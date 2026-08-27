@@ -18,6 +18,9 @@ const BusinessRaidResolver := preload("res://campaign/missions/resolvers/busines
 const ForceMoveRequest := preload("res://campaign/travel/force_move_request.gd")
 const ForceMoveResult := preload("res://campaign/travel/force_move_result.gd")
 const ForceMovementService := preload("res://campaign/travel/force_movement_service.gd")
+const ForceTurnResult := preload("res://campaign/turns/force_turn_result.gd")
+const TurnResult := preload("res://campaign/turns/turn_result.gd")
+const TurnManager := preload("res://campaign/turns/turn_manager.gd")
 
 
 static func run() -> Dictionary:
@@ -2415,6 +2418,398 @@ static func run() -> Dictionary:
 	var rem_atomic_mid_ok: bool = rem_mid_block_ok
 	var rem_atomic_noroute_ok: bool = rem_dest_noroute_ok
 
+	var turn_route_abc: Array[String] = ["turn_a", "turn_b", "turn_c"]
+	var turn_route_cba: Array[String] = ["turn_c", "turn_b", "turn_a"]
+	var turn_route_ab: Array[String] = ["turn_a", "turn_b"]
+	var turn_route_c: Array[String] = ["turn_c"]
+	var turn_route_a: Array[String] = ["turn_a"]
+
+	var turn_state: GameState = _make_turn_world(5)
+	var turn_gang: MajorGang = turn_state.get_faction("turn_gang") as MajorGang
+	var turn_shop: Business = turn_state.get_map_location("turn_shop") as Business
+	var turn_soldier: Soldier = turn_state.get_soldier("turn_soldier")
+	var turn_vehicle: Vehicle = turn_state.get_vehicle("turn_vehicle")
+	var turn_force_partial: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_partial", "turn_keep", "turn_shop", turn_route_abc, 5.0, "traveling_outbound", 1.0, 0, 0.0
+	)
+	var turn_force_arrive: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_arrive", "turn_keep", "turn_shop", turn_route_abc, 5.0, "traveling_outbound", 0.25, 1, 2.0
+	)
+	var turn_force_idle: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_idle", "turn_keep", "turn_shop", turn_route_c, 4.0, "at_destination", 0.5, 0, 0.0
+	)
+	turn_force_idle.soldier_group.add_soldier_id("turn_soldier")
+	turn_force_idle.vehicle_group.add_vehicle_id("turn_vehicle")
+	var turn_force_complete: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_complete", "turn_keep", "turn_shop", turn_route_abc, 5.0, "complete", 1.25, 0, 0.0
+	)
+	var turn_force_return: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_return", "turn_shop", "turn_keep", turn_route_cba, 5.0, "traveling_return", 0.75, 0, 0.0
+	)
+	var turn_force_zero: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_zero", "turn_keep", "turn_shop", turn_route_abc, 0.0, "traveling_outbound", 2.0, 0, 0.0
+	)
+	var turn_force_queue: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_queue", "turn_keep", "turn_shop", turn_route_abc, 4.0, "traveling_outbound", 0.0, 0, 0.0
+	)
+	var turn_force_resolved: TravelingForce = _make_turn_force(
+		turn_state, "turn_force_resolved", "turn_keep", "turn_loc_b", turn_route_abc, 5.0, "traveling_outbound", 0.0, 0, 0.0
+	)
+	_register_turn_mission(turn_state, "turn_mission_z", "turn_force_complete", "turn_keep", "turn_shop", "traveling_outbound", "")
+	_register_turn_mission(turn_state, "turn_mission_a", "turn_force_arrive", "turn_keep", "turn_shop", "traveling_outbound", "")
+	_register_turn_mission(turn_state, "turn_mission_m", "turn_force_partial", "turn_keep", "turn_shop", "traveling_outbound", "")
+	var turn_mission_resolved: CampaignMission = _register_turn_mission(
+		turn_state, "turn_mission_resolved", "turn_force_resolved", "turn_keep", "turn_shop", "resolved_success", "prior_raid_complete"
+	)
+	var turn_idle_route_before: Array[String] = _copy_ids(turn_force_idle.route_node_ids)
+	var turn_idle_dest_before: String = turn_force_idle.destination_location_id
+	var turn_complete_remaining_before: float = turn_force_complete.movement_remaining
+	var turn_complete_state_before: String = turn_force_complete.travel_state
+	var turn_money_before: float = turn_gang.money
+	var turn_ammo_before: float = turn_gang.resources.get_amount("Ammo")
+	var turn_shop_owner_before: String = turn_shop.owner_faction_id
+	var turn_shop_level_before: int = turn_shop.level
+	var turn_shop_open_before: bool = turn_shop.is_open
+	var turn_mission_count_before: int = turn_state.missions.size()
+	var turn_soldier_home_before: String = turn_soldier.home_stronghold_id
+	var turn_vehicle_home_before: String = turn_vehicle.home_stronghold_id
+	var turn_idle_soldiers_before: Array[String] = _copy_ids(turn_force_idle.soldier_group.soldier_ids)
+	var turn_idle_vehicles_before: Array[String] = _copy_ids(turn_force_idle.vehicle_group.vehicle_ids)
+	var turn_partial_dest_before: String = turn_force_partial.destination_location_id
+	var turn_queue_dest_before: String = turn_force_queue.destination_location_id
+	var turn_resolved_target_before: String = turn_mission_resolved.target_location_id
+	var turn_resolved_outcome_before: String = turn_mission_resolved.outcome_code
+	var turn_main_result: TurnResult = TurnManager.advance_to_next_turn(turn_state)
+	var turn_partial_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_partial")
+	var turn_arrive_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_arrive")
+	var turn_idle_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_idle")
+	var turn_complete_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_complete")
+	var turn_return_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_return")
+	var turn_zero_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_zero")
+	var turn_queue_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_queue")
+	var turn_resolved_res: ForceTurnResult = _find_force_turn_result(turn_main_result.force_results, "turn_force_resolved")
+	var turn_mission_a_res: MissionResult = _find_mission_result(turn_main_result.mission_results, "turn_mission_a")
+	var turn_mission_m_res: MissionResult = _find_mission_result(turn_main_result.mission_results, "turn_mission_m")
+	var turn_mission_z_res: MissionResult = _find_mission_result(turn_main_result.mission_results, "turn_mission_z")
+	var turn_mission_resolved_res: MissionResult = _find_mission_result(turn_main_result.mission_results, "turn_mission_resolved")
+	var expected_turn_mission_order: Array[String] = ["turn_mission_a", "turn_mission_m", "turn_mission_resolved", "turn_mission_z"]
+	var turn_basic_increment_ok: bool = (
+		turn_main_result.success
+		and turn_main_result.turn_before == 5
+		and turn_main_result.turn_after == 6
+		and turn_state.current_turn == 6
+		and turn_state.current_month == 7
+		and turn_state.current_year == 2034
+		and turn_main_result.error_code.is_empty()
+	)
+	var turn_partial_continue_ok: bool = (
+		turn_partial_res != null
+		and turn_force_partial.travel_state == "traveling_outbound"
+		and turn_force_partial.route_segment_index == 1
+		and is_equal_approx(turn_force_partial.distance_into_segment, 2.0)
+		and is_equal_approx(turn_force_partial.movement_remaining, 0.0)
+		and is_equal_approx(turn_partial_res.movement_refreshed, 5.0)
+		and is_equal_approx(turn_partial_res.movement_spent, 5.0)
+		and is_equal_approx(turn_partial_res.movement_remaining, 0.0)
+		and turn_partial_res.state_before == "traveling_outbound"
+		and turn_partial_res.state_after == "traveling_outbound"
+		and turn_partial_res.reached_destination == false
+		and turn_partial_res.error_code.is_empty()
+	)
+	var turn_arrive_leftover_ok: bool = (
+		turn_arrive_res != null
+		and turn_force_arrive.travel_state == "at_destination"
+		and is_equal_approx(turn_arrive_res.movement_refreshed, 5.0)
+		and is_equal_approx(turn_arrive_res.movement_spent, 2.0)
+		and is_equal_approx(turn_force_arrive.movement_remaining, 3.0)
+		and is_equal_approx(turn_arrive_res.movement_remaining, 3.0)
+		and turn_arrive_res.reached_destination == true
+		and turn_arrive_res.state_before == "traveling_outbound"
+		and turn_arrive_res.state_after == "at_destination"
+		and turn_arrive_res.error_code.is_empty()
+	)
+	var turn_at_destination_ok: bool = (
+		turn_idle_res != null
+		and turn_force_idle.travel_state == "at_destination"
+		and is_equal_approx(turn_force_idle.movement_remaining, 4.0)
+		and is_equal_approx(turn_idle_res.movement_refreshed, 4.0)
+		and is_equal_approx(turn_idle_res.movement_spent, 0.0)
+		and turn_idle_res.reached_destination == false
+		and _string_ids_match(turn_force_idle.route_node_ids, turn_idle_route_before)
+		and turn_force_idle.destination_location_id == turn_idle_dest_before
+		and turn_idle_res.state_before == "at_destination"
+		and turn_idle_res.state_after == "at_destination"
+	)
+	var turn_complete_ok: bool = (
+		turn_complete_res != null
+		and turn_force_complete.travel_state == turn_complete_state_before
+		and is_equal_approx(turn_force_complete.movement_remaining, turn_complete_remaining_before)
+		and is_equal_approx(turn_force_complete.movement_remaining, 1.25)
+		and is_equal_approx(turn_complete_res.movement_refreshed, 0.0)
+		and is_equal_approx(turn_complete_res.movement_spent, 0.0)
+		and is_equal_approx(turn_complete_res.movement_remaining, 1.25)
+		and turn_complete_res.state_before == "complete"
+		and turn_complete_res.state_after == "complete"
+		and turn_complete_res.reached_destination == false
+	)
+	var turn_return_ok: bool = (
+		turn_return_res != null
+		and turn_force_return.travel_state == "traveling_return"
+		and turn_force_return.route_segment_index == 1
+		and is_equal_approx(turn_force_return.distance_into_segment, 1.0)
+		and is_equal_approx(turn_force_return.movement_remaining, 0.0)
+		and is_equal_approx(turn_return_res.movement_refreshed, 5.0)
+		and is_equal_approx(turn_return_res.movement_spent, 5.0)
+		and turn_return_res.state_before == "traveling_return"
+		and turn_return_res.state_after == "traveling_return"
+		and turn_return_res.reached_destination == false
+		and turn_return_res.error_code.is_empty()
+	)
+	var turn_zero_speed_ok: bool = (
+		turn_zero_res != null
+		and turn_force_zero.travel_state == "traveling_outbound"
+		and turn_force_zero.route_segment_index == 0
+		and is_equal_approx(turn_force_zero.distance_into_segment, 0.0)
+		and is_equal_approx(turn_force_zero.movement_remaining, 0.0)
+		and is_equal_approx(turn_zero_res.movement_refreshed, 0.0)
+		and is_equal_approx(turn_zero_res.movement_spent, 0.0)
+		and turn_zero_res.error_code.is_empty()
+		and turn_zero_res.error_message.is_empty()
+		and turn_zero_res.reached_destination == false
+	)
+	var turn_queued_ok: bool = (
+		turn_queue_res != null
+		and turn_force_queue.travel_state == "traveling_outbound"
+		and turn_force_queue.route_segment_index == 1
+		and is_equal_approx(turn_force_queue.distance_into_segment, 1.0)
+		and is_equal_approx(turn_queue_res.movement_refreshed, 4.0)
+		and is_equal_approx(turn_queue_res.movement_spent, 4.0)
+		and is_equal_approx(turn_force_queue.movement_remaining, 0.0)
+		and turn_queue_res.error_code.is_empty()
+	)
+	var turn_mission_arrive_ok: bool = (
+		turn_mission_a_res != null
+		and turn_force_arrive.travel_state == "at_destination"
+		and turn_state.get_mission("turn_mission_a").mission_state == "awaiting_resolution"
+		and turn_mission_a_res.success
+		and turn_mission_a_res.mission_state == "awaiting_resolution"
+		and is_equal_approx(turn_force_arrive.movement_remaining, 3.0)
+	)
+	var turn_mission_still_outbound_ok: bool = (
+		turn_mission_m_res != null
+		and turn_force_partial.travel_state == "traveling_outbound"
+		and turn_state.get_mission("turn_mission_m").mission_state == "traveling_outbound"
+		and turn_mission_m_res.success
+		and turn_mission_m_res.mission_state == "traveling_outbound"
+	)
+	var turn_resolved_history_ok: bool = (
+		turn_resolved_res != null
+		and turn_force_resolved.travel_state == "traveling_outbound"
+		and turn_force_resolved.route_segment_index == 1
+		and is_equal_approx(turn_force_resolved.distance_into_segment, 2.0)
+		and turn_mission_resolved.mission_state == "resolved_success"
+		and turn_mission_resolved.target_location_id == turn_resolved_target_before
+		and turn_mission_resolved.outcome_code == turn_resolved_outcome_before
+		and turn_mission_resolved_res != null
+		and turn_mission_resolved_res.success
+		and turn_mission_resolved_res.mission_state == "resolved_success"
+	)
+	var turn_mission_mismatch_ok: bool = (
+		turn_main_result.success
+		and turn_state.current_turn == 6
+		and turn_mission_z_res != null
+		and not turn_mission_z_res.success
+		and turn_mission_z_res.error_code == "mission_force_state_mismatch"
+		and turn_partial_res != null
+		and turn_partial_res.error_code.is_empty()
+		and turn_force_partial.travel_state == "traveling_outbound"
+	)
+	var turn_mission_order_ok: bool = _string_ids_match(_mission_result_ids(turn_main_result.mission_results), expected_turn_mission_order)
+	var turn_no_auto_actions_ok: bool = (
+		turn_state.missions.size() == turn_mission_count_before
+		and is_equal_approx(turn_gang.money, turn_money_before)
+		and is_equal_approx(turn_gang.resources.get_amount("Ammo"), turn_ammo_before)
+		and turn_shop.owner_faction_id == turn_shop_owner_before
+		and turn_shop.level == turn_shop_level_before
+		and turn_shop.is_open == turn_shop_open_before
+		and turn_force_partial.destination_location_id == turn_partial_dest_before
+		and turn_force_queue.destination_location_id == turn_queue_dest_before
+		and turn_force_idle.destination_location_id == turn_idle_dest_before
+		and turn_force_complete.destination_location_id == "turn_shop"
+		and turn_mission_resolved.mission_state == "resolved_success"
+		and turn_state.get_mission("turn_mission_a").mission_state != "resolved_success"
+		and turn_state.get_mission("turn_mission_a").mission_state != "resolved_failure"
+		and turn_state.get_mission("turn_mission_m").mission_state == "traveling_outbound"
+		and _string_ids_match(turn_force_idle.soldier_group.soldier_ids, turn_idle_soldiers_before)
+		and _string_ids_match(turn_force_idle.vehicle_group.vehicle_ids, turn_idle_vehicles_before)
+		and turn_soldier.home_stronghold_id == turn_soldier_home_before
+		and turn_vehicle.home_stronghold_id == turn_vehicle_home_before
+	)
+
+	var turn_null_result: TurnResult = TurnManager.advance_to_next_turn(null)
+	var turn_null_state_ok: bool = (
+		not turn_null_result.success
+		and turn_null_result.error_code == "null_game_state"
+	)
+	var turn_invalid_state: GameState = _make_turn_world(0)
+	var turn_invalid_force: TravelingForce = _make_turn_force(
+		turn_invalid_state, "turn_force_invalid", "turn_keep", "turn_shop", turn_route_abc, 5.0, "traveling_outbound", 1.0, 0, 0.0
+	)
+	var turn_invalid_snap: Dictionary = _force_travel_snapshot(turn_invalid_force)
+	var turn_invalid_month: int = turn_invalid_state.current_month
+	var turn_invalid_year: int = turn_invalid_state.current_year
+	var turn_invalid_result: TurnResult = TurnManager.advance_to_next_turn(turn_invalid_state)
+	var turn_invalid_current_ok: bool = (
+		not turn_invalid_result.success
+		and turn_invalid_result.error_code == "invalid_current_turn"
+		and turn_invalid_state.current_turn == 0
+		and turn_invalid_state.current_month == turn_invalid_month
+		and turn_invalid_state.current_year == turn_invalid_year
+		and _force_travel_unchanged(turn_invalid_force, turn_invalid_snap)
+	)
+
+	var turn_block_state: GameState = _make_turn_world(3)
+	var turn_force_blocked: TravelingForce = _make_turn_force(
+		turn_block_state, "turn_force_blocked", "turn_keep", "turn_shop", turn_route_abc, 5.0, "traveling_outbound", 1.0, 1, 0.0
+	)
+	var turn_force_ok: TravelingForce = _make_turn_force(
+		turn_block_state, "turn_force_ok", "turn_keep", "turn_loc_b", turn_route_ab, 5.0, "traveling_outbound", 0.5, 0, 0.0
+	)
+	var turn_force_edge: TravelingForce = _make_turn_force(
+		turn_block_state, "turn_force_edge", "turn_keep", "turn_shop", turn_route_abc, 3.0, "traveling_outbound", 1.0, 0, 0.0
+	)
+	var turn_blocked_snap: Dictionary = _force_travel_snapshot(turn_force_blocked)
+	turn_block_state.road_graph.get_segment("turn_bc").is_open = false
+	var turn_block_result: TurnResult = TurnManager.advance_to_next_turn(turn_block_state)
+	var turn_blocked_res: ForceTurnResult = _find_force_turn_result(turn_block_result.force_results, "turn_force_blocked")
+	var turn_ok_res: ForceTurnResult = _find_force_turn_result(turn_block_result.force_results, "turn_force_ok")
+	var turn_edge_res: ForceTurnResult = _find_force_turn_result(turn_block_result.force_results, "turn_force_edge")
+	var turn_closed_segment_ok: bool = (
+		turn_block_result.success
+		and turn_block_state.current_turn == 4
+		and turn_blocked_res != null
+		and turn_blocked_res.error_code == "missing_open_segment"
+		and turn_force_blocked.travel_state == "traveling_outbound"
+		and turn_force_blocked.route_segment_index == int(turn_blocked_snap.get("segment", -1))
+		and is_equal_approx(turn_force_blocked.distance_into_segment, float(turn_blocked_snap.get("distance", -1.0)))
+		and is_equal_approx(turn_force_blocked.movement_remaining, 5.0)
+		and turn_ok_res != null
+		and turn_ok_res.error_code.is_empty()
+		and turn_force_ok.travel_state == "at_destination"
+		and is_equal_approx(turn_ok_res.movement_refreshed, 5.0)
+		and is_equal_approx(turn_force_ok.movement_remaining, 2.0)
+	)
+	var turn_full_budget_edge_ok: bool = (
+		turn_edge_res != null
+		and turn_edge_res.error_code.is_empty()
+		and turn_force_edge.travel_state == "traveling_outbound"
+		and turn_force_edge.route_segment_index == 1
+		and is_equal_approx(turn_force_edge.distance_into_segment, 0.0)
+		and is_equal_approx(turn_force_edge.movement_remaining, 0.0)
+		and is_equal_approx(turn_edge_res.movement_refreshed, 3.0)
+		and is_equal_approx(turn_edge_res.movement_spent, 3.0)
+		and turn_edge_res.reached_destination == false
+	)
+	turn_block_state.road_graph.get_segment("turn_bc").is_open = true
+
+	var turn_order_state: GameState = _make_turn_world(2)
+	_make_turn_force(turn_order_state, "turn_force_z", "turn_keep", "turn_shop", turn_route_c, 4.0, "at_destination", 0.0, 0, 0.0)
+	_make_turn_force(turn_order_state, "turn_force_a", "turn_keep", "turn_shop", turn_route_c, 4.0, "at_destination", 0.0, 0, 0.0)
+	_make_turn_force(turn_order_state, "turn_force_m", "turn_keep", "turn_shop", turn_route_c, 4.0, "at_destination", 0.0, 0, 0.0)
+	var turn_order_result: TurnResult = TurnManager.advance_to_next_turn(turn_order_state)
+	var expected_turn_force_order: Array[String] = ["turn_force_a", "turn_force_m", "turn_force_z"]
+	var turn_force_order_ok: bool = (
+		turn_order_result.success
+		and _string_ids_match(_force_turn_result_ids(turn_order_result.force_results), expected_turn_force_order)
+	)
+
+	var turn_helper_forces: Array[ForceTurnResult] = []
+	turn_helper_forces.append(
+		ForceTurnResult.succeeded("turn_helper_force", 5.0, 2.0, 3.0, "traveling_outbound", "at_destination", true)
+	)
+	var turn_helper_missions: Array[MissionResult] = []
+	turn_helper_missions.append(MissionResult.succeeded("turn_helper_mission", "turn_helper_force", "awaiting_resolution"))
+	var turn_helper_ok: TurnResult = TurnResult.succeeded(8, 9, turn_helper_forces, turn_helper_missions)
+	var turn_result_success_helper_ok: bool = (
+		turn_helper_ok.success
+		and turn_helper_ok.turn_before == 8
+		and turn_helper_ok.turn_after == 9
+		and turn_helper_ok.error_code.is_empty()
+		and turn_helper_ok.error_message.is_empty()
+		and turn_helper_ok.force_results.size() == 1
+		and turn_helper_ok.force_results[0].force_id == "turn_helper_force"
+		and turn_helper_ok.mission_results.size() == 1
+		and turn_helper_ok.mission_results[0].mission_id == "turn_helper_mission"
+	)
+	var turn_helper_fail: TurnResult = TurnResult.failed("invalid_current_turn", "Turn advancement failed: current_turn '0' is invalid.", 0, 0)
+	var turn_result_fail_helper_ok: bool = (
+		not turn_helper_fail.success
+		and turn_helper_fail.error_code == "invalid_current_turn"
+		and turn_helper_fail.error_message == "Turn advancement failed: current_turn '0' is invalid."
+		and turn_helper_fail.turn_before == 0
+		and turn_helper_fail.turn_after == 0
+		and turn_helper_fail.force_results.is_empty()
+		and turn_helper_fail.mission_results.is_empty()
+	)
+	var turn_ftr_ok: ForceTurnResult = ForceTurnResult.succeeded(
+		"turn_helper_force", 5.0, 2.0, 3.0, "traveling_outbound", "at_destination", true
+	)
+	var turn_force_result_success_helper_ok: bool = (
+		turn_ftr_ok.force_id == "turn_helper_force"
+		and is_equal_approx(turn_ftr_ok.movement_refreshed, 5.0)
+		and is_equal_approx(turn_ftr_ok.movement_spent, 2.0)
+		and is_equal_approx(turn_ftr_ok.movement_remaining, 3.0)
+		and turn_ftr_ok.state_before == "traveling_outbound"
+		and turn_ftr_ok.state_after == "at_destination"
+		and turn_ftr_ok.reached_destination
+		and turn_ftr_ok.error_code.is_empty()
+		and turn_ftr_ok.error_message.is_empty()
+	)
+	var turn_ftr_fail: ForceTurnResult = ForceTurnResult.failed(
+		"missing_open_segment",
+		"Turn force processing failed: required open segment missing.",
+		"turn_helper_force",
+		5.0,
+		0.0,
+		5.0,
+		"traveling_outbound",
+		"traveling_outbound",
+		false
+	)
+	var turn_force_result_fail_helper_ok: bool = (
+		turn_ftr_fail.force_id == "turn_helper_force"
+		and turn_ftr_fail.error_code == "missing_open_segment"
+		and turn_ftr_fail.error_message == "Turn force processing failed: required open segment missing."
+		and is_equal_approx(turn_ftr_fail.movement_refreshed, 5.0)
+		and is_equal_approx(turn_ftr_fail.movement_spent, 0.0)
+		and is_equal_approx(turn_ftr_fail.movement_remaining, 5.0)
+		and turn_ftr_fail.state_before == "traveling_outbound"
+		and turn_ftr_fail.state_after == "traveling_outbound"
+		and turn_ftr_fail.reached_destination == false
+	)
+
+	var turn_calendar_state: GameState = _make_turn_world(10)
+	var turn_cal_1: TurnResult = TurnManager.advance_to_next_turn(turn_calendar_state)
+	var turn_cal_2: TurnResult = TurnManager.advance_to_next_turn(turn_calendar_state)
+	var turn_cal_3: TurnResult = TurnManager.advance_to_next_turn(turn_calendar_state)
+	var turn_calendar_ok: bool = (
+		turn_cal_1.success
+		and turn_cal_1.turn_before == 10
+		and turn_cal_1.turn_after == 11
+		and turn_cal_2.success
+		and turn_cal_2.turn_before == 11
+		and turn_cal_2.turn_after == 12
+		and turn_cal_3.success
+		and turn_cal_3.turn_before == 12
+		and turn_cal_3.turn_after == 13
+		and turn_calendar_state.current_turn == 13
+		and turn_calendar_state.current_month == 7
+		and turn_calendar_state.current_year == 2034
+		and turn_cal_1.turn_after - turn_cal_1.turn_before == 1
+		and turn_cal_2.turn_after - turn_cal_2.turn_before == 1
+		and turn_cal_3.turn_after - turn_cal_3.turn_before == 1
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -2834,6 +3229,30 @@ static func run() -> Dictionary:
 		"rem_atomic_noroute_ok": rem_atomic_noroute_ok,
 		"rem_save_load_ok": rem_save_load_ok,
 		"rem_older_save_ok": rem_older_save_ok,
+		"turn_basic_increment_ok": turn_basic_increment_ok,
+		"turn_null_state_ok": turn_null_state_ok,
+		"turn_invalid_current_ok": turn_invalid_current_ok,
+		"turn_partial_continue_ok": turn_partial_continue_ok,
+		"turn_arrive_leftover_ok": turn_arrive_leftover_ok,
+		"turn_at_destination_ok": turn_at_destination_ok,
+		"turn_complete_ok": turn_complete_ok,
+		"turn_return_ok": turn_return_ok,
+		"turn_zero_speed_ok": turn_zero_speed_ok,
+		"turn_queued_ok": turn_queued_ok,
+		"turn_mission_arrive_ok": turn_mission_arrive_ok,
+		"turn_mission_still_outbound_ok": turn_mission_still_outbound_ok,
+		"turn_resolved_history_ok": turn_resolved_history_ok,
+		"turn_mission_mismatch_ok": turn_mission_mismatch_ok,
+		"turn_closed_segment_ok": turn_closed_segment_ok,
+		"turn_full_budget_edge_ok": turn_full_budget_edge_ok,
+		"turn_force_order_ok": turn_force_order_ok,
+		"turn_mission_order_ok": turn_mission_order_ok,
+		"turn_result_success_helper_ok": turn_result_success_helper_ok,
+		"turn_result_fail_helper_ok": turn_result_fail_helper_ok,
+		"turn_force_result_success_helper_ok": turn_force_result_success_helper_ok,
+		"turn_force_result_fail_helper_ok": turn_force_result_fail_helper_ok,
+		"turn_calendar_ok": turn_calendar_ok,
+		"turn_no_auto_actions_ok": turn_no_auto_actions_ok,
 	}
 
 	var passed := true
@@ -3073,3 +3492,118 @@ static func _force_travel_unchanged(force: TravelingForce, snap: Dictionary) -> 
 		and _string_ids_match(force.soldier_group.soldier_ids, expected_soldiers)
 		and _string_ids_match(force.vehicle_group.vehicle_ids, expected_vehicles)
 	)
+
+
+static func _make_turn_world(p_current_turn: int = 5) -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = p_current_turn
+	state.current_month = 7
+	state.current_year = 2034
+	var gang: MajorGang = MajorGang.new("turn_gang", "Turn Gang", "player")
+	gang.money = 1000.0
+	gang.resources.set_amount("Ammo", 5.0)
+	state.add_faction(gang)
+	state.add_stronghold_region(StrongholdRegion.new("turn_region", "Turn Region"))
+	state.add_police_region(PoliceRegion.new("turn_district", "Turn District"))
+	state.add_neighborhood(Neighborhood.new("turn_hood", "Turn Hood", "turn_region", "turn_district"))
+	var keep: Stronghold = Stronghold.new("turn_keep", "Turn Keep", "turn_hood", Vector2(0.0, 0.0), "turn_gang", true, 1)
+	keep.road_node_id = "turn_a"
+	state.add_map_location(keep)
+	var loc_b: Business = Business.new("turn_loc_b", "Turn Loc B", "turn_hood", Vector2(3.0, 0.0), "turn_gang", true, "market", 1)
+	loc_b.road_node_id = "turn_b"
+	state.add_map_location(loc_b)
+	var shop: Business = Business.new("turn_shop", "Turn Shop", "turn_hood", Vector2(7.0, 0.0), "turn_gang", true, "market", 2)
+	shop.road_node_id = "turn_c"
+	state.add_map_location(shop)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("turn_a", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("turn_b", Vector2(3.0, 0.0)))
+	graph.add_node(RoadNode.new("turn_c", Vector2(7.0, 0.0)))
+	graph.add_segment(RoadSegment.new("turn_ab", "turn_a", "turn_b", 3.0))
+	graph.add_segment(RoadSegment.new("turn_bc", "turn_b", "turn_c", 4.0))
+	var soldier: Soldier = Soldier.new("turn_soldier", "turn_gang", "", "pistol", 1.0, 20.0)
+	var vehicle: Vehicle = Vehicle.new("turn_vehicle", "turn_gang", "car", "", 2, 5.0, 50.0)
+	state.add_soldier(soldier)
+	state.add_vehicle(vehicle)
+	state.assign_soldier_to_stronghold("turn_soldier", "turn_keep")
+	state.assign_vehicle_to_stronghold("turn_vehicle", "turn_keep")
+	return state
+
+
+static func _make_turn_force(
+	game_state: GameState,
+	force_id: String,
+	origin_id: String,
+	dest_id: String,
+	route: Array[String],
+	movement_per_turn: float,
+	travel_state: String,
+	movement_remaining: float,
+	segment_index: int = 0,
+	distance_into: float = 0.0
+) -> TravelingForce:
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		"turn_gang",
+		origin_id,
+		dest_id,
+		route,
+		movement_per_turn,
+		travel_state
+	)
+	force.route_segment_index = segment_index
+	force.distance_into_segment = distance_into
+	force.movement_remaining = movement_remaining
+	game_state.add_traveling_force(force)
+	return force
+
+
+static func _register_turn_mission(
+	game_state: GameState,
+	mission_id: String,
+	force_id: String,
+	origin_id: String,
+	target_id: String,
+	mission_state: String,
+	outcome_code: String
+) -> CampaignMission:
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		"raid_business",
+		"turn_gang",
+		force_id,
+		origin_id,
+		target_id,
+		mission_state,
+		outcome_code
+	)
+	game_state.add_mission(mission)
+	return mission
+
+
+static func _find_force_turn_result(results: Array[ForceTurnResult], force_id: String) -> ForceTurnResult:
+	for result: ForceTurnResult in results:
+		if result.force_id == force_id:
+			return result
+	return null
+
+
+static func _find_mission_result(results: Array[MissionResult], mission_id: String) -> MissionResult:
+	for result: MissionResult in results:
+		if result.mission_id == mission_id:
+			return result
+	return null
+
+
+static func _force_turn_result_ids(results: Array[ForceTurnResult]) -> Array[String]:
+	var ids: Array[String] = []
+	for result: ForceTurnResult in results:
+		ids.append(result.force_id)
+	return ids
+
+
+static func _mission_result_ids(results: Array[MissionResult]) -> Array[String]:
+	var ids: Array[String] = []
+	for result: MissionResult in results:
+		ids.append(result.mission_id)
+	return ids
