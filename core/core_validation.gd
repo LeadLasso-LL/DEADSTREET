@@ -37,6 +37,10 @@ const DiplomacyResult := preload("res://campaign/diplomacy/diplomacy_result.gd")
 const DiplomacyService := preload("res://campaign/diplomacy/diplomacy_service.gd")
 const NeighborhoodHQAttackResult := preload("res://campaign/missions/neighborhood_hq_attack_result.gd")
 const NeighborhoodHQAttackService := preload("res://campaign/missions/neighborhood_hq_attack_service.gd")
+const NeighborhoodHQAttackFailureResult := preload("res://campaign/missions/resolvers/neighborhood_hq_attack_failure_result.gd")
+const NeighborhoodHQAttackFailureResolver := preload("res://campaign/missions/resolvers/neighborhood_hq_attack_failure_resolver.gd")
+const NeighborhoodHQBattleResult := preload("res://campaign/missions/resolvers/neighborhood_hq_battle_result.gd")
+const NeighborhoodHQBattleResolver := preload("res://campaign/missions/resolvers/neighborhood_hq_battle_resolver.gd")
 
 
 static func run() -> Dictionary:
@@ -5057,6 +5061,324 @@ static func run() -> Dictionary:
 		and not hqattack_helper_fail.reached_destination
 	)
 
+	var hqbattle_fail_state: GameState = _make_hqbattle_world()
+	var hqbattle_fail_force: TravelingForce = _hqbattle_add_force_mission(hqbattle_fail_state)
+	var hqbattle_fail_hood: Neighborhood = hqbattle_fail_state.get_neighborhood("hqbattle_hood")
+	var hqbattle_fail_hq: NeighborhoodHQ = hqbattle_fail_state.get_map_location("hqbattle_hq") as NeighborhoodHQ
+	var hqbattle_fail_biz_a: Business = hqbattle_fail_state.get_map_location("hqbattle_biz_a") as Business
+	var hqbattle_fail_biz_b: Business = hqbattle_fail_state.get_map_location("hqbattle_biz_b") as Business
+	var hqbattle_fail_biz_c: Business = hqbattle_fail_state.get_map_location("hqbattle_biz_c") as Business
+	var hqbattle_fail_def_keep: Stronghold = hqbattle_fail_state.get_map_location("hqbattle_def_keep") as Stronghold
+	var hqbattle_fail_att: MajorGang = hqbattle_fail_state.get_faction("hqbattle_a") as MajorGang
+	var hqbattle_fail_def: MajorGang = hqbattle_fail_state.get_faction("hqbattle_b") as MajorGang
+	var hqbattle_fail_mission: CampaignMission = hqbattle_fail_state.get_mission("hqbattle_mission")
+	var hqbattle_fail_force_snap: Dictionary = _force_travel_snapshot(hqbattle_fail_force)
+	var hqbattle_fail_soldiers: Array[String] = _copy_ids(hqbattle_fail_force.soldier_group.soldier_ids)
+	var hqbattle_fail_vehicles: Array[String] = _copy_ids(hqbattle_fail_force.vehicle_group.vehicle_ids)
+	var hqbattle_fail_force_count: int = hqbattle_fail_state.traveling_forces.size()
+	var hqbattle_fail_soldier_count: int = hqbattle_fail_state.soldiers.size()
+	var hqbattle_fail_vehicle_count: int = hqbattle_fail_state.vehicles.size()
+	var hqbattle_fail_money_a: float = hqbattle_fail_att.money
+	var hqbattle_fail_money_b: float = hqbattle_fail_def.money
+	var hqbattle_fail_ammo_a: float = hqbattle_fail_att.resources.get_amount("Ammo")
+	var hqbattle_fail_narc_b: float = hqbattle_fail_def.resources.get_amount("Narcotics")
+	var hqbattle_fail_rel_count: int = hqbattle_fail_state.relationships.size()
+	var hqbattle_fail_res: NeighborhoodHQAttackFailureResult = NeighborhoodHQAttackFailureResolver.resolve_failure(
+		hqbattle_fail_state, "hqbattle_mission"
+	)
+	var hqbattle_fail_ok: bool = (
+		hqbattle_fail_res.success
+		and hqbattle_fail_res.mission_id == "hqbattle_mission"
+		and hqbattle_fail_res.force_id == "hqbattle_force"
+		and hqbattle_fail_res.defender_faction_id == "hqbattle_b"
+		and hqbattle_fail_res.attacker_faction_id == "hqbattle_a"
+		and hqbattle_fail_mission.mission_state == "resolved_failure"
+		and hqbattle_fail_mission.outcome_code == "neighborhood_hq_assault_failed"
+		and hqbattle_fail_hood.owner_faction_id == "hqbattle_b"
+		and hqbattle_fail_hq.owner_faction_id == "hqbattle_b"
+		and hqbattle_fail_biz_a.owner_faction_id == "hqbattle_b"
+		and hqbattle_fail_biz_b.owner_faction_id == "hqbattle_b"
+		and hqbattle_fail_biz_c.owner_faction_id == "hqbattle_c"
+		and hqbattle_fail_def_keep.owner_faction_id == "hqbattle_b"
+		and _force_travel_unchanged(hqbattle_fail_force, hqbattle_fail_force_snap)
+		and hqbattle_fail_force.destination_location_id == "hqbattle_hq"
+		and hqbattle_fail_force.travel_state == "at_destination"
+		and _string_ids_match(hqbattle_fail_force.soldier_group.soldier_ids, hqbattle_fail_soldiers)
+		and _string_ids_match(hqbattle_fail_force.vehicle_group.vehicle_ids, hqbattle_fail_vehicles)
+		and hqbattle_fail_state.traveling_forces.size() == hqbattle_fail_force_count
+		and hqbattle_fail_state.soldiers.size() == hqbattle_fail_soldier_count
+		and hqbattle_fail_state.vehicles.size() == hqbattle_fail_vehicle_count
+	)
+	var hqbattle_reuse_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"hqbattle_reuse", "raid_business", "hqbattle_force", "hqbattle_hq_b"
+	)
+	var hqbattle_reuse_res: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		hqbattle_fail_state, hqbattle_reuse_req
+	)
+	var hqbattle_reuse_ok: bool = (
+		hqbattle_fail_ok
+		and hqbattle_reuse_res.success
+		and hqbattle_reuse_res.force_id == "hqbattle_force"
+		and hqbattle_fail_state.traveling_forces.size() == 1
+		and hqbattle_fail_state.has_mission("hqbattle_reuse")
+		and hqbattle_fail_mission.mission_state == "resolved_failure"
+	)
+	var hqbattle_no_side_effects_ok: bool = (
+		hqbattle_fail_ok
+		and is_equal_approx(hqbattle_fail_att.money, hqbattle_fail_money_a)
+		and is_equal_approx(hqbattle_fail_def.money, hqbattle_fail_money_b)
+		and is_equal_approx(hqbattle_fail_att.resources.get_amount("Ammo"), hqbattle_fail_ammo_a)
+		and is_equal_approx(hqbattle_fail_def.resources.get_amount("Narcotics"), hqbattle_fail_narc_b)
+		and hqbattle_fail_state.relationships.size() == hqbattle_fail_rel_count
+		and hqbattle_fail_state.has_soldier("hqbattle_soldier")
+		and hqbattle_fail_state.has_vehicle("hqbattle_vehicle")
+		and hqbattle_fail_state.has_soldier("hqbattle_def_soldier")
+	)
+
+	var hqbattle_null_res: NeighborhoodHQAttackFailureResult = NeighborhoodHQAttackFailureResolver.resolve_failure(null, "hqbattle_mission")
+	var hqbattle_null_ok: bool = not hqbattle_null_res.success and hqbattle_null_res.error_code == "null_game_state"
+	var hqbattle_empty_state: GameState = _make_hqbattle_world()
+	_hqbattle_add_force_mission(hqbattle_empty_state)
+	var hqbattle_empty_id_ok: bool = _hqbattle_fails_atomically(hqbattle_empty_state, "", "empty_mission_id", hqbattle_empty_state.get_traveling_force("hqbattle_force"))
+	var hqbattle_miss_state: GameState = _make_hqbattle_world()
+	var hqbattle_miss_force: TravelingForce = _hqbattle_add_force_mission(hqbattle_miss_state)
+	var hqbattle_missing_mission_ok: bool = _hqbattle_fails_atomically(hqbattle_miss_state, "hqbattle_missing", "invalid_mission", hqbattle_miss_force)
+	var hqbattle_type_state: GameState = _make_hqbattle_world()
+	var hqbattle_type_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_type_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq", "hqbattle_hq", "at_destination", "awaiting_resolution", "raid_business"
+	)
+	var hqbattle_wrong_type_ok: bool = _hqbattle_fails_atomically(hqbattle_type_state, "hqbattle_mission", "invalid_mission_type", hqbattle_type_force)
+	var hqbattle_await_state: GameState = _make_hqbattle_world()
+	var hqbattle_await_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_await_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq", "hqbattle_hq", "at_destination", "traveling_outbound"
+	)
+	var hqbattle_not_awaiting_ok: bool = _hqbattle_fails_atomically(hqbattle_await_state, "hqbattle_mission", "mission_not_awaiting_resolution", hqbattle_await_force)
+	var hqbattle_bad_force_state: GameState = _make_hqbattle_world()
+	var hqbattle_bad_force: TravelingForce = _hqbattle_add_force_mission(hqbattle_bad_force_state)
+	hqbattle_bad_force_state.get_mission("hqbattle_mission").force_id = "hqbattle_missing_force"
+	var hqbattle_invalid_force_ok: bool = _hqbattle_fails_atomically(hqbattle_bad_force_state, "hqbattle_mission", "invalid_force", hqbattle_bad_force)
+	var hqbattle_travel_state: GameState = _make_hqbattle_world()
+	var hqbattle_travel_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_travel_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq", "hqbattle_hq", "traveling_outbound"
+	)
+	var hqbattle_not_dest_ok: bool = _hqbattle_fails_atomically(hqbattle_travel_state, "hqbattle_mission", "force_not_at_destination", hqbattle_travel_force)
+	var hqbattle_fac_state: GameState = _make_hqbattle_world()
+	var hqbattle_fac_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_fac_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_b"
+	)
+	var hqbattle_faction_mismatch_ok: bool = _hqbattle_fails_atomically(hqbattle_fac_state, "hqbattle_mission", "force_faction_mismatch", hqbattle_fac_force)
+	var hqbattle_tgt_state: GameState = _make_hqbattle_world()
+	var hqbattle_tgt_force: TravelingForce = _hqbattle_add_force_mission(hqbattle_tgt_state)
+	hqbattle_tgt_state.get_mission("hqbattle_mission").target_location_id = "hqbattle_missing_loc"
+	var hqbattle_missing_target_ok: bool = _hqbattle_fails_atomically(hqbattle_tgt_state, "hqbattle_mission", "invalid_target_location", hqbattle_tgt_force)
+	var hqbattle_biz_state: GameState = _make_hqbattle_world()
+	var hqbattle_biz_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_biz_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq", "hqbattle_biz_a"
+	)
+	var hqbattle_target_not_hq_ok: bool = _hqbattle_fails_atomically(hqbattle_biz_state, "hqbattle_mission", "target_not_neighborhood_hq", hqbattle_biz_force)
+	var hqbattle_ftm_state: GameState = _make_hqbattle_world()
+	var hqbattle_ftm_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_ftm_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq_b", "hqbattle_hq"
+	)
+	var hqbattle_force_target_mismatch_ok: bool = _hqbattle_fails_atomically(hqbattle_ftm_state, "hqbattle_mission", "force_target_mismatch", hqbattle_ftm_force)
+	var hqbattle_orphan_state: GameState = _make_hqbattle_world()
+	var hqbattle_orphan_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_orphan_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq_orphan", "hqbattle_hq_orphan"
+	)
+	var hqbattle_missing_neighborhood_ok: bool = _hqbattle_fails_atomically(hqbattle_orphan_state, "hqbattle_mission", "missing_neighborhood", hqbattle_orphan_force)
+	var hqbattle_ghost_state: GameState = _make_hqbattle_world()
+	var hqbattle_ghost_force: TravelingForce = _hqbattle_add_force_mission(
+		hqbattle_ghost_state, "hqbattle_force", "hqbattle_mission", "hqbattle_a", "hqbattle_a",
+		"hqbattle_hq_ghost", "hqbattle_hq_ghost"
+	)
+	var hqbattle_invalid_neighborhood_ok: bool = _hqbattle_fails_atomically(hqbattle_ghost_state, "hqbattle_mission", "invalid_neighborhood", hqbattle_ghost_force)
+	var hqbattle_mm_state: GameState = _make_hqbattle_world("hqbattle_b", "hqbattle_c")
+	var hqbattle_mm_force: TravelingForce = _hqbattle_add_force_mission(hqbattle_mm_state)
+	var hqbattle_mismatch_ok: bool = _hqbattle_fails_atomically(hqbattle_mm_state, "hqbattle_mission", "territory_owner_mismatch", hqbattle_mm_force)
+	var hqbattle_atomicity_ok: bool = (
+		hqbattle_empty_id_ok
+		and hqbattle_missing_mission_ok
+		and hqbattle_wrong_type_ok
+		and hqbattle_not_awaiting_ok
+		and hqbattle_invalid_force_ok
+		and hqbattle_not_dest_ok
+		and hqbattle_faction_mismatch_ok
+		and hqbattle_missing_target_ok
+		and hqbattle_target_not_hq_ok
+		and hqbattle_force_target_mismatch_ok
+		and hqbattle_missing_neighborhood_ok
+		and hqbattle_invalid_neighborhood_ok
+		and hqbattle_mismatch_ok
+	)
+
+	var hqbattle_unclaimed_state: GameState = _make_hqbattle_world("", "")
+	var hqbattle_unclaimed_force: TravelingForce = _hqbattle_add_force_mission(hqbattle_unclaimed_state)
+	var hqbattle_unclaimed_hood: Neighborhood = hqbattle_unclaimed_state.get_neighborhood("hqbattle_hood")
+	var hqbattle_unclaimed_hq: NeighborhoodHQ = hqbattle_unclaimed_state.get_map_location("hqbattle_hq") as NeighborhoodHQ
+	var hqbattle_unclaimed_res: NeighborhoodHQAttackFailureResult = NeighborhoodHQAttackFailureResolver.resolve_failure(
+		hqbattle_unclaimed_state, "hqbattle_mission"
+	)
+	var hqbattle_unclaimed_fail_ok: bool = (
+		hqbattle_unclaimed_res.success
+		and hqbattle_unclaimed_res.defender_faction_id == ""
+		and hqbattle_unclaimed_state.get_mission("hqbattle_mission").mission_state == "resolved_failure"
+		and hqbattle_unclaimed_state.get_mission("hqbattle_mission").outcome_code == "neighborhood_hq_assault_failed"
+		and hqbattle_unclaimed_hood.owner_faction_id == ""
+		and hqbattle_unclaimed_hq.owner_faction_id == ""
+		and hqbattle_unclaimed_force.destination_location_id == "hqbattle_hq"
+	)
+
+	var hqbattle_win_state: GameState = _make_hqbattle_world()
+	_hqbattle_add_force_mission(hqbattle_win_state)
+	var hqbattle_win_expected: Array[String] = ["hqbattle_biz_a", "hqbattle_biz_b"]
+	var hqbattle_win_res: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		hqbattle_win_state, "hqbattle_mission", true
+	)
+	var hqbattle_win_source: Array[String] = _copy_ids(hqbattle_win_res.businesses_unclaimed)
+	hqbattle_win_res.businesses_unclaimed.append("mutated")
+	var hqbattle_win_ok: bool = (
+		hqbattle_win_res.success
+		and hqbattle_win_res.attacker_won
+		and hqbattle_win_res.mission_state == "resolved_success"
+		and hqbattle_win_res.outcome_code == "neighborhood_hq_captured"
+		and hqbattle_win_state.get_neighborhood("hqbattle_hood").owner_faction_id == "hqbattle_a"
+		and (hqbattle_win_state.get_map_location("hqbattle_hq") as NeighborhoodHQ).owner_faction_id == "hqbattle_a"
+		and (hqbattle_win_state.get_map_location("hqbattle_biz_a") as Business).owner_faction_id == ""
+		and (hqbattle_win_state.get_map_location("hqbattle_biz_b") as Business).owner_faction_id == ""
+		and (hqbattle_win_state.get_map_location("hqbattle_biz_c") as Business).owner_faction_id == "hqbattle_c"
+		and _string_ids_match(hqbattle_win_source, hqbattle_win_expected)
+		and hqbattle_win_state.get_mission("hqbattle_mission").mission_state == "resolved_success"
+	)
+
+	var hqbattle_loss_state: GameState = _make_hqbattle_world()
+	_hqbattle_add_force_mission(hqbattle_loss_state)
+	var hqbattle_loss_res: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		hqbattle_loss_state, "hqbattle_mission", false
+	)
+	var hqbattle_loss_ok: bool = (
+		hqbattle_loss_res.success
+		and not hqbattle_loss_res.attacker_won
+		and hqbattle_loss_res.mission_state == "resolved_failure"
+		and hqbattle_loss_res.outcome_code == "neighborhood_hq_assault_failed"
+		and hqbattle_loss_res.businesses_unclaimed.is_empty()
+		and hqbattle_loss_state.get_neighborhood("hqbattle_hood").owner_faction_id == "hqbattle_b"
+		and (hqbattle_loss_state.get_map_location("hqbattle_hq") as NeighborhoodHQ).owner_faction_id == "hqbattle_b"
+		and (hqbattle_loss_state.get_map_location("hqbattle_biz_a") as Business).owner_faction_id == "hqbattle_b"
+		and (hqbattle_loss_state.get_map_location("hqbattle_biz_c") as Business).owner_faction_id == "hqbattle_c"
+		and hqbattle_loss_state.get_mission("hqbattle_mission").mission_state == "resolved_failure"
+	)
+
+	var hqbattle_err_win_state: GameState = _make_hqbattle_world()
+	_hqbattle_add_force_mission(hqbattle_err_win_state)
+	var hqbattle_err_win: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		hqbattle_err_win_state, "hqbattle_missing", true
+	)
+	var hqbattle_err_loss: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		hqbattle_err_win_state, "hqbattle_missing", false
+	)
+	var hqbattle_err_win_ok: bool = (
+		not hqbattle_err_win.success
+		and hqbattle_err_win.attacker_won
+		and hqbattle_err_win.error_code == "invalid_mission"
+		and not hqbattle_err_win.error_message.is_empty()
+	)
+	var hqbattle_err_loss_ok: bool = (
+		not hqbattle_err_loss.success
+		and not hqbattle_err_loss.attacker_won
+		and hqbattle_err_loss.error_code == "invalid_mission"
+		and not hqbattle_err_loss.error_message.is_empty()
+	)
+
+	var hqbattle_fail_helper_ok_res: NeighborhoodHQAttackFailureResult = NeighborhoodHQAttackFailureResult.succeeded(
+		"m1", "f1", "hqbattle_hood", "hqbattle_hq", "hqbattle_a", "hqbattle_b"
+	)
+	var hqbattle_fail_helper_fail_res: NeighborhoodHQAttackFailureResult = NeighborhoodHQAttackFailureResult.failed(
+		"invalid_mission", "missing", "m2", "f2"
+	)
+	var hqbattle_fail_helper_ok: bool = (
+		hqbattle_fail_helper_ok_res.success
+		and hqbattle_fail_helper_ok_res.mission_id == "m1"
+		and hqbattle_fail_helper_ok_res.force_id == "f1"
+		and hqbattle_fail_helper_ok_res.neighborhood_id == "hqbattle_hood"
+		and hqbattle_fail_helper_ok_res.hq_location_id == "hqbattle_hq"
+		and hqbattle_fail_helper_ok_res.attacker_faction_id == "hqbattle_a"
+		and hqbattle_fail_helper_ok_res.defender_faction_id == "hqbattle_b"
+		and hqbattle_fail_helper_ok_res.error_code.is_empty()
+		and not hqbattle_fail_helper_fail_res.success
+		and hqbattle_fail_helper_fail_res.error_code == "invalid_mission"
+		and hqbattle_fail_helper_fail_res.error_message == "missing"
+	)
+	var hqbattle_helper_src: Array[String] = ["hqbattle_biz_a", "hqbattle_biz_b"]
+	var hqbattle_helper_ok_res: NeighborhoodHQBattleResult = NeighborhoodHQBattleResult.succeeded(
+		true, "m3", "f3", "hqbattle_hood", "hqbattle_hq", "hqbattle_a", "hqbattle_b",
+		"resolved_success", "neighborhood_hq_captured", hqbattle_helper_src
+	)
+	hqbattle_helper_ok_res.businesses_unclaimed.append("mutated")
+	var hqbattle_helper_fail_res: NeighborhoodHQBattleResult = NeighborhoodHQBattleResult.failed(
+		"invalid_mission_type", "wrong type", false, "m4", "f4"
+	)
+	var hqbattle_result_helper_ok: bool = (
+		hqbattle_helper_ok_res.success
+		and hqbattle_helper_ok_res.attacker_won
+		and hqbattle_helper_ok_res.mission_id == "m3"
+		and hqbattle_helper_ok_res.force_id == "f3"
+		and hqbattle_helper_ok_res.attacker_faction_id == "hqbattle_a"
+		and hqbattle_helper_ok_res.defender_faction_id == "hqbattle_b"
+		and hqbattle_helper_ok_res.mission_state == "resolved_success"
+		and hqbattle_helper_ok_res.outcome_code == "neighborhood_hq_captured"
+		and hqbattle_helper_ok_res.error_code.is_empty()
+		and _string_ids_match(hqbattle_helper_src, ["hqbattle_biz_a", "hqbattle_biz_b"])
+		and not hqbattle_helper_fail_res.success
+		and not hqbattle_helper_fail_res.attacker_won
+		and hqbattle_helper_fail_res.error_code == "invalid_mission_type"
+		and hqbattle_helper_fail_res.businesses_unclaimed.is_empty()
+	)
+
+	var hqbattle_chain_loss_state: GameState = _make_hqbattle_world()
+	DiplomacyService.declare_war(hqbattle_chain_loss_state, "hqbattle_a", "hqbattle_b")
+	var hqbattle_chain_loss_launch: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqbattle_chain_loss_state, _hqbattle_stronghold_request("hqbattle_chain_loss")
+	)
+	var hqbattle_chain_loss_battle: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		hqbattle_chain_loss_state, "hqbattle_chain_loss", false
+	)
+	var hqbattle_chain_loss_ok: bool = (
+		hqbattle_chain_loss_launch.success
+		and hqbattle_chain_loss_launch.mission_state == "awaiting_resolution"
+		and hqbattle_chain_loss_battle.success
+		and not hqbattle_chain_loss_battle.attacker_won
+		and hqbattle_chain_loss_state.get_neighborhood("hqbattle_hood").owner_faction_id == "hqbattle_b"
+		and (hqbattle_chain_loss_state.get_map_location("hqbattle_hq") as NeighborhoodHQ).owner_faction_id == "hqbattle_b"
+		and (hqbattle_chain_loss_state.get_map_location("hqbattle_biz_a") as Business).owner_faction_id == "hqbattle_b"
+		and hqbattle_chain_loss_state.get_mission("hqbattle_chain_loss").mission_state == "resolved_failure"
+		and hqbattle_chain_loss_state.get_mission("hqbattle_chain_loss").outcome_code == "neighborhood_hq_assault_failed"
+	)
+	var hqbattle_chain_win_state: GameState = _make_hqbattle_world()
+	DiplomacyService.declare_war(hqbattle_chain_win_state, "hqbattle_a", "hqbattle_b")
+	var hqbattle_chain_win_launch: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqbattle_chain_win_state, _hqbattle_stronghold_request("hqbattle_chain_win")
+	)
+	var hqbattle_chain_win_battle: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		hqbattle_chain_win_state, "hqbattle_chain_win", true
+	)
+	var hqbattle_chain_win_ok: bool = (
+		hqbattle_chain_win_launch.success
+		and hqbattle_chain_win_launch.mission_state == "awaiting_resolution"
+		and hqbattle_chain_win_battle.success
+		and hqbattle_chain_win_battle.attacker_won
+		and hqbattle_chain_win_state.get_neighborhood("hqbattle_hood").owner_faction_id == "hqbattle_a"
+		and (hqbattle_chain_win_state.get_map_location("hqbattle_hq") as NeighborhoodHQ).owner_faction_id == "hqbattle_a"
+		and (hqbattle_chain_win_state.get_map_location("hqbattle_biz_a") as Business).owner_faction_id == ""
+		and hqbattle_chain_win_state.get_mission("hqbattle_chain_win").mission_state == "resolved_success"
+		and hqbattle_chain_win_state.get_mission("hqbattle_chain_win").outcome_code == "neighborhood_hq_captured"
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -5655,6 +5977,33 @@ static func run() -> Dictionary:
 		"hqattack_unresolved_ok": hqattack_unresolved_ok,
 		"hqattack_no_capture_until_resolve_ok": hqattack_no_capture_until_resolve_ok,
 		"hqattack_result_helper_ok": hqattack_result_helper_ok,
+		"hqbattle_fail_ok": hqbattle_fail_ok,
+		"hqbattle_reuse_ok": hqbattle_reuse_ok,
+		"hqbattle_null_ok": hqbattle_null_ok,
+		"hqbattle_empty_id_ok": hqbattle_empty_id_ok,
+		"hqbattle_missing_mission_ok": hqbattle_missing_mission_ok,
+		"hqbattle_wrong_type_ok": hqbattle_wrong_type_ok,
+		"hqbattle_not_awaiting_ok": hqbattle_not_awaiting_ok,
+		"hqbattle_invalid_force_ok": hqbattle_invalid_force_ok,
+		"hqbattle_not_dest_ok": hqbattle_not_dest_ok,
+		"hqbattle_faction_mismatch_ok": hqbattle_faction_mismatch_ok,
+		"hqbattle_missing_target_ok": hqbattle_missing_target_ok,
+		"hqbattle_target_not_hq_ok": hqbattle_target_not_hq_ok,
+		"hqbattle_force_target_mismatch_ok": hqbattle_force_target_mismatch_ok,
+		"hqbattle_missing_neighborhood_ok": hqbattle_missing_neighborhood_ok,
+		"hqbattle_invalid_neighborhood_ok": hqbattle_invalid_neighborhood_ok,
+		"hqbattle_mismatch_ok": hqbattle_mismatch_ok,
+		"hqbattle_atomicity_ok": hqbattle_atomicity_ok,
+		"hqbattle_unclaimed_fail_ok": hqbattle_unclaimed_fail_ok,
+		"hqbattle_win_ok": hqbattle_win_ok,
+		"hqbattle_loss_ok": hqbattle_loss_ok,
+		"hqbattle_err_win_ok": hqbattle_err_win_ok,
+		"hqbattle_err_loss_ok": hqbattle_err_loss_ok,
+		"hqbattle_fail_helper_ok": hqbattle_fail_helper_ok,
+		"hqbattle_result_helper_ok": hqbattle_result_helper_ok,
+		"hqbattle_chain_loss_ok": hqbattle_chain_loss_ok,
+		"hqbattle_chain_win_ok": hqbattle_chain_win_ok,
+		"hqbattle_no_side_effects_ok": hqbattle_no_side_effects_ok,
 	}
 
 	var passed := true
@@ -6680,5 +7029,168 @@ static func _hqattack_unchanged(game_state: GameState, snap: Dictionary, force: 
 		if not (force_snap is Dictionary):
 			return false
 		if not _force_travel_unchanged(force, force_snap):
+			return false
+	return true
+
+
+static func _make_hqbattle_world(hood_owner: String = "hqbattle_b", hq_owner: String = "hqbattle_b") -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 7
+	state.current_month = 10
+	state.current_year = 2034
+	var attacker: MajorGang = MajorGang.new("hqbattle_a", "HQBattle A", "player")
+	attacker.money = 800.0
+	attacker.resources.set_amount("Ammo", 4.0)
+	var defender: MajorGang = MajorGang.new("hqbattle_b", "HQBattle B", "ai")
+	defender.money = 600.0
+	defender.resources.set_amount("Narcotics", 2.0)
+	var third: MajorGang = MajorGang.new("hqbattle_c", "HQBattle C", "ai")
+	state.add_faction(attacker)
+	state.add_faction(defender)
+	state.add_faction(third)
+	state.add_stronghold_region(StrongholdRegion.new("hqbattle_region", "HQBattle Region"))
+	state.add_police_region(PoliceRegion.new("hqbattle_district", "HQBattle District"))
+	state.add_neighborhood(Neighborhood.new("hqbattle_hood", "HQBattle Hood", "hqbattle_region", "hqbattle_district", hood_owner))
+	var keep: Stronghold = Stronghold.new("hqbattle_keep", "HQBattle Keep", "hqbattle_hood", Vector2(0.0, 0.0), "hqbattle_a", true, 1, 0.0)
+	keep.road_node_id = "hqbattle_node_hq"
+	state.add_map_location(keep)
+	var def_keep: Stronghold = Stronghold.new("hqbattle_def_keep", "HQBattle Def Keep", "hqbattle_hood", Vector2(0.5, 0.4), "hqbattle_b", true, 2, 0.0)
+	def_keep.road_node_id = "hqbattle_node_hq"
+	state.add_map_location(def_keep)
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new("hqbattle_hq", "HQBattle HQ", "hqbattle_hood", Vector2(0.2, 0.0), hq_owner, true)
+	hq.road_node_id = "hqbattle_node_hq"
+	state.add_map_location(hq)
+	var hq_b: NeighborhoodHQ = NeighborhoodHQ.new("hqbattle_hq_b", "HQBattle HQ B", "hqbattle_hood", Vector2(4.0, 0.0), hq_owner, true)
+	hq_b.road_node_id = "hqbattle_node_b"
+	state.add_map_location(hq_b)
+	var hq_orphan: NeighborhoodHQ = NeighborhoodHQ.new("hqbattle_hq_orphan", "HQBattle Orphan HQ", "", Vector2(20.0, 0.0), hq_owner, true)
+	hq_orphan.road_node_id = "hqbattle_node_orphan"
+	state.add_map_location(hq_orphan)
+	var hq_ghost: NeighborhoodHQ = NeighborhoodHQ.new("hqbattle_hq_ghost", "HQBattle Ghost HQ", "hqbattle_missing_hood", Vector2(25.0, 0.0), hq_owner, true)
+	hq_ghost.road_node_id = "hqbattle_node_ghost"
+	state.add_map_location(hq_ghost)
+	var biz_a: Business = Business.new("hqbattle_biz_a", "HQBattle Biz A", "hqbattle_hood", Vector2(0.3, 0.2), "hqbattle_b", true, "market", 2)
+	biz_a.road_node_id = "hqbattle_node_hq"
+	state.add_map_location(biz_a)
+	var biz_b: Business = Business.new("hqbattle_biz_b", "HQBattle Biz B", "hqbattle_hood", Vector2(4.2, 0.2), "hqbattle_b", false, "narcotics_site", 1)
+	biz_b.road_node_id = "hqbattle_node_b"
+	state.add_map_location(biz_b)
+	var biz_c: Business = Business.new("hqbattle_biz_c", "HQBattle Biz C", "hqbattle_hood", Vector2(0.4, -0.2), "hqbattle_c", true, "market", 1)
+	biz_c.road_node_id = "hqbattle_node_hq"
+	state.add_map_location(biz_c)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("hqbattle_node_hq", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("hqbattle_node_b", Vector2(4.0, 0.0)))
+	graph.add_node(RoadNode.new("hqbattle_node_orphan", Vector2(20.0, 0.0)))
+	graph.add_node(RoadNode.new("hqbattle_node_ghost", Vector2(25.0, 0.0)))
+	graph.add_segment(RoadSegment.new("hqbattle_seg_hq_b", "hqbattle_node_hq", "hqbattle_node_b", 4.0))
+	var soldier: Soldier = Soldier.new("hqbattle_soldier", "hqbattle_a", "", "pistol", 1.0, 0.0)
+	var vehicle: Vehicle = Vehicle.new("hqbattle_vehicle", "hqbattle_a", "car", "", 2, 5.0, 0.0)
+	var def_soldier: Soldier = Soldier.new("hqbattle_def_soldier", "hqbattle_b", "", "pistol", 1.0, 0.0)
+	state.add_soldier(soldier)
+	state.add_vehicle(vehicle)
+	state.add_soldier(def_soldier)
+	state.assign_soldier_to_stronghold("hqbattle_soldier", "hqbattle_keep")
+	state.assign_vehicle_to_stronghold("hqbattle_vehicle", "hqbattle_keep")
+	state.assign_soldier_to_stronghold("hqbattle_def_soldier", "hqbattle_def_keep")
+	return state
+
+
+static func _hqbattle_stronghold_request(
+	mission_id: String = "hqbattle_mission",
+	force_id: String = "hqbattle_force",
+	destination_id: String = "hqbattle_hq"
+) -> MissionRequest:
+	var soldier_ids: Array[String] = ["hqbattle_soldier"]
+	var vehicle_ids: Array[String] = ["hqbattle_vehicle"]
+	var deployment: DeploymentRequest = DeploymentRequest.new(
+		force_id,
+		"hqbattle_a",
+		"hqbattle_keep",
+		destination_id,
+		soldier_ids,
+		vehicle_ids,
+		10.0
+	)
+	return MissionRequest.new(mission_id, "capture_neighborhood_hq", deployment)
+
+
+static func _hqbattle_add_force_mission(
+	game_state: GameState,
+	force_id: String = "hqbattle_force",
+	mission_id: String = "hqbattle_mission",
+	force_faction_id: String = "hqbattle_a",
+	mission_faction_id: String = "hqbattle_a",
+	destination_id: String = "hqbattle_hq",
+	target_id: String = "hqbattle_hq",
+	travel_state: String = "at_destination",
+	mission_state: String = "awaiting_resolution",
+	mission_type_id: String = "capture_neighborhood_hq",
+	movement_remaining: float = 5.0
+) -> TravelingForce:
+	var dest_node: String = "hqbattle_node_hq"
+	var dest_location: MapLocation = game_state.get_map_location(destination_id)
+	if dest_location != null and not dest_location.road_node_id.is_empty():
+		dest_node = dest_location.road_node_id
+	var route: Array[String] = [dest_node]
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		force_faction_id,
+		"hqbattle_keep",
+		destination_id,
+		route,
+		5.0,
+		travel_state
+	)
+	force.route_segment_index = 0
+	force.distance_into_segment = 0.0
+	force.movement_remaining = movement_remaining
+	if game_state.has_soldier("hqbattle_soldier"):
+		force.soldier_group.add_soldier_id("hqbattle_soldier")
+	if game_state.has_vehicle("hqbattle_vehicle"):
+		force.vehicle_group.add_vehicle_id("hqbattle_vehicle")
+	game_state.add_traveling_force(force)
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		mission_faction_id,
+		force_id,
+		"hqbattle_keep",
+		target_id,
+		mission_state,
+		""
+	)
+	game_state.add_mission(mission)
+	return force
+
+
+static func _hqbattle_fails_atomically(
+	game_state: GameState,
+	mission_id: String,
+	expected_error: String,
+	force: TravelingForce
+) -> bool:
+	if game_state == null:
+		return false
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var money_a: float = 0.0
+	var ammo_a: float = 0.0
+	if game_state.has_faction("hqbattle_a") and game_state.get_faction("hqbattle_a") is MajorGang:
+		var gang_a: MajorGang = game_state.get_faction("hqbattle_a") as MajorGang
+		money_a = gang_a.money
+		ammo_a = gang_a.resources.get_amount("Ammo")
+	var result: NeighborhoodHQAttackFailureResult = NeighborhoodHQAttackFailureResolver.resolve_failure(
+		game_state,
+		mission_id
+	)
+	if result.success or result.error_code != expected_error:
+		return false
+	if not _hqattack_unchanged(game_state, snap, force):
+		return false
+	if game_state.has_faction("hqbattle_a") and game_state.get_faction("hqbattle_a") is MajorGang:
+		var gang_after: MajorGang = game_state.get_faction("hqbattle_a") as MajorGang
+		if not is_equal_approx(gang_after.money, money_a):
+			return false
+		if not is_equal_approx(gang_after.resources.get_amount("Ammo"), ammo_a):
 			return false
 	return true
