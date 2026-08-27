@@ -5,9 +5,15 @@ const ForceTurnResult := preload("res://campaign/turns/force_turn_result.gd")
 const TurnResult := preload("res://campaign/turns/turn_result.gd")
 const MissionService := preload("res://campaign/missions/mission_service.gd")
 const MissionResult := preload("res://campaign/missions/mission_result.gd")
+const BusinessEconomyCatalog := preload("res://campaign/economy/business_economy_catalog.gd")
+const EconomyService := preload("res://campaign/economy/economy_service.gd")
+const EconomyTurnResult := preload("res://campaign/economy/economy_turn_result.gd")
 
 
-static func advance_to_next_turn(game_state: GameState) -> TurnResult:
+static func advance_to_next_turn(
+	game_state: GameState,
+	business_catalog: BusinessEconomyCatalog = null
+) -> TurnResult:
 	if game_state == null:
 		return TurnResult.failed("null_game_state", "Turn advancement failed: game_state is null.")
 	if game_state.current_turn < 1:
@@ -22,13 +28,17 @@ static func advance_to_next_turn(game_state: GameState) -> TurnResult:
 	game_state.current_turn = turn_before + 1
 	var turn_after: int = game_state.current_turn
 
-	# Future ordered phases (not implemented yet):
-	# 1. income / resource production
-	# 2. expenses / upkeep / bribes
-	# 3. police disruption
+	# Ordered phases currently implemented:
+	# 1. income / upkeep (when a business catalog is supplied)
+	# 2. [future police disruption]
+	# 3. force movement
+	# 4. Mission arrival synchronization
+	var economy_result: EconomyTurnResult = null
+	if business_catalog != null:
+		economy_result = EconomyService.process_turn_start(game_state, business_catalog)
 	var force_results: Array[ForceTurnResult] = _process_force_movement(game_state)
 	var mission_results: Array[MissionResult] = MissionService.sync_all_arrivals(game_state)
-	return TurnResult.succeeded(turn_before, turn_after, force_results, mission_results)
+	return TurnResult.succeeded(turn_before, turn_after, force_results, mission_results, economy_result)
 
 
 static func _process_force_movement(game_state: GameState) -> Array[ForceTurnResult]:

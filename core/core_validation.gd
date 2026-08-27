@@ -21,6 +21,13 @@ const ForceMovementService := preload("res://campaign/travel/force_movement_serv
 const ForceTurnResult := preload("res://campaign/turns/force_turn_result.gd")
 const TurnResult := preload("res://campaign/turns/turn_result.gd")
 const TurnManager := preload("res://campaign/turns/turn_manager.gd")
+const BusinessLevelOutput := preload("res://campaign/economy/business_level_output.gd")
+const BusinessEconomyDefinition := preload("res://campaign/economy/business_economy_definition.gd")
+const BusinessEconomyCatalog := preload("res://campaign/economy/business_economy_catalog.gd")
+const BusinessProductionResult := preload("res://campaign/economy/business_production_result.gd")
+const FactionEconomyResult := preload("res://campaign/economy/faction_economy_result.gd")
+const EconomyTurnResult := preload("res://campaign/economy/economy_turn_result.gd")
+const EconomyService := preload("res://campaign/economy/economy_service.gd")
 
 
 static func run() -> Dictionary:
@@ -2810,6 +2817,530 @@ static func run() -> Dictionary:
 		and turn_cal_3.turn_after - turn_cal_3.turn_before == 1
 	)
 
+	var eco_catalog: BusinessEconomyCatalog = _make_eco_catalog()
+	var eco_market_def: BusinessEconomyDefinition = eco_catalog.get_definition("market")
+	var eco_narc_def: BusinessEconomyDefinition = eco_catalog.get_definition("narcotics_site")
+	var eco_market_l1: BusinessLevelOutput = eco_market_def.get_level_output(1)
+	var eco_market_l2: BusinessLevelOutput = eco_market_def.get_level_output(2)
+	var eco_market_l3: BusinessLevelOutput = eco_market_def.get_level_output(3)
+	var eco_narc_l1: BusinessLevelOutput = eco_narc_def.get_level_output(1)
+	var eco_narc_l2: BusinessLevelOutput = eco_narc_def.get_level_output(2)
+	var eco_narc_l3: BusinessLevelOutput = eco_narc_def.get_level_output(3)
+	var eco_dup_market: BusinessEconomyDefinition = BusinessEconomyDefinition.new("market")
+	eco_dup_market.set_level_output(1, BusinessLevelOutput.new(1.0))
+	var eco_empty_type_def: BusinessEconomyDefinition = BusinessEconomyDefinition.new("")
+	var eco_empty_type_output: BusinessLevelOutput = BusinessLevelOutput.new(1.0)
+	var eco_level_probe: BusinessEconomyDefinition = BusinessEconomyDefinition.new("eco_probe_type")
+	var eco_level_probe_output: BusinessLevelOutput = BusinessLevelOutput.new(1.0)
+	var eco_zero_res: BusinessLevelOutput = BusinessLevelOutput.new(1.0)
+	var eco_zero_res_set: bool = eco_zero_res.set_resource_output("Ammo", 2.0)
+	var eco_zero_res_clear: bool = eco_zero_res.set_resource_output("Ammo", 0.0)
+	var eco_neg_cash: BusinessLevelOutput = BusinessLevelOutput.new(-10.0)
+	var eco_catalog_ok: bool = (
+		eco_catalog.has_definition("market")
+		and eco_catalog.has_definition("narcotics_site")
+		and eco_market_def != null
+		and eco_narc_def != null
+		and eco_market_l1 != null
+		and eco_market_l2 != null
+		and eco_market_l3 != null
+		and is_equal_approx(eco_market_l1.cash_per_turn, 100.0)
+		and is_equal_approx(eco_market_l2.cash_per_turn, 175.0)
+		and is_equal_approx(eco_market_l3.cash_per_turn, 300.0)
+		and is_equal_approx(eco_narc_l1.cash_per_turn, 50.0)
+		and is_equal_approx(eco_narc_l1.get_resource_output("Narcotics"), 0.5)
+		and is_equal_approx(eco_narc_l2.cash_per_turn, 100.0)
+		and is_equal_approx(eco_narc_l2.get_resource_output("Narcotics"), 1.0)
+		and is_equal_approx(eco_narc_l3.cash_per_turn, 150.0)
+		and is_equal_approx(eco_narc_l3.get_resource_output("Narcotics"), 2.0)
+		and not eco_catalog.add_definition(eco_dup_market)
+		and not eco_catalog.add_definition(eco_empty_type_def)
+		and not eco_empty_type_def.set_level_output(1, eco_empty_type_output)
+		and not eco_level_probe.set_level_output(0, eco_level_probe_output)
+		and not eco_level_probe.set_level_output(1, null)
+		and not eco_zero_res.set_resource_output("", 1.0)
+		and not eco_zero_res.set_resource_output("Ammo", -1.0)
+		and eco_zero_res_set
+		and eco_zero_res_clear
+		and not eco_zero_res.resources_per_turn.has("Ammo")
+		and is_equal_approx(eco_neg_cash.cash_per_turn, 0.0)
+	)
+
+	var eco_main: GameState = _make_eco_world(1000.0, 2000.0)
+	var eco_gang_a: MajorGang = eco_main.get_faction("eco_gang_a") as MajorGang
+	var eco_gang_b: MajorGang = eco_main.get_faction("eco_gang_b") as MajorGang
+	eco_gang_a.resources.set_amount("Ammo", 12.0)
+	eco_gang_a.resources.set_amount("Gun Parts", 7.0)
+	eco_gang_a.resources.set_amount("Narcotics", 0.0)
+	eco_gang_a.resources.set_amount("Black Market Goods", 1.0)
+	eco_gang_b.resources.set_amount("Ammo", 4.0)
+	eco_gang_b.resources.set_amount("Narcotics", 3.0)
+	_make_eco_business(eco_main, "eco_market", "Eco Market", "market", 2, "eco_gang_a", true)
+	_make_eco_business(eco_main, "eco_narcotics", "Eco Narcotics", "narcotics_site", 3, "eco_gang_a", true)
+	_make_eco_business(eco_main, "eco_closed", "Eco Closed", "market", 2, "eco_gang_a", false)
+	_make_eco_business(eco_main, "eco_unowned", "Eco Unowned", "market", 2, "", true)
+	_make_eco_business(eco_main, "eco_missing_owner", "Eco Missing Owner", "market", 2, "eco_ghost", true)
+	_make_eco_business(eco_main, "eco_plain_owner", "Eco Plain Owner", "market", 2, "eco_civilians", true)
+	_make_eco_business(eco_main, "eco_empty_type", "Eco Empty Type", "", 2, "eco_gang_a", true)
+	_make_eco_business(eco_main, "eco_unknown_type", "Eco Unknown Type", "warehouse", 2, "eco_gang_a", true)
+	_make_eco_business(eco_main, "eco_chop", "Eco Chop", "chop_shop", 2, "eco_gang_a", true)
+	_make_eco_business(eco_main, "eco_b_market", "Eco B Market", "market", 1, "eco_gang_b", true)
+	var eco_keep_75: Stronghold = eco_main.get_map_location("eco_keep_75") as Stronghold
+	var eco_keep_125: Stronghold = eco_main.get_map_location("eco_keep_125") as Stronghold
+	var eco_soldier_20: Soldier = Soldier.new("eco_soldier_20", "eco_gang_a", "", "pistol", 1.0, 20.0)
+	var eco_soldier_30: Soldier = Soldier.new("eco_soldier_30", "eco_gang_a", "", "pistol", 1.0, 30.0)
+	var eco_soldier_b: Soldier = Soldier.new("eco_soldier_b", "eco_gang_b", "", "pistol", 1.0, 10.0)
+	eco_main.add_soldier(eco_soldier_20)
+	eco_main.add_soldier(eco_soldier_30)
+	eco_main.add_soldier(eco_soldier_b)
+	eco_main.assign_soldier_to_stronghold("eco_soldier_20", "eco_keep_75")
+	eco_main.assign_soldier_to_stronghold("eco_soldier_30", "eco_keep_75")
+	eco_keep_75.add_soldier_id("eco_ghost_soldier")
+	var eco_vehicle_40: Vehicle = Vehicle.new("eco_vehicle_40", "eco_gang_a", "car", "", 2, 5.0, 40.0)
+	var eco_vehicle_60: Vehicle = Vehicle.new("eco_vehicle_60", "eco_gang_a", "car", "", 2, 5.0, 60.0)
+	var eco_vehicle_b: Vehicle = Vehicle.new("eco_vehicle_b", "eco_gang_b", "car", "", 2, 5.0, 15.0)
+	eco_main.add_vehicle(eco_vehicle_40)
+	eco_main.add_vehicle(eco_vehicle_60)
+	eco_main.add_vehicle(eco_vehicle_b)
+	eco_main.assign_vehicle_to_stronghold("eco_vehicle_40", "eco_keep_75")
+	eco_main.assign_vehicle_to_stronghold("eco_vehicle_60", "eco_keep_75")
+	eco_keep_75.add_vehicle_id("eco_ghost_vehicle")
+	var eco_route: Array[String] = ["eco_n1", "eco_n2"]
+	var eco_force: TravelingForce = TravelingForce.new(
+		"eco_force_deployed", "eco_gang_a", "eco_keep_75", "eco_keep_125", eco_route, 3.0, "traveling_outbound"
+	)
+	eco_force.soldier_group.add_soldier_id("eco_soldier_30")
+	eco_force.vehicle_group.add_vehicle_id("eco_vehicle_60")
+	eco_main.add_traveling_force(eco_force)
+	var eco_ammo_before: float = eco_gang_a.resources.get_amount("Ammo")
+	var eco_gun_before: float = eco_gang_a.resources.get_amount("Gun Parts")
+	var eco_narc_before: float = eco_gang_a.resources.get_amount("Narcotics")
+	var eco_bmg_before: float = eco_gang_a.resources.get_amount("Black Market Goods")
+	var eco_b_ammo_before: float = eco_gang_b.resources.get_amount("Ammo")
+	var eco_b_narc_before: float = eco_gang_b.resources.get_amount("Narcotics")
+	var eco_force_index_before: int = eco_force.route_segment_index
+	var eco_main_result: EconomyTurnResult = EconomyService.process_turn_start(eco_main, eco_catalog)
+	var eco_res_market: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_market")
+	var eco_res_narc: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_narcotics")
+	var eco_res_closed: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_closed")
+	var eco_res_unowned: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_unowned")
+	var eco_res_missing_owner: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_missing_owner")
+	var eco_res_plain: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_plain_owner")
+	var eco_res_empty_type: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_empty_type")
+	var eco_res_unknown: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_unknown_type")
+	var eco_res_chop: BusinessProductionResult = _find_business_production_result(eco_main_result.business_results, "eco_chop")
+	var eco_faction_a: FactionEconomyResult = _find_faction_economy_result(eco_main_result.faction_results, "eco_gang_a")
+	var eco_faction_b: FactionEconomyResult = _find_faction_economy_result(eco_main_result.faction_results, "eco_gang_b")
+	var eco_standard_production_ok: bool = (
+		eco_main_result.success
+		and eco_res_market != null
+		and eco_res_market.produced
+		and is_equal_approx(eco_res_market.cash_produced, 175.0)
+		and eco_res_narc != null
+		and eco_res_narc.produced
+		and is_equal_approx(eco_res_narc.cash_produced, 150.0)
+		and is_equal_approx(float(eco_res_narc.resources_produced.get("Narcotics", 0.0)), 2.0)
+		and eco_faction_a != null
+		and is_equal_approx(eco_faction_a.business_cash_income, 325.0)
+		and is_equal_approx(eco_gang_a.resources.get_amount("Narcotics"), eco_narc_before + 2.0)
+	)
+	var eco_closed_ok: bool = (
+		eco_res_closed != null
+		and not eco_res_closed.produced
+		and eco_res_closed.error_code.is_empty()
+		and is_equal_approx(eco_res_closed.cash_produced, 0.0)
+		and eco_res_closed.resources_produced.is_empty()
+	)
+	var eco_unowned_ok: bool = (
+		eco_res_unowned != null
+		and not eco_res_unowned.produced
+		and eco_res_unowned.error_code.is_empty()
+		and is_equal_approx(eco_res_unowned.cash_produced, 0.0)
+	)
+	var eco_malformed_ok: bool = (
+		eco_main_result.success
+		and eco_res_missing_owner != null
+		and eco_res_missing_owner.error_code == "invalid_owner_faction"
+		and eco_res_plain != null
+		and eco_res_plain.error_code == "owner_not_major_gang"
+		and eco_res_empty_type != null
+		and eco_res_empty_type.error_code == "empty_business_type"
+		and eco_res_unknown != null
+		and eco_res_unknown.error_code == "missing_business_definition"
+		and eco_res_chop != null
+		and eco_res_chop.error_code == "missing_level_output"
+		and eco_res_market.produced
+		and eco_res_narc.produced
+	)
+	var eco_soldier_upkeep_ok: bool = (
+		eco_faction_a != null
+		and is_equal_approx(eco_faction_a.soldier_upkeep_due, 50.0)
+		and eco_main.has_soldier("eco_soldier_20")
+		and eco_main.has_soldier("eco_soldier_30")
+		and eco_main.has_traveling_force("eco_force_deployed")
+		and eco_keep_75.has_soldier_id("eco_ghost_soldier")
+	)
+	var eco_vehicle_upkeep_ok: bool = (
+		eco_faction_a != null
+		and is_equal_approx(eco_faction_a.vehicle_upkeep_due, 100.0)
+		and eco_main.has_vehicle("eco_vehicle_40")
+		and eco_main.has_vehicle("eco_vehicle_60")
+		and eco_keep_75.has_vehicle_id("eco_ghost_vehicle")
+	)
+	var eco_stronghold_upkeep_ok: bool = (
+		eco_faction_a != null
+		and is_equal_approx(eco_faction_a.stronghold_upkeep_due, 200.0)
+		and eco_keep_75 != null
+		and eco_keep_125 != null
+		and is_equal_approx(eco_keep_75.upkeep_per_turn, 75.0)
+		and is_equal_approx(eco_keep_125.upkeep_per_turn, 125.0)
+	)
+	var eco_total_upkeep_ok: bool = (
+		eco_faction_a != null
+		and is_equal_approx(eco_faction_a.total_upkeep_due, 350.0)
+		and is_equal_approx(eco_faction_a.upkeep_paid, 350.0)
+		and is_equal_approx(eco_gang_a.money, 975.0)
+	)
+	var eco_resources_ok: bool = (
+		is_equal_approx(eco_gang_a.resources.get_amount("Ammo"), eco_ammo_before)
+		and is_equal_approx(eco_gang_a.resources.get_amount("Gun Parts"), eco_gun_before)
+		and is_equal_approx(eco_gang_a.resources.get_amount("Black Market Goods"), eco_bmg_before)
+		and is_equal_approx(eco_gang_a.resources.get_amount("Narcotics"), 2.0)
+		and is_equal_approx(eco_gang_b.resources.get_amount("Ammo"), eco_b_ammo_before)
+		and is_equal_approx(eco_gang_b.resources.get_amount("Narcotics"), eco_b_narc_before)
+	)
+	var eco_multi_gang_ok: bool = (
+		eco_faction_b != null
+		and is_equal_approx(eco_faction_b.business_cash_income, 100.0)
+		and is_equal_approx(eco_faction_b.soldier_upkeep_due, 10.0)
+		and is_equal_approx(eco_faction_b.vehicle_upkeep_due, 15.0)
+		and is_equal_approx(eco_faction_b.stronghold_upkeep_due, 25.0)
+		and is_equal_approx(eco_faction_b.total_upkeep_due, 50.0)
+		and is_equal_approx(eco_gang_b.money, 2050.0)
+		and is_equal_approx(eco_faction_a.upkeep_shortfall, 0.0)
+		and is_equal_approx(eco_faction_b.upkeep_shortfall, 0.0)
+	)
+	var eco_raid_closed_ok: bool = (
+		eco_res_closed != null
+		and not eco_res_closed.produced
+		and is_equal_approx(eco_res_closed.cash_produced, 0.0)
+		and eco_res_closed.resources_produced.is_empty()
+		and eco_res_closed.error_code.is_empty()
+	)
+	var eco_copy_safety_ok: bool = false
+	if eco_res_narc != null and eco_narc_l3 != null:
+		eco_res_narc.resources_produced["Narcotics"] = 99.0
+		eco_copy_safety_ok = is_equal_approx(eco_narc_l3.get_resource_output("Narcotics"), 2.0)
+	var eco_result_data_ok: bool = (
+		eco_main_result.success
+		and eco_main_result.error_code.is_empty()
+		and eco_faction_a != null
+		and eco_faction_a.faction_id == "eco_gang_a"
+		and is_equal_approx(eco_faction_a.cash_before, 1000.0)
+		and is_equal_approx(eco_faction_a.cash_after, 975.0)
+		and eco_force.route_segment_index == eco_force_index_before
+	)
+
+	var eco_level_state: GameState = _make_eco_world(0.0, 0.0)
+	_make_eco_business(eco_level_state, "eco_lvl_1", "Level One", "market", 1, "eco_gang_a", true)
+	_make_eco_business(eco_level_state, "eco_lvl_2", "Level Two", "market", 2, "eco_gang_a", true)
+	_make_eco_business(eco_level_state, "eco_lvl_3", "Level Three", "market", 3, "eco_gang_a", true)
+	var eco_level_result: EconomyTurnResult = EconomyService.process_turn_start(eco_level_state, eco_catalog)
+	var eco_lvl_1_res: BusinessProductionResult = _find_business_production_result(eco_level_result.business_results, "eco_lvl_1")
+	var eco_lvl_2_res: BusinessProductionResult = _find_business_production_result(eco_level_result.business_results, "eco_lvl_2")
+	var eco_lvl_3_res: BusinessProductionResult = _find_business_production_result(eco_level_result.business_results, "eco_lvl_3")
+	var eco_level_ok: bool = (
+		eco_lvl_1_res != null
+		and is_equal_approx(eco_lvl_1_res.cash_produced, 100.0)
+		and eco_lvl_2_res != null
+		and is_equal_approx(eco_lvl_2_res.cash_produced, 175.0)
+		and eco_lvl_3_res != null
+		and is_equal_approx(eco_lvl_3_res.cash_produced, 300.0)
+	)
+
+	var eco_atomic_state: GameState = _make_eco_world(1000.0, 0.0)
+	var eco_atomic_gang: MajorGang = eco_atomic_state.get_faction("eco_gang_a") as MajorGang
+	eco_atomic_gang.resources.set_amount("Narcotics", 1.0)
+	eco_atomic_gang.resources.set_amount("Ammo", 8.0)
+	_make_eco_business(eco_atomic_state, "eco_atomic_ok", "Atomic OK", "market", 1, "eco_gang_a", true)
+	_make_eco_business(eco_atomic_state, "eco_atomic_bad", "Atomic Bad", "chop_shop", 1, "eco_gang_a", true)
+	(eco_atomic_state.get_map_location("eco_keep_75") as Stronghold).upkeep_per_turn = 0.0
+	(eco_atomic_state.get_map_location("eco_keep_125") as Stronghold).upkeep_per_turn = 0.0
+	(eco_atomic_state.get_map_location("eco_keep_b") as Stronghold).upkeep_per_turn = 0.0
+	var eco_chop_def: BusinessEconomyDefinition = eco_catalog.get_definition("chop_shop")
+	var eco_chop_output: BusinessLevelOutput = eco_chop_def.get_level_output(1)
+	eco_chop_output.resources_per_turn["Ammo"] = -1.0
+	var eco_atomic_money_before: float = eco_atomic_gang.money
+	var eco_atomic_narc_before: float = eco_atomic_gang.resources.get_amount("Narcotics")
+	var eco_atomic_ammo_before: float = eco_atomic_gang.resources.get_amount("Ammo")
+	var eco_atomic_result: EconomyTurnResult = EconomyService.process_turn_start(eco_atomic_state, eco_catalog)
+	var eco_atomic_ok_res: BusinessProductionResult = _find_business_production_result(eco_atomic_result.business_results, "eco_atomic_ok")
+	var eco_atomic_bad_res: BusinessProductionResult = _find_business_production_result(eco_atomic_result.business_results, "eco_atomic_bad")
+	var eco_atomicity_ok: bool = (
+		eco_atomic_result.success
+		and eco_atomic_ok_res != null
+		and eco_atomic_ok_res.produced
+		and eco_atomic_bad_res != null
+		and eco_atomic_bad_res.error_code == "invalid_level_output"
+		and is_equal_approx(eco_atomic_gang.resources.get_amount("Narcotics"), eco_atomic_narc_before)
+		and is_equal_approx(eco_atomic_gang.resources.get_amount("Ammo"), eco_atomic_ammo_before)
+		and is_equal_approx(eco_atomic_gang.money, eco_atomic_money_before + 100.0)
+	)
+	eco_chop_output.resources_per_turn.erase("Ammo")
+	var eco_atomicity_structurally_protected_ok: bool = (
+		not eco_zero_res.set_resource_output("Ammo", -1.0)
+		and is_equal_approx(eco_neg_cash.cash_per_turn, 0.0)
+	)
+
+	var eco_short_state: GameState = _make_eco_world(100.0, 0.0)
+	var eco_short_gang: MajorGang = eco_short_state.get_faction("eco_gang_a") as MajorGang
+	_make_eco_business(eco_short_state, "eco_short_biz", "Short Biz", "narcotics_site", 1, "eco_gang_a", true)
+	var eco_short_keep: Stronghold = eco_short_state.get_map_location("eco_keep_75") as Stronghold
+	eco_short_keep.upkeep_per_turn = 200.0
+	var eco_keep_125_short: Stronghold = eco_short_state.get_map_location("eco_keep_125") as Stronghold
+	eco_keep_125_short.upkeep_per_turn = 0.0
+	var eco_b_keep_short: Stronghold = eco_short_state.get_map_location("eco_keep_b") as Stronghold
+	eco_b_keep_short.upkeep_per_turn = 0.0
+	var eco_short_result: EconomyTurnResult = EconomyService.process_turn_start(eco_short_state, eco_catalog)
+	var eco_short_faction: FactionEconomyResult = _find_faction_economy_result(eco_short_result.faction_results, "eco_gang_a")
+	var eco_shortfall_ok: bool = (
+		eco_short_faction != null
+		and is_equal_approx(eco_short_faction.cash_before, 100.0)
+		and is_equal_approx(eco_short_faction.business_cash_income, 50.0)
+		and is_equal_approx(eco_short_faction.total_upkeep_due, 200.0)
+		and is_equal_approx(eco_short_faction.upkeep_paid, 150.0)
+		and is_equal_approx(eco_short_faction.cash_after, 0.0)
+		and is_equal_approx(eco_short_faction.upkeep_shortfall, 50.0)
+		and is_equal_approx(eco_short_gang.money, 0.0)
+		and is_equal_approx(eco_short_gang.upkeep_shortfall, 50.0)
+	)
+
+	var eco_afford_state: GameState = _make_eco_world(500.0, 0.0)
+	var eco_afford_gang: MajorGang = eco_afford_state.get_faction("eco_gang_a") as MajorGang
+	_make_eco_business(eco_afford_state, "eco_afford_biz", "Afford Biz", "market", 1, "eco_gang_a", true)
+	var eco_afford_soldier: Soldier = Soldier.new("eco_afford_soldier", "eco_gang_a", "", "pistol", 1.0, 250.0)
+	eco_afford_state.add_soldier(eco_afford_soldier)
+	(eco_afford_state.get_map_location("eco_keep_75") as Stronghold).upkeep_per_turn = 0.0
+	(eco_afford_state.get_map_location("eco_keep_125") as Stronghold).upkeep_per_turn = 0.0
+	(eco_afford_state.get_map_location("eco_keep_b") as Stronghold).upkeep_per_turn = 0.0
+	var eco_afford_result: EconomyTurnResult = EconomyService.process_turn_start(eco_afford_state, eco_catalog)
+	var eco_afford_faction: FactionEconomyResult = _find_faction_economy_result(eco_afford_result.faction_results, "eco_gang_a")
+	var eco_afford_ok: bool = (
+		eco_afford_faction != null
+		and is_equal_approx(eco_afford_faction.upkeep_paid, 250.0)
+		and is_equal_approx(eco_afford_faction.upkeep_shortfall, 0.0)
+		and is_equal_approx(eco_afford_faction.cash_after, 350.0)
+		and is_equal_approx(eco_afford_gang.money, 350.0)
+		and is_equal_approx(eco_afford_gang.upkeep_shortfall, 0.0)
+	)
+
+	var eco_zero_state: GameState = _make_eco_world(0.0, 0.0)
+	var eco_zero_gang: MajorGang = eco_zero_state.get_faction("eco_gang_a") as MajorGang
+	var eco_zero_soldier: Soldier = Soldier.new("eco_zero_soldier", "eco_gang_a", "", "pistol", 1.0, 25.0)
+	eco_zero_state.add_soldier(eco_zero_soldier)
+	(eco_zero_state.get_map_location("eco_keep_75") as Stronghold).upkeep_per_turn = 0.0
+	(eco_zero_state.get_map_location("eco_keep_125") as Stronghold).upkeep_per_turn = 0.0
+	(eco_zero_state.get_map_location("eco_keep_b") as Stronghold).upkeep_per_turn = 0.0
+	var eco_zero_result: EconomyTurnResult = EconomyService.process_turn_start(eco_zero_state, eco_catalog)
+	var eco_zero_faction: FactionEconomyResult = _find_faction_economy_result(eco_zero_result.faction_results, "eco_gang_a")
+	var eco_zero_cash_ok: bool = (
+		eco_zero_faction != null
+		and is_equal_approx(eco_zero_faction.upkeep_paid, 0.0)
+		and is_equal_approx(eco_zero_gang.money, 0.0)
+		and is_equal_approx(eco_zero_gang.upkeep_shortfall, 25.0)
+		and eco_zero_state.has_soldier("eco_zero_soldier")
+		and eco_zero_state.has_map_location("eco_keep_75")
+	)
+	eco_zero_gang.money = -12.5
+	var eco_money_never_negative_ok: bool = (
+		is_equal_approx(eco_zero_gang.money, 0.0)
+		and eco_zero_gang.money >= 0.0
+		and is_equal_approx(eco_short_gang.money, 0.0)
+	)
+
+	var eco_reset_state: GameState = _make_eco_world(0.0, 0.0)
+	var eco_reset_gang: MajorGang = eco_reset_state.get_faction("eco_gang_a") as MajorGang
+	var eco_reset_soldier: Soldier = Soldier.new("eco_reset_soldier", "eco_gang_a", "", "pistol", 1.0, 100.0)
+	eco_reset_state.add_soldier(eco_reset_soldier)
+	(eco_reset_state.get_map_location("eco_keep_75") as Stronghold).upkeep_per_turn = 0.0
+	(eco_reset_state.get_map_location("eco_keep_125") as Stronghold).upkeep_per_turn = 0.0
+	(eco_reset_state.get_map_location("eco_keep_b") as Stronghold).upkeep_per_turn = 0.0
+	EconomyService.process_turn_start(eco_reset_state, eco_catalog)
+	var eco_reset_first: float = eco_reset_gang.upkeep_shortfall
+	eco_reset_gang.money = 1000.0
+	EconomyService.process_turn_start(eco_reset_state, eco_catalog)
+	var eco_reset_cleared: float = eco_reset_gang.upkeep_shortfall
+	eco_reset_gang.money = 40.0
+	EconomyService.process_turn_start(eco_reset_state, eco_catalog)
+	var eco_shortfall_reset_ok: bool = (
+		is_equal_approx(eco_reset_first, 100.0)
+		and is_equal_approx(eco_reset_cleared, 0.0)
+		and is_equal_approx(eco_reset_gang.upkeep_shortfall, 60.0)
+		and is_equal_approx(eco_reset_gang.money, 0.0)
+	)
+
+	var eco_order_state: GameState = _make_eco_world(0.0, 0.0)
+	_make_eco_business(eco_order_state, "eco_z", "Z", "market", 1, "eco_gang_a", false)
+	_make_eco_business(eco_order_state, "eco_a", "A", "market", 1, "eco_gang_a", false)
+	_make_eco_business(eco_order_state, "eco_m", "M", "market", 1, "eco_gang_a", false)
+	var eco_order_result: EconomyTurnResult = EconomyService.process_turn_start(eco_order_state, eco_catalog)
+	var expected_eco_biz_order: Array[String] = ["eco_a", "eco_m", "eco_z"]
+	var eco_business_order_ok: bool = _string_ids_match(
+		_business_production_ids(eco_order_result.business_results),
+		expected_eco_biz_order
+	)
+
+	var eco_faction_order_state: GameState = GameState.new()
+	eco_faction_order_state.add_faction(MajorGang.new("eco_z_gang", "Z Gang", "ai"))
+	eco_faction_order_state.add_faction(MajorGang.new("eco_a_gang", "A Gang", "player"))
+	var eco_faction_order_result: EconomyTurnResult = EconomyService.process_turn_start(eco_faction_order_state, eco_catalog)
+	var expected_eco_faction_order: Array[String] = ["eco_a_gang", "eco_z_gang"]
+	var eco_faction_order_ok: bool = _string_ids_match(
+		_faction_economy_ids(eco_faction_order_result.faction_results),
+		expected_eco_faction_order
+	)
+
+	var eco_turn_state: GameState = _make_eco_world(200.0, 0.0)
+	var eco_turn_gang: MajorGang = eco_turn_state.get_faction("eco_gang_a") as MajorGang
+	_make_eco_business(eco_turn_state, "eco_turn_biz", "Turn Biz", "market", 1, "eco_gang_a", true)
+	var eco_turn_soldier: Soldier = Soldier.new("eco_turn_soldier", "eco_gang_a", "", "pistol", 1.0, 20.0)
+	eco_turn_state.add_soldier(eco_turn_soldier)
+	(eco_turn_state.get_map_location("eco_keep_75") as Stronghold).upkeep_per_turn = 0.0
+	(eco_turn_state.get_map_location("eco_keep_125") as Stronghold).upkeep_per_turn = 0.0
+	(eco_turn_state.get_map_location("eco_keep_b") as Stronghold).upkeep_per_turn = 0.0
+	var eco_turn_route: Array[String] = ["eco_n1", "eco_n2"]
+	var eco_turn_force: TravelingForce = TravelingForce.new(
+		"eco_turn_force", "eco_gang_a", "eco_keep_75", "eco_keep_125", eco_turn_route, 3.0, "traveling_outbound"
+	)
+	eco_turn_force.soldier_group.add_soldier_id("eco_turn_soldier")
+	eco_turn_state.add_traveling_force(eco_turn_force)
+	_register_turn_mission(eco_turn_state, "eco_turn_mission", "eco_turn_force", "eco_keep_75", "eco_keep_125", "traveling_outbound", "")
+	eco_turn_state.current_turn = 5
+	var eco_turn_result: TurnResult = TurnManager.advance_to_next_turn(eco_turn_state, eco_catalog)
+	var eco_turn_econ: EconomyTurnResult = eco_turn_result.economy_result
+	var eco_turn_faction: FactionEconomyResult = null
+	if eco_turn_econ != null:
+		eco_turn_faction = _find_faction_economy_result(eco_turn_econ.faction_results, "eco_gang_a")
+	var eco_turn_mission: CampaignMission = eco_turn_state.get_mission("eco_turn_mission")
+	var eco_turn_integration_ok: bool = (
+		eco_turn_result.success
+		and eco_turn_state.current_turn == 6
+		and eco_turn_state.current_month == 7
+		and eco_turn_state.current_year == 2034
+		and eco_turn_econ != null
+		and eco_turn_econ.success
+		and eco_turn_faction != null
+		and is_equal_approx(eco_turn_faction.business_cash_income, 100.0)
+		and is_equal_approx(eco_turn_faction.soldier_upkeep_due, 20.0)
+		and is_equal_approx(eco_turn_gang.money, 280.0)
+		and eco_turn_force.travel_state == "traveling_outbound"
+		and eco_turn_force.route_segment_index == 0
+		and is_equal_approx(eco_turn_force.distance_into_segment, 3.0)
+		and eco_turn_mission != null
+		and eco_turn_mission.mission_state == "traveling_outbound"
+	)
+
+	var eco_null_state: GameState = _make_eco_world(500.0, 0.0)
+	var eco_null_gang: MajorGang = eco_null_state.get_faction("eco_gang_a") as MajorGang
+	_make_eco_business(eco_null_state, "eco_null_biz", "Null Biz", "market", 1, "eco_gang_a", true)
+	var eco_null_soldier: Soldier = Soldier.new("eco_null_soldier", "eco_gang_a", "", "pistol", 1.0, 20.0)
+	eco_null_state.add_soldier(eco_null_soldier)
+	(eco_null_state.get_map_location("eco_keep_75") as Stronghold).upkeep_per_turn = 0.0
+	(eco_null_state.get_map_location("eco_keep_125") as Stronghold).upkeep_per_turn = 0.0
+	(eco_null_state.get_map_location("eco_keep_b") as Stronghold).upkeep_per_turn = 0.0
+	var eco_null_force: TravelingForce = TravelingForce.new(
+		"eco_null_force", "eco_gang_a", "eco_keep_75", "eco_keep_125", eco_turn_route, 3.0, "traveling_outbound"
+	)
+	eco_null_state.add_traveling_force(eco_null_force)
+	_register_turn_mission(eco_null_state, "eco_null_mission", "eco_null_force", "eco_keep_75", "eco_keep_125", "traveling_outbound", "")
+	eco_null_state.current_turn = 4
+	var eco_null_money_before: float = eco_null_gang.money
+	var eco_null_result: TurnResult = TurnManager.advance_to_next_turn(eco_null_state)
+	var eco_null_catalog_ok: bool = (
+		eco_null_result.success
+		and eco_null_state.current_turn == 5
+		and eco_null_result.economy_result == null
+		and is_equal_approx(eco_null_gang.money, eco_null_money_before)
+		and is_equal_approx(eco_null_gang.upkeep_shortfall, 0.0)
+		and eco_null_force.travel_state == "traveling_outbound"
+		and is_equal_approx(eco_null_force.distance_into_segment, 3.0)
+		and eco_null_state.get_mission("eco_null_mission").mission_state == "traveling_outbound"
+	)
+
+	var eco_null_gs: EconomyTurnResult = EconomyService.process_turn_start(null, eco_catalog)
+	var eco_null_cat: EconomyTurnResult = EconomyService.process_turn_start(eco_null_state, null)
+	var eco_top_level_fail_ok: bool = (
+		not eco_null_gs.success
+		and eco_null_gs.error_code == "null_game_state"
+		and not eco_null_cat.success
+		and eco_null_cat.error_code == "null_business_catalog"
+	)
+
+	var eco_persist_state: GameState = _make_eco_world(10.0, 0.0)
+	var eco_persist_gang: MajorGang = eco_persist_state.get_faction("eco_gang_a") as MajorGang
+	eco_persist_gang.upkeep_shortfall = 42.5
+	var eco_persist_keep: Stronghold = eco_persist_state.get_map_location("eco_keep_75") as Stronghold
+	eco_persist_keep.upkeep_per_turn = 88.0
+	var eco_persist_save: Dictionary = eco_persist_state.to_dict()
+	var eco_persist_restored: GameState = GameState.new()
+	eco_persist_restored.from_dict(eco_persist_save)
+	var eco_persist_gang_r: MajorGang = eco_persist_restored.get_faction("eco_gang_a") as MajorGang
+	var eco_persist_keep_r: Stronghold = eco_persist_restored.get_map_location("eco_keep_75") as Stronghold
+	var eco_older_save: Dictionary = eco_persist_save.duplicate(true)
+	var eco_older_factions: Variant = eco_older_save.get("factions", {})
+	var eco_older_erased: bool = false
+	if eco_older_factions is Dictionary:
+		var eco_gang_rec: Variant = eco_older_factions.get("eco_gang_a", {})
+		if eco_gang_rec is Dictionary:
+			eco_gang_rec.erase("upkeep_shortfall")
+			eco_older_erased = not eco_gang_rec.has("upkeep_shortfall")
+	var eco_older_locations: Variant = eco_older_save.get("map_locations", {})
+	var eco_older_keep_erased: bool = false
+	if eco_older_locations is Dictionary:
+		var eco_keep_rec: Variant = eco_older_locations.get("eco_keep_75", {})
+		if eco_keep_rec is Dictionary:
+			eco_keep_rec.erase("upkeep_per_turn")
+			eco_older_keep_erased = not eco_keep_rec.has("upkeep_per_turn")
+	var eco_older_restored: GameState = GameState.new()
+	eco_older_restored.from_dict(eco_older_save)
+	var eco_older_gang: MajorGang = eco_older_restored.get_faction("eco_gang_a") as MajorGang
+	var eco_older_keep: Stronghold = eco_older_restored.get_map_location("eco_keep_75") as Stronghold
+	var eco_persist_ok: bool = (
+		eco_persist_gang_r != null
+		and is_equal_approx(eco_persist_gang_r.upkeep_shortfall, 42.5)
+		and eco_persist_keep_r != null
+		and is_equal_approx(eco_persist_keep_r.upkeep_per_turn, 88.0)
+		and not eco_persist_save.has("business_catalog")
+		and not eco_persist_save.has("economy")
+		and not eco_persist_save.has("business_economy_catalog")
+		and eco_older_erased
+		and eco_older_keep_erased
+		and eco_older_gang != null
+		and is_equal_approx(eco_older_gang.upkeep_shortfall, 0.0)
+		and eco_older_keep != null
+		and is_equal_approx(eco_older_keep.upkeep_per_turn, 0.0)
+	)
+
+	var eco_helper_biz: Array[BusinessProductionResult] = []
+	var eco_helper_res: Dictionary = {}
+	eco_helper_res["Narcotics"] = 2.0
+	eco_helper_biz.append(BusinessProductionResult.succeeded("eco_h_biz", "eco_gang_a", 150.0, eco_helper_res))
+	var eco_helper_fac: Array[FactionEconomyResult] = []
+	var eco_helper_ok: EconomyTurnResult = EconomyTurnResult.succeeded(eco_helper_biz, eco_helper_fac)
+	var eco_helper_fail: EconomyTurnResult = EconomyTurnResult.failed("null_game_state", "Economy processing failed: game_state is null.")
+	var eco_helper_skip: BusinessProductionResult = BusinessProductionResult.skipped("eco_skip", "eco_gang_a")
+	var eco_helper_biz_fail: BusinessProductionResult = BusinessProductionResult.failed("empty_business_type", "msg", "eco_bad", "eco_gang_a")
+	var eco_helpers_ok: bool = (
+		eco_helper_ok.success
+		and eco_helper_ok.business_results.size() == 1
+		and is_equal_approx(eco_helper_ok.business_results[0].cash_produced, 150.0)
+		and not eco_helper_fail.success
+		and eco_helper_fail.error_code == "null_game_state"
+		and not eco_helper_skip.produced
+		and eco_helper_skip.error_code.is_empty()
+		and eco_helper_biz_fail.error_code == "empty_business_type"
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -3253,6 +3784,35 @@ static func run() -> Dictionary:
 		"turn_force_result_fail_helper_ok": turn_force_result_fail_helper_ok,
 		"turn_calendar_ok": turn_calendar_ok,
 		"turn_no_auto_actions_ok": turn_no_auto_actions_ok,
+		"eco_catalog_ok": eco_catalog_ok,
+		"eco_standard_production_ok": eco_standard_production_ok,
+		"eco_closed_ok": eco_closed_ok,
+		"eco_unowned_ok": eco_unowned_ok,
+		"eco_level_ok": eco_level_ok,
+		"eco_malformed_ok": eco_malformed_ok,
+		"eco_atomicity_ok": eco_atomicity_ok,
+		"eco_atomicity_structurally_protected_ok": eco_atomicity_structurally_protected_ok,
+		"eco_soldier_upkeep_ok": eco_soldier_upkeep_ok,
+		"eco_vehicle_upkeep_ok": eco_vehicle_upkeep_ok,
+		"eco_stronghold_upkeep_ok": eco_stronghold_upkeep_ok,
+		"eco_total_upkeep_ok": eco_total_upkeep_ok,
+		"eco_shortfall_ok": eco_shortfall_ok,
+		"eco_afford_ok": eco_afford_ok,
+		"eco_zero_cash_ok": eco_zero_cash_ok,
+		"eco_money_never_negative_ok": eco_money_never_negative_ok,
+		"eco_shortfall_reset_ok": eco_shortfall_reset_ok,
+		"eco_resources_ok": eco_resources_ok,
+		"eco_multi_gang_ok": eco_multi_gang_ok,
+		"eco_business_order_ok": eco_business_order_ok,
+		"eco_faction_order_ok": eco_faction_order_ok,
+		"eco_turn_integration_ok": eco_turn_integration_ok,
+		"eco_null_catalog_ok": eco_null_catalog_ok,
+		"eco_top_level_fail_ok": eco_top_level_fail_ok,
+		"eco_raid_closed_ok": eco_raid_closed_ok,
+		"eco_persist_ok": eco_persist_ok,
+		"eco_copy_safety_ok": eco_copy_safety_ok,
+		"eco_result_data_ok": eco_result_data_ok,
+		"eco_helpers_ok": eco_helpers_ok,
 	}
 
 	var passed := true
@@ -3606,4 +4166,121 @@ static func _mission_result_ids(results: Array[MissionResult]) -> Array[String]:
 	var ids: Array[String] = []
 	for result: MissionResult in results:
 		ids.append(result.mission_id)
+	return ids
+
+
+static func _make_eco_catalog() -> BusinessEconomyCatalog:
+	var catalog: BusinessEconomyCatalog = BusinessEconomyCatalog.new()
+	var market: BusinessEconomyDefinition = BusinessEconomyDefinition.new("market")
+	market.set_level_output(1, BusinessLevelOutput.new(100.0))
+	market.set_level_output(2, BusinessLevelOutput.new(175.0))
+	market.set_level_output(3, BusinessLevelOutput.new(300.0))
+	catalog.add_definition(market)
+	var narcotics: BusinessEconomyDefinition = BusinessEconomyDefinition.new("narcotics_site")
+	var narc_l1_res: Dictionary = {}
+	narc_l1_res["Narcotics"] = 0.5
+	narcotics.set_level_output(1, BusinessLevelOutput.new(50.0, narc_l1_res))
+	var narc_l2_res: Dictionary = {}
+	narc_l2_res["Narcotics"] = 1.0
+	narcotics.set_level_output(2, BusinessLevelOutput.new(100.0, narc_l2_res))
+	var narc_l3_res: Dictionary = {}
+	narc_l3_res["Narcotics"] = 2.0
+	narcotics.set_level_output(3, BusinessLevelOutput.new(150.0, narc_l3_res))
+	catalog.add_definition(narcotics)
+	var chop: BusinessEconomyDefinition = BusinessEconomyDefinition.new("chop_shop")
+	chop.set_level_output(1, BusinessLevelOutput.new(10.0))
+	catalog.add_definition(chop)
+	return catalog
+
+
+static func _make_eco_world(p_money_a: float = 1000.0, p_money_b: float = 2000.0) -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 1
+	state.current_month = 7
+	state.current_year = 2034
+	var gang_a: MajorGang = MajorGang.new("eco_gang_a", "Eco Gang A", "player")
+	gang_a.money = p_money_a
+	var gang_b: MajorGang = MajorGang.new("eco_gang_b", "Eco Gang B", "ai")
+	gang_b.money = p_money_b
+	state.add_faction(gang_a)
+	state.add_faction(gang_b)
+	state.add_faction(Faction.new("eco_civilians", "Eco Civilians", "civilian"))
+	state.add_stronghold_region(StrongholdRegion.new("eco_region", "Eco Region"))
+	state.add_police_region(PoliceRegion.new("eco_district", "Eco District"))
+	state.add_neighborhood(Neighborhood.new("eco_hood", "Eco Hood", "eco_region", "eco_district"))
+	var keep_75: Stronghold = Stronghold.new("eco_keep_75", "Eco Keep 75", "eco_hood", Vector2(0.0, 0.0), "eco_gang_a", true, 1, 75.0)
+	keep_75.road_node_id = "eco_n1"
+	state.add_map_location(keep_75)
+	var keep_125: Stronghold = Stronghold.new("eco_keep_125", "Eco Keep 125", "eco_hood", Vector2(5.0, 0.0), "eco_gang_a", true, 1, 125.0)
+	keep_125.road_node_id = "eco_n2"
+	state.add_map_location(keep_125)
+	var keep_b: Stronghold = Stronghold.new("eco_keep_b", "Eco Keep B", "eco_hood", Vector2(8.0, 0.0), "eco_gang_b", true, 1, 25.0)
+	keep_b.road_node_id = "eco_n2"
+	state.add_map_location(keep_b)
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new("eco_hq", "Eco HQ", "eco_hood", Vector2(2.0, 0.0), "eco_gang_a", true)
+	hq.road_node_id = "eco_n1"
+	state.add_map_location(hq)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("eco_n1", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("eco_n2", Vector2(5.0, 0.0)))
+	graph.add_segment(RoadSegment.new("eco_seg", "eco_n1", "eco_n2", 5.0))
+	return state
+
+
+static func _make_eco_business(
+	game_state: GameState,
+	business_id: String,
+	display_name: String,
+	business_type_id: String,
+	level: int,
+	owner_faction_id: String,
+	is_open: bool,
+	road_node_id: String = "eco_n1"
+) -> Business:
+	var business: Business = Business.new(
+		business_id,
+		display_name,
+		"eco_hood",
+		Vector2(1.0, 1.0),
+		owner_faction_id,
+		is_open,
+		business_type_id,
+		level
+	)
+	business.road_node_id = road_node_id
+	game_state.add_map_location(business)
+	return business
+
+
+static func _find_business_production_result(
+	results: Array[BusinessProductionResult],
+	business_id: String
+) -> BusinessProductionResult:
+	for result: BusinessProductionResult in results:
+		if result.business_id == business_id:
+			return result
+	return null
+
+
+static func _find_faction_economy_result(
+	results: Array[FactionEconomyResult],
+	faction_id: String
+) -> FactionEconomyResult:
+	for result: FactionEconomyResult in results:
+		if result.faction_id == faction_id:
+			return result
+	return null
+
+
+static func _business_production_ids(results: Array[BusinessProductionResult]) -> Array[String]:
+	var ids: Array[String] = []
+	for result: BusinessProductionResult in results:
+		ids.append(result.business_id)
+	return ids
+
+
+static func _faction_economy_ids(results: Array[FactionEconomyResult]) -> Array[String]:
+	var ids: Array[String] = []
+	for result: FactionEconomyResult in results:
+		ids.append(result.faction_id)
 	return ids

@@ -3,6 +3,7 @@ extends RefCounted
 
 const ForceTurnResult := preload("res://campaign/turns/force_turn_result.gd")
 const MissionResult := preload("res://campaign/missions/mission_result.gd")
+const EconomyTurnResult := preload("res://campaign/economy/economy_turn_result.gd")
 
 var success: bool = false
 var turn_before: int = 0
@@ -11,13 +12,15 @@ var error_code: String = ""
 var error_message: String = ""
 var force_results: Array[ForceTurnResult] = []
 var mission_results: Array[MissionResult] = []
+var economy_result: EconomyTurnResult = null
 
 
 static func succeeded(
 	p_turn_before: int,
 	p_turn_after: int,
 	p_force_results: Array[ForceTurnResult],
-	p_mission_results: Array[MissionResult]
+	p_mission_results: Array[MissionResult],
+	p_economy_result: EconomyTurnResult = null
 ) -> TurnResult:
 	var result: TurnResult = TurnResult.new()
 	result.success = true
@@ -29,6 +32,7 @@ static func succeeded(
 		result.force_results.append(force_result)
 	for mission_result: MissionResult in p_mission_results:
 		result.mission_results.append(mission_result)
+	result.economy_result = p_economy_result
 	return result
 
 

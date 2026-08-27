@@ -4,6 +4,9 @@ extends Building
 var level: int = 1:
 	set(value):
 		level = maxi(value, 1)
+var upkeep_per_turn: float = 0.0:
+	set(value):
+		upkeep_per_turn = maxf(value, 0.0)
 var vehicle_ids: Array[String] = []
 var soldier_ids: Array[String] = []
 
@@ -15,10 +18,12 @@ func _init(
 	p_map_position: Vector2 = Vector2.ZERO,
 	p_owner_faction_id: String = "",
 	p_is_open: bool = true,
-	p_level: int = 1
+	p_level: int = 1,
+	p_upkeep_per_turn: float = 0.0
 ) -> void:
 	super(p_id, p_display_name, "stronghold", p_neighborhood_id, p_map_position, p_owner_faction_id, p_is_open)
 	level = p_level
+	upkeep_per_turn = p_upkeep_per_turn
 
 
 func to_dict() -> Dictionary:
@@ -30,6 +35,7 @@ func to_dict() -> Dictionary:
 	for soldier_id in soldier_ids:
 		soldier_id_data.append(soldier_id)
 	data["level"] = level
+	data["upkeep_per_turn"] = upkeep_per_turn
 	data["vehicle_ids"] = ids
 	data["soldier_ids"] = soldier_id_data
 	return data
@@ -39,6 +45,7 @@ func from_dict(data: Dictionary) -> void:
 	super.from_dict(data)
 	location_type = "stronghold"
 	level = int(data.get("level", 1))
+	upkeep_per_turn = maxf(float(data.get("upkeep_per_turn", 0.0)), 0.0)
 	vehicle_ids.clear()
 	var ids_data: Variant = data.get("vehicle_ids", [])
 	if ids_data is Array:
