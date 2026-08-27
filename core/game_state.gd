@@ -1,6 +1,8 @@
 class_name GameState
 extends RefCounted
 
+const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
+
 var current_turn: int = 1
 var current_year: int = 2034
 var current_month: int = 7
@@ -13,6 +15,7 @@ var map_locations: Dictionary[String, MapLocation] = {}
 var vehicles: Dictionary[String, Vehicle] = {}
 var soldiers: Dictionary[String, Soldier] = {}
 var traveling_forces: Dictionary[String, TravelingForce] = {}
+var missions: Dictionary[String, CampaignMission] = {}
 
 
 func add_faction(faction: Faction) -> void:
@@ -358,6 +361,36 @@ func remove_traveling_force(force_id: String) -> bool:
 	return true
 
 
+func add_mission(mission: CampaignMission) -> void:
+	if mission == null:
+		push_error("GameState.add_mission: mission is null.")
+		return
+	if mission.id.is_empty():
+		push_error("GameState.add_mission: mission id is empty.")
+		return
+	if missions.has(mission.id):
+		push_error("GameState.add_mission: duplicate mission id '%s'." % mission.id)
+		return
+	missions[mission.id] = mission
+
+
+func get_mission(mission_id: String) -> CampaignMission:
+	if missions.has(mission_id):
+		return missions[mission_id]
+	return null
+
+
+func has_mission(mission_id: String) -> bool:
+	return missions.has(mission_id)
+
+
+func remove_mission(mission_id: String) -> bool:
+	if not missions.has(mission_id):
+		return false
+	missions.erase(mission_id)
+	return true
+
+
 func to_dict() -> Dictionary:
 	var faction_data := {}
 	for faction_id: String in factions:
@@ -383,6 +416,9 @@ func to_dict() -> Dictionary:
 	var traveling_force_data := {}
 	for force_id: String in traveling_forces:
 		traveling_force_data[force_id] = traveling_forces[force_id].to_dict()
+	var mission_data := {}
+	for mission_id: String in missions:
+		mission_data[mission_id] = missions[mission_id].to_dict()
 	return {
 		"current_turn": current_turn,
 		"current_year": current_year,
@@ -396,6 +432,7 @@ func to_dict() -> Dictionary:
 		"vehicles": vehicle_data,
 		"soldiers": soldier_data,
 		"traveling_forces": traveling_force_data,
+		"missions": mission_data,
 	}
 
 
@@ -442,6 +479,7 @@ func from_dict(data: Dictionary) -> void:
 	_restore_vehicles(data.get("vehicles", {}))
 	_restore_soldiers(data.get("soldiers", {}))
 	_restore_traveling_forces(data.get("traveling_forces", {}))
+	_restore_missions(data.get("missions", {}))
 
 
 func _create_faction_from_dict(data: Dictionary) -> Faction:
@@ -584,3 +622,23 @@ func _restore_traveling_forces(force_data: Variant) -> void:
 			push_error("GameState.from_dict: traveling force record is missing an id; skipping.")
 			continue
 		add_traveling_force(force)
+
+
+func _restore_missions(mission_data: Variant) -> void:
+	missions.clear()
+	if not (mission_data is Dictionary):
+		push_error("GameState.from_dict: missions is not a Dictionary; skipping mission restore.")
+		return
+	for mission_id: Variant in mission_data:
+		var record: Variant = mission_data[mission_id]
+		if not (record is Dictionary):
+			push_error("GameState.from_dict: mission record '%s' is not a Dictionary; skipping." % str(mission_id))
+			continue
+		var mission: CampaignMission = CampaignMission.new()
+		mission.from_dict(record)
+		if mission.id.is_empty():
+			mission.id = str(mission_id)
+		if mission.id.is_empty():
+			push_error("GameState.from_dict: mission record is missing an id; skipping.")
+			continue
+		add_mission(mission)

@@ -8,6 +8,10 @@ const SoldierGroup := preload("res://campaign/units/soldier_group.gd")
 const DeploymentRequest := preload("res://campaign/actions/deployment_request.gd")
 const DeploymentResult := preload("res://campaign/actions/deployment_result.gd")
 const DeploymentService := preload("res://campaign/actions/deployment_service.gd")
+const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
+const MissionRequest := preload("res://campaign/missions/mission_request.gd")
+const MissionResult := preload("res://campaign/missions/mission_result.gd")
+const MissionService := preload("res://campaign/missions/mission_service.gd")
 
 
 static func run() -> Dictionary:
@@ -955,6 +959,413 @@ static func run() -> Dictionary:
 	var helper_fail: DeploymentResult = DeploymentResult.failed("test_code", "test message", "helper_fail_id")
 	var deploy_helper_fail_ok: bool = (not helper_fail.success) and helper_fail.error_code == "test_code" and helper_fail.error_message == "test message"
 
+	var mission_soldier_p: Soldier = Soldier.new("mission_soldier_p", "gang_a", "", "pistol", 1.0, 20.0)
+	var mission_soldier_i: Soldier = Soldier.new("mission_soldier_i", "gang_a", "", "rifle", 1.9, 35.0)
+	var mission_soldier_s: Soldier = Soldier.new("mission_soldier_s", "gang_a", "", "smg", 1.55, 30.0)
+	var mission_soldier_m: Soldier = Soldier.new("mission_soldier_m", "gang_a", "", "pistol", 1.0, 20.0)
+	var mission_soldier_z: Soldier = Soldier.new("mission_soldier_z", "gang_a", "", "pistol", 1.0, 20.0)
+	var mission_soldier_a: Soldier = Soldier.new("mission_soldier_a", "gang_a", "", "pistol", 1.0, 20.0)
+	var mission_soldier_g: Soldier = Soldier.new("mission_soldier_g", "gang_a", "", "pistol", 1.0, 20.0)
+	var mission_soldier_unused: Soldier = Soldier.new("mission_soldier_unused", "gang_a", "", "pistol", 1.0, 20.0)
+	original.add_soldier(mission_soldier_p)
+	original.add_soldier(mission_soldier_i)
+	original.add_soldier(mission_soldier_s)
+	original.add_soldier(mission_soldier_m)
+	original.add_soldier(mission_soldier_z)
+	original.add_soldier(mission_soldier_a)
+	original.add_soldier(mission_soldier_g)
+	original.add_soldier(mission_soldier_unused)
+	original.assign_soldier_to_stronghold("mission_soldier_p", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_i", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_s", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_m", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_z", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_a", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_g", "stronghold_a")
+	original.assign_soldier_to_stronghold("mission_soldier_unused", "stronghold_a")
+	var mission_vehicle_p: Vehicle = Vehicle.new("mission_vehicle_p", "gang_a", "car", "", 2, 5.0, 50.0)
+	var mission_vehicle_i: Vehicle = Vehicle.new("mission_vehicle_i", "gang_a", "car", "", 4, 8.0, 50.0)
+	var mission_vehicle_s: Vehicle = Vehicle.new("mission_vehicle_s", "gang_a", "car", "", 2, 5.0, 50.0)
+	var mission_vehicle_m: Vehicle = Vehicle.new("mission_vehicle_m", "gang_a", "car", "", 2, 5.0, 50.0)
+	var mission_vehicle_z: Vehicle = Vehicle.new("mission_vehicle_z", "gang_a", "car", "", 2, 5.0, 50.0)
+	var mission_vehicle_a: Vehicle = Vehicle.new("mission_vehicle_a", "gang_a", "car", "", 2, 5.0, 50.0)
+	var mission_vehicle_g: Vehicle = Vehicle.new("mission_vehicle_g", "gang_a", "car", "", 2, 5.0, 50.0)
+	var mission_vehicle_unused: Vehicle = Vehicle.new("mission_vehicle_unused", "gang_a", "car", "", 2, 5.0, 50.0)
+	original.add_vehicle(mission_vehicle_p)
+	original.add_vehicle(mission_vehicle_i)
+	original.add_vehicle(mission_vehicle_s)
+	original.add_vehicle(mission_vehicle_m)
+	original.add_vehicle(mission_vehicle_z)
+	original.add_vehicle(mission_vehicle_a)
+	original.add_vehicle(mission_vehicle_g)
+	original.add_vehicle(mission_vehicle_unused)
+	original.assign_vehicle_to_stronghold("mission_vehicle_p", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_i", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_s", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_m", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_z", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_a", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_g", "stronghold_a")
+	original.assign_vehicle_to_stronghold("mission_vehicle_unused", "stronghold_a")
+
+	var mission_ids_p_s: Array[String] = ["mission_soldier_p"]
+	var mission_ids_p_v: Array[String] = ["mission_vehicle_p"]
+	var deploy_mission_partial: DeploymentRequest = DeploymentRequest.new("mission_force_partial", "gang_a", "stronghold_a", "hq_contested", mission_ids_p_s, mission_ids_p_v, 3.0)
+	var req_mission_partial: MissionRequest = MissionRequest.new("mission_partial", "raid_business", deploy_mission_partial)
+	var res_mission_partial: MissionResult = MissionService.launch(original, req_mission_partial)
+	var mission_partial: CampaignMission = original.get_mission("mission_partial")
+	var force_mission_partial: TravelingForce = original.get_traveling_force("mission_force_partial")
+	var mission_partial_ok: bool = (
+		res_mission_partial.success
+		and mission_partial != null
+		and force_mission_partial != null
+		and mission_partial.mission_type_id == "raid_business"
+		and mission_partial.faction_id == "gang_a"
+		and mission_partial.origin_location_id == "stronghold_a"
+		and mission_partial.target_location_id == "hq_contested"
+		and mission_partial.force_id == "mission_force_partial"
+		and mission_partial.mission_state == "traveling_outbound"
+		and mission_partial.outcome_code.is_empty()
+		and res_mission_partial.mission_state == "traveling_outbound"
+		and force_mission_partial.travel_state == "traveling_outbound"
+	)
+
+	var mission_ids_i_s: Array[String] = ["mission_soldier_i"]
+	var mission_ids_i_v: Array[String] = ["mission_vehicle_i"]
+	var deploy_mission_immediate: DeploymentRequest = DeploymentRequest.new("mission_force_immediate", "gang_a", "stronghold_a", "hq_contested", mission_ids_i_s, mission_ids_i_v, 8.0)
+	var req_mission_immediate: MissionRequest = MissionRequest.new("mission_immediate", "attack_neighborhood_hq", deploy_mission_immediate)
+	var res_mission_immediate: MissionResult = MissionService.launch(original, req_mission_immediate)
+	var mission_immediate: CampaignMission = original.get_mission("mission_immediate")
+	var force_mission_immediate: TravelingForce = original.get_traveling_force("mission_force_immediate")
+	var mission_immediate_ok: bool = (
+		res_mission_immediate.success
+		and mission_immediate != null
+		and force_mission_immediate != null
+		and force_mission_immediate.travel_state == "at_destination"
+		and mission_immediate.mission_state == "awaiting_resolution"
+		and res_mission_immediate.mission_state == "awaiting_resolution"
+		and mission_immediate.outcome_code.is_empty()
+	)
+
+	var mission_ids_s_s: Array[String] = ["mission_soldier_s"]
+	var mission_ids_s_v: Array[String] = ["mission_vehicle_s"]
+	var deploy_mission_same: DeploymentRequest = DeploymentRequest.new("mission_force_samenode", "gang_a", "stronghold_a", "business_same_node", mission_ids_s_s, mission_ids_s_v, 0.0)
+	var req_mission_same: MissionRequest = MissionRequest.new("mission_samenode", "secure_event_location", deploy_mission_same)
+	var res_mission_same: MissionResult = MissionService.launch(original, req_mission_same)
+	var mission_samenode: CampaignMission = original.get_mission("mission_samenode")
+	var force_mission_samenode: TravelingForce = original.get_traveling_force("mission_force_samenode")
+	var mission_samenode_ok: bool = (
+		res_mission_same.success
+		and mission_samenode != null
+		and force_mission_samenode != null
+		and force_mission_samenode.travel_state == "at_destination"
+		and mission_samenode.mission_state == "awaiting_resolution"
+	)
+
+	var forces_before_mission_block: int = original.traveling_forces.size()
+	var missions_before_mission_block: int = original.missions.size()
+	var mission_ids_block_s: Array[String] = ["mission_soldier_p"]
+	var mission_ids_block_v: Array[String] = ["mission_vehicle_unused"]
+	var deploy_mission_block: DeploymentRequest = DeploymentRequest.new("mission_force_blocked", "gang_a", "stronghold_a", "hq_contested", mission_ids_block_s, mission_ids_block_v, 3.0)
+	var req_mission_block: MissionRequest = MissionRequest.new("mission_blocked", "raid_business", deploy_mission_block)
+	var res_mission_block: MissionResult = MissionService.launch(original, req_mission_block)
+	var mission_deploy_fail_ok: bool = (
+		not res_mission_block.success
+		and res_mission_block.error_code == "soldier_already_deployed"
+		and not original.has_mission("mission_blocked")
+		and not original.has_traveling_force("mission_force_blocked")
+		and original.missions.size() == missions_before_mission_block
+		and original.traveling_forces.size() == forces_before_mission_block
+	)
+
+	var forces_before_null_req: int = original.traveling_forces.size()
+	var missions_before_null_req: int = original.missions.size()
+	var res_mission_null: MissionResult = MissionService.launch(original, null)
+	var mission_null_request_ok: bool = (
+		not res_mission_null.success
+		and res_mission_null.error_code == "null_request"
+		and original.missions.size() == missions_before_null_req
+		and original.traveling_forces.size() == forces_before_null_req
+	)
+	var deploy_empty_id: DeploymentRequest = DeploymentRequest.new("mission_force_empty_id", "gang_a", "stronghold_a", "hq_contested", mission_ids_p_s, mission_ids_p_v, 3.0)
+	var req_empty_id: MissionRequest = MissionRequest.new("", "raid_business", deploy_empty_id)
+	var res_empty_id: MissionResult = MissionService.launch(original, req_empty_id)
+	var mission_empty_id_ok: bool = (
+		not res_empty_id.success
+		and res_empty_id.error_code == "empty_mission_id"
+		and not original.has_traveling_force("mission_force_empty_id")
+	)
+	var deploy_empty_type: DeploymentRequest = DeploymentRequest.new("mission_force_empty_type", "gang_a", "stronghold_a", "hq_contested", mission_ids_p_s, mission_ids_p_v, 3.0)
+	var req_empty_type: MissionRequest = MissionRequest.new("mission_empty_type", "", deploy_empty_type)
+	var res_empty_type: MissionResult = MissionService.launch(original, req_empty_type)
+	var mission_empty_type_ok: bool = (
+		not res_empty_type.success
+		and res_empty_type.error_code == "empty_mission_type_id"
+		and not original.has_mission("mission_empty_type")
+		and not original.has_traveling_force("mission_force_empty_type")
+	)
+	var deploy_dup_s: Array[String] = ["mission_soldier_unused"]
+	var deploy_dup_v: Array[String] = ["mission_vehicle_unused"]
+	var deploy_dup_mission: DeploymentRequest = DeploymentRequest.new("mission_force_dup_mission", "gang_a", "stronghold_a", "hq_contested", deploy_dup_s, deploy_dup_v, 3.0)
+	var req_dup_mission: MissionRequest = MissionRequest.new("mission_partial", "raid_business", deploy_dup_mission)
+	var res_dup_mission: MissionResult = MissionService.launch(original, req_dup_mission)
+	var mission_dup_id_ok: bool = (
+		not res_dup_mission.success
+		and res_dup_mission.error_code == "duplicate_mission_id"
+		and not original.has_traveling_force("mission_force_dup_mission")
+	)
+	var req_null_dep: MissionRequest = MissionRequest.new("mission_null_dep", "raid_business")
+	req_null_dep.deployment_request = null
+	var res_null_dep: MissionResult = MissionService.launch(original, req_null_dep)
+	var mission_null_dep_ok: bool = (
+		not res_null_dep.success
+		and res_null_dep.error_code == "null_deployment_request"
+		and not original.has_mission("mission_null_dep")
+	)
+
+	var partial_index_before_sync: int = 0
+	var partial_distance_before_sync: float = 0.0
+	var partial_state_before_sync: String = ""
+	if force_mission_partial != null:
+		partial_index_before_sync = force_mission_partial.route_segment_index
+		partial_distance_before_sync = force_mission_partial.distance_into_segment
+		partial_state_before_sync = force_mission_partial.travel_state
+	var res_sync_partial_travel: MissionResult = MissionService.sync_arrival(original, "mission_partial")
+	var mission_sync_still_traveling_ok: bool = (
+		force_mission_partial != null
+		and mission_partial != null
+		and res_sync_partial_travel.success
+		and mission_partial.mission_state == "traveling_outbound"
+		and force_mission_partial.travel_state == partial_state_before_sync
+		and force_mission_partial.route_segment_index == partial_index_before_sync
+		and is_equal_approx(force_mission_partial.distance_into_segment, partial_distance_before_sync)
+	)
+
+	var leftover_partial_arrive: float = 0.0
+	if force_mission_partial != null:
+		leftover_partial_arrive = force_mission_partial.advance(4.0, graph)
+	var mission_partial_force_arrived: bool = (
+		force_mission_partial != null
+		and mission_partial != null
+		and force_mission_partial.travel_state == "at_destination"
+		and mission_partial.mission_state == "traveling_outbound"
+	)
+	var res_sync_partial_arrive: MissionResult = MissionService.sync_arrival(original, "mission_partial")
+	var mission_sync_arrived_ok: bool = (
+		mission_partial_force_arrived
+		and is_equal_approx(leftover_partial_arrive, 0.0)
+		and res_sync_partial_arrive.success
+		and mission_partial.mission_state == "awaiting_resolution"
+		and mission_partial.outcome_code.is_empty()
+	)
+	var res_sync_partial_again: MissionResult = MissionService.sync_arrival(original, "mission_partial")
+	var mission_sync_idempotent_ok: bool = (
+		res_sync_partial_again.success
+		and mission_partial.mission_state == "awaiting_resolution"
+		and mission_partial.outcome_code.is_empty()
+	)
+
+	var mission_ids_m_s: Array[String] = ["mission_soldier_m"]
+	var mission_ids_m_v: Array[String] = ["mission_vehicle_m"]
+	var deploy_mission_mismatch: DeploymentRequest = DeploymentRequest.new("mission_force_mismatch", "gang_a", "stronghold_a", "hq_contested", mission_ids_m_s, mission_ids_m_v, 3.0)
+	var req_mission_mismatch: MissionRequest = MissionRequest.new("mission_mismatch", "raid_business", deploy_mission_mismatch)
+	var res_mission_mismatch: MissionResult = MissionService.launch(original, req_mission_mismatch)
+	var force_mission_mismatch: TravelingForce = original.get_traveling_force("mission_force_mismatch")
+	var mission_mismatch: CampaignMission = original.get_mission("mission_mismatch")
+	if force_mission_mismatch != null:
+		force_mission_mismatch.travel_state = "traveling_return"
+	var mismatch_state_before: String = ""
+	if mission_mismatch != null:
+		mismatch_state_before = mission_mismatch.mission_state
+	var res_sync_mismatch: MissionResult = MissionService.sync_arrival(original, "mission_mismatch")
+	var mission_mismatch_ok: bool = (
+		res_mission_mismatch.success
+		and not res_sync_mismatch.success
+		and res_sync_mismatch.error_code == "mission_force_state_mismatch"
+		and mission_mismatch != null
+		and mission_mismatch.mission_state == mismatch_state_before
+		and mission_mismatch.mission_state == "traveling_outbound"
+	)
+
+	var mission_ids_z_s: Array[String] = ["mission_soldier_z"]
+	var mission_ids_z_v: Array[String] = ["mission_vehicle_z"]
+	var deploy_mission_z: DeploymentRequest = DeploymentRequest.new("mission_force_z", "gang_a", "stronghold_a", "hq_contested", mission_ids_z_s, mission_ids_z_v, 3.0)
+	var req_mission_z: MissionRequest = MissionRequest.new("mission_z_keep", "intercept_convoy", deploy_mission_z)
+	var res_mission_z: MissionResult = MissionService.launch(original, req_mission_z)
+	var mission_z_keep: CampaignMission = original.get_mission("mission_z_keep")
+	var mission_ids_a_s: Array[String] = ["mission_soldier_a"]
+	var mission_ids_a_v: Array[String] = ["mission_vehicle_a"]
+	var deploy_mission_a: DeploymentRequest = DeploymentRequest.new("mission_force_a", "gang_a", "stronghold_a", "hq_contested", mission_ids_a_s, mission_ids_a_v, 3.0)
+	var req_mission_a: MissionRequest = MissionRequest.new("mission_a_arrive_sync", "delivery", deploy_mission_a)
+	var res_mission_a: MissionResult = MissionService.launch(original, req_mission_a)
+	var mission_a_arrive: CampaignMission = original.get_mission("mission_a_arrive_sync")
+	var force_mission_a: TravelingForce = original.get_traveling_force("mission_force_a")
+	if force_mission_a != null:
+		force_mission_a.travel_state = "at_destination"
+	var expected_sync_ids: Array[String] = []
+	for existing_mission_id: String in original.missions:
+		expected_sync_ids.append(existing_mission_id)
+	expected_sync_ids.sort()
+	var immediate_state_before_all: String = ""
+	if mission_immediate != null:
+		immediate_state_before_all = mission_immediate.mission_state
+	var samenode_state_before_all: String = ""
+	if mission_samenode != null:
+		samenode_state_before_all = mission_samenode.mission_state
+	var partial_state_before_all: String = ""
+	if mission_partial != null:
+		partial_state_before_all = mission_partial.mission_state
+	var mismatch_state_before_all: String = ""
+	if mission_mismatch != null:
+		mismatch_state_before_all = mission_mismatch.mission_state
+	var z_state_before_all: String = ""
+	if mission_z_keep != null:
+		z_state_before_all = mission_z_keep.mission_state
+	var sync_all_results: Array[MissionResult] = MissionService.sync_all_arrivals(original)
+	var sync_all_ids: Array[String] = []
+	for sync_result: MissionResult in sync_all_results:
+		sync_all_ids.append(sync_result.mission_id)
+	var mission_sync_all_ok: bool = (
+		res_mission_z.success
+		and res_mission_a.success
+		and sync_all_results.size() == expected_sync_ids.size()
+		and _string_ids_match(sync_all_ids, expected_sync_ids)
+		and mission_a_arrive != null
+		and mission_a_arrive.mission_state == "awaiting_resolution"
+		and mission_immediate != null
+		and mission_immediate.mission_state == immediate_state_before_all
+		and mission_samenode != null
+		and mission_samenode.mission_state == samenode_state_before_all
+		and mission_partial != null
+		and mission_partial.mission_state == partial_state_before_all
+		and mission_mismatch != null
+		and mission_mismatch.mission_state == mismatch_state_before_all
+		and mission_z_keep != null
+		and mission_z_keep.mission_state == z_state_before_all
+		and mission_z_keep.mission_state == "traveling_outbound"
+	)
+
+	var hq_owner_before_resolve: String = hq_contested.owner_faction_id
+	var hq_open_before_resolve: bool = hq_contested.is_open
+	var money_before_resolve: float = gang_a.money
+	var ammo_before_resolve: float = gang_a.resources.get_amount("Ammo")
+	var home_i_s_before: String = mission_soldier_i.home_stronghold_id
+	var home_i_v_before: String = mission_vehicle_i.home_stronghold_id
+	var home_s_s_before: String = mission_soldier_s.home_stronghold_id
+	var home_s_v_before: String = mission_vehicle_s.home_stronghold_id
+	var soldiers_before_resolve: Array[String] = _copy_ids(stronghold_a.soldier_ids)
+	var vehicles_before_resolve: Array[String] = _copy_ids(stronghold_a.vehicle_ids)
+	var res_resolve_success: MissionResult = MissionService.resolve(original, "mission_immediate", true, "target_secured")
+	var mission_resolve_success_ok: bool = (
+		res_resolve_success.success
+		and mission_immediate.mission_state == "resolved_success"
+		and mission_immediate.outcome_code == "target_secured"
+		and force_mission_immediate.travel_state == "at_destination"
+		and original.has_mission("mission_immediate")
+		and original.has_traveling_force("mission_force_immediate")
+		and force_mission_immediate.travel_state != "traveling_return"
+	)
+
+	var samenode_state_before_empty: String = mission_samenode.mission_state
+	var samenode_outcome_before_empty: String = mission_samenode.outcome_code
+	var res_resolve_empty: MissionResult = MissionService.resolve(original, "mission_samenode", true, "")
+	var mission_empty_outcome_ok: bool = (
+		not res_resolve_empty.success
+		and res_resolve_empty.error_code == "empty_outcome_code"
+		and mission_samenode.mission_state == samenode_state_before_empty
+		and mission_samenode.outcome_code == samenode_outcome_before_empty
+	)
+	var res_resolve_missing: MissionResult = MissionService.resolve(original, "mission_does_not_exist", true, "target_secured")
+	var mission_invalid_ok: bool = not res_resolve_missing.success and res_resolve_missing.error_code == "invalid_mission"
+	var immediate_state_before_guard: String = mission_immediate.mission_state
+	var immediate_outcome_before_guard: String = mission_immediate.outcome_code
+	var res_resolve_not_awaiting: MissionResult = MissionService.resolve(original, "mission_immediate", true, "again")
+	var mission_not_awaiting_ok: bool = (
+		not res_resolve_not_awaiting.success
+		and res_resolve_not_awaiting.error_code == "mission_not_awaiting_resolution"
+		and mission_immediate.mission_state == immediate_state_before_guard
+		and mission_immediate.outcome_code == immediate_outcome_before_guard
+	)
+	var mission_ids_g_s: Array[String] = ["mission_soldier_g"]
+	var mission_ids_g_v: Array[String] = ["mission_vehicle_g"]
+	var deploy_mission_guard: DeploymentRequest = DeploymentRequest.new("mission_force_guard", "gang_a", "stronghold_a", "business_same_node", mission_ids_g_s, mission_ids_g_v, 0.0)
+	var req_mission_guard: MissionRequest = MissionRequest.new("mission_guard_force", "raid_business", deploy_mission_guard)
+	var res_mission_guard: MissionResult = MissionService.launch(original, req_mission_guard)
+	var mission_guard: CampaignMission = original.get_mission("mission_guard_force")
+	var force_mission_guard: TravelingForce = original.get_traveling_force("mission_force_guard")
+	if force_mission_guard != null:
+		force_mission_guard.travel_state = "traveling_outbound"
+	var guard_state_before: String = ""
+	var guard_outcome_before: String = ""
+	if mission_guard != null:
+		guard_state_before = mission_guard.mission_state
+		guard_outcome_before = mission_guard.outcome_code
+	var res_resolve_not_dest: MissionResult = MissionService.resolve(original, "mission_guard_force", true, "target_secured")
+	var mission_force_not_dest_ok: bool = (
+		res_mission_guard.success
+		and not res_resolve_not_dest.success
+		and res_resolve_not_dest.error_code == "force_not_at_destination"
+		and mission_guard != null
+		and mission_guard.mission_state == guard_state_before
+		and mission_guard.outcome_code == guard_outcome_before
+	)
+	var mission_missing_force: CampaignMission = CampaignMission.new("mission_missing_force", "raid_business", "gang_a", "no_such_force", "stronghold_a", "hq_contested", "awaiting_resolution", "")
+	original.add_mission(mission_missing_force)
+	var missing_force_state_before: String = mission_missing_force.mission_state
+	var missing_force_outcome_before: String = mission_missing_force.outcome_code
+	var res_resolve_no_force: MissionResult = MissionService.resolve(original, "mission_missing_force", true, "target_secured")
+	var mission_invalid_force_ok: bool = (
+		not res_resolve_no_force.success
+		and res_resolve_no_force.error_code == "invalid_force"
+		and mission_missing_force.mission_state == missing_force_state_before
+		and mission_missing_force.outcome_code == missing_force_outcome_before
+	)
+	original.remove_mission("mission_missing_force")
+
+	var res_resolve_fail: MissionResult = MissionService.resolve(original, "mission_samenode", false, "operation_failed")
+	var mission_resolve_fail_ok: bool = (
+		res_resolve_fail.success
+		and mission_samenode.mission_state == "resolved_failure"
+		and mission_samenode.outcome_code == "operation_failed"
+		and force_mission_samenode.travel_state == "at_destination"
+	)
+	var mission_no_effects_ok: bool = (
+		hq_contested.owner_faction_id == hq_owner_before_resolve
+		and hq_contested.is_open == hq_open_before_resolve
+		and is_equal_approx(gang_a.money, money_before_resolve)
+		and is_equal_approx(gang_a.resources.get_amount("Ammo"), ammo_before_resolve)
+		and mission_soldier_i.home_stronghold_id == home_i_s_before
+		and mission_vehicle_i.home_stronghold_id == home_i_v_before
+		and mission_soldier_s.home_stronghold_id == home_s_s_before
+		and mission_vehicle_s.home_stronghold_id == home_s_v_before
+		and _string_ids_match(stronghold_a.soldier_ids, soldiers_before_resolve)
+		and _string_ids_match(stronghold_a.vehicle_ids, vehicles_before_resolve)
+	)
+
+	var existing_mission_partial: CampaignMission = original.get_mission("mission_partial")
+	original.add_mission(CampaignMission.new("mission_partial", "raid_business", "gang_b", "other_force", "stronghold_a", "hq_contested", "complete", "nope"))
+	var mission_add_dup_ok: bool = original.get_mission("mission_partial") == existing_mission_partial
+	var mission_remove_missing_ok: bool = not original.remove_mission("mission_does_not_exist")
+	var mission_disposable: CampaignMission = CampaignMission.new("mission_disposable", "delivery", "gang_a", "unused_force", "stronghold_a", "hq_contested", "complete", "")
+	original.add_mission(mission_disposable)
+	var mission_remove_ok: bool = original.remove_mission("mission_disposable") and not original.has_mission("mission_disposable")
+
+	var mission_helper_ok: MissionResult = MissionResult.succeeded("helper_mission", "helper_force", "awaiting_resolution")
+	var mission_helper_success_ok: bool = (
+		mission_helper_ok.success
+		and mission_helper_ok.mission_id == "helper_mission"
+		and mission_helper_ok.force_id == "helper_force"
+		and mission_helper_ok.mission_state == "awaiting_resolution"
+		and mission_helper_ok.error_code.is_empty()
+		and mission_helper_ok.error_message.is_empty()
+	)
+	var mission_helper_fail: MissionResult = MissionResult.failed("test_code", "test message", "helper_fail_mission", "helper_fail_force", "traveling_outbound")
+	var mission_helper_fail_ok: bool = (
+		not mission_helper_fail.success
+		and mission_helper_fail.error_code == "test_code"
+		and mission_helper_fail.error_message == "test message"
+	)
+
 	final_stronghold_a_soldiers = _copy_ids(stronghold_a.soldier_ids)
 	final_stronghold_b_soldiers = _copy_ids(stronghold_b.soldier_ids)
 	final_stronghold_a_vehicles = _copy_ids(stronghold_a.vehicle_ids)
@@ -997,11 +1408,93 @@ static func run() -> Dictionary:
 	var restored_smg: Soldier = restored.get_soldier("soldier_smg")
 	var restored_rifle: Soldier = restored.get_soldier("soldier_rifle")
 	var restored_enemy_soldier: Soldier = restored.get_soldier("soldier_enemy")
+	var restored_mission_partial: CampaignMission = restored.get_mission("mission_partial")
+	var restored_mission_immediate: CampaignMission = restored.get_mission("mission_immediate")
+	var restored_mission_samenode: CampaignMission = restored.get_mission("mission_samenode")
+	var restored_mission_outbound: CampaignMission = restored.get_mission("mission_z_keep")
 	var restored_seg_ab: RoadSegment = restored_graph.get_segment("seg_ab")
 	var restored_seg_bc: RoadSegment = restored_graph.get_segment("seg_bc")
 	var restored_seg_cd: RoadSegment = restored_graph.get_segment("seg_cd")
 	var restored_seg_be: RoadSegment = restored_graph.get_segment("seg_be")
 	var restored_seg_ed: RoadSegment = restored_graph.get_segment("seg_ed")
+
+	var older_save: Dictionary = serialized_state.duplicate(true)
+	older_save.erase("missions")
+	var restored_older: GameState = GameState.new()
+	restored_older.from_dict(older_save)
+	var mission_older_save_ok: bool = (
+		restored_older.missions.is_empty()
+		and restored_older.has_faction("gang_a")
+		and restored_older.has_map_location("stronghold_a")
+		and restored_older.has_map_location("hq_contested")
+		and restored_older.road_graph != null
+		and restored_older.road_graph.has_node("road_a")
+	)
+	var malformed_save: Dictionary = serialized_state.duplicate(true)
+	var malformed_missions: Variant = malformed_save.get("missions", {})
+	var mission_malformed_ok: bool = false
+	if malformed_missions is Dictionary:
+		malformed_missions["bad_mission"] = "not_a_dictionary"
+		var restored_malformed: GameState = GameState.new()
+		restored_malformed.from_dict(malformed_save)
+		var restored_malformed_partial: CampaignMission = restored_malformed.get_mission("mission_partial")
+		mission_malformed_ok = (
+			not restored_malformed.has_mission("bad_mission")
+			and restored_malformed_partial != null
+			and restored_malformed.get_mission("mission_partial") is CampaignMission
+		)
+	var restored_mission_partial_ok: bool = (
+		restored_mission_partial != null
+		and restored.get_mission("mission_partial") is CampaignMission
+		and restored_mission_partial.id == "mission_partial"
+		and restored_mission_partial.mission_type_id == "raid_business"
+		and restored_mission_partial.faction_id == "gang_a"
+		and restored_mission_partial.force_id == "mission_force_partial"
+		and restored_mission_partial.origin_location_id == "stronghold_a"
+		and restored_mission_partial.target_location_id == "hq_contested"
+		and restored_mission_partial.mission_state == "awaiting_resolution"
+		and restored_mission_partial.outcome_code.is_empty()
+		and restored.has_traveling_force("mission_force_partial")
+	)
+	var restored_mission_immediate_ok: bool = (
+		restored_mission_immediate != null
+		and restored.get_mission("mission_immediate") is CampaignMission
+		and restored_mission_immediate.id == "mission_immediate"
+		and restored_mission_immediate.mission_type_id == "attack_neighborhood_hq"
+		and restored_mission_immediate.faction_id == "gang_a"
+		and restored_mission_immediate.force_id == "mission_force_immediate"
+		and restored_mission_immediate.origin_location_id == "stronghold_a"
+		and restored_mission_immediate.target_location_id == "hq_contested"
+		and restored_mission_immediate.mission_state == "resolved_success"
+		and restored_mission_immediate.outcome_code == "target_secured"
+		and restored.has_traveling_force("mission_force_immediate")
+	)
+	var restored_mission_samenode_ok: bool = (
+		restored_mission_samenode != null
+		and restored.get_mission("mission_samenode") is CampaignMission
+		and restored_mission_samenode.id == "mission_samenode"
+		and restored_mission_samenode.mission_type_id == "secure_event_location"
+		and restored_mission_samenode.faction_id == "gang_a"
+		and restored_mission_samenode.force_id == "mission_force_samenode"
+		and restored_mission_samenode.origin_location_id == "stronghold_a"
+		and restored_mission_samenode.target_location_id == "business_same_node"
+		and restored_mission_samenode.mission_state == "resolved_failure"
+		and restored_mission_samenode.outcome_code == "operation_failed"
+		and restored.has_traveling_force("mission_force_samenode")
+	)
+	var restored_mission_outbound_ok: bool = (
+		restored_mission_outbound != null
+		and restored.get_mission("mission_z_keep") is CampaignMission
+		and restored_mission_outbound.id == "mission_z_keep"
+		and restored_mission_outbound.mission_type_id == "intercept_convoy"
+		and restored_mission_outbound.faction_id == "gang_a"
+		and restored_mission_outbound.force_id == "mission_force_z"
+		and restored_mission_outbound.origin_location_id == "stronghold_a"
+		and restored_mission_outbound.target_location_id == "hq_contested"
+		and restored_mission_outbound.mission_state == "traveling_outbound"
+		and restored_mission_outbound.outcome_code.is_empty()
+		and restored.has_traveling_force("mission_force_z")
+	)
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -1328,6 +1821,39 @@ static func run() -> Dictionary:
 		"deploy_atomic_redeploy_ok": deploy_atomic_redeploy_ok,
 		"deploy_helper_success_ok": deploy_helper_success_ok,
 		"deploy_helper_fail_ok": deploy_helper_fail_ok,
+		"mission_partial_ok": mission_partial_ok,
+		"mission_immediate_ok": mission_immediate_ok,
+		"mission_samenode_ok": mission_samenode_ok,
+		"mission_deploy_fail_ok": mission_deploy_fail_ok,
+		"mission_null_request_ok": mission_null_request_ok,
+		"mission_empty_id_ok": mission_empty_id_ok,
+		"mission_empty_type_ok": mission_empty_type_ok,
+		"mission_dup_id_ok": mission_dup_id_ok,
+		"mission_null_dep_ok": mission_null_dep_ok,
+		"mission_sync_still_traveling_ok": mission_sync_still_traveling_ok,
+		"mission_sync_arrived_ok": mission_sync_arrived_ok,
+		"mission_sync_idempotent_ok": mission_sync_idempotent_ok,
+		"mission_mismatch_ok": mission_mismatch_ok,
+		"mission_sync_all_ok": mission_sync_all_ok,
+		"mission_resolve_success_ok": mission_resolve_success_ok,
+		"mission_resolve_fail_ok": mission_resolve_fail_ok,
+		"mission_invalid_ok": mission_invalid_ok,
+		"mission_empty_outcome_ok": mission_empty_outcome_ok,
+		"mission_not_awaiting_ok": mission_not_awaiting_ok,
+		"mission_force_not_dest_ok": mission_force_not_dest_ok,
+		"mission_invalid_force_ok": mission_invalid_force_ok,
+		"mission_add_dup_ok": mission_add_dup_ok,
+		"mission_remove_missing_ok": mission_remove_missing_ok,
+		"mission_remove_ok": mission_remove_ok,
+		"restored_mission_partial_ok": restored_mission_partial_ok,
+		"restored_mission_immediate_ok": restored_mission_immediate_ok,
+		"restored_mission_samenode_ok": restored_mission_samenode_ok,
+		"restored_mission_outbound_ok": restored_mission_outbound_ok,
+		"mission_older_save_ok": mission_older_save_ok,
+		"mission_malformed_ok": mission_malformed_ok,
+		"mission_helper_success_ok": mission_helper_success_ok,
+		"mission_helper_fail_ok": mission_helper_fail_ok,
+		"mission_no_effects_ok": mission_no_effects_ok,
 	}
 
 	var passed := true
