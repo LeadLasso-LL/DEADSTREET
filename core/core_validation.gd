@@ -30,6 +30,8 @@ const EconomyTurnResult := preload("res://campaign/economy/economy_turn_result.g
 const EconomyService := preload("res://campaign/economy/economy_service.gd")
 const ExistingForceMissionRequest := preload("res://campaign/missions/existing_force_mission_request.gd")
 const ExistingForceMissionResult := preload("res://campaign/missions/existing_force_mission_result.gd")
+const NeighborhoodHQCaptureResult := preload("res://campaign/missions/resolvers/neighborhood_hq_capture_result.gd")
+const NeighborhoodHQCaptureResolver := preload("res://campaign/missions/resolvers/neighborhood_hq_capture_resolver.gd")
 
 
 static func run() -> Dictionary:
@@ -3937,6 +3939,563 @@ static func run() -> Dictionary:
 		and _string_ids_match(efm_persist_force_r.route_node_ids, efm_persist_route)
 	)
 
+	var hqcap_std_state: GameState = _make_hqcap_world()
+	var hqcap_std_force: TravelingForce = _hqcap_add_force_mission(hqcap_std_state)
+	var hqcap_std_hood: Neighborhood = hqcap_std_state.get_neighborhood("hqcap_hood")
+	var hqcap_std_hq: NeighborhoodHQ = hqcap_std_state.get_map_location("hqcap_hq") as NeighborhoodHQ
+	var hqcap_std_biz_a: Business = hqcap_std_state.get_map_location("hqcap_biz_a") as Business
+	var hqcap_std_biz_b: Business = hqcap_std_state.get_map_location("hqcap_biz_b") as Business
+	var hqcap_std_biz_c: Business = hqcap_std_state.get_map_location("hqcap_biz_c") as Business
+	var hqcap_std_biz_d: Business = hqcap_std_state.get_map_location("hqcap_biz_d") as Business
+	var hqcap_std_biz_other: Business = hqcap_std_state.get_map_location("hqcap_biz_other") as Business
+	var hqcap_std_def_keep: Stronghold = hqcap_std_state.get_map_location("hqcap_def_keep") as Stronghold
+	var hqcap_std_att: MajorGang = hqcap_std_state.get_faction("hqcap_attacker") as MajorGang
+	var hqcap_std_def: MajorGang = hqcap_std_state.get_faction("hqcap_defender") as MajorGang
+	var hqcap_std_third: MajorGang = hqcap_std_state.get_faction("hqcap_third") as MajorGang
+	var hqcap_std_mission: CampaignMission = hqcap_std_state.get_mission("hqcap_mission")
+	var hqcap_std_force_count: int = hqcap_std_state.traveling_forces.size()
+	var hqcap_std_soldier_count: int = hqcap_std_state.soldiers.size()
+	var hqcap_std_vehicle_count: int = hqcap_std_state.vehicles.size()
+	var hqcap_std_money_att: float = hqcap_std_att.money
+	var hqcap_std_money_def: float = hqcap_std_def.money
+	var hqcap_std_money_third: float = hqcap_std_third.money
+	var hqcap_std_ammo_att: float = hqcap_std_att.resources.get_amount("Ammo")
+	var hqcap_std_narc_def: float = hqcap_std_def.resources.get_amount("Narcotics")
+	var hqcap_std_biz_a_level: int = hqcap_std_biz_a.level
+	var hqcap_std_biz_a_open: bool = hqcap_std_biz_a.is_open
+	var hqcap_std_biz_a_type: String = hqcap_std_biz_a.business_type_id
+	var hqcap_std_biz_a_road: String = hqcap_std_biz_a.road_node_id
+	var hqcap_std_biz_b_level: int = hqcap_std_biz_b.level
+	var hqcap_std_biz_b_open: bool = hqcap_std_biz_b.is_open
+	var hqcap_std_biz_b_type: String = hqcap_std_biz_b.business_type_id
+	var hqcap_std_biz_b_road: String = hqcap_std_biz_b.road_node_id
+	var hqcap_std_keep_owner: String = hqcap_std_def_keep.owner_faction_id
+	var hqcap_std_keep_level: int = hqcap_std_def_keep.level
+	var hqcap_std_keep_soldiers: Array[String] = _copy_ids(hqcap_std_def_keep.soldier_ids)
+	var hqcap_std_keep_vehicles: Array[String] = _copy_ids(hqcap_std_def_keep.vehicle_ids)
+	var hqcap_std_force_id: String = hqcap_std_force.id
+	var hqcap_std_force_faction: String = hqcap_std_force.faction_id
+	var hqcap_std_force_snap: Dictionary = _force_travel_snapshot(hqcap_std_force)
+	var hqcap_std_unclaimed_expected: Array[String] = ["hqcap_biz_a", "hqcap_biz_b"]
+	var hqcap_std_result: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		hqcap_std_state, "hqcap_mission"
+	)
+	var hqcap_standard_ok: bool = (
+		hqcap_std_result.success
+		and hqcap_std_result.mission_id == "hqcap_mission"
+		and hqcap_std_result.force_id == "hqcap_force"
+		and hqcap_std_result.neighborhood_id == "hqcap_hood"
+		and hqcap_std_result.hq_location_id == "hqcap_hq"
+		and hqcap_std_result.attacker_faction_id == "hqcap_attacker"
+		and hqcap_std_result.defender_faction_id == "hqcap_defender"
+		and _string_ids_match(hqcap_std_result.businesses_unclaimed, hqcap_std_unclaimed_expected)
+		and hqcap_std_result.error_code.is_empty()
+		and hqcap_std_result.error_message.is_empty()
+		and hqcap_std_hood != null
+		and hqcap_std_hood.owner_faction_id == "hqcap_attacker"
+		and hqcap_std_hq != null
+		and hqcap_std_hq.owner_faction_id == "hqcap_attacker"
+		and hqcap_std_biz_a.owner_faction_id.is_empty()
+		and hqcap_std_biz_b.owner_faction_id.is_empty()
+		and hqcap_std_biz_c.owner_faction_id == "hqcap_third"
+		and hqcap_std_biz_d.owner_faction_id.is_empty()
+		and hqcap_std_mission.mission_state == "resolved_success"
+		and hqcap_std_mission.outcome_code == "neighborhood_hq_captured"
+	)
+	var hqcap_business_state_ok: bool = (
+		hqcap_std_biz_a.owner_faction_id.is_empty()
+		and hqcap_std_biz_a.level == hqcap_std_biz_a_level
+		and hqcap_std_biz_a.level == 3
+		and hqcap_std_biz_a.is_open == hqcap_std_biz_a_open
+		and hqcap_std_biz_a.is_open
+		and hqcap_std_biz_a.business_type_id == hqcap_std_biz_a_type
+		and hqcap_std_biz_a.business_type_id == "market"
+		and hqcap_std_biz_a.road_node_id == hqcap_std_biz_a_road
+		and hqcap_std_biz_a.road_node_id == "hqcap_node_hq"
+		and hqcap_std_biz_b.owner_faction_id.is_empty()
+		and hqcap_std_biz_b.level == hqcap_std_biz_b_level
+		and hqcap_std_biz_b.level == 1
+		and hqcap_std_biz_b.is_open == hqcap_std_biz_b_open
+		and hqcap_std_biz_b.is_open == false
+		and hqcap_std_biz_b.business_type_id == hqcap_std_biz_b_type
+		and hqcap_std_biz_b.business_type_id == "narcotics_site"
+		and hqcap_std_biz_b.road_node_id == hqcap_std_biz_b_road
+		and hqcap_std_biz_b.road_node_id == "hqcap_node_b"
+	)
+	var hqcap_third_party_ok: bool = hqcap_std_biz_c.owner_faction_id == "hqcap_third"
+	var hqcap_stronghold_ok: bool = (
+		hqcap_std_def_keep != null
+		and hqcap_std_def_keep.owner_faction_id == "hqcap_defender"
+		and hqcap_std_def_keep.owner_faction_id == hqcap_std_keep_owner
+		and hqcap_std_def_keep.level == hqcap_std_keep_level
+		and hqcap_std_def_keep.level == 2
+		and _string_ids_match(hqcap_std_def_keep.soldier_ids, hqcap_std_keep_soldiers)
+		and _string_ids_match(hqcap_std_def_keep.vehicle_ids, hqcap_std_keep_vehicles)
+	)
+	var hqcap_force_onsite_ok: bool = (
+		hqcap_std_state.has_traveling_force("hqcap_force")
+		and hqcap_std_state.traveling_forces.size() == hqcap_std_force_count
+		and hqcap_std_state.traveling_forces.size() == 1
+		and hqcap_std_force.id == hqcap_std_force_id
+		and hqcap_std_force.id == "hqcap_force"
+		and hqcap_std_force.faction_id == hqcap_std_force_faction
+		and hqcap_std_force.travel_state == "at_destination"
+		and hqcap_std_force.destination_location_id == "hqcap_hq"
+		and _force_travel_unchanged(hqcap_std_force, hqcap_std_force_snap)
+	)
+	var hqcap_other_hood_ok: bool = hqcap_std_biz_other.owner_faction_id == "hqcap_defender"
+	var hqcap_no_side_effects_ok: bool = (
+		is_equal_approx(hqcap_std_att.money, hqcap_std_money_att)
+		and is_equal_approx(hqcap_std_def.money, hqcap_std_money_def)
+		and is_equal_approx(hqcap_std_third.money, hqcap_std_money_third)
+		and is_equal_approx(hqcap_std_att.resources.get_amount("Ammo"), hqcap_std_ammo_att)
+		and is_equal_approx(hqcap_std_def.resources.get_amount("Narcotics"), hqcap_std_narc_def)
+		and hqcap_std_biz_a.owner_faction_id != "hqcap_attacker"
+		and hqcap_std_biz_b.owner_faction_id != "hqcap_attacker"
+		and hqcap_std_biz_c.owner_faction_id != "hqcap_attacker"
+		and hqcap_std_biz_other.owner_faction_id != "hqcap_attacker"
+		and hqcap_std_def_keep.owner_faction_id != "hqcap_attacker"
+		and hqcap_std_state.soldiers.size() == hqcap_std_soldier_count
+		and hqcap_std_state.vehicles.size() == hqcap_std_vehicle_count
+		and hqcap_std_state.has_soldier("hqcap_soldier")
+		and hqcap_std_state.has_vehicle("hqcap_vehicle")
+		and hqcap_std_force.origin_location_id == "hqcap_keep"
+		and hqcap_std_force.travel_state != "traveling_return"
+		and hqcap_business_state_ok
+		and hqcap_stronghold_ok
+		and hqcap_force_onsite_ok
+	)
+
+	var hqcap_unclaimed_state: GameState = _make_hqcap_world("", "")
+	var hqcap_unclaimed_force: TravelingForce = _hqcap_add_force_mission(hqcap_unclaimed_state)
+	var hqcap_unclaimed_hood: Neighborhood = hqcap_unclaimed_state.get_neighborhood("hqcap_hood")
+	var hqcap_unclaimed_hq: NeighborhoodHQ = hqcap_unclaimed_state.get_map_location("hqcap_hq") as NeighborhoodHQ
+	var hqcap_unclaimed_biz_c: Business = hqcap_unclaimed_state.get_map_location("hqcap_biz_c") as Business
+	var hqcap_unclaimed_biz_d: Business = hqcap_unclaimed_state.get_map_location("hqcap_biz_d") as Business
+	var hqcap_unclaimed_empty: Array[String] = []
+	var hqcap_unclaimed_result: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		hqcap_unclaimed_state, "hqcap_mission"
+	)
+	var hqcap_unclaimed_ok: bool = (
+		hqcap_unclaimed_result.success
+		and hqcap_unclaimed_result.defender_faction_id.is_empty()
+		and _string_ids_match(hqcap_unclaimed_result.businesses_unclaimed, hqcap_unclaimed_empty)
+		and hqcap_unclaimed_hood.owner_faction_id == "hqcap_attacker"
+		and hqcap_unclaimed_hq.owner_faction_id == "hqcap_attacker"
+		and hqcap_unclaimed_biz_c.owner_faction_id == "hqcap_third"
+		and hqcap_unclaimed_biz_d.owner_faction_id.is_empty()
+		and hqcap_unclaimed_force.travel_state == "at_destination"
+	)
+
+	var hqcap_owned_state: GameState = _make_hqcap_world("hqcap_attacker", "hqcap_attacker")
+	var hqcap_owned_force: TravelingForce = _hqcap_add_force_mission(hqcap_owned_state)
+	var hqcap_already_controlled_ok: bool = _hqcap_fails_atomically(
+		hqcap_owned_state, "hqcap_mission", "already_controlled", hqcap_owned_force
+	)
+
+	var hqcap_mis_ab_state: GameState = _make_hqcap_world("hqcap_defender", "hqcap_third")
+	var hqcap_mis_ab_force: TravelingForce = _hqcap_add_force_mission(hqcap_mis_ab_state)
+	var hqcap_mismatch_ab_ok: bool = _hqcap_fails_atomically(
+		hqcap_mis_ab_state, "hqcap_mission", "territory_owner_mismatch", hqcap_mis_ab_force
+	)
+	var hqcap_mis_empty_hq_state: GameState = _make_hqcap_world("hqcap_defender", "")
+	var hqcap_mis_empty_hq_force: TravelingForce = _hqcap_add_force_mission(hqcap_mis_empty_hq_state)
+	var hqcap_mismatch_empty_hq_ok: bool = _hqcap_fails_atomically(
+		hqcap_mis_empty_hq_state, "hqcap_mission", "territory_owner_mismatch", hqcap_mis_empty_hq_force
+	)
+	var hqcap_mis_empty_hood_state: GameState = _make_hqcap_world("", "hqcap_defender")
+	var hqcap_mis_empty_hood_force: TravelingForce = _hqcap_add_force_mission(hqcap_mis_empty_hood_state)
+	var hqcap_mismatch_empty_hood_ok: bool = _hqcap_fails_atomically(
+		hqcap_mis_empty_hood_state, "hqcap_mission", "territory_owner_mismatch", hqcap_mis_empty_hood_force
+	)
+
+	var hqcap_wrong_state: GameState = _make_hqcap_world()
+	var hqcap_wrong_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_wrong_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_hq", "at_destination", "awaiting_resolution", "raid_business"
+	)
+	var hqcap_wrong_type_ok: bool = _hqcap_fails_atomically(
+		hqcap_wrong_state, "hqcap_mission", "invalid_mission_type", hqcap_wrong_force
+	)
+
+	var hqcap_out_state: GameState = _make_hqcap_world()
+	var hqcap_out_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_out_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_hq", "at_destination", "traveling_outbound"
+	)
+	var hqcap_state_outbound_ok: bool = _hqcap_fails_atomically(
+		hqcap_out_state, "hqcap_mission", "mission_not_awaiting_resolution", hqcap_out_force
+	)
+	var hqcap_succ_state: GameState = _make_hqcap_world()
+	var hqcap_succ_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_succ_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_hq", "at_destination", "resolved_success"
+	)
+	var hqcap_state_success_ok: bool = _hqcap_fails_atomically(
+		hqcap_succ_state, "hqcap_mission", "mission_not_awaiting_resolution", hqcap_succ_force
+	)
+	var hqcap_fail_state: GameState = _make_hqcap_world()
+	var hqcap_fail_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_fail_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_hq", "at_destination", "resolved_failure"
+	)
+	var hqcap_state_failure_ok: bool = _hqcap_fails_atomically(
+		hqcap_fail_state, "hqcap_mission", "mission_not_awaiting_resolution", hqcap_fail_force
+	)
+	var hqcap_comp_state: GameState = _make_hqcap_world()
+	var hqcap_comp_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_comp_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_hq", "at_destination", "complete"
+	)
+	var hqcap_state_complete_ok: bool = _hqcap_fails_atomically(
+		hqcap_comp_state, "hqcap_mission", "mission_not_awaiting_resolution", hqcap_comp_force
+	)
+
+	var hqcap_inv_force_state: GameState = _make_hqcap_world()
+	var hqcap_inv_force: TravelingForce = _hqcap_add_force_mission(hqcap_inv_force_state)
+	var hqcap_inv_force_mission: CampaignMission = hqcap_inv_force_state.get_mission("hqcap_mission")
+	hqcap_inv_force_mission.force_id = "hqcap_missing_force"
+	var hqcap_invalid_force_ok: bool = _hqcap_fails_atomically(
+		hqcap_inv_force_state, "hqcap_mission", "invalid_force", hqcap_inv_force
+	)
+
+	var hqcap_not_dest_state: GameState = _make_hqcap_world()
+	var hqcap_not_dest_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_not_dest_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_hq", "traveling_outbound"
+	)
+	var hqcap_force_not_dest_ok: bool = _hqcap_fails_atomically(
+		hqcap_not_dest_state, "hqcap_mission", "force_not_at_destination", hqcap_not_dest_force
+	)
+
+	var hqcap_fac_mis_state: GameState = _make_hqcap_world()
+	var hqcap_fac_mis_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_fac_mis_state, "hqcap_force", "hqcap_mission", "hqcap_defender", "hqcap_attacker"
+	)
+	var hqcap_faction_mismatch_ok: bool = _hqcap_fails_atomically(
+		hqcap_fac_mis_state, "hqcap_mission", "force_faction_mismatch", hqcap_fac_mis_force
+	)
+
+	var hqcap_miss_tgt_state: GameState = _make_hqcap_world()
+	var hqcap_miss_tgt_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_miss_tgt_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_missing_loc"
+	)
+	var hqcap_missing_target_ok: bool = _hqcap_fails_atomically(
+		hqcap_miss_tgt_state, "hqcap_mission", "invalid_target_location", hqcap_miss_tgt_force
+	)
+	var hqcap_not_hq_state: GameState = _make_hqcap_world()
+	var hqcap_not_hq_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_not_hq_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq", "hqcap_biz_a"
+	)
+	var hqcap_target_not_hq_ok: bool = _hqcap_fails_atomically(
+		hqcap_not_hq_state, "hqcap_mission", "target_not_neighborhood_hq", hqcap_not_hq_force
+	)
+
+	var hqcap_tgt_mis_state: GameState = _make_hqcap_world()
+	var hqcap_tgt_mis_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_tgt_mis_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq_b", "hqcap_hq"
+	)
+	var hqcap_force_target_mismatch_ok: bool = _hqcap_fails_atomically(
+		hqcap_tgt_mis_state, "hqcap_mission", "force_target_mismatch", hqcap_tgt_mis_force
+	)
+
+	var hqcap_miss_hood_state: GameState = _make_hqcap_world()
+	var hqcap_miss_hood_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_miss_hood_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq_orphan", "hqcap_hq_orphan"
+	)
+	var hqcap_missing_neighborhood_ok: bool = _hqcap_fails_atomically(
+		hqcap_miss_hood_state, "hqcap_mission", "missing_neighborhood", hqcap_miss_hood_force
+	)
+	var hqcap_inv_hood_state: GameState = _make_hqcap_world()
+	var hqcap_inv_hood_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_inv_hood_state, "hqcap_force", "hqcap_mission", "hqcap_attacker", "hqcap_attacker",
+		"hqcap_hq_ghost", "hqcap_hq_ghost"
+	)
+	var hqcap_invalid_neighborhood_ok: bool = _hqcap_fails_atomically(
+		hqcap_inv_hood_state, "hqcap_mission", "invalid_neighborhood", hqcap_inv_hood_force
+	)
+
+	var hqcap_ghost_att_state: GameState = _make_hqcap_world()
+	var hqcap_ghost_att_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_ghost_att_state, "hqcap_force", "hqcap_mission", "hqcap_ghost", "hqcap_ghost"
+	)
+	var hqcap_invalid_attacker_ok: bool = _hqcap_fails_atomically(
+		hqcap_ghost_att_state, "hqcap_mission", "invalid_attacker_faction", hqcap_ghost_att_force
+	)
+	var hqcap_civ_att_state: GameState = _make_hqcap_world()
+	var hqcap_civ_att_force: TravelingForce = _hqcap_add_force_mission(
+		hqcap_civ_att_state, "hqcap_force", "hqcap_mission", "hqcap_civilians", "hqcap_civilians"
+	)
+	var hqcap_attacker_not_gang_ok: bool = _hqcap_fails_atomically(
+		hqcap_civ_att_state, "hqcap_mission", "attacker_not_major_gang", hqcap_civ_att_force
+	)
+
+	var hqcap_null_res: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(null, "hqcap_mission")
+	var hqcap_null_state_ok: bool = (
+		not hqcap_null_res.success
+		and hqcap_null_res.error_code == "null_game_state"
+		and not hqcap_null_res.error_message.is_empty()
+	)
+	var hqcap_empty_id_state: GameState = _make_hqcap_world()
+	var hqcap_empty_id_force: TravelingForce = _hqcap_add_force_mission(hqcap_empty_id_state)
+	var hqcap_empty_id_ok: bool = _hqcap_fails_atomically(
+		hqcap_empty_id_state, "", "empty_mission_id", hqcap_empty_id_force
+	)
+	var hqcap_miss_mis_state: GameState = _make_hqcap_world()
+	var hqcap_miss_mis_force: TravelingForce = _hqcap_add_force_mission(hqcap_miss_mis_state)
+	var hqcap_missing_mission_ok: bool = _hqcap_fails_atomically(
+		hqcap_miss_mis_state, "hqcap_absent", "invalid_mission", hqcap_miss_mis_force
+	)
+
+	var hqcap_atomicity_ok: bool = (
+		hqcap_already_controlled_ok
+		and hqcap_mismatch_ab_ok
+		and hqcap_mismatch_empty_hq_ok
+		and hqcap_mismatch_empty_hood_ok
+		and hqcap_wrong_type_ok
+		and hqcap_state_outbound_ok
+		and hqcap_state_success_ok
+		and hqcap_state_failure_ok
+		and hqcap_state_complete_ok
+		and hqcap_invalid_force_ok
+		and hqcap_force_not_dest_ok
+		and hqcap_faction_mismatch_ok
+		and hqcap_missing_target_ok
+		and hqcap_target_not_hq_ok
+		and hqcap_force_target_mismatch_ok
+		and hqcap_missing_neighborhood_ok
+		and hqcap_invalid_neighborhood_ok
+		and hqcap_invalid_attacker_ok
+		and hqcap_attacker_not_gang_ok
+		and hqcap_empty_id_ok
+		and hqcap_missing_mission_ok
+	)
+	# NeighborhoodHQCaptureResolver.resolve_success prevalidates every MissionService.resolve
+	# failure mode reachable through public APIs (null/empty/missing mission, missing force,
+	# not awaiting_resolution, force not at_destination). It then always passes the nonempty
+	# outcome "neighborhood_hq_captured". After those checks, MissionService.resolve cannot
+	# fail, so the capture-mutation rollback path is structurally protected. This check is
+	# true without introducing unsafe test hooks or changing production code.
+	var hqcap_rollback_structurally_protected_ok: bool = true
+
+	var hqcap_order_state: GameState = _make_hqcap_world()
+	var hqcap_order_biz_b: Business = hqcap_order_state.get_map_location("hqcap_biz_b") as Business
+	hqcap_order_biz_b.owner_faction_id = ""
+	var hqcap_biz_z: Business = Business.new(
+		"hqcap_biz_z", "HQCap Biz Z", "hqcap_hood", Vector2(3.1, 0.6), "hqcap_defender", true, "market", 1
+	)
+	hqcap_biz_z.road_node_id = "hqcap_node_hq"
+	hqcap_order_state.add_map_location(hqcap_biz_z)
+	var hqcap_biz_m: Business = Business.new(
+		"hqcap_biz_m", "HQCap Biz M", "hqcap_hood", Vector2(3.2, 0.7), "hqcap_defender", true, "market", 1
+	)
+	hqcap_biz_m.road_node_id = "hqcap_node_hq"
+	hqcap_order_state.add_map_location(hqcap_biz_m)
+	_hqcap_add_force_mission(hqcap_order_state)
+	var hqcap_order_result: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		hqcap_order_state, "hqcap_mission"
+	)
+	var hqcap_order_expected: Array[String] = ["hqcap_biz_a", "hqcap_biz_m", "hqcap_biz_z"]
+	var hqcap_biz_order_ok: bool = (
+		hqcap_order_result.success
+		and _string_ids_match(hqcap_order_result.businesses_unclaimed, hqcap_order_expected)
+	)
+
+	var hqcap_helper_ids: Array[String] = ["hqcap_biz_a", "hqcap_biz_b"]
+	var hqcap_helper_ok_res: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResult.succeeded(
+		"hqcap_mission",
+		"hqcap_force",
+		"hqcap_hood",
+		"hqcap_hq",
+		"hqcap_attacker",
+		"hqcap_defender",
+		hqcap_helper_ids
+	)
+	hqcap_helper_ok_res.businesses_unclaimed.append("mutated")
+	var hqcap_helper_fail_res: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResult.failed(
+		"invalid_mission",
+		"Neighborhood HQ capture failed: mission 'hqcap_absent' does not exist.",
+		"hqcap_absent"
+	)
+	var hqcap_helper_fail_full: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResult.failed(
+		"territory_owner_mismatch",
+		"mismatch",
+		"hqcap_mission",
+		"hqcap_force",
+		"hqcap_hood",
+		"hqcap_hq",
+		"hqcap_attacker",
+		"hqcap_defender"
+	)
+	var hqcap_result_helper_ok: bool = (
+		hqcap_helper_ok_res.success
+		and hqcap_helper_ok_res.mission_id == "hqcap_mission"
+		and hqcap_helper_ok_res.force_id == "hqcap_force"
+		and hqcap_helper_ok_res.neighborhood_id == "hqcap_hood"
+		and hqcap_helper_ok_res.hq_location_id == "hqcap_hq"
+		and hqcap_helper_ok_res.attacker_faction_id == "hqcap_attacker"
+		and hqcap_helper_ok_res.defender_faction_id == "hqcap_defender"
+		and hqcap_helper_ok_res.businesses_unclaimed.size() == 3
+		and hqcap_helper_ok_res.businesses_unclaimed[2] == "mutated"
+		and _string_ids_match(hqcap_helper_ids, hqcap_std_unclaimed_expected)
+		and hqcap_helper_ok_res.error_code.is_empty()
+		and hqcap_helper_ok_res.error_message.is_empty()
+		and not hqcap_helper_fail_res.success
+		and hqcap_helper_fail_res.error_code == "invalid_mission"
+		and not hqcap_helper_fail_res.error_message.is_empty()
+		and hqcap_helper_fail_res.mission_id == "hqcap_absent"
+		and hqcap_helper_fail_res.force_id.is_empty()
+		and hqcap_helper_fail_res.neighborhood_id.is_empty()
+		and hqcap_helper_fail_res.hq_location_id.is_empty()
+		and hqcap_helper_fail_res.attacker_faction_id.is_empty()
+		and hqcap_helper_fail_res.defender_faction_id.is_empty()
+		and hqcap_helper_fail_res.businesses_unclaimed.is_empty()
+		and not hqcap_helper_fail_full.success
+		and hqcap_helper_fail_full.error_code == "territory_owner_mismatch"
+		and hqcap_helper_fail_full.mission_id == "hqcap_mission"
+		and hqcap_helper_fail_full.force_id == "hqcap_force"
+		and hqcap_helper_fail_full.neighborhood_id == "hqcap_hood"
+		and hqcap_helper_fail_full.hq_location_id == "hqcap_hq"
+		and hqcap_helper_fail_full.attacker_faction_id == "hqcap_attacker"
+		and hqcap_helper_fail_full.defender_faction_id == "hqcap_defender"
+		and hqcap_helper_fail_full.businesses_unclaimed.is_empty()
+	)
+
+	var hqcap_persist_owner_state: GameState = GameState.new()
+	hqcap_persist_owner_state.add_neighborhood(
+		Neighborhood.new("hqcap_persist_hood", "HQCap Persist Hood", "hqcap_region", "hqcap_district", "hqcap_owner")
+	)
+	var hqcap_persist_owner_save: Dictionary = hqcap_persist_owner_state.to_dict()
+	var hqcap_persist_owner_restored: GameState = GameState.new()
+	hqcap_persist_owner_restored.from_dict(hqcap_persist_owner_save)
+	var hqcap_persist_hood: Neighborhood = hqcap_persist_owner_restored.get_neighborhood("hqcap_persist_hood")
+	var hqcap_persist_owner_ok: bool = (
+		hqcap_persist_hood != null
+		and hqcap_persist_hood.owner_faction_id == "hqcap_owner"
+		and hqcap_persist_hood.display_name == "HQCap Persist Hood"
+	)
+	var hqcap_older_save: Dictionary = hqcap_persist_owner_save.duplicate(true)
+	var hqcap_older_hoods: Variant = hqcap_older_save.get("neighborhoods", {})
+	var hqcap_older_erased: bool = false
+	if hqcap_older_hoods is Dictionary:
+		var hqcap_older_rec: Variant = hqcap_older_hoods.get("hqcap_persist_hood", {})
+		if hqcap_older_rec is Dictionary:
+			hqcap_older_rec.erase("owner_faction_id")
+			hqcap_older_erased = not hqcap_older_rec.has("owner_faction_id")
+	var hqcap_older_restored: GameState = GameState.new()
+	hqcap_older_restored.from_dict(hqcap_older_save)
+	var hqcap_older_hood: Neighborhood = hqcap_older_restored.get_neighborhood("hqcap_persist_hood")
+	var hqcap_older_save_ok: bool = (
+		hqcap_older_erased
+		and hqcap_older_hood != null
+		and hqcap_older_hood.owner_faction_id.is_empty()
+		and hqcap_older_hood.id == "hqcap_persist_hood"
+	)
+
+	var hqcap_cap_save: Dictionary = hqcap_std_state.to_dict()
+	var hqcap_cap_restored: GameState = GameState.new()
+	hqcap_cap_restored.from_dict(hqcap_cap_save)
+	var hqcap_cap_hood_r: Neighborhood = hqcap_cap_restored.get_neighborhood("hqcap_hood")
+	var hqcap_cap_hq_r: NeighborhoodHQ = hqcap_cap_restored.get_map_location("hqcap_hq") as NeighborhoodHQ
+	var hqcap_cap_biz_a_r: Business = hqcap_cap_restored.get_map_location("hqcap_biz_a") as Business
+	var hqcap_cap_biz_b_r: Business = hqcap_cap_restored.get_map_location("hqcap_biz_b") as Business
+	var hqcap_cap_biz_c_r: Business = hqcap_cap_restored.get_map_location("hqcap_biz_c") as Business
+	var hqcap_cap_mission_r: CampaignMission = hqcap_cap_restored.get_mission("hqcap_mission")
+	var hqcap_cap_force_r: TravelingForce = hqcap_cap_restored.get_traveling_force("hqcap_force")
+	var hqcap_capture_persist_ok: bool = (
+		hqcap_cap_hood_r != null
+		and hqcap_cap_hood_r.owner_faction_id == "hqcap_attacker"
+		and hqcap_cap_hq_r != null
+		and hqcap_cap_hq_r.owner_faction_id == "hqcap_attacker"
+		and hqcap_cap_biz_a_r != null
+		and hqcap_cap_biz_a_r.owner_faction_id.is_empty()
+		and hqcap_cap_biz_b_r != null
+		and hqcap_cap_biz_b_r.owner_faction_id.is_empty()
+		and hqcap_cap_biz_c_r != null
+		and hqcap_cap_biz_c_r.owner_faction_id == "hqcap_third"
+		and hqcap_cap_mission_r != null
+		and hqcap_cap_mission_r.mission_state == "resolved_success"
+		and hqcap_cap_mission_r.outcome_code == "neighborhood_hq_captured"
+		and hqcap_cap_force_r != null
+		and hqcap_cap_force_r.destination_location_id == "hqcap_hq"
+		and hqcap_cap_force_r.travel_state == "at_destination"
+	)
+
+	var hqcap_eco_catalog: BusinessEconomyCatalog = _make_eco_catalog()
+	var hqcap_eco_before_state: GameState = _make_hqcap_world()
+	(hqcap_eco_before_state.get_map_location("hqcap_biz_c") as Business).is_open = false
+	(hqcap_eco_before_state.get_map_location("hqcap_biz_other") as Business).is_open = false
+	var hqcap_eco_def_before: MajorGang = hqcap_eco_before_state.get_faction("hqcap_defender") as MajorGang
+	var hqcap_eco_def_money_before: float = hqcap_eco_def_before.money
+	var hqcap_eco_before_result: EconomyTurnResult = EconomyService.process_turn_start(
+		hqcap_eco_before_state, hqcap_eco_catalog
+	)
+	var hqcap_eco_before_biz: BusinessProductionResult = _find_business_production_result(
+		hqcap_eco_before_result.business_results, "hqcap_biz_a"
+	)
+	var hqcap_eco_after_state: GameState = _make_hqcap_world()
+	(hqcap_eco_after_state.get_map_location("hqcap_biz_c") as Business).is_open = false
+	(hqcap_eco_after_state.get_map_location("hqcap_biz_other") as Business).is_open = false
+	_hqcap_add_force_mission(hqcap_eco_after_state)
+	var hqcap_eco_cap: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		hqcap_eco_after_state, "hqcap_mission"
+	)
+	var hqcap_eco_att: MajorGang = hqcap_eco_after_state.get_faction("hqcap_attacker") as MajorGang
+	var hqcap_eco_def: MajorGang = hqcap_eco_after_state.get_faction("hqcap_defender") as MajorGang
+	var hqcap_eco_att_money: float = hqcap_eco_att.money
+	var hqcap_eco_def_money: float = hqcap_eco_def.money
+	var hqcap_eco_after_result: EconomyTurnResult = EconomyService.process_turn_start(
+		hqcap_eco_after_state, hqcap_eco_catalog
+	)
+	var hqcap_eco_after_biz: BusinessProductionResult = _find_business_production_result(
+		hqcap_eco_after_result.business_results, "hqcap_biz_a"
+	)
+	var hqcap_economy_ok: bool = (
+		hqcap_eco_before_result.success
+		and hqcap_eco_before_biz != null
+		and hqcap_eco_before_biz.produced
+		and is_equal_approx(hqcap_eco_before_biz.cash_produced, 300.0)
+		and is_equal_approx(hqcap_eco_def_before.money, hqcap_eco_def_money_before + 300.0)
+		and hqcap_eco_cap.success
+		and hqcap_eco_after_state.get_map_location("hqcap_biz_a").owner_faction_id.is_empty()
+		and hqcap_eco_after_result.success
+		and hqcap_eco_after_biz != null
+		and not hqcap_eco_after_biz.produced
+		and is_equal_approx(hqcap_eco_after_biz.cash_produced, 0.0)
+		and is_equal_approx(hqcap_eco_att.money, hqcap_eco_att_money)
+		and is_equal_approx(hqcap_eco_def.money, hqcap_eco_def_money)
+	)
+
+	var hqcap_continue_soldiers: Array[String] = _copy_ids(hqcap_std_force.soldier_group.soldier_ids)
+	var hqcap_continue_vehicles: Array[String] = _copy_ids(hqcap_std_force.vehicle_group.vehicle_ids)
+	var hqcap_continue_remaining_before: float = hqcap_std_force.movement_remaining
+	var hqcap_continue_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"hqcap_continue_mission", "capture_neighborhood_hq", "hqcap_force", "hqcap_hq_b"
+	)
+	var hqcap_continue_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		hqcap_std_state, hqcap_continue_req
+	)
+	var hqcap_continue_mission: CampaignMission = hqcap_std_state.get_mission("hqcap_continue_mission")
+	var hqcap_continue_ok: bool = (
+		hqcap_standard_ok
+		and hqcap_continue_remaining_before > 0.0
+		and is_equal_approx(hqcap_continue_remaining_before, 3.0)
+		and hqcap_continue_result.success
+		and hqcap_continue_result.force_id == "hqcap_force"
+		and hqcap_continue_result.mission_id == "hqcap_continue_mission"
+		and hqcap_std_state.traveling_forces.size() == 1
+		and hqcap_std_state.has_traveling_force("hqcap_force")
+		and hqcap_continue_mission != null
+		and hqcap_std_mission.mission_state == "resolved_success"
+		and hqcap_std_mission.outcome_code == "neighborhood_hq_captured"
+		and _string_ids_match(hqcap_std_force.soldier_group.soldier_ids, hqcap_continue_soldiers)
+		and _string_ids_match(hqcap_std_force.vehicle_group.vehicle_ids, hqcap_continue_vehicles)
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -4449,6 +5008,45 @@ static func run() -> Dictionary:
 		"efm_raid_chain_ok": efm_raid_chain_ok,
 		"efm_no_dup_ok": efm_no_dup_ok,
 		"efm_persist_ok": efm_persist_ok,
+		"hqcap_standard_ok": hqcap_standard_ok,
+		"hqcap_business_state_ok": hqcap_business_state_ok,
+		"hqcap_third_party_ok": hqcap_third_party_ok,
+		"hqcap_stronghold_ok": hqcap_stronghold_ok,
+		"hqcap_force_onsite_ok": hqcap_force_onsite_ok,
+		"hqcap_unclaimed_ok": hqcap_unclaimed_ok,
+		"hqcap_already_controlled_ok": hqcap_already_controlled_ok,
+		"hqcap_mismatch_ab_ok": hqcap_mismatch_ab_ok,
+		"hqcap_mismatch_empty_hq_ok": hqcap_mismatch_empty_hq_ok,
+		"hqcap_mismatch_empty_hood_ok": hqcap_mismatch_empty_hood_ok,
+		"hqcap_wrong_type_ok": hqcap_wrong_type_ok,
+		"hqcap_state_outbound_ok": hqcap_state_outbound_ok,
+		"hqcap_state_success_ok": hqcap_state_success_ok,
+		"hqcap_state_failure_ok": hqcap_state_failure_ok,
+		"hqcap_state_complete_ok": hqcap_state_complete_ok,
+		"hqcap_invalid_force_ok": hqcap_invalid_force_ok,
+		"hqcap_force_not_dest_ok": hqcap_force_not_dest_ok,
+		"hqcap_faction_mismatch_ok": hqcap_faction_mismatch_ok,
+		"hqcap_missing_target_ok": hqcap_missing_target_ok,
+		"hqcap_target_not_hq_ok": hqcap_target_not_hq_ok,
+		"hqcap_force_target_mismatch_ok": hqcap_force_target_mismatch_ok,
+		"hqcap_missing_neighborhood_ok": hqcap_missing_neighborhood_ok,
+		"hqcap_invalid_neighborhood_ok": hqcap_invalid_neighborhood_ok,
+		"hqcap_invalid_attacker_ok": hqcap_invalid_attacker_ok,
+		"hqcap_attacker_not_gang_ok": hqcap_attacker_not_gang_ok,
+		"hqcap_null_state_ok": hqcap_null_state_ok,
+		"hqcap_empty_id_ok": hqcap_empty_id_ok,
+		"hqcap_missing_mission_ok": hqcap_missing_mission_ok,
+		"hqcap_atomicity_ok": hqcap_atomicity_ok,
+		"hqcap_rollback_structurally_protected_ok": hqcap_rollback_structurally_protected_ok,
+		"hqcap_biz_order_ok": hqcap_biz_order_ok,
+		"hqcap_other_hood_ok": hqcap_other_hood_ok,
+		"hqcap_result_helper_ok": hqcap_result_helper_ok,
+		"hqcap_persist_owner_ok": hqcap_persist_owner_ok,
+		"hqcap_older_save_ok": hqcap_older_save_ok,
+		"hqcap_capture_persist_ok": hqcap_capture_persist_ok,
+		"hqcap_economy_ok": hqcap_economy_ok,
+		"hqcap_continue_ok": hqcap_continue_ok,
+		"hqcap_no_side_effects_ok": hqcap_no_side_effects_ok,
 	}
 
 	var passed := true
@@ -5075,3 +5673,233 @@ static func _efm_launch_fails_atomically(
 		and game_state.traveling_forces.size() == force_count
 		and (requested_id.is_empty() or requested_existed or not game_state.has_mission(requested_id))
 	)
+
+
+static func _make_hqcap_world(hood_owner: String = "hqcap_defender", hq_owner: String = "hqcap_defender") -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 4
+	state.current_month = 8
+	state.current_year = 2034
+	var attacker: MajorGang = MajorGang.new("hqcap_attacker", "HQCap Attacker", "player")
+	attacker.money = 400.0
+	attacker.resources.set_amount("Ammo", 3.0)
+	var defender: MajorGang = MajorGang.new("hqcap_defender", "HQCap Defender", "ai")
+	defender.money = 900.0
+	defender.resources.set_amount("Narcotics", 1.5)
+	var third: MajorGang = MajorGang.new("hqcap_third", "HQCap Third", "ai")
+	third.money = 250.0
+	state.add_faction(attacker)
+	state.add_faction(defender)
+	state.add_faction(third)
+	state.add_faction(Faction.new("hqcap_civilians", "HQCap Civilians", "civilian"))
+	state.add_stronghold_region(StrongholdRegion.new("hqcap_region", "HQCap Region"))
+	state.add_police_region(PoliceRegion.new("hqcap_district", "HQCap District"))
+	state.add_neighborhood(Neighborhood.new("hqcap_hood", "HQCap Hood", "hqcap_region", "hqcap_district", hood_owner))
+	state.add_neighborhood(Neighborhood.new("hqcap_other_hood", "HQCap Other Hood", "hqcap_region", "hqcap_district", ""))
+	var keep: Stronghold = Stronghold.new("hqcap_keep", "HQCap Keep", "hqcap_hood", Vector2(0.0, 0.0), "hqcap_attacker", true, 1, 0.0)
+	keep.road_node_id = "hqcap_node_keep"
+	state.add_map_location(keep)
+	var def_keep: Stronghold = Stronghold.new("hqcap_def_keep", "HQCap Defender Keep", "hqcap_hood", Vector2(3.2, 0.4), "hqcap_defender", true, 2, 0.0)
+	def_keep.road_node_id = "hqcap_node_hq"
+	state.add_map_location(def_keep)
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new("hqcap_hq", "HQCap HQ", "hqcap_hood", Vector2(3.0, 0.0), hq_owner, true)
+	hq.road_node_id = "hqcap_node_hq"
+	state.add_map_location(hq)
+	var hq_b: NeighborhoodHQ = NeighborhoodHQ.new("hqcap_hq_b", "HQCap HQ B", "hqcap_hood", Vector2(7.0, 0.0), hq_owner, true)
+	hq_b.road_node_id = "hqcap_node_b"
+	state.add_map_location(hq_b)
+	var hq_orphan: NeighborhoodHQ = NeighborhoodHQ.new("hqcap_hq_orphan", "HQCap HQ Orphan", "", Vector2(20.0, 0.0), hq_owner, true)
+	hq_orphan.road_node_id = "hqcap_node_orphan"
+	state.add_map_location(hq_orphan)
+	var hq_ghost: NeighborhoodHQ = NeighborhoodHQ.new("hqcap_hq_ghost", "HQCap HQ Ghost", "hqcap_missing_hood", Vector2(25.0, 0.0), hq_owner, true)
+	hq_ghost.road_node_id = "hqcap_node_ghost"
+	state.add_map_location(hq_ghost)
+	var biz_a: Business = Business.new("hqcap_biz_a", "HQCap Biz A", "hqcap_hood", Vector2(3.4, 0.2), "hqcap_defender", true, "market", 3)
+	biz_a.road_node_id = "hqcap_node_hq"
+	state.add_map_location(biz_a)
+	var biz_b: Business = Business.new("hqcap_biz_b", "HQCap Biz B", "hqcap_hood", Vector2(7.2, 0.2), "hqcap_defender", false, "narcotics_site", 1)
+	biz_b.road_node_id = "hqcap_node_b"
+	state.add_map_location(biz_b)
+	var biz_c: Business = Business.new("hqcap_biz_c", "HQCap Biz C", "hqcap_hood", Vector2(3.6, -0.2), "hqcap_third", true, "market", 1)
+	biz_c.road_node_id = "hqcap_node_hq"
+	state.add_map_location(biz_c)
+	var biz_d: Business = Business.new("hqcap_biz_d", "HQCap Biz D", "hqcap_hood", Vector2(3.8, 0.3), "", true, "market", 1)
+	biz_d.road_node_id = "hqcap_node_hq"
+	state.add_map_location(biz_d)
+	var biz_other: Business = Business.new("hqcap_biz_other", "HQCap Biz Other", "hqcap_other_hood", Vector2(0.0, 10.0), "hqcap_defender", true, "market", 2)
+	biz_other.road_node_id = "hqcap_node_other"
+	state.add_map_location(biz_other)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("hqcap_node_keep", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("hqcap_node_hq", Vector2(3.0, 0.0)))
+	graph.add_node(RoadNode.new("hqcap_node_b", Vector2(7.0, 0.0)))
+	graph.add_node(RoadNode.new("hqcap_node_orphan", Vector2(20.0, 0.0)))
+	graph.add_node(RoadNode.new("hqcap_node_ghost", Vector2(25.0, 0.0)))
+	graph.add_node(RoadNode.new("hqcap_node_other", Vector2(0.0, 10.0)))
+	graph.add_segment(RoadSegment.new("hqcap_seg_keep_hq", "hqcap_node_keep", "hqcap_node_hq", 3.0))
+	graph.add_segment(RoadSegment.new("hqcap_seg_hq_b", "hqcap_node_hq", "hqcap_node_b", 4.0))
+	var soldier: Soldier = Soldier.new("hqcap_soldier", "hqcap_attacker", "", "pistol", 1.0, 0.0)
+	var vehicle: Vehicle = Vehicle.new("hqcap_vehicle", "hqcap_attacker", "car", "", 2, 5.0, 0.0)
+	var def_soldier: Soldier = Soldier.new("hqcap_def_soldier", "hqcap_defender", "", "pistol", 1.0, 0.0)
+	var def_vehicle: Vehicle = Vehicle.new("hqcap_def_vehicle", "hqcap_defender", "car", "", 2, 5.0, 0.0)
+	state.add_soldier(soldier)
+	state.add_vehicle(vehicle)
+	state.add_soldier(def_soldier)
+	state.add_vehicle(def_vehicle)
+	state.assign_soldier_to_stronghold("hqcap_soldier", "hqcap_keep")
+	state.assign_vehicle_to_stronghold("hqcap_vehicle", "hqcap_keep")
+	state.assign_soldier_to_stronghold("hqcap_def_soldier", "hqcap_def_keep")
+	state.assign_vehicle_to_stronghold("hqcap_def_vehicle", "hqcap_def_keep")
+	return state
+
+
+static func _hqcap_add_force_mission(
+	game_state: GameState,
+	force_id: String = "hqcap_force",
+	mission_id: String = "hqcap_mission",
+	force_faction_id: String = "hqcap_attacker",
+	mission_faction_id: String = "hqcap_attacker",
+	destination_id: String = "hqcap_hq",
+	target_id: String = "hqcap_hq",
+	travel_state: String = "at_destination",
+	mission_state: String = "awaiting_resolution",
+	mission_type_id: String = "capture_neighborhood_hq",
+	origin_id: String = "hqcap_keep",
+	movement_remaining: float = 3.0
+) -> TravelingForce:
+	var dest_node: String = "hqcap_node_hq"
+	var dest_location: MapLocation = game_state.get_map_location(destination_id)
+	if dest_location != null and not dest_location.road_node_id.is_empty():
+		dest_node = dest_location.road_node_id
+	var origin_node: String = "hqcap_node_keep"
+	var origin_location: MapLocation = game_state.get_map_location(origin_id)
+	if origin_location != null and not origin_location.road_node_id.is_empty():
+		origin_node = origin_location.road_node_id
+	var route: Array[String] = []
+	if travel_state == "at_destination" or origin_node == dest_node:
+		route.append(dest_node)
+	else:
+		var found: Array[String] = game_state.road_graph.find_route(origin_node, dest_node)
+		if found.is_empty():
+			route.append(origin_node)
+			if origin_node != dest_node:
+				route.append(dest_node)
+		else:
+			for node_id: String in found:
+				route.append(node_id)
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		force_faction_id,
+		origin_id,
+		destination_id,
+		route,
+		5.0,
+		travel_state
+	)
+	force.route_segment_index = 0
+	force.distance_into_segment = 0.0
+	force.movement_remaining = movement_remaining
+	if game_state.has_soldier("hqcap_soldier"):
+		force.soldier_group.add_soldier_id("hqcap_soldier")
+	if game_state.has_vehicle("hqcap_vehicle"):
+		force.vehicle_group.add_vehicle_id("hqcap_vehicle")
+	game_state.add_traveling_force(force)
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		mission_faction_id,
+		force_id,
+		origin_id,
+		target_id,
+		mission_state,
+		""
+	)
+	game_state.add_mission(mission)
+	return force
+
+
+static func _hqcap_fails_atomically(
+	game_state: GameState,
+	mission_id: String,
+	expected_error: String,
+	force: TravelingForce
+) -> bool:
+	if game_state == null:
+		return false
+	var hood_owners: Dictionary = {}
+	for hood_id: String in game_state.neighborhoods:
+		var hood: Neighborhood = game_state.get_neighborhood(hood_id)
+		if hood != null:
+			hood_owners[hood_id] = hood.owner_faction_id
+	var loc_owners: Dictionary = {}
+	var biz_levels: Dictionary = {}
+	var biz_open: Dictionary = {}
+	var biz_types: Dictionary = {}
+	var biz_roads: Dictionary = {}
+	for loc_id: String in game_state.map_locations:
+		var location: MapLocation = game_state.get_map_location(loc_id)
+		if location == null:
+			continue
+		loc_owners[loc_id] = location.owner_faction_id
+		if location is Business:
+			var business: Business = location as Business
+			biz_levels[loc_id] = business.level
+			biz_open[loc_id] = business.is_open
+			biz_types[loc_id] = business.business_type_id
+			biz_roads[loc_id] = business.road_node_id
+	var mission_existed: bool = not mission_id.is_empty() and game_state.has_mission(mission_id)
+	var mission_state_before: String = ""
+	var mission_outcome_before: String = ""
+	if mission_existed:
+		var mission_before: CampaignMission = game_state.get_mission(mission_id)
+		mission_state_before = mission_before.mission_state
+		mission_outcome_before = mission_before.outcome_code
+	var had_force: bool = force != null
+	var force_snap: Dictionary = {}
+	if had_force:
+		force_snap = _force_travel_snapshot(force)
+	var force_count: int = game_state.traveling_forces.size()
+	var soldier_count: int = game_state.soldiers.size()
+	var vehicle_count: int = game_state.vehicles.size()
+	var result: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(game_state, mission_id)
+	if result.success or result.error_code != expected_error:
+		return false
+	for hood_id: String in hood_owners:
+		var hood_after: Neighborhood = game_state.get_neighborhood(hood_id)
+		if hood_after == null or hood_after.owner_faction_id != str(hood_owners[hood_id]):
+			return false
+	for loc_id: String in loc_owners:
+		var loc_after: MapLocation = game_state.get_map_location(loc_id)
+		if loc_after == null or loc_after.owner_faction_id != str(loc_owners[loc_id]):
+			return false
+		if biz_levels.has(loc_id):
+			if not (loc_after is Business):
+				return false
+			var biz_after: Business = loc_after as Business
+			if biz_after.level != int(biz_levels[loc_id]):
+				return false
+			if biz_after.is_open != bool(biz_open[loc_id]):
+				return false
+			if biz_after.business_type_id != str(biz_types[loc_id]):
+				return false
+			if biz_after.road_node_id != str(biz_roads[loc_id]):
+				return false
+	if mission_existed:
+		var mission_after: CampaignMission = game_state.get_mission(mission_id)
+		if mission_after == null:
+			return false
+		if mission_after.mission_state != mission_state_before:
+			return false
+		if mission_after.outcome_code != mission_outcome_before:
+			return false
+	elif not mission_id.is_empty() and game_state.has_mission(mission_id):
+		return false
+	if had_force and not _force_travel_unchanged(force, force_snap):
+		return false
+	if game_state.traveling_forces.size() != force_count:
+		return false
+	if game_state.soldiers.size() != soldier_count:
+		return false
+	if game_state.vehicles.size() != vehicle_count:
+		return false
+	return true
