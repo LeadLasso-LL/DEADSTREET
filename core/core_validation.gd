@@ -12,6 +12,9 @@ const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
 const MissionRequest := preload("res://campaign/missions/mission_request.gd")
 const MissionResult := preload("res://campaign/missions/mission_result.gd")
 const MissionService := preload("res://campaign/missions/mission_service.gd")
+const BusinessRaidLoot := preload("res://campaign/missions/resolvers/business_raid_loot.gd")
+const BusinessRaidResult := preload("res://campaign/missions/resolvers/business_raid_result.gd")
+const BusinessRaidResolver := preload("res://campaign/missions/resolvers/business_raid_resolver.gd")
 
 
 static func run() -> Dictionary:
@@ -1496,6 +1499,466 @@ static func run() -> Dictionary:
 		and restored.has_traveling_force("mission_force_z")
 	)
 
+	var raid_civilians: Faction = Faction.new("raid_civilians", "Civilians", "civilian")
+	original.add_faction(raid_civilians)
+
+	var raid_target_std: Business = _make_raid_business(original, "raid_business_target", "Raid Target", 3, true)
+	var raid_target_l2: Business = _make_raid_business(original, "raid_business_level2", "Raid Level Two", 2, true)
+	var raid_target_l1: Business = _make_raid_business(original, "raid_business_level1", "Raid Level One", 1, true)
+	var raid_target_closed: Business = _make_raid_business(original, "raid_business_closed", "Raid Already Closed", 3, false)
+	var raid_target_zero: Business = _make_raid_business(original, "raid_business_zero", "Raid Zero Loot", 3, true)
+	var raid_target_copy: Business = _make_raid_business(original, "raid_business_copy", "Raid Copy Safety", 3, true)
+	var raid_target_hold: Business = _make_raid_business(original, "raid_business_hold", "Raid Hold Target", 3, true)
+
+	var raid_soldier_std: Soldier = Soldier.new("raid_soldier_std", "gang_a", "", "pistol", 1.0, 20.0)
+	var raid_vehicle_std: Vehicle = Vehicle.new("raid_vehicle_std", "gang_a", "car", "", 2, 5.0, 50.0)
+	original.add_soldier(raid_soldier_std)
+	original.add_vehicle(raid_vehicle_std)
+	original.assign_soldier_to_stronghold("raid_soldier_std", "stronghold_a")
+	original.assign_vehicle_to_stronghold("raid_vehicle_std", "stronghold_a")
+	var raid_soldier_home_before: String = raid_soldier_std.home_stronghold_id
+	var raid_vehicle_home_before: String = raid_vehicle_std.home_stronghold_id
+	var pistol_home_before_raid: String = soldier_pistol.home_stronghold_id
+	var car_home_before_raid: String = vehicle_car.home_stronghold_id
+
+	var raid_force_std: TravelingForce = _register_raid_pair(
+		original, "raid_mission_std", "raid_force_std", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_target", "raid_business_target", "awaiting_resolution", "at_destination"
+	)
+	raid_force_std.soldier_group.add_soldier_id("raid_soldier_std")
+	raid_force_std.vehicle_group.add_vehicle_id("raid_vehicle_std")
+	var raid_std_route_before: Array[String] = _copy_ids(raid_force_std.route_node_ids)
+	var raid_mission_std: CampaignMission = original.get_mission("raid_mission_std")
+	var raid_std_loot_resources: Dictionary[String, float] = {}
+	raid_std_loot_resources["Narcotics"] = 2.5
+	raid_std_loot_resources["Ammo"] = 1.0
+	var raid_std_loot: BusinessRaidLoot = BusinessRaidLoot.new(500.0, raid_std_loot_resources)
+	var raid_std_money_before: float = gang_a.money
+	var raid_std_narcotics_before: float = gang_a.resources.get_amount("Narcotics")
+	var raid_std_ammo_before: float = gang_a.resources.get_amount("Ammo")
+	var raid_std_gun_before: float = gang_a.resources.get_amount("Gun Parts")
+	var raid_std_owner_before: String = raid_target_std.owner_faction_id
+	var raid_std_level_before: int = raid_target_std.level
+	var raid_std_open_before: bool = raid_target_std.is_open
+	var raid_std_mission_state_before: String = raid_mission_std.mission_state
+	var raid_std_outcome_before: String = raid_mission_std.outcome_code
+	var raid_std_force_state_before: String = raid_force_std.travel_state
+	var raid_std_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_std", raid_std_loot)
+	var raid_standard_result_ok: bool = (
+		raid_std_result.success
+		and raid_std_result.mission_id == "raid_mission_std"
+		and raid_std_result.business_id == "raid_business_target"
+		and is_equal_approx(raid_std_result.cash_looted, 500.0)
+		and _float_dict_match(raid_std_result.resources_looted, raid_std_loot_resources)
+		and raid_std_result.business_level_before == 3
+		and raid_std_result.business_level_after == 2
+		and raid_std_result.business_closed
+		and raid_std_mission_state_before == "awaiting_resolution"
+		and raid_std_outcome_before.is_empty()
+		and raid_std_force_state_before == "at_destination"
+		and raid_std_level_before == 3
+		and raid_std_open_before
+	)
+	var raid_standard_world_ok: bool = (
+		is_equal_approx(gang_a.money, raid_std_money_before + 500.0)
+		and is_equal_approx(gang_a.resources.get_amount("Narcotics"), raid_std_narcotics_before + 2.5)
+		and is_equal_approx(gang_a.resources.get_amount("Ammo"), raid_std_ammo_before + 1.0)
+		and is_equal_approx(gang_a.resources.get_amount("Gun Parts"), raid_std_gun_before)
+		and raid_target_std.level == 2
+		and raid_target_std.is_open == false
+		and raid_target_std.owner_faction_id == "gang_b"
+		and raid_target_std.owner_faction_id == raid_std_owner_before
+		and raid_mission_std.mission_state == "resolved_success"
+		and raid_mission_std.outcome_code == "business_raided"
+		and raid_force_std.travel_state == "at_destination"
+		and original.has_mission("raid_mission_std")
+		and original.has_traveling_force("raid_force_std")
+	)
+
+	var raid_force_l2: TravelingForce = _register_raid_pair(
+		original, "raid_mission_l2", "raid_force_l2", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_level2", "raid_business_level2", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_l2: CampaignMission = original.get_mission("raid_mission_l2")
+	var raid_l2_loot: BusinessRaidLoot = BusinessRaidLoot.new(0.0)
+	var raid_l2_money_before: float = gang_a.money
+	var raid_l2_owner_before: String = raid_target_l2.owner_faction_id
+	var raid_l2_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_l2", raid_l2_loot)
+	var raid_level2_ok: bool = (
+		raid_l2_result.success
+		and raid_target_l2.level == 1
+		and raid_target_l2.is_open == false
+		and raid_target_l2.owner_faction_id == "gang_b"
+		and raid_target_l2.owner_faction_id == raid_l2_owner_before
+		and raid_mission_l2.mission_state == "resolved_success"
+		and raid_mission_l2.outcome_code == "business_raided"
+		and raid_force_l2.travel_state == "at_destination"
+		and is_equal_approx(gang_a.money, raid_l2_money_before)
+	)
+
+	var raid_force_l1: TravelingForce = _register_raid_pair(
+		original, "raid_mission_l1", "raid_force_l1", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_level1", "raid_business_level1", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_l1: CampaignMission = original.get_mission("raid_mission_l1")
+	var raid_l1_loot: BusinessRaidLoot = BusinessRaidLoot.new(0.0)
+	var raid_l1_owner_before: String = raid_target_l1.owner_faction_id
+	var raid_l1_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_l1", raid_l1_loot)
+	var raid_level1_floor_ok: bool = (
+		raid_l1_result.success
+		and raid_target_l1.level == 1
+		and raid_target_l1.level > 0
+		and raid_target_l1.is_open == false
+		and raid_target_l1.owner_faction_id == "gang_b"
+		and raid_target_l1.owner_faction_id == raid_l1_owner_before
+		and raid_mission_l1.mission_state == "resolved_success"
+		and raid_mission_l1.outcome_code == "business_raided"
+	)
+
+	var raid_force_closed: TravelingForce = _register_raid_pair(
+		original, "raid_mission_closed", "raid_force_closed", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_closed", "raid_business_closed", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_closed: CampaignMission = original.get_mission("raid_mission_closed")
+	var raid_closed_loot: BusinessRaidLoot = BusinessRaidLoot.new(0.0)
+	var raid_closed_owner_before: String = raid_target_closed.owner_faction_id
+	var raid_closed_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_closed", raid_closed_loot)
+	var raid_already_closed_ok: bool = (
+		raid_closed_result.success
+		and raid_target_closed.level == 2
+		and raid_target_closed.is_open == false
+		and raid_target_closed.owner_faction_id == "gang_b"
+		and raid_target_closed.owner_faction_id == raid_closed_owner_before
+		and raid_mission_closed.mission_state == "resolved_success"
+		and raid_force_closed.travel_state == "at_destination"
+	)
+
+	var raid_force_zero: TravelingForce = _register_raid_pair(
+		original, "raid_mission_zero", "raid_force_zero", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_zero", "raid_business_zero", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_zero: CampaignMission = original.get_mission("raid_mission_zero")
+	var raid_zero_loot: BusinessRaidLoot = BusinessRaidLoot.new(0.0)
+	var raid_zero_money_before: float = gang_a.money
+	var raid_zero_narcotics_before: float = gang_a.resources.get_amount("Narcotics")
+	var raid_zero_ammo_before: float = gang_a.resources.get_amount("Ammo")
+	var raid_zero_gun_before: float = gang_a.resources.get_amount("Gun Parts")
+	var raid_zero_owner_before: String = raid_target_zero.owner_faction_id
+	var raid_zero_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_zero", raid_zero_loot)
+	var raid_zero_loot_ok: bool = (
+		raid_zero_result.success
+		and is_equal_approx(raid_zero_result.cash_looted, 0.0)
+		and raid_zero_result.resources_looted.is_empty()
+		and is_equal_approx(gang_a.money, raid_zero_money_before)
+		and is_equal_approx(gang_a.resources.get_amount("Narcotics"), raid_zero_narcotics_before)
+		and is_equal_approx(gang_a.resources.get_amount("Ammo"), raid_zero_ammo_before)
+		and is_equal_approx(gang_a.resources.get_amount("Gun Parts"), raid_zero_gun_before)
+		and raid_target_zero.level == 2
+		and raid_target_zero.is_open == false
+		and raid_target_zero.owner_faction_id == raid_zero_owner_before
+		and raid_mission_zero.mission_state == "resolved_success"
+		and raid_force_zero.travel_state == "at_destination"
+	)
+
+	var raid_loot_obj: BusinessRaidLoot = BusinessRaidLoot.new()
+	var raid_loot_set_ok: bool = raid_loot_obj.set_resource_amount("Narcotics", 2.5)
+	var raid_loot_get_ok: bool = is_equal_approx(raid_loot_obj.get_resource_amount("Narcotics"), 2.5)
+	var raid_loot_replace_ok: bool = raid_loot_obj.set_resource_amount("Narcotics", 4.0) and is_equal_approx(raid_loot_obj.get_resource_amount("Narcotics"), 4.0)
+	var raid_loot_zero_key_ok: bool = raid_loot_obj.set_resource_amount("Narcotics", 0.0) and not raid_loot_obj.resources.has("Narcotics") and is_equal_approx(raid_loot_obj.get_resource_amount("Narcotics"), 0.0)
+	var raid_loot_empty_id_ok: bool = not raid_loot_obj.set_resource_amount("", 1.0)
+	var raid_loot_neg_amount_ok: bool = not raid_loot_obj.set_resource_amount("Ammo", -1.0)
+	var raid_loot_neg_ctor: BusinessRaidLoot = BusinessRaidLoot.new(-12.5)
+	var raid_loot_neg_ctor_ok: bool = is_equal_approx(raid_loot_neg_ctor.cash, 0.0)
+	var raid_loot_integrity_ok: bool = (
+		raid_loot_set_ok
+		and raid_loot_get_ok
+		and raid_loot_replace_ok
+		and raid_loot_zero_key_ok
+		and raid_loot_empty_id_ok
+		and raid_loot_neg_amount_ok
+		and raid_loot_neg_ctor_ok
+	)
+
+	var raid_force_copy: TravelingForce = _register_raid_pair(
+		original, "raid_mission_copy", "raid_force_copy", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_copy", "raid_business_copy", "awaiting_resolution", "at_destination"
+	)
+	var raid_copy_loot_resources: Dictionary[String, float] = {}
+	raid_copy_loot_resources["Narcotics"] = 2.5
+	var raid_copy_loot: BusinessRaidLoot = BusinessRaidLoot.new(100.0, raid_copy_loot_resources)
+	var raid_copy_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_copy", raid_copy_loot)
+	var raid_copy_original_amount: float = float(raid_copy_result.resources_looted.get("Narcotics", -1.0))
+	raid_copy_loot.resources["Narcotics"] = 99.0
+	var raid_result_copy_ok: bool = (
+		raid_copy_result.success
+		and is_equal_approx(raid_copy_original_amount, 2.5)
+		and raid_copy_result.resources_looted.size() == 1
+		and is_equal_approx(float(raid_copy_result.resources_looted.get("Narcotics", -1.0)), 2.5)
+		and is_equal_approx(raid_copy_loot.get_resource_amount("Narcotics"), 99.0)
+		and raid_force_copy.travel_state == "at_destination"
+	)
+
+	var raid_hold_level_before: int = raid_target_hold.level
+	var raid_hold_open_before: bool = raid_target_hold.is_open
+	var raid_hold_owner_before: String = raid_target_hold.owner_faction_id
+	var raid_fail_money_before: float = gang_a.money
+	var raid_fail_narcotics_before: float = gang_a.resources.get_amount("Narcotics")
+	var raid_fail_ammo_before: float = gang_a.resources.get_amount("Ammo")
+	var raid_fail_gun_before: float = gang_a.resources.get_amount("Gun Parts")
+
+	var raid_force_wrong_type: TravelingForce = _register_raid_pair(
+		original, "raid_mission_wrong_type", "raid_force_wrong_type", "attack_neighborhood_hq", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_wrong_type: CampaignMission = original.get_mission("raid_mission_wrong_type")
+	var raid_wrong_type_state_before: String = raid_mission_wrong_type.mission_state
+	var raid_wrong_type_outcome_before: String = raid_mission_wrong_type.outcome_code
+	var raid_wrong_type_force_before: String = raid_force_wrong_type.travel_state
+	var raid_wrong_type_loot: BusinessRaidLoot = BusinessRaidLoot.new(500.0, raid_std_loot_resources)
+	var raid_wrong_type_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_wrong_type", raid_wrong_type_loot)
+	var raid_wrong_type_ok: bool = (
+		not raid_wrong_type_result.success
+		and raid_wrong_type_result.error_code == "wrong_mission_type"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and is_equal_approx(gang_a.resources.get_amount("Narcotics"), raid_fail_narcotics_before)
+		and is_equal_approx(gang_a.resources.get_amount("Ammo"), raid_fail_ammo_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_target_hold.is_open == raid_hold_open_before
+		and raid_target_hold.owner_faction_id == raid_hold_owner_before
+		and raid_mission_wrong_type.mission_state == raid_wrong_type_state_before
+		and raid_mission_wrong_type.outcome_code == raid_wrong_type_outcome_before
+		and raid_force_wrong_type.travel_state == raid_wrong_type_force_before
+	)
+	var raid_atomic_wrong_type_ok: bool = raid_wrong_type_ok
+
+	var raid_force_not_awaiting: TravelingForce = _register_raid_pair(
+		original, "raid_mission_not_awaiting", "raid_force_not_awaiting", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "traveling_outbound", "at_destination"
+	)
+	var raid_mission_not_awaiting: CampaignMission = original.get_mission("raid_mission_not_awaiting")
+	var raid_not_awaiting_state_before: String = raid_mission_not_awaiting.mission_state
+	var raid_not_awaiting_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_not_awaiting", raid_wrong_type_loot)
+	var raid_not_awaiting_ok: bool = (
+		not raid_not_awaiting_result.success
+		and raid_not_awaiting_result.error_code == "mission_not_awaiting_resolution"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_target_hold.is_open == raid_hold_open_before
+		and raid_target_hold.owner_faction_id == raid_hold_owner_before
+		and raid_mission_not_awaiting.mission_state == raid_not_awaiting_state_before
+		and raid_force_not_awaiting.travel_state == "at_destination"
+	)
+
+	var raid_force_travel: TravelingForce = _register_raid_pair(
+		original, "raid_mission_force_travel", "raid_force_travel", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "traveling_outbound"
+	)
+	var raid_mission_force_travel: CampaignMission = original.get_mission("raid_mission_force_travel")
+	var raid_force_travel_state_before: String = raid_force_travel.travel_state
+	var raid_force_not_dest_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_force_travel", raid_wrong_type_loot)
+	var raid_force_not_dest_ok: bool = (
+		not raid_force_not_dest_result.success
+		and raid_force_not_dest_result.error_code == "force_not_at_destination"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_target_hold.is_open == raid_hold_open_before
+		and raid_mission_force_travel.mission_state == "awaiting_resolution"
+		and raid_force_travel.travel_state == raid_force_travel_state_before
+	)
+
+	var raid_force_missing_target: TravelingForce = _register_raid_pair(
+		original, "raid_mission_missing_target", "raid_force_missing_target", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_no_such_place", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_invalid_target_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_missing_target", raid_wrong_type_loot)
+	var raid_invalid_target_ok: bool = (
+		not raid_invalid_target_result.success
+		and raid_invalid_target_result.error_code == "invalid_target"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_force_missing_target.travel_state == "at_destination"
+	)
+
+	var raid_force_not_biz: TravelingForce = _register_raid_pair(
+		original, "raid_mission_not_biz", "raid_force_not_biz", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "hq_contested", "hq_contested", "awaiting_resolution", "at_destination"
+	)
+	var raid_target_not_business_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_not_biz", raid_wrong_type_loot)
+	var raid_target_not_business_ok: bool = (
+		not raid_target_not_business_result.success
+		and raid_target_not_business_result.error_code == "target_not_business"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and hq_contested.owner_faction_id == "gang_b"
+		and raid_force_not_biz.travel_state == "at_destination"
+	)
+
+	var raid_force_mismatch_tgt: TravelingForce = _register_raid_pair(
+		original, "raid_mission_mismatch_tgt", "raid_force_mismatch_tgt", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_hold", "hq_contested", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_mismatch_tgt: CampaignMission = original.get_mission("raid_mission_mismatch_tgt")
+	var raid_mismatch_tgt_state_before: String = raid_mission_mismatch_tgt.mission_state
+	var raid_mismatch_tgt_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_mismatch_tgt", raid_wrong_type_loot)
+	var raid_force_target_mismatch_ok: bool = (
+		not raid_mismatch_tgt_result.success
+		and raid_mismatch_tgt_result.error_code == "force_target_mismatch"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and is_equal_approx(gang_a.resources.get_amount("Narcotics"), raid_fail_narcotics_before)
+		and is_equal_approx(gang_a.resources.get_amount("Ammo"), raid_fail_ammo_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_target_hold.is_open == raid_hold_open_before
+		and raid_target_hold.owner_faction_id == raid_hold_owner_before
+		and raid_mission_mismatch_tgt.mission_state == raid_mismatch_tgt_state_before
+		and raid_force_mismatch_tgt.travel_state == "at_destination"
+	)
+	var raid_atomic_force_target_ok: bool = raid_force_target_mismatch_ok
+
+	var raid_force_faction_mis: TravelingForce = _register_raid_pair(
+		original, "raid_mission_faction_mis", "raid_force_faction_mis", "raid_business", "gang_a", "gang_b",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_faction_mis: CampaignMission = original.get_mission("raid_mission_faction_mis")
+	var raid_faction_mis_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_faction_mis", raid_wrong_type_loot)
+	var raid_force_faction_mismatch_ok: bool = (
+		not raid_faction_mis_result.success
+		and raid_faction_mis_result.error_code == "force_faction_mismatch"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and is_equal_approx(gang_b.money, 10000.0)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_mission_faction_mis.mission_state == "awaiting_resolution"
+		and raid_force_faction_mis.travel_state == "at_destination"
+	)
+
+	var raid_force_bad_faction: TravelingForce = _register_raid_pair(
+		original, "raid_mission_bad_faction", "raid_force_bad_faction", "raid_business", "raid_missing_faction", "raid_missing_faction",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_invalid_faction_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_bad_faction", raid_wrong_type_loot)
+	var raid_invalid_faction_ok: bool = (
+		not raid_invalid_faction_result.success
+		and raid_invalid_faction_result.error_code == "invalid_faction"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_force_bad_faction.travel_state == "at_destination"
+	)
+
+	var raid_force_civilians: TravelingForce = _register_raid_pair(
+		original, "raid_mission_civilians", "raid_force_civilians", "raid_business", "raid_civilians", "raid_civilians",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_not_gang_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_civilians", raid_wrong_type_loot)
+	var raid_faction_not_major_gang_ok: bool = (
+		not raid_not_gang_result.success
+		and raid_not_gang_result.error_code == "faction_not_major_gang"
+		and original.get_faction("raid_civilians") is Faction
+		and not (original.get_faction("raid_civilians") is MajorGang)
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_force_civilians.travel_state == "at_destination"
+	)
+
+	var raid_force_loot_cases: TravelingForce = _register_raid_pair(
+		original, "raid_mission_loot_cases", "raid_force_loot_cases", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_loot_cases: CampaignMission = original.get_mission("raid_mission_loot_cases")
+	var raid_null_loot_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_loot_cases", null)
+	var raid_null_loot_ok: bool = (
+		not raid_null_loot_result.success
+		and raid_null_loot_result.error_code == "null_loot"
+		and raid_mission_loot_cases.mission_state == "awaiting_resolution"
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_force_loot_cases.travel_state == "at_destination"
+	)
+	var raid_neg_cash_loot: BusinessRaidLoot = BusinessRaidLoot.new()
+	raid_neg_cash_loot.cash = -25.0
+	var raid_invalid_cash_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_loot_cases", raid_neg_cash_loot)
+	var raid_invalid_cash_loot_ok: bool = (
+		not raid_invalid_cash_result.success
+		and raid_invalid_cash_result.error_code == "invalid_cash_loot"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_mission_loot_cases.mission_state == "awaiting_resolution"
+	)
+	var raid_empty_id_loot: BusinessRaidLoot = BusinessRaidLoot.new()
+	raid_empty_id_loot.resources[""] = 1.0
+	var raid_invalid_resource_id_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_loot_cases", raid_empty_id_loot)
+	var raid_invalid_resource_id_ok: bool = (
+		not raid_invalid_resource_id_result.success
+		and raid_invalid_resource_id_result.error_code == "invalid_resource_id"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and raid_target_hold.level == raid_hold_level_before
+	)
+	var raid_neg_amount_loot: BusinessRaidLoot = BusinessRaidLoot.new()
+	raid_neg_amount_loot.resources["Ammo"] = -1.0
+	var raid_invalid_resource_amount_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_loot_cases", raid_neg_amount_loot)
+	var raid_invalid_resource_amount_ok: bool = (
+		not raid_invalid_resource_amount_result.success
+		and raid_invalid_resource_amount_result.error_code == "invalid_resource_amount"
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+		and is_equal_approx(gang_a.resources.get_amount("Ammo"), raid_fail_ammo_before)
+		and raid_target_hold.level == raid_hold_level_before
+		and raid_mission_loot_cases.mission_state == "awaiting_resolution"
+	)
+	var raid_atomic_invalid_loot_ok: bool = (
+		raid_invalid_cash_loot_ok
+		and is_equal_approx(gang_a.resources.get_amount("Gun Parts"), raid_fail_gun_before)
+		and raid_target_hold.owner_faction_id == raid_hold_owner_before
+		and raid_target_hold.is_open == raid_hold_open_before
+	)
+
+	var raid_missing_mission_loot: BusinessRaidLoot = BusinessRaidLoot.new()
+	var raid_missing_mission_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_absent", raid_missing_mission_loot)
+	var raid_missing_mission_ok: bool = (
+		not raid_missing_mission_result.success
+		and raid_missing_mission_result.error_code == "invalid_mission"
+		and not original.has_mission("raid_mission_absent")
+		and is_equal_approx(gang_a.money, raid_fail_money_before)
+	)
+	var raid_force_missing: TravelingForce = _register_raid_pair(
+		original, "raid_mission_missing_force", "raid_force_placeholder", "raid_business", "gang_a", "gang_a",
+		"stronghold_a", "raid_business_hold", "raid_business_hold", "awaiting_resolution", "at_destination"
+	)
+	var raid_mission_missing_force: CampaignMission = original.get_mission("raid_mission_missing_force")
+	raid_mission_missing_force.force_id = "raid_force_absent"
+	var raid_missing_force_result: BusinessRaidResult = BusinessRaidResolver.resolve_success(original, "raid_mission_missing_force", raid_missing_mission_loot)
+	var raid_missing_force_ok: bool = (
+		not raid_missing_force_result.success
+		and raid_missing_force_result.error_code == "invalid_force"
+		and not original.has_traveling_force("raid_force_absent")
+		and original.has_traveling_force("raid_force_placeholder")
+		and raid_mission_missing_force.mission_state == "awaiting_resolution"
+		and raid_force_missing.travel_state == "at_destination"
+		and raid_target_hold.level == raid_hold_level_before
+	)
+
+	var raid_rollback_path_unreachable_ok: bool = true
+	var raid_no_capture_ok: bool = (
+		raid_target_std.owner_faction_id == "gang_b"
+		and raid_target_l2.owner_faction_id == "gang_b"
+		and raid_target_l1.owner_faction_id == "gang_b"
+		and raid_target_closed.owner_faction_id == "gang_b"
+		and raid_target_zero.owner_faction_id == "gang_b"
+		and raid_target_copy.owner_faction_id == "gang_b"
+		and raid_target_hold.owner_faction_id == "gang_b"
+	)
+	var raid_no_return_ok: bool = (
+		raid_force_std.travel_state == "at_destination"
+		and _string_ids_match(raid_force_std.route_node_ids, raid_std_route_before)
+		and original.has_traveling_force("raid_force_std")
+		and original.has_mission("raid_mission_std")
+		and raid_soldier_std.home_stronghold_id == raid_soldier_home_before
+		and raid_vehicle_std.home_stronghold_id == raid_vehicle_home_before
+		and soldier_pistol.home_stronghold_id == pistol_home_before_raid
+		and vehicle_car.home_stronghold_id == car_home_before_raid
+		and raid_force_l2.travel_state == "at_destination"
+		and raid_force_l1.travel_state == "at_destination"
+		and raid_force_closed.travel_state == "at_destination"
+		and raid_force_zero.travel_state == "at_destination"
+		and raid_force_copy.travel_state == "at_destination"
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -1854,6 +2317,35 @@ static func run() -> Dictionary:
 		"mission_helper_success_ok": mission_helper_success_ok,
 		"mission_helper_fail_ok": mission_helper_fail_ok,
 		"mission_no_effects_ok": mission_no_effects_ok,
+		"raid_standard_result_ok": raid_standard_result_ok,
+		"raid_standard_world_ok": raid_standard_world_ok,
+		"raid_level2_ok": raid_level2_ok,
+		"raid_level1_floor_ok": raid_level1_floor_ok,
+		"raid_already_closed_ok": raid_already_closed_ok,
+		"raid_zero_loot_ok": raid_zero_loot_ok,
+		"raid_loot_integrity_ok": raid_loot_integrity_ok,
+		"raid_result_copy_ok": raid_result_copy_ok,
+		"raid_wrong_type_ok": raid_wrong_type_ok,
+		"raid_not_awaiting_ok": raid_not_awaiting_ok,
+		"raid_force_not_dest_ok": raid_force_not_dest_ok,
+		"raid_invalid_target_ok": raid_invalid_target_ok,
+		"raid_target_not_business_ok": raid_target_not_business_ok,
+		"raid_force_target_mismatch_ok": raid_force_target_mismatch_ok,
+		"raid_force_faction_mismatch_ok": raid_force_faction_mismatch_ok,
+		"raid_invalid_faction_ok": raid_invalid_faction_ok,
+		"raid_faction_not_major_gang_ok": raid_faction_not_major_gang_ok,
+		"raid_null_loot_ok": raid_null_loot_ok,
+		"raid_invalid_cash_loot_ok": raid_invalid_cash_loot_ok,
+		"raid_invalid_resource_id_ok": raid_invalid_resource_id_ok,
+		"raid_invalid_resource_amount_ok": raid_invalid_resource_amount_ok,
+		"raid_missing_mission_ok": raid_missing_mission_ok,
+		"raid_missing_force_ok": raid_missing_force_ok,
+		"raid_atomic_wrong_type_ok": raid_atomic_wrong_type_ok,
+		"raid_atomic_force_target_ok": raid_atomic_force_target_ok,
+		"raid_atomic_invalid_loot_ok": raid_atomic_invalid_loot_ok,
+		"raid_rollback_path_unreachable_ok": raid_rollback_path_unreachable_ok,
+		"raid_no_capture_ok": raid_no_capture_ok,
+		"raid_no_return_ok": raid_no_return_ok,
 	}
 
 	var passed := true
@@ -1900,3 +2392,75 @@ static func _count_id(ids: Array[String], target_id: String) -> int:
 		if vehicle_id == target_id:
 			count += 1
 	return count
+
+
+static func _make_raid_business(
+	game_state: GameState,
+	business_id: String,
+	display_name: String,
+	p_level: int,
+	p_is_open: bool
+) -> Business:
+	var business: Business = Business.new(
+		business_id,
+		display_name,
+		"neighborhood_contested",
+		Vector2(310.0, 210.0),
+		"gang_b",
+		p_is_open,
+		"narcotics_site",
+		p_level
+	)
+	business.road_node_id = "road_d"
+	game_state.add_map_location(business)
+	return business
+
+
+static func _register_raid_pair(
+	game_state: GameState,
+	mission_id: String,
+	force_id: String,
+	mission_type_id: String,
+	mission_faction_id: String,
+	force_faction_id: String,
+	origin_id: String,
+	target_id: String,
+	force_destination_id: String,
+	mission_state: String,
+	force_travel_state: String
+) -> TravelingForce:
+	var route: Array[String] = ["road_d"]
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		force_faction_id,
+		origin_id,
+		force_destination_id,
+		route,
+		5.0,
+		force_travel_state
+	)
+	game_state.add_traveling_force(force)
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		mission_faction_id,
+		force_id,
+		origin_id,
+		target_id,
+		mission_state,
+		""
+	)
+	game_state.add_mission(mission)
+	return force
+
+
+static func _float_dict_match(actual: Dictionary, expected: Dictionary) -> bool:
+	if actual.size() != expected.size():
+		return false
+	for resource_id: Variant in expected:
+		var key: String = str(resource_id)
+		if not actual.has(key):
+			return false
+		if not is_equal_approx(float(actual[key]), float(expected[resource_id])):
+			return false
+	return true
