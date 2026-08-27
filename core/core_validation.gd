@@ -1,6 +1,9 @@
 class_name CoreValidation
 extends RefCounted
 
+const Vehicle := preload("res://campaign/vehicles/vehicle.gd")
+const VehicleGroup := preload("res://campaign/vehicles/vehicle_group.gd")
+
 
 static func run() -> Dictionary:
 	var original := GameState.new()
@@ -222,6 +225,129 @@ static func run() -> Dictionary:
 	original.add_police_region(PoliceRegion.new("district_1", "Impostor District"))
 	var duplicate_police_region_rejected := original.get_police_region("district_1") == police_region_before_dup
 
+	var vehicle_bike: Vehicle = Vehicle.new("vehicle_bike", "gang_a", "bike", "", 1, 6.0, 25.0)
+	var vehicle_car: Vehicle = Vehicle.new("vehicle_car", "gang_a", "car", "", 4, 5.0, 50.0)
+	var vehicle_van: Vehicle = Vehicle.new("vehicle_van", "gang_a", "van", "", 7, 4.0, 80.0)
+	original.add_vehicle(vehicle_bike)
+	original.add_vehicle(vehicle_car)
+	original.add_vehicle(vehicle_van)
+
+	var bike_assigned: bool = original.assign_vehicle_to_stronghold("vehicle_bike", "stronghold_a")
+	var car_assigned: bool = original.assign_vehicle_to_stronghold("vehicle_car", "stronghold_a")
+	var van_assigned: bool = original.assign_vehicle_to_stronghold("vehicle_van", "stronghold_a")
+	var expected_stronghold_a_vehicles: Array[String] = ["vehicle_bike", "vehicle_car", "vehicle_van"]
+	var assigned_homes_ok: bool = (
+		vehicle_bike.home_stronghold_id == "stronghold_a"
+		and vehicle_car.home_stronghold_id == "stronghold_a"
+		and vehicle_van.home_stronghold_id == "stronghold_a"
+	)
+	var stronghold_a_vehicles_once: bool = _string_ids_match(stronghold_a.vehicle_ids, expected_stronghold_a_vehicles)
+
+	var car_reassign_same: bool = original.assign_vehicle_to_stronghold("vehicle_car", "stronghold_a")
+	var car_not_duplicated: bool = (
+		_count_id(stronghold_a.vehicle_ids, "vehicle_car") == 1
+		and stronghold_a.vehicle_ids.size() == 3
+	)
+
+	var stronghold_b: Stronghold = Stronghold.new(
+		"stronghold_b",
+		"Gang A Secondary Stronghold",
+		"neighborhood_b",
+		Vector2(500.0, 400.0),
+		"gang_a",
+		true,
+		1
+	)
+	stronghold_b.road_node_id = "road_d"
+	original.add_map_location(stronghold_b)
+
+	var car_moved_to_b: bool = original.assign_vehicle_to_stronghold("vehicle_car", "stronghold_b")
+	var car_home_is_b: bool = vehicle_car.home_stronghold_id == "stronghold_b"
+	var stronghold_a_lacks_car: bool = not stronghold_a.has_vehicle_id("vehicle_car")
+	var stronghold_b_has_car_once: bool = _count_id(stronghold_b.vehicle_ids, "vehicle_car") == 1
+	var car_moved_back: bool = original.assign_vehicle_to_stronghold("vehicle_car", "stronghold_a")
+
+	var vehicle_enemy: Vehicle = Vehicle.new("vehicle_enemy", "gang_b", "car", "", 4, 5.0, 50.0)
+	original.add_vehicle(vehicle_enemy)
+	var enemy_assign_rejected: bool = not original.assign_vehicle_to_stronghold("vehicle_enemy", "stronghold_a")
+	var enemy_home_empty: bool = vehicle_enemy.home_stronghold_id.is_empty()
+	var stronghold_a_lacks_enemy: bool = not stronghold_a.has_vehicle_id("vehicle_enemy")
+
+	var van_unassigned: bool = original.unassign_vehicle_from_stronghold("vehicle_van")
+	var van_home_cleared: bool = vehicle_van.home_stronghold_id.is_empty()
+	var stronghold_a_lacks_van: bool = not stronghold_a.has_vehicle_id("vehicle_van")
+	var van_reassigned: bool = original.assign_vehicle_to_stronghold("vehicle_van", "stronghold_a")
+	var final_stronghold_a_vehicles: Array[String] = ["vehicle_bike", "vehicle_car", "vehicle_van"]
+	var final_stronghold_b_vehicles: Array[String] = []
+	var final_homes_ok: bool = (
+		vehicle_bike.home_stronghold_id == "stronghold_a"
+		and vehicle_car.home_stronghold_id == "stronghold_a"
+		and vehicle_van.home_stronghold_id == "stronghold_a"
+		and _string_ids_match(stronghold_a.vehicle_ids, final_stronghold_a_vehicles)
+		and _string_ids_match(stronghold_b.vehicle_ids, final_stronghold_b_vehicles)
+	)
+
+	var convoy: VehicleGroup = VehicleGroup.new()
+	var convoy_add_bike: bool = convoy.add_vehicle_id("vehicle_bike")
+	var convoy_add_car: bool = convoy.add_vehicle_id("vehicle_car")
+	var convoy_add_van: bool = convoy.add_vehicle_id("vehicle_van")
+	var expected_convoy_order: Array[String] = ["vehicle_bike", "vehicle_car", "vehicle_van"]
+	var convoy_order_ok: bool = _string_ids_match(convoy.vehicle_ids, expected_convoy_order)
+	var convoy_dup_rejected: bool = not convoy.add_vehicle_id("vehicle_car")
+	var convoy_empty_rejected: bool = not convoy.add_vehicle_id("")
+	var convoy_size_three: bool = convoy.vehicle_ids.size() == 3 and convoy_order_ok
+	var convoy_remove_missing: bool = not convoy.remove_vehicle_id("missing_vehicle")
+	var convoy_remove_car: bool = convoy.remove_vehicle_id("vehicle_car")
+	var convoy_car_absent: bool = not convoy.has_vehicle_id("vehicle_car")
+	var convoy_readd_car: bool = convoy.add_vehicle_id("vehicle_car")
+	var unique_convoy_ids: Array[String] = ["vehicle_bike", "vehicle_van", "vehicle_car"]
+	var convoy_unique_after_readd: bool = _string_ids_match(convoy.vehicle_ids, unique_convoy_ids)
+	var convoy_capacity_ok: bool = convoy.get_total_passenger_capacity(original) == 12
+	var convoy_movement_ok: bool = convoy.get_movement_per_turn(original) == 4.0
+
+	var empty_group: VehicleGroup = VehicleGroup.new()
+	var empty_capacity_ok: bool = empty_group.get_total_passenger_capacity(original) == 0
+	var empty_movement_ok: bool = empty_group.get_movement_per_turn(original) == 0.0
+
+	var force_convoy: TravelingForce = TravelingForce.new(
+		"force_convoy",
+		"gang_a",
+		"stronghold_a",
+		"hq_contested",
+		route_short,
+		99.0,
+		"traveling_outbound"
+	)
+	force_convoy.vehicle_group.add_vehicle_id("vehicle_bike")
+	force_convoy.vehicle_group.add_vehicle_id("vehicle_car")
+	force_convoy.vehicle_group.add_vehicle_id("vehicle_van")
+	original.add_traveling_force(force_convoy)
+	var refreshed_movement: float = force_convoy.refresh_movement_from_vehicles(original)
+	var force_convoy_refresh_ok: bool = refreshed_movement == 4.0
+	var force_convoy_stored_ok: bool = force_convoy.movement_per_turn == 4.0
+	var expected_force_convoy_ids: Array[String] = ["vehicle_bike", "vehicle_car", "vehicle_van"]
+
+	var missing_group: VehicleGroup = VehicleGroup.new()
+	missing_group.add_vehicle_id("vehicle_bike")
+	missing_group.add_vehicle_id("missing_vehicle")
+	var missing_capacity_ok: bool = missing_group.get_total_passenger_capacity(original) == 1
+	var missing_movement_ok: bool = missing_group.get_movement_per_turn(original) == 6.0
+
+	var loaded_group: VehicleGroup = VehicleGroup.new()
+	var malformed_ids: Array[String] = ["vehicle_bike", "vehicle_car", "vehicle_bike", "", "vehicle_van"]
+	loaded_group.from_dict({"vehicle_ids": malformed_ids})
+	var loaded_group_ok: bool = _string_ids_match(loaded_group.vehicle_ids, expected_convoy_order)
+
+	var bike_before_dup: Vehicle = original.get_vehicle("vehicle_bike")
+	original.add_vehicle(Vehicle.new("vehicle_bike", "gang_b", "car", "", 4, 5.0, 50.0))
+	var duplicate_vehicle_rejected: bool = original.get_vehicle("vehicle_bike") == bike_before_dup
+	var remove_missing_vehicle: bool = not original.remove_vehicle("missing_vehicle")
+
+	var negative_vehicle: Vehicle = Vehicle.new("vehicle_negative", "gang_a", "bike", "", -3, -2.5, -10.0)
+	var negative_capacity_ok: bool = negative_vehicle.passenger_capacity == 0
+	var negative_movement_ok: bool = negative_vehicle.movement_per_turn == 0.0
+	var negative_upkeep_ok: bool = negative_vehicle.upkeep_per_turn == 0.0
+
 	var serialized_state := original.to_dict()
 	var restored := GameState.new()
 	restored.from_dict(serialized_state)
@@ -247,6 +373,12 @@ static func run() -> Dictionary:
 	var restored_force_partial: TravelingForce = restored.get_traveling_force("force_partial")
 	var restored_force_leftover: TravelingForce = restored.get_traveling_force("force_leftover")
 	var restored_force_blocked: TravelingForce = restored.get_traveling_force("force_blocked")
+	var restored_force_convoy: TravelingForce = restored.get_traveling_force("force_convoy")
+	var restored_stronghold_b: Stronghold = restored.get_map_location("stronghold_b") as Stronghold
+	var restored_bike: Vehicle = restored.get_vehicle("vehicle_bike")
+	var restored_car: Vehicle = restored.get_vehicle("vehicle_car")
+	var restored_van: Vehicle = restored.get_vehicle("vehicle_van")
+	var restored_enemy: Vehicle = restored.get_vehicle("vehicle_enemy")
 	var restored_seg_ab: RoadSegment = restored_graph.get_segment("seg_ab")
 	var restored_seg_bc: RoadSegment = restored_graph.get_segment("seg_bc")
 	var restored_seg_cd: RoadSegment = restored_graph.get_segment("seg_cd")
@@ -402,6 +534,71 @@ static func run() -> Dictionary:
 		"force_partial_travel_state": restored_force_partial != null and restored_force_partial.travel_state == "traveling_outbound",
 		"force_leftover_travel_state": restored_force_leftover != null and restored_force_leftover.travel_state == "at_destination",
 		"force_blocked_travel_state": restored_force_blocked != null and restored_force_blocked.travel_state == "traveling_outbound",
+		"vehicle_bike_assigned": bike_assigned,
+		"vehicle_car_assigned": car_assigned,
+		"vehicle_van_assigned": van_assigned,
+		"assigned_homes_ok": assigned_homes_ok,
+		"stronghold_a_vehicles_once": stronghold_a_vehicles_once,
+		"vehicle_car_reassign_same": car_reassign_same,
+		"vehicle_car_not_duplicated": car_not_duplicated,
+		"vehicle_car_moved_to_b": car_moved_to_b,
+		"vehicle_car_home_is_b": car_home_is_b,
+		"stronghold_a_lacks_car_after_move": stronghold_a_lacks_car,
+		"stronghold_b_has_car_once": stronghold_b_has_car_once,
+		"vehicle_car_moved_back": car_moved_back,
+		"enemy_assign_rejected": enemy_assign_rejected,
+		"enemy_home_empty": enemy_home_empty,
+		"stronghold_a_lacks_enemy": stronghold_a_lacks_enemy,
+		"vehicle_van_unassigned": van_unassigned,
+		"vehicle_van_home_cleared": van_home_cleared,
+		"stronghold_a_lacks_van_after_unassign": stronghold_a_lacks_van,
+		"vehicle_van_reassigned": van_reassigned,
+		"final_vehicle_homes_ok": final_homes_ok,
+		"convoy_add_bike": convoy_add_bike,
+		"convoy_add_car": convoy_add_car,
+		"convoy_add_van": convoy_add_van,
+		"convoy_order_ok": convoy_order_ok,
+		"convoy_dup_rejected": convoy_dup_rejected,
+		"convoy_empty_rejected": convoy_empty_rejected,
+		"convoy_size_three": convoy_size_three,
+		"convoy_remove_missing": convoy_remove_missing,
+		"convoy_remove_car": convoy_remove_car,
+		"convoy_car_absent": convoy_car_absent,
+		"convoy_readd_car": convoy_readd_car,
+		"convoy_unique_after_readd": convoy_unique_after_readd,
+		"convoy_capacity_ok": convoy_capacity_ok,
+		"convoy_movement_ok": convoy_movement_ok,
+		"empty_group_capacity_ok": empty_capacity_ok,
+		"empty_group_movement_ok": empty_movement_ok,
+		"force_convoy_refresh_ok": force_convoy_refresh_ok,
+		"force_convoy_stored_ok": force_convoy_stored_ok,
+		"missing_capacity_ok": missing_capacity_ok,
+		"missing_movement_ok": missing_movement_ok,
+		"loaded_group_ok": loaded_group_ok,
+		"duplicate_vehicle_rejected": duplicate_vehicle_rejected,
+		"remove_missing_vehicle": remove_missing_vehicle,
+		"negative_capacity_ok": negative_capacity_ok,
+		"negative_movement_ok": negative_movement_ok,
+		"negative_upkeep_ok": negative_upkeep_ok,
+		"vehicle_bike_exists": restored.has_vehicle("vehicle_bike"),
+		"vehicle_car_exists": restored.has_vehicle("vehicle_car"),
+		"vehicle_van_exists": restored.has_vehicle("vehicle_van"),
+		"vehicle_enemy_exists": restored.has_vehicle("vehicle_enemy"),
+		"vehicle_bike_is_vehicle": restored.get_vehicle("vehicle_bike") is Vehicle,
+		"vehicle_car_is_vehicle": restored.get_vehicle("vehicle_car") is Vehicle,
+		"vehicle_van_is_vehicle": restored.get_vehicle("vehicle_van") is Vehicle,
+		"vehicle_enemy_is_vehicle": restored.get_vehicle("vehicle_enemy") is Vehicle,
+		"vehicle_bike_fields": restored_bike != null and restored_bike.faction_id == "gang_a" and restored_bike.vehicle_type_id == "bike" and restored_bike.home_stronghold_id == "stronghold_a" and restored_bike.passenger_capacity == 1 and restored_bike.movement_per_turn == 6.0 and restored_bike.upkeep_per_turn == 25.0,
+		"vehicle_car_fields": restored_car != null and restored_car.faction_id == "gang_a" and restored_car.vehicle_type_id == "car" and restored_car.home_stronghold_id == "stronghold_a" and restored_car.passenger_capacity == 4 and restored_car.movement_per_turn == 5.0 and restored_car.upkeep_per_turn == 50.0,
+		"vehicle_van_fields": restored_van != null and restored_van.faction_id == "gang_a" and restored_van.vehicle_type_id == "van" and restored_van.home_stronghold_id == "stronghold_a" and restored_van.passenger_capacity == 7 and restored_van.movement_per_turn == 4.0 and restored_van.upkeep_per_turn == 80.0,
+		"vehicle_enemy_fields": restored_enemy != null and restored_enemy.faction_id == "gang_b" and restored_enemy.vehicle_type_id == "car" and restored_enemy.home_stronghold_id == "" and restored_enemy.passenger_capacity == 4 and restored_enemy.movement_per_turn == 5.0 and restored_enemy.upkeep_per_turn == 50.0,
+		"stronghold_b_exists": restored.has_map_location("stronghold_b"),
+		"stronghold_b_is_stronghold": restored.get_map_location("stronghold_b") is Stronghold,
+		"restored_stronghold_a_vehicle_ids": restored_stronghold != null and _string_ids_match(restored_stronghold.vehicle_ids, final_stronghold_a_vehicles),
+		"restored_stronghold_b_vehicle_ids": restored_stronghold_b != null and _string_ids_match(restored_stronghold_b.vehicle_ids, final_stronghold_b_vehicles),
+		"force_convoy_exists": restored.has_traveling_force("force_convoy"),
+		"restored_force_convoy_vehicle_ids": restored_force_convoy != null and restored_force_convoy.vehicle_group != null and _string_ids_match(restored_force_convoy.vehicle_group.vehicle_ids, expected_force_convoy_ids),
+		"restored_force_convoy_movement_per_turn": restored_force_convoy != null and restored_force_convoy.movement_per_turn == 4.0,
 	}
 
 	var passed := true
@@ -433,3 +630,11 @@ static func _string_ids_match(actual: Array[String], expected: Array[String]) ->
 		if actual[i] != expected[i]:
 			return false
 	return true
+
+
+static func _count_id(ids: Array[String], target_id: String) -> int:
+	var count := 0
+	for vehicle_id in ids:
+		if vehicle_id == target_id:
+			count += 1
+	return count

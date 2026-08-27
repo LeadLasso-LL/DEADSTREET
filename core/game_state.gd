@@ -10,6 +10,7 @@ var police_regions: Dictionary[String, PoliceRegion] = {}
 var neighborhoods: Dictionary[String, Neighborhood] = {}
 var road_graph: RoadGraph = RoadGraph.new()
 var map_locations: Dictionary[String, MapLocation] = {}
+var vehicles: Dictionary[String, Vehicle] = {}
 var traveling_forces: Dictionary[String, TravelingForce] = {}
 
 
@@ -150,6 +151,94 @@ func has_map_location(location_id: String) -> bool:
 	return map_locations.has(location_id)
 
 
+func add_vehicle(vehicle: Vehicle) -> void:
+	if vehicle == null:
+		push_error("GameState.add_vehicle: vehicle is null.")
+		return
+	if vehicle.id.is_empty():
+		push_error("GameState.add_vehicle: vehicle id is empty.")
+		return
+	if vehicles.has(vehicle.id):
+		push_error("GameState.add_vehicle: duplicate vehicle id '%s'." % vehicle.id)
+		return
+	vehicles[vehicle.id] = vehicle
+
+
+func get_vehicle(vehicle_id: String) -> Vehicle:
+	if vehicles.has(vehicle_id):
+		return vehicles[vehicle_id]
+	return null
+
+
+func has_vehicle(vehicle_id: String) -> bool:
+	return vehicles.has(vehicle_id)
+
+
+func remove_vehicle(vehicle_id: String) -> bool:
+	if not vehicles.has(vehicle_id):
+		return false
+	vehicles.erase(vehicle_id)
+	return true
+
+
+func assign_vehicle_to_stronghold(vehicle_id: String, stronghold_id: String) -> bool:
+	if not has_vehicle(vehicle_id):
+		push_error("GameState.assign_vehicle_to_stronghold: vehicle '%s' does not exist." % vehicle_id)
+		return false
+	var vehicle: Vehicle = get_vehicle(vehicle_id)
+	var location: MapLocation = get_map_location(stronghold_id)
+	if location == null:
+		push_error("GameState.assign_vehicle_to_stronghold: location '%s' does not exist." % stronghold_id)
+		return false
+	if not (location is Stronghold):
+		push_error("GameState.assign_vehicle_to_stronghold: location '%s' is not a Stronghold." % stronghold_id)
+		return false
+	var target: Stronghold = location as Stronghold
+	if vehicle.faction_id != target.owner_faction_id:
+		push_error("GameState.assign_vehicle_to_stronghold: vehicle '%s' faction does not match Stronghold '%s' owner." % [vehicle_id, stronghold_id])
+		return false
+	if vehicle.home_stronghold_id == stronghold_id:
+		if not target.has_vehicle_id(vehicle_id):
+			target.add_vehicle_id(vehicle_id)
+		return true
+	var old_stronghold: Stronghold = null
+	if not vehicle.home_stronghold_id.is_empty():
+		var old_location: MapLocation = get_map_location(vehicle.home_stronghold_id)
+		if old_location == null:
+			push_error("GameState.assign_vehicle_to_stronghold: vehicle '%s' has stale home Stronghold '%s'." % [vehicle_id, vehicle.home_stronghold_id])
+			return false
+		if not (old_location is Stronghold):
+			push_error("GameState.assign_vehicle_to_stronghold: vehicle '%s' home '%s' is not a Stronghold." % [vehicle_id, vehicle.home_stronghold_id])
+			return false
+		old_stronghold = old_location as Stronghold
+	if old_stronghold != null:
+		old_stronghold.remove_vehicle_id(vehicle_id)
+	vehicle.home_stronghold_id = stronghold_id
+	if not target.has_vehicle_id(vehicle_id):
+		target.add_vehicle_id(vehicle_id)
+	return true
+
+
+func unassign_vehicle_from_stronghold(vehicle_id: String) -> bool:
+	if not has_vehicle(vehicle_id):
+		push_error("GameState.unassign_vehicle_from_stronghold: vehicle '%s' does not exist." % vehicle_id)
+		return false
+	var vehicle: Vehicle = get_vehicle(vehicle_id)
+	if vehicle.home_stronghold_id.is_empty():
+		return true
+	var old_id: String = vehicle.home_stronghold_id
+	var old_location: MapLocation = get_map_location(old_id)
+	var removed_cleanly := true
+	if old_location != null and old_location is Stronghold:
+		var old_stronghold: Stronghold = old_location as Stronghold
+		old_stronghold.remove_vehicle_id(vehicle_id)
+	else:
+		push_error("GameState.unassign_vehicle_from_stronghold: vehicle '%s' referenced missing or invalid Stronghold '%s'." % [vehicle_id, old_id])
+		removed_cleanly = false
+	vehicle.home_stronghold_id = ""
+	return removed_cleanly
+
+
 func add_traveling_force(force: TravelingForce) -> void:
 	if force == null:
 		push_error("GameState.add_traveling_force: force is null.")
@@ -196,6 +285,9 @@ func to_dict() -> Dictionary:
 	var location_data := {}
 	for location_id: String in map_locations:
 		location_data[location_id] = map_locations[location_id].to_dict()
+	var vehicle_data := {}
+	for vehicle_id: String in vehicles:
+		vehicle_data[vehicle_id] = vehicles[vehicle_id].to_dict()
 	var traveling_force_data := {}
 	for force_id: String in traveling_forces:
 		traveling_force_data[force_id] = traveling_forces[force_id].to_dict()
@@ -209,6 +301,7 @@ func to_dict() -> Dictionary:
 		"police_regions": police_region_data,
 		"road_graph": road_graph.to_dict(),
 		"map_locations": location_data,
+		"vehicles": vehicle_data,
 		"traveling_forces": traveling_force_data,
 	}
 
@@ -253,6 +346,7 @@ func from_dict(data: Dictionary) -> void:
 			add_map_location(location)
 	elif data.has("map_locations"):
 		push_error("GameState.from_dict: map_locations is not a Dictionary; skipping map location restore.")
+	_restore_vehicles(data.get("vehicles", {}))
 	_restore_traveling_forces(data.get("traveling_forces", {}))
 
 
@@ -337,6 +431,26 @@ func _neighborhoods_sorted_by_id(matching_ids: Array[String]) -> Array[Neighborh
 	for neighborhood_id in matching_ids:
 		result.append(neighborhoods[neighborhood_id])
 	return result
+
+
+func _restore_vehicles(vehicle_data: Variant) -> void:
+	vehicles.clear()
+	if not (vehicle_data is Dictionary):
+		push_error("GameState.from_dict: vehicles is not a Dictionary; skipping vehicle restore.")
+		return
+	for vehicle_id: Variant in vehicle_data:
+		var record: Variant = vehicle_data[vehicle_id]
+		if not (record is Dictionary):
+			push_error("GameState.from_dict: vehicle record '%s' is not a Dictionary; skipping." % str(vehicle_id))
+			continue
+		var vehicle: Vehicle = Vehicle.new()
+		vehicle.from_dict(record)
+		if vehicle.id.is_empty():
+			vehicle.id = str(vehicle_id)
+		if vehicle.id.is_empty():
+			push_error("GameState.from_dict: vehicle record is missing an id; skipping.")
+			continue
+		add_vehicle(vehicle)
 
 
 func _restore_traveling_forces(force_data: Variant) -> void:

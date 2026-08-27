@@ -10,6 +10,7 @@ var route_segment_index: int = 0
 var distance_into_segment: float = 0.0
 var movement_per_turn: float = 0.0
 var travel_state: String = ""
+var vehicle_group: VehicleGroup = VehicleGroup.new()
 
 
 func _init(
@@ -83,10 +84,19 @@ func advance(distance_budget: float, road_graph: RoadGraph) -> float:
 	return remaining
 
 
+func refresh_movement_from_vehicles(game_state: GameState) -> float:
+	if vehicle_group == null:
+		vehicle_group = VehicleGroup.new()
+	movement_per_turn = vehicle_group.get_movement_per_turn(game_state)
+	return movement_per_turn
+
+
 func to_dict() -> Dictionary:
 	var route_data: Array[String] = []
 	for node_id in route_node_ids:
 		route_data.append(node_id)
+	if vehicle_group == null:
+		vehicle_group = VehicleGroup.new()
 	return {
 		"id": id,
 		"faction_id": faction_id,
@@ -97,6 +107,7 @@ func to_dict() -> Dictionary:
 		"distance_into_segment": distance_into_segment,
 		"movement_per_turn": movement_per_turn,
 		"travel_state": travel_state,
+		"vehicle_group": vehicle_group.to_dict(),
 	}
 
 
@@ -114,6 +125,15 @@ func from_dict(data: Dictionary) -> void:
 	distance_into_segment = maxf(float(data.get("distance_into_segment", 0.0)), 0.0)
 	movement_per_turn = float(data.get("movement_per_turn", 0.0))
 	travel_state = str(data.get("travel_state", ""))
+	if vehicle_group == null:
+		vehicle_group = VehicleGroup.new()
+	var group_data: Variant = data.get("vehicle_group", {})
+	if group_data is Dictionary:
+		vehicle_group.from_dict(group_data)
+	else:
+		if data.has("vehicle_group"):
+			push_error("TravelingForce.from_dict: vehicle_group is not a Dictionary (id='%s'); loading empty group." % id)
+		vehicle_group.from_dict({})
 
 
 func _arrive_at_destination(final_distance_into_segment: float) -> void:
