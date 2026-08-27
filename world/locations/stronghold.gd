@@ -5,6 +5,7 @@ var level: int = 1:
 	set(value):
 		level = maxi(value, 1)
 var vehicle_ids: Array[String] = []
+var soldier_ids: Array[String] = []
 
 
 func _init(
@@ -25,8 +26,12 @@ func to_dict() -> Dictionary:
 	var ids: Array[String] = []
 	for vehicle_id in vehicle_ids:
 		ids.append(vehicle_id)
+	var soldier_id_data: Array[String] = []
+	for soldier_id in soldier_ids:
+		soldier_id_data.append(soldier_id)
 	data["level"] = level
 	data["vehicle_ids"] = ids
+	data["soldier_ids"] = soldier_id_data
 	return data
 
 
@@ -39,6 +44,11 @@ func from_dict(data: Dictionary) -> void:
 	if ids_data is Array:
 		for vehicle_id: Variant in ids_data:
 			add_vehicle_id(str(vehicle_id))
+	soldier_ids.clear()
+	var soldier_ids_data: Variant = data.get("soldier_ids", [])
+	if soldier_ids_data is Array:
+		for soldier_id: Variant in soldier_ids_data:
+			add_soldier_id(str(soldier_id))
 
 
 func add_vehicle_id(vehicle_id: String) -> bool:
@@ -62,3 +72,26 @@ func remove_vehicle_id(vehicle_id: String) -> bool:
 
 func has_vehicle_id(vehicle_id: String) -> bool:
 	return vehicle_ids.has(vehicle_id)
+
+
+func add_soldier_id(soldier_id: String) -> bool:
+	if soldier_id.is_empty():
+		push_error("Stronghold.add_soldier_id: soldier id is empty (stronghold='%s')." % id)
+		return false
+	if soldier_ids.has(soldier_id):
+		push_error("Stronghold.add_soldier_id: duplicate soldier id '%s' (stronghold='%s')." % [soldier_id, id])
+		return false
+	soldier_ids.append(soldier_id)
+	return true
+
+
+func remove_soldier_id(soldier_id: String) -> bool:
+	var index := soldier_ids.find(soldier_id)
+	if index < 0:
+		return false
+	soldier_ids.remove_at(index)
+	return true
+
+
+func has_soldier_id(soldier_id: String) -> bool:
+	return soldier_ids.has(soldier_id)

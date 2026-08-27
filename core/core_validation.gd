@@ -3,6 +3,8 @@ extends RefCounted
 
 const Vehicle := preload("res://campaign/vehicles/vehicle.gd")
 const VehicleGroup := preload("res://campaign/vehicles/vehicle_group.gd")
+const Soldier := preload("res://campaign/units/soldier.gd")
+const SoldierGroup := preload("res://campaign/units/soldier_group.gd")
 
 
 static func run() -> Dictionary:
@@ -348,6 +350,170 @@ static func run() -> Dictionary:
 	var negative_movement_ok: bool = negative_vehicle.movement_per_turn == 0.0
 	var negative_upkeep_ok: bool = negative_vehicle.upkeep_per_turn == 0.0
 
+	var soldier_pistol: Soldier = Soldier.new("soldier_pistol", "gang_a", "", "pistol", 1.00, 20.0)
+	var soldier_shotgun: Soldier = Soldier.new("soldier_shotgun", "gang_a", "", "shotgun", 1.25, 25.0)
+	var soldier_smg: Soldier = Soldier.new("soldier_smg", "gang_a", "", "smg", 1.55, 30.0)
+	var soldier_rifle: Soldier = Soldier.new("soldier_rifle", "gang_a", "", "rifle", 1.90, 35.0)
+	original.add_soldier(soldier_pistol)
+	original.add_soldier(soldier_shotgun)
+	original.add_soldier(soldier_smg)
+	original.add_soldier(soldier_rifle)
+
+	var pistol_assigned: bool = original.assign_soldier_to_stronghold("soldier_pistol", "stronghold_a")
+	var shotgun_assigned: bool = original.assign_soldier_to_stronghold("soldier_shotgun", "stronghold_a")
+	var smg_assigned: bool = original.assign_soldier_to_stronghold("soldier_smg", "stronghold_a")
+	var rifle_assigned: bool = original.assign_soldier_to_stronghold("soldier_rifle", "stronghold_a")
+	var expected_stronghold_a_soldiers: Array[String] = ["soldier_pistol", "soldier_shotgun", "soldier_smg", "soldier_rifle"]
+	var assigned_soldier_homes_ok: bool = (
+		soldier_pistol.home_stronghold_id == "stronghold_a"
+		and soldier_shotgun.home_stronghold_id == "stronghold_a"
+		and soldier_smg.home_stronghold_id == "stronghold_a"
+		and soldier_rifle.home_stronghold_id == "stronghold_a"
+	)
+	var stronghold_a_soldiers_once: bool = _string_ids_match(stronghold_a.soldier_ids, expected_stronghold_a_soldiers)
+
+	var pistol_reassign_same: bool = original.assign_soldier_to_stronghold("soldier_pistol", "stronghold_a")
+	var pistol_not_duplicated: bool = (
+		_count_id(stronghold_a.soldier_ids, "soldier_pistol") == 1
+		and stronghold_a.soldier_ids.size() == 4
+	)
+
+	var rifle_moved_to_b: bool = original.assign_soldier_to_stronghold("soldier_rifle", "stronghold_b")
+	var rifle_home_is_b: bool = soldier_rifle.home_stronghold_id == "stronghold_b"
+	var stronghold_a_lacks_rifle: bool = not stronghold_a.has_soldier_id("soldier_rifle")
+	var stronghold_b_has_rifle_once: bool = _count_id(stronghold_b.soldier_ids, "soldier_rifle") == 1
+	var rifle_moved_back: bool = original.assign_soldier_to_stronghold("soldier_rifle", "stronghold_a")
+
+	var soldier_enemy: Soldier = Soldier.new("soldier_enemy", "gang_b", "", "pistol", 1.0, 20.0)
+	original.add_soldier(soldier_enemy)
+	var enemy_soldier_assign_rejected: bool = not original.assign_soldier_to_stronghold("soldier_enemy", "stronghold_a")
+	var enemy_soldier_home_empty: bool = soldier_enemy.home_stronghold_id.is_empty()
+	var stronghold_a_lacks_enemy_soldier: bool = not stronghold_a.has_soldier_id("soldier_enemy")
+
+	var smg_unassigned: bool = original.unassign_soldier_from_stronghold("soldier_smg")
+	var smg_home_cleared: bool = soldier_smg.home_stronghold_id.is_empty()
+	var stronghold_a_lacks_smg: bool = not stronghold_a.has_soldier_id("soldier_smg")
+	var smg_reassigned: bool = original.assign_soldier_to_stronghold("soldier_smg", "stronghold_a")
+	var final_stronghold_a_soldiers: Array[String] = ["soldier_pistol", "soldier_shotgun", "soldier_rifle", "soldier_smg"]
+	var final_stronghold_b_soldiers: Array[String] = []
+	var final_soldier_homes_ok: bool = (
+		soldier_pistol.home_stronghold_id == "stronghold_a"
+		and soldier_shotgun.home_stronghold_id == "stronghold_a"
+		and soldier_smg.home_stronghold_id == "stronghold_a"
+		and soldier_rifle.home_stronghold_id == "stronghold_a"
+		and _string_ids_match(stronghold_a.soldier_ids, final_stronghold_a_soldiers)
+		and _string_ids_match(stronghold_b.soldier_ids, final_stronghold_b_soldiers)
+	)
+
+	var squad: SoldierGroup = SoldierGroup.new()
+	var squad_add_pistol: bool = squad.add_soldier_id("soldier_pistol")
+	var squad_add_shotgun: bool = squad.add_soldier_id("soldier_shotgun")
+	var squad_add_smg: bool = squad.add_soldier_id("soldier_smg")
+	var squad_add_rifle: bool = squad.add_soldier_id("soldier_rifle")
+	var expected_squad_order: Array[String] = ["soldier_pistol", "soldier_shotgun", "soldier_smg", "soldier_rifle"]
+	var squad_order_ok: bool = _string_ids_match(squad.soldier_ids, expected_squad_order)
+	var squad_dup_rejected: bool = not squad.add_soldier_id("soldier_pistol")
+	var squad_empty_rejected: bool = not squad.add_soldier_id("")
+	var squad_size_four: bool = squad.soldier_ids.size() == 4 and squad_order_ok
+	var squad_remove_missing: bool = not squad.remove_soldier_id("missing_soldier")
+	var squad_remove_shotgun: bool = squad.remove_soldier_id("soldier_shotgun")
+	var squad_shotgun_absent: bool = not squad.has_soldier_id("soldier_shotgun")
+	var squad_readd_shotgun: bool = squad.add_soldier_id("soldier_shotgun")
+	var unique_squad_ids: Array[String] = ["soldier_pistol", "soldier_smg", "soldier_rifle", "soldier_shotgun"]
+	var squad_unique_after_readd: bool = _string_ids_match(squad.soldier_ids, unique_squad_ids)
+	var squad_strength_ok: bool = is_equal_approx(squad.get_total_strategic_strength(original), 5.70)
+
+	var empty_squad: SoldierGroup = SoldierGroup.new()
+	var empty_squad_strength_ok: bool = empty_squad.get_total_strategic_strength(original) == 0.0
+
+	var missing_squad: SoldierGroup = SoldierGroup.new()
+	missing_squad.add_soldier_id("soldier_pistol")
+	missing_squad.add_soldier_id("missing_soldier")
+	var missing_squad_strength_ok: bool = missing_squad.get_total_strategic_strength(original) == 1.0
+
+	var loaded_squad: SoldierGroup = SoldierGroup.new()
+	var malformed_soldier_ids: Array[String] = ["soldier_pistol", "soldier_shotgun", "soldier_pistol", "", "soldier_rifle"]
+	loaded_squad.from_dict({"soldier_ids": malformed_soldier_ids})
+	var expected_loaded_squad_ids: Array[String] = ["soldier_pistol", "soldier_shotgun", "soldier_rifle"]
+	var loaded_squad_ok: bool = _string_ids_match(loaded_squad.soldier_ids, expected_loaded_squad_ids)
+
+	var force_soldiers: TravelingForce = TravelingForce.new(
+		"force_soldiers",
+		"gang_a",
+		"stronghold_a",
+		"hq_contested",
+		route_short,
+		5.0,
+		"traveling_outbound"
+	)
+	force_soldiers.soldier_group.add_soldier_id("soldier_pistol")
+	force_soldiers.soldier_group.add_soldier_id("soldier_shotgun")
+	force_soldiers.soldier_group.add_soldier_id("soldier_smg")
+	force_soldiers.soldier_group.add_soldier_id("soldier_rifle")
+	force_soldiers.vehicle_group.add_vehicle_id("vehicle_car")
+	original.add_traveling_force(force_soldiers)
+	var expected_force_soldiers_ids: Array[String] = ["soldier_pistol", "soldier_shotgun", "soldier_smg", "soldier_rifle"]
+	var expected_force_soldiers_vehicles: Array[String] = ["vehicle_car"]
+	var force_soldiers_count_ok: bool = force_soldiers.soldier_group.soldier_ids.size() == 4
+	var force_soldiers_capacity: int = force_soldiers.get_transport_capacity(original)
+	var force_soldiers_capacity_ok: bool = force_soldiers_capacity == 4
+	var force_soldiers_valid: bool = force_soldiers.has_valid_transport_capacity(original)
+	var force_soldiers_strength_ok: bool = is_equal_approx(force_soldiers.get_total_strategic_strength(original), 5.70)
+
+	var force_overloaded: TravelingForce = TravelingForce.new(
+		"force_overloaded",
+		"gang_a",
+		"stronghold_a",
+		"hq_contested",
+		route_short,
+		5.0,
+		"traveling_outbound"
+	)
+	force_overloaded.soldier_group.add_soldier_id("soldier_pistol")
+	force_overloaded.soldier_group.add_soldier_id("soldier_shotgun")
+	force_overloaded.soldier_group.add_soldier_id("soldier_smg")
+	force_overloaded.soldier_group.add_soldier_id("soldier_rifle")
+	force_overloaded.vehicle_group.add_vehicle_id("vehicle_bike")
+	var overloaded_capacity: int = force_overloaded.get_transport_capacity(original)
+	var overloaded_capacity_ok: bool = overloaded_capacity == 1
+	var overloaded_invalid: bool = not force_overloaded.has_valid_transport_capacity(original)
+
+	var force_no_vehicles: TravelingForce = TravelingForce.new(
+		"force_no_vehicles",
+		"gang_a",
+		"stronghold_a",
+		"hq_contested",
+		route_short,
+		5.0,
+		"traveling_outbound"
+	)
+	force_no_vehicles.soldier_group.add_soldier_id("soldier_pistol")
+	var no_vehicle_capacity: int = force_no_vehicles.get_transport_capacity(original)
+	var no_vehicle_capacity_ok: bool = no_vehicle_capacity == 0
+	var no_vehicle_invalid: bool = not force_no_vehicles.has_valid_transport_capacity(original)
+
+	var force_empty_transport: TravelingForce = TravelingForce.new(
+		"force_empty_transport",
+		"gang_a",
+		"stronghold_a",
+		"hq_contested",
+		route_short,
+		5.0,
+		"traveling_outbound"
+	)
+	var empty_transport_capacity: int = force_empty_transport.get_transport_capacity(original)
+	var empty_transport_capacity_ok: bool = empty_transport_capacity == 0
+	var empty_transport_valid: bool = force_empty_transport.has_valid_transport_capacity(original)
+
+	var negative_soldier: Soldier = Soldier.new("soldier_negative", "gang_a", "", "pistol", -2.0, -15.0)
+	var negative_soldier_strength_ok: bool = negative_soldier.strategic_strength == 0.0
+	var negative_soldier_upkeep_ok: bool = negative_soldier.upkeep_per_turn == 0.0
+
+	var pistol_before_dup: Soldier = original.get_soldier("soldier_pistol")
+	original.add_soldier(Soldier.new("soldier_pistol", "gang_b", "", "rifle", 1.90, 35.0))
+	var duplicate_soldier_rejected: bool = original.get_soldier("soldier_pistol") == pistol_before_dup
+	var remove_missing_soldier: bool = not original.remove_soldier("missing_soldier")
+
 	var serialized_state := original.to_dict()
 	var restored := GameState.new()
 	restored.from_dict(serialized_state)
@@ -379,6 +545,12 @@ static func run() -> Dictionary:
 	var restored_car: Vehicle = restored.get_vehicle("vehicle_car")
 	var restored_van: Vehicle = restored.get_vehicle("vehicle_van")
 	var restored_enemy: Vehicle = restored.get_vehicle("vehicle_enemy")
+	var restored_force_soldiers: TravelingForce = restored.get_traveling_force("force_soldiers")
+	var restored_pistol: Soldier = restored.get_soldier("soldier_pistol")
+	var restored_shotgun: Soldier = restored.get_soldier("soldier_shotgun")
+	var restored_smg: Soldier = restored.get_soldier("soldier_smg")
+	var restored_rifle: Soldier = restored.get_soldier("soldier_rifle")
+	var restored_enemy_soldier: Soldier = restored.get_soldier("soldier_enemy")
 	var restored_seg_ab: RoadSegment = restored_graph.get_segment("seg_ab")
 	var restored_seg_bc: RoadSegment = restored_graph.get_segment("seg_bc")
 	var restored_seg_cd: RoadSegment = restored_graph.get_segment("seg_cd")
@@ -599,6 +771,81 @@ static func run() -> Dictionary:
 		"force_convoy_exists": restored.has_traveling_force("force_convoy"),
 		"restored_force_convoy_vehicle_ids": restored_force_convoy != null and restored_force_convoy.vehicle_group != null and _string_ids_match(restored_force_convoy.vehicle_group.vehicle_ids, expected_force_convoy_ids),
 		"restored_force_convoy_movement_per_turn": restored_force_convoy != null and restored_force_convoy.movement_per_turn == 4.0,
+		"pistol_assigned": pistol_assigned,
+		"shotgun_assigned": shotgun_assigned,
+		"smg_assigned": smg_assigned,
+		"rifle_assigned": rifle_assigned,
+		"assigned_soldier_homes_ok": assigned_soldier_homes_ok,
+		"stronghold_a_soldiers_once": stronghold_a_soldiers_once,
+		"pistol_reassign_same": pistol_reassign_same,
+		"pistol_not_duplicated": pistol_not_duplicated,
+		"rifle_moved_to_b": rifle_moved_to_b,
+		"rifle_home_is_b": rifle_home_is_b,
+		"stronghold_a_lacks_rifle": stronghold_a_lacks_rifle,
+		"stronghold_b_has_rifle_once": stronghold_b_has_rifle_once,
+		"rifle_moved_back": rifle_moved_back,
+		"enemy_soldier_assign_rejected": enemy_soldier_assign_rejected,
+		"enemy_soldier_home_empty": enemy_soldier_home_empty,
+		"stronghold_a_lacks_enemy_soldier": stronghold_a_lacks_enemy_soldier,
+		"smg_unassigned": smg_unassigned,
+		"smg_home_cleared": smg_home_cleared,
+		"stronghold_a_lacks_smg": stronghold_a_lacks_smg,
+		"smg_reassigned": smg_reassigned,
+		"final_soldier_homes_ok": final_soldier_homes_ok,
+		"squad_add_pistol": squad_add_pistol,
+		"squad_add_shotgun": squad_add_shotgun,
+		"squad_add_smg": squad_add_smg,
+		"squad_add_rifle": squad_add_rifle,
+		"squad_order_ok": squad_order_ok,
+		"squad_dup_rejected": squad_dup_rejected,
+		"squad_empty_rejected": squad_empty_rejected,
+		"squad_size_four": squad_size_four,
+		"squad_remove_missing": squad_remove_missing,
+		"squad_remove_shotgun": squad_remove_shotgun,
+		"squad_shotgun_absent": squad_shotgun_absent,
+		"squad_readd_shotgun": squad_readd_shotgun,
+		"squad_unique_after_readd": squad_unique_after_readd,
+		"squad_strength_ok": squad_strength_ok,
+		"empty_squad_strength_ok": empty_squad_strength_ok,
+		"missing_squad_strength_ok": missing_squad_strength_ok,
+		"loaded_squad_ok": loaded_squad_ok,
+		"force_soldiers_count_ok": force_soldiers_count_ok,
+		"force_soldiers_capacity_ok": force_soldiers_capacity_ok,
+		"force_soldiers_valid": force_soldiers_valid,
+		"force_soldiers_strength_ok": force_soldiers_strength_ok,
+		"overloaded_capacity_ok": overloaded_capacity_ok,
+		"overloaded_invalid": overloaded_invalid,
+		"no_vehicle_capacity_ok": no_vehicle_capacity_ok,
+		"no_vehicle_invalid": no_vehicle_invalid,
+		"empty_transport_capacity_ok": empty_transport_capacity_ok,
+		"empty_transport_valid": empty_transport_valid,
+		"negative_soldier_strength_ok": negative_soldier_strength_ok,
+		"negative_soldier_upkeep_ok": negative_soldier_upkeep_ok,
+		"duplicate_soldier_rejected": duplicate_soldier_rejected,
+		"remove_missing_soldier": remove_missing_soldier,
+		"soldier_pistol_exists": restored.has_soldier("soldier_pistol"),
+		"soldier_shotgun_exists": restored.has_soldier("soldier_shotgun"),
+		"soldier_smg_exists": restored.has_soldier("soldier_smg"),
+		"soldier_rifle_exists": restored.has_soldier("soldier_rifle"),
+		"soldier_enemy_exists": restored.has_soldier("soldier_enemy"),
+		"soldier_pistol_is_soldier": restored.get_soldier("soldier_pistol") is Soldier,
+		"soldier_shotgun_is_soldier": restored.get_soldier("soldier_shotgun") is Soldier,
+		"soldier_smg_is_soldier": restored.get_soldier("soldier_smg") is Soldier,
+		"soldier_rifle_is_soldier": restored.get_soldier("soldier_rifle") is Soldier,
+		"soldier_enemy_is_soldier": restored.get_soldier("soldier_enemy") is Soldier,
+		"soldier_pistol_fields": restored_pistol != null and restored_pistol.faction_id == "gang_a" and restored_pistol.home_stronghold_id == "stronghold_a" and restored_pistol.weapon_type_id == "pistol" and is_equal_approx(restored_pistol.strategic_strength, 1.00) and restored_pistol.upkeep_per_turn == 20.0,
+		"soldier_shotgun_fields": restored_shotgun != null and restored_shotgun.faction_id == "gang_a" and restored_shotgun.home_stronghold_id == "stronghold_a" and restored_shotgun.weapon_type_id == "shotgun" and is_equal_approx(restored_shotgun.strategic_strength, 1.25) and restored_shotgun.upkeep_per_turn == 25.0,
+		"soldier_smg_fields": restored_smg != null and restored_smg.faction_id == "gang_a" and restored_smg.home_stronghold_id == "stronghold_a" and restored_smg.weapon_type_id == "smg" and is_equal_approx(restored_smg.strategic_strength, 1.55) and restored_smg.upkeep_per_turn == 30.0,
+		"soldier_rifle_fields": restored_rifle != null and restored_rifle.faction_id == "gang_a" and restored_rifle.home_stronghold_id == "stronghold_a" and restored_rifle.weapon_type_id == "rifle" and is_equal_approx(restored_rifle.strategic_strength, 1.90) and restored_rifle.upkeep_per_turn == 35.0,
+		"soldier_enemy_fields": restored_enemy_soldier != null and restored_enemy_soldier.faction_id == "gang_b" and restored_enemy_soldier.home_stronghold_id == "" and restored_enemy_soldier.weapon_type_id == "pistol" and restored_enemy_soldier.strategic_strength == 1.0 and restored_enemy_soldier.upkeep_per_turn == 20.0,
+		"restored_stronghold_a_soldier_ids": restored_stronghold != null and _string_ids_match(restored_stronghold.soldier_ids, final_stronghold_a_soldiers),
+		"restored_stronghold_b_soldier_ids": restored_stronghold_b != null and _string_ids_match(restored_stronghold_b.soldier_ids, final_stronghold_b_soldiers),
+		"force_soldiers_exists": restored.has_traveling_force("force_soldiers"),
+		"restored_force_soldiers_ids": restored_force_soldiers != null and restored_force_soldiers.soldier_group != null and _string_ids_match(restored_force_soldiers.soldier_group.soldier_ids, expected_force_soldiers_ids),
+		"restored_force_soldiers_vehicles": restored_force_soldiers != null and restored_force_soldiers.vehicle_group != null and _string_ids_match(restored_force_soldiers.vehicle_group.vehicle_ids, expected_force_soldiers_vehicles),
+		"restored_force_soldiers_capacity": restored_force_soldiers != null and restored_force_soldiers.get_transport_capacity(restored) == 4,
+		"restored_force_soldiers_valid": restored_force_soldiers != null and restored_force_soldiers.has_valid_transport_capacity(restored) == true,
+		"restored_force_soldiers_strength": restored_force_soldiers != null and is_equal_approx(restored_force_soldiers.get_total_strategic_strength(restored), 5.70),
 	}
 
 	var passed := true

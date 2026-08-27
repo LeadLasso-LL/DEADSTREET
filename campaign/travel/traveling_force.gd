@@ -11,6 +11,7 @@ var distance_into_segment: float = 0.0
 var movement_per_turn: float = 0.0
 var travel_state: String = ""
 var vehicle_group: VehicleGroup = VehicleGroup.new()
+var soldier_group: SoldierGroup = SoldierGroup.new()
 
 
 func _init(
@@ -91,12 +92,32 @@ func refresh_movement_from_vehicles(game_state: GameState) -> float:
 	return movement_per_turn
 
 
+func get_total_strategic_strength(game_state: GameState) -> float:
+	if soldier_group == null:
+		soldier_group = SoldierGroup.new()
+	return soldier_group.get_total_strategic_strength(game_state)
+
+
+func get_transport_capacity(game_state: GameState) -> int:
+	if vehicle_group == null:
+		vehicle_group = VehicleGroup.new()
+	return vehicle_group.get_total_passenger_capacity(game_state)
+
+
+func has_valid_transport_capacity(game_state: GameState) -> bool:
+	if soldier_group == null:
+		soldier_group = SoldierGroup.new()
+	return soldier_group.soldier_ids.size() <= get_transport_capacity(game_state)
+
+
 func to_dict() -> Dictionary:
 	var route_data: Array[String] = []
 	for node_id in route_node_ids:
 		route_data.append(node_id)
 	if vehicle_group == null:
 		vehicle_group = VehicleGroup.new()
+	if soldier_group == null:
+		soldier_group = SoldierGroup.new()
 	return {
 		"id": id,
 		"faction_id": faction_id,
@@ -108,6 +129,7 @@ func to_dict() -> Dictionary:
 		"movement_per_turn": movement_per_turn,
 		"travel_state": travel_state,
 		"vehicle_group": vehicle_group.to_dict(),
+		"soldier_group": soldier_group.to_dict(),
 	}
 
 
@@ -134,6 +156,15 @@ func from_dict(data: Dictionary) -> void:
 		if data.has("vehicle_group"):
 			push_error("TravelingForce.from_dict: vehicle_group is not a Dictionary (id='%s'); loading empty group." % id)
 		vehicle_group.from_dict({})
+	if soldier_group == null:
+		soldier_group = SoldierGroup.new()
+	var soldier_group_data: Variant = data.get("soldier_group", {})
+	if soldier_group_data is Dictionary:
+		soldier_group.from_dict(soldier_group_data)
+	else:
+		if data.has("soldier_group"):
+			push_error("TravelingForce.from_dict: soldier_group is not a Dictionary (id='%s'); loading empty group." % id)
+		soldier_group.from_dict({})
 
 
 func _arrive_at_destination(final_distance_into_segment: float) -> void:

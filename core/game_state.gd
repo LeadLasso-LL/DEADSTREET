@@ -11,6 +11,7 @@ var neighborhoods: Dictionary[String, Neighborhood] = {}
 var road_graph: RoadGraph = RoadGraph.new()
 var map_locations: Dictionary[String, MapLocation] = {}
 var vehicles: Dictionary[String, Vehicle] = {}
+var soldiers: Dictionary[String, Soldier] = {}
 var traveling_forces: Dictionary[String, TravelingForce] = {}
 
 
@@ -239,6 +240,94 @@ func unassign_vehicle_from_stronghold(vehicle_id: String) -> bool:
 	return removed_cleanly
 
 
+func add_soldier(soldier: Soldier) -> void:
+	if soldier == null:
+		push_error("GameState.add_soldier: soldier is null.")
+		return
+	if soldier.id.is_empty():
+		push_error("GameState.add_soldier: soldier id is empty.")
+		return
+	if soldiers.has(soldier.id):
+		push_error("GameState.add_soldier: duplicate soldier id '%s'." % soldier.id)
+		return
+	soldiers[soldier.id] = soldier
+
+
+func get_soldier(soldier_id: String) -> Soldier:
+	if soldiers.has(soldier_id):
+		return soldiers[soldier_id]
+	return null
+
+
+func has_soldier(soldier_id: String) -> bool:
+	return soldiers.has(soldier_id)
+
+
+func remove_soldier(soldier_id: String) -> bool:
+	if not soldiers.has(soldier_id):
+		return false
+	soldiers.erase(soldier_id)
+	return true
+
+
+func assign_soldier_to_stronghold(soldier_id: String, stronghold_id: String) -> bool:
+	if not has_soldier(soldier_id):
+		push_error("GameState.assign_soldier_to_stronghold: soldier '%s' does not exist." % soldier_id)
+		return false
+	var soldier: Soldier = get_soldier(soldier_id)
+	var location: MapLocation = get_map_location(stronghold_id)
+	if location == null:
+		push_error("GameState.assign_soldier_to_stronghold: location '%s' does not exist." % stronghold_id)
+		return false
+	if not (location is Stronghold):
+		push_error("GameState.assign_soldier_to_stronghold: location '%s' is not a Stronghold." % stronghold_id)
+		return false
+	var target: Stronghold = location as Stronghold
+	if soldier.faction_id != target.owner_faction_id:
+		push_error("GameState.assign_soldier_to_stronghold: soldier '%s' faction does not match Stronghold '%s' owner." % [soldier_id, stronghold_id])
+		return false
+	if soldier.home_stronghold_id == stronghold_id:
+		if not target.has_soldier_id(soldier_id):
+			target.add_soldier_id(soldier_id)
+		return true
+	var old_stronghold: Stronghold = null
+	if not soldier.home_stronghold_id.is_empty():
+		var old_location: MapLocation = get_map_location(soldier.home_stronghold_id)
+		if old_location == null:
+			push_error("GameState.assign_soldier_to_stronghold: soldier '%s' has stale home Stronghold '%s'." % [soldier_id, soldier.home_stronghold_id])
+			return false
+		if not (old_location is Stronghold):
+			push_error("GameState.assign_soldier_to_stronghold: soldier '%s' home '%s' is not a Stronghold." % [soldier_id, soldier.home_stronghold_id])
+			return false
+		old_stronghold = old_location as Stronghold
+	if old_stronghold != null:
+		old_stronghold.remove_soldier_id(soldier_id)
+	soldier.home_stronghold_id = stronghold_id
+	if not target.has_soldier_id(soldier_id):
+		target.add_soldier_id(soldier_id)
+	return true
+
+
+func unassign_soldier_from_stronghold(soldier_id: String) -> bool:
+	if not has_soldier(soldier_id):
+		push_error("GameState.unassign_soldier_from_stronghold: soldier '%s' does not exist." % soldier_id)
+		return false
+	var soldier: Soldier = get_soldier(soldier_id)
+	if soldier.home_stronghold_id.is_empty():
+		return true
+	var old_id: String = soldier.home_stronghold_id
+	var old_location: MapLocation = get_map_location(old_id)
+	var removed_cleanly := true
+	if old_location != null and old_location is Stronghold:
+		var old_stronghold: Stronghold = old_location as Stronghold
+		old_stronghold.remove_soldier_id(soldier_id)
+	else:
+		push_error("GameState.unassign_soldier_from_stronghold: soldier '%s' referenced missing or invalid Stronghold '%s'." % [soldier_id, old_id])
+		removed_cleanly = false
+	soldier.home_stronghold_id = ""
+	return removed_cleanly
+
+
 func add_traveling_force(force: TravelingForce) -> void:
 	if force == null:
 		push_error("GameState.add_traveling_force: force is null.")
@@ -288,6 +377,9 @@ func to_dict() -> Dictionary:
 	var vehicle_data := {}
 	for vehicle_id: String in vehicles:
 		vehicle_data[vehicle_id] = vehicles[vehicle_id].to_dict()
+	var soldier_data := {}
+	for soldier_id: String in soldiers:
+		soldier_data[soldier_id] = soldiers[soldier_id].to_dict()
 	var traveling_force_data := {}
 	for force_id: String in traveling_forces:
 		traveling_force_data[force_id] = traveling_forces[force_id].to_dict()
@@ -302,6 +394,7 @@ func to_dict() -> Dictionary:
 		"road_graph": road_graph.to_dict(),
 		"map_locations": location_data,
 		"vehicles": vehicle_data,
+		"soldiers": soldier_data,
 		"traveling_forces": traveling_force_data,
 	}
 
@@ -347,6 +440,7 @@ func from_dict(data: Dictionary) -> void:
 	elif data.has("map_locations"):
 		push_error("GameState.from_dict: map_locations is not a Dictionary; skipping map location restore.")
 	_restore_vehicles(data.get("vehicles", {}))
+	_restore_soldiers(data.get("soldiers", {}))
 	_restore_traveling_forces(data.get("traveling_forces", {}))
 
 
@@ -451,6 +545,26 @@ func _restore_vehicles(vehicle_data: Variant) -> void:
 			push_error("GameState.from_dict: vehicle record is missing an id; skipping.")
 			continue
 		add_vehicle(vehicle)
+
+
+func _restore_soldiers(soldier_data: Variant) -> void:
+	soldiers.clear()
+	if not (soldier_data is Dictionary):
+		push_error("GameState.from_dict: soldiers is not a Dictionary; skipping soldier restore.")
+		return
+	for soldier_id: Variant in soldier_data:
+		var record: Variant = soldier_data[soldier_id]
+		if not (record is Dictionary):
+			push_error("GameState.from_dict: soldier record '%s' is not a Dictionary; skipping." % str(soldier_id))
+			continue
+		var soldier: Soldier = Soldier.new()
+		soldier.from_dict(record)
+		if soldier.id.is_empty():
+			soldier.id = str(soldier_id)
+		if soldier.id.is_empty():
+			push_error("GameState.from_dict: soldier record is missing an id; skipping.")
+			continue
+		add_soldier(soldier)
 
 
 func _restore_traveling_forces(force_data: Variant) -> void:
