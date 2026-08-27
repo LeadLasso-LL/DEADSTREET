@@ -8,7 +8,9 @@ var factions: Dictionary[String, Faction] = {}
 var stronghold_regions: Dictionary[String, StrongholdRegion] = {}
 var police_regions: Dictionary[String, PoliceRegion] = {}
 var neighborhoods: Dictionary[String, Neighborhood] = {}
+var road_graph: RoadGraph = RoadGraph.new()
 var map_locations: Dictionary[String, MapLocation] = {}
+var traveling_forces: Dictionary[String, TravelingForce] = {}
 
 
 func add_faction(faction: Faction) -> void:
@@ -148,6 +150,36 @@ func has_map_location(location_id: String) -> bool:
 	return map_locations.has(location_id)
 
 
+func add_traveling_force(force: TravelingForce) -> void:
+	if force == null:
+		push_error("GameState.add_traveling_force: force is null.")
+		return
+	if force.id.is_empty():
+		push_error("GameState.add_traveling_force: force id is empty.")
+		return
+	if traveling_forces.has(force.id):
+		push_error("GameState.add_traveling_force: duplicate force id '%s'." % force.id)
+		return
+	traveling_forces[force.id] = force
+
+
+func get_traveling_force(force_id: String) -> TravelingForce:
+	if traveling_forces.has(force_id):
+		return traveling_forces[force_id]
+	return null
+
+
+func has_traveling_force(force_id: String) -> bool:
+	return traveling_forces.has(force_id)
+
+
+func remove_traveling_force(force_id: String) -> bool:
+	if not traveling_forces.has(force_id):
+		return false
+	traveling_forces.erase(force_id)
+	return true
+
+
 func to_dict() -> Dictionary:
 	var faction_data := {}
 	for faction_id: String in factions:
@@ -164,6 +196,9 @@ func to_dict() -> Dictionary:
 	var location_data := {}
 	for location_id: String in map_locations:
 		location_data[location_id] = map_locations[location_id].to_dict()
+	var traveling_force_data := {}
+	for force_id: String in traveling_forces:
+		traveling_force_data[force_id] = traveling_forces[force_id].to_dict()
 	return {
 		"current_turn": current_turn,
 		"current_year": current_year,
@@ -172,7 +207,9 @@ func to_dict() -> Dictionary:
 		"neighborhoods": neighborhood_data,
 		"stronghold_regions": stronghold_region_data,
 		"police_regions": police_region_data,
+		"road_graph": road_graph.to_dict(),
 		"map_locations": location_data,
+		"traveling_forces": traveling_force_data,
 	}
 
 
@@ -196,22 +233,27 @@ func from_dict(data: Dictionary) -> void:
 	_restore_stronghold_regions(data.get("stronghold_regions", {}))
 	_restore_police_regions(data.get("police_regions", {}))
 	_restore_neighborhoods(data.get("neighborhoods", {}))
+	road_graph = RoadGraph.new()
+	var graph_data: Variant = data.get("road_graph", {})
+	if graph_data is Dictionary:
+		road_graph.from_dict(graph_data)
 	map_locations.clear()
 	var location_data: Variant = data.get("map_locations", {})
-	if not (location_data is Dictionary):
+	if location_data is Dictionary:
+		for location_id: Variant in location_data:
+			var record: Variant = location_data[location_id]
+			if not (record is Dictionary):
+				push_error("GameState.from_dict: map location record '%s' is not a Dictionary; skipping." % str(location_id))
+				continue
+			var location := _create_map_location_from_dict(record)
+			if location == null:
+				continue
+			if location.id.is_empty():
+				location.id = str(location_id)
+			add_map_location(location)
+	elif data.has("map_locations"):
 		push_error("GameState.from_dict: map_locations is not a Dictionary; skipping map location restore.")
-		return
-	for location_id: Variant in location_data:
-		var record: Variant = location_data[location_id]
-		if not (record is Dictionary):
-			push_error("GameState.from_dict: map location record '%s' is not a Dictionary; skipping." % str(location_id))
-			continue
-		var location := _create_map_location_from_dict(record)
-		if location == null:
-			continue
-		if location.id.is_empty():
-			location.id = str(location_id)
-		add_map_location(location)
+	_restore_traveling_forces(data.get("traveling_forces", {}))
 
 
 func _create_faction_from_dict(data: Dictionary) -> Faction:
@@ -295,3 +337,22 @@ func _neighborhoods_sorted_by_id(matching_ids: Array[String]) -> Array[Neighborh
 	for neighborhood_id in matching_ids:
 		result.append(neighborhoods[neighborhood_id])
 	return result
+
+
+func _restore_traveling_forces(force_data: Variant) -> void:
+	traveling_forces.clear()
+	if not (force_data is Dictionary):
+		return
+	for force_id: Variant in force_data:
+		var record: Variant = force_data[force_id]
+		if not (record is Dictionary):
+			push_error("GameState.from_dict: traveling force record '%s' is not a Dictionary; skipping." % str(force_id))
+			continue
+		var force := TravelingForce.new()
+		force.from_dict(record)
+		if force.id.is_empty():
+			force.id = str(force_id)
+		if force.id.is_empty():
+			push_error("GameState.from_dict: traveling force record is missing an id; skipping.")
+			continue
+		add_traveling_force(force)

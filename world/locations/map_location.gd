@@ -5,6 +5,7 @@ var id: String = ""
 var display_name: String = ""
 var location_type: String = ""
 var neighborhood_id: String = ""
+var road_node_id: String = ""
 var map_position: Vector2 = Vector2.ZERO
 
 
@@ -13,13 +14,15 @@ func _init(
 	p_display_name: String = "",
 	p_location_type: String = "",
 	p_neighborhood_id: String = "",
-	p_map_position: Vector2 = Vector2.ZERO
+	p_map_position: Vector2 = Vector2.ZERO,
+	p_road_node_id: String = ""
 ) -> void:
 	id = p_id
 	display_name = p_display_name
 	location_type = p_location_type
 	neighborhood_id = p_neighborhood_id
 	map_position = p_map_position
+	road_node_id = p_road_node_id
 
 
 func to_dict() -> Dictionary:
@@ -28,6 +31,7 @@ func to_dict() -> Dictionary:
 		"display_name": display_name,
 		"location_type": location_type,
 		"neighborhood_id": neighborhood_id,
+		"road_node_id": road_node_id,
 		"map_position": {
 			"x": map_position.x,
 			"y": map_position.y,
@@ -40,6 +44,7 @@ func from_dict(data: Dictionary) -> void:
 	display_name = str(data.get("display_name", ""))
 	location_type = str(data.get("location_type", ""))
 	neighborhood_id = str(data.get("neighborhood_id", ""))
+	road_node_id = str(data.get("road_node_id", ""))
 	map_position = _vector2_from_save(data.get("map_position", {}))
 
 

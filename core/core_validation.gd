@@ -63,6 +63,135 @@ static func run() -> Dictionary:
 	original.add_map_location(hq_contested)
 	original.add_map_location(business_a)
 
+	var graph: RoadGraph = original.road_graph
+	graph.add_node(RoadNode.new("road_a", Vector2(0, 0)))
+	graph.add_node(RoadNode.new("road_b", Vector2(2, 0)))
+	graph.add_node(RoadNode.new("road_c", Vector2(5, 0)))
+	graph.add_node(RoadNode.new("road_d", Vector2(5, 4)))
+	graph.add_node(RoadNode.new("road_e", Vector2(2, 4)))
+	graph.add_segment(RoadSegment.new("seg_ab", "road_a", "road_b", 2.0))
+	graph.add_segment(RoadSegment.new("seg_bc", "road_b", "road_c", 3.0))
+	graph.add_segment(RoadSegment.new("seg_cd", "road_c", "road_d", 4.0))
+	graph.add_segment(RoadSegment.new("seg_be", "road_b", "road_e", 2.0))
+	graph.add_segment(RoadSegment.new("seg_ed", "road_e", "road_d", 3.0))
+	stronghold_a.road_node_id = "road_a"
+	business_a.road_node_id = "road_b"
+	hq_contested.road_node_id = "road_d"
+
+	var route_short: Array[String] = ["road_a", "road_b", "road_e", "road_d"]
+	var route_long: Array[String] = ["road_a", "road_b", "road_c", "road_d"]
+	var route_same: Array[String] = ["road_a"]
+	var route_ab: Array[String] = ["road_a", "road_b"]
+	var found_short: Array[String] = graph.find_route("road_a", "road_d")
+	var route_short_ok := _string_ids_match(found_short, route_short)
+	var route_short_distance_ok := graph.get_route_distance(found_short) == 7.0
+	var route_same_ok := _string_ids_match(graph.find_route("road_a", "road_a"), route_same)
+	var empty_start_route_ok := graph.find_route("", "road_d").is_empty()
+	var missing_destination_route_ok := graph.find_route("road_a", "road_missing").is_empty()
+
+	graph.get_segment("seg_ed").is_open = false
+	var found_closed: Array[String] = graph.find_route("road_a", "road_d")
+	var closed_route_ok := _string_ids_match(found_closed, route_long)
+	var closed_route_distance_ok := graph.get_route_distance(found_closed) == 9.0
+	graph.get_segment("seg_ed").is_open = true
+
+	var node_count_before := graph.nodes.size()
+	var segment_count_before := graph.segments.size()
+	var road_a_before: RoadNode = graph.get_node("road_a")
+	graph.add_node(RoadNode.new("road_a", Vector2(9, 9)))
+	var duplicate_road_node_rejected := graph.get_node("road_a") == road_a_before and graph.nodes.size() == node_count_before
+	var seg_ab_before: RoadSegment = graph.get_segment("seg_ab")
+	graph.add_segment(RoadSegment.new("seg_ab", "road_c", "road_d", 1.0))
+	var duplicate_road_segment_rejected := graph.get_segment("seg_ab") == seg_ab_before and graph.segments.size() == segment_count_before
+	graph.add_segment(RoadSegment.new("seg_ba", "road_b", "road_a", 2.0))
+	var reversed_endpoint_pair_rejected := not graph.has_segment("seg_ba") and graph.segments.size() == segment_count_before
+	graph.add_segment(RoadSegment.new("seg_loop", "road_a", "road_a", 1.0))
+	var self_loop_rejected := not graph.has_segment("seg_loop") and graph.segments.size() == segment_count_before
+	graph.add_segment(RoadSegment.new("seg_missing", "road_a", "road_z", 1.0))
+	var missing_endpoint_rejected := not graph.has_segment("seg_missing") and graph.segments.size() == segment_count_before
+
+	var force_a: TravelingForce = TravelingForce.new("force_a", "gang_a", "stronghold_a", "hq_contested", route_short, 5.0, "traveling_outbound")
+	original.add_traveling_force(force_a)
+	var leftover_step_1: float = force_a.advance(3.0, graph)
+	var force_step_1_ok := (
+		leftover_step_1 == 0.0
+		and force_a.route_segment_index == 1
+		and force_a.distance_into_segment == 1.0
+		and force_a.travel_state == "traveling_outbound"
+	)
+	var leftover_step_2: float = force_a.advance(1.0, graph)
+	var force_step_2_ok := (
+		leftover_step_2 == 0.0
+		and force_a.route_segment_index == 2
+		and force_a.distance_into_segment == 0.0
+		and force_a.travel_state == "traveling_outbound"
+	)
+	var leftover_step_3: float = force_a.advance(3.0, graph)
+	var force_step_3_ok := (
+		leftover_step_3 == 0.0
+		and force_a.travel_state == "at_destination"
+		and force_a.route_segment_index == 2
+		and force_a.distance_into_segment == 3.0
+	)
+	var index_after_arrival := force_a.route_segment_index
+	var distance_after_arrival := force_a.distance_into_segment
+	var leftover_step_4: float = force_a.advance(2.0, graph)
+	var force_step_4_ok := (
+		leftover_step_4 == 2.0
+		and force_a.travel_state == "at_destination"
+		and force_a.route_segment_index == index_after_arrival
+		and force_a.distance_into_segment == distance_after_arrival
+	)
+
+	var force_partial: TravelingForce = TravelingForce.new("force_partial", "gang_a", "stronghold_a", "hq_contested", route_short, 5.0, "traveling_outbound")
+	original.add_traveling_force(force_partial)
+	var leftover_partial: float = force_partial.advance(5.5, graph)
+	var force_partial_ok := (
+		leftover_partial == 0.0
+		and force_partial.travel_state == "traveling_outbound"
+		and force_partial.route_segment_index == 2
+		and force_partial.distance_into_segment == 1.5
+	)
+
+	var force_leftover: TravelingForce = TravelingForce.new("force_leftover", "gang_a", "stronghold_a", "business_a", route_ab, 5.0, "traveling_outbound")
+	original.add_traveling_force(force_leftover)
+	var leftover_arrival: float = force_leftover.advance(5.0, graph)
+	var force_leftover_ok := (
+		leftover_arrival == 3.0
+		and force_leftover.travel_state == "at_destination"
+		and force_leftover.route_segment_index == 0
+		and force_leftover.distance_into_segment == 2.0
+	)
+
+	var force_blocked: TravelingForce = TravelingForce.new("force_blocked", "gang_a", "stronghold_a", "hq_contested", route_short, 5.0, "traveling_outbound")
+	force_blocked.route_segment_index = 1
+	force_blocked.distance_into_segment = 0.0
+	original.add_traveling_force(force_blocked)
+	graph.get_segment("seg_be").is_open = false
+	var leftover_blocked: float = force_blocked.advance(2.0, graph)
+	var force_blocked_ok := (
+		leftover_blocked == 2.0
+		and force_blocked.travel_state == "traveling_outbound"
+		and force_blocked.route_segment_index == 1
+		and force_blocked.distance_into_segment == 0.0
+	)
+	graph.get_segment("seg_be").is_open = true
+
+	var blocked_state_before_invalid := force_partial.travel_state
+	var blocked_index_before_invalid := force_partial.route_segment_index
+	var blocked_distance_before_invalid := force_partial.distance_into_segment
+	var leftover_invalid: float = force_partial.advance(-1.0, graph)
+	var invalid_budget_ok := (
+		leftover_invalid == -1.0
+		and force_partial.travel_state == blocked_state_before_invalid
+		and force_partial.route_segment_index == blocked_index_before_invalid
+		and force_partial.distance_into_segment == blocked_distance_before_invalid
+	)
+
+	var force_a_before_dup: TravelingForce = original.get_traveling_force("force_a")
+	original.add_traveling_force(TravelingForce.new("force_a", "gang_b", "business_a", "hq_contested", route_ab, 3.0, "complete"))
+	var duplicate_traveling_force_rejected := original.get_traveling_force("force_a") == force_a_before_dup
+
 	var gang_a_before_dup := original.get_faction("gang_a")
 	original.add_faction(MajorGang.new("gang_a", "Impostor Gang", "ai"))
 	var duplicate_faction_rejected := original.get_faction("gang_a") == gang_a_before_dup
@@ -113,6 +242,16 @@ static func run() -> Dictionary:
 	var northside_neighborhoods := restored.get_neighborhoods_in_stronghold_region("northside")
 	var district_1_neighborhoods := restored.get_neighborhoods_in_police_region("district_1")
 	var district_2_neighborhoods := restored.get_neighborhoods_in_police_region("district_2")
+	var restored_graph: RoadGraph = restored.road_graph
+	var restored_force_a: TravelingForce = restored.get_traveling_force("force_a")
+	var restored_force_partial: TravelingForce = restored.get_traveling_force("force_partial")
+	var restored_force_leftover: TravelingForce = restored.get_traveling_force("force_leftover")
+	var restored_force_blocked: TravelingForce = restored.get_traveling_force("force_blocked")
+	var restored_seg_ab: RoadSegment = restored_graph.get_segment("seg_ab")
+	var restored_seg_bc: RoadSegment = restored_graph.get_segment("seg_bc")
+	var restored_seg_cd: RoadSegment = restored_graph.get_segment("seg_cd")
+	var restored_seg_be: RoadSegment = restored_graph.get_segment("seg_be")
+	var restored_seg_ed: RoadSegment = restored_graph.get_segment("seg_ed")
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -191,6 +330,78 @@ static func run() -> Dictionary:
 		"duplicate_neighborhood_rejected": duplicate_neighborhood_rejected,
 		"duplicate_stronghold_region_rejected": duplicate_stronghold_region_rejected,
 		"duplicate_police_region_rejected": duplicate_police_region_rejected,
+		"route_short_ok": route_short_ok,
+		"route_short_distance_ok": route_short_distance_ok,
+		"route_same_ok": route_same_ok,
+		"empty_start_route_ok": empty_start_route_ok,
+		"missing_destination_route_ok": missing_destination_route_ok,
+		"closed_route_ok": closed_route_ok,
+		"closed_route_distance_ok": closed_route_distance_ok,
+		"duplicate_road_node_rejected": duplicate_road_node_rejected,
+		"duplicate_road_segment_rejected": duplicate_road_segment_rejected,
+		"reversed_endpoint_pair_rejected": reversed_endpoint_pair_rejected,
+		"self_loop_rejected": self_loop_rejected,
+		"missing_endpoint_rejected": missing_endpoint_rejected,
+		"force_step_1_ok": force_step_1_ok,
+		"force_step_2_ok": force_step_2_ok,
+		"force_step_3_ok": force_step_3_ok,
+		"force_step_4_ok": force_step_4_ok,
+		"force_partial_ok": force_partial_ok,
+		"force_leftover_ok": force_leftover_ok,
+		"force_blocked_ok": force_blocked_ok,
+		"invalid_budget_ok": invalid_budget_ok,
+		"duplicate_traveling_force_rejected": duplicate_traveling_force_rejected,
+		"road_a_exists": restored_graph != null and restored_graph.has_node("road_a"),
+		"road_b_exists": restored_graph != null and restored_graph.has_node("road_b"),
+		"road_c_exists": restored_graph != null and restored_graph.has_node("road_c"),
+		"road_d_exists": restored_graph != null and restored_graph.has_node("road_d"),
+		"road_e_exists": restored_graph != null and restored_graph.has_node("road_e"),
+		"seg_ab_exists": restored_graph != null and restored_graph.has_segment("seg_ab"),
+		"seg_bc_exists": restored_graph != null and restored_graph.has_segment("seg_bc"),
+		"seg_cd_exists": restored_graph != null and restored_graph.has_segment("seg_cd"),
+		"seg_be_exists": restored_graph != null and restored_graph.has_segment("seg_be"),
+		"seg_ed_exists": restored_graph != null and restored_graph.has_segment("seg_ed"),
+		"seg_ab_distance": restored_seg_ab != null and restored_seg_ab.distance == 2.0,
+		"seg_bc_distance": restored_seg_bc != null and restored_seg_bc.distance == 3.0,
+		"seg_cd_distance": restored_seg_cd != null and restored_seg_cd.distance == 4.0,
+		"seg_be_distance": restored_seg_be != null and restored_seg_be.distance == 2.0,
+		"seg_ed_distance": restored_seg_ed != null and restored_seg_ed.distance == 3.0,
+		"seg_ab_is_open": restored_seg_ab != null and restored_seg_ab.is_open == true,
+		"seg_bc_is_open": restored_seg_bc != null and restored_seg_bc.is_open == true,
+		"seg_cd_is_open": restored_seg_cd != null and restored_seg_cd.is_open == true,
+		"seg_be_is_open": restored_seg_be != null and restored_seg_be.is_open == true,
+		"seg_ed_is_open": restored_seg_ed != null and restored_seg_ed.is_open == true,
+		"stronghold_a_road_node_id": restored_stronghold != null and restored_stronghold.road_node_id == "road_a",
+		"business_a_road_node_id": restored_business != null and restored_business.road_node_id == "road_b",
+		"hq_contested_road_node_id": restored_hq != null and restored_hq.road_node_id == "road_d",
+		"force_a_exists": restored.has_traveling_force("force_a"),
+		"force_partial_exists": restored.has_traveling_force("force_partial"),
+		"force_leftover_exists": restored.has_traveling_force("force_leftover"),
+		"force_blocked_exists": restored.has_traveling_force("force_blocked"),
+		"force_a_ids": restored_force_a != null and restored_force_a.faction_id == "gang_a" and restored_force_a.origin_location_id == "stronghold_a" and restored_force_a.destination_location_id == "hq_contested",
+		"force_partial_ids": restored_force_partial != null and restored_force_partial.faction_id == "gang_a" and restored_force_partial.origin_location_id == "stronghold_a" and restored_force_partial.destination_location_id == "hq_contested",
+		"force_leftover_ids": restored_force_leftover != null and restored_force_leftover.faction_id == "gang_a" and restored_force_leftover.origin_location_id == "stronghold_a" and restored_force_leftover.destination_location_id == "business_a",
+		"force_blocked_ids": restored_force_blocked != null and restored_force_blocked.faction_id == "gang_a",
+		"force_a_route": restored_force_a != null and _string_ids_match(restored_force_a.route_node_ids, route_short),
+		"force_partial_route": restored_force_partial != null and _string_ids_match(restored_force_partial.route_node_ids, route_short),
+		"force_leftover_route": restored_force_leftover != null and _string_ids_match(restored_force_leftover.route_node_ids, route_ab),
+		"force_blocked_route": restored_force_blocked != null and _string_ids_match(restored_force_blocked.route_node_ids, route_short),
+		"force_a_segment_index": restored_force_a != null and restored_force_a.route_segment_index == 2,
+		"force_partial_segment_index": restored_force_partial != null and restored_force_partial.route_segment_index == 2,
+		"force_leftover_segment_index": restored_force_leftover != null and restored_force_leftover.route_segment_index == 0,
+		"force_blocked_segment_index": restored_force_blocked != null and restored_force_blocked.route_segment_index == 1,
+		"force_a_distance_into_segment": restored_force_a != null and restored_force_a.distance_into_segment == 3.0,
+		"force_partial_distance_into_segment": restored_force_partial != null and restored_force_partial.distance_into_segment == 1.5,
+		"force_leftover_distance_into_segment": restored_force_leftover != null and restored_force_leftover.distance_into_segment == 2.0,
+		"force_blocked_distance_into_segment": restored_force_blocked != null and restored_force_blocked.distance_into_segment == 0.0,
+		"force_a_movement_per_turn": restored_force_a != null and restored_force_a.movement_per_turn == 5.0,
+		"force_partial_movement_per_turn": restored_force_partial != null and restored_force_partial.movement_per_turn == 5.0,
+		"force_leftover_movement_per_turn": restored_force_leftover != null and restored_force_leftover.movement_per_turn == 5.0,
+		"force_blocked_movement_per_turn": restored_force_blocked != null and restored_force_blocked.movement_per_turn == 5.0,
+		"force_a_travel_state": restored_force_a != null and restored_force_a.travel_state == "at_destination",
+		"force_partial_travel_state": restored_force_partial != null and restored_force_partial.travel_state == "traveling_outbound",
+		"force_leftover_travel_state": restored_force_leftover != null and restored_force_leftover.travel_state == "at_destination",
+		"force_blocked_travel_state": restored_force_blocked != null and restored_force_blocked.travel_state == "traveling_outbound",
 	}
 
 	var passed := true
@@ -211,5 +422,14 @@ static func _neighborhood_ids_match(neighborhood_list: Array[Neighborhood], expe
 		return false
 	for i in expected_ids.size():
 		if neighborhood_list[i].id != expected_ids[i]:
+			return false
+	return true
+
+
+static func _string_ids_match(actual: Array[String], expected: Array[String]) -> bool:
+	if actual.size() != expected.size():
+		return false
+	for i in expected.size():
+		if actual[i] != expected[i]:
 			return false
 	return true
