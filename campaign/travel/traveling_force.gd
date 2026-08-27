@@ -9,6 +9,9 @@ var route_node_ids: Array[String] = []
 var route_segment_index: int = 0
 var distance_into_segment: float = 0.0
 var movement_per_turn: float = 0.0
+var movement_remaining: float = 0.0:
+	set(value):
+		movement_remaining = maxf(value, 0.0)
 var travel_state: String = ""
 var vehicle_group: VehicleGroup = VehicleGroup.new()
 var soldier_group: SoldierGroup = SoldierGroup.new()
@@ -85,6 +88,22 @@ func advance(distance_budget: float, road_graph: RoadGraph) -> float:
 	return remaining
 
 
+func refresh_turn_movement() -> float:
+	movement_remaining = maxf(movement_per_turn, 0.0)
+	return movement_remaining
+
+
+func get_current_road_node_id() -> String:
+	if route_node_ids.is_empty():
+		return ""
+	if travel_state == "at_destination":
+		return str(route_node_ids[route_node_ids.size() - 1])
+	if is_equal_approx(distance_into_segment, 0.0):
+		if route_segment_index >= 0 and route_segment_index < route_node_ids.size():
+			return str(route_node_ids[route_segment_index])
+	return ""
+
+
 func refresh_movement_from_vehicles(game_state: GameState) -> float:
 	if vehicle_group == null:
 		vehicle_group = VehicleGroup.new()
@@ -127,6 +146,7 @@ func to_dict() -> Dictionary:
 		"route_segment_index": route_segment_index,
 		"distance_into_segment": distance_into_segment,
 		"movement_per_turn": movement_per_turn,
+		"movement_remaining": movement_remaining,
 		"travel_state": travel_state,
 		"vehicle_group": vehicle_group.to_dict(),
 		"soldier_group": soldier_group.to_dict(),
@@ -146,6 +166,7 @@ func from_dict(data: Dictionary) -> void:
 	route_segment_index = maxi(int(data.get("route_segment_index", 0)), 0)
 	distance_into_segment = maxf(float(data.get("distance_into_segment", 0.0)), 0.0)
 	movement_per_turn = float(data.get("movement_per_turn", 0.0))
+	movement_remaining = maxf(float(data.get("movement_remaining", 0.0)), 0.0)
 	travel_state = str(data.get("travel_state", ""))
 	if vehicle_group == null:
 		vehicle_group = VehicleGroup.new()

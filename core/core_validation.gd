@@ -15,6 +15,9 @@ const MissionService := preload("res://campaign/missions/mission_service.gd")
 const BusinessRaidLoot := preload("res://campaign/missions/resolvers/business_raid_loot.gd")
 const BusinessRaidResult := preload("res://campaign/missions/resolvers/business_raid_result.gd")
 const BusinessRaidResolver := preload("res://campaign/missions/resolvers/business_raid_resolver.gd")
+const ForceMoveRequest := preload("res://campaign/travel/force_move_request.gd")
+const ForceMoveResult := preload("res://campaign/travel/force_move_result.gd")
+const ForceMovementService := preload("res://campaign/travel/force_movement_service.gd")
 
 
 static func run() -> Dictionary:
@@ -1959,6 +1962,459 @@ static func run() -> Dictionary:
 		and raid_force_copy.travel_state == "at_destination"
 	)
 
+	var rem_route_a: Array[String] = ["road_a"]
+	var rem_route_ab: Array[String] = ["road_a", "road_b"]
+	var rem_route_short: Array[String] = ["road_a", "road_b", "road_e", "road_d"]
+	var rem_save_zero: TravelingForce = TravelingForce.new("rem_save_zero", "gang_a", "stronghold_a", "stronghold_a", rem_route_a, 5.0, "at_destination")
+	rem_save_zero.movement_remaining = 0.0
+	original.add_traveling_force(rem_save_zero)
+	var rem_save_partial: TravelingForce = TravelingForce.new("rem_save_partial", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "traveling_outbound")
+	rem_save_partial.movement_remaining = 1.25
+	original.add_traveling_force(rem_save_partial)
+	var rem_save_full: TravelingForce = TravelingForce.new("rem_save_full", "gang_a", "stronghold_a", "stronghold_a", rem_route_a, 5.0, "at_destination")
+	rem_save_full.movement_remaining = 5.0
+	original.add_traveling_force(rem_save_full)
+	var rem_live_save: Dictionary = original.to_dict()
+	var rem_live_restored := GameState.new()
+	rem_live_restored.from_dict(rem_live_save)
+	var rem_restored_zero: TravelingForce = rem_live_restored.get_traveling_force("rem_save_zero")
+	var rem_restored_partial: TravelingForce = rem_live_restored.get_traveling_force("rem_save_partial")
+	var rem_restored_full: TravelingForce = rem_live_restored.get_traveling_force("rem_save_full")
+	var rem_save_load_ok: bool = (
+		rem_restored_zero != null
+		and rem_restored_partial != null
+		and rem_restored_full != null
+		and is_equal_approx(rem_restored_zero.movement_remaining, 0.0)
+		and is_equal_approx(rem_restored_partial.movement_remaining, 1.25)
+		and is_equal_approx(rem_restored_full.movement_remaining, 5.0)
+	)
+	var rem_older_save: Dictionary = rem_live_save.duplicate(true)
+	var rem_older_forces: Variant = rem_older_save.get("traveling_forces", {})
+	var rem_older_erased: bool = false
+	if rem_older_forces is Dictionary:
+		var rem_full_record: Variant = rem_older_forces.get("rem_save_full", {})
+		if rem_full_record is Dictionary:
+			rem_full_record.erase("movement_remaining")
+			rem_older_erased = not rem_full_record.has("movement_remaining")
+	var rem_older_restored := GameState.new()
+	rem_older_restored.from_dict(rem_older_save)
+	var rem_older_full: TravelingForce = rem_older_restored.get_traveling_force("rem_save_full")
+	var rem_older_save_ok: bool = (
+		rem_older_erased
+		and rem_older_full != null
+		and is_equal_approx(rem_older_full.movement_remaining, 0.0)
+	)
+
+	var rem_loc_start: Business = _make_move_business(original, "rem_loc_start", "Remaining Start", "road_a")
+	var rem_loc_dest: Business = _make_move_business(original, "rem_loc_dest", "Remaining Dest", "road_b")
+	var rem_same_a: Business = _make_move_business(original, "rem_same_a", "Remaining Same A", "road_a")
+	var rem_same_b: Business = _make_move_business(original, "rem_same_b", "Remaining Same B", "road_a")
+	var rem_raid_biz: Business = _make_move_business(original, "rem_raid_biz", "Remaining Raid Business A", "road_a")
+	var rem_home_away: Business = _make_move_business(original, "rem_home_away", "Remaining Away", "road_d")
+	var rem_allow_from: Business = _make_move_business(original, "rem_allow_from", "Remaining Allow From", "road_a")
+	var rem_allow_to: Business = _make_move_business(original, "rem_allow_to", "Remaining Allow To", "road_a")
+	var rem_block_from: Business = _make_move_business(original, "rem_block_from", "Remaining Block From", "road_a")
+	var rem_probe_from: Business = _make_move_business(original, "rem_probe_from", "Remaining Probe From", "road_a")
+
+	var rem_soldier_partial: Soldier = Soldier.new("rem_soldier_partial", "gang_a", "", "pistol", 1.0, 20.0)
+	var rem_soldier_arrive: Soldier = Soldier.new("rem_soldier_arrive", "gang_a", "", "pistol", 1.0, 20.0)
+	var rem_soldier_same: Soldier = Soldier.new("rem_soldier_same", "gang_a", "", "pistol", 1.0, 20.0)
+	var rem_soldier_zero: Soldier = Soldier.new("rem_soldier_zero", "gang_a", "", "pistol", 1.0, 20.0)
+	var rem_soldier_resolved: Soldier = Soldier.new("rem_soldier_resolved", "gang_a", "", "pistol", 1.0, 20.0)
+	var rem_soldier_raid: Soldier = Soldier.new("rem_soldier_raid", "gang_a", "", "pistol", 1.0, 20.0)
+	original.add_soldier(rem_soldier_partial)
+	original.add_soldier(rem_soldier_arrive)
+	original.add_soldier(rem_soldier_same)
+	original.add_soldier(rem_soldier_zero)
+	original.add_soldier(rem_soldier_resolved)
+	original.add_soldier(rem_soldier_raid)
+	original.assign_soldier_to_stronghold("rem_soldier_partial", "stronghold_a")
+	original.assign_soldier_to_stronghold("rem_soldier_arrive", "stronghold_a")
+	original.assign_soldier_to_stronghold("rem_soldier_same", "stronghold_a")
+	original.assign_soldier_to_stronghold("rem_soldier_zero", "stronghold_a")
+	original.assign_soldier_to_stronghold("rem_soldier_resolved", "stronghold_a")
+	original.assign_soldier_to_stronghold("rem_soldier_raid", "stronghold_a")
+	var rem_vehicle_partial: Vehicle = Vehicle.new("rem_vehicle_partial", "gang_a", "car", "", 2, 5.0, 50.0)
+	var rem_vehicle_arrive: Vehicle = Vehicle.new("rem_vehicle_arrive", "gang_a", "car", "", 4, 8.0, 50.0)
+	var rem_vehicle_same: Vehicle = Vehicle.new("rem_vehicle_same", "gang_a", "car", "", 2, 5.0, 50.0)
+	var rem_vehicle_zero: Vehicle = Vehicle.new("rem_vehicle_zero", "gang_a", "car", "", 2, 5.0, 50.0)
+	var rem_vehicle_resolved: Vehicle = Vehicle.new("rem_vehicle_resolved", "gang_a", "car", "", 2, 5.0, 50.0)
+	var rem_vehicle_raid: Vehicle = Vehicle.new("rem_vehicle_raid", "gang_a", "car", "", 2, 5.0, 50.0)
+	original.add_vehicle(rem_vehicle_partial)
+	original.add_vehicle(rem_vehicle_arrive)
+	original.add_vehicle(rem_vehicle_same)
+	original.add_vehicle(rem_vehicle_zero)
+	original.add_vehicle(rem_vehicle_resolved)
+	original.add_vehicle(rem_vehicle_raid)
+	original.assign_vehicle_to_stronghold("rem_vehicle_partial", "stronghold_a")
+	original.assign_vehicle_to_stronghold("rem_vehicle_arrive", "stronghold_a")
+	original.assign_vehicle_to_stronghold("rem_vehicle_same", "stronghold_a")
+	original.assign_vehicle_to_stronghold("rem_vehicle_zero", "stronghold_a")
+	original.assign_vehicle_to_stronghold("rem_vehicle_resolved", "stronghold_a")
+	original.assign_vehicle_to_stronghold("rem_vehicle_raid", "stronghold_a")
+
+	var rem_ids_partial_s: Array[String] = ["rem_soldier_partial"]
+	var rem_ids_partial_v: Array[String] = ["rem_vehicle_partial"]
+	var rem_req_partial: DeploymentRequest = DeploymentRequest.new("rem_force_partial", "gang_a", "stronghold_a", "hq_contested", rem_ids_partial_s, rem_ids_partial_v, 3.0)
+	var rem_res_partial: DeploymentResult = DeploymentService.deploy(original, rem_req_partial)
+	var rem_force_partial: TravelingForce = original.get_traveling_force("rem_force_partial")
+	var rem_deploy_partial_ok: bool = (
+		rem_res_partial.success
+		and rem_force_partial != null
+		and is_equal_approx(rem_force_partial.movement_per_turn, 5.0)
+		and is_equal_approx(rem_force_partial.movement_remaining, 0.0)
+		and is_equal_approx(rem_res_partial.unused_movement, 0.0)
+	)
+	var rem_ids_arrive_s: Array[String] = ["rem_soldier_arrive"]
+	var rem_ids_arrive_v: Array[String] = ["rem_vehicle_arrive"]
+	var rem_req_arrive: DeploymentRequest = DeploymentRequest.new("rem_force_arrive", "gang_a", "stronghold_a", "hq_contested", rem_ids_arrive_s, rem_ids_arrive_v, 8.0)
+	var rem_res_arrive: DeploymentResult = DeploymentService.deploy(original, rem_req_arrive)
+	var rem_force_arrive: TravelingForce = original.get_traveling_force("rem_force_arrive")
+	var rem_deploy_arrive_ok: bool = (
+		rem_res_arrive.success
+		and rem_res_arrive.reached_destination
+		and rem_force_arrive != null
+		and rem_force_arrive.travel_state == "at_destination"
+		and is_equal_approx(rem_force_arrive.movement_remaining, 1.0)
+		and is_equal_approx(rem_res_arrive.unused_movement, 1.0)
+	)
+	var rem_ids_same_s: Array[String] = ["rem_soldier_same"]
+	var rem_ids_same_v: Array[String] = ["rem_vehicle_same"]
+	var rem_req_same: DeploymentRequest = DeploymentRequest.new("rem_force_same", "gang_a", "stronghold_a", "business_same_node", rem_ids_same_s, rem_ids_same_v, 3.0)
+	var rem_res_same: DeploymentResult = DeploymentService.deploy(original, rem_req_same)
+	var rem_force_same: TravelingForce = original.get_traveling_force("rem_force_same")
+	var rem_deploy_same_ok: bool = (
+		rem_res_same.success
+		and rem_res_same.reached_destination
+		and rem_force_same != null
+		and rem_force_same.travel_state == "at_destination"
+		and is_equal_approx(rem_force_same.movement_remaining, 3.0)
+		and is_equal_approx(rem_res_same.unused_movement, 3.0)
+	)
+	var rem_ids_zero_s: Array[String] = ["rem_soldier_zero"]
+	var rem_ids_zero_v: Array[String] = ["rem_vehicle_zero"]
+	var rem_req_zero: DeploymentRequest = DeploymentRequest.new("rem_force_zero", "gang_a", "stronghold_a", "hq_contested", rem_ids_zero_s, rem_ids_zero_v, 0.0)
+	var rem_res_zero: DeploymentResult = DeploymentService.deploy(original, rem_req_zero)
+	var rem_force_zero: TravelingForce = original.get_traveling_force("rem_force_zero")
+	var expected_zero_route: Array[String] = ["road_a", "road_b", "road_e", "road_d"]
+	var rem_deploy_zero_ok: bool = (
+		rem_res_zero.success
+		and rem_force_zero != null
+		and rem_force_zero.travel_state == "traveling_outbound"
+		and _string_ids_match(rem_force_zero.route_node_ids, expected_zero_route)
+		and rem_force_zero.route_segment_index == 0
+		and is_equal_approx(rem_force_zero.distance_into_segment, 0.0)
+		and is_equal_approx(rem_force_zero.movement_remaining, 0.0)
+		and is_equal_approx(rem_res_zero.unused_movement, 0.0)
+	)
+
+	var rem_refresh: TravelingForce = TravelingForce.new("rem_refresh", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "traveling_outbound")
+	rem_refresh.route_segment_index = 0
+	rem_refresh.distance_into_segment = 1.0
+	rem_refresh.movement_remaining = 1.25
+	var rem_refresh_route_before: Array[String] = _copy_ids(rem_refresh.route_node_ids)
+	var rem_refresh_index_before: int = rem_refresh.route_segment_index
+	var rem_refresh_dist_before: float = rem_refresh.distance_into_segment
+	var rem_refresh_dest_before: String = rem_refresh.destination_location_id
+	var rem_refresh_state_before: String = rem_refresh.travel_state
+	var rem_refresh_origin_before: String = rem_refresh.origin_location_id
+	var rem_refresh_returned: float = rem_refresh.refresh_turn_movement()
+	var rem_refresh_ok: bool = (
+		is_equal_approx(rem_refresh_returned, 5.0)
+		and is_equal_approx(rem_refresh.movement_remaining, 5.0)
+		and _string_ids_match(rem_refresh.route_node_ids, rem_refresh_route_before)
+		and rem_refresh.route_segment_index == rem_refresh_index_before
+		and is_equal_approx(rem_refresh.distance_into_segment, rem_refresh_dist_before)
+		and rem_refresh.destination_location_id == rem_refresh_dest_before
+		and rem_refresh.travel_state == rem_refresh_state_before
+		and rem_refresh.origin_location_id == rem_refresh_origin_before
+	)
+
+	var rem_node_one: TravelingForce = TravelingForce.new("rem_node_one", "gang_a", "stronghold_a", "business_same_node", rem_route_a, 5.0, "at_destination")
+	var rem_node_complete: TravelingForce = TravelingForce.new("rem_node_complete", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "at_destination")
+	rem_node_complete.route_segment_index = 2
+	rem_node_complete.distance_into_segment = 3.0
+	var rem_node_exact: TravelingForce = TravelingForce.new("rem_node_exact", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "traveling_outbound")
+	rem_node_exact.route_segment_index = 1
+	rem_node_exact.distance_into_segment = 0.0
+	var rem_node_mid: TravelingForce = TravelingForce.new("rem_node_mid", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "traveling_outbound")
+	rem_node_mid.route_segment_index = 0
+	rem_node_mid.distance_into_segment = 1.0
+	var rem_current_node_ok: bool = (
+		rem_node_one.get_current_road_node_id() == "road_a"
+		and rem_node_complete.get_current_road_node_id() == "road_d"
+		and rem_node_exact.get_current_road_node_id() == "road_b"
+		and rem_node_mid.get_current_road_node_id().is_empty()
+	)
+
+	var rem_force_resolved: TravelingForce = _make_at_dest_force(original, "rem_force_resolved", "stronghold_a", "rem_loc_start", rem_route_a, 3.0, 5.0)
+	rem_force_resolved.soldier_group.add_soldier_id("rem_soldier_resolved")
+	rem_force_resolved.vehicle_group.add_vehicle_id("rem_vehicle_resolved")
+	var rem_resolved_soldiers_before: Array[String] = _copy_ids(rem_force_resolved.soldier_group.soldier_ids)
+	var rem_resolved_vehicles_before: Array[String] = _copy_ids(rem_force_resolved.vehicle_group.vehicle_ids)
+	var rem_resolved_soldier_home_before: String = rem_soldier_resolved.home_stronghold_id
+	var rem_resolved_vehicle_home_before: String = rem_vehicle_resolved.home_stronghold_id
+	var rem_mission_resolved: CampaignMission = _register_move_mission(
+		original, "rem_mission_resolved", "raid_business", "rem_force_resolved",
+		"stronghold_a", "rem_loc_start", "resolved_success", "prior_operation_complete"
+	)
+	var rem_resolved_req: ForceMoveRequest = ForceMoveRequest.new("rem_force_resolved", "rem_loc_dest")
+	var rem_resolved_result: ForceMoveResult = ForceMovementService.move_to_location(original, rem_resolved_req)
+	var rem_resolved_move_ok: bool = (
+		rem_resolved_result.success
+		and rem_resolved_result.error_code.is_empty()
+		and rem_force_resolved.destination_location_id == "rem_loc_dest"
+		and rem_force_resolved.travel_state == "at_destination"
+		and _string_ids_match(rem_force_resolved.route_node_ids, rem_route_ab)
+		and is_equal_approx(rem_resolved_result.movement_spent, 2.0)
+		and is_equal_approx(rem_force_resolved.movement_remaining, 1.0)
+		and rem_force_resolved.origin_location_id == "stronghold_a"
+		and rem_mission_resolved.mission_state == "resolved_success"
+		and rem_mission_resolved.target_location_id == "rem_loc_start"
+		and rem_mission_resolved.outcome_code == "prior_operation_complete"
+		and rem_mission_resolved.origin_location_id == "stronghold_a"
+		and _string_ids_match(rem_force_resolved.soldier_group.soldier_ids, rem_resolved_soldiers_before)
+		and _string_ids_match(rem_force_resolved.vehicle_group.vehicle_ids, rem_resolved_vehicles_before)
+		and rem_soldier_resolved.home_stronghold_id == rem_resolved_soldier_home_before
+		and rem_vehicle_resolved.home_stronghold_id == rem_resolved_vehicle_home_before
+		and rem_loc_start != null
+		and rem_loc_dest != null
+	)
+
+	var rem_force_raid: TravelingForce = _make_at_dest_force(original, "rem_force_raid", "stronghold_a", "rem_raid_biz", rem_route_a, 3.0, 5.0)
+	rem_force_raid.soldier_group.add_soldier_id("rem_soldier_raid")
+	rem_force_raid.vehicle_group.add_vehicle_id("rem_vehicle_raid")
+	var rem_mission_raid: CampaignMission = _register_move_mission(
+		original, "rem_mission_raid", "raid_business", "rem_force_raid",
+		"stronghold_a", "rem_raid_biz", "resolved_success", "business_raided"
+	)
+	var rem_raid_req: ForceMoveRequest = ForceMoveRequest.new("rem_force_raid", "rem_loc_dest")
+	var rem_raid_result: ForceMoveResult = ForceMovementService.move_to_location(original, rem_raid_req)
+	var rem_raid_continue_ok: bool = (
+		rem_raid_result.success
+		and rem_force_raid.destination_location_id == "rem_loc_dest"
+		and rem_force_raid.destination_location_id != "rem_raid_biz"
+		and rem_raid_biz != null
+		and rem_mission_raid.mission_type_id == "raid_business"
+		and rem_mission_raid.mission_state == "resolved_success"
+		and rem_mission_raid.target_location_id == "rem_raid_biz"
+		and rem_mission_raid.outcome_code == "business_raided"
+		and rem_mission_raid.origin_location_id == "stronghold_a"
+		and rem_mission_raid.force_id == "rem_force_raid"
+	)
+
+	var rem_force_block_out: TravelingForce = _make_at_dest_force(original, "rem_force_block_out", "stronghold_a", "rem_block_from", rem_route_a, 3.0, 5.0)
+	_register_move_mission(original, "rem_mission_block_out", "raid_business", "rem_force_block_out", "stronghold_a", "rem_block_from", "traveling_outbound", "")
+	var rem_block_out_snap: Dictionary = _force_travel_snapshot(rem_force_block_out)
+	var rem_block_out_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_block_out", "rem_loc_dest"))
+	var rem_block_outbound_ok: bool = (
+		not rem_block_out_result.success
+		and rem_block_out_result.error_code == "force_has_unresolved_mission"
+		and _force_travel_unchanged(rem_force_block_out, rem_block_out_snap)
+	)
+	var rem_force_block_await: TravelingForce = _make_at_dest_force(original, "rem_force_block_await", "stronghold_a", "rem_block_from", rem_route_a, 3.0, 5.0)
+	_register_move_mission(original, "rem_mission_block_await", "raid_business", "rem_force_block_await", "stronghold_a", "rem_block_from", "awaiting_resolution", "")
+	var rem_block_await_snap: Dictionary = _force_travel_snapshot(rem_force_block_await)
+	var rem_block_await_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_block_await", "rem_loc_dest"))
+	var rem_block_await_ok: bool = (
+		not rem_block_await_result.success
+		and rem_block_await_result.error_code == "force_has_unresolved_mission"
+		and _force_travel_unchanged(rem_force_block_await, rem_block_await_snap)
+	)
+	var rem_force_block_return: TravelingForce = _make_at_dest_force(original, "rem_force_block_return", "stronghold_a", "rem_block_from", rem_route_a, 3.0, 5.0)
+	_register_move_mission(original, "rem_mission_block_return", "raid_business", "rem_force_block_return", "stronghold_a", "rem_block_from", "traveling_return", "")
+	var rem_block_return_snap: Dictionary = _force_travel_snapshot(rem_force_block_return)
+	var rem_block_return_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_block_return", "rem_loc_dest"))
+	var rem_block_return_ok: bool = (
+		not rem_block_return_result.success
+		and rem_block_return_result.error_code == "force_has_unresolved_mission"
+		and _force_travel_unchanged(rem_force_block_return, rem_block_return_snap)
+	)
+
+	var rem_force_allow_success: TravelingForce = _make_at_dest_force(original, "rem_force_allow_success", "stronghold_a", "rem_allow_from", rem_route_a, 3.0, 5.0)
+	_register_move_mission(original, "rem_mission_allow_success", "raid_business", "rem_force_allow_success", "stronghold_a", "rem_allow_from", "resolved_success", "ok")
+	var rem_allow_success_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_allow_success", "rem_allow_to"))
+	var rem_allow_success_ok: bool = (
+		rem_allow_success_result.success
+		and rem_force_allow_success.destination_location_id == "rem_allow_to"
+		and rem_force_allow_success.travel_state == "at_destination"
+	)
+	var rem_force_allow_failure: TravelingForce = _make_at_dest_force(original, "rem_force_allow_failure", "stronghold_a", "rem_allow_from", rem_route_a, 3.0, 5.0)
+	var rem_mission_allow_failure: CampaignMission = _register_move_mission(original, "rem_mission_allow_failure", "raid_business", "rem_force_allow_failure", "stronghold_a", "rem_allow_from", "resolved_failure", "failed")
+	var rem_allow_failure_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_allow_failure", "rem_allow_to"))
+	var rem_allow_failure_ok: bool = (
+		rem_mission_allow_failure != null
+		and rem_allow_failure_result.success
+		and rem_force_allow_failure.destination_location_id == "rem_allow_to"
+	)
+	var rem_force_allow_complete: TravelingForce = _make_at_dest_force(original, "rem_force_allow_complete", "stronghold_a", "rem_allow_from", rem_route_a, 3.0, 5.0)
+	_register_move_mission(original, "rem_mission_allow_complete", "raid_business", "rem_force_allow_complete", "stronghold_a", "rem_allow_from", "complete", "done")
+	var rem_allow_complete_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_allow_complete", "rem_allow_to"))
+	var rem_allow_complete_ok: bool = (
+		rem_allow_complete_result.success
+		and rem_force_allow_complete.destination_location_id == "rem_allow_to"
+	)
+
+	var rem_force_samenode: TravelingForce = _make_at_dest_force(original, "rem_force_samenode", "stronghold_a", "rem_same_a", rem_route_a, 3.0, 5.0)
+	var rem_samenode_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_samenode", "rem_same_b"))
+	var rem_samenode_ok: bool = (
+		rem_samenode_result.success
+		and rem_samenode_result.reached_destination
+		and rem_force_samenode.destination_location_id == "rem_same_b"
+		and rem_same_a != null
+		and rem_same_b != null
+		and rem_force_samenode.travel_state == "at_destination"
+		and rem_force_samenode.route_node_ids.size() == 1
+		and rem_force_samenode.route_node_ids[0] == "road_a"
+		and is_equal_approx(rem_samenode_result.movement_spent, 0.0)
+		and is_equal_approx(rem_force_samenode.movement_remaining, 3.0)
+	)
+
+	var rem_force_queue: TravelingForce = _make_at_dest_force(original, "rem_force_queue", "stronghold_a", "rem_probe_from", rem_route_a, 0.0, 5.0)
+	var rem_queue_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_queue", "hq_contested"))
+	var rem_zero_queue_ok: bool = (
+		rem_queue_result.success
+		and rem_force_queue.destination_location_id == "hq_contested"
+		and _string_ids_match(rem_force_queue.route_node_ids, rem_route_short)
+		and rem_force_queue.travel_state == "traveling_outbound"
+		and rem_force_queue.route_segment_index == 0
+		and is_equal_approx(rem_force_queue.distance_into_segment, 0.0)
+		and is_equal_approx(rem_queue_result.movement_spent, 0.0)
+		and is_equal_approx(rem_force_queue.movement_remaining, 0.0)
+		and not rem_queue_result.reached_destination
+	)
+
+	var rem_force_cap: TravelingForce = _make_at_dest_force(original, "rem_force_cap", "stronghold_a", "rem_probe_from", rem_route_a, 1.0, 5.0)
+	var rem_cap_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_cap", "hq_contested"))
+	var rem_cap_ok: bool = (
+		rem_cap_result.success
+		and rem_force_cap.travel_state == "traveling_outbound"
+		and rem_force_cap.destination_location_id == "hq_contested"
+		and _string_ids_match(rem_force_cap.route_node_ids, rem_route_short)
+		and rem_force_cap.route_segment_index == 0
+		and is_equal_approx(rem_force_cap.distance_into_segment, 1.0)
+		and is_equal_approx(rem_cap_result.movement_spent, 1.0)
+		and is_equal_approx(rem_force_cap.movement_remaining, 0.0)
+		and not rem_cap_result.reached_destination
+	)
+
+	var rem_route_d: Array[String] = ["road_d"]
+	var rem_force_home: TravelingForce = _make_at_dest_force(original, "rem_force_home", "stronghold_a", "rem_home_away", rem_route_d, 3.0, 5.0)
+	var rem_home_missions_before: int = original.missions.size()
+	var rem_home_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_home", "stronghold_a"))
+	var rem_home_linked: int = 0
+	for rem_home_mission_id: String in original.missions:
+		var rem_home_mission: CampaignMission = original.get_mission(rem_home_mission_id)
+		if rem_home_mission != null and rem_home_mission.force_id == "rem_force_home":
+			rem_home_linked += 1
+	var rem_home_route: Array[String] = graph.find_route("road_d", "road_a")
+	var rem_return_home_ok: bool = (
+		rem_home_result.success
+		and rem_home_away != null
+		and original.has_traveling_force("rem_force_home")
+		and rem_force_home.origin_location_id == "stronghold_a"
+		and rem_force_home.destination_location_id == "stronghold_a"
+		and rem_force_home.travel_state == "traveling_outbound"
+		and rem_force_home.travel_state != "traveling_return"
+		and rem_force_home.travel_state != "complete"
+		and _string_ids_match(rem_force_home.route_node_ids, rem_home_route)
+		and original.missions.size() == rem_home_missions_before
+		and rem_home_linked == 0
+	)
+
+	var rem_force_mid: TravelingForce = TravelingForce.new("rem_force_mid", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "traveling_outbound")
+	rem_force_mid.route_segment_index = 0
+	rem_force_mid.distance_into_segment = 1.0
+	rem_force_mid.movement_remaining = 2.0
+	original.add_traveling_force(rem_force_mid)
+	var rem_mid_snap: Dictionary = _force_travel_snapshot(rem_force_mid)
+	var rem_mid_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_mid", "rem_loc_dest"))
+	var rem_mid_block_ok: bool = (
+		not rem_mid_result.success
+		and rem_mid_result.error_code == "force_not_at_node"
+		and _force_travel_unchanged(rem_force_mid, rem_mid_snap)
+	)
+
+	var rem_force_complete: TravelingForce = TravelingForce.new("rem_force_complete", "gang_a", "stronghold_a", "hq_contested", rem_route_short, 5.0, "complete")
+	rem_force_complete.movement_remaining = 3.0
+	original.add_traveling_force(rem_force_complete)
+	var rem_complete_snap: Dictionary = _force_travel_snapshot(rem_force_complete)
+	var rem_complete_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_complete", "rem_loc_dest"))
+	var rem_complete_block_ok: bool = (
+		not rem_complete_result.success
+		and rem_complete_result.error_code == "force_complete"
+		and _force_travel_unchanged(rem_force_complete, rem_complete_snap)
+	)
+
+	var rem_force_probe: TravelingForce = _make_at_dest_force(original, "rem_force_probe", "stronghold_a", "rem_probe_from", rem_route_a, 3.0, 5.0)
+	var rem_probe_snap_missing: Dictionary = _force_travel_snapshot(rem_force_probe)
+	var rem_missing_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_probe", "rem_missing_place"))
+	var rem_dest_missing_ok: bool = (
+		not rem_missing_result.success
+		and rem_missing_result.error_code == "invalid_destination"
+		and _force_travel_unchanged(rem_force_probe, rem_probe_snap_missing)
+	)
+	var rem_probe_snap_empty: Dictionary = _force_travel_snapshot(rem_force_probe)
+	var rem_empty_road_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_probe", "business_no_road"))
+	var rem_dest_empty_road_ok: bool = (
+		not rem_empty_road_result.success
+		and rem_empty_road_result.error_code == "destination_missing_road_node"
+		and _force_travel_unchanged(rem_force_probe, rem_probe_snap_empty)
+	)
+	var rem_probe_snap_ghost: Dictionary = _force_travel_snapshot(rem_force_probe)
+	var rem_ghost_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_probe", "business_ghost_road"))
+	var rem_dest_ghost_ok: bool = (
+		not rem_ghost_result.success
+		and rem_ghost_result.error_code == "invalid_destination_road_node"
+		and _force_travel_unchanged(rem_force_probe, rem_probe_snap_ghost)
+	)
+	var rem_probe_snap_noroute: Dictionary = _force_travel_snapshot(rem_force_probe)
+	var rem_noroute_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_probe", "business_isolated"))
+	var rem_dest_noroute_ok: bool = (
+		not rem_noroute_result.success
+		and rem_noroute_result.error_code == "no_route"
+		and _force_travel_unchanged(rem_force_probe, rem_probe_snap_noroute)
+	)
+
+	var rem_phantom_route: Array[String] = ["road_not_in_graph"]
+	var rem_force_malformed: TravelingForce = TravelingForce.new("rem_force_malformed", "gang_a", "stronghold_a", "rem_probe_from", rem_phantom_route, 5.0, "at_destination")
+	rem_force_malformed.movement_remaining = 3.0
+	original.add_traveling_force(rem_force_malformed)
+	var rem_malformed_snap: Dictionary = _force_travel_snapshot(rem_force_malformed)
+	var rem_malformed_current: String = rem_force_malformed.get_current_road_node_id()
+	var rem_malformed_result: ForceMoveResult = ForceMovementService.move_to_location(original, ForceMoveRequest.new("rem_force_malformed", "rem_loc_dest"))
+	var rem_invalid_current_ok: bool = (
+		not rem_malformed_current.is_empty()
+		and not graph.has_node(rem_malformed_current)
+		and not rem_malformed_result.success
+		and rem_malformed_result.error_code == "invalid_current_road_node"
+		and _force_travel_unchanged(rem_force_malformed, rem_malformed_snap)
+	)
+
+	var rem_helper_ok_result: ForceMoveResult = ForceMoveResult.succeeded("rem_helper_force", "rem_helper_dest", true, 2.0, 1.0)
+	var rem_result_success_ok: bool = (
+		rem_helper_ok_result.success
+		and rem_helper_ok_result.force_id == "rem_helper_force"
+		and rem_helper_ok_result.destination_location_id == "rem_helper_dest"
+		and rem_helper_ok_result.reached_destination
+		and is_equal_approx(rem_helper_ok_result.movement_spent, 2.0)
+		and is_equal_approx(rem_helper_ok_result.movement_remaining, 1.0)
+		and rem_helper_ok_result.error_code.is_empty()
+		and rem_helper_ok_result.error_message.is_empty()
+	)
+	var rem_helper_fail_result: ForceMoveResult = ForceMoveResult.failed("no_route", "Force movement failed: no route.", "rem_helper_force", "rem_helper_dest")
+	var rem_result_failure_ok: bool = (
+		not rem_helper_fail_result.success
+		and rem_helper_fail_result.error_code == "no_route"
+		and rem_helper_fail_result.error_message == "Force movement failed: no route."
+		and rem_helper_fail_result.force_id == "rem_helper_force"
+		and rem_helper_fail_result.destination_location_id == "rem_helper_dest"
+	)
+
+	var rem_atomic_unresolved_ok: bool = rem_block_outbound_ok
+	var rem_atomic_mid_ok: bool = rem_mid_block_ok
+	var rem_atomic_noroute_ok: bool = rem_dest_noroute_ok
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -2346,6 +2802,38 @@ static func run() -> Dictionary:
 		"raid_rollback_path_unreachable_ok": raid_rollback_path_unreachable_ok,
 		"raid_no_capture_ok": raid_no_capture_ok,
 		"raid_no_return_ok": raid_no_return_ok,
+		"rem_deploy_partial_ok": rem_deploy_partial_ok,
+		"rem_deploy_arrive_ok": rem_deploy_arrive_ok,
+		"rem_deploy_same_ok": rem_deploy_same_ok,
+		"rem_deploy_zero_ok": rem_deploy_zero_ok,
+		"rem_refresh_ok": rem_refresh_ok,
+		"rem_current_node_ok": rem_current_node_ok,
+		"rem_resolved_move_ok": rem_resolved_move_ok,
+		"rem_raid_continue_ok": rem_raid_continue_ok,
+		"rem_block_outbound_ok": rem_block_outbound_ok,
+		"rem_block_await_ok": rem_block_await_ok,
+		"rem_block_return_ok": rem_block_return_ok,
+		"rem_allow_success_ok": rem_allow_success_ok,
+		"rem_allow_failure_ok": rem_allow_failure_ok,
+		"rem_allow_complete_ok": rem_allow_complete_ok,
+		"rem_samenode_ok": rem_samenode_ok,
+		"rem_zero_queue_ok": rem_zero_queue_ok,
+		"rem_cap_ok": rem_cap_ok,
+		"rem_return_home_ok": rem_return_home_ok,
+		"rem_mid_block_ok": rem_mid_block_ok,
+		"rem_complete_block_ok": rem_complete_block_ok,
+		"rem_dest_missing_ok": rem_dest_missing_ok,
+		"rem_dest_empty_road_ok": rem_dest_empty_road_ok,
+		"rem_dest_ghost_ok": rem_dest_ghost_ok,
+		"rem_dest_noroute_ok": rem_dest_noroute_ok,
+		"rem_invalid_current_ok": rem_invalid_current_ok,
+		"rem_result_success_ok": rem_result_success_ok,
+		"rem_result_failure_ok": rem_result_failure_ok,
+		"rem_atomic_unresolved_ok": rem_atomic_unresolved_ok,
+		"rem_atomic_mid_ok": rem_atomic_mid_ok,
+		"rem_atomic_noroute_ok": rem_atomic_noroute_ok,
+		"rem_save_load_ok": rem_save_load_ok,
+		"rem_older_save_ok": rem_older_save_ok,
 	}
 
 	var passed := true
@@ -2464,3 +2952,124 @@ static func _float_dict_match(actual: Dictionary, expected: Dictionary) -> bool:
 		if not is_equal_approx(float(actual[key]), float(expected[resource_id])):
 			return false
 	return true
+
+
+static func _make_move_business(
+	game_state: GameState,
+	business_id: String,
+	display_name: String,
+	road_node_id: String
+) -> Business:
+	var business: Business = Business.new(
+		business_id,
+		display_name,
+		"neighborhood_a",
+		Vector2(115.0, 215.0),
+		"gang_a",
+		true,
+		"market",
+		1
+	)
+	business.road_node_id = road_node_id
+	game_state.add_map_location(business)
+	return business
+
+
+static func _make_at_dest_force(
+	game_state: GameState,
+	force_id: String,
+	origin_id: String,
+	destination_id: String,
+	route: Array[String],
+	movement_remaining: float,
+	movement_per_turn: float = 5.0
+) -> TravelingForce:
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		"gang_a",
+		origin_id,
+		destination_id,
+		route,
+		movement_per_turn,
+		"at_destination"
+	)
+	force.movement_remaining = movement_remaining
+	game_state.add_traveling_force(force)
+	return force
+
+
+static func _register_move_mission(
+	game_state: GameState,
+	mission_id: String,
+	mission_type_id: String,
+	force_id: String,
+	origin_id: String,
+	target_id: String,
+	mission_state: String,
+	outcome_code: String
+) -> CampaignMission:
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		"gang_a",
+		force_id,
+		origin_id,
+		target_id,
+		mission_state,
+		outcome_code
+	)
+	game_state.add_mission(mission)
+	return mission
+
+
+static func _force_travel_snapshot(force: TravelingForce) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["route"] = _copy_ids(force.route_node_ids)
+	snap["segment"] = force.route_segment_index
+	snap["distance"] = force.distance_into_segment
+	snap["dest"] = force.destination_location_id
+	snap["state"] = force.travel_state
+	snap["remaining"] = force.movement_remaining
+	snap["origin"] = force.origin_location_id
+	if force.soldier_group != null:
+		snap["soldiers"] = _copy_ids(force.soldier_group.soldier_ids)
+	else:
+		snap["soldiers"] = []
+	if force.vehicle_group != null:
+		snap["vehicles"] = _copy_ids(force.vehicle_group.vehicle_ids)
+	else:
+		snap["vehicles"] = []
+	return snap
+
+
+static func _force_travel_unchanged(force: TravelingForce, snap: Dictionary) -> bool:
+	if force == null:
+		return false
+	var expected_route: Array[String] = []
+	var route_data: Variant = snap.get("route", [])
+	if route_data is Array:
+		for node_id: Variant in route_data:
+			expected_route.append(str(node_id))
+	var expected_soldiers: Array[String] = []
+	var soldier_data: Variant = snap.get("soldiers", [])
+	if soldier_data is Array:
+		for soldier_id: Variant in soldier_data:
+			expected_soldiers.append(str(soldier_id))
+	var expected_vehicles: Array[String] = []
+	var vehicle_data: Variant = snap.get("vehicles", [])
+	if vehicle_data is Array:
+		for vehicle_id: Variant in vehicle_data:
+			expected_vehicles.append(str(vehicle_id))
+	if force.soldier_group == null or force.vehicle_group == null:
+		return false
+	return (
+		_string_ids_match(force.route_node_ids, expected_route)
+		and force.route_segment_index == int(snap.get("segment", -1))
+		and is_equal_approx(force.distance_into_segment, float(snap.get("distance", -1.0)))
+		and force.destination_location_id == str(snap.get("dest", ""))
+		and force.travel_state == str(snap.get("state", ""))
+		and is_equal_approx(force.movement_remaining, float(snap.get("remaining", -1.0)))
+		and force.origin_location_id == str(snap.get("origin", ""))
+		and _string_ids_match(force.soldier_group.soldier_ids, expected_soldiers)
+		and _string_ids_match(force.vehicle_group.vehicle_ids, expected_vehicles)
+	)

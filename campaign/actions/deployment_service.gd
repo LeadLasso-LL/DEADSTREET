@@ -91,8 +91,10 @@ static func deploy(game_state: GameState, request: DeploymentRequest) -> Deploym
 	force.soldier_group = soldier_group
 	force.vehicle_group = vehicle_group
 	force.movement_per_turn = convoy_movement
+	force.movement_remaining = actual_launch_budget
 	game_state.add_traveling_force(force)
 	var unused_movement: float = force.advance(actual_launch_budget, graph)
+	force.movement_remaining = unused_movement
 	var reached_destination: bool = force.travel_state == "at_destination"
 	return DeploymentResult.succeeded(force.id, reached_destination, unused_movement)
 
