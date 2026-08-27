@@ -28,6 +28,8 @@ const BusinessProductionResult := preload("res://campaign/economy/business_produ
 const FactionEconomyResult := preload("res://campaign/economy/faction_economy_result.gd")
 const EconomyTurnResult := preload("res://campaign/economy/economy_turn_result.gd")
 const EconomyService := preload("res://campaign/economy/economy_service.gd")
+const ExistingForceMissionRequest := preload("res://campaign/missions/existing_force_mission_request.gd")
+const ExistingForceMissionResult := preload("res://campaign/missions/existing_force_mission_result.gd")
 
 
 static func run() -> Dictionary:
@@ -3341,6 +3343,600 @@ static func run() -> Dictionary:
 		and eco_helper_biz_fail.error_code == "empty_business_type"
 	)
 
+	var efm_continue_state: GameState = _make_efm_world()
+	var efm_continue_force: TravelingForce = _make_efm_force(
+		efm_continue_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	var efm_old_continue: CampaignMission = _register_efm_mission(
+		efm_continue_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "business_raided"
+	)
+	var efm_old_id: String = efm_old_continue.id
+	var efm_old_state: String = efm_old_continue.mission_state
+	var efm_old_origin: String = efm_old_continue.origin_location_id
+	var efm_old_target: String = efm_old_continue.target_location_id
+	var efm_old_outcome: String = efm_old_continue.outcome_code
+	var efm_soldiers_before: Array[String] = _copy_ids(efm_continue_force.soldier_group.soldier_ids)
+	var efm_vehicles_before: Array[String] = _copy_ids(efm_continue_force.vehicle_group.vehicle_ids)
+	var efm_force_id_before: String = efm_continue_force.id
+	var efm_faction_before: String = efm_continue_force.faction_id
+	var efm_mpt_before: float = efm_continue_force.movement_per_turn
+	var efm_origin_before: String = efm_continue_force.origin_location_id
+	var efm_force_count_before: int = efm_continue_state.traveling_forces.size()
+	var efm_continue_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"efm_mission_2", "raid_business", "efm_force", "efm_loc_b"
+	)
+	var efm_continue_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_continue_state, efm_continue_req
+	)
+	var efm_new_continue: CampaignMission = efm_continue_state.get_mission("efm_mission_2")
+	var efm_continue_ok: bool = (
+		efm_continue_result.success
+		and efm_continue_result.force_id == "efm_force"
+		and efm_continue_result.mission_id == "efm_mission_2"
+		and efm_continue_state.traveling_forces.size() == efm_force_count_before
+		and efm_continue_state.has_traveling_force("efm_force")
+		and efm_continue_state.has_mission("efm_mission_2")
+		and efm_new_continue != null
+		and efm_new_continue.faction_id == "efm_gang"
+		and efm_new_continue.force_id == "efm_force"
+		and efm_continue_force.destination_location_id == "efm_loc_b"
+		and is_equal_approx(efm_continue_result.movement_spent, 3.0)
+		and is_equal_approx(efm_continue_force.movement_remaining, 2.0)
+		and efm_continue_force.travel_state == "at_destination"
+		and efm_new_continue.mission_state == "awaiting_resolution"
+		and efm_continue_result.mission_state == "awaiting_resolution"
+		and efm_continue_result.reached_destination
+		and efm_continue_result.error_code.is_empty()
+		and efm_continue_result.error_message.is_empty()
+	)
+	var efm_history_ok: bool = (
+		efm_old_continue.id == efm_old_id
+		and efm_old_continue.mission_state == "resolved_success"
+		and efm_old_continue.mission_state == efm_old_state
+		and efm_old_continue.origin_location_id == efm_old_origin
+		and efm_old_continue.origin_location_id == "efm_keep"
+		and efm_old_continue.target_location_id == efm_old_target
+		and efm_old_continue.target_location_id == "efm_loc_a"
+		and efm_old_continue.outcome_code == efm_old_outcome
+		and efm_old_continue.outcome_code == "business_raided"
+		and efm_old_continue.force_id == "efm_force"
+		and efm_new_continue != null
+		and efm_new_continue.target_location_id == "efm_loc_b"
+		and efm_old_continue.target_location_id != efm_new_continue.target_location_id
+	)
+	var efm_composition_ok: bool = (
+		efm_continue_force.id == efm_force_id_before
+		and efm_continue_force.faction_id == efm_faction_before
+		and is_equal_approx(efm_continue_force.movement_per_turn, efm_mpt_before)
+		and efm_continue_force.origin_location_id == efm_origin_before
+		and efm_continue_force.origin_location_id == "efm_keep"
+		and _string_ids_match(efm_continue_force.soldier_group.soldier_ids, efm_soldiers_before)
+		and _string_ids_match(efm_continue_force.vehicle_group.vehicle_ids, efm_vehicles_before)
+	)
+
+	var efm_origin_dest_state: GameState = _make_efm_world()
+	var efm_origin_dest_force: TravelingForce = _make_efm_force(
+		efm_origin_dest_state, "efm_force", "efm_keep", "efm_loc_a_same", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_origin_dest_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a_same", "resolved_success", "done")
+	var efm_origin_dest_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_origin_dest_state, ExistingForceMissionRequest.new("efm_next", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_origin_dest_mission: CampaignMission = efm_origin_dest_state.get_mission("efm_next")
+	var efm_origin_dest_ok: bool = (
+		efm_origin_dest_result.success
+		and efm_origin_dest_mission != null
+		and efm_origin_dest_mission.origin_location_id == "efm_loc_a_same"
+		and efm_origin_dest_force.origin_location_id == "efm_keep"
+	)
+
+	var efm_lex_state: GameState = _make_efm_world()
+	var efm_lex_force: TravelingForce = _make_efm_force(
+		efm_lex_state, "efm_force", "efm_keep", "efm_loc_b", ["efm_node_lex"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_lex_state, "efm_old", "efm_force", "efm_keep", "efm_loc_b", "resolved_success", "done")
+	var efm_lex_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_lex_state, ExistingForceMissionRequest.new("efm_lex_m", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_lex_mission: CampaignMission = efm_lex_state.get_mission("efm_lex_m")
+	var efm_origin_lex_ok: bool = (
+		efm_lex_result.success
+		and efm_lex_mission != null
+		and efm_lex_mission.origin_location_id == "efm_origin_a"
+	)
+
+	var efm_empty_origin_state: GameState = _make_efm_world()
+	var efm_empty_origin_force: TravelingForce = _make_efm_force(
+		efm_empty_origin_state, "efm_force", "efm_keep", "", ["efm_node_empty"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_empty_origin_state, "efm_old", "efm_force", "", "", "complete", "")
+	var efm_empty_origin_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_empty_origin_state, ExistingForceMissionRequest.new("efm_empty_m", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_empty_origin_mission: CampaignMission = efm_empty_origin_state.get_mission("efm_empty_m")
+	var efm_origin_empty_ok: bool = (
+		efm_empty_origin_result.success
+		and efm_empty_origin_mission != null
+		and efm_empty_origin_mission.origin_location_id == ""
+		and efm_empty_origin_force.origin_location_id == "efm_keep"
+	)
+
+	var efm_same_state: GameState = _make_efm_world()
+	var efm_same_route: Array[String] = ["efm_node_home", "efm_node_a"]
+	var efm_same_force: TravelingForce = _make_efm_force(
+		efm_same_state, "efm_force", "efm_keep", "efm_loc_a", efm_same_route, 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_same_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	var efm_same_route_before: Array[String] = _copy_ids(efm_same_force.route_node_ids)
+	var efm_same_remaining_before: float = efm_same_force.movement_remaining
+	var efm_same_forces_before: int = efm_same_state.traveling_forces.size()
+	var efm_same_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_same_state, ExistingForceMissionRequest.new("efm_same_m", "raid_business", "efm_force", "efm_loc_a_same")
+	)
+	var efm_same_mission: CampaignMission = efm_same_state.get_mission("efm_same_m")
+	var efm_same_node_ok: bool = (
+		efm_same_result.success
+		and is_equal_approx(efm_same_result.movement_spent, 0.0)
+		and is_equal_approx(efm_same_force.movement_remaining, efm_same_remaining_before)
+		and efm_same_force.destination_location_id == "efm_loc_a_same"
+		and efm_same_force.travel_state == "at_destination"
+		and efm_same_mission != null
+		and efm_same_mission.mission_state == "awaiting_resolution"
+		and efm_same_result.reached_destination
+		and efm_same_state.traveling_forces.size() == efm_same_forces_before
+		and _string_ids_match(efm_same_force.route_node_ids, efm_same_route_before)
+	)
+
+	var efm_partial_state: GameState = _make_efm_world()
+	var efm_partial_force: TravelingForce = _make_efm_force(
+		efm_partial_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 3.0, "at_destination"
+	)
+	_register_efm_mission(efm_partial_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	var efm_partial_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_partial_state, ExistingForceMissionRequest.new("efm_partial_m", "raid_business", "efm_force", "efm_loc_long")
+	)
+	var efm_partial_mission: CampaignMission = efm_partial_state.get_mission("efm_partial_m")
+	var efm_partial_ok: bool = (
+		efm_partial_result.success
+		and is_equal_approx(efm_partial_result.movement_spent, 3.0)
+		and is_equal_approx(efm_partial_force.movement_remaining, 0.0)
+		and efm_partial_force.travel_state == "traveling_outbound"
+		and efm_partial_mission != null
+		and efm_partial_mission.mission_state == "traveling_outbound"
+		and not efm_partial_result.reached_destination
+		and efm_partial_force.route_segment_index == 0
+		and is_equal_approx(efm_partial_force.distance_into_segment, 3.0)
+	)
+
+	var efm_zero_state: GameState = _make_efm_world()
+	efm_zero_state.current_turn = 3
+	var efm_zero_force: TravelingForce = _make_efm_force(
+		efm_zero_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 0.0, "at_destination"
+	)
+	_register_efm_mission(efm_zero_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	var efm_zero_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_zero_state, ExistingForceMissionRequest.new("efm_zero_m", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_zero_mission: CampaignMission = efm_zero_state.get_mission("efm_zero_m")
+	var efm_zero_ok: bool = (
+		efm_zero_result.success
+		and efm_zero_force.travel_state == "traveling_outbound"
+		and efm_zero_mission != null
+		and efm_zero_mission.mission_state == "traveling_outbound"
+		and is_equal_approx(efm_zero_result.movement_spent, 0.0)
+		and is_equal_approx(efm_zero_force.movement_remaining, 0.0)
+		and efm_zero_force.route_node_ids.size() >= 2
+		and efm_zero_force.route_node_ids[0] == "efm_node_a"
+		and efm_zero_force.route_node_ids[efm_zero_force.route_node_ids.size() - 1] == "efm_node_b"
+	)
+	var efm_zero_turn: TurnResult = TurnManager.advance_to_next_turn(efm_zero_state)
+	var efm_zero_turn_ok: bool = (
+		efm_zero_ok
+		and efm_zero_turn.success
+		and efm_zero_state.current_turn == 4
+		and efm_zero_force.travel_state == "at_destination"
+		and efm_zero_mission.mission_state == "awaiting_resolution"
+		and is_equal_approx(efm_zero_force.movement_remaining, 2.0)
+	)
+
+	var efm_fail_state: GameState = _make_efm_world()
+	var efm_fail_force: TravelingForce = _make_efm_force(
+		efm_fail_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_fail_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_failure", "failed_raid")
+	var efm_fail_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_fail_state, ExistingForceMissionRequest.new("efm_from_fail", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_fail_old: CampaignMission = efm_fail_state.get_mission("efm_old")
+	var efm_resolved_failure_ok: bool = (
+		efm_fail_result.success
+		and efm_fail_old != null
+		and efm_fail_old.mission_state == "resolved_failure"
+		and efm_fail_old.outcome_code == "failed_raid"
+	)
+
+	var efm_complete_m_state: GameState = _make_efm_world()
+	_make_efm_force(efm_complete_m_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination")
+	_register_efm_mission(efm_complete_m_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "complete", "")
+	var efm_complete_m_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_complete_m_state, ExistingForceMissionRequest.new("efm_from_complete", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_complete_old: CampaignMission = efm_complete_m_state.get_mission("efm_old")
+	var efm_complete_mission_ok: bool = (
+		efm_complete_m_result.success
+		and efm_complete_old != null
+		and efm_complete_old.mission_state == "complete"
+	)
+
+	var efm_multi_state: GameState = _make_efm_world()
+	var efm_multi_force: TravelingForce = _make_efm_force(
+		efm_multi_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_multi_state, "efm_hist_z", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "ok_z")
+	_register_efm_mission(efm_multi_state, "efm_hist_a", "efm_force", "efm_keep", "efm_loc_a", "resolved_failure", "ok_a")
+	_register_efm_mission(efm_multi_state, "efm_hist_m", "efm_force", "efm_keep", "efm_loc_a", "complete", "ok_m")
+	var efm_hist_z: CampaignMission = efm_multi_state.get_mission("efm_hist_z")
+	var efm_hist_a: CampaignMission = efm_multi_state.get_mission("efm_hist_a")
+	var efm_hist_m: CampaignMission = efm_multi_state.get_mission("efm_hist_m")
+	var efm_multi_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_multi_state, ExistingForceMissionRequest.new("efm_hist_new", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_multi_history_ok: bool = (
+		efm_multi_result.success
+		and efm_hist_z.mission_state == "resolved_success"
+		and efm_hist_z.origin_location_id == "efm_keep"
+		and efm_hist_z.target_location_id == "efm_loc_a"
+		and efm_hist_z.outcome_code == "ok_z"
+		and efm_hist_a.mission_state == "resolved_failure"
+		and efm_hist_a.outcome_code == "ok_a"
+		and efm_hist_m.mission_state == "complete"
+		and efm_hist_m.outcome_code == "ok_m"
+		and efm_multi_state.has_mission("efm_hist_new")
+		and efm_multi_force.origin_location_id == "efm_keep"
+	)
+
+	var efm_block_out_state: GameState = _make_efm_world()
+	var efm_block_out_force: TravelingForce = _make_efm_force(
+		efm_block_out_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_block_out_state, "efm_open", "efm_force", "efm_keep", "efm_loc_b", "traveling_outbound", "")
+	var efm_block_outbound_ok: bool = _efm_launch_fails_atomically(
+		efm_block_out_state,
+		efm_block_out_force,
+		ExistingForceMissionRequest.new("efm_blocked", "raid_business", "efm_force", "efm_loc_b"),
+		"force_has_unresolved_mission"
+	)
+
+	var efm_block_await_state: GameState = _make_efm_world()
+	var efm_block_await_force: TravelingForce = _make_efm_force(
+		efm_block_await_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_block_await_state, "efm_open", "efm_force", "efm_keep", "efm_loc_a", "awaiting_resolution", "")
+	var efm_block_await_ok: bool = _efm_launch_fails_atomically(
+		efm_block_await_state,
+		efm_block_await_force,
+		ExistingForceMissionRequest.new("efm_blocked", "raid_business", "efm_force", "efm_loc_b"),
+		"force_has_unresolved_mission"
+	)
+
+	var efm_block_ret_state: GameState = _make_efm_world()
+	var efm_block_ret_force: TravelingForce = _make_efm_force(
+		efm_block_ret_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_block_ret_state, "efm_open", "efm_force", "efm_keep", "efm_keep", "traveling_return", "")
+	var efm_block_return_ok: bool = _efm_launch_fails_atomically(
+		efm_block_ret_state,
+		efm_block_ret_force,
+		ExistingForceMissionRequest.new("efm_blocked", "raid_business", "efm_force", "efm_loc_b"),
+		"force_has_unresolved_mission"
+	)
+
+	var efm_block_unk_state: GameState = _make_efm_world()
+	var efm_block_unk_force: TravelingForce = _make_efm_force(
+		efm_block_unk_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	var efm_unk_mission: CampaignMission = _register_efm_mission(
+		efm_block_unk_state, "efm_open", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done"
+	)
+	efm_unk_mission.mission_state = "unknown_fixture_state"
+	var efm_block_unknown_ok: bool = _efm_launch_fails_atomically(
+		efm_block_unk_state,
+		efm_block_unk_force,
+		ExistingForceMissionRequest.new("efm_blocked", "raid_business", "efm_force", "efm_loc_b"),
+		"force_has_unresolved_mission"
+	)
+
+	var efm_scan_state: GameState = _make_efm_world()
+	var efm_scan_force: TravelingForce = _make_efm_force(
+		efm_scan_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_scan_state, "efm_scan_z", "efm_force", "efm_keep", "efm_loc_b", "traveling_outbound", "")
+	_register_efm_mission(efm_scan_state, "efm_scan_a", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	_register_efm_mission(efm_scan_state, "efm_scan_m", "efm_force", "efm_keep", "efm_loc_a", "resolved_failure", "done")
+	var efm_scan_order_ok: bool = _efm_launch_fails_atomically(
+		efm_scan_state,
+		efm_scan_force,
+		ExistingForceMissionRequest.new("efm_scan_new", "raid_business", "efm_force", "efm_loc_b"),
+		"force_has_unresolved_mission"
+	)
+
+	var efm_mid_state: GameState = _make_efm_world()
+	var efm_mid_force: TravelingForce = _make_efm_force(
+		efm_mid_state, "efm_force", "efm_keep", "efm_loc_b", ["efm_node_a", "efm_node_b"], 5.0, "traveling_outbound", 0, 1.25
+	)
+	_register_efm_mission(efm_mid_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	var efm_mid_segment_ok: bool = _efm_launch_fails_atomically(
+		efm_mid_state,
+		efm_mid_force,
+		ExistingForceMissionRequest.new("efm_mid_m", "raid_business", "efm_force", "efm_loc_b"),
+		"force_not_at_node"
+	)
+
+	var efm_inter_state: GameState = _make_efm_world()
+	var efm_inter_route: Array[String] = ["efm_node_home", "efm_node_a", "efm_node_b", "efm_node_c"]
+	var efm_inter_force: TravelingForce = _make_efm_force(
+		efm_inter_state, "efm_force", "efm_keep", "efm_loc_c", efm_inter_route, 5.0, "traveling_outbound", 2, 0.0
+	)
+	_register_efm_mission(efm_inter_state, "efm_old", "efm_force", "efm_keep", "efm_loc_c", "resolved_success", "done")
+	var efm_inter_node_before: String = efm_inter_force.get_current_road_node_id()
+	var efm_inter_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_inter_state, ExistingForceMissionRequest.new("efm_inter_m", "raid_business", "efm_force", "efm_loc_a")
+	)
+	var efm_intermediate_ok: bool = (
+		efm_inter_node_before == "efm_node_b"
+		and efm_inter_result.success
+		and efm_inter_state.has_mission("efm_inter_m")
+		and efm_inter_force.origin_location_id == "efm_keep"
+	)
+
+	var efm_complete_f_state: GameState = _make_efm_world()
+	var efm_complete_f_force: TravelingForce = _make_efm_force(
+		efm_complete_f_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_complete_f_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	efm_complete_f_force.travel_state = "complete"
+	var efm_force_complete_ok: bool = _efm_launch_fails_atomically(
+		efm_complete_f_state,
+		efm_complete_f_force,
+		ExistingForceMissionRequest.new("efm_comp_m", "raid_business", "efm_force", "efm_loc_b"),
+		"force_complete"
+	)
+
+	var efm_err_state: GameState = _make_efm_world()
+	var efm_err_force: TravelingForce = _make_efm_force(
+		efm_err_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_err_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	var efm_null_state_res: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		null, ExistingForceMissionRequest.new("efm_x", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_null_req_res: ExistingForceMissionResult = MissionService.launch_from_existing_force(efm_err_state, null)
+	var efm_null_state_ok: bool = not efm_null_state_res.success and efm_null_state_res.error_code == "null_game_state"
+	var efm_null_request_ok: bool = not efm_null_req_res.success and efm_null_req_res.error_code == "null_request"
+	var efm_empty_id_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("", "raid_business", "efm_force", "efm_loc_b"), "empty_mission_id"
+	)
+	var efm_dup_id_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_old", "raid_business", "efm_force", "efm_loc_b"), "duplicate_mission_id"
+	)
+	var efm_dup_old: CampaignMission = efm_err_state.get_mission("efm_old")
+	var efm_dup_id_untouched_ok: bool = (
+		efm_dup_id_ok
+		and efm_dup_old != null
+		and efm_dup_old.mission_state == "resolved_success"
+		and efm_dup_old.target_location_id == "efm_loc_a"
+		and efm_dup_old.outcome_code == "done"
+	)
+	var efm_empty_type_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_new", "", "efm_force", "efm_loc_b"), "empty_mission_type"
+	)
+	var efm_empty_force_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_new", "raid_business", "", "efm_loc_b"), "empty_force_id"
+	)
+	var efm_invalid_force_res: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_err_state, ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_missing_force", "efm_loc_b")
+	)
+	var efm_invalid_force_ok: bool = (
+		not efm_invalid_force_res.success
+		and efm_invalid_force_res.error_code == "invalid_force"
+		and not efm_err_state.has_mission("efm_new")
+	)
+	var efm_empty_target_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_force", ""), "empty_target_location"
+	)
+	var efm_invalid_target_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_force", "efm_missing_loc"), "invalid_target_location"
+	)
+	var efm_missing_target_road_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_force", "efm_loc_noroad"), "missing_target_road_node"
+	)
+	var efm_invalid_target_road_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state, efm_err_force, ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_force", "efm_loc_badnode"), "invalid_target_road_node"
+	)
+
+	var efm_bad_node_state: GameState = _make_efm_world()
+	var efm_bad_node_force: TravelingForce = _make_efm_force(
+		efm_bad_node_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_ghost_node"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_bad_node_state, "efm_old", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "done")
+	var efm_invalid_force_road_ok: bool = _efm_launch_fails_atomically(
+		efm_bad_node_state,
+		efm_bad_node_force,
+		ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_force", "efm_loc_b"),
+		"invalid_force_road_node"
+	)
+
+	var efm_noroute_ok: bool = _efm_launch_fails_atomically(
+		efm_err_state,
+		efm_err_force,
+		ExistingForceMissionRequest.new("efm_new", "raid_business", "efm_force", "efm_loc_island"),
+		"no_route"
+	)
+
+	var efm_neg_rem_state: GameState = _make_efm_world()
+	var efm_neg_rem_force: TravelingForce = _make_efm_force(
+		efm_neg_rem_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	efm_neg_rem_force.movement_remaining = -4.0
+	var efm_invalid_remaining_structurally_protected_ok: bool = is_equal_approx(efm_neg_rem_force.movement_remaining, 0.0)
+
+	var efm_atomicity_ok: bool = (
+		efm_block_outbound_ok
+		and efm_block_await_ok
+		and efm_block_return_ok
+		and efm_block_unknown_ok
+		and efm_mid_segment_ok
+		and efm_force_complete_ok
+		and efm_dup_id_ok
+		and efm_empty_target_ok
+		and efm_invalid_target_ok
+		and efm_missing_target_road_ok
+		and efm_invalid_target_road_ok
+		and efm_invalid_force_road_ok
+		and efm_noroute_ok
+		and efm_empty_type_ok
+	)
+
+	var efm_helper_ok_res: ExistingForceMissionResult = ExistingForceMissionResult.succeeded(
+		"efm_h_ok", "efm_force", "awaiting_resolution", true, 3.0, 2.0
+	)
+	var efm_helper_fail_res: ExistingForceMissionResult = ExistingForceMissionResult.failed(
+		"empty_mission_id", "Existing-force mission launch failed: mission_id is empty.", "", "efm_force"
+	)
+	var efm_result_helper_ok: bool = (
+		efm_helper_ok_res.success
+		and efm_helper_ok_res.mission_id == "efm_h_ok"
+		and efm_helper_ok_res.force_id == "efm_force"
+		and efm_helper_ok_res.mission_state == "awaiting_resolution"
+		and efm_helper_ok_res.reached_destination
+		and is_equal_approx(efm_helper_ok_res.movement_spent, 3.0)
+		and is_equal_approx(efm_helper_ok_res.movement_remaining, 2.0)
+		and efm_helper_ok_res.error_code.is_empty()
+		and efm_helper_ok_res.error_message.is_empty()
+		and not efm_helper_fail_res.success
+		and efm_helper_fail_res.error_code == "empty_mission_id"
+		and not efm_helper_fail_res.error_message.is_empty()
+		and efm_helper_fail_res.force_id == "efm_force"
+		and not efm_helper_fail_res.reached_destination
+		and is_equal_approx(efm_helper_fail_res.movement_spent, 0.0)
+	)
+
+	var efm_chain_state: GameState = _make_efm_world()
+	var efm_chain_gang: MajorGang = efm_chain_state.get_faction("efm_gang") as MajorGang
+	var efm_chain_force: TravelingForce = _make_efm_force(
+		efm_chain_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 5.0, "at_destination"
+	)
+	_register_efm_mission(efm_chain_state, "efm_chain_1", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "business_raided")
+	var efm_chain_soldiers: Array[String] = _copy_ids(efm_chain_force.soldier_group.soldier_ids)
+	var efm_chain_vehicles: Array[String] = _copy_ids(efm_chain_force.vehicle_group.vehicle_ids)
+	var efm_chain_soldier_count: int = efm_chain_state.soldiers.size()
+	var efm_chain_vehicle_count: int = efm_chain_state.vehicles.size()
+	var efm_chain_force_count: int = efm_chain_state.traveling_forces.size()
+	var efm_chain_launch2: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_chain_state, ExistingForceMissionRequest.new("efm_chain_2", "raid_business", "efm_force", "efm_loc_b")
+	)
+	var efm_chain_m2: CampaignMission = efm_chain_state.get_mission("efm_chain_2")
+	var efm_chain_m2_after_launch: String = ""
+	if efm_chain_m2 != null:
+		efm_chain_m2_after_launch = efm_chain_m2.mission_state
+	var efm_chain_biz: Business = efm_chain_state.get_map_location("efm_loc_b") as Business
+	var efm_chain_money_before: float = efm_chain_gang.money
+	var efm_chain_narc_before: float = efm_chain_gang.resources.get_amount("Narcotics")
+	var efm_chain_remaining_after_2: float = efm_chain_force.movement_remaining
+	var efm_chain_loot_res: Dictionary = {}
+	efm_chain_loot_res["Narcotics"] = 1.5
+	var efm_chain_loot: BusinessRaidLoot = BusinessRaidLoot.new(80.0, efm_chain_loot_res)
+	var efm_chain_raid: BusinessRaidResult = BusinessRaidResolver.resolve_success(efm_chain_state, "efm_chain_2", efm_chain_loot)
+	var efm_chain_state_after_raid: String = efm_chain_force.travel_state
+	var efm_chain_remaining_after_raid: float = efm_chain_force.movement_remaining
+	var efm_chain_launch3: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		efm_chain_state, ExistingForceMissionRequest.new("efm_chain_3", "raid_business", "efm_force", "efm_loc_c")
+	)
+	var efm_chain_m1: CampaignMission = efm_chain_state.get_mission("efm_chain_1")
+	var efm_chain_m3: CampaignMission = efm_chain_state.get_mission("efm_chain_3")
+	var efm_raid_chain_ok: bool = (
+		efm_chain_launch2.success
+		and efm_chain_m2 != null
+		and efm_chain_m2_after_launch == "awaiting_resolution"
+		and efm_chain_raid.success
+		and efm_chain_biz != null
+		and efm_chain_biz.level == 1
+		and efm_chain_biz.is_open == false
+		and is_equal_approx(efm_chain_gang.money, efm_chain_money_before + 80.0)
+		and is_equal_approx(efm_chain_gang.resources.get_amount("Narcotics"), efm_chain_narc_before + 1.5)
+		and efm_chain_m2.mission_state == "resolved_success"
+		and efm_chain_m2.outcome_code == "business_raided"
+		and efm_chain_state_after_raid == "at_destination"
+		and is_equal_approx(efm_chain_remaining_after_raid, efm_chain_remaining_after_2)
+		and efm_chain_launch3.success
+		and efm_chain_m3 != null
+		and efm_chain_m1.mission_state == "resolved_success"
+		and efm_chain_m1.outcome_code == "business_raided"
+	)
+	var efm_no_dup_ok: bool = (
+		efm_raid_chain_ok
+		and efm_chain_state.traveling_forces.size() == efm_chain_force_count
+		and efm_chain_state.traveling_forces.size() == 1
+		and efm_chain_force.id == "efm_force"
+		and _string_ids_match(efm_chain_force.soldier_group.soldier_ids, efm_chain_soldiers)
+		and _string_ids_match(efm_chain_force.vehicle_group.vehicle_ids, efm_chain_vehicles)
+		and efm_chain_state.soldiers.size() == efm_chain_soldier_count
+		and efm_chain_state.vehicles.size() == efm_chain_vehicle_count
+	)
+
+	var efm_persist_state: GameState = _make_efm_world()
+	var efm_persist_force: TravelingForce = _make_efm_force(
+		efm_persist_state, "efm_force", "efm_keep", "efm_loc_a", ["efm_node_a"], 4.0, "at_destination"
+	)
+	_register_efm_mission(efm_persist_state, "efm_p_z", "efm_force", "efm_keep", "efm_loc_a", "resolved_success", "out_z")
+	_register_efm_mission(efm_persist_state, "efm_p_a", "efm_force", "efm_keep", "efm_loc_a", "resolved_failure", "out_a")
+	_register_efm_mission(efm_persist_state, "efm_p_m", "efm_force", "efm_keep", "efm_loc_a", "complete", "out_m")
+	MissionService.launch_from_existing_force(
+		efm_persist_state, ExistingForceMissionRequest.new("efm_p_cur", "raid_business", "efm_force", "efm_loc_long")
+	)
+	var efm_persist_cur_before: CampaignMission = efm_persist_state.get_mission("efm_p_cur")
+	var efm_persist_cur_state: String = ""
+	if efm_persist_cur_before != null:
+		efm_persist_cur_state = efm_persist_cur_before.mission_state
+	var efm_persist_dest: String = efm_persist_force.destination_location_id
+	var efm_persist_travel: String = efm_persist_force.travel_state
+	var efm_persist_remaining: float = efm_persist_force.movement_remaining
+	var efm_persist_route: Array[String] = _copy_ids(efm_persist_force.route_node_ids)
+	var efm_persist_save: Dictionary = efm_persist_state.to_dict()
+	var efm_persist_restored: GameState = GameState.new()
+	efm_persist_restored.from_dict(efm_persist_save)
+	var efm_persist_force_r: TravelingForce = efm_persist_restored.get_traveling_force("efm_force")
+	var efm_persist_pz: CampaignMission = efm_persist_restored.get_mission("efm_p_z")
+	var efm_persist_pa: CampaignMission = efm_persist_restored.get_mission("efm_p_a")
+	var efm_persist_pm: CampaignMission = efm_persist_restored.get_mission("efm_p_m")
+	var efm_persist_pc: CampaignMission = efm_persist_restored.get_mission("efm_p_cur")
+	var efm_persist_ok: bool = (
+		not efm_persist_save.has("existing_force_mission_request")
+		and not efm_persist_save.has("existing_force_mission_result")
+		and efm_persist_force_r != null
+		and efm_persist_force_r.id == "efm_force"
+		and efm_persist_pz != null
+		and efm_persist_pz.force_id == "efm_force"
+		and efm_persist_pz.mission_state == "resolved_success"
+		and efm_persist_pz.origin_location_id == "efm_keep"
+		and efm_persist_pz.target_location_id == "efm_loc_a"
+		and efm_persist_pz.outcome_code == "out_z"
+		and efm_persist_pa != null
+		and efm_persist_pa.force_id == "efm_force"
+		and efm_persist_pa.mission_state == "resolved_failure"
+		and efm_persist_pa.outcome_code == "out_a"
+		and efm_persist_pm != null
+		and efm_persist_pm.force_id == "efm_force"
+		and efm_persist_pm.mission_state == "complete"
+		and efm_persist_pc != null
+		and efm_persist_pc.force_id == "efm_force"
+		and efm_persist_pc.mission_state == efm_persist_cur_state
+		and efm_persist_force_r.travel_state == efm_persist_travel
+		and efm_persist_force_r.destination_location_id == efm_persist_dest
+		and is_equal_approx(efm_persist_force_r.movement_remaining, efm_persist_remaining)
+		and _string_ids_match(efm_persist_force_r.route_node_ids, efm_persist_route)
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -3813,6 +4409,46 @@ static func run() -> Dictionary:
 		"eco_copy_safety_ok": eco_copy_safety_ok,
 		"eco_result_data_ok": eco_result_data_ok,
 		"eco_helpers_ok": eco_helpers_ok,
+		"efm_continue_ok": efm_continue_ok,
+		"efm_history_ok": efm_history_ok,
+		"efm_composition_ok": efm_composition_ok,
+		"efm_origin_dest_ok": efm_origin_dest_ok,
+		"efm_origin_lex_ok": efm_origin_lex_ok,
+		"efm_origin_empty_ok": efm_origin_empty_ok,
+		"efm_same_node_ok": efm_same_node_ok,
+		"efm_partial_ok": efm_partial_ok,
+		"efm_zero_ok": efm_zero_ok,
+		"efm_zero_turn_ok": efm_zero_turn_ok,
+		"efm_resolved_failure_ok": efm_resolved_failure_ok,
+		"efm_complete_mission_ok": efm_complete_mission_ok,
+		"efm_multi_history_ok": efm_multi_history_ok,
+		"efm_block_outbound_ok": efm_block_outbound_ok,
+		"efm_block_await_ok": efm_block_await_ok,
+		"efm_block_return_ok": efm_block_return_ok,
+		"efm_block_unknown_ok": efm_block_unknown_ok,
+		"efm_scan_order_ok": efm_scan_order_ok,
+		"efm_mid_segment_ok": efm_mid_segment_ok,
+		"efm_intermediate_ok": efm_intermediate_ok,
+		"efm_force_complete_ok": efm_force_complete_ok,
+		"efm_null_state_ok": efm_null_state_ok,
+		"efm_null_request_ok": efm_null_request_ok,
+		"efm_empty_id_ok": efm_empty_id_ok,
+		"efm_dup_id_ok": efm_dup_id_untouched_ok,
+		"efm_empty_type_ok": efm_empty_type_ok,
+		"efm_empty_force_ok": efm_empty_force_ok,
+		"efm_invalid_force_ok": efm_invalid_force_ok,
+		"efm_empty_target_ok": efm_empty_target_ok,
+		"efm_invalid_target_ok": efm_invalid_target_ok,
+		"efm_missing_target_road_ok": efm_missing_target_road_ok,
+		"efm_invalid_target_road_ok": efm_invalid_target_road_ok,
+		"efm_invalid_force_road_ok": efm_invalid_force_road_ok,
+		"efm_no_route_ok": efm_noroute_ok,
+		"efm_invalid_remaining_structurally_protected_ok": efm_invalid_remaining_structurally_protected_ok,
+		"efm_atomicity_ok": efm_atomicity_ok,
+		"efm_result_helper_ok": efm_result_helper_ok,
+		"efm_raid_chain_ok": efm_raid_chain_ok,
+		"efm_no_dup_ok": efm_no_dup_ok,
+		"efm_persist_ok": efm_persist_ok,
 	}
 
 	var passed := true
@@ -4284,3 +4920,158 @@ static func _faction_economy_ids(results: Array[FactionEconomyResult]) -> Array[
 	for result: FactionEconomyResult in results:
 		ids.append(result.faction_id)
 	return ids
+
+
+static func _make_efm_world() -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 3
+	state.current_month = 7
+	state.current_year = 2034
+	var gang: MajorGang = MajorGang.new("efm_gang", "EFM Gang", "player")
+	gang.money = 200.0
+	gang.resources.set_amount("Narcotics", 0.0)
+	state.add_faction(gang)
+	state.add_stronghold_region(StrongholdRegion.new("efm_region", "EFM Region"))
+	state.add_police_region(PoliceRegion.new("efm_district", "EFM District"))
+	state.add_neighborhood(Neighborhood.new("efm_hood", "EFM Hood", "efm_region", "efm_district"))
+	var keep: Stronghold = Stronghold.new("efm_keep", "EFM Keep", "efm_hood", Vector2(0.0, 0.0), "efm_gang", true, 1)
+	keep.road_node_id = "efm_node_home"
+	state.add_map_location(keep)
+	var loc_a: Business = Business.new("efm_loc_a", "EFM Loc A", "efm_hood", Vector2(3.0, 0.0), "efm_gang", true, "market", 2)
+	loc_a.road_node_id = "efm_node_a"
+	state.add_map_location(loc_a)
+	var loc_a_same: NeighborhoodHQ = NeighborhoodHQ.new("efm_loc_a_same", "EFM Loc A Same", "efm_hood", Vector2(3.2, 0.2), "efm_gang", true)
+	loc_a_same.road_node_id = "efm_node_a"
+	state.add_map_location(loc_a_same)
+	var loc_b: Business = Business.new("efm_loc_b", "EFM Loc B", "efm_hood", Vector2(6.0, 0.0), "efm_gang", true, "market", 2)
+	loc_b.road_node_id = "efm_node_b"
+	state.add_map_location(loc_b)
+	var loc_c: Business = Business.new("efm_loc_c", "EFM Loc C", "efm_hood", Vector2(11.0, 0.0), "efm_gang", true, "market", 1)
+	loc_c.road_node_id = "efm_node_c"
+	state.add_map_location(loc_c)
+	var loc_long: Business = Business.new("efm_loc_long", "EFM Loc Long", "efm_hood", Vector2(11.0, 3.0), "efm_gang", true, "market", 1)
+	loc_long.road_node_id = "efm_node_long"
+	state.add_map_location(loc_long)
+	var origin_a: NeighborhoodHQ = NeighborhoodHQ.new("efm_origin_a", "EFM Origin A", "efm_hood", Vector2(6.0, 4.0), "efm_gang", true)
+	origin_a.road_node_id = "efm_node_lex"
+	state.add_map_location(origin_a)
+	var origin_z: NeighborhoodHQ = NeighborhoodHQ.new("efm_origin_z", "EFM Origin Z", "efm_hood", Vector2(6.4, 4.0), "efm_gang", true)
+	origin_z.road_node_id = "efm_node_lex"
+	state.add_map_location(origin_z)
+	var loc_noroad: Business = Business.new("efm_loc_noroad", "EFM No Road", "efm_hood", Vector2(20.0, 0.0), "efm_gang", true, "market", 1)
+	loc_noroad.road_node_id = ""
+	state.add_map_location(loc_noroad)
+	var loc_badnode: Business = Business.new("efm_loc_badnode", "EFM Bad Node", "efm_hood", Vector2(21.0, 0.0), "efm_gang", true, "market", 1)
+	loc_badnode.road_node_id = "efm_missing_graph_node"
+	state.add_map_location(loc_badnode)
+	var loc_island: Business = Business.new("efm_loc_island", "EFM Island", "efm_hood", Vector2(30.0, 0.0), "efm_gang", true, "market", 1)
+	loc_island.road_node_id = "efm_node_island"
+	state.add_map_location(loc_island)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("efm_node_home", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("efm_node_a", Vector2(3.0, 0.0)))
+	graph.add_node(RoadNode.new("efm_node_b", Vector2(6.0, 0.0)))
+	graph.add_node(RoadNode.new("efm_node_c", Vector2(11.0, 0.0)))
+	graph.add_node(RoadNode.new("efm_node_long", Vector2(11.0, 3.0)))
+	graph.add_node(RoadNode.new("efm_node_empty", Vector2(6.0, -2.0)))
+	graph.add_node(RoadNode.new("efm_node_lex", Vector2(6.0, 4.0)))
+	graph.add_node(RoadNode.new("efm_node_island", Vector2(30.0, 0.0)))
+	graph.add_segment(RoadSegment.new("efm_seg_home_a", "efm_node_home", "efm_node_a", 3.0))
+	graph.add_segment(RoadSegment.new("efm_seg_ab", "efm_node_a", "efm_node_b", 3.0))
+	graph.add_segment(RoadSegment.new("efm_seg_bc", "efm_node_b", "efm_node_c", 5.0))
+	graph.add_segment(RoadSegment.new("efm_seg_a_long", "efm_node_a", "efm_node_long", 8.0))
+	graph.add_segment(RoadSegment.new("efm_seg_empty_b", "efm_node_empty", "efm_node_b", 2.0))
+	graph.add_segment(RoadSegment.new("efm_seg_lex_b", "efm_node_lex", "efm_node_b", 3.0))
+	var soldier: Soldier = Soldier.new("efm_soldier", "efm_gang", "", "pistol", 1.0, 20.0)
+	var vehicle: Vehicle = Vehicle.new("efm_vehicle", "efm_gang", "car", "", 2, 5.0, 40.0)
+	state.add_soldier(soldier)
+	state.add_vehicle(vehicle)
+	state.assign_soldier_to_stronghold("efm_soldier", "efm_keep")
+	state.assign_vehicle_to_stronghold("efm_vehicle", "efm_keep")
+	return state
+
+
+static func _make_efm_force(
+	game_state: GameState,
+	force_id: String,
+	origin_id: String,
+	dest_id: String,
+	route: Array[String],
+	movement_remaining: float,
+	travel_state: String,
+	segment_index: int = 0,
+	distance_into: float = 0.0,
+	movement_per_turn: float = 5.0
+) -> TravelingForce:
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		"efm_gang",
+		origin_id,
+		dest_id,
+		route,
+		movement_per_turn,
+		travel_state
+	)
+	force.route_segment_index = segment_index
+	force.distance_into_segment = distance_into
+	force.movement_remaining = movement_remaining
+	force.soldier_group.add_soldier_id("efm_soldier")
+	force.vehicle_group.add_vehicle_id("efm_vehicle")
+	game_state.add_traveling_force(force)
+	return force
+
+
+static func _register_efm_mission(
+	game_state: GameState,
+	mission_id: String,
+	force_id: String,
+	origin_id: String,
+	target_id: String,
+	mission_state: String,
+	outcome_code: String,
+	mission_type_id: String = "raid_business"
+) -> CampaignMission:
+	var faction_id: String = "efm_gang"
+	var force: TravelingForce = game_state.get_traveling_force(force_id)
+	if force != null:
+		faction_id = force.faction_id
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		faction_id,
+		force_id,
+		origin_id,
+		target_id,
+		mission_state,
+		outcome_code
+	)
+	game_state.add_mission(mission)
+	return mission
+
+
+static func _efm_launch_fails_atomically(
+	game_state: GameState,
+	force: TravelingForce,
+	request: ExistingForceMissionRequest,
+	expected_error: String
+) -> bool:
+	if game_state == null or force == null or request == null:
+		return false
+	var snap: Dictionary = _force_travel_snapshot(force)
+	var mission_count: int = game_state.missions.size()
+	var soldier_count: int = game_state.soldiers.size()
+	var vehicle_count: int = game_state.vehicles.size()
+	var force_count: int = game_state.traveling_forces.size()
+	var requested_id: String = request.mission_id
+	var requested_existed: bool = not requested_id.is_empty() and game_state.has_mission(requested_id)
+	var result: ExistingForceMissionResult = MissionService.launch_from_existing_force(game_state, request)
+	return (
+		not result.success
+		and result.error_code == expected_error
+		and _force_travel_unchanged(force, snap)
+		and game_state.missions.size() == mission_count
+		and game_state.soldiers.size() == soldier_count
+		and game_state.vehicles.size() == vehicle_count
+		and game_state.traveling_forces.size() == force_count
+		and (requested_id.is_empty() or requested_existed or not game_state.has_mission(requested_id))
+	)
