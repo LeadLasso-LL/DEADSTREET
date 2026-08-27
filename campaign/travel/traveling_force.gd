@@ -39,13 +39,13 @@ func advance(distance_budget: float, road_graph: RoadGraph) -> float:
 		return distance_budget
 	if travel_state != "traveling_outbound" and travel_state != "traveling_return":
 		return distance_budget
+	if route_node_ids.size() <= 1:
+		_arrive_at_destination(0.0)
+		return distance_budget
 	if distance_budget == 0.0:
 		return 0.0
 	if road_graph == null:
 		push_error("TravelingForce.advance: road_graph is null (id='%s')." % id)
-		return distance_budget
-	if route_node_ids.size() <= 1:
-		_arrive_at_destination(0.0)
 		return distance_budget
 
 	var remaining := distance_budget

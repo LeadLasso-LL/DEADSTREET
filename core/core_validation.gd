@@ -5,6 +5,9 @@ const Vehicle := preload("res://campaign/vehicles/vehicle.gd")
 const VehicleGroup := preload("res://campaign/vehicles/vehicle_group.gd")
 const Soldier := preload("res://campaign/units/soldier.gd")
 const SoldierGroup := preload("res://campaign/units/soldier_group.gd")
+const DeploymentRequest := preload("res://campaign/actions/deployment_request.gd")
+const DeploymentResult := preload("res://campaign/actions/deployment_result.gd")
+const DeploymentService := preload("res://campaign/actions/deployment_service.gd")
 
 
 static func run() -> Dictionary:
@@ -514,6 +517,449 @@ static func run() -> Dictionary:
 	var duplicate_soldier_rejected: bool = original.get_soldier("soldier_pistol") == pistol_before_dup
 	var remove_missing_soldier: bool = not original.remove_soldier("missing_soldier")
 
+	var deploy_soldier_1: Soldier = Soldier.new("deploy_soldier_1", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_2: Soldier = Soldier.new("deploy_soldier_2", "gang_a", "", "rifle", 1.9, 35.0)
+	var deploy_soldier_3: Soldier = Soldier.new("deploy_soldier_3", "gang_a", "", "smg", 1.55, 30.0)
+	var deploy_soldier_4: Soldier = Soldier.new("deploy_soldier_4", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_5: Soldier = Soldier.new("deploy_soldier_5", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_6: Soldier = Soldier.new("deploy_soldier_6", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_7: Soldier = Soldier.new("deploy_soldier_7", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_8: Soldier = Soldier.new("deploy_soldier_8", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_9: Soldier = Soldier.new("deploy_soldier_9", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_x: Soldier = Soldier.new("deploy_soldier_x", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_y: Soldier = Soldier.new("deploy_soldier_y", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_nov: Soldier = Soldier.new("deploy_soldier_nov", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_enemy: Soldier = Soldier.new("deploy_soldier_enemy", "gang_b", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_home_b: Soldier = Soldier.new("deploy_soldier_home_b", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_soldier_orphan: Soldier = Soldier.new("deploy_soldier_orphan", "gang_a", "stronghold_a", "pistol", 1.0, 20.0)
+	original.add_soldier(deploy_soldier_1)
+	original.add_soldier(deploy_soldier_2)
+	original.add_soldier(deploy_soldier_3)
+	original.add_soldier(deploy_soldier_4)
+	original.add_soldier(deploy_soldier_5)
+	original.add_soldier(deploy_soldier_6)
+	original.add_soldier(deploy_soldier_7)
+	original.add_soldier(deploy_soldier_8)
+	original.add_soldier(deploy_soldier_9)
+	original.add_soldier(deploy_soldier_x)
+	original.add_soldier(deploy_soldier_y)
+	original.add_soldier(deploy_soldier_nov)
+	original.add_soldier(deploy_soldier_enemy)
+	original.add_soldier(deploy_soldier_home_b)
+	original.add_soldier(deploy_soldier_orphan)
+	var assign_ds1: bool = original.assign_soldier_to_stronghold("deploy_soldier_1", "stronghold_a")
+	var assign_ds2: bool = original.assign_soldier_to_stronghold("deploy_soldier_2", "stronghold_a")
+	var assign_ds3: bool = original.assign_soldier_to_stronghold("deploy_soldier_3", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_4", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_5", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_6", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_7", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_8", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_9", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_x", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_y", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_nov", "stronghold_a")
+	original.assign_soldier_to_stronghold("deploy_soldier_home_b", "stronghold_b")
+
+	var deploy_car: Vehicle = Vehicle.new("deploy_car", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_van: Vehicle = Vehicle.new("deploy_van", "gang_a", "van", "", 7, 4.0, 80.0)
+	var deploy_fast: Vehicle = Vehicle.new("deploy_fast", "gang_a", "car", "", 4, 8.0, 50.0)
+	var deploy_same_a: Vehicle = Vehicle.new("deploy_same_a", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_same_b: Vehicle = Vehicle.new("deploy_same_b", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_zero_nl: Vehicle = Vehicle.new("deploy_zero_nl", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_spare: Vehicle = Vehicle.new("deploy_spare", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_bike: Vehicle = Vehicle.new("deploy_bike", "gang_a", "bike", "", 1, 6.0, 25.0)
+	var deploy_vehicle_nos: Vehicle = Vehicle.new("deploy_vehicle_nos", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_vehicle_enemy: Vehicle = Vehicle.new("deploy_vehicle_enemy", "gang_b", "car", "", 2, 5.0, 50.0)
+	var deploy_vehicle_home_b: Vehicle = Vehicle.new("deploy_vehicle_home_b", "gang_a", "car", "", 2, 5.0, 50.0)
+	var deploy_vehicle_orphan: Vehicle = Vehicle.new("deploy_vehicle_orphan", "gang_a", "car", "stronghold_a", 2, 5.0, 50.0)
+	original.add_vehicle(deploy_car)
+	original.add_vehicle(deploy_van)
+	original.add_vehicle(deploy_fast)
+	original.add_vehicle(deploy_same_a)
+	original.add_vehicle(deploy_same_b)
+	original.add_vehicle(deploy_zero_nl)
+	original.add_vehicle(deploy_spare)
+	original.add_vehicle(deploy_bike)
+	original.add_vehicle(deploy_vehicle_nos)
+	original.add_vehicle(deploy_vehicle_enemy)
+	original.add_vehicle(deploy_vehicle_home_b)
+	original.add_vehicle(deploy_vehicle_orphan)
+	var assign_dcar: bool = original.assign_vehicle_to_stronghold("deploy_car", "stronghold_a")
+	var assign_dvan: bool = original.assign_vehicle_to_stronghold("deploy_van", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_fast", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_same_a", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_same_b", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_zero_nl", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_spare", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_bike", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_vehicle_nos", "stronghold_a")
+	original.assign_vehicle_to_stronghold("deploy_vehicle_home_b", "stronghold_b")
+
+	var business_same_node: Business = Business.new("business_same_node", "Same Node Shop", "neighborhood_a", Vector2(110.0, 210.0), "gang_a", true, "market", 1)
+	business_same_node.road_node_id = "road_a"
+	original.add_map_location(business_same_node)
+	var stronghold_enemy: Stronghold = Stronghold.new("stronghold_enemy", "Gang B Stronghold", "neighborhood_contested", Vector2(320.0, 220.0), "gang_b", true, 1)
+	stronghold_enemy.road_node_id = "road_d"
+	original.add_map_location(stronghold_enemy)
+	var stronghold_no_road: Stronghold = Stronghold.new("stronghold_no_road", "No Road Stronghold", "neighborhood_a", Vector2(80.0, 80.0), "gang_a", true, 1)
+	original.add_map_location(stronghold_no_road)
+	var stronghold_ghost_road: Stronghold = Stronghold.new("stronghold_ghost_road", "Ghost Road Stronghold", "neighborhood_a", Vector2(90.0, 90.0), "gang_a", true, 1)
+	stronghold_ghost_road.road_node_id = "road_ghost"
+	original.add_map_location(stronghold_ghost_road)
+	var deploy_soldier_ghost: Soldier = Soldier.new("deploy_soldier_ghost", "gang_a", "", "pistol", 1.0, 20.0)
+	var deploy_vehicle_ghost: Vehicle = Vehicle.new("deploy_vehicle_ghost", "gang_a", "car", "", 2, 5.0, 50.0)
+	original.add_soldier(deploy_soldier_ghost)
+	original.add_vehicle(deploy_vehicle_ghost)
+	original.assign_soldier_to_stronghold("deploy_soldier_ghost", "stronghold_ghost_road")
+	original.assign_vehicle_to_stronghold("deploy_vehicle_ghost", "stronghold_ghost_road")
+	var business_no_road: Business = Business.new("business_no_road", "No Road Shop", "neighborhood_a", Vector2(70.0, 70.0), "gang_a", true, "market", 1)
+	original.add_map_location(business_no_road)
+	var business_ghost_road: Business = Business.new("business_ghost_road", "Ghost Road Shop", "neighborhood_a", Vector2(60.0, 60.0), "gang_a", true, "market", 1)
+	business_ghost_road.road_node_id = "road_ghost"
+	original.add_map_location(business_ghost_road)
+	graph.add_node(RoadNode.new("road_isolated", Vector2(99.0, 99.0)))
+	var business_isolated: Business = Business.new("business_isolated", "Isolated Shop", "neighborhood_a", Vector2(99.0, 99.0), "gang_a", true, "market", 1)
+	business_isolated.road_node_id = "road_isolated"
+	original.add_map_location(business_isolated)
+
+	var expected_deploy_route: Array[String] = ["road_a", "road_b", "road_e", "road_d"]
+	var deploy_ids_partial_s: Array[String] = ["deploy_soldier_1", "deploy_soldier_2"]
+	var deploy_ids_partial_v: Array[String] = ["deploy_car"]
+	var homes_before_partial_s1: String = deploy_soldier_1.home_stronghold_id
+	var homes_before_partial_s2: String = deploy_soldier_2.home_stronghold_id
+	var homes_before_partial_car: String = deploy_car.home_stronghold_id
+	var origin_soldiers_before_partial: Array[String] = _copy_ids(stronghold_a.soldier_ids)
+	var origin_vehicles_before_partial: Array[String] = _copy_ids(stronghold_a.vehicle_ids)
+	var req_partial: DeploymentRequest = DeploymentRequest.new("deploy_force_partial", "gang_a", "stronghold_a", "hq_contested", deploy_ids_partial_s, deploy_ids_partial_v, 3.0)
+	var res_partial: DeploymentResult = DeploymentService.deploy(original, req_partial)
+	var force_partial_deploy: TravelingForce = original.get_traveling_force("deploy_force_partial")
+	var deploy_partial_result_ok: bool = (
+		res_partial.success
+		and res_partial.force_id == "deploy_force_partial"
+		and res_partial.error_code.is_empty()
+		and res_partial.error_message.is_empty()
+		and res_partial.reached_destination == false
+		and is_equal_approx(res_partial.unused_movement, 0.0)
+	)
+	var deploy_partial_force_ok: bool = (
+		force_partial_deploy != null
+		and force_partial_deploy.faction_id == "gang_a"
+		and force_partial_deploy.origin_location_id == "stronghold_a"
+		and force_partial_deploy.destination_location_id == "hq_contested"
+		and _string_ids_match(force_partial_deploy.route_node_ids, expected_deploy_route)
+		and _string_ids_match(force_partial_deploy.soldier_group.soldier_ids, deploy_ids_partial_s)
+		and _string_ids_match(force_partial_deploy.vehicle_group.vehicle_ids, deploy_ids_partial_v)
+		and is_equal_approx(force_partial_deploy.movement_per_turn, 5.0)
+		and force_partial_deploy.travel_state == "traveling_outbound"
+		and force_partial_deploy.route_segment_index == 1
+		and is_equal_approx(force_partial_deploy.distance_into_segment, 1.0)
+	)
+	var deploy_partial_homes_ok: bool = (
+		deploy_soldier_1.home_stronghold_id == homes_before_partial_s1
+		and deploy_soldier_2.home_stronghold_id == homes_before_partial_s2
+		and deploy_car.home_stronghold_id == homes_before_partial_car
+		and _string_ids_match(stronghold_a.soldier_ids, origin_soldiers_before_partial)
+		and _string_ids_match(stronghold_a.vehicle_ids, origin_vehicles_before_partial)
+		and stronghold_a.has_soldier_id("deploy_soldier_1")
+		and stronghold_a.has_soldier_id("deploy_soldier_2")
+		and stronghold_a.has_vehicle_id("deploy_car")
+	)
+
+	var deploy_ids_capped_s: Array[String] = ["deploy_soldier_3"]
+	var deploy_ids_capped_v: Array[String] = ["deploy_van"]
+	var req_capped: DeploymentRequest = DeploymentRequest.new("deploy_force_capped", "gang_a", "stronghold_a", "hq_contested", deploy_ids_capped_s, deploy_ids_capped_v, 99.0)
+	var res_capped: DeploymentResult = DeploymentService.deploy(original, req_capped)
+	var force_capped: TravelingForce = original.get_traveling_force("deploy_force_capped")
+	var deploy_capped_ok: bool = (
+		res_capped.success
+		and force_capped != null
+		and is_equal_approx(force_capped.movement_per_turn, 4.0)
+		and force_capped.travel_state == "traveling_outbound"
+		and force_capped.route_segment_index == 2
+		and is_equal_approx(force_capped.distance_into_segment, 0.0)
+		and is_equal_approx(res_capped.unused_movement, 0.0)
+		and not is_equal_approx(res_capped.unused_movement, 95.0)
+	)
+
+	var deploy_ids_arrive_s: Array[String] = ["deploy_soldier_4"]
+	var deploy_ids_arrive_v: Array[String] = ["deploy_fast"]
+	var req_arrive: DeploymentRequest = DeploymentRequest.new("deploy_force_arrive", "gang_a", "stronghold_a", "hq_contested", deploy_ids_arrive_s, deploy_ids_arrive_v, 8.0)
+	var res_arrive: DeploymentResult = DeploymentService.deploy(original, req_arrive)
+	var force_arrive: TravelingForce = original.get_traveling_force("deploy_force_arrive")
+	var deploy_arrive_ok: bool = (
+		res_arrive.success
+		and res_arrive.reached_destination == true
+		and is_equal_approx(res_arrive.unused_movement, 1.0)
+		and force_arrive != null
+		and force_arrive.travel_state == "at_destination"
+		and force_arrive.travel_state != "traveling_return"
+		and force_arrive.route_segment_index == 2
+		and is_equal_approx(force_arrive.distance_into_segment, 3.0)
+		and hq_contested.owner_faction_id == "gang_b"
+		and hq_contested.is_open == true
+	)
+
+	var expected_same_route: Array[String] = ["road_a"]
+	var deploy_ids_same0_s: Array[String] = ["deploy_soldier_5"]
+	var deploy_ids_same0_v: Array[String] = ["deploy_same_a"]
+	var req_same0: DeploymentRequest = DeploymentRequest.new("deploy_force_same_zero", "gang_a", "stronghold_a", "business_same_node", deploy_ids_same0_s, deploy_ids_same0_v, 0.0)
+	var res_same0: DeploymentResult = DeploymentService.deploy(original, req_same0)
+	var force_same0: TravelingForce = original.get_traveling_force("deploy_force_same_zero")
+	var deploy_same0_ok: bool = (
+		res_same0.success
+		and res_same0.reached_destination == true
+		and is_equal_approx(res_same0.unused_movement, 0.0)
+		and force_same0 != null
+		and _string_ids_match(force_same0.route_node_ids, expected_same_route)
+		and force_same0.travel_state == "at_destination"
+	)
+	var deploy_ids_same3_s: Array[String] = ["deploy_soldier_6"]
+	var deploy_ids_same3_v: Array[String] = ["deploy_same_b"]
+	var req_same3: DeploymentRequest = DeploymentRequest.new("deploy_force_same_pos", "gang_a", "stronghold_a", "business_same_node", deploy_ids_same3_s, deploy_ids_same3_v, 3.0)
+	var res_same3: DeploymentResult = DeploymentService.deploy(original, req_same3)
+	var force_same3: TravelingForce = original.get_traveling_force("deploy_force_same_pos")
+	var deploy_same3_ok: bool = (
+		res_same3.success
+		and res_same3.reached_destination == true
+		and is_equal_approx(res_same3.unused_movement, 3.0)
+		and force_same3 != null
+		and force_same3.travel_state == "at_destination"
+	)
+
+	var deploy_ids_zero_s: Array[String] = ["deploy_soldier_7"]
+	var deploy_ids_zero_v: Array[String] = ["deploy_zero_nl"]
+	var req_zero: DeploymentRequest = DeploymentRequest.new("deploy_force_zero_nl", "gang_a", "stronghold_a", "hq_contested", deploy_ids_zero_s, deploy_ids_zero_v, 0.0)
+	var res_zero: DeploymentResult = DeploymentService.deploy(original, req_zero)
+	var force_zero: TravelingForce = original.get_traveling_force("deploy_force_zero_nl")
+	var deploy_zero_ok: bool = (
+		res_zero.success
+		and res_zero.reached_destination == false
+		and is_equal_approx(res_zero.unused_movement, 0.0)
+		and force_zero != null
+		and force_zero.travel_state == "traveling_outbound"
+		and force_zero.route_segment_index == 0
+		and is_equal_approx(force_zero.distance_into_segment, 0.0)
+	)
+
+	var forces_before_excl_s: int = original.traveling_forces.size()
+	var partial_state_before_excl: String = ""
+	if force_partial_deploy != null:
+		partial_state_before_excl = force_partial_deploy.travel_state
+	var deploy_ids_block_s: Array[String] = ["deploy_soldier_1"]
+	var deploy_ids_block_v: Array[String] = ["deploy_spare"]
+	var req_block_s: DeploymentRequest = DeploymentRequest.new("deploy_force_blocked_soldier", "gang_a", "stronghold_a", "hq_contested", deploy_ids_block_s, deploy_ids_block_v, 3.0)
+	var res_block_s: DeploymentResult = DeploymentService.deploy(original, req_block_s)
+	var deploy_soldier_excl_ok: bool = (
+		not res_block_s.success
+		and res_block_s.error_code == "soldier_already_deployed"
+		and not original.has_traveling_force("deploy_force_blocked_soldier")
+		and original.traveling_forces.size() == forces_before_excl_s
+		and force_partial_deploy != null
+		and force_partial_deploy.travel_state == partial_state_before_excl
+	)
+
+	var forces_before_excl_v: int = original.traveling_forces.size()
+	var deploy_ids_block_vs: Array[String] = ["deploy_soldier_9"]
+	var deploy_ids_block_vv: Array[String] = ["deploy_car"]
+	var req_block_v: DeploymentRequest = DeploymentRequest.new("deploy_force_blocked_vehicle", "gang_a", "stronghold_a", "hq_contested", deploy_ids_block_vs, deploy_ids_block_vv, 3.0)
+	var res_block_v: DeploymentResult = DeploymentService.deploy(original, req_block_v)
+	var deploy_vehicle_excl_ok: bool = (
+		not res_block_v.success
+		and res_block_v.error_code == "vehicle_already_deployed"
+		and not original.has_traveling_force("deploy_force_blocked_vehicle")
+		and original.traveling_forces.size() == forces_before_excl_v
+	)
+
+	if force_partial_deploy != null:
+		force_partial_deploy.travel_state = "complete"
+	var req_release: DeploymentRequest = DeploymentRequest.new("deploy_force_released", "gang_a", "stronghold_a", "hq_contested", deploy_ids_partial_s, deploy_ids_partial_v, 3.0)
+	var res_release: DeploymentResult = DeploymentService.deploy(original, req_release)
+	var deploy_release_ok: bool = res_release.success and original.has_traveling_force("deploy_force_released")
+
+	var forces_before_transport: int = original.traveling_forces.size()
+	var soldiers_before_transport: Array[String] = _copy_ids(stronghold_a.soldier_ids)
+	var vehicles_before_transport: Array[String] = _copy_ids(stronghold_a.vehicle_ids)
+	var home_x_before: String = deploy_soldier_x.home_stronghold_id
+	var home_y_before: String = deploy_soldier_y.home_stronghold_id
+	var home_bike_before: String = deploy_bike.home_stronghold_id
+	var deploy_ids_over_s: Array[String] = ["deploy_soldier_x", "deploy_soldier_y"]
+	var deploy_ids_over_v: Array[String] = ["deploy_bike"]
+	var req_over: DeploymentRequest = DeploymentRequest.new("deploy_force_over", "gang_a", "stronghold_a", "hq_contested", deploy_ids_over_s, deploy_ids_over_v, 3.0)
+	var res_over: DeploymentResult = DeploymentService.deploy(original, req_over)
+	var deploy_over_ok: bool = (
+		not res_over.success
+		and res_over.error_code == "insufficient_transport"
+		and not original.has_traveling_force("deploy_force_over")
+		and original.traveling_forces.size() == forces_before_transport
+		and deploy_soldier_x.home_stronghold_id == home_x_before
+		and deploy_soldier_y.home_stronghold_id == home_y_before
+		and deploy_bike.home_stronghold_id == home_bike_before
+		and _string_ids_match(stronghold_a.soldier_ids, soldiers_before_transport)
+		and _string_ids_match(stronghold_a.vehicle_ids, vehicles_before_transport)
+	)
+
+	var empty_soldiers: Array[String] = []
+	var deploy_ids_nos_v: Array[String] = ["deploy_vehicle_nos"]
+	var req_no_s: DeploymentRequest = DeploymentRequest.new("deploy_force_no_soldiers", "gang_a", "stronghold_a", "hq_contested", empty_soldiers, deploy_ids_nos_v, 3.0)
+	var res_no_s: DeploymentResult = DeploymentService.deploy(original, req_no_s)
+	var deploy_no_soldiers_ok: bool = not res_no_s.success and res_no_s.error_code == "no_soldiers" and not original.has_traveling_force("deploy_force_no_soldiers")
+	var deploy_ids_nov_s: Array[String] = ["deploy_soldier_nov"]
+	var empty_vehicles: Array[String] = []
+	var req_no_v: DeploymentRequest = DeploymentRequest.new("deploy_force_no_vehicles", "gang_a", "stronghold_a", "hq_contested", deploy_ids_nov_s, empty_vehicles, 3.0)
+	var res_no_v: DeploymentResult = DeploymentService.deploy(original, req_no_v)
+	var deploy_no_vehicles_ok: bool = not res_no_v.success and res_no_v.error_code == "no_vehicles" and not original.has_traveling_force("deploy_force_no_vehicles")
+
+	var deploy_ids_dup_s: Array[String] = ["deploy_soldier_1", "deploy_soldier_1"]
+	var deploy_ids_dup_sv: Array[String] = ["deploy_bike"]
+	var req_dup_s: DeploymentRequest = DeploymentRequest.new("deploy_force_dup_s", "gang_a", "stronghold_a", "hq_contested", deploy_ids_dup_s, deploy_ids_dup_sv, 3.0)
+	var res_dup_s: DeploymentResult = DeploymentService.deploy(original, req_dup_s)
+	var deploy_dup_soldier_ok: bool = not res_dup_s.success and res_dup_s.error_code == "duplicate_soldier_id" and not original.has_traveling_force("deploy_force_dup_s")
+	var deploy_ids_dup_vs: Array[String] = ["deploy_soldier_x"]
+	var deploy_ids_dup_v: Array[String] = ["deploy_car", "deploy_car"]
+	var req_dup_v: DeploymentRequest = DeploymentRequest.new("deploy_force_dup_v", "gang_a", "stronghold_a", "hq_contested", deploy_ids_dup_vs, deploy_ids_dup_v, 3.0)
+	var res_dup_v: DeploymentResult = DeploymentService.deploy(original, req_dup_v)
+	var deploy_dup_vehicle_ok: bool = not res_dup_v.success and res_dup_v.error_code == "duplicate_vehicle_id" and not original.has_traveling_force("deploy_force_dup_v")
+
+	var forces_before_wf: int = original.traveling_forces.size()
+	var soldiers_before_wf: Array[String] = _copy_ids(stronghold_a.soldier_ids)
+	var vehicles_before_wf: Array[String] = _copy_ids(stronghold_a.vehicle_ids)
+	var home_x_wf: String = deploy_soldier_x.home_stronghold_id
+	var home_bike_wf: String = deploy_bike.home_stronghold_id
+	var deploy_ids_wf_s: Array[String] = ["deploy_soldier_enemy"]
+	var deploy_ids_wf_v: Array[String] = ["deploy_bike"]
+	var req_wf_s: DeploymentRequest = DeploymentRequest.new("deploy_force_wf_s", "gang_a", "stronghold_a", "hq_contested", deploy_ids_wf_s, deploy_ids_wf_v, 3.0)
+	var res_wf_s: DeploymentResult = DeploymentService.deploy(original, req_wf_s)
+	var deploy_wrong_faction_s_ok: bool = (
+		not res_wf_s.success
+		and res_wf_s.error_code == "soldier_wrong_faction"
+		and not original.has_traveling_force("deploy_force_wf_s")
+		and original.traveling_forces.size() == forces_before_wf
+		and deploy_soldier_x.home_stronghold_id == home_x_wf
+		and deploy_bike.home_stronghold_id == home_bike_wf
+		and _string_ids_match(stronghold_a.soldier_ids, soldiers_before_wf)
+		and _string_ids_match(stronghold_a.vehicle_ids, vehicles_before_wf)
+	)
+	var deploy_ids_wf_vs: Array[String] = ["deploy_soldier_x"]
+	var deploy_ids_wf_vv: Array[String] = ["deploy_vehicle_enemy"]
+	var req_wf_v: DeploymentRequest = DeploymentRequest.new("deploy_force_wf_v", "gang_a", "stronghold_a", "hq_contested", deploy_ids_wf_vs, deploy_ids_wf_vv, 3.0)
+	var res_wf_v: DeploymentResult = DeploymentService.deploy(original, req_wf_v)
+	var deploy_wrong_faction_v_ok: bool = (
+		not res_wf_v.success
+		and res_wf_v.error_code == "vehicle_wrong_faction"
+		and not original.has_traveling_force("deploy_force_wf_v")
+		and original.traveling_forces.size() == forces_before_wf
+		and deploy_soldier_x.home_stronghold_id == home_x_wf
+		and deploy_bike.home_stronghold_id == home_bike_wf
+		and _string_ids_match(stronghold_a.soldier_ids, soldiers_before_wf)
+		and _string_ids_match(stronghold_a.vehicle_ids, vehicles_before_wf)
+	)
+
+	var deploy_ids_home_s: Array[String] = ["deploy_soldier_home_b"]
+	var deploy_ids_home_v: Array[String] = ["deploy_bike"]
+	var req_home_s: DeploymentRequest = DeploymentRequest.new("deploy_force_home_s", "gang_a", "stronghold_a", "hq_contested", deploy_ids_home_s, deploy_ids_home_v, 3.0)
+	var res_home_s: DeploymentResult = DeploymentService.deploy(original, req_home_s)
+	var deploy_wrong_home_s_ok: bool = not res_home_s.success and res_home_s.error_code == "soldier_wrong_home"
+	var deploy_ids_home_vs: Array[String] = ["deploy_soldier_x"]
+	var deploy_ids_home_vv: Array[String] = ["deploy_vehicle_home_b"]
+	var req_home_v: DeploymentRequest = DeploymentRequest.new("deploy_force_home_v", "gang_a", "stronghold_a", "hq_contested", deploy_ids_home_vs, deploy_ids_home_vv, 3.0)
+	var res_home_v: DeploymentResult = DeploymentService.deploy(original, req_home_v)
+	var deploy_wrong_home_v_ok: bool = not res_home_v.success and res_home_v.error_code == "vehicle_wrong_home"
+
+	var deploy_ids_orphan_s: Array[String] = ["deploy_soldier_orphan"]
+	var deploy_ids_orphan_v: Array[String] = ["deploy_bike"]
+	var req_orphan_s: DeploymentRequest = DeploymentRequest.new("deploy_force_orphan_s", "gang_a", "stronghold_a", "hq_contested", deploy_ids_orphan_s, deploy_ids_orphan_v, 3.0)
+	var res_orphan_s: DeploymentResult = DeploymentService.deploy(original, req_orphan_s)
+	var deploy_not_at_origin_s_ok: bool = not res_orphan_s.success and res_orphan_s.error_code == "soldier_not_at_origin"
+	var deploy_ids_orphan_vs: Array[String] = ["deploy_soldier_x"]
+	var deploy_ids_orphan_vv: Array[String] = ["deploy_vehicle_orphan"]
+	var req_orphan_v: DeploymentRequest = DeploymentRequest.new("deploy_force_orphan_v", "gang_a", "stronghold_a", "hq_contested", deploy_ids_orphan_vs, deploy_ids_orphan_vv, 3.0)
+	var res_orphan_v: DeploymentResult = DeploymentService.deploy(original, req_orphan_v)
+	var deploy_not_at_origin_v_ok: bool = not res_orphan_v.success and res_orphan_v.error_code == "vehicle_not_at_origin"
+
+	var dummy_s: Array[String] = ["deploy_soldier_x"]
+	var dummy_v: Array[String] = ["deploy_bike"]
+	var req_bad_origin: DeploymentRequest = DeploymentRequest.new("deploy_force_bad_origin", "gang_a", "missing_origin", "hq_contested", dummy_s, dummy_v, 3.0)
+	var res_bad_origin: DeploymentResult = DeploymentService.deploy(original, req_bad_origin)
+	var deploy_invalid_origin_ok: bool = not res_bad_origin.success and res_bad_origin.error_code == "invalid_origin"
+	var req_origin_business: DeploymentRequest = DeploymentRequest.new("deploy_force_origin_biz", "gang_a", "business_a", "hq_contested", dummy_s, dummy_v, 3.0)
+	var res_origin_business: DeploymentResult = DeploymentService.deploy(original, req_origin_business)
+	var deploy_origin_not_stronghold_ok: bool = not res_origin_business.success and res_origin_business.error_code == "invalid_origin"
+	var req_origin_faction: DeploymentRequest = DeploymentRequest.new("deploy_force_origin_faction", "gang_a", "stronghold_enemy", "hq_contested", dummy_s, dummy_v, 3.0)
+	var res_origin_faction: DeploymentResult = DeploymentService.deploy(original, req_origin_faction)
+	var deploy_origin_wrong_faction_ok: bool = not res_origin_faction.success and res_origin_faction.error_code == "origin_wrong_faction"
+	var req_origin_no_road: DeploymentRequest = DeploymentRequest.new("deploy_force_origin_noroad", "gang_a", "stronghold_no_road", "hq_contested", dummy_s, dummy_v, 3.0)
+	var res_origin_no_road: DeploymentResult = DeploymentService.deploy(original, req_origin_no_road)
+	var deploy_origin_missing_road_ok: bool = not res_origin_no_road.success and res_origin_no_road.error_code == "origin_missing_road_node"
+	var req_bad_dest: DeploymentRequest = DeploymentRequest.new("deploy_force_bad_dest", "gang_a", "stronghold_a", "missing_dest", dummy_s, dummy_v, 3.0)
+	var res_bad_dest: DeploymentResult = DeploymentService.deploy(original, req_bad_dest)
+	var deploy_invalid_dest_ok: bool = not res_bad_dest.success and res_bad_dest.error_code == "invalid_destination"
+	var req_dest_no_road: DeploymentRequest = DeploymentRequest.new("deploy_force_dest_noroad", "gang_a", "stronghold_a", "business_no_road", dummy_s, dummy_v, 3.0)
+	var res_dest_no_road: DeploymentResult = DeploymentService.deploy(original, req_dest_no_road)
+	var deploy_dest_missing_road_ok: bool = not res_dest_no_road.success and res_dest_no_road.error_code == "destination_missing_road_node"
+	var deploy_ids_origin_ghost_s: Array[String] = ["deploy_soldier_ghost"]
+	var deploy_ids_origin_ghost_v: Array[String] = ["deploy_vehicle_ghost"]
+	var req_origin_ghost: DeploymentRequest = DeploymentRequest.new("deploy_force_origin_ghost", "gang_a", "stronghold_ghost_road", "hq_contested", deploy_ids_origin_ghost_s, deploy_ids_origin_ghost_v, 3.0)
+	var res_origin_ghost: DeploymentResult = DeploymentService.deploy(original, req_origin_ghost)
+	var deploy_origin_ghost_ok: bool = not res_origin_ghost.success and res_origin_ghost.error_code == "invalid_origin_road_node"
+	var req_dest_ghost: DeploymentRequest = DeploymentRequest.new("deploy_force_dest_ghost", "gang_a", "stronghold_a", "business_ghost_road", dummy_s, dummy_v, 3.0)
+	var res_dest_ghost: DeploymentResult = DeploymentService.deploy(original, req_dest_ghost)
+	var deploy_dest_ghost_ok: bool = not res_dest_ghost.success and res_dest_ghost.error_code == "invalid_destination_road_node"
+
+	var forces_before_noroute: int = original.traveling_forces.size()
+	var soldiers_before_noroute: Array[String] = _copy_ids(stronghold_a.soldier_ids)
+	var vehicles_before_noroute: Array[String] = _copy_ids(stronghold_a.vehicle_ids)
+	var home_x_noroute: String = deploy_soldier_x.home_stronghold_id
+	var home_bike_noroute: String = deploy_bike.home_stronghold_id
+	var req_noroute: DeploymentRequest = DeploymentRequest.new("deploy_force_noroute", "gang_a", "stronghold_a", "business_isolated", dummy_s, dummy_v, 3.0)
+	var res_noroute: DeploymentResult = DeploymentService.deploy(original, req_noroute)
+	var deploy_no_route_ok: bool = (
+		not res_noroute.success
+		and res_noroute.error_code == "no_route"
+		and not original.has_traveling_force("deploy_force_noroute")
+		and original.traveling_forces.size() == forces_before_noroute
+		and deploy_soldier_x.home_stronghold_id == home_x_noroute
+		and deploy_bike.home_stronghold_id == home_bike_noroute
+		and _string_ids_match(stronghold_a.soldier_ids, soldiers_before_noroute)
+		and _string_ids_match(stronghold_a.vehicle_ids, vehicles_before_noroute)
+	)
+
+	var existing_partial: TravelingForce = original.get_traveling_force("deploy_force_partial")
+	var req_dup_force: DeploymentRequest = DeploymentRequest.new("deploy_force_partial", "gang_a", "stronghold_a", "hq_contested", dummy_s, dummy_v, 3.0)
+	var res_dup_force: DeploymentResult = DeploymentService.deploy(original, req_dup_force)
+	var deploy_dup_force_ok: bool = (
+		not res_dup_force.success
+		and res_dup_force.error_code == "duplicate_force_id"
+		and original.get_traveling_force("deploy_force_partial") == existing_partial
+	)
+
+	var forces_before_redeploy: int = original.traveling_forces.size()
+	var soldiers_before_redeploy: Array[String] = _copy_ids(stronghold_a.soldier_ids)
+	var vehicles_before_redeploy: Array[String] = _copy_ids(stronghold_a.vehicle_ids)
+	var home_s1_before_redeploy: String = deploy_soldier_1.home_stronghold_id
+	var home_car_before_redeploy: String = deploy_car.home_stronghold_id
+	var req_redeploy: DeploymentRequest = DeploymentRequest.new("deploy_force_redeploy_fail", "gang_a", "stronghold_a", "hq_contested", deploy_ids_block_s, deploy_ids_block_v, 3.0)
+	var res_redeploy: DeploymentResult = DeploymentService.deploy(original, req_redeploy)
+	var deploy_atomic_redeploy_ok: bool = (
+		not res_redeploy.success
+		and res_redeploy.error_code == "soldier_already_deployed"
+		and original.traveling_forces.size() == forces_before_redeploy
+		and deploy_soldier_1.home_stronghold_id == home_s1_before_redeploy
+		and deploy_car.home_stronghold_id == home_car_before_redeploy
+		and _string_ids_match(stronghold_a.soldier_ids, soldiers_before_redeploy)
+		and _string_ids_match(stronghold_a.vehicle_ids, vehicles_before_redeploy)
+	)
+
+	var helper_ok: DeploymentResult = DeploymentResult.succeeded("helper_force", true, 2.5)
+	var deploy_helper_success_ok: bool = helper_ok.success and helper_ok.force_id == "helper_force" and helper_ok.error_code.is_empty() and helper_ok.error_message.is_empty()
+	var helper_fail: DeploymentResult = DeploymentResult.failed("test_code", "test message", "helper_fail_id")
+	var deploy_helper_fail_ok: bool = (not helper_fail.success) and helper_fail.error_code == "test_code" and helper_fail.error_message == "test message"
+
+	final_stronghold_a_soldiers = _copy_ids(stronghold_a.soldier_ids)
+	final_stronghold_b_soldiers = _copy_ids(stronghold_b.soldier_ids)
+	final_stronghold_a_vehicles = _copy_ids(stronghold_a.vehicle_ids)
+	final_stronghold_b_vehicles = _copy_ids(stronghold_b.vehicle_ids)
+
 	var serialized_state := original.to_dict()
 	var restored := GameState.new()
 	restored.from_dict(serialized_state)
@@ -846,6 +1292,42 @@ static func run() -> Dictionary:
 		"restored_force_soldiers_capacity": restored_force_soldiers != null and restored_force_soldiers.get_transport_capacity(restored) == 4,
 		"restored_force_soldiers_valid": restored_force_soldiers != null and restored_force_soldiers.has_valid_transport_capacity(restored) == true,
 		"restored_force_soldiers_strength": restored_force_soldiers != null and is_equal_approx(restored_force_soldiers.get_total_strategic_strength(restored), 5.70),
+		"deploy_assets_assigned": assign_ds1 and assign_ds2 and assign_ds3 and assign_dcar and assign_dvan,
+		"deploy_partial_result_ok": deploy_partial_result_ok,
+		"deploy_partial_force_ok": deploy_partial_force_ok,
+		"deploy_partial_homes_ok": deploy_partial_homes_ok,
+		"deploy_capped_ok": deploy_capped_ok,
+		"deploy_arrive_ok": deploy_arrive_ok,
+		"deploy_same0_ok": deploy_same0_ok,
+		"deploy_same3_ok": deploy_same3_ok,
+		"deploy_zero_ok": deploy_zero_ok,
+		"deploy_soldier_excl_ok": deploy_soldier_excl_ok,
+		"deploy_vehicle_excl_ok": deploy_vehicle_excl_ok,
+		"deploy_release_ok": deploy_release_ok,
+		"deploy_over_ok": deploy_over_ok,
+		"deploy_no_soldiers_ok": deploy_no_soldiers_ok,
+		"deploy_no_vehicles_ok": deploy_no_vehicles_ok,
+		"deploy_dup_soldier_ok": deploy_dup_soldier_ok,
+		"deploy_dup_vehicle_ok": deploy_dup_vehicle_ok,
+		"deploy_wrong_faction_s_ok": deploy_wrong_faction_s_ok,
+		"deploy_wrong_faction_v_ok": deploy_wrong_faction_v_ok,
+		"deploy_wrong_home_s_ok": deploy_wrong_home_s_ok,
+		"deploy_wrong_home_v_ok": deploy_wrong_home_v_ok,
+		"deploy_not_at_origin_s_ok": deploy_not_at_origin_s_ok,
+		"deploy_not_at_origin_v_ok": deploy_not_at_origin_v_ok,
+		"deploy_invalid_origin_ok": deploy_invalid_origin_ok,
+		"deploy_origin_not_stronghold_ok": deploy_origin_not_stronghold_ok,
+		"deploy_origin_wrong_faction_ok": deploy_origin_wrong_faction_ok,
+		"deploy_origin_missing_road_ok": deploy_origin_missing_road_ok,
+		"deploy_invalid_dest_ok": deploy_invalid_dest_ok,
+		"deploy_dest_missing_road_ok": deploy_dest_missing_road_ok,
+		"deploy_origin_ghost_ok": deploy_origin_ghost_ok,
+		"deploy_dest_ghost_ok": deploy_dest_ghost_ok,
+		"deploy_no_route_ok": deploy_no_route_ok,
+		"deploy_dup_force_ok": deploy_dup_force_ok,
+		"deploy_atomic_redeploy_ok": deploy_atomic_redeploy_ok,
+		"deploy_helper_success_ok": deploy_helper_success_ok,
+		"deploy_helper_fail_ok": deploy_helper_fail_ok,
 	}
 
 	var passed := true
@@ -877,6 +1359,13 @@ static func _string_ids_match(actual: Array[String], expected: Array[String]) ->
 		if actual[i] != expected[i]:
 			return false
 	return true
+
+
+static func _copy_ids(ids: Array[String]) -> Array[String]:
+	var copied: Array[String] = []
+	for id_value: String in ids:
+		copied.append(id_value)
+	return copied
 
 
 static func _count_id(ids: Array[String], target_id: String) -> int:
