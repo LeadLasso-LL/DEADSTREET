@@ -32,6 +32,11 @@ const ExistingForceMissionRequest := preload("res://campaign/missions/existing_f
 const ExistingForceMissionResult := preload("res://campaign/missions/existing_force_mission_result.gd")
 const NeighborhoodHQCaptureResult := preload("res://campaign/missions/resolvers/neighborhood_hq_capture_result.gd")
 const NeighborhoodHQCaptureResolver := preload("res://campaign/missions/resolvers/neighborhood_hq_capture_resolver.gd")
+const FactionRelationship := preload("res://campaign/diplomacy/faction_relationship.gd")
+const DiplomacyResult := preload("res://campaign/diplomacy/diplomacy_result.gd")
+const DiplomacyService := preload("res://campaign/diplomacy/diplomacy_service.gd")
+const NeighborhoodHQAttackResult := preload("res://campaign/missions/neighborhood_hq_attack_result.gd")
+const NeighborhoodHQAttackService := preload("res://campaign/missions/neighborhood_hq_attack_service.gd")
 
 
 static func run() -> Dictionary:
@@ -4496,6 +4501,562 @@ static func run() -> Dictionary:
 		and _string_ids_match(hqcap_std_force.vehicle_group.vehicle_ids, hqcap_continue_vehicles)
 	)
 
+	var war_key_ok: bool = (
+		FactionRelationship.make_key("a", "b") == FactionRelationship.make_key("b", "a")
+		and FactionRelationship.make_key("a", "b") == "a|b"
+		and FactionRelationship.make_key("", "b") == ""
+		and FactionRelationship.make_key("a", "a") == ""
+	)
+	var war_stored: FactionRelationship = FactionRelationship.new("war_z", "war_a", false)
+	var war_canonical_store_ok: bool = (
+		war_stored.faction_a_id == "war_a"
+		and war_stored.faction_b_id == "war_z"
+	)
+	var war_empty_rel: FactionRelationship = FactionRelationship.new("", "war_a")
+	var war_same_rel: FactionRelationship = FactionRelationship.new("war_a", "war_a")
+	var war_pair: FactionRelationship = FactionRelationship.new("war_b", "war_a", true)
+	var war_contains_ok: bool = (
+		war_pair.contains_faction("war_a")
+		and war_pair.contains_faction("war_b")
+		and not war_pair.contains_faction("war_c")
+		and not war_pair.contains_faction("")
+	)
+	var war_other_id_ok: bool = (
+		war_pair.get_other_faction_id("war_a") == "war_b"
+		and war_pair.get_other_faction_id("war_b") == "war_a"
+		and war_pair.get_other_faction_id("war_c") == ""
+	)
+
+	var war_reg_state: GameState = _make_war_state()
+	var war_empty_add_ok: bool = not war_reg_state.add_relationship(war_empty_rel)
+	var war_same_add_ok: bool = not war_reg_state.add_relationship(war_same_rel)
+	var war_only_a_state: GameState = GameState.new()
+	war_only_a_state.add_faction(MajorGang.new("war_a", "War A", "player"))
+	var war_premature: FactionRelationship = FactionRelationship.new("war_a", "war_b", true)
+	var war_before_both_ok: bool = not war_only_a_state.add_relationship(war_premature)
+	war_only_a_state.add_faction(MajorGang.new("war_b", "War B", "ai"))
+	var war_after_both_ok: bool = war_only_a_state.add_relationship(war_premature)
+	var war_rel_ab: FactionRelationship = FactionRelationship.new("war_a", "war_b", false)
+	var war_add_ok: bool = war_reg_state.add_relationship(war_rel_ab)
+	var war_had_ab: bool = war_reg_state.has_relationship_between("war_a", "war_b")
+	var war_lookup_ab: FactionRelationship = war_reg_state.get_relationship_between("war_a", "war_b")
+	var war_lookup_ba: FactionRelationship = war_reg_state.get_relationship_between("war_b", "war_a")
+	var war_dup_rev: FactionRelationship = FactionRelationship.new("war_b", "war_a", true)
+	var war_dup_rejected: bool = not war_reg_state.add_relationship(war_dup_rev)
+	var war_size_after_add: int = war_reg_state.relationships.size()
+	var war_removed: bool = war_reg_state.remove_relationship_between("war_b", "war_a")
+	var war_registry_ok: bool = (
+		war_empty_add_ok
+		and war_same_add_ok
+		and war_before_both_ok
+		and war_after_both_ok
+		and war_add_ok
+		and war_had_ab
+		and war_lookup_ab != null
+		and war_lookup_ba == war_lookup_ab
+		and war_dup_rejected
+		and war_size_after_add == 1
+		and war_removed
+		and not war_reg_state.has_relationship_between("war_a", "war_b")
+		and war_reg_state.relationships.is_empty()
+	)
+	var war_empty_pair_ok: bool = war_empty_add_ok and war_empty_rel.faction_a_id.is_empty() and war_empty_rel.faction_b_id.is_empty()
+	var war_same_faction_ok: bool = war_same_add_ok and war_same_rel.faction_a_id.is_empty()
+
+	var war_ok_state: GameState = _make_war_state()
+	var war_declare: DiplomacyResult = DiplomacyService.declare_war(war_ok_state, "war_a", "war_b")
+	var war_rel_after: FactionRelationship = war_ok_state.get_relationship_between("war_a", "war_b")
+	var war_declare_ok: bool = (
+		war_declare.success
+		and war_ok_state.has_relationship_between("war_a", "war_b")
+		and war_rel_after != null
+		and war_rel_after.is_at_war
+		and DiplomacyService.are_at_war(war_ok_state, "war_a", "war_b")
+		and DiplomacyService.are_at_war(war_ok_state, "war_b", "war_a")
+		and war_ok_state.relationships.size() == 1
+	)
+	var war_declare_again: DiplomacyResult = DiplomacyService.declare_war(war_ok_state, "war_b", "war_a")
+	var war_declare_idempotent_ok: bool = (
+		war_declare_again.success
+		and war_ok_state.relationships.size() == 1
+		and DiplomacyService.are_at_war(war_ok_state, "war_a", "war_b")
+		and war_ok_state.get_relationship_between("war_a", "war_b").is_at_war
+	)
+
+	var war_err_state: GameState = _make_war_state()
+	var war_err_count: int = war_err_state.relationships.size()
+	var war_null_res: DiplomacyResult = DiplomacyService.declare_war(null, "war_a", "war_b")
+	var war_empty_a_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "", "war_b")
+	var war_empty_b_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "war_a", "")
+	var war_same_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "war_a", "war_a")
+	var war_missing_a_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "war_missing", "war_b")
+	var war_missing_b_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "war_a", "war_missing")
+	var war_a_civ_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "war_civilians", "war_b")
+	var war_b_civ_res: DiplomacyResult = DiplomacyService.declare_war(war_err_state, "war_a", "war_civilians")
+	var war_null_state_ok: bool = not war_null_res.success and war_null_res.error_code == "null_game_state"
+	var war_empty_a_ok: bool = not war_empty_a_res.success and war_empty_a_res.error_code == "empty_faction_a"
+	var war_empty_b_ok: bool = not war_empty_b_res.success and war_empty_b_res.error_code == "empty_faction_b"
+	var war_same_ok: bool = not war_same_res.success and war_same_res.error_code == "same_faction"
+	var war_missing_a_ok: bool = not war_missing_a_res.success and war_missing_a_res.error_code == "invalid_faction_a"
+	var war_missing_b_ok: bool = not war_missing_b_res.success and war_missing_b_res.error_code == "invalid_faction_b"
+	var war_a_not_gang_ok: bool = not war_a_civ_res.success and war_a_civ_res.error_code == "faction_a_not_major_gang"
+	var war_b_not_gang_ok: bool = not war_b_civ_res.success and war_b_civ_res.error_code == "faction_b_not_major_gang"
+	var war_fail_atomicity_ok: bool = war_err_state.relationships.size() == war_err_count
+
+	var war_false_state: GameState = _make_war_state()
+	var war_peace_rel: FactionRelationship = FactionRelationship.new("war_a", "war_b", false)
+	war_false_state.add_relationship(war_peace_rel)
+	var war_are_false_ok: bool = (
+		not DiplomacyService.are_at_war(null, "war_a", "war_b")
+		and not DiplomacyService.are_at_war(war_false_state, "", "war_b")
+		and not DiplomacyService.are_at_war(war_false_state, "war_a", "")
+		and not DiplomacyService.are_at_war(war_false_state, "war_a", "war_a")
+		and not DiplomacyService.are_at_war(_make_war_state(), "war_a", "war_b")
+		and not DiplomacyService.are_at_war(war_false_state, "war_a", "war_b")
+	)
+
+	var war_persist_state: GameState = _make_war_state()
+	DiplomacyService.declare_war(war_persist_state, "war_b", "war_a")
+	var war_persist_save: Dictionary = war_persist_state.to_dict()
+	var war_persist_restored: GameState = GameState.new()
+	war_persist_restored.from_dict(war_persist_save)
+	var war_persist_rel: FactionRelationship = war_persist_restored.get_relationship_between("war_a", "war_b")
+	var war_persist_ok: bool = (
+		war_persist_rel != null
+		and war_persist_rel.faction_a_id == "war_a"
+		and war_persist_rel.faction_b_id == "war_b"
+		and war_persist_rel.is_at_war
+		and DiplomacyService.are_at_war(war_persist_restored, "war_a", "war_b")
+		and DiplomacyService.are_at_war(war_persist_restored, "war_b", "war_a")
+	)
+	var war_older_save: Dictionary = war_persist_save.duplicate(true)
+	war_older_save.erase("relationships")
+	var war_older_restored: GameState = GameState.new()
+	war_older_restored.from_dict(war_older_save)
+	var war_older_save_ok: bool = (
+		war_older_restored.has_faction("war_a")
+		and war_older_restored.has_faction("war_b")
+		and war_older_restored.relationships.is_empty()
+		and not DiplomacyService.are_at_war(war_older_restored, "war_a", "war_b")
+	)
+
+	var war_order_state: GameState = GameState.new()
+	war_order_state.add_faction(MajorGang.new("war_m", "War M", "ai"))
+	war_order_state.add_faction(MajorGang.new("war_x", "War X", "ai"))
+	war_order_state.add_faction(MajorGang.new("war_z", "War Z", "ai"))
+	war_order_state.add_relationship(FactionRelationship.new("war_x", "war_z", true))
+	war_order_state.add_relationship(FactionRelationship.new("war_z", "war_m", true))
+	war_order_state.add_relationship(FactionRelationship.new("war_m", "war_x", true))
+	var war_order_save: Dictionary = war_order_state.to_dict()
+	var war_order_keys: Array[String] = []
+	var war_order_data: Variant = war_order_save.get("relationships", {})
+	if war_order_data is Dictionary:
+		for war_order_key: Variant in war_order_data:
+			war_order_keys.append(str(war_order_key))
+	var war_order_expected: Array[String] = ["war_m|war_x", "war_m|war_z", "war_x|war_z"]
+	var war_serialize_order_ok: bool = _string_ids_match(war_order_keys, war_order_expected)
+
+	var war_helper_ok_res: DiplomacyResult = DiplomacyResult.succeeded("war_a", "war_b", true)
+	var war_helper_fail_res: DiplomacyResult = DiplomacyResult.failed("same_faction", "test", "war_a", "war_a", false)
+	var war_result_helper_ok: bool = (
+		war_helper_ok_res.success
+		and war_helper_ok_res.faction_a_id == "war_a"
+		and war_helper_ok_res.faction_b_id == "war_b"
+		and war_helper_ok_res.is_at_war
+		and war_helper_ok_res.error_code.is_empty()
+		and war_helper_ok_res.error_message.is_empty()
+		and not war_helper_fail_res.success
+		and war_helper_fail_res.error_code == "same_faction"
+		and war_helper_fail_res.error_message == "test"
+		and war_helper_fail_res.faction_a_id == "war_a"
+		and not war_helper_fail_res.is_at_war
+	)
+
+	var hqattack_nowar_state: GameState = _make_hqattack_world()
+	var hqattack_nowar_snap: Dictionary = _hqattack_snapshot(hqattack_nowar_state)
+	var hqattack_nowar_req: MissionRequest = _hqattack_stronghold_request()
+	var hqattack_nowar_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_nowar_state, hqattack_nowar_req
+	)
+	var hqattack_nowar_force_state: GameState = _make_hqattack_world()
+	var hqattack_nowar_force: TravelingForce = _hqattack_add_idle_force(hqattack_nowar_force_state)
+	var hqattack_nowar_force_snap: Dictionary = _hqattack_snapshot(hqattack_nowar_force_state, hqattack_nowar_force)
+	var hqattack_nowar_efm_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"hqattack_efm_nowar", "capture_neighborhood_hq", "hqattack_force", "hqattack_hq"
+	)
+	var hqattack_nowar_efm_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_existing_force(
+		hqattack_nowar_force_state, hqattack_nowar_efm_req
+	)
+	var hqattack_war_required_ok: bool = (
+		not hqattack_nowar_res.success
+		and hqattack_nowar_res.error_code == "formal_war_required"
+		and not hqattack_nowar_state.has_mission("hqattack_mission")
+		and not hqattack_nowar_state.has_traveling_force("hqattack_force")
+		and _hqattack_unchanged(hqattack_nowar_state, hqattack_nowar_snap)
+		and not hqattack_nowar_efm_res.success
+		and hqattack_nowar_efm_res.error_code == "formal_war_required"
+		and not hqattack_nowar_force_state.has_mission("hqattack_efm_nowar")
+		and hqattack_nowar_force_state.traveling_forces.size() == 1
+		and _hqattack_unchanged(hqattack_nowar_force_state, hqattack_nowar_force_snap, hqattack_nowar_force)
+	)
+	var hqattack_no_auto_war_ok: bool = (
+		hqattack_war_required_ok
+		and hqattack_nowar_state.relationships.is_empty()
+		and not DiplomacyService.are_at_war(hqattack_nowar_state, "hqattack_a", "hqattack_b")
+		and hqattack_nowar_force_state.relationships.is_empty()
+		and not DiplomacyService.are_at_war(hqattack_nowar_force_state, "hqattack_a", "hqattack_b")
+	)
+
+	var hqattack_enable_state: GameState = _make_hqattack_world()
+	var hqattack_enable_war: DiplomacyResult = DiplomacyService.declare_war(hqattack_enable_state, "hqattack_a", "hqattack_b")
+	var hqattack_enable_hood: Neighborhood = hqattack_enable_state.get_neighborhood("hqattack_hood")
+	var hqattack_enable_hq: NeighborhoodHQ = hqattack_enable_state.get_map_location("hqattack_hq") as NeighborhoodHQ
+	var hqattack_enable_biz: Business = hqattack_enable_state.get_map_location("hqattack_biz") as Business
+	var hqattack_enable_req: MissionRequest = _hqattack_stronghold_request()
+	var hqattack_enable_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_enable_state, hqattack_enable_req
+	)
+	var hqattack_enable_mission: CampaignMission = hqattack_enable_state.get_mission("hqattack_mission")
+	var hqattack_enable_force: TravelingForce = hqattack_enable_state.get_traveling_force("hqattack_force")
+	var hqattack_declare_enables_ok: bool = (
+		hqattack_enable_war.success
+		and hqattack_enable_res.success
+		and hqattack_enable_mission != null
+		and hqattack_enable_mission.mission_type_id == "capture_neighborhood_hq"
+		and hqattack_enable_mission.faction_id == "hqattack_a"
+		and hqattack_enable_mission.mission_state == "awaiting_resolution"
+		and hqattack_enable_hood.owner_faction_id == "hqattack_b"
+		and hqattack_enable_hq.owner_faction_id == "hqattack_b"
+		and hqattack_enable_biz.owner_faction_id == "hqattack_b"
+	)
+	var hqattack_stronghold_ok: bool = (
+		hqattack_enable_res.success
+		and hqattack_enable_res.attacker_faction_id == "hqattack_a"
+		and hqattack_enable_res.defender_faction_id == "hqattack_b"
+		and hqattack_enable_res.neighborhood_id == "hqattack_hood"
+		and hqattack_enable_res.hq_location_id == "hqattack_hq"
+		and hqattack_enable_res.mission_id == "hqattack_mission"
+		and hqattack_enable_res.force_id == "hqattack_force"
+		and hqattack_enable_res.mission_state == "awaiting_resolution"
+		and hqattack_enable_res.reached_destination
+		and hqattack_enable_force != null
+		and hqattack_enable_state.traveling_forces.size() == 1
+		and hqattack_enable_force.destination_location_id == "hqattack_hq"
+		and hqattack_enable_force.travel_state == "at_destination"
+		and hqattack_enable_req.deployment_request.faction_id == "hqattack_a"
+	)
+
+	var hqattack_efm_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_efm_state, "hqattack_a", "hqattack_b")
+	var hqattack_efm_force: TravelingForce = _hqattack_add_idle_force(hqattack_efm_state)
+	var hqattack_efm_force_count: int = hqattack_efm_state.traveling_forces.size()
+	var hqattack_efm_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"hqattack_efm_mission", "capture_neighborhood_hq", "hqattack_force", "hqattack_hq"
+	)
+	var hqattack_efm_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_existing_force(
+		hqattack_efm_state, hqattack_efm_req
+	)
+	var hqattack_efm_mission: CampaignMission = hqattack_efm_state.get_mission("hqattack_efm_mission")
+	var hqattack_existing_force_ok: bool = (
+		hqattack_efm_res.success
+		and hqattack_efm_res.attacker_faction_id == "hqattack_a"
+		and hqattack_efm_res.force_id == "hqattack_force"
+		and hqattack_efm_state.traveling_forces.size() == hqattack_efm_force_count
+		and hqattack_efm_state.has_traveling_force("hqattack_force")
+		and hqattack_efm_force.id == "hqattack_force"
+		and hqattack_efm_force.faction_id == "hqattack_a"
+		and hqattack_efm_force.destination_location_id == "hqattack_hq"
+		and hqattack_efm_force.travel_state == "at_destination"
+		and hqattack_efm_mission != null
+		and hqattack_efm_mission.force_id == "hqattack_force"
+		and hqattack_efm_mission.mission_type_id == "capture_neighborhood_hq"
+		and hqattack_efm_mission.mission_state == "awaiting_resolution"
+		and hqattack_efm_res.reached_destination
+		and hqattack_efm_res.mission_state == "awaiting_resolution"
+	)
+
+	var hqattack_unclaimed_state: GameState = _make_hqattack_world("", "")
+	var hqattack_unclaimed_rel_before: int = hqattack_unclaimed_state.relationships.size()
+	var hqattack_unclaimed_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_unclaimed_state, _hqattack_stronghold_request("hqattack_unclaimed")
+	)
+	var hqattack_unclaimed_ok: bool = (
+		hqattack_unclaimed_res.success
+		and hqattack_unclaimed_res.defender_faction_id == ""
+		and hqattack_unclaimed_state.has_mission("hqattack_unclaimed")
+		and hqattack_unclaimed_state.relationships.size() == hqattack_unclaimed_rel_before
+		and hqattack_unclaimed_state.relationships.is_empty()
+		and not DiplomacyService.are_at_war(hqattack_unclaimed_state, "hqattack_a", "hqattack_b")
+	)
+
+	var hqattack_owned_state: GameState = _make_hqattack_world("hqattack_a", "hqattack_a")
+	var hqattack_owned_snap: Dictionary = _hqattack_snapshot(hqattack_owned_state)
+	var hqattack_owned_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_owned_state, _hqattack_stronghold_request("hqattack_owned")
+	)
+	var hqattack_already_controlled_ok: bool = (
+		not hqattack_owned_res.success
+		and hqattack_owned_res.error_code == "already_controlled"
+		and not hqattack_owned_state.has_mission("hqattack_owned")
+		and _hqattack_unchanged(hqattack_owned_state, hqattack_owned_snap)
+	)
+
+	var hqattack_mm_ab_state: GameState = _make_hqattack_world("hqattack_b", "hqattack_c")
+	var hqattack_mm_ab_snap: Dictionary = _hqattack_snapshot(hqattack_mm_ab_state)
+	var hqattack_mm_ab_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_mm_ab_state, _hqattack_stronghold_request("hqattack_mm_ab")
+	)
+	var hqattack_mismatch_ab_ok: bool = (
+		not hqattack_mm_ab_res.success
+		and hqattack_mm_ab_res.error_code == "territory_owner_mismatch"
+		and not hqattack_mm_ab_state.has_mission("hqattack_mm_ab")
+		and _hqattack_unchanged(hqattack_mm_ab_state, hqattack_mm_ab_snap)
+	)
+	var hqattack_mm_empty_hq_state: GameState = _make_hqattack_world("hqattack_b", "")
+	var hqattack_mm_empty_hq_snap: Dictionary = _hqattack_snapshot(hqattack_mm_empty_hq_state)
+	var hqattack_mm_empty_hq_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_mm_empty_hq_state, _hqattack_stronghold_request("hqattack_mm_empty_hq")
+	)
+	var hqattack_mismatch_empty_hq_ok: bool = (
+		not hqattack_mm_empty_hq_res.success
+		and hqattack_mm_empty_hq_res.error_code == "territory_owner_mismatch"
+		and _hqattack_unchanged(hqattack_mm_empty_hq_state, hqattack_mm_empty_hq_snap)
+	)
+	var hqattack_mm_empty_hood_state: GameState = _make_hqattack_world("", "hqattack_b")
+	var hqattack_mm_empty_hood_snap: Dictionary = _hqattack_snapshot(hqattack_mm_empty_hood_state)
+	var hqattack_mm_empty_hood_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_mm_empty_hood_state, _hqattack_stronghold_request("hqattack_mm_empty_hood")
+	)
+	var hqattack_mismatch_empty_hood_ok: bool = (
+		not hqattack_mm_empty_hood_res.success
+		and hqattack_mm_empty_hood_res.error_code == "territory_owner_mismatch"
+		and _hqattack_unchanged(hqattack_mm_empty_hood_state, hqattack_mm_empty_hood_snap)
+	)
+
+	var hqattack_ghost_def_state: GameState = _make_hqattack_world("hqattack_ghost_def", "hqattack_ghost_def")
+	var hqattack_ghost_def_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_ghost_def_state, _hqattack_stronghold_request("hqattack_ghost_def")
+	)
+	var hqattack_invalid_defender_ok: bool = (
+		not hqattack_ghost_def_res.success
+		and hqattack_ghost_def_res.error_code == "invalid_defender_faction"
+		and not hqattack_ghost_def_state.has_mission("hqattack_ghost_def")
+	)
+
+	var hqattack_miss_att_state: GameState = _make_hqattack_world()
+	var hqattack_miss_att_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_miss_att", "hqattack_force", "hqattack_hq", "hqattack_keep", "hqattack_missing"
+	)
+	var hqattack_miss_att_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_miss_att_state, hqattack_miss_att_req
+	)
+	var hqattack_miss_force_state: GameState = _make_hqattack_world()
+	var hqattack_miss_force_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"hqattack_miss_force", "capture_neighborhood_hq", "hqattack_missing_force", "hqattack_hq"
+	)
+	var hqattack_miss_force_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_existing_force(
+		hqattack_miss_force_state, hqattack_miss_force_req
+	)
+	var hqattack_invalid_attacker_ok: bool = (
+		not hqattack_miss_att_res.success
+		and hqattack_miss_att_res.error_code == "invalid_attacker_faction"
+		and not hqattack_miss_force_res.success
+		and hqattack_miss_force_res.error_code == "invalid_attacker_faction"
+	)
+	var hqattack_civ_att_state: GameState = _make_hqattack_world()
+	var hqattack_civ_att_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_civ_att", "hqattack_force", "hqattack_hq", "hqattack_keep", "hqattack_civilians"
+	)
+	var hqattack_civ_att_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_civ_att_state, hqattack_civ_att_req
+	)
+	var hqattack_attacker_not_gang_ok: bool = (
+		not hqattack_civ_att_res.success
+		and hqattack_civ_att_res.error_code == "attacker_not_major_gang"
+	)
+
+	var hqattack_miss_tgt_state: GameState = _make_hqattack_world()
+	var hqattack_miss_tgt_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_miss_tgt", "hqattack_force", "hqattack_missing_loc"
+	)
+	var hqattack_miss_tgt_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_miss_tgt_state, hqattack_miss_tgt_req
+	)
+	var hqattack_missing_target_ok: bool = (
+		not hqattack_miss_tgt_res.success
+		and hqattack_miss_tgt_res.error_code == "invalid_target_location"
+	)
+	var hqattack_biz_tgt_state: GameState = _make_hqattack_world()
+	var hqattack_biz_tgt_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_biz_tgt", "hqattack_force", "hqattack_biz"
+	)
+	var hqattack_biz_tgt_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_biz_tgt_state, hqattack_biz_tgt_req
+	)
+	var hqattack_target_not_hq_ok: bool = (
+		not hqattack_biz_tgt_res.success
+		and hqattack_biz_tgt_res.error_code == "target_not_neighborhood_hq"
+	)
+	var hqattack_orphan_state: GameState = _make_hqattack_world()
+	var hqattack_orphan_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_orphan", "hqattack_force", "hqattack_hq_orphan"
+	)
+	var hqattack_orphan_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_orphan_state, hqattack_orphan_req
+	)
+	var hqattack_missing_neighborhood_ok: bool = (
+		not hqattack_orphan_res.success
+		and hqattack_orphan_res.error_code == "missing_neighborhood"
+	)
+	var hqattack_ghost_hood_state: GameState = _make_hqattack_world()
+	var hqattack_ghost_hood_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_ghost_hood", "hqattack_force", "hqattack_hq_ghost"
+	)
+	var hqattack_ghost_hood_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_ghost_hood_state, hqattack_ghost_hood_req
+	)
+	var hqattack_invalid_neighborhood_ok: bool = (
+		not hqattack_ghost_hood_res.success
+		and hqattack_ghost_hood_res.error_code == "invalid_neighborhood"
+	)
+
+	var hqattack_type_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_type_state, "hqattack_a", "hqattack_b")
+	var hqattack_type_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_raid", "hqattack_force", "hqattack_hq", "hqattack_keep", "hqattack_a", "raid_business"
+	)
+	var hqattack_type_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_type_state, hqattack_type_req
+	)
+	var hqattack_wrong_type_ok: bool = (
+		not hqattack_type_res.success
+		and hqattack_type_res.error_code == "invalid_mission_type"
+		and not hqattack_type_state.has_mission("hqattack_raid")
+		and hqattack_type_req.mission_type_id == "raid_business"
+	)
+
+	var hqattack_dup_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_dup_state, "hqattack_a", "hqattack_b")
+	var hqattack_dup_first: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_dup_state, _hqattack_stronghold_request("hqattack_dup")
+	)
+	var hqattack_dup_second: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_dup_state, _hqattack_stronghold_request("hqattack_dup", "hqattack_force_2")
+	)
+	var hqattack_dup_mission_ok: bool = (
+		hqattack_dup_first.success
+		and not hqattack_dup_second.success
+		and hqattack_dup_second.error_code == "duplicate_mission_id"
+		and not hqattack_dup_second.error_message.is_empty()
+	)
+	var hqattack_origin_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_origin_state, "hqattack_a", "hqattack_b")
+	var hqattack_origin_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_bad_origin", "hqattack_force", "hqattack_hq", "hqattack_missing_keep"
+	)
+	var hqattack_origin_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_origin_state, hqattack_origin_req
+	)
+	var hqattack_invalid_origin_ok: bool = (
+		not hqattack_origin_res.success
+		and hqattack_origin_res.error_code == "invalid_origin"
+		and not hqattack_origin_res.error_message.is_empty()
+		and not hqattack_origin_state.has_mission("hqattack_bad_origin")
+	)
+	var hqattack_noroute_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_noroute_state, "hqattack_a", "hqattack_b")
+	var hqattack_noroute_req: MissionRequest = _hqattack_stronghold_request(
+		"hqattack_noroute", "hqattack_force", "hqattack_hq_island"
+	)
+	var hqattack_noroute_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_noroute_state, hqattack_noroute_req
+	)
+	var hqattack_no_route_ok: bool = (
+		not hqattack_noroute_res.success
+		and hqattack_noroute_res.error_code == "no_route"
+		and not hqattack_noroute_res.error_message.is_empty()
+		and not hqattack_noroute_state.has_mission("hqattack_noroute")
+	)
+	var hqattack_unres_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_unres_state, "hqattack_a", "hqattack_b")
+	var hqattack_unres_force: TravelingForce = _hqattack_add_idle_force(hqattack_unres_state)
+	hqattack_unres_state.add_mission(CampaignMission.new(
+		"hqattack_open",
+		"raid_business",
+		"hqattack_a",
+		"hqattack_force",
+		"hqattack_keep",
+		"hqattack_biz",
+		"awaiting_resolution",
+		""
+	))
+	var hqattack_unres_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"hqattack_blocked", "capture_neighborhood_hq", "hqattack_force", "hqattack_hq"
+	)
+	var hqattack_unres_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_existing_force(
+		hqattack_unres_state, hqattack_unres_req
+	)
+	var hqattack_unresolved_ok: bool = (
+		not hqattack_unres_res.success
+		and hqattack_unres_res.error_code == "force_has_unresolved_mission"
+		and not hqattack_unres_res.error_message.is_empty()
+		and not hqattack_unres_state.has_mission("hqattack_blocked")
+		and hqattack_unres_force.destination_location_id == "hqattack_keep"
+	)
+
+	var hqattack_boundary_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(hqattack_boundary_state, "hqattack_a", "hqattack_b")
+	var hqattack_boundary_res: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		hqattack_boundary_state, _hqattack_stronghold_request("hqattack_boundary")
+	)
+	var hqattack_boundary_hood: Neighborhood = hqattack_boundary_state.get_neighborhood("hqattack_hood")
+	var hqattack_boundary_hq: NeighborhoodHQ = hqattack_boundary_state.get_map_location("hqattack_hq") as NeighborhoodHQ
+	var hqattack_boundary_biz: Business = hqattack_boundary_state.get_map_location("hqattack_biz") as Business
+	var hqattack_boundary_mission: CampaignMission = hqattack_boundary_state.get_mission("hqattack_boundary")
+	var hqattack_launch_no_capture_ok: bool = (
+		hqattack_boundary_res.success
+		and hqattack_boundary_hood.owner_faction_id == "hqattack_b"
+		and hqattack_boundary_hq.owner_faction_id == "hqattack_b"
+		and hqattack_boundary_biz.owner_faction_id == "hqattack_b"
+		and hqattack_boundary_mission != null
+		and hqattack_boundary_mission.mission_state == "awaiting_resolution"
+	)
+	var hqattack_capture_after: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		hqattack_boundary_state, "hqattack_boundary"
+	)
+	var hqattack_no_capture_until_resolve_ok: bool = (
+		hqattack_launch_no_capture_ok
+		and hqattack_capture_after.success
+		and hqattack_boundary_hood.owner_faction_id == "hqattack_a"
+		and hqattack_boundary_hq.owner_faction_id == "hqattack_a"
+		and hqattack_boundary_biz.owner_faction_id == ""
+		and hqattack_boundary_mission.mission_state == "resolved_success"
+		and hqattack_boundary_mission.outcome_code == "neighborhood_hq_captured"
+	)
+
+	var hqattack_helper_ok: NeighborhoodHQAttackResult = NeighborhoodHQAttackResult.succeeded(
+		"m1", "f1", "hqattack_a", "hqattack_b", "hqattack_hood", "hqattack_hq", "awaiting_resolution", true
+	)
+	var hqattack_helper_fail: NeighborhoodHQAttackResult = NeighborhoodHQAttackResult.failed(
+		"formal_war_required", "need war", "m2", "f2", "hqattack_a", "hqattack_b", "hqattack_hood", "hqattack_hq"
+	)
+	var hqattack_result_helper_ok: bool = (
+		hqattack_helper_ok.success
+		and hqattack_helper_ok.mission_id == "m1"
+		and hqattack_helper_ok.force_id == "f1"
+		and hqattack_helper_ok.attacker_faction_id == "hqattack_a"
+		and hqattack_helper_ok.defender_faction_id == "hqattack_b"
+		and hqattack_helper_ok.neighborhood_id == "hqattack_hood"
+		and hqattack_helper_ok.hq_location_id == "hqattack_hq"
+		and hqattack_helper_ok.mission_state == "awaiting_resolution"
+		and hqattack_helper_ok.reached_destination
+		and hqattack_helper_ok.error_code.is_empty()
+		and not hqattack_helper_fail.success
+		and hqattack_helper_fail.error_code == "formal_war_required"
+		and hqattack_helper_fail.error_message == "need war"
+		and not hqattack_helper_fail.reached_destination
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -5047,6 +5608,53 @@ static func run() -> Dictionary:
 		"hqcap_economy_ok": hqcap_economy_ok,
 		"hqcap_continue_ok": hqcap_continue_ok,
 		"hqcap_no_side_effects_ok": hqcap_no_side_effects_ok,
+		"war_key_ok": war_key_ok,
+		"war_canonical_store_ok": war_canonical_store_ok,
+		"war_empty_pair_ok": war_empty_pair_ok,
+		"war_same_faction_ok": war_same_faction_ok,
+		"war_contains_ok": war_contains_ok,
+		"war_other_id_ok": war_other_id_ok,
+		"war_registry_ok": war_registry_ok,
+		"war_declare_ok": war_declare_ok,
+		"war_declare_idempotent_ok": war_declare_idempotent_ok,
+		"war_null_state_ok": war_null_state_ok,
+		"war_empty_a_ok": war_empty_a_ok,
+		"war_empty_b_ok": war_empty_b_ok,
+		"war_same_ok": war_same_ok,
+		"war_missing_a_ok": war_missing_a_ok,
+		"war_missing_b_ok": war_missing_b_ok,
+		"war_a_not_gang_ok": war_a_not_gang_ok,
+		"war_b_not_gang_ok": war_b_not_gang_ok,
+		"war_fail_atomicity_ok": war_fail_atomicity_ok,
+		"war_are_false_ok": war_are_false_ok,
+		"war_persist_ok": war_persist_ok,
+		"war_older_save_ok": war_older_save_ok,
+		"war_serialize_order_ok": war_serialize_order_ok,
+		"war_result_helper_ok": war_result_helper_ok,
+		"hqattack_war_required_ok": hqattack_war_required_ok,
+		"hqattack_no_auto_war_ok": hqattack_no_auto_war_ok,
+		"hqattack_declare_enables_ok": hqattack_declare_enables_ok,
+		"hqattack_stronghold_ok": hqattack_stronghold_ok,
+		"hqattack_existing_force_ok": hqattack_existing_force_ok,
+		"hqattack_unclaimed_ok": hqattack_unclaimed_ok,
+		"hqattack_already_controlled_ok": hqattack_already_controlled_ok,
+		"hqattack_mismatch_ab_ok": hqattack_mismatch_ab_ok,
+		"hqattack_mismatch_empty_hq_ok": hqattack_mismatch_empty_hq_ok,
+		"hqattack_mismatch_empty_hood_ok": hqattack_mismatch_empty_hood_ok,
+		"hqattack_invalid_defender_ok": hqattack_invalid_defender_ok,
+		"hqattack_invalid_attacker_ok": hqattack_invalid_attacker_ok,
+		"hqattack_attacker_not_gang_ok": hqattack_attacker_not_gang_ok,
+		"hqattack_missing_target_ok": hqattack_missing_target_ok,
+		"hqattack_target_not_hq_ok": hqattack_target_not_hq_ok,
+		"hqattack_missing_neighborhood_ok": hqattack_missing_neighborhood_ok,
+		"hqattack_invalid_neighborhood_ok": hqattack_invalid_neighborhood_ok,
+		"hqattack_wrong_type_ok": hqattack_wrong_type_ok,
+		"hqattack_dup_mission_ok": hqattack_dup_mission_ok,
+		"hqattack_invalid_origin_ok": hqattack_invalid_origin_ok,
+		"hqattack_no_route_ok": hqattack_no_route_ok,
+		"hqattack_unresolved_ok": hqattack_unresolved_ok,
+		"hqattack_no_capture_until_resolve_ok": hqattack_no_capture_until_resolve_ok,
+		"hqattack_result_helper_ok": hqattack_result_helper_ok,
 	}
 
 	var passed := true
@@ -5902,4 +6510,175 @@ static func _hqcap_fails_atomically(
 		return false
 	if game_state.vehicles.size() != vehicle_count:
 		return false
+	return true
+
+
+static func _make_war_state() -> GameState:
+	var state: GameState = GameState.new()
+	state.add_faction(MajorGang.new("war_a", "War A", "player"))
+	state.add_faction(MajorGang.new("war_b", "War B", "ai"))
+	state.add_faction(MajorGang.new("war_c", "War C", "ai"))
+	state.add_faction(Faction.new("war_civilians", "War Civilians", "civilian"))
+	return state
+
+
+static func _make_hqattack_world(hood_owner: String = "hqattack_b", hq_owner: String = "hqattack_b") -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 6
+	state.current_month = 9
+	state.current_year = 2034
+	var attacker: MajorGang = MajorGang.new("hqattack_a", "HQAttack A", "player")
+	attacker.money = 500.0
+	attacker.resources.set_amount("Ammo", 2.0)
+	var defender: MajorGang = MajorGang.new("hqattack_b", "HQAttack B", "ai")
+	defender.money = 700.0
+	var third: MajorGang = MajorGang.new("hqattack_c", "HQAttack C", "ai")
+	state.add_faction(attacker)
+	state.add_faction(defender)
+	state.add_faction(third)
+	state.add_faction(Faction.new("hqattack_civilians", "HQAttack Civilians", "civilian"))
+	state.add_stronghold_region(StrongholdRegion.new("hqattack_region", "HQAttack Region"))
+	state.add_police_region(PoliceRegion.new("hqattack_district", "HQAttack District"))
+	state.add_neighborhood(Neighborhood.new("hqattack_hood", "HQAttack Hood", "hqattack_region", "hqattack_district", hood_owner))
+	var keep: Stronghold = Stronghold.new("hqattack_keep", "HQAttack Keep", "hqattack_hood", Vector2(0.0, 0.0), "hqattack_a", true, 1, 0.0)
+	keep.road_node_id = "hqattack_node_hq"
+	state.add_map_location(keep)
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new("hqattack_hq", "HQAttack HQ", "hqattack_hood", Vector2(0.2, 0.0), hq_owner, true)
+	hq.road_node_id = "hqattack_node_hq"
+	state.add_map_location(hq)
+	var hq_b: NeighborhoodHQ = NeighborhoodHQ.new("hqattack_hq_b", "HQAttack HQ B", "hqattack_hood", Vector2(4.0, 0.0), hq_owner, true)
+	hq_b.road_node_id = "hqattack_node_b"
+	state.add_map_location(hq_b)
+	var hq_island: NeighborhoodHQ = NeighborhoodHQ.new("hqattack_hq_island", "HQAttack Island HQ", "hqattack_hood", Vector2(40.0, 0.0), hq_owner, true)
+	hq_island.road_node_id = "hqattack_node_island"
+	state.add_map_location(hq_island)
+	var hq_orphan: NeighborhoodHQ = NeighborhoodHQ.new("hqattack_hq_orphan", "HQAttack Orphan HQ", "", Vector2(20.0, 0.0), hq_owner, true)
+	hq_orphan.road_node_id = "hqattack_node_orphan"
+	state.add_map_location(hq_orphan)
+	var hq_ghost: NeighborhoodHQ = NeighborhoodHQ.new("hqattack_hq_ghost", "HQAttack Ghost HQ", "hqattack_missing_hood", Vector2(25.0, 0.0), hq_owner, true)
+	hq_ghost.road_node_id = "hqattack_node_ghost"
+	state.add_map_location(hq_ghost)
+	var biz: Business = Business.new("hqattack_biz", "HQAttack Biz", "hqattack_hood", Vector2(0.4, 0.2), "hqattack_b", true, "market", 2)
+	biz.road_node_id = "hqattack_node_hq"
+	state.add_map_location(biz)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("hqattack_node_hq", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("hqattack_node_b", Vector2(4.0, 0.0)))
+	graph.add_node(RoadNode.new("hqattack_node_island", Vector2(40.0, 0.0)))
+	graph.add_node(RoadNode.new("hqattack_node_orphan", Vector2(20.0, 0.0)))
+	graph.add_node(RoadNode.new("hqattack_node_ghost", Vector2(25.0, 0.0)))
+	graph.add_segment(RoadSegment.new("hqattack_seg_hq_b", "hqattack_node_hq", "hqattack_node_b", 4.0))
+	var soldier: Soldier = Soldier.new("hqattack_soldier", "hqattack_a", "", "pistol", 1.0, 0.0)
+	var vehicle: Vehicle = Vehicle.new("hqattack_vehicle", "hqattack_a", "car", "", 2, 5.0, 0.0)
+	state.add_soldier(soldier)
+	state.add_vehicle(vehicle)
+	state.assign_soldier_to_stronghold("hqattack_soldier", "hqattack_keep")
+	state.assign_vehicle_to_stronghold("hqattack_vehicle", "hqattack_keep")
+	return state
+
+
+static func _hqattack_stronghold_request(
+	mission_id: String = "hqattack_mission",
+	force_id: String = "hqattack_force",
+	destination_id: String = "hqattack_hq",
+	origin_id: String = "hqattack_keep",
+	faction_id: String = "hqattack_a",
+	mission_type_id: String = "capture_neighborhood_hq",
+	movement_budget: float = 10.0
+) -> MissionRequest:
+	var soldier_ids: Array[String] = ["hqattack_soldier"]
+	var vehicle_ids: Array[String] = ["hqattack_vehicle"]
+	var deployment: DeploymentRequest = DeploymentRequest.new(
+		force_id,
+		faction_id,
+		origin_id,
+		destination_id,
+		soldier_ids,
+		vehicle_ids,
+		movement_budget
+	)
+	return MissionRequest.new(mission_id, mission_type_id, deployment)
+
+
+static func _hqattack_add_idle_force(
+	game_state: GameState,
+	force_id: String = "hqattack_force",
+	faction_id: String = "hqattack_a",
+	origin_id: String = "hqattack_keep",
+	destination_id: String = "hqattack_keep",
+	travel_state: String = "at_destination",
+	movement_remaining: float = 5.0
+) -> TravelingForce:
+	var dest_node: String = "hqattack_node_hq"
+	var dest_location: MapLocation = game_state.get_map_location(destination_id)
+	if dest_location != null and not dest_location.road_node_id.is_empty():
+		dest_node = dest_location.road_node_id
+	var route: Array[String] = [dest_node]
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		faction_id,
+		origin_id,
+		destination_id,
+		route,
+		5.0,
+		travel_state
+	)
+	force.route_segment_index = 0
+	force.distance_into_segment = 0.0
+	force.movement_remaining = movement_remaining
+	if game_state.has_soldier("hqattack_soldier"):
+		force.soldier_group.add_soldier_id("hqattack_soldier")
+	if game_state.has_vehicle("hqattack_vehicle"):
+		force.vehicle_group.add_vehicle_id("hqattack_vehicle")
+	game_state.add_traveling_force(force)
+	return force
+
+
+static func _hqattack_snapshot(game_state: GameState, force: TravelingForce = null) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["rel_count"] = game_state.relationships.size()
+	snap["mission_count"] = game_state.missions.size()
+	snap["force_count"] = game_state.traveling_forces.size()
+	var hood_owners: Dictionary = {}
+	for hood_id: String in game_state.neighborhoods:
+		var hood: Neighborhood = game_state.get_neighborhood(hood_id)
+		if hood != null:
+			hood_owners[hood_id] = hood.owner_faction_id
+	snap["hood_owners"] = hood_owners
+	var loc_owners: Dictionary = {}
+	for loc_id: String in game_state.map_locations:
+		var location: MapLocation = game_state.get_map_location(loc_id)
+		if location != null:
+			loc_owners[loc_id] = location.owner_faction_id
+	snap["loc_owners"] = loc_owners
+	if force != null:
+		snap["force"] = _force_travel_snapshot(force)
+	return snap
+
+
+static func _hqattack_unchanged(game_state: GameState, snap: Dictionary, force: TravelingForce = null) -> bool:
+	if game_state.relationships.size() != int(snap.get("rel_count", -1)):
+		return false
+	if game_state.missions.size() != int(snap.get("mission_count", -1)):
+		return false
+	if game_state.traveling_forces.size() != int(snap.get("force_count", -1)):
+		return false
+	var hood_owners: Variant = snap.get("hood_owners", {})
+	if hood_owners is Dictionary:
+		for hood_id: Variant in hood_owners:
+			var hood: Neighborhood = game_state.get_neighborhood(str(hood_id))
+			if hood == null or hood.owner_faction_id != str(hood_owners[hood_id]):
+				return false
+	var loc_owners: Variant = snap.get("loc_owners", {})
+	if loc_owners is Dictionary:
+		for loc_id: Variant in loc_owners:
+			var location: MapLocation = game_state.get_map_location(str(loc_id))
+			if location == null or location.owner_faction_id != str(loc_owners[loc_id]):
+				return false
+	if force != null:
+		var force_snap: Variant = snap.get("force", {})
+		if not (force_snap is Dictionary):
+			return false
+		if not _force_travel_unchanged(force, force_snap):
+			return false
 	return true

@@ -2,6 +2,7 @@ class_name GameState
 extends RefCounted
 
 const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
+const FactionRelationship := preload("res://campaign/diplomacy/faction_relationship.gd")
 
 var current_turn: int = 1
 var current_year: int = 2034
@@ -16,6 +17,7 @@ var vehicles: Dictionary[String, Vehicle] = {}
 var soldiers: Dictionary[String, Soldier] = {}
 var traveling_forces: Dictionary[String, TravelingForce] = {}
 var missions: Dictionary[String, CampaignMission] = {}
+var relationships: Dictionary[String, FactionRelationship] = {}
 
 
 func add_faction(faction: Faction) -> void:
@@ -391,6 +393,60 @@ func remove_mission(mission_id: String) -> bool:
 	return true
 
 
+func add_relationship(relationship: FactionRelationship) -> bool:
+	if relationship == null:
+		push_error("GameState.add_relationship: relationship is null.")
+		return false
+	relationship.canonicalize()
+	var key: String = FactionRelationship.make_key(relationship.faction_a_id, relationship.faction_b_id)
+	if key.is_empty():
+		push_error("GameState.add_relationship: faction pair is empty or the same faction.")
+		return false
+	if not has_faction(relationship.faction_a_id):
+		push_error(
+			"GameState.add_relationship: faction '%s' does not exist."
+			% relationship.faction_a_id
+		)
+		return false
+	if not has_faction(relationship.faction_b_id):
+		push_error(
+			"GameState.add_relationship: faction '%s' does not exist."
+			% relationship.faction_b_id
+		)
+		return false
+	if relationships.has(key):
+		push_error("GameState.add_relationship: duplicate relationship '%s'." % key)
+		return false
+	relationships[key] = relationship
+	return true
+
+
+func has_relationship_between(faction_one_id: String, faction_two_id: String) -> bool:
+	var key: String = FactionRelationship.make_key(faction_one_id, faction_two_id)
+	if key.is_empty():
+		return false
+	return relationships.has(key)
+
+
+func get_relationship_between(faction_one_id: String, faction_two_id: String) -> FactionRelationship:
+	var key: String = FactionRelationship.make_key(faction_one_id, faction_two_id)
+	if key.is_empty():
+		return null
+	if relationships.has(key):
+		return relationships[key]
+	return null
+
+
+func remove_relationship_between(faction_one_id: String, faction_two_id: String) -> bool:
+	var key: String = FactionRelationship.make_key(faction_one_id, faction_two_id)
+	if key.is_empty():
+		return false
+	if not relationships.has(key):
+		return false
+	relationships.erase(key)
+	return true
+
+
 func to_dict() -> Dictionary:
 	var faction_data := {}
 	for faction_id: String in factions:
@@ -419,11 +475,19 @@ func to_dict() -> Dictionary:
 	var mission_data := {}
 	for mission_id: String in missions:
 		mission_data[mission_id] = missions[mission_id].to_dict()
+	var relationship_data := {}
+	var relationship_keys: Array[String] = []
+	for relationship_key: String in relationships:
+		relationship_keys.append(relationship_key)
+	relationship_keys.sort()
+	for relationship_key: String in relationship_keys:
+		relationship_data[relationship_key] = relationships[relationship_key].to_dict()
 	return {
 		"current_turn": current_turn,
 		"current_year": current_year,
 		"current_month": current_month,
 		"factions": faction_data,
+		"relationships": relationship_data,
 		"neighborhoods": neighborhood_data,
 		"stronghold_regions": stronghold_region_data,
 		"police_regions": police_region_data,
@@ -453,6 +517,7 @@ func from_dict(data: Dictionary) -> void:
 			if faction.id.is_empty():
 				faction.id = str(faction_id)
 			add_faction(faction)
+	_restore_relationships(data.get("relationships", {}))
 	_restore_stronghold_regions(data.get("stronghold_regions", {}))
 	_restore_police_regions(data.get("police_regions", {}))
 	_restore_neighborhoods(data.get("neighborhoods", {}))
@@ -642,3 +707,34 @@ func _restore_missions(mission_data: Variant) -> void:
 			push_error("GameState.from_dict: mission record is missing an id; skipping.")
 			continue
 		add_mission(mission)
+
+
+func _restore_relationships(relationship_data: Variant) -> void:
+	relationships.clear()
+	if not (relationship_data is Dictionary):
+		return
+	var relationship_keys: Array[String] = []
+	for relationship_key: Variant in relationship_data:
+		relationship_keys.append(str(relationship_key))
+	relationship_keys.sort()
+	for relationship_key: String in relationship_keys:
+		var record: Variant = relationship_data[relationship_key]
+		if not (record is Dictionary):
+			push_error(
+				"GameState.from_dict: relationship record '%s' is not a Dictionary; skipping."
+				% relationship_key
+			)
+			continue
+		var relationship: FactionRelationship = FactionRelationship.new()
+		relationship.from_dict(record)
+		if FactionRelationship.make_key(relationship.faction_a_id, relationship.faction_b_id).is_empty():
+			push_error(
+				"GameState.from_dict: relationship record '%s' has an invalid faction pair; skipping."
+				% relationship_key
+			)
+			continue
+		if not add_relationship(relationship):
+			push_error(
+				"GameState.from_dict: failed to restore relationship '%s'; skipping."
+				% relationship_key
+			)
