@@ -6119,6 +6119,220 @@ static func run() -> Dictionary:
 			and battle_dep_det_a.get_vehicle_deployment_zone_id("battle_veh_m") == battle_dep_det_b.get_vehicle_deployment_zone_id("battle_veh_m")
 		)
 
+	var battle_ready_empty_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_empty_bs: BattleState = battle_ready_empty_pack.get("battle_state", null) as BattleState
+	var battle_ready_empty_ok: bool = (
+		battle_ready_empty_bs != null
+		and battle_ready_empty_bs.is_side_ready("defender")
+		and not battle_ready_empty_bs.is_side_ready("attacker")
+		and not battle_ready_empty_bs.is_side_ready("")
+		and not battle_ready_empty_bs.is_side_ready("missing_side")
+		and not battle_ready_empty_bs.is_battle_ready()
+		and battle_ready_empty_bs.battle_phase == "deployment"
+	)
+	var battle_ready_partial_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_partial_bs: BattleState = battle_ready_partial_pack.get("battle_state", null) as BattleState
+	var battle_ready_partial_ok: bool = false
+	if battle_ready_partial_bs != null:
+		var battle_ready_partial_deployed: bool = battle_ready_partial_bs.deploy_participant("battle_sol_a", "attacker_deployment")
+		battle_ready_partial_ok = (
+			battle_ready_partial_deployed
+			and battle_ready_partial_bs.is_side_ready("defender")
+			and not battle_ready_partial_bs.is_side_ready("attacker")
+			and not battle_ready_partial_bs.is_battle_ready()
+		)
+	var battle_ready_part_bs: BattleState = _battle_make_bare_state()
+	var battle_ready_part_ok: bool = false
+	if battle_ready_part_bs != null:
+		var battle_ready_part_added: bool = (
+			_battle_register_participant(battle_ready_part_bs, "ready_p_z", "attacker", "attacker_deployment")
+			and _battle_register_participant(battle_ready_part_bs, "ready_p_a", "attacker", "attacker_deployment")
+			and battle_ready_part_bs.deploy_participant("ready_p_z", "attacker_deployment")
+			and battle_ready_part_bs.deploy_participant("ready_p_a", "attacker_deployment")
+		)
+		battle_ready_part_ok = (
+			battle_ready_part_added
+			and battle_ready_part_bs.is_side_ready("attacker")
+			and battle_ready_part_bs.is_side_ready("defender")
+			and battle_ready_part_bs.get_side("attacker").vehicle_ids.is_empty()
+			and battle_ready_part_bs.is_battle_ready()
+		)
+	var battle_ready_veh_bs: BattleState = _battle_make_bare_state()
+	var battle_ready_veh_ok: bool = false
+	if battle_ready_veh_bs != null:
+		var battle_ready_veh_added: bool = (
+			_battle_register_vehicle(battle_ready_veh_bs, "ready_v_z", "attacker", "attacker_deployment")
+			and _battle_register_vehicle(battle_ready_veh_bs, "ready_v_a", "attacker", "attacker_deployment")
+			and battle_ready_veh_bs.deploy_vehicle("ready_v_z", "attacker_deployment")
+			and battle_ready_veh_bs.deploy_vehicle("ready_v_a", "attacker_deployment")
+		)
+		battle_ready_veh_ok = (
+			battle_ready_veh_added
+			and battle_ready_veh_bs.is_side_ready("attacker")
+			and battle_ready_veh_bs.is_side_ready("defender")
+			and battle_ready_veh_bs.get_side("attacker").participant_ids.is_empty()
+			and battle_ready_veh_bs.is_battle_ready()
+		)
+	var battle_ready_mixed_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_mixed_bs: BattleState = battle_ready_mixed_pack.get("battle_state", null) as BattleState
+	var battle_ready_mixed_ok: bool = false
+	if battle_ready_mixed_bs != null:
+		battle_ready_mixed_ok = (
+			_battle_deploy_standard_attacker(battle_ready_mixed_bs)
+			and battle_ready_mixed_bs.is_side_ready("attacker")
+			and battle_ready_mixed_bs.is_side_ready("defender")
+			and not battle_ready_mixed_bs.get_side("attacker").participant_ids.is_empty()
+			and not battle_ready_mixed_bs.get_side("attacker").vehicle_ids.is_empty()
+			and battle_ready_mixed_bs.is_battle_ready()
+		)
+	var battle_ready_att_only_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_att_only_bs: BattleState = battle_ready_att_only_pack.get("battle_state", null) as BattleState
+	var battle_ready_att_only_ok: bool = false
+	if battle_ready_att_only_bs != null:
+		var battle_ready_att_deployed: bool = _battle_deploy_standard_attacker(battle_ready_att_only_bs)
+		var battle_ready_def_added: bool = _battle_register_participant(
+			battle_ready_att_only_bs, "ready_def_p", "defender", "defender_deployment"
+		)
+		battle_ready_att_only_ok = (
+			battle_ready_att_deployed
+			and battle_ready_def_added
+			and battle_ready_att_only_bs.is_side_ready("attacker")
+			and not battle_ready_att_only_bs.is_side_ready("defender")
+			and not battle_ready_att_only_bs.is_battle_ready()
+		)
+	var battle_ready_def_only_ok: bool = (
+		battle_ready_empty_ok
+		and battle_ready_empty_bs != null
+		and battle_ready_empty_bs.is_side_ready("defender")
+		and not battle_ready_empty_bs.is_side_ready("attacker")
+		and not battle_ready_empty_bs.is_battle_ready()
+	)
+	var battle_ready_full_ok: bool = battle_ready_mixed_ok
+	var battle_ready_act_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_act_game: GameState = battle_ready_act_pack.get("game_state", null) as GameState
+	var battle_ready_act_force: TravelingForce = battle_ready_act_pack.get("force", null) as TravelingForce
+	var battle_ready_act_bs: BattleState = battle_ready_act_pack.get("battle_state", null) as BattleState
+	var battle_ready_act_snap: Dictionary = _battle_campaign_snapshot(
+		battle_ready_act_game, battle_ready_act_force, "battle_mission"
+	)
+	var battle_ready_activate_ok: bool = false
+	var battle_ready_activate_phase_ok: bool = false
+	var battle_ready_blocked_ok: bool = false
+	var battle_ready_immutability_ok: bool = false
+	var battle_ready_persist_ok: bool = false
+	if battle_ready_act_bs != null:
+		var battle_ready_act_deployed: bool = _battle_deploy_standard_attacker(battle_ready_act_bs)
+		var battle_ready_act_begun: bool = battle_ready_act_bs.begin_battle()
+		battle_ready_activate_ok = (
+			battle_ready_act_deployed
+			and battle_ready_act_bs.is_battle_ready()
+			and battle_ready_act_begun
+		)
+		battle_ready_activate_phase_ok = (
+			battle_ready_activate_ok
+			and battle_ready_act_bs.battle_phase == "active"
+			and battle_ready_act_bs.battle_phase != "deployment"
+			and battle_ready_act_bs.battle_phase != "resolved"
+		)
+		var battle_ready_extra_added: bool = _battle_register_participant(
+			battle_ready_act_bs, "ready_late_p", "attacker", "attacker_deployment"
+		)
+		var battle_ready_late_deploy: bool = battle_ready_act_bs.deploy_participant("ready_late_p", "attacker_deployment")
+		var battle_ready_late_vehicle: bool = battle_ready_act_bs.deploy_vehicle("battle_veh_a", "attacker_deployment")
+		battle_ready_blocked_ok = (
+			battle_ready_activate_phase_ok
+			and battle_ready_extra_added
+			and not battle_ready_late_deploy
+			and not battle_ready_late_vehicle
+			and battle_ready_act_bs.get_participant("ready_late_p").deployment_slot_id.is_empty()
+			and battle_ready_act_bs.get_vehicle("battle_veh_a").deployment_slot_id == "attacker_deployment"
+			and battle_ready_act_bs.battle_phase == "active"
+		)
+		battle_ready_immutability_ok = (
+			battle_ready_activate_ok
+			and _battle_campaign_unchanged(battle_ready_act_game, battle_ready_act_snap, battle_ready_act_force, "battle_mission")
+			and battle_ready_act_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battle_ready_act_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+		var battle_ready_persist_data: Dictionary = battle_ready_act_game.to_dict()
+		var battle_ready_restored: GameState = GameState.new()
+		battle_ready_restored.from_dict(battle_ready_persist_data)
+		battle_ready_persist_ok = (
+			battle_ready_activate_ok
+			and _battle_serialized_campaign_keys_only(battle_ready_persist_data)
+			and not _battle_data_has_tactical_trace(battle_ready_persist_data)
+			and battle_ready_restored.has_mission("battle_mission")
+			and battle_ready_restored.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		)
+	var battle_ready_early_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_early_bs: BattleState = battle_ready_early_pack.get("battle_state", null) as BattleState
+	var battle_ready_before_ok: bool = false
+	var battle_ready_no_mutate_ok: bool = false
+	if battle_ready_early_bs != null:
+		var battle_ready_early_before: Dictionary = _battle_deploy_assignment_snapshot(battle_ready_early_bs)
+		var battle_ready_early_begin: bool = battle_ready_early_bs.begin_battle()
+		battle_ready_before_ok = (
+			not battle_ready_early_bs.is_battle_ready()
+			and not battle_ready_early_begin
+			and battle_ready_early_bs.battle_phase == "deployment"
+		)
+		battle_ready_no_mutate_ok = (
+			battle_ready_before_ok
+			and _battle_deploy_assignment_unchanged(battle_ready_early_bs, battle_ready_early_before)
+		)
+	var battle_ready_outside_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_outside_bs: BattleState = battle_ready_outside_pack.get("battle_state", null) as BattleState
+	var battle_ready_outside_ok: bool = false
+	if battle_ready_outside_bs != null:
+		var battle_ready_outside_deployed: bool = _battle_deploy_standard_attacker(battle_ready_outside_bs)
+		var battle_ready_outside_first: bool = battle_ready_outside_bs.begin_battle()
+		var battle_ready_outside_before: Dictionary = _battle_deploy_assignment_snapshot(battle_ready_outside_bs)
+		var battle_ready_outside_second: bool = battle_ready_outside_bs.begin_battle()
+		battle_ready_outside_ok = (
+			battle_ready_outside_deployed
+			and battle_ready_outside_first
+			and battle_ready_outside_bs.battle_phase == "active"
+			and not battle_ready_outside_second
+			and _battle_deploy_assignment_unchanged(battle_ready_outside_bs, battle_ready_outside_before)
+		)
+		if battle_ready_outside_ok:
+			battle_ready_outside_bs.battle_phase = "resolved"
+			var battle_ready_resolved_before: Dictionary = _battle_deploy_assignment_snapshot(battle_ready_outside_bs)
+			var battle_ready_outside_resolved: bool = battle_ready_outside_bs.begin_battle()
+			battle_ready_outside_ok = (
+				not battle_ready_outside_resolved
+				and battle_ready_outside_bs.battle_phase == "resolved"
+				and _battle_deploy_assignment_unchanged(battle_ready_outside_bs, battle_ready_resolved_before)
+			)
+	var battle_ready_det_a_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_det_b_pack: Dictionary = _battle_create_ready_pack()
+	var battle_ready_det_a: BattleState = battle_ready_det_a_pack.get("battle_state", null) as BattleState
+	var battle_ready_det_b: BattleState = battle_ready_det_b_pack.get("battle_state", null) as BattleState
+	var battle_ready_determinism_ok: bool = false
+	if battle_ready_det_a != null and battle_ready_det_b != null:
+		var battle_ready_det_before_match: bool = (
+			battle_ready_det_a.is_side_ready("attacker") == battle_ready_det_b.is_side_ready("attacker")
+			and battle_ready_det_a.is_side_ready("defender") == battle_ready_det_b.is_side_ready("defender")
+			and battle_ready_det_a.is_battle_ready() == battle_ready_det_b.is_battle_ready()
+			and not battle_ready_det_a.is_battle_ready()
+		)
+		var battle_ready_det_deployed: bool = (
+			_battle_deploy_standard_attacker(battle_ready_det_a)
+			and _battle_deploy_standard_attacker(battle_ready_det_b)
+		)
+		battle_ready_determinism_ok = (
+			battle_ready_det_before_match
+			and battle_ready_det_deployed
+			and battle_ready_det_a.is_side_ready("attacker")
+			and battle_ready_det_b.is_side_ready("attacker")
+			and battle_ready_det_a.is_battle_ready()
+			and battle_ready_det_b.is_battle_ready()
+			and battle_ready_det_a.begin_battle()
+			and battle_ready_det_b.begin_battle()
+			and battle_ready_det_a.battle_phase == battle_ready_det_b.battle_phase
+			and battle_ready_det_a.battle_phase == "active"
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -6790,6 +7004,23 @@ static func run() -> Dictionary:
 		"battle_deploy_immutability_ok": battle_deploy_immutability_ok,
 		"battle_deploy_persist_ok": battle_deploy_persist_ok,
 		"battle_deploy_phase_stays_ok": battle_deploy_phase_stays_ok,
+		"battle_ready_empty_ok": battle_ready_empty_ok,
+		"battle_ready_partial_ok": battle_ready_partial_ok,
+		"battle_ready_part_ok": battle_ready_part_ok,
+		"battle_ready_veh_ok": battle_ready_veh_ok,
+		"battle_ready_mixed_ok": battle_ready_mixed_ok,
+		"battle_ready_att_only_ok": battle_ready_att_only_ok,
+		"battle_ready_def_only_ok": battle_ready_def_only_ok,
+		"battle_ready_full_ok": battle_ready_full_ok,
+		"battle_ready_activate_ok": battle_ready_activate_ok,
+		"battle_ready_activate_phase_ok": battle_ready_activate_phase_ok,
+		"battle_ready_before_ok": battle_ready_before_ok,
+		"battle_ready_outside_ok": battle_ready_outside_ok,
+		"battle_ready_no_mutate_ok": battle_ready_no_mutate_ok,
+		"battle_ready_blocked_ok": battle_ready_blocked_ok,
+		"battle_ready_determinism_ok": battle_ready_determinism_ok,
+		"battle_ready_immutability_ok": battle_ready_immutability_ok,
+		"battle_ready_persist_ok": battle_ready_persist_ok,
 	}
 
 	var passed := true
@@ -8562,5 +8793,108 @@ static func _battle_deploy_assignment_unchanged(battle_state: BattleState, snap:
 				expected_vehicles.append(str(vehicle_id))
 		if not _string_ids_match(zone.deployed_vehicle_ids, expected_vehicles):
 			return false
+	return true
+
+
+static func _battle_make_bare_state() -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"battle_ready_bare",
+		"neighborhood_hq_assault",
+		"battle_ready_mission",
+		"battle_hq",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	var attacker_side: BattleSide = BattleSide.new("attacker", "battle_a", "battle_force", true, "attacker_deployment")
+	var defender_side: BattleSide = BattleSide.new("defender", "battle_b", "", false, "defender_deployment")
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	var attacker_zone: DeploymentZone = DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry")
+	var defender_zone: DeploymentZone = DeploymentZone.new("defender_deployment", "defender", "defender_position")
+	if not battle_state.add_deployment_zone(attacker_zone) or not battle_state.add_deployment_zone(defender_zone):
+		return null
+	return battle_state
+
+
+static func _battle_register_participant(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	zone_id: String
+) -> bool:
+	if battle_state == null:
+		return false
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		participant_id,
+		"battle_a",
+		side_id,
+		"pistol",
+		true,
+		false,
+		""
+	)
+	if side_id == "defender":
+		participant.faction_id = "battle_b"
+	if not battle_state.add_participant(participant):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null or not side.add_participant_id(participant_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	return true
+
+
+static func _battle_register_vehicle(
+	battle_state: BattleState,
+	vehicle_id: String,
+	side_id: String,
+	zone_id: String
+) -> bool:
+	if battle_state == null:
+		return false
+	var vehicle: BattleVehicle = BattleVehicle.new(
+		vehicle_id,
+		vehicle_id,
+		"battle_a",
+		side_id,
+		"car",
+		""
+	)
+	if side_id == "defender":
+		vehicle.faction_id = "battle_b"
+	if not battle_state.add_vehicle(vehicle):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null or not side.add_vehicle_id(vehicle_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_vehicle_ids.has(vehicle_id):
+		zone.allowed_vehicle_ids.append(vehicle_id)
+	return true
+
+
+static func _battle_deploy_standard_attacker(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	if not battle_state.deploy_participant("battle_sol_z", "attacker_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_sol_a", "attacker_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_sol_m", "attacker_deployment"):
+		return false
+	if not battle_state.deploy_vehicle("battle_veh_z", "attacker_deployment"):
+		return false
+	if not battle_state.deploy_vehicle("battle_veh_a", "attacker_deployment"):
+		return false
+	if not battle_state.deploy_vehicle("battle_veh_m", "attacker_deployment"):
+		return false
 	return true
 

@@ -257,3 +257,83 @@ func get_zone_deployed_vehicle_ids(zone_id: String) -> Array[String]:
 	for vehicle_id: String in zone.deployed_vehicle_ids:
 		ids.append(vehicle_id)
 	return ids
+
+
+func is_side_ready(side_id: String) -> bool:
+	if side_id.is_empty() or not has_side(side_id):
+		return false
+	var side: BattleSide = get_side(side_id)
+	for participant_id: String in side.participant_ids:
+		if not _participant_assignment_is_valid(participant_id, side.side_id):
+			return false
+	for vehicle_id: String in side.vehicle_ids:
+		if not _vehicle_assignment_is_valid(vehicle_id, side.side_id):
+			return false
+	return true
+
+
+func is_battle_ready() -> bool:
+	if attacker_side_id.is_empty() or defender_side_id.is_empty():
+		return false
+	if not has_side(attacker_side_id) or not has_side(defender_side_id):
+		return false
+	if not is_side_ready(attacker_side_id):
+		return false
+	if not is_side_ready(defender_side_id):
+		return false
+	return true
+
+
+func begin_battle() -> bool:
+	if battle_phase != "deployment":
+		push_error("BattleState.begin_battle: battle phase is '%s', not deployment." % battle_phase)
+		return false
+	if not is_battle_ready():
+		push_error("BattleState.begin_battle: battle is not ready.")
+		return false
+	battle_phase = "active"
+	return true
+
+
+func _participant_assignment_is_valid(participant_id: String, expected_side_id: String) -> bool:
+	if participant_id.is_empty() or expected_side_id.is_empty():
+		return false
+	if not has_participant(participant_id):
+		return false
+	var participant: BattleParticipant = get_participant(participant_id)
+	if participant.side_id != expected_side_id:
+		return false
+	if participant.deployment_slot_id.is_empty():
+		return false
+	if not has_deployment_zone(participant.deployment_slot_id):
+		return false
+	var zone: DeploymentZone = get_deployment_zone(participant.deployment_slot_id)
+	if zone.side_id != expected_side_id:
+		return false
+	if not zone.allows_participant(participant_id):
+		return false
+	if not zone.has_deployed_participant(participant_id):
+		return false
+	return true
+
+
+func _vehicle_assignment_is_valid(vehicle_id: String, expected_side_id: String) -> bool:
+	if vehicle_id.is_empty() or expected_side_id.is_empty():
+		return false
+	if not has_vehicle(vehicle_id):
+		return false
+	var vehicle: BattleVehicle = get_vehicle(vehicle_id)
+	if vehicle.side_id != expected_side_id:
+		return false
+	if vehicle.deployment_slot_id.is_empty():
+		return false
+	if not has_deployment_zone(vehicle.deployment_slot_id):
+		return false
+	var zone: DeploymentZone = get_deployment_zone(vehicle.deployment_slot_id)
+	if zone.side_id != expected_side_id:
+		return false
+	if not zone.allows_vehicle(vehicle_id):
+		return false
+	if not zone.has_deployed_vehicle(vehicle_id):
+		return false
+	return true
