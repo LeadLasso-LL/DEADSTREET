@@ -13,6 +13,7 @@ var has_battle_position: bool = false
 var battle_position: Vector2 = Vector2.ZERO
 var velocity: Vector2 = Vector2.ZERO
 var movement_intent: Vector2 = Vector2.ZERO
+var movement_speed: float = 0.0
 
 
 func _init(
@@ -48,3 +49,11 @@ func set_movement_intent(direction: Vector2) -> bool:
 
 func clear_movement_intent() -> void:
 	movement_intent = Vector2.ZERO
+
+
+func set_movement_speed(value: float) -> bool:
+	if not is_finite(value) or value < 0.0:
+		push_error("BattleParticipant.set_movement_speed: value is invalid.")
+		return false
+	movement_speed = value
+	return true

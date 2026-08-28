@@ -3,6 +3,8 @@ extends RefCounted
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
+const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
+const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRuntimeResult:
@@ -32,6 +34,21 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 		return BattleRuntimeResult.failed(
 			"invalid_elapsed_time",
 			"Battle runtime failed: elapsed_time_seconds is invalid.",
+			delta_seconds,
+			elapsed_before
+		)
+	var movement_result: BattleMovementResult = BattleMovementService.advance(battle_state, delta_seconds)
+	if movement_result == null or not movement_result.success:
+		var error_code: String = "invalid_delta"
+		var error_message: String = "Battle runtime failed: movement advancement failed."
+		if movement_result != null:
+			if not movement_result.error_code.is_empty():
+				error_code = movement_result.error_code
+			if not movement_result.error_message.is_empty():
+				error_message = movement_result.error_message
+		return BattleRuntimeResult.failed(
+			error_code,
+			error_message,
 			delta_seconds,
 			elapsed_before
 		)

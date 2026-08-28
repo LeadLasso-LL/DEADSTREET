@@ -50,6 +50,8 @@ const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
 const BattleSetupService := preload("res://battle/core/battle_setup_service.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
 const BattleRuntimeService := preload("res://battle/runtime/battle_runtime_service.gd")
+const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
+const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
 
 
 static func run() -> Dictionary:
@@ -6525,7 +6527,7 @@ static func run() -> Dictionary:
 				and is_equal_approx(battlert_zero_state.elapsed_time_seconds, 1.25)
 				and battlert_zero_part.has_battle_position
 				and battlert_zero_part.battle_position.is_equal_approx(Vector2(4.0, 5.0))
-				and battlert_zero_part.velocity.is_equal_approx(Vector2(0.0, 1.0))
+				and battlert_zero_part.velocity.is_equal_approx(Vector2.ZERO)
 				and battlert_zero_part.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
 				and battlert_zero_part.is_alive == battlert_zero_alive
 				and battlert_zero_part.is_wounded == battlert_zero_wounded
@@ -6748,10 +6750,10 @@ static func run() -> Dictionary:
 				and battlert_multi_a.velocity.is_equal_approx(Vector2.ZERO)
 				and battlert_multi_a.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
 				and battlert_multi_b.battle_position.is_equal_approx(Vector2(30.0, 40.0))
-				and battlert_multi_b.velocity.is_equal_approx(Vector2(0.0, 2.0))
+				and battlert_multi_b.velocity.is_equal_approx(Vector2.ZERO)
 				and battlert_multi_b.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
 				and battlert_multi_c.battle_position.is_equal_approx(Vector2(50.0, 60.0))
-				and battlert_multi_c.velocity.is_equal_approx(Vector2(-1.0, 0.0))
+				and battlert_multi_c.velocity.is_equal_approx(Vector2.ZERO)
 				and battlert_multi_c.movement_intent.is_equal_approx(Vector2(-0.6, -0.8))
 			)
 			battlert_no_turn_ok = (
@@ -6873,6 +6875,685 @@ static func run() -> Dictionary:
 			and battlert_imm_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
 			and battlert_imm_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
 		)
+
+	var battlemove_default_ok: bool = false
+	var battlemove_speed_set_ok: bool = false
+	var battlemove_reject_ok: bool = false
+	var battlemove_physics_ok: bool = false
+	var battlemove_zero_delta_ok: bool = false
+	var battlemove_zero_speed_ok: bool = false
+	var battlemove_zero_intent_ok: bool = false
+	var battlemove_unpos_ok: bool = false
+	var battlemove_dead_ok: bool = false
+	var battlemove_bad_speed_ok: bool = false
+	var battlemove_bad_intent_ok: bool = false
+	var battlemove_norm_ok: bool = false
+	var battlemove_multi_ok: bool = false
+	var battlemove_runtime_ok: bool = false
+	var battlemove_tx_ok: bool = false
+	var battlemove_intent_stable_ok: bool = false
+	var battlemove_wounded_ok: bool = false
+	var battlemove_weapon_ok: bool = false
+	var battlemove_deploy_unpos_ok: bool = false
+	var battlemove_persist_ok: bool = false
+	var battlemove_immutability_ok: bool = false
+	var battlemove_no_turn_ok: bool = false
+	var battlemove_result_ok: bool = false
+
+	var battlemove_fresh: BattleParticipant = BattleParticipant.new()
+	battlemove_default_ok = (
+		is_equal_approx(battlemove_fresh.movement_speed, 0.0)
+		and battlemove_fresh.velocity.is_equal_approx(Vector2.ZERO)
+		and battlemove_fresh.movement_intent.is_equal_approx(Vector2.ZERO)
+		and battlemove_fresh.has_battle_position == false
+	)
+
+	var battlemove_speed_part: BattleParticipant = BattleParticipant.new()
+	var battlemove_speed_pos: bool = battlemove_speed_part.set_movement_speed(5.0)
+	var battlemove_speed_stored: float = battlemove_speed_part.movement_speed
+	var battlemove_speed_zero: bool = battlemove_speed_part.set_movement_speed(0.0)
+	var battlemove_speed_zero_stored: float = battlemove_speed_part.movement_speed
+	var battlemove_speed_neg: bool = battlemove_speed_part.set_movement_speed(-1.0)
+	var battlemove_speed_after_neg: float = battlemove_speed_part.movement_speed
+	var battlemove_speed_nan: bool = battlemove_speed_part.set_movement_speed(NAN)
+	var battlemove_speed_after_nan: float = battlemove_speed_part.movement_speed
+	var battlemove_speed_inf: bool = battlemove_speed_part.set_movement_speed(INF)
+	battlemove_speed_set_ok = (
+		battlemove_speed_pos
+		and is_equal_approx(battlemove_speed_stored, 5.0)
+		and battlemove_speed_zero
+		and is_equal_approx(battlemove_speed_zero_stored, 0.0)
+		and not battlemove_speed_neg
+		and is_equal_approx(battlemove_speed_after_neg, 0.0)
+		and not battlemove_speed_nan
+		and is_equal_approx(battlemove_speed_after_nan, 0.0)
+		and not battlemove_speed_inf
+		and is_equal_approx(battlemove_speed_part.movement_speed, 0.0)
+	)
+	var battlemove_speed_reset: bool = battlemove_speed_part.set_movement_speed(5.0)
+	battlemove_speed_set_ok = (
+		battlemove_speed_set_ok
+		and battlemove_speed_reset
+		and is_equal_approx(battlemove_speed_part.movement_speed, 5.0)
+		and not battlemove_speed_part.set_movement_speed(-2.0)
+		and is_equal_approx(battlemove_speed_part.movement_speed, 5.0)
+		and not battlemove_speed_part.set_movement_speed(NAN)
+		and is_equal_approx(battlemove_speed_part.movement_speed, 5.0)
+		and not battlemove_speed_part.set_movement_speed(INF)
+		and is_equal_approx(battlemove_speed_part.movement_speed, 5.0)
+	)
+
+	var battlemove_reject_null: BattleState = null
+	var battlemove_null_res: BattleMovementResult = BattleMovementService.advance(battlemove_reject_null, 0.1)
+	var battlemove_deploy_state: BattleState = _battlemove_make_state("deployment")
+	var battlemove_reject_deploy_ok: bool = false
+	if battlemove_deploy_state != null:
+		var battlemove_reject_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_deploy_state,
+			"battlemove_reject_p",
+			"attacker"
+		)
+		if battlemove_reject_p != null:
+			battlemove_reject_p.has_battle_position = true
+			battlemove_reject_p.battle_position = Vector2(1.0, 2.0)
+			battlemove_reject_p.velocity = Vector2(3.0, 4.0)
+			var battlemove_reject_speed: bool = battlemove_reject_p.set_movement_speed(5.0)
+			var battlemove_reject_intent: bool = battlemove_reject_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_reject_snap: Dictionary = _battlemove_part_snap(battlemove_reject_p)
+			var battlemove_deploy_res: BattleMovementResult = BattleMovementService.advance(battlemove_deploy_state, 0.25)
+			var battlemove_deploy_fail_ok: bool = (
+				_battlemove_fail_ok(battlemove_deploy_res, "battle_not_active", 0.25)
+				and battlemove_deploy_res.error_message == "Battle movement failed: battle phase is 'deployment', not active."
+				and _battlemove_part_unchanged(battlemove_reject_p, battlemove_reject_snap)
+			)
+			battlemove_deploy_state.battle_phase = "active"
+			var battlemove_neg_res: BattleMovementResult = BattleMovementService.advance(battlemove_deploy_state, -0.5)
+			var battlemove_nan_delta: BattleMovementResult = BattleMovementService.advance(battlemove_deploy_state, NAN)
+			var battlemove_inf_delta: BattleMovementResult = BattleMovementService.advance(battlemove_deploy_state, INF)
+			battlemove_reject_deploy_ok = (
+				battlemove_reject_speed
+				and battlemove_reject_intent
+				and battlemove_deploy_fail_ok
+				and _battlemove_fail_ok(battlemove_neg_res, "invalid_delta", -0.5)
+				and battlemove_neg_res.error_message == "Battle movement failed: delta_seconds is invalid."
+				and battlemove_nan_delta != null
+				and not battlemove_nan_delta.success
+				and battlemove_nan_delta.error_code == "invalid_delta"
+				and is_nan(battlemove_nan_delta.delta_seconds)
+				and battlemove_inf_delta != null
+				and not battlemove_inf_delta.success
+				and battlemove_inf_delta.error_code == "invalid_delta"
+				and is_inf(battlemove_inf_delta.delta_seconds)
+				and _battlemove_part_unchanged(battlemove_reject_p, battlemove_reject_snap)
+			)
+	battlemove_reject_ok = (
+		_battlemove_fail_ok(battlemove_null_res, "null_battle_state", 0.1)
+		and battlemove_null_res.error_message == "Battle movement failed: battle_state is null."
+		and battlemove_reject_deploy_ok
+	)
+
+	var battlemove_phys_state: BattleState = _battlemove_make_state("active")
+	if battlemove_phys_state != null:
+		var battlemove_phys_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_phys_state,
+			"battlemove_phys_p",
+			"attacker"
+		)
+		if battlemove_phys_p != null:
+			battlemove_phys_p.has_battle_position = true
+			battlemove_phys_p.battle_position = Vector2(10.0, 20.0)
+			var battlemove_phys_speed: bool = battlemove_phys_p.set_movement_speed(4.0)
+			var battlemove_phys_intent: bool = battlemove_phys_p.set_movement_intent(Vector2(3.0, 4.0))
+			var battlemove_phys_res: BattleMovementResult = BattleMovementService.advance(battlemove_phys_state, 2.0)
+			battlemove_physics_ok = (
+				battlemove_phys_speed
+				and battlemove_phys_intent
+				and battlemove_phys_p.movement_intent.is_equal_approx(Vector2(0.6, 0.8))
+				and _battlemove_ok(battlemove_phys_res, 2.0, 1, 1)
+				and battlemove_phys_p.velocity.is_equal_approx(Vector2(2.4, 3.2))
+				and battlemove_phys_p.battle_position.is_equal_approx(Vector2(14.8, 26.4))
+			)
+			battlemove_no_turn_ok = _battle_has_no_combat_turn_model(battlemove_phys_state)
+
+	var battlemove_zd_state: BattleState = _battlemove_make_state("active")
+	if battlemove_zd_state != null:
+		var battlemove_zd_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_zd_state,
+			"battlemove_zd_p",
+			"attacker"
+		)
+		if battlemove_zd_p != null:
+			battlemove_zd_p.has_battle_position = true
+			battlemove_zd_p.battle_position = Vector2(8.0, 9.0)
+			var battlemove_zd_speed: bool = battlemove_zd_p.set_movement_speed(5.0)
+			var battlemove_zd_intent: bool = battlemove_zd_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_zd_res: BattleMovementResult = BattleMovementService.advance(battlemove_zd_state, 0.0)
+			battlemove_zero_delta_ok = (
+				battlemove_zd_speed
+				and battlemove_zd_intent
+				and _battlemove_ok(battlemove_zd_res, 0.0, 1, 0)
+				and battlemove_zd_p.velocity.is_equal_approx(Vector2(5.0, 0.0))
+				and battlemove_zd_p.battle_position.is_equal_approx(Vector2(8.0, 9.0))
+			)
+
+	var battlemove_zs_state: BattleState = _battlemove_make_state("active")
+	if battlemove_zs_state != null:
+		var battlemove_zs_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_zs_state,
+			"battlemove_zs_p",
+			"attacker"
+		)
+		if battlemove_zs_p != null:
+			battlemove_zs_p.has_battle_position = true
+			battlemove_zs_p.battle_position = Vector2(10.0, 20.0)
+			battlemove_zs_p.velocity = Vector2(7.0, 8.0)
+			var battlemove_zs_speed: bool = battlemove_zs_p.set_movement_speed(0.0)
+			var battlemove_zs_intent: bool = battlemove_zs_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_zs_res: BattleMovementResult = BattleMovementService.advance(battlemove_zs_state, 1.0)
+			battlemove_zero_speed_ok = (
+				battlemove_zs_speed
+				and battlemove_zs_intent
+				and _battlemove_ok(battlemove_zs_res, 1.0, 1, 0)
+				and battlemove_zs_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_zs_p.battle_position.is_equal_approx(Vector2(10.0, 20.0))
+				and battlemove_zs_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+
+	var battlemove_zi_state: BattleState = _battlemove_make_state("active")
+	if battlemove_zi_state != null:
+		var battlemove_zi_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_zi_state,
+			"battlemove_zi_p",
+			"attacker"
+		)
+		if battlemove_zi_p != null:
+			battlemove_zi_p.has_battle_position = true
+			battlemove_zi_p.battle_position = Vector2(2.0, 3.0)
+			battlemove_zi_p.velocity = Vector2(9.0, 1.0)
+			var battlemove_zi_speed: bool = battlemove_zi_p.set_movement_speed(6.0)
+			var battlemove_zi_intent: bool = battlemove_zi_p.set_movement_intent(Vector2.ZERO)
+			var battlemove_zi_res: BattleMovementResult = BattleMovementService.advance(battlemove_zi_state, 1.0)
+			battlemove_zero_intent_ok = (
+				battlemove_zi_speed
+				and battlemove_zi_intent
+				and _battlemove_ok(battlemove_zi_res, 1.0, 1, 0)
+				and battlemove_zi_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_zi_p.battle_position.is_equal_approx(Vector2(2.0, 3.0))
+				and battlemove_zi_p.movement_intent.is_equal_approx(Vector2.ZERO)
+			)
+
+	var battlemove_unpos_state: BattleState = _battlemove_make_state("active")
+	if battlemove_unpos_state != null:
+		var battlemove_unpos_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_unpos_state,
+			"battlemove_unpos_p",
+			"attacker"
+		)
+		if battlemove_unpos_p != null:
+			battlemove_unpos_p.has_battle_position = false
+			battlemove_unpos_p.battle_position = Vector2.ZERO
+			battlemove_unpos_p.velocity = Vector2(4.0, 5.0)
+			var battlemove_unpos_speed: bool = battlemove_unpos_p.set_movement_speed(8.0)
+			var battlemove_unpos_intent: bool = battlemove_unpos_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlemove_unpos_res: BattleMovementResult = BattleMovementService.advance(battlemove_unpos_state, 1.0)
+			battlemove_unpos_ok = (
+				battlemove_unpos_speed
+				and battlemove_unpos_intent
+				and _battlemove_ok(battlemove_unpos_res, 1.0, 1, 0)
+				and battlemove_unpos_p.has_battle_position == false
+				and battlemove_unpos_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_unpos_p.battle_position.is_equal_approx(Vector2.ZERO)
+				and battlemove_unpos_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+			)
+
+	var battlemove_dead_state: BattleState = _battlemove_make_state("active")
+	if battlemove_dead_state != null:
+		var battlemove_dead_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_dead_state,
+			"battlemove_dead_p",
+			"attacker"
+		)
+		if battlemove_dead_p != null:
+			battlemove_dead_p.has_battle_position = true
+			battlemove_dead_p.battle_position = Vector2(12.0, 13.0)
+			battlemove_dead_p.velocity = Vector2(2.0, 2.0)
+			battlemove_dead_p.is_alive = false
+			var battlemove_dead_speed: bool = battlemove_dead_p.set_movement_speed(5.0)
+			var battlemove_dead_intent: bool = battlemove_dead_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_dead_res: BattleMovementResult = BattleMovementService.advance(battlemove_dead_state, 1.0)
+			battlemove_dead_ok = (
+				battlemove_dead_speed
+				and battlemove_dead_intent
+				and _battlemove_ok(battlemove_dead_res, 1.0, 1, 0)
+				and battlemove_dead_p.is_alive == false
+				and battlemove_dead_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_dead_p.battle_position.is_equal_approx(Vector2(12.0, 13.0))
+				and battlemove_dead_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+
+	var battlemove_badsp_state: BattleState = _battlemove_make_state("active")
+	if battlemove_badsp_state != null:
+		var battlemove_bad_neg: BattleParticipant = _battlemove_add_participant(
+			battlemove_badsp_state,
+			"battlemove_bad_neg",
+			"attacker"
+		)
+		var battlemove_bad_nan: BattleParticipant = _battlemove_add_participant(
+			battlemove_badsp_state,
+			"battlemove_bad_nan",
+			"attacker"
+		)
+		var battlemove_bad_inf: BattleParticipant = _battlemove_add_participant(
+			battlemove_badsp_state,
+			"battlemove_bad_inf",
+			"attacker"
+		)
+		var battlemove_bad_okp: BattleParticipant = _battlemove_add_participant(
+			battlemove_badsp_state,
+			"battlemove_bad_okp",
+			"attacker"
+		)
+		if (
+			battlemove_bad_neg != null
+			and battlemove_bad_nan != null
+			and battlemove_bad_inf != null
+			and battlemove_bad_okp != null
+		):
+			battlemove_bad_neg.has_battle_position = true
+			battlemove_bad_neg.battle_position = Vector2(1.0, 1.0)
+			battlemove_bad_neg.velocity = Vector2(1.0, 1.0)
+			battlemove_bad_neg.movement_speed = -1.0
+			var battlemove_bad_neg_intent: bool = battlemove_bad_neg.set_movement_intent(Vector2(1.0, 0.0))
+			battlemove_bad_nan.has_battle_position = true
+			battlemove_bad_nan.battle_position = Vector2(2.0, 2.0)
+			battlemove_bad_nan.velocity = Vector2(1.0, 0.0)
+			battlemove_bad_nan.movement_speed = NAN
+			var battlemove_bad_nan_intent: bool = battlemove_bad_nan.set_movement_intent(Vector2(0.0, 1.0))
+			battlemove_bad_inf.has_battle_position = true
+			battlemove_bad_inf.battle_position = Vector2(3.0, 3.0)
+			battlemove_bad_inf.velocity = Vector2(0.0, 1.0)
+			battlemove_bad_inf.movement_speed = INF
+			var battlemove_bad_inf_intent: bool = battlemove_bad_inf.set_movement_intent(Vector2(1.0, 0.0))
+			battlemove_bad_okp.has_battle_position = true
+			battlemove_bad_okp.battle_position = Vector2(1.0, 1.0)
+			var battlemove_bad_ok_speed: bool = battlemove_bad_okp.set_movement_speed(2.0)
+			var battlemove_bad_ok_intent: bool = battlemove_bad_okp.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_badsp_res: BattleMovementResult = BattleMovementService.advance(battlemove_badsp_state, 1.0)
+			battlemove_bad_speed_ok = (
+				battlemove_bad_neg_intent
+				and battlemove_bad_nan_intent
+				and battlemove_bad_inf_intent
+				and battlemove_bad_ok_speed
+				and battlemove_bad_ok_intent
+				and _battlemove_ok(battlemove_badsp_res, 1.0, 4, 1)
+				and is_equal_approx(battlemove_bad_neg.movement_speed, -1.0)
+				and battlemove_bad_neg.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_bad_neg.battle_position.is_equal_approx(Vector2(1.0, 1.0))
+				and is_nan(battlemove_bad_nan.movement_speed)
+				and battlemove_bad_nan.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_bad_nan.battle_position.is_equal_approx(Vector2(2.0, 2.0))
+				and is_inf(battlemove_bad_inf.movement_speed)
+				and battlemove_bad_inf.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_bad_inf.battle_position.is_equal_approx(Vector2(3.0, 3.0))
+				and battlemove_bad_okp.velocity.is_equal_approx(Vector2(2.0, 0.0))
+				and battlemove_bad_okp.battle_position.is_equal_approx(Vector2(3.0, 1.0))
+			)
+
+	var battlemove_badi_state: BattleState = _battlemove_make_state("active")
+	if battlemove_badi_state != null:
+		var battlemove_badi_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_badi_state,
+			"battlemove_badi_p",
+			"attacker"
+		)
+		if battlemove_badi_p != null:
+			battlemove_badi_p.has_battle_position = true
+			battlemove_badi_p.battle_position = Vector2(5.0, 6.0)
+			var battlemove_badi_speed: bool = battlemove_badi_p.set_movement_speed(4.0)
+			battlemove_badi_p.movement_intent = Vector2(NAN, 1.0)
+			var battlemove_badi_res: BattleMovementResult = BattleMovementService.advance(battlemove_badi_state, 1.0)
+			battlemove_bad_intent_ok = (
+				battlemove_badi_speed
+				and _battlemove_ok(battlemove_badi_res, 1.0, 1, 0)
+				and battlemove_badi_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlemove_badi_p.battle_position.is_equal_approx(Vector2(5.0, 6.0))
+				and is_nan(battlemove_badi_p.movement_intent.x)
+				and is_equal_approx(battlemove_badi_p.movement_intent.y, 1.0)
+			)
+
+	var battlemove_norm_state: BattleState = _battlemove_make_state("active")
+	if battlemove_norm_state != null:
+		var battlemove_norm_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_norm_state,
+			"battlemove_norm_p",
+			"attacker"
+		)
+		if battlemove_norm_p != null:
+			battlemove_norm_p.has_battle_position = true
+			battlemove_norm_p.battle_position = Vector2(0.0, 0.0)
+			var battlemove_norm_speed: bool = battlemove_norm_p.set_movement_speed(3.0)
+			battlemove_norm_p.movement_intent = Vector2(10.0, 0.0)
+			var battlemove_norm_res: BattleMovementResult = BattleMovementService.advance(battlemove_norm_state, 1.0)
+			battlemove_norm_ok = (
+				battlemove_norm_speed
+				and _battlemove_ok(battlemove_norm_res, 1.0, 1, 1)
+				and battlemove_norm_p.velocity.is_equal_approx(Vector2(3.0, 0.0))
+				and not battlemove_norm_p.velocity.is_equal_approx(Vector2(30.0, 0.0))
+				and battlemove_norm_p.battle_position.is_equal_approx(Vector2(3.0, 0.0))
+				and battlemove_norm_p.movement_intent.is_equal_approx(Vector2(10.0, 0.0))
+			)
+
+	var battlemove_multi_state: BattleState = _battlemove_make_state("active")
+	if battlemove_multi_state != null:
+		var battlemove_mz: BattleParticipant = _battlemove_add_participant(
+			battlemove_multi_state,
+			"z_unit",
+			"attacker"
+		)
+		var battlemove_ma: BattleParticipant = _battlemove_add_participant(
+			battlemove_multi_state,
+			"a_unit",
+			"attacker"
+		)
+		var battlemove_mm: BattleParticipant = _battlemove_add_participant(
+			battlemove_multi_state,
+			"m_unit",
+			"defender"
+		)
+		if battlemove_mz != null and battlemove_ma != null and battlemove_mm != null:
+			battlemove_mz.has_battle_position = true
+			battlemove_mz.battle_position = Vector2(0.0, 0.0)
+			var battlemove_mz_speed: bool = battlemove_mz.set_movement_speed(1.0)
+			var battlemove_mz_intent: bool = battlemove_mz.set_movement_intent(Vector2(1.0, 0.0))
+			battlemove_ma.has_battle_position = true
+			battlemove_ma.battle_position = Vector2(10.0, 0.0)
+			var battlemove_ma_speed: bool = battlemove_ma.set_movement_speed(2.0)
+			var battlemove_ma_intent: bool = battlemove_ma.set_movement_intent(Vector2(0.0, 1.0))
+			battlemove_mm.has_battle_position = true
+			battlemove_mm.battle_position = Vector2(0.0, 10.0)
+			var battlemove_mm_speed: bool = battlemove_mm.set_movement_speed(3.0)
+			var battlemove_mm_intent: bool = battlemove_mm.set_movement_intent(Vector2(-1.0, 0.0))
+			var battlemove_multi_res: BattleMovementResult = BattleMovementService.advance(battlemove_multi_state, 1.0)
+			battlemove_multi_ok = (
+				battlemove_mz_speed
+				and battlemove_mz_intent
+				and battlemove_ma_speed
+				and battlemove_ma_intent
+				and battlemove_mm_speed
+				and battlemove_mm_intent
+				and _battlemove_ok(battlemove_multi_res, 1.0, 3, 3)
+				and battlemove_mz.velocity.is_equal_approx(Vector2(1.0, 0.0))
+				and battlemove_mz.battle_position.is_equal_approx(Vector2(1.0, 0.0))
+				and battlemove_ma.velocity.is_equal_approx(Vector2(0.0, 2.0))
+				and battlemove_ma.battle_position.is_equal_approx(Vector2(10.0, 2.0))
+				and battlemove_mm.velocity.is_equal_approx(Vector2(-3.0, 0.0))
+				and battlemove_mm.battle_position.is_equal_approx(Vector2(-3.0, 10.0))
+			)
+			battlemove_no_turn_ok = (
+				battlemove_no_turn_ok
+				and _battle_has_no_combat_turn_model(battlemove_multi_state)
+			)
+
+	var battlemove_rt_state: BattleState = _battlemove_make_state("active")
+	if battlemove_rt_state != null:
+		var battlemove_rt_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_rt_state,
+			"battlemove_rt_p",
+			"attacker"
+		)
+		if battlemove_rt_p != null:
+			battlemove_rt_p.has_battle_position = true
+			battlemove_rt_p.battle_position = Vector2(10.0, 20.0)
+			var battlemove_rt_speed: bool = battlemove_rt_p.set_movement_speed(4.0)
+			var battlemove_rt_intent: bool = battlemove_rt_p.set_movement_intent(Vector2(3.0, 4.0))
+			var battlemove_rt_res: BattleRuntimeResult = BattleRuntimeService.advance(battlemove_rt_state, 2.0)
+			battlemove_runtime_ok = (
+				battlemove_rt_speed
+				and battlemove_rt_intent
+				and _battlert_clock_ok(battlemove_rt_res, 2.0, 0.0, 2.0)
+				and is_equal_approx(battlemove_rt_state.elapsed_time_seconds, 2.0)
+				and battlemove_rt_p.velocity.is_equal_approx(Vector2(2.4, 3.2))
+				and battlemove_rt_p.battle_position.is_equal_approx(Vector2(14.8, 26.4))
+			)
+
+	var battlemove_tx_state: BattleState = _battlemove_make_state("active")
+	if battlemove_tx_state != null:
+		var battlemove_tx_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_tx_state,
+			"battlemove_tx_p",
+			"attacker"
+		)
+		if battlemove_tx_p != null:
+			battlemove_tx_p.has_battle_position = true
+			battlemove_tx_p.battle_position = Vector2(10.0, 20.0)
+			battlemove_tx_p.velocity = Vector2(1.0, 1.0)
+			var battlemove_tx_speed: bool = battlemove_tx_p.set_movement_speed(4.0)
+			var battlemove_tx_intent: bool = battlemove_tx_p.set_movement_intent(Vector2(1.0, 0.0))
+			battlemove_tx_state.elapsed_time_seconds = 3.0
+			var battlemove_tx_snap: Dictionary = _battlemove_part_snap(battlemove_tx_p)
+			var battlemove_tx_neg: BattleRuntimeResult = BattleRuntimeService.advance(battlemove_tx_state, -0.5)
+			var battlemove_tx_neg_ok: bool = (
+				battlemove_tx_speed
+				and battlemove_tx_intent
+				and _battlert_fail_ok(battlemove_tx_neg, "invalid_delta", 3.0)
+				and is_equal_approx(battlemove_tx_state.elapsed_time_seconds, 3.0)
+				and _battlemove_part_unchanged(battlemove_tx_p, battlemove_tx_snap)
+			)
+			battlemove_tx_state.battle_phase = "deployment"
+			var battlemove_tx_phase: BattleRuntimeResult = BattleRuntimeService.advance(battlemove_tx_state, 1.0)
+			battlemove_tx_ok = (
+				battlemove_tx_neg_ok
+				and _battlert_fail_ok(battlemove_tx_phase, "battle_not_active", 3.0)
+				and is_equal_approx(battlemove_tx_state.elapsed_time_seconds, 3.0)
+				and _battlemove_part_unchanged(battlemove_tx_p, battlemove_tx_snap)
+			)
+
+	var battlemove_int_state: BattleState = _battlemove_make_state("active")
+	if battlemove_int_state != null:
+		var battlemove_int_p: BattleParticipant = _battlemove_add_participant(
+			battlemove_int_state,
+			"battlemove_int_p",
+			"attacker"
+		)
+		if battlemove_int_p != null:
+			battlemove_int_p.has_battle_position = true
+			battlemove_int_p.battle_position = Vector2(0.0, 0.0)
+			var battlemove_int_speed: bool = battlemove_int_p.set_movement_speed(1.0)
+			var battlemove_int_set: bool = battlemove_int_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlemove_int_before: Vector2 = battlemove_int_p.movement_intent
+			var battlemove_int_r1: BattleMovementResult = BattleMovementService.advance(battlemove_int_state, 0.5)
+			var battlemove_int_r2: BattleMovementResult = BattleMovementService.advance(battlemove_int_state, 0.5)
+			var battlemove_int_r3: BattleMovementResult = BattleMovementService.advance(battlemove_int_state, 0.5)
+			battlemove_intent_stable_ok = (
+				battlemove_int_speed
+				and battlemove_int_set
+				and battlemove_int_r1 != null
+				and battlemove_int_r1.success
+				and battlemove_int_r2 != null
+				and battlemove_int_r2.success
+				and battlemove_int_r3 != null
+				and battlemove_int_r3.success
+				and battlemove_int_p.movement_intent.is_equal_approx(battlemove_int_before)
+				and battlemove_int_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+			)
+
+	var battlemove_wnd_state: BattleState = _battlemove_make_state("active")
+	if battlemove_wnd_state != null:
+		var battlemove_wnd_a: BattleParticipant = _battlemove_add_participant(
+			battlemove_wnd_state,
+			"battlemove_wnd_a",
+			"attacker"
+		)
+		var battlemove_wnd_b: BattleParticipant = _battlemove_add_participant(
+			battlemove_wnd_state,
+			"battlemove_wnd_b",
+			"attacker"
+		)
+		if battlemove_wnd_a != null and battlemove_wnd_b != null:
+			battlemove_wnd_a.has_battle_position = true
+			battlemove_wnd_a.battle_position = Vector2(0.0, 0.0)
+			battlemove_wnd_a.is_wounded = false
+			var battlemove_wnd_a_speed: bool = battlemove_wnd_a.set_movement_speed(2.0)
+			var battlemove_wnd_a_intent: bool = battlemove_wnd_a.set_movement_intent(Vector2(1.0, 0.0))
+			battlemove_wnd_b.has_battle_position = true
+			battlemove_wnd_b.battle_position = Vector2(0.0, 0.0)
+			battlemove_wnd_b.is_wounded = true
+			var battlemove_wnd_b_speed: bool = battlemove_wnd_b.set_movement_speed(2.0)
+			var battlemove_wnd_b_intent: bool = battlemove_wnd_b.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_wnd_res: BattleMovementResult = BattleMovementService.advance(battlemove_wnd_state, 1.0)
+			battlemove_wounded_ok = (
+				battlemove_wnd_a_speed
+				and battlemove_wnd_a_intent
+				and battlemove_wnd_b_speed
+				and battlemove_wnd_b_intent
+				and _battlemove_ok(battlemove_wnd_res, 1.0, 2, 2)
+				and battlemove_wnd_a.battle_position.is_equal_approx(battlemove_wnd_b.battle_position)
+				and battlemove_wnd_a.velocity.is_equal_approx(battlemove_wnd_b.velocity)
+				and battlemove_wnd_a.battle_position.is_equal_approx(Vector2(2.0, 0.0))
+			)
+
+	var battlemove_wpn_state: BattleState = _battlemove_make_state("active")
+	if battlemove_wpn_state != null:
+		var battlemove_wpn_a: BattleParticipant = _battlemove_add_participant(
+			battlemove_wpn_state,
+			"battlemove_wpn_a",
+			"attacker"
+		)
+		var battlemove_wpn_b: BattleParticipant = _battlemove_add_participant(
+			battlemove_wpn_state,
+			"battlemove_wpn_b",
+			"attacker"
+		)
+		if battlemove_wpn_a != null and battlemove_wpn_b != null:
+			battlemove_wpn_a.weapon_type = "pistol"
+			battlemove_wpn_a.has_battle_position = true
+			battlemove_wpn_a.battle_position = Vector2(0.0, 0.0)
+			var battlemove_wpn_a_speed: bool = battlemove_wpn_a.set_movement_speed(2.0)
+			var battlemove_wpn_a_intent: bool = battlemove_wpn_a.set_movement_intent(Vector2(0.0, 1.0))
+			battlemove_wpn_b.weapon_type = "rifle"
+			battlemove_wpn_b.has_battle_position = true
+			battlemove_wpn_b.battle_position = Vector2(0.0, 0.0)
+			var battlemove_wpn_b_speed: bool = battlemove_wpn_b.set_movement_speed(2.0)
+			var battlemove_wpn_b_intent: bool = battlemove_wpn_b.set_movement_intent(Vector2(0.0, 1.0))
+			var battlemove_wpn_res: BattleMovementResult = BattleMovementService.advance(battlemove_wpn_state, 1.0)
+			battlemove_weapon_ok = (
+				battlemove_wpn_a_speed
+				and battlemove_wpn_a_intent
+				and battlemove_wpn_b_speed
+				and battlemove_wpn_b_intent
+				and battlemove_wpn_a.weapon_type != battlemove_wpn_b.weapon_type
+				and _battlemove_ok(battlemove_wpn_res, 1.0, 2, 2)
+				and battlemove_wpn_a.battle_position.is_equal_approx(battlemove_wpn_b.battle_position)
+				and battlemove_wpn_a.velocity.is_equal_approx(battlemove_wpn_b.velocity)
+				and battlemove_wpn_a.battle_position.is_equal_approx(Vector2(0.0, 2.0))
+			)
+
+	var battlemove_dep_pack: Dictionary = _battle_create_ready_pack()
+	var battlemove_dep_bs: BattleState = battlemove_dep_pack.get("battle_state", null) as BattleState
+	if battlemove_dep_bs != null:
+		var battlemove_dep_deployed: bool = _battle_deploy_standard_attacker(battlemove_dep_bs)
+		var battlemove_dep_begun: bool = battlemove_dep_bs.begin_battle()
+		var battlemove_dep_unpos: bool = battlemove_dep_bs.participants.size() > 0
+		for battlemove_dep_id: String in battlemove_dep_bs.participants:
+			var battlemove_dep_p: BattleParticipant = battlemove_dep_bs.get_participant(battlemove_dep_id)
+			if battlemove_dep_p == null or battlemove_dep_p.has_battle_position:
+				battlemove_dep_unpos = false
+				break
+		battlemove_deploy_unpos_ok = (
+			battlemove_dep_deployed
+			and battlemove_dep_begun
+			and battlemove_dep_bs.battle_phase == "active"
+			and battlemove_dep_unpos
+		)
+		battlemove_no_turn_ok = (
+			battlemove_no_turn_ok
+			and _battle_has_no_combat_turn_model(battlemove_dep_bs)
+			and battlemove_dep_bs.get("current_turn_index") == null
+			and battlemove_dep_bs.get("current_round") == null
+			and battlemove_dep_bs.get("active_turn_actor_id") == null
+		)
+
+	var battlemove_persist_pack: Dictionary = _battle_create_ready_pack()
+	var battlemove_persist_game: GameState = battlemove_persist_pack.get("game_state", null) as GameState
+	var battlemove_persist_bs: BattleState = battlemove_persist_pack.get("battle_state", null) as BattleState
+	if battlemove_persist_game != null and battlemove_persist_bs != null:
+		var battlemove_persist_part: BattleParticipant = battlemove_persist_bs.get_participant("battle_sol_a")
+		if battlemove_persist_part != null:
+			battlemove_persist_part.has_battle_position = true
+			battlemove_persist_part.battle_position = Vector2(111.0, 222.0)
+			battlemove_persist_part.velocity = Vector2(3.0, 4.0)
+			var battlemove_persist_speed: bool = battlemove_persist_part.set_movement_speed(9.5)
+			var battlemove_persist_intent: bool = battlemove_persist_part.set_movement_intent(Vector2(1.0, 0.0))
+			var battlemove_persist_data: Dictionary = battlemove_persist_game.to_dict()
+			battlemove_persist_ok = (
+				battlemove_persist_speed
+				and battlemove_persist_intent
+				and battlemove_persist_part.has_battle_position
+				and _battle_serialized_campaign_keys_only(battlemove_persist_data)
+				and not _battle_data_has_tactical_trace(battlemove_persist_data)
+			)
+
+	var battlemove_imm_pack: Dictionary = _battle_create_ready_pack()
+	var battlemove_imm_game: GameState = battlemove_imm_pack.get("game_state", null) as GameState
+	var battlemove_imm_force: TravelingForce = battlemove_imm_pack.get("force", null) as TravelingForce
+	var battlemove_imm_bs: BattleState = battlemove_imm_pack.get("battle_state", null) as BattleState
+	var battlemove_imm_campaign: Dictionary = _battle_campaign_snapshot(
+		battlemove_imm_game,
+		battlemove_imm_force,
+		"battle_mission"
+	)
+	if battlemove_imm_game != null and battlemove_imm_bs != null:
+		var battlemove_imm_deployed: bool = _battle_deploy_standard_attacker(battlemove_imm_bs)
+		var battlemove_imm_begun: bool = battlemove_imm_bs.begin_battle()
+		var battlemove_imm_part: BattleParticipant = battlemove_imm_bs.get_participant("battle_sol_a")
+		var battlemove_imm_ready: bool = false
+		if battlemove_imm_part != null:
+			battlemove_imm_part.has_battle_position = true
+			battlemove_imm_part.battle_position = Vector2(0.0, 0.0)
+			battlemove_imm_ready = (
+				battlemove_imm_part.set_movement_speed(2.0)
+				and battlemove_imm_part.set_movement_intent(Vector2(1.0, 0.0))
+			)
+		var battlemove_imm_res: BattleRuntimeResult = BattleRuntimeService.advance(battlemove_imm_bs, 0.5)
+		battlemove_immutability_ok = (
+			battlemove_imm_deployed
+			and battlemove_imm_begun
+			and battlemove_imm_ready
+			and _battlert_clock_ok(battlemove_imm_res, 0.5, 0.0, 0.5)
+			and battlemove_imm_part != null
+			and battlemove_imm_part.battle_position.is_equal_approx(Vector2(1.0, 0.0))
+			and _battle_campaign_unchanged(
+				battlemove_imm_game,
+				battlemove_imm_campaign,
+				battlemove_imm_force,
+				"battle_mission"
+			)
+			and battlemove_imm_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlemove_imm_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
+	var battlemove_ok_res: BattleMovementResult = BattleMovementResult.succeeded(0.25, 3, 2)
+	var battlemove_fail_res: BattleMovementResult = BattleMovementResult.failed(
+		"invalid_delta",
+		"Battle movement failed: delta_seconds is invalid.",
+		-1.0
+	)
+	battlemove_result_ok = (
+		battlemove_ok_res != null
+		and battlemove_ok_res.success
+		and is_equal_approx(battlemove_ok_res.delta_seconds, 0.25)
+		and battlemove_ok_res.participants_considered == 3
+		and battlemove_ok_res.participants_moved == 2
+		and battlemove_ok_res.error_code.is_empty()
+		and battlemove_ok_res.error_message.is_empty()
+		and battlemove_fail_res != null
+		and not battlemove_fail_res.success
+		and battlemove_fail_res.error_code == "invalid_delta"
+		and battlemove_fail_res.error_message == "Battle movement failed: delta_seconds is invalid."
+		and is_equal_approx(battlemove_fail_res.delta_seconds, -1.0)
+		and battlemove_fail_res.participants_considered == 0
+		and battlemove_fail_res.participants_moved == 0
+	)
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -7586,6 +8267,29 @@ static func run() -> Dictionary:
 		"battlert_result_ok": battlert_result_ok,
 		"battlert_persist_ok": battlert_persist_ok,
 		"battlert_immutability_ok": battlert_immutability_ok,
+		"battlemove_default_ok": battlemove_default_ok,
+		"battlemove_speed_set_ok": battlemove_speed_set_ok,
+		"battlemove_reject_ok": battlemove_reject_ok,
+		"battlemove_physics_ok": battlemove_physics_ok,
+		"battlemove_zero_delta_ok": battlemove_zero_delta_ok,
+		"battlemove_zero_speed_ok": battlemove_zero_speed_ok,
+		"battlemove_zero_intent_ok": battlemove_zero_intent_ok,
+		"battlemove_unpos_ok": battlemove_unpos_ok,
+		"battlemove_dead_ok": battlemove_dead_ok,
+		"battlemove_bad_speed_ok": battlemove_bad_speed_ok,
+		"battlemove_bad_intent_ok": battlemove_bad_intent_ok,
+		"battlemove_norm_ok": battlemove_norm_ok,
+		"battlemove_multi_ok": battlemove_multi_ok,
+		"battlemove_runtime_ok": battlemove_runtime_ok,
+		"battlemove_tx_ok": battlemove_tx_ok,
+		"battlemove_intent_stable_ok": battlemove_intent_stable_ok,
+		"battlemove_wounded_ok": battlemove_wounded_ok,
+		"battlemove_weapon_ok": battlemove_weapon_ok,
+		"battlemove_deploy_unpos_ok": battlemove_deploy_unpos_ok,
+		"battlemove_persist_ok": battlemove_persist_ok,
+		"battlemove_immutability_ok": battlemove_immutability_ok,
+		"battlemove_no_turn_ok": battlemove_no_turn_ok,
+		"battlemove_result_ok": battlemove_result_ok,
 	}
 
 	var passed := true
@@ -9244,6 +9948,7 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "battle_position"
 		or text == "movement_intent"
 		or text == "velocity"
+		or text == "movement_speed"
 	)
 
 
@@ -9653,5 +10358,124 @@ static func _battlert_fail_ok(
 		and not result.error_message.is_empty()
 		and is_equal_approx(result.elapsed_time_before, elapsed_before)
 		and is_equal_approx(result.elapsed_time_after, elapsed_before)
+	)
+
+
+static func _battlemove_make_state(p_phase: String) -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"battlemove_battle",
+		"battlemove_type",
+		"battlemove_mission",
+		"battlemove_location",
+		"attacker",
+		"defender",
+		p_phase
+	)
+	var attacker_side: BattleSide = BattleSide.new("attacker", "battlemove_a", "", true, "")
+	var defender_side: BattleSide = BattleSide.new("defender", "battlemove_b", "", false, "")
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	return battle_state
+
+
+static func _battlemove_add_participant(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String
+) -> BattleParticipant:
+	if battle_state == null:
+		return null
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"battlemove_soldier_" + participant_id,
+		"battlemove_a",
+		side_id,
+		"pistol",
+		true,
+		false,
+		""
+	)
+	if side_id == "defender":
+		participant.faction_id = "battlemove_b"
+	if not battle_state.add_participant(participant):
+		return null
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null or not side.add_participant_id(participant_id):
+		return null
+	return participant
+
+
+static func _battlemove_ok(
+	result: BattleMovementResult,
+	delta_seconds: float,
+	considered: int,
+	moved: int
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+		and is_equal_approx(result.delta_seconds, delta_seconds)
+		and result.participants_considered == considered
+		and result.participants_moved == moved
+	)
+
+
+static func _battlemove_fail_ok(
+	result: BattleMovementResult,
+	error_code: String,
+	delta_seconds: float
+) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.error_code == error_code
+		and not result.error_message.is_empty()
+		and is_equal_approx(result.delta_seconds, delta_seconds)
+		and result.participants_considered == 0
+		and result.participants_moved == 0
+	)
+
+
+static func _battlemove_part_snap(participant: BattleParticipant) -> Dictionary:
+	var snap: Dictionary = {}
+	if participant == null:
+		return snap
+	snap["has_pos"] = participant.has_battle_position
+	snap["pos"] = participant.battle_position
+	snap["vel"] = participant.velocity
+	snap["intent"] = participant.movement_intent
+	snap["speed"] = participant.movement_speed
+	snap["alive"] = participant.is_alive
+	snap["wounded"] = participant.is_wounded
+	return snap
+
+
+static func _battlemove_part_unchanged(participant: BattleParticipant, snap: Dictionary) -> bool:
+	if participant == null:
+		return false
+	var pos_raw: Variant = snap.get("pos", Vector2.ZERO)
+	if typeof(pos_raw) != TYPE_VECTOR2:
+		return false
+	var vel_raw: Variant = snap.get("vel", Vector2.ZERO)
+	if typeof(vel_raw) != TYPE_VECTOR2:
+		return false
+	var intent_raw: Variant = snap.get("intent", Vector2.ZERO)
+	if typeof(intent_raw) != TYPE_VECTOR2:
+		return false
+	var pos: Vector2 = pos_raw as Vector2
+	var vel: Vector2 = vel_raw as Vector2
+	var intent: Vector2 = intent_raw as Vector2
+	return (
+		participant.has_battle_position == bool(snap.get("has_pos", false))
+		and participant.battle_position.is_equal_approx(pos)
+		and participant.velocity.is_equal_approx(vel)
+		and participant.movement_intent.is_equal_approx(intent)
+		and is_equal_approx(participant.movement_speed, float(snap.get("speed", 0.0)))
+		and participant.is_alive == bool(snap.get("alive", false))
+		and participant.is_wounded == bool(snap.get("wounded", false))
 	)
 
