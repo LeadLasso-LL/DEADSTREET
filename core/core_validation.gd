@@ -55,6 +55,9 @@ const BattleMovementService := preload("res://battle/runtime/battle_movement_ser
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattlefieldGeometryResult := preload("res://battle/geometry/battlefield_geometry_result.gd")
 const BattlefieldGeometryService := preload("res://battle/geometry/battlefield_geometry_service.gd")
+const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
+const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
+const BattleSpatialService := preload("res://battle/geometry/battle_spatial_service.gd")
 
 
 static func run() -> Dictionary:
@@ -7283,7 +7286,7 @@ static func run() -> Dictionary:
 			var battlemove_ma_speed: bool = battlemove_ma.set_movement_speed(2.0)
 			var battlemove_ma_intent: bool = battlemove_ma.set_movement_intent(Vector2(0.0, 1.0))
 			battlemove_mm.has_battle_position = true
-			battlemove_mm.battle_position = Vector2(0.0, 10.0)
+			battlemove_mm.battle_position = Vector2(3.0, 10.0)
 			var battlemove_mm_speed: bool = battlemove_mm.set_movement_speed(3.0)
 			var battlemove_mm_intent: bool = battlemove_mm.set_movement_intent(Vector2(-1.0, 0.0))
 			var battlemove_multi_res: BattleMovementResult = BattleMovementService.advance(battlemove_multi_state, 1.0)
@@ -7300,7 +7303,7 @@ static func run() -> Dictionary:
 				and battlemove_ma.velocity.is_equal_approx(Vector2(0.0, 2.0))
 				and battlemove_ma.battle_position.is_equal_approx(Vector2(10.0, 2.0))
 				and battlemove_mm.velocity.is_equal_approx(Vector2(-3.0, 0.0))
-				and battlemove_mm.battle_position.is_equal_approx(Vector2(-3.0, 10.0))
+				and battlemove_mm.battle_position.is_equal_approx(Vector2(0.0, 10.0))
 			)
 			battlemove_no_turn_ok = (
 				battlemove_no_turn_ok
@@ -8049,6 +8052,945 @@ static func run() -> Dictionary:
 			and battlegeo_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
 			and battlegeo_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
 		)
+
+	var battlespatial_obstacle_ok: bool = false
+	var battlespatial_registry_ok: bool = false
+	var battlespatial_reject_ok: bool = false
+	var battlespatial_geo: BattlefieldGeometry = _battlespatial_open_geometry()
+	if battlespatial_geo != null:
+		var battlespatial_wall: BattleObstacle = BattleObstacle.new(
+			"wall_ok",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		battlespatial_obstacle_ok = (
+			battlespatial_wall.obstacle_id == "wall_ok"
+			and battlespatial_wall.blocks_movement
+			and battlespatial_wall.bounds_are_usable()
+			and battlespatial_wall.is_valid()
+			and battlespatial_wall.contains_point(Vector2(45.0, 30.0))
+			and not battlespatial_wall.contains_point(Vector2(10.0, 10.0))
+		)
+		var battlespatial_added: bool = battlespatial_geo.add_obstacle(battlespatial_wall)
+		var battlespatial_z: BattleObstacle = BattleObstacle.new("z_obs", Rect2(1.0, 1.0, 2.0, 2.0), true)
+		var battlespatial_a: BattleObstacle = BattleObstacle.new("a_obs", Rect2(3.0, 1.0, 2.0, 2.0), true)
+		var battlespatial_m: BattleObstacle = BattleObstacle.new("m_obs", Rect2(5.0, 1.0, 2.0, 2.0), true)
+		var battlespatial_expected_ids: Array[String] = ["a_obs", "m_obs", "wall_ok", "z_obs"]
+		var battlespatial_sorted_ok: bool = (
+			battlespatial_geo.add_obstacle(battlespatial_z)
+			and battlespatial_geo.add_obstacle(battlespatial_a)
+			and battlespatial_geo.add_obstacle(battlespatial_m)
+			and _string_ids_match(
+				battlespatial_geo.get_sorted_obstacle_ids(),
+				battlespatial_expected_ids
+			)
+		)
+		battlespatial_registry_ok = (
+			battlespatial_added
+			and battlespatial_geo.has_obstacle("wall_ok")
+			and battlespatial_geo.get_obstacle("wall_ok") == battlespatial_wall
+			and battlespatial_sorted_ok
+		)
+		var battlespatial_before_count: int = battlespatial_geo.obstacles.size()
+		var battlespatial_dup: BattleObstacle = BattleObstacle.new("wall_ok", Rect2(8.0, 8.0, 2.0, 2.0), true)
+		var battlespatial_empty: BattleObstacle = BattleObstacle.new("", Rect2(8.0, 8.0, 2.0, 2.0), true)
+		var battlespatial_bad_rect: BattleObstacle = BattleObstacle.new("bad_rect", Rect2(0.0, 0.0, 0.0, 1.0), true)
+		battlespatial_reject_ok = (
+			not battlespatial_geo.add_obstacle(null)
+			and not battlespatial_geo.add_obstacle(battlespatial_empty)
+			and not battlespatial_geo.add_obstacle(battlespatial_dup)
+			and not battlespatial_geo.add_obstacle(battlespatial_bad_rect)
+			and battlespatial_geo.obstacles.size() == battlespatial_before_count
+			and battlespatial_geo.has_obstacle("wall_ok")
+			and not battlespatial_geo.has_obstacle("bad_rect")
+			and not battlespatial_geo.has_obstacle("")
+		)
+
+	var battlespatial_default_empty_ok: bool = false
+	var battlespatial_default_bs: BattleState = _battle_make_bare_state()
+	var battlespatial_default_res: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+		battlespatial_default_bs
+	)
+	if battlespatial_default_bs != null and battlespatial_default_bs.battlefield_geometry != null:
+		battlespatial_default_empty_ok = (
+			battlespatial_default_res != null
+			and battlespatial_default_res.success
+			and battlespatial_default_bs.battlefield_geometry.obstacles.size() == 0
+			and battlespatial_default_bs.battlefield_geometry.get_sorted_obstacle_ids().is_empty()
+		)
+
+	var battlespatial_open_ok: bool = false
+	var battlespatial_zero_disp_ok: bool = false
+	var battlespatial_open_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_open_bs != null:
+		var battlespatial_open_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_open_bs,
+			Vector2(10.0, 10.0),
+			Vector2(5.0, 0.0)
+		)
+		battlespatial_open_ok = (
+			battlespatial_open_res != null
+			and battlespatial_open_res.success
+			and battlespatial_open_res.start_position.is_equal_approx(Vector2(10.0, 10.0))
+			and battlespatial_open_res.requested_displacement.is_equal_approx(Vector2(5.0, 0.0))
+			and battlespatial_open_res.resolved_displacement.is_equal_approx(Vector2(5.0, 0.0))
+			and battlespatial_open_res.final_position.is_equal_approx(Vector2(15.0, 10.0))
+			and battlespatial_open_res.was_blocked == false
+			and battlespatial_open_res.blocking_obstacle_id.is_empty()
+			and battlespatial_open_res.error_code.is_empty()
+			and battlespatial_open_res.error_message.is_empty()
+		)
+		var battlespatial_zero_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_open_bs,
+			Vector2(10.0, 10.0),
+			Vector2.ZERO
+		)
+		battlespatial_zero_disp_ok = (
+			battlespatial_zero_res != null
+			and battlespatial_zero_res.success
+			and battlespatial_zero_res.final_position.is_equal_approx(Vector2(10.0, 10.0))
+			and battlespatial_zero_res.resolved_displacement.is_equal_approx(Vector2.ZERO)
+			and battlespatial_zero_res.was_blocked == false
+		)
+
+	var battlespatial_null_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		null,
+		Vector2(10.0, 10.0),
+		Vector2(1.0, 0.0)
+	)
+	var battlespatial_fail_null_ok: bool = _battlespatial_fail_ok(battlespatial_null_res, "null_battle_state")
+
+	var battlespatial_fail_missing_geo_ok: bool = false
+	var battlespatial_miss_bs: BattleState = BattleState.new(
+		"spatial_miss",
+		"spatial_type",
+		"spatial_mission",
+		"spatial_loc",
+		"attacker",
+		"defender",
+		"active"
+	)
+	var battlespatial_miss_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battlespatial_miss_bs,
+		Vector2(10.0, 10.0),
+		Vector2(1.0, 0.0)
+	)
+	battlespatial_fail_missing_geo_ok = (
+		_battlespatial_fail_ok(battlespatial_miss_res, "missing_battlefield_geometry")
+		and battlespatial_miss_bs.battlefield_geometry == null
+	)
+
+	var battlespatial_fail_invalid_geo_ok: bool = false
+	var battlespatial_badgeo_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_badgeo_bs != null:
+		battlespatial_badgeo_bs.battlefield_geometry = BattlefieldGeometry.new()
+		var battlespatial_badgeo_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_badgeo_bs,
+			Vector2(10.0, 10.0),
+			Vector2(1.0, 0.0)
+		)
+		battlespatial_fail_invalid_geo_ok = (
+			_battlespatial_fail_ok(battlespatial_badgeo_res, "invalid_battlefield_geometry")
+			and battlespatial_badgeo_bs.battlefield_geometry != null
+			and not battlespatial_badgeo_bs.battlefield_geometry.is_valid()
+			and is_equal_approx(battlespatial_badgeo_bs.battlefield_geometry.width, 0.0)
+		)
+
+	var battlespatial_fail_bad_start_ok: bool = false
+	var battlespatial_fail_outside_ok: bool = false
+	var battlespatial_fail_bad_disp_ok: bool = false
+	var battlespatial_err_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_err_bs != null:
+		var battlespatial_err_part: BattleParticipant = _battlemove_add_participant(
+			battlespatial_err_bs,
+			"spatial_err_p",
+			"attacker"
+		)
+		if battlespatial_err_part != null:
+			battlespatial_err_part.has_battle_position = true
+			battlespatial_err_part.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_err_snap: Dictionary = _battlemove_part_snap(battlespatial_err_part)
+			var battlespatial_nan_start: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_err_bs,
+				Vector2(NAN, 10.0),
+				Vector2(1.0, 0.0)
+			)
+			var battlespatial_inf_start: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_err_bs,
+				Vector2(INF, 10.0),
+				Vector2(1.0, 0.0)
+			)
+			battlespatial_fail_bad_start_ok = (
+				_battlespatial_fail_ok(battlespatial_nan_start, "invalid_start_position")
+				and _battlespatial_fail_ok(battlespatial_inf_start, "invalid_start_position")
+				and _battlemove_part_unchanged(battlespatial_err_part, battlespatial_err_snap)
+			)
+			var battlespatial_out_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_err_bs,
+				Vector2(-1.0, 10.0),
+				Vector2(1.0, 0.0)
+			)
+			battlespatial_fail_outside_ok = (
+				_battlespatial_fail_ok(battlespatial_out_res, "start_outside_battlefield")
+				and _battlemove_part_unchanged(battlespatial_err_part, battlespatial_err_snap)
+			)
+			var battlespatial_nan_disp: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_err_bs,
+				Vector2(10.0, 10.0),
+				Vector2(NAN, 0.0)
+			)
+			var battlespatial_inf_disp: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_err_bs,
+				Vector2(10.0, 10.0),
+				Vector2(INF, 0.0)
+			)
+			battlespatial_fail_bad_disp_ok = (
+				_battlespatial_fail_ok(battlespatial_nan_disp, "invalid_displacement")
+				and _battlespatial_fail_ok(battlespatial_inf_disp, "invalid_displacement")
+				and _battlemove_part_unchanged(battlespatial_err_part, battlespatial_err_snap)
+			)
+
+	var battlespatial_bound_right_ok: bool = false
+	var battlespatial_bound_left_ok: bool = false
+	var battlespatial_bound_top_ok: bool = false
+	var battlespatial_bound_bottom_ok: bool = false
+	var battlespatial_bound_diag_ok: bool = false
+	var battlespatial_bound_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_bound_bs != null and battlespatial_bound_bs.battlefield_geometry != null:
+		var battlespatial_bound_geo: BattlefieldGeometry = battlespatial_bound_bs.battlefield_geometry
+		var battlespatial_right: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_bound_bs,
+			Vector2(95.0, 30.0),
+			Vector2(20.0, 0.0)
+		)
+		battlespatial_bound_right_ok = (
+			battlespatial_right != null
+			and battlespatial_right.success
+			and battlespatial_right.was_blocked
+			and battlespatial_bound_geo.contains_point(battlespatial_right.final_position)
+			and is_equal_approx(battlespatial_right.final_position.x, 100.0)
+			and is_equal_approx(battlespatial_right.final_position.y, 30.0)
+			and battlespatial_right.resolved_displacement.x < 20.0
+			and battlespatial_right.blocking_obstacle_id.is_empty()
+		)
+		var battlespatial_left: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_bound_bs,
+			Vector2(5.0, 30.0),
+			Vector2(-20.0, 0.0)
+		)
+		battlespatial_bound_left_ok = (
+			battlespatial_left != null
+			and battlespatial_left.success
+			and battlespatial_left.was_blocked
+			and battlespatial_bound_geo.contains_point(battlespatial_left.final_position)
+			and is_equal_approx(battlespatial_left.final_position.x, 0.0)
+			and is_equal_approx(battlespatial_left.final_position.y, 30.0)
+		)
+		var battlespatial_top: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_bound_bs,
+			Vector2(50.0, 5.0),
+			Vector2(0.0, -20.0)
+		)
+		battlespatial_bound_top_ok = (
+			battlespatial_top != null
+			and battlespatial_top.success
+			and battlespatial_top.was_blocked
+			and battlespatial_bound_geo.contains_point(battlespatial_top.final_position)
+			and is_equal_approx(battlespatial_top.final_position.x, 50.0)
+			and is_equal_approx(battlespatial_top.final_position.y, 0.0)
+		)
+		var battlespatial_bottom: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_bound_bs,
+			Vector2(50.0, 55.0),
+			Vector2(0.0, 20.0)
+		)
+		battlespatial_bound_bottom_ok = (
+			battlespatial_bottom != null
+			and battlespatial_bottom.success
+			and battlespatial_bottom.was_blocked
+			and battlespatial_bound_geo.contains_point(battlespatial_bottom.final_position)
+			and is_equal_approx(battlespatial_bottom.final_position.x, 50.0)
+			and is_equal_approx(battlespatial_bottom.final_position.y, 60.0)
+		)
+		var battlespatial_diag_req: Vector2 = Vector2(20.0, 20.0)
+		var battlespatial_diag: BattleSpatialResult = BattleSpatialService.resolve_translation(
+			battlespatial_bound_bs,
+			Vector2(98.0, 50.0),
+			battlespatial_diag_req
+		)
+		battlespatial_bound_diag_ok = (
+			battlespatial_diag != null
+			and battlespatial_diag.success
+			and battlespatial_diag.was_blocked
+			and battlespatial_bound_geo.contains_point(battlespatial_diag.final_position)
+			and BattlefieldGeometry.is_finite_point(battlespatial_diag.final_position)
+			and _battlespatial_collinear(battlespatial_diag.resolved_displacement, battlespatial_diag_req)
+			and is_equal_approx(battlespatial_diag.final_position.x, 100.0)
+			and is_equal_approx(battlespatial_diag.final_position.y, 52.0)
+		)
+
+	var battlespatial_eps: float = BattleSpatialService.COLLISION_EPSILON
+	var battlespatial_wall_hit_ok: bool = false
+	var battlespatial_tunnel_ok: bool = false
+	var battlespatial_nonblock_ok: bool = false
+	var battlespatial_start_inside_ok: bool = false
+	var battlespatial_start_inside_nonblock_ok: bool = false
+	var battlespatial_hit_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_hit_bs != null and battlespatial_hit_bs.battlefield_geometry != null:
+		var battlespatial_hit_geo: BattlefieldGeometry = battlespatial_hit_bs.battlefield_geometry
+		var battlespatial_wall_a: BattleObstacle = BattleObstacle.new(
+			"wall_a",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		if battlespatial_hit_geo.add_obstacle(battlespatial_wall_a):
+			var battlespatial_hit_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_hit_bs,
+				Vector2(30.0, 30.0),
+				Vector2(20.0, 0.0)
+			)
+			battlespatial_wall_hit_ok = (
+				battlespatial_hit_res != null
+				and battlespatial_hit_res.success
+				and battlespatial_hit_res.was_blocked
+				and battlespatial_hit_res.blocking_obstacle_id == "wall_a"
+				and is_equal_approx(battlespatial_hit_res.final_position.x, 40.0 - battlespatial_eps)
+				and is_equal_approx(battlespatial_hit_res.final_position.y, 30.0)
+				and not battlespatial_wall_a.contains_point(battlespatial_hit_res.final_position)
+				and battlespatial_hit_geo.contains_point(battlespatial_hit_res.final_position)
+			)
+			var battlespatial_tunnel_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_hit_bs,
+				Vector2(30.0, 30.0),
+				Vector2(100.0, 0.0)
+			)
+			battlespatial_tunnel_ok = (
+				battlespatial_tunnel_res != null
+				and battlespatial_tunnel_res.success
+				and battlespatial_tunnel_res.was_blocked
+				and battlespatial_tunnel_res.blocking_obstacle_id == "wall_a"
+				and battlespatial_tunnel_res.final_position.x < 40.0
+				and battlespatial_tunnel_res.final_position.x < 50.0
+				and not battlespatial_wall_a.contains_point(battlespatial_tunnel_res.final_position)
+				and not battlespatial_tunnel_res.final_position.is_equal_approx(Vector2(130.0, 30.0))
+			)
+			var battlespatial_inside_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_hit_bs,
+				Vector2(45.0, 30.0),
+				Vector2(5.0, 0.0)
+			)
+			battlespatial_start_inside_ok = (
+				_battlespatial_fail_ok(battlespatial_inside_res, "start_inside_blocking_obstacle")
+				and battlespatial_inside_res.blocking_obstacle_id == "wall_a"
+				and battlespatial_inside_res.final_position.is_equal_approx(Vector2(45.0, 30.0))
+				and battlespatial_inside_res.resolved_displacement.is_equal_approx(Vector2.ZERO)
+			)
+		var battlespatial_non_bs: BattleState = _battlemove_make_state("active")
+		if battlespatial_non_bs != null and battlespatial_non_bs.battlefield_geometry != null:
+			var battlespatial_soft: BattleObstacle = BattleObstacle.new(
+				"soft_zone",
+				Rect2(40.0, 20.0, 10.0, 20.0),
+				false
+			)
+			if battlespatial_non_bs.battlefield_geometry.add_obstacle(battlespatial_soft):
+				var battlespatial_soft_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+					battlespatial_non_bs,
+					Vector2(30.0, 30.0),
+					Vector2(20.0, 0.0)
+				)
+				battlespatial_nonblock_ok = (
+					battlespatial_soft_res != null
+					and battlespatial_soft_res.success
+					and battlespatial_soft_res.was_blocked == false
+					and battlespatial_soft_res.blocking_obstacle_id.is_empty()
+					and battlespatial_soft_res.final_position.is_equal_approx(Vector2(50.0, 30.0))
+				)
+				var battlespatial_soft_inside: BattleSpatialResult = BattleSpatialService.resolve_translation(
+					battlespatial_non_bs,
+					Vector2(45.0, 30.0),
+					Vector2(5.0, 0.0)
+				)
+				battlespatial_start_inside_nonblock_ok = (
+					battlespatial_soft_inside != null
+					and battlespatial_soft_inside.success
+					and battlespatial_soft_inside.was_blocked == false
+					and battlespatial_soft_inside.final_position.is_equal_approx(Vector2(50.0, 30.0))
+				)
+
+	var battlespatial_earliest_ok: bool = false
+	var battlespatial_tie_ok: bool = false
+	var battlespatial_early_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_early_bs != null and battlespatial_early_bs.battlefield_geometry != null:
+		var battlespatial_far: BattleObstacle = BattleObstacle.new("far_wall", Rect2(60.0, 20.0, 10.0, 20.0), true)
+		var battlespatial_near: BattleObstacle = BattleObstacle.new("near_wall", Rect2(40.0, 20.0, 10.0, 20.0), true)
+		if (
+			battlespatial_early_bs.battlefield_geometry.add_obstacle(battlespatial_far)
+			and battlespatial_early_bs.battlefield_geometry.add_obstacle(battlespatial_near)
+		):
+			var battlespatial_early_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_early_bs,
+				Vector2(30.0, 30.0),
+				Vector2(50.0, 0.0)
+			)
+			battlespatial_earliest_ok = (
+				battlespatial_early_res != null
+				and battlespatial_early_res.success
+				and battlespatial_early_res.was_blocked
+				and battlespatial_early_res.blocking_obstacle_id == "near_wall"
+				and battlespatial_early_res.final_position.x < 40.0
+				and not battlespatial_near.contains_point(battlespatial_early_res.final_position)
+			)
+		var battlespatial_tie_bs: BattleState = _battlemove_make_state("active")
+		if battlespatial_tie_bs != null and battlespatial_tie_bs.battlefield_geometry != null:
+			var battlespatial_z_wall: BattleObstacle = BattleObstacle.new("z_wall", Rect2(40.0, 25.0, 10.0, 10.0), true)
+			var battlespatial_a_wall: BattleObstacle = BattleObstacle.new("a_wall", Rect2(40.0, 20.0, 10.0, 20.0), true)
+			if (
+				battlespatial_tie_bs.battlefield_geometry.add_obstacle(battlespatial_z_wall)
+				and battlespatial_tie_bs.battlefield_geometry.add_obstacle(battlespatial_a_wall)
+			):
+				var battlespatial_tie_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+					battlespatial_tie_bs,
+					Vector2(30.0, 30.0),
+					Vector2(20.0, 0.0)
+				)
+				battlespatial_tie_ok = (
+					battlespatial_tie_res != null
+					and battlespatial_tie_res.success
+					and battlespatial_tie_res.was_blocked
+					and battlespatial_tie_res.blocking_obstacle_id == "a_wall"
+				)
+
+	var battlespatial_obs_before_bound_ok: bool = false
+	var battlespatial_bound_before_obs_ok: bool = false
+	var battlespatial_obs_bound_tie_ok: bool = false
+	var battlespatial_order_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_order_bs != null and battlespatial_order_bs.battlefield_geometry != null:
+		var battlespatial_pre_exit: BattleObstacle = BattleObstacle.new(
+			"pre_exit",
+			Rect2(95.0, 0.0, 2.0, 60.0),
+			true
+		)
+		if battlespatial_order_bs.battlefield_geometry.add_obstacle(battlespatial_pre_exit):
+			var battlespatial_pre_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_order_bs,
+				Vector2(90.0, 30.0),
+				Vector2(20.0, 0.0)
+			)
+			battlespatial_obs_before_bound_ok = (
+				battlespatial_pre_res != null
+				and battlespatial_pre_res.success
+				and battlespatial_pre_res.was_blocked
+				and battlespatial_pre_res.blocking_obstacle_id == "pre_exit"
+				and battlespatial_pre_res.final_position.x < 95.0
+			)
+		var battlespatial_post_bs: BattleState = _battlemove_make_state("active")
+		if battlespatial_post_bs != null and battlespatial_post_bs.battlefield_geometry != null:
+			var battlespatial_outside_wall: BattleObstacle = BattleObstacle.new(
+				"outside_wall",
+				Rect2(105.0, 20.0, 10.0, 20.0),
+				true
+			)
+			if battlespatial_post_bs.battlefield_geometry.add_obstacle(battlespatial_outside_wall):
+				var battlespatial_post_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+					battlespatial_post_bs,
+					Vector2(95.0, 30.0),
+					Vector2(20.0, 0.0)
+				)
+				battlespatial_bound_before_obs_ok = (
+					battlespatial_post_res != null
+					and battlespatial_post_res.success
+					and battlespatial_post_res.was_blocked
+					and battlespatial_post_res.blocking_obstacle_id.is_empty()
+					and is_equal_approx(battlespatial_post_res.final_position.x, 100.0)
+				)
+		var battlespatial_tie2_bs: BattleState = _battlemove_make_state("active")
+		if battlespatial_tie2_bs != null and battlespatial_tie2_bs.battlefield_geometry != null:
+			var battlespatial_edge_wall: BattleObstacle = BattleObstacle.new(
+				"edge_wall",
+				Rect2(100.0, 0.0, 5.0, 60.0),
+				true
+			)
+			if battlespatial_tie2_bs.battlefield_geometry.add_obstacle(battlespatial_edge_wall):
+				var battlespatial_tie2_res: BattleSpatialResult = BattleSpatialService.resolve_translation(
+					battlespatial_tie2_bs,
+					Vector2(90.0, 30.0),
+					Vector2(20.0, 0.0)
+				)
+				battlespatial_obs_bound_tie_ok = (
+					battlespatial_tie2_res != null
+					and battlespatial_tie2_res.success
+					and battlespatial_tie2_res.was_blocked
+					and battlespatial_tie2_res.blocking_obstacle_id == "edge_wall"
+				)
+
+	var battlespatial_diag_wall_ok: bool = false
+	var battlespatial_diag_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_diag_bs != null and battlespatial_diag_bs.battlefield_geometry != null:
+		var battlespatial_diag_wall: BattleObstacle = BattleObstacle.new(
+			"diag_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		if battlespatial_diag_bs.battlefield_geometry.add_obstacle(battlespatial_diag_wall):
+			var battlespatial_diag_req2: Vector2 = Vector2(20.0, 10.0)
+			var battlespatial_diag_hit: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_diag_bs,
+				Vector2(30.0, 25.0),
+				battlespatial_diag_req2
+			)
+			battlespatial_diag_wall_ok = (
+				battlespatial_diag_hit != null
+				and battlespatial_diag_hit.success
+				and battlespatial_diag_hit.was_blocked
+				and battlespatial_diag_hit.blocking_obstacle_id == "diag_wall"
+				and not battlespatial_diag_wall.contains_point(battlespatial_diag_hit.final_position)
+				and _battlespatial_collinear(battlespatial_diag_hit.resolved_displacement, battlespatial_diag_req2)
+				and not is_equal_approx(battlespatial_diag_hit.final_position.x, 50.0)
+				and not is_equal_approx(battlespatial_diag_hit.final_position.y, 35.0)
+			)
+
+	var battlespatial_move_integrate_ok: bool = false
+	var battlespatial_blocked_count_ok: bool = false
+	var battlespatial_partial_count_ok: bool = false
+	var battlespatial_velocity_ok: bool = false
+	var battlespatial_move_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_move_bs != null and battlespatial_move_bs.battlefield_geometry != null:
+		var battlespatial_move_wall: BattleObstacle = BattleObstacle.new(
+			"move_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlespatial_move_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_move_bs,
+			"spatial_move_p",
+			"attacker"
+		)
+		if battlespatial_move_p != null and battlespatial_move_bs.battlefield_geometry.add_obstacle(battlespatial_move_wall):
+			battlespatial_move_p.has_battle_position = true
+			battlespatial_move_p.battle_position = Vector2(30.0, 30.0)
+			var battlespatial_move_speed: bool = battlespatial_move_p.set_movement_speed(10.0)
+			var battlespatial_move_intent: bool = battlespatial_move_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_expected: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlespatial_move_bs,
+				Vector2(30.0, 30.0),
+				Vector2(20.0, 0.0)
+			)
+			var battlespatial_move_res: BattleMovementResult = BattleMovementService.advance(battlespatial_move_bs, 2.0)
+			battlespatial_move_integrate_ok = (
+				battlespatial_move_speed
+				and battlespatial_move_intent
+				and battlespatial_move_res != null
+				and battlespatial_move_res.success
+				and battlespatial_move_p.velocity.is_equal_approx(Vector2(10.0, 0.0))
+				and battlespatial_move_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlespatial_expected != null
+				and battlespatial_expected.success
+				and battlespatial_move_p.battle_position.is_equal_approx(battlespatial_expected.final_position)
+				and not battlespatial_move_wall.contains_point(battlespatial_move_p.battle_position)
+				and battlespatial_move_p.battle_position.x < 40.0
+			)
+			battlespatial_partial_count_ok = (
+				battlespatial_move_integrate_ok
+				and _battlemove_ok(battlespatial_move_res, 2.0, 1, 1)
+			)
+			var battlespatial_block_bs: BattleState = _battlemove_make_state("active")
+			if battlespatial_block_bs != null and battlespatial_block_bs.battlefield_geometry != null:
+				var battlespatial_block_wall: BattleObstacle = BattleObstacle.new(
+					"block_wall",
+					Rect2(40.0, 20.0, 10.0, 20.0),
+					true
+				)
+				var battlespatial_block_p: BattleParticipant = _battlemove_add_participant(
+					battlespatial_block_bs,
+					"spatial_block_p",
+					"attacker"
+				)
+				if (
+					battlespatial_block_p != null
+					and battlespatial_block_bs.battlefield_geometry.add_obstacle(battlespatial_block_wall)
+				):
+					var battlespatial_block_start: Vector2 = Vector2(40.0 - battlespatial_eps * 0.5, 30.0)
+					battlespatial_block_p.has_battle_position = true
+					battlespatial_block_p.battle_position = battlespatial_block_start
+					var battlespatial_block_speed: bool = battlespatial_block_p.set_movement_speed(5.0)
+					var battlespatial_block_intent: bool = battlespatial_block_p.set_movement_intent(Vector2(1.0, 0.0))
+					var battlespatial_block_res: BattleMovementResult = BattleMovementService.advance(
+						battlespatial_block_bs,
+						1.0
+					)
+					battlespatial_blocked_count_ok = (
+						battlespatial_block_speed
+						and battlespatial_block_intent
+						and _battlemove_ok(battlespatial_block_res, 1.0, 1, 0)
+						and battlespatial_block_p.battle_position.is_equal_approx(battlespatial_block_start)
+						and battlespatial_block_p.velocity.is_equal_approx(Vector2(5.0, 0.0))
+						and battlespatial_block_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+					)
+					battlespatial_velocity_ok = battlespatial_blocked_count_ok
+
+	var battlespatial_sibling_malformed_ok: bool = false
+	var battlespatial_sib_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_sib_bs != null:
+		var battlespatial_sib_a: BattleParticipant = _battlemove_add_participant(
+			battlespatial_sib_bs,
+			"spatial_sib_a",
+			"attacker"
+		)
+		var battlespatial_sib_b: BattleParticipant = _battlemove_add_participant(
+			battlespatial_sib_bs,
+			"spatial_sib_b",
+			"attacker"
+		)
+		if battlespatial_sib_a != null and battlespatial_sib_b != null:
+			battlespatial_sib_a.has_battle_position = true
+			battlespatial_sib_a.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_sib_a_speed: bool = battlespatial_sib_a.set_movement_speed(2.0)
+			var battlespatial_sib_a_intent: bool = battlespatial_sib_a.set_movement_intent(Vector2(1.0, 0.0))
+			battlespatial_sib_b.has_battle_position = true
+			battlespatial_sib_b.battle_position = Vector2(NAN, 20.0)
+			var battlespatial_sib_b_speed: bool = battlespatial_sib_b.set_movement_speed(2.0)
+			var battlespatial_sib_b_intent: bool = battlespatial_sib_b.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_sib_res: BattleMovementResult = BattleMovementService.advance(battlespatial_sib_bs, 1.0)
+			battlespatial_sibling_malformed_ok = (
+				battlespatial_sib_a_speed
+				and battlespatial_sib_a_intent
+				and battlespatial_sib_b_speed
+				and battlespatial_sib_b_intent
+				and battlespatial_sib_res != null
+				and battlespatial_sib_res.success
+				and _battlemove_ok(battlespatial_sib_res, 1.0, 2, 1)
+				and battlespatial_sib_a.battle_position.is_equal_approx(Vector2(12.0, 10.0))
+				and is_nan(battlespatial_sib_b.battle_position.x)
+				and is_equal_approx(battlespatial_sib_b.battle_position.y, 20.0)
+			)
+
+	var battlespatial_sibling_inside_ok: bool = false
+	var battlespatial_in_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_in_bs != null and battlespatial_in_bs.battlefield_geometry != null:
+		var battlespatial_in_wall: BattleObstacle = BattleObstacle.new(
+			"inside_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlespatial_in_a: BattleParticipant = _battlemove_add_participant(
+			battlespatial_in_bs,
+			"spatial_in_a",
+			"attacker"
+		)
+		var battlespatial_in_b: BattleParticipant = _battlemove_add_participant(
+			battlespatial_in_bs,
+			"spatial_in_b",
+			"attacker"
+		)
+		if (
+			battlespatial_in_a != null
+			and battlespatial_in_b != null
+			and battlespatial_in_bs.battlefield_geometry.add_obstacle(battlespatial_in_wall)
+		):
+			battlespatial_in_a.has_battle_position = true
+			battlespatial_in_a.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_in_a_speed: bool = battlespatial_in_a.set_movement_speed(2.0)
+			var battlespatial_in_a_intent: bool = battlespatial_in_a.set_movement_intent(Vector2(1.0, 0.0))
+			battlespatial_in_b.has_battle_position = true
+			battlespatial_in_b.battle_position = Vector2(45.0, 30.0)
+			var battlespatial_in_b_speed: bool = battlespatial_in_b.set_movement_speed(2.0)
+			var battlespatial_in_b_intent: bool = battlespatial_in_b.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_in_res: BattleMovementResult = BattleMovementService.advance(battlespatial_in_bs, 1.0)
+			battlespatial_sibling_inside_ok = (
+				battlespatial_in_a_speed
+				and battlespatial_in_a_intent
+				and battlespatial_in_b_speed
+				and battlespatial_in_b_intent
+				and battlespatial_in_res != null
+				and battlespatial_in_res.success
+				and _battlemove_ok(battlespatial_in_res, 1.0, 2, 1)
+				and battlespatial_in_a.battle_position.is_equal_approx(Vector2(12.0, 10.0))
+				and battlespatial_in_b.battle_position.is_equal_approx(Vector2(45.0, 30.0))
+			)
+
+	var battlespatial_move_missing_geo_ok: bool = false
+	var battlespatial_missmove_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_missmove_bs != null:
+		var battlespatial_missmove_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_missmove_bs,
+			"spatial_missmove_p",
+			"attacker"
+		)
+		if battlespatial_missmove_p != null:
+			battlespatial_missmove_p.has_battle_position = true
+			battlespatial_missmove_p.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_missmove_speed: bool = battlespatial_missmove_p.set_movement_speed(2.0)
+			var battlespatial_missmove_intent: bool = battlespatial_missmove_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_missmove_snap: Dictionary = _battlemove_part_snap(battlespatial_missmove_p)
+			battlespatial_missmove_bs.battlefield_geometry = null
+			var battlespatial_missmove_res: BattleMovementResult = BattleMovementService.advance(
+				battlespatial_missmove_bs,
+				0.5
+			)
+			battlespatial_move_missing_geo_ok = (
+				battlespatial_missmove_speed
+				and battlespatial_missmove_intent
+				and _battlemove_fail_ok(battlespatial_missmove_res, "missing_battlefield_geometry", 0.5)
+				and _battlemove_part_unchanged(battlespatial_missmove_p, battlespatial_missmove_snap)
+			)
+
+	var battlespatial_move_invalid_geo_ok: bool = false
+	var battlespatial_badmove_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_badmove_bs != null:
+		var battlespatial_badmove_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_badmove_bs,
+			"spatial_badmove_p",
+			"attacker"
+		)
+		if battlespatial_badmove_p != null:
+			battlespatial_badmove_p.has_battle_position = true
+			battlespatial_badmove_p.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_badmove_speed: bool = battlespatial_badmove_p.set_movement_speed(2.0)
+			var battlespatial_badmove_intent: bool = battlespatial_badmove_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_badmove_snap: Dictionary = _battlemove_part_snap(battlespatial_badmove_p)
+			battlespatial_badmove_bs.battlefield_geometry = BattlefieldGeometry.new()
+			var battlespatial_badmove_res: BattleMovementResult = BattleMovementService.advance(
+				battlespatial_badmove_bs,
+				0.5
+			)
+			battlespatial_move_invalid_geo_ok = (
+				battlespatial_badmove_speed
+				and battlespatial_badmove_intent
+				and _battlemove_fail_ok(battlespatial_badmove_res, "invalid_battlefield_geometry", 0.5)
+				and _battlemove_part_unchanged(battlespatial_badmove_p, battlespatial_badmove_snap)
+			)
+
+	var battlespatial_runtime_tx_ok: bool = false
+	var battlespatial_runtime_ok: bool = false
+	var battlespatial_rt_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_rt_bs != null:
+		var battlespatial_rt_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_rt_bs,
+			"spatial_rt_p",
+			"attacker"
+		)
+		if battlespatial_rt_p != null:
+			battlespatial_rt_p.has_battle_position = true
+			battlespatial_rt_p.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_rt_speed: bool = battlespatial_rt_p.set_movement_speed(2.0)
+			var battlespatial_rt_intent: bool = battlespatial_rt_p.set_movement_intent(Vector2(1.0, 0.0))
+			battlespatial_rt_bs.elapsed_time_seconds = 4.0
+			var battlespatial_rt_snap: Dictionary = _battlemove_part_snap(battlespatial_rt_p)
+			battlespatial_rt_bs.battlefield_geometry = null
+			var battlespatial_rt_fail: BattleRuntimeResult = BattleRuntimeService.advance(battlespatial_rt_bs, 0.5)
+			battlespatial_runtime_tx_ok = (
+				battlespatial_rt_speed
+				and battlespatial_rt_intent
+				and _battlert_fail_ok(battlespatial_rt_fail, "missing_battlefield_geometry", 4.0)
+				and is_equal_approx(battlespatial_rt_bs.elapsed_time_seconds, 4.0)
+				and _battlemove_part_unchanged(battlespatial_rt_p, battlespatial_rt_snap)
+			)
+			_battlespatial_attach_open_geometry(battlespatial_rt_bs)
+			var battlespatial_rt_ok_res: BattleRuntimeResult = BattleRuntimeService.advance(battlespatial_rt_bs, 0.5)
+			battlespatial_runtime_ok = (
+				battlespatial_runtime_tx_ok
+				and _battlert_clock_ok(battlespatial_rt_ok_res, 0.5, 4.0, 4.5)
+				and is_equal_approx(battlespatial_rt_bs.elapsed_time_seconds, 4.5)
+				and battlespatial_rt_p.battle_position.is_equal_approx(Vector2(11.0, 10.0))
+			)
+
+	var battlespatial_dead_ok: bool = false
+	var battlespatial_zero_speed_ok: bool = false
+	var battlespatial_zero_intent_ok: bool = false
+	var battlespatial_rules_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_rules_bs != null:
+		var battlespatial_dead_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_rules_bs,
+			"spatial_dead_p",
+			"attacker"
+		)
+		if battlespatial_dead_p != null:
+			battlespatial_dead_p.has_battle_position = true
+			battlespatial_dead_p.battle_position = Vector2(10.0, 10.0)
+			battlespatial_dead_p.is_alive = false
+			var battlespatial_dead_speed: bool = battlespatial_dead_p.set_movement_speed(4.0)
+			var battlespatial_dead_intent: bool = battlespatial_dead_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_dead_res: BattleMovementResult = BattleMovementService.advance(battlespatial_rules_bs, 1.0)
+			battlespatial_dead_ok = (
+				battlespatial_dead_speed
+				and battlespatial_dead_intent
+				and _battlemove_ok(battlespatial_dead_res, 1.0, 1, 0)
+				and battlespatial_dead_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlespatial_dead_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+			)
+		var battlespatial_zs_bs: BattleState = _battlemove_make_state("active")
+		var battlespatial_zs_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_zs_bs,
+			"spatial_zs_p",
+			"attacker"
+		)
+		if battlespatial_zs_p != null:
+			battlespatial_zs_p.has_battle_position = true
+			battlespatial_zs_p.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_zs_speed: bool = battlespatial_zs_p.set_movement_speed(0.0)
+			var battlespatial_zs_intent: bool = battlespatial_zs_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_zs_res: BattleMovementResult = BattleMovementService.advance(battlespatial_zs_bs, 1.0)
+			battlespatial_zero_speed_ok = (
+				battlespatial_zs_speed
+				and battlespatial_zs_intent
+				and _battlemove_ok(battlespatial_zs_res, 1.0, 1, 0)
+				and battlespatial_zs_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlespatial_zs_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+			)
+		var battlespatial_zi_bs: BattleState = _battlemove_make_state("active")
+		var battlespatial_zi_p: BattleParticipant = _battlemove_add_participant(
+			battlespatial_zi_bs,
+			"spatial_zi_p",
+			"attacker"
+		)
+		if battlespatial_zi_p != null:
+			battlespatial_zi_p.has_battle_position = true
+			battlespatial_zi_p.battle_position = Vector2(10.0, 10.0)
+			var battlespatial_zi_speed: bool = battlespatial_zi_p.set_movement_speed(4.0)
+			var battlespatial_zi_intent: bool = battlespatial_zi_p.set_movement_intent(Vector2.ZERO)
+			var battlespatial_zi_res: BattleMovementResult = BattleMovementService.advance(battlespatial_zi_bs, 1.0)
+			battlespatial_zero_intent_ok = (
+				battlespatial_zi_speed
+				and battlespatial_zi_intent
+				and _battlemove_ok(battlespatial_zi_res, 1.0, 1, 0)
+				and battlespatial_zi_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlespatial_zi_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+			)
+
+	var battlespatial_persist_ok: bool = false
+	var battlespatial_immutability_ok: bool = false
+	var battlespatial_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battlespatial_camp_game: GameState = battlespatial_camp_pack.get("game_state", null) as GameState
+	var battlespatial_camp_force: TravelingForce = battlespatial_camp_pack.get("force", null) as TravelingForce
+	var battlespatial_camp_bs: BattleState = battlespatial_camp_pack.get("battle_state", null) as BattleState
+	if battlespatial_camp_game != null and battlespatial_camp_bs != null:
+		var battlespatial_camp_deployed: bool = _battle_deploy_standard_attacker(battlespatial_camp_bs)
+		var battlespatial_camp_geo: bool = _battlegeo_init(battlespatial_camp_bs)
+		var battlespatial_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battlespatial_camp_game,
+			battlespatial_camp_force,
+			"battle_mission"
+		)
+		var battlespatial_camp_wall: BattleObstacle = BattleObstacle.new(
+			"camp_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlespatial_camp_added: bool = false
+		if battlespatial_camp_bs.battlefield_geometry != null:
+			battlespatial_camp_added = battlespatial_camp_bs.battlefield_geometry.add_obstacle(battlespatial_camp_wall)
+		var battlespatial_camp_part: BattleParticipant = battlespatial_camp_bs.get_participant("battle_sol_a")
+		var battlespatial_camp_ready: bool = false
+		if battlespatial_camp_part != null and battlespatial_camp_part.has_battle_position:
+			battlespatial_camp_ready = (
+				battlespatial_camp_part.set_movement_speed(2.0)
+				and battlespatial_camp_part.set_movement_intent(Vector2(1.0, 0.0))
+			)
+		var battlespatial_camp_begun: bool = battlespatial_camp_geo and battlespatial_camp_bs.begin_battle()
+		var battlespatial_camp_adv: BattleRuntimeResult = BattleRuntimeService.advance(battlespatial_camp_bs, 0.25)
+		var battlespatial_camp_persist: Dictionary = battlespatial_camp_game.to_dict()
+		battlespatial_persist_ok = (
+			battlespatial_camp_deployed
+			and battlespatial_camp_added
+			and battlespatial_camp_ready
+			and battlespatial_camp_begun
+			and battlespatial_camp_adv != null
+			and battlespatial_camp_adv.success
+			and _battle_serialized_campaign_keys_only(battlespatial_camp_persist)
+			and not _battle_data_has_tactical_trace(battlespatial_camp_persist)
+		)
+		battlespatial_immutability_ok = (
+			battlespatial_persist_ok
+			and _battle_campaign_unchanged(
+				battlespatial_camp_game,
+				battlespatial_camp_snap,
+				battlespatial_camp_force,
+				"battle_mission"
+			)
+			and battlespatial_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlespatial_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
+	var battlespatial_no_part_collision_ok: bool = false
+	var battlespatial_overlap_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_overlap_bs != null:
+		var battlespatial_ov_a: BattleParticipant = _battlemove_add_participant(
+			battlespatial_overlap_bs,
+			"spatial_ov_a",
+			"attacker"
+		)
+		var battlespatial_ov_b: BattleParticipant = _battlemove_add_participant(
+			battlespatial_overlap_bs,
+			"spatial_ov_b",
+			"attacker"
+		)
+		if battlespatial_ov_a != null and battlespatial_ov_b != null:
+			battlespatial_ov_a.has_battle_position = true
+			battlespatial_ov_a.battle_position = Vector2(12.0, 12.0)
+			var battlespatial_ov_a_speed: bool = battlespatial_ov_a.set_movement_speed(2.0)
+			var battlespatial_ov_a_intent: bool = battlespatial_ov_a.set_movement_intent(Vector2(1.0, 0.0))
+			battlespatial_ov_b.has_battle_position = true
+			battlespatial_ov_b.battle_position = Vector2(12.0, 12.0)
+			var battlespatial_ov_b_speed: bool = battlespatial_ov_b.set_movement_speed(2.0)
+			var battlespatial_ov_b_intent: bool = battlespatial_ov_b.set_movement_intent(Vector2(1.0, 0.0))
+			var battlespatial_ov_res: BattleMovementResult = BattleMovementService.advance(battlespatial_overlap_bs, 1.0)
+			battlespatial_no_part_collision_ok = (
+				battlespatial_ov_a_speed
+				and battlespatial_ov_a_intent
+				and battlespatial_ov_b_speed
+				and battlespatial_ov_b_intent
+				and _battlemove_ok(battlespatial_ov_res, 1.0, 2, 2)
+				and battlespatial_ov_a.battle_position.is_equal_approx(battlespatial_ov_b.battle_position)
+				and battlespatial_ov_a.battle_position.is_equal_approx(Vector2(14.0, 12.0))
+			)
+
+	var battlespatial_no_combat_ok: bool = false
+	var battlespatial_no_combat_bs: BattleState = _battlemove_make_state("active")
+	if battlespatial_no_combat_bs != null:
+		battlespatial_no_combat_ok = (
+			_battle_has_no_combat_turn_model(battlespatial_no_combat_bs)
+			and battlespatial_no_combat_bs.get("current_turn_index") == null
+			and battlespatial_no_combat_bs.get("current_round") == null
+			and battlespatial_no_combat_bs.get("active_turn_actor_id") == null
+			and battlespatial_no_combat_bs.get("find_path") == null
+			and battlespatial_no_combat_bs.get("cover_value") == null
+		)
+
+	var battlespatial_ok_res: BattleSpatialResult = BattleSpatialResult.succeeded(
+		Vector2(1.0, 2.0),
+		Vector2(3.0, 0.0),
+		Vector2(3.0, 0.0),
+		Vector2(4.0, 2.0),
+		false,
+		""
+	)
+	var battlespatial_fail_res: BattleSpatialResult = BattleSpatialResult.failed(
+		"null_battle_state",
+		"Battle spatial resolution failed: battle_state is null.",
+		Vector2(1.0, 2.0),
+		Vector2(3.0, 0.0),
+		"wall_a"
+	)
+	var battlespatial_result_helper_ok: bool = (
+		battlespatial_ok_res != null
+		and battlespatial_ok_res.success
+		and battlespatial_ok_res.start_position.is_equal_approx(Vector2(1.0, 2.0))
+		and battlespatial_ok_res.requested_displacement.is_equal_approx(Vector2(3.0, 0.0))
+		and battlespatial_ok_res.resolved_displacement.is_equal_approx(Vector2(3.0, 0.0))
+		and battlespatial_ok_res.final_position.is_equal_approx(Vector2(4.0, 2.0))
+		and battlespatial_ok_res.was_blocked == false
+		and battlespatial_ok_res.blocking_obstacle_id.is_empty()
+		and battlespatial_ok_res.error_code.is_empty()
+		and battlespatial_ok_res.error_message.is_empty()
+		and battlespatial_fail_res != null
+		and not battlespatial_fail_res.success
+		and battlespatial_fail_res.error_code == "null_battle_state"
+		and battlespatial_fail_res.error_message == "Battle spatial resolution failed: battle_state is null."
+		and battlespatial_fail_res.final_position.is_equal_approx(Vector2(1.0, 2.0))
+		and battlespatial_fail_res.resolved_displacement.is_equal_approx(Vector2.ZERO)
+		and battlespatial_fail_res.was_blocked == false
+		and battlespatial_fail_res.blocking_obstacle_id == "wall_a"
+	)
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -8809,6 +9751,52 @@ static func run() -> Dictionary:
 		"battlegeo_persist_ok": battlegeo_persist_ok,
 		"battlegeo_immutability_ok": battlegeo_immutability_ok,
 		"battlegeo_no_combat_ok": battlegeo_no_combat_ok,
+		"battlespatial_obstacle_ok": battlespatial_obstacle_ok,
+		"battlespatial_registry_ok": battlespatial_registry_ok,
+		"battlespatial_reject_ok": battlespatial_reject_ok,
+		"battlespatial_default_empty_ok": battlespatial_default_empty_ok,
+		"battlespatial_open_ok": battlespatial_open_ok,
+		"battlespatial_zero_disp_ok": battlespatial_zero_disp_ok,
+		"battlespatial_fail_null_ok": battlespatial_fail_null_ok,
+		"battlespatial_fail_missing_geo_ok": battlespatial_fail_missing_geo_ok,
+		"battlespatial_fail_invalid_geo_ok": battlespatial_fail_invalid_geo_ok,
+		"battlespatial_fail_bad_start_ok": battlespatial_fail_bad_start_ok,
+		"battlespatial_fail_outside_ok": battlespatial_fail_outside_ok,
+		"battlespatial_fail_bad_disp_ok": battlespatial_fail_bad_disp_ok,
+		"battlespatial_bound_right_ok": battlespatial_bound_right_ok,
+		"battlespatial_bound_left_ok": battlespatial_bound_left_ok,
+		"battlespatial_bound_top_ok": battlespatial_bound_top_ok,
+		"battlespatial_bound_bottom_ok": battlespatial_bound_bottom_ok,
+		"battlespatial_bound_diag_ok": battlespatial_bound_diag_ok,
+		"battlespatial_wall_hit_ok": battlespatial_wall_hit_ok,
+		"battlespatial_tunnel_ok": battlespatial_tunnel_ok,
+		"battlespatial_nonblock_ok": battlespatial_nonblock_ok,
+		"battlespatial_start_inside_ok": battlespatial_start_inside_ok,
+		"battlespatial_start_inside_nonblock_ok": battlespatial_start_inside_nonblock_ok,
+		"battlespatial_earliest_ok": battlespatial_earliest_ok,
+		"battlespatial_tie_ok": battlespatial_tie_ok,
+		"battlespatial_obs_before_bound_ok": battlespatial_obs_before_bound_ok,
+		"battlespatial_bound_before_obs_ok": battlespatial_bound_before_obs_ok,
+		"battlespatial_obs_bound_tie_ok": battlespatial_obs_bound_tie_ok,
+		"battlespatial_diag_wall_ok": battlespatial_diag_wall_ok,
+		"battlespatial_move_integrate_ok": battlespatial_move_integrate_ok,
+		"battlespatial_blocked_count_ok": battlespatial_blocked_count_ok,
+		"battlespatial_partial_count_ok": battlespatial_partial_count_ok,
+		"battlespatial_sibling_malformed_ok": battlespatial_sibling_malformed_ok,
+		"battlespatial_sibling_inside_ok": battlespatial_sibling_inside_ok,
+		"battlespatial_move_missing_geo_ok": battlespatial_move_missing_geo_ok,
+		"battlespatial_move_invalid_geo_ok": battlespatial_move_invalid_geo_ok,
+		"battlespatial_runtime_tx_ok": battlespatial_runtime_tx_ok,
+		"battlespatial_runtime_ok": battlespatial_runtime_ok,
+		"battlespatial_velocity_ok": battlespatial_velocity_ok,
+		"battlespatial_dead_ok": battlespatial_dead_ok,
+		"battlespatial_zero_speed_ok": battlespatial_zero_speed_ok,
+		"battlespatial_zero_intent_ok": battlespatial_zero_intent_ok,
+		"battlespatial_persist_ok": battlespatial_persist_ok,
+		"battlespatial_immutability_ok": battlespatial_immutability_ok,
+		"battlespatial_no_part_collision_ok": battlespatial_no_part_collision_ok,
+		"battlespatial_no_combat_ok": battlespatial_no_combat_ok,
+		"battlespatial_result_helper_ok": battlespatial_result_helper_ok,
 	}
 
 	var passed := true
@@ -10472,6 +11460,11 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "attacker_deployment_rect"
 		or text == "defender_deployment_rect"
 		or text == "deployment_rect"
+		or text == "obstacles"
+		or text == "obstacle_id"
+		or text == "blocks_movement"
+		or text == "blocking_obstacle_id"
+		or text == "was_blocked"
 	)
 
 
@@ -10820,6 +11813,8 @@ static func _battlert_make_state(p_phase: String) -> BattleState:
 	var defender_side: BattleSide = BattleSide.new("defender", "battlert_b", "", false, "")
 	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
 		return null
+	if not _battlespatial_attach_open_geometry(battle_state):
+		return null
 	return battle_state
 
 
@@ -10897,6 +11892,8 @@ static func _battlemove_make_state(p_phase: String) -> BattleState:
 	var attacker_side: BattleSide = BattleSide.new("attacker", "battlemove_a", "", true, "")
 	var defender_side: BattleSide = BattleSide.new("defender", "battlemove_b", "", false, "")
 	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	if not _battlespatial_attach_open_geometry(battle_state):
 		return null
 	return battle_state
 
@@ -11571,4 +12568,44 @@ static func _battlegeo_vector_map_match(left_raw: Variant, right_raw: Variant) -
 		if not left_pos.is_equal_approx(right_pos):
 			return false
 	return true
+
+
+static func _battlespatial_open_geometry() -> BattlefieldGeometry:
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = 100.0
+	geometry.height = 60.0
+	geometry.attacker_deployment_rect = Rect2(0.0, 0.0, 20.0, 60.0)
+	geometry.defender_deployment_rect = Rect2(80.0, 0.0, 20.0, 60.0)
+	return geometry
+
+
+static func _battlespatial_attach_open_geometry(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var geometry: BattlefieldGeometry = _battlespatial_open_geometry()
+	if geometry == null or not geometry.is_valid():
+		return false
+	battle_state.battlefield_geometry = geometry
+	return true
+
+
+static func _battlespatial_fail_ok(result: BattleSpatialResult, expected_code: String) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.resolved_displacement.is_equal_approx(Vector2.ZERO)
+		and result.error_code == expected_code
+		and result.error_message.begins_with("Battle spatial resolution failed:")
+	)
+
+
+static func _battlespatial_collinear(resolved: Vector2, requested: Vector2) -> bool:
+	if not BattlefieldGeometry.is_finite_point(resolved) or not BattlefieldGeometry.is_finite_point(requested):
+		return false
+	if resolved.is_equal_approx(Vector2.ZERO):
+		return true
+	if requested.is_equal_approx(Vector2.ZERO):
+		return false
+	return is_equal_approx(resolved.cross(requested), 0.0) and resolved.dot(requested) >= 0.0
 

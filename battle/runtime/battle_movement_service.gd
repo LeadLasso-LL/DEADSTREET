@@ -4,6 +4,8 @@ extends RefCounted
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
+const BattleSpatialService := preload("res://battle/geometry/battle_spatial_service.gd")
+const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleMovementResult:
@@ -25,6 +27,18 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleMo
 			"Battle movement failed: delta_seconds is invalid.",
 			delta_seconds
 		)
+	if battle_state.battlefield_geometry == null:
+		return BattleMovementResult.failed(
+			"missing_battlefield_geometry",
+			"Battle movement failed: battlefield geometry is missing.",
+			delta_seconds
+		)
+	if not battle_state.battlefield_geometry.is_valid():
+		return BattleMovementResult.failed(
+			"invalid_battlefield_geometry",
+			"Battle movement failed: battlefield geometry is invalid.",
+			delta_seconds
+		)
 	var participant_ids: Array[String] = _sorted_participant_ids(battle_state)
 	var participants_considered: int = 0
 	var participants_moved: int = 0
@@ -33,7 +47,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleMo
 		if participant == null:
 			continue
 		participants_considered += 1
-		if _advance_participant(participant, delta_seconds):
+		if _advance_participant(battle_state, participant, delta_seconds):
 			participants_moved += 1
 	return BattleMovementResult.succeeded(delta_seconds, participants_considered, participants_moved)
 
@@ -46,7 +60,11 @@ static func _sorted_participant_ids(battle_state: BattleState) -> Array[String]:
 	return ids
 
 
-static func _advance_participant(participant: BattleParticipant, delta_seconds: float) -> bool:
+static func _advance_participant(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	delta_seconds: float
+) -> bool:
 	if not participant.has_battle_position:
 		participant.velocity = Vector2.ZERO
 		return false
@@ -69,15 +87,23 @@ static func _advance_participant(participant: BattleParticipant, delta_seconds: 
 		participant.velocity = Vector2.ZERO
 		return false
 	participant.velocity = next_velocity
-	if delta_seconds == 0.0:
-		return false
 	if not _is_finite_vector(participant.battle_position):
 		return false
 	var displacement: Vector2 = participant.velocity * delta_seconds
 	if not _is_finite_vector(displacement):
 		return false
-	participant.battle_position += displacement
-	return not displacement.is_equal_approx(Vector2.ZERO)
+	var start_position: Vector2 = participant.battle_position
+	var spatial: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battle_state,
+		start_position,
+		displacement
+	)
+	if spatial == null or not spatial.success:
+		return false
+	if not _is_finite_vector(spatial.final_position):
+		return false
+	participant.battle_position = spatial.final_position
+	return not start_position.is_equal_approx(spatial.final_position)
 
 
 static func _resolved_direction(intent: Vector2) -> Vector2:

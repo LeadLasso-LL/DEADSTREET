@@ -1,10 +1,13 @@
 class_name BattlefieldGeometry
 extends RefCounted
 
+const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
+
 var width: float = 0.0
 var height: float = 0.0
 var attacker_deployment_rect: Rect2 = Rect2()
 var defender_deployment_rect: Rect2 = Rect2()
+var obstacles: Dictionary[String, BattleObstacle] = {}
 
 
 func is_valid() -> bool:
@@ -20,6 +23,12 @@ func is_valid() -> bool:
 		return false
 	if not _rect_is_within_battlefield(defender_deployment_rect):
 		return false
+	for obstacle_id: String in obstacles:
+		var obstacle: BattleObstacle = obstacles[obstacle_id]
+		if obstacle == null or obstacle.obstacle_id != obstacle_id:
+			return false
+		if not obstacle.is_valid():
+			return false
 	return true
 
 
@@ -44,6 +53,41 @@ func defender_deployment_contains(point: Vector2) -> bool:
 
 func bounds() -> Rect2:
 	return Rect2(0.0, 0.0, width, height)
+
+
+func add_obstacle(obstacle: BattleObstacle) -> bool:
+	if obstacle == null:
+		push_error("BattlefieldGeometry.add_obstacle: obstacle is null.")
+		return false
+	if obstacle.obstacle_id.is_empty():
+		push_error("BattlefieldGeometry.add_obstacle: obstacle id is empty.")
+		return false
+	if obstacles.has(obstacle.obstacle_id):
+		push_error("BattlefieldGeometry.add_obstacle: duplicate obstacle id '%s'." % obstacle.obstacle_id)
+		return false
+	if not obstacle.bounds_are_usable():
+		push_error("BattlefieldGeometry.add_obstacle: obstacle '%s' bounds are invalid." % obstacle.obstacle_id)
+		return false
+	obstacles[obstacle.obstacle_id] = obstacle
+	return true
+
+
+func has_obstacle(obstacle_id: String) -> bool:
+	return obstacles.has(obstacle_id)
+
+
+func get_obstacle(obstacle_id: String) -> BattleObstacle:
+	if obstacles.has(obstacle_id):
+		return obstacles[obstacle_id]
+	return null
+
+
+func get_sorted_obstacle_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for obstacle_id: String in obstacles:
+		ids.append(obstacle_id)
+	ids.sort()
+	return ids
 
 
 static func rect_contains_point(rect: Rect2, point: Vector2) -> bool:
