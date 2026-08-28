@@ -6612,6 +6612,227 @@ static func run() -> Dictionary:
 			and battle_turn_empty_bs.battle_phase == "active"
 		)
 
+	var battle_actor_turn_begin_ok: bool = false
+	var battle_actor_turn_snapshot_ok: bool = false
+	var battle_actor_turn_dup_begin_ok: bool = false
+	var battle_actor_turn_end_ok: bool = false
+	var battle_actor_turn_end_none_ok: bool = false
+	var battle_actor_turn_advance_one_ok: bool = false
+	var battle_actor_turn_wrap_ok: bool = false
+	var battle_actor_turn_advance_blocked_ok: bool = false
+	var battle_actor_turn_reinit_blocked_ok: bool = false
+	var battle_actor_turn_outside_ok: bool = false
+	var battle_actor_turn_empty_ok: bool = false
+	var battle_actor_turn_no_mutate_ok: bool = false
+	var battle_actor_turn_phase_ok: bool = false
+	var battle_actor_turn_deploy_unchanged_ok: bool = false
+	var battle_actor_turn_immutability_ok: bool = false
+	var battle_actor_turn_persist_ok: bool = false
+	var battle_actor_turn_pack: Dictionary = _battle_create_ready_pack()
+	var battle_actor_turn_game: GameState = battle_actor_turn_pack.get("game_state", null) as GameState
+	var battle_actor_turn_force: TravelingForce = battle_actor_turn_pack.get("force", null) as TravelingForce
+	var battle_actor_turn_bs: BattleState = battle_actor_turn_pack.get("battle_state", null) as BattleState
+	var battle_actor_turn_campaign: Dictionary = _battle_campaign_snapshot(
+		battle_actor_turn_game, battle_actor_turn_force, "battle_mission"
+	)
+	if battle_actor_turn_bs != null:
+		var battle_actor_turn_deployed: bool = _battle_deploy_standard_attacker(battle_actor_turn_bs)
+		var battle_actor_turn_begun: bool = battle_actor_turn_bs.begin_battle()
+		var battle_actor_turn_inited: bool = battle_actor_turn_bs.initialize_turn_order()
+		var battle_actor_turn_assign: Dictionary = _battle_deploy_assignment_snapshot(battle_actor_turn_bs)
+		var battle_actor_turn_idle_before: Dictionary = _battle_turn_snapshot(battle_actor_turn_bs)
+		var battle_actor_turn_early_end: bool = battle_actor_turn_bs.end_current_actor_turn()
+		battle_actor_turn_end_none_ok = (
+			battle_actor_turn_deployed
+			and battle_actor_turn_begun
+			and battle_actor_turn_inited
+			and not battle_actor_turn_early_end
+			and _battle_turn_unchanged(battle_actor_turn_bs, battle_actor_turn_idle_before)
+		)
+		var battle_actor_turn_started: bool = battle_actor_turn_bs.begin_current_actor_turn()
+		battle_actor_turn_begin_ok = (
+			battle_actor_turn_end_none_ok
+			and battle_actor_turn_started
+			and battle_actor_turn_bs.is_actor_turn_in_progress()
+			and battle_actor_turn_bs.get_current_turn_index() == 0
+			and battle_actor_turn_bs.get_current_round() == 1
+		)
+		battle_actor_turn_snapshot_ok = (
+			battle_actor_turn_begin_ok
+			and battle_actor_turn_bs.get_active_turn_actor_id() == "battle_sol_a"
+			and battle_actor_turn_bs.get_active_turn_actor_type() == BattleState.TURN_ACTOR_TYPE_PARTICIPANT
+			and battle_actor_turn_bs.get_active_turn_actor_side_id() == "attacker"
+			and battle_actor_turn_bs.get_active_turn_actor_id() == battle_actor_turn_bs.get_current_turn_actor_id()
+			and battle_actor_turn_bs.get_active_turn_actor_type() == battle_actor_turn_bs.get_current_turn_actor_type()
+			and battle_actor_turn_bs.get_active_turn_actor_side_id() == battle_actor_turn_bs.get_current_turn_actor_side_id()
+		)
+		var battle_actor_turn_active_snap: Dictionary = _battle_turn_snapshot(battle_actor_turn_bs)
+		var battle_actor_turn_dup: bool = battle_actor_turn_bs.begin_current_actor_turn()
+		battle_actor_turn_dup_begin_ok = (
+			battle_actor_turn_snapshot_ok
+			and not battle_actor_turn_dup
+			and _battle_turn_unchanged(battle_actor_turn_bs, battle_actor_turn_active_snap)
+		)
+		var battle_actor_turn_blocked_advance: bool = battle_actor_turn_bs.advance_turn()
+		battle_actor_turn_advance_blocked_ok = (
+			battle_actor_turn_dup_begin_ok
+			and not battle_actor_turn_blocked_advance
+			and _battle_turn_unchanged(battle_actor_turn_bs, battle_actor_turn_active_snap)
+		)
+		var battle_actor_turn_blocked_reinit: bool = battle_actor_turn_bs.initialize_turn_order()
+		battle_actor_turn_reinit_blocked_ok = (
+			battle_actor_turn_advance_blocked_ok
+			and not battle_actor_turn_blocked_reinit
+			and _battle_turn_unchanged(battle_actor_turn_bs, battle_actor_turn_active_snap)
+		)
+		var battle_actor_turn_ended: bool = battle_actor_turn_bs.end_current_actor_turn()
+		battle_actor_turn_end_ok = (
+			battle_actor_turn_reinit_blocked_ok
+			and battle_actor_turn_ended
+			and not battle_actor_turn_bs.is_actor_turn_in_progress()
+			and battle_actor_turn_bs.get_active_turn_actor_id().is_empty()
+			and battle_actor_turn_bs.get_active_turn_actor_type().is_empty()
+			and battle_actor_turn_bs.get_active_turn_actor_side_id().is_empty()
+		)
+		battle_actor_turn_advance_one_ok = (
+			battle_actor_turn_end_ok
+			and battle_actor_turn_bs.get_current_turn_index() == 1
+			and battle_actor_turn_bs.get_current_round() == 1
+			and battle_actor_turn_bs.get_current_turn_actor_id() == "battle_sol_m"
+			and battle_actor_turn_bs.get_current_turn_actor_type() == BattleState.TURN_ACTOR_TYPE_PARTICIPANT
+			and battle_actor_turn_bs.get_current_turn_actor_side_id() == "attacker"
+		)
+		var battle_actor_turn_to_last: bool = battle_actor_turn_advance_one_ok
+		var battle_actor_turn_step: int = 2
+		while battle_actor_turn_to_last and battle_actor_turn_step < 6:
+			if not battle_actor_turn_bs.advance_turn():
+				battle_actor_turn_to_last = false
+				break
+			if battle_actor_turn_bs.get_current_turn_index() != battle_actor_turn_step:
+				battle_actor_turn_to_last = false
+				break
+			if battle_actor_turn_bs.get_current_round() != 1:
+				battle_actor_turn_to_last = false
+				break
+			battle_actor_turn_step += 1
+		var battle_actor_turn_last_begun: bool = false
+		var battle_actor_turn_last_ended: bool = false
+		if battle_actor_turn_to_last:
+			battle_actor_turn_last_begun = battle_actor_turn_bs.begin_current_actor_turn()
+			battle_actor_turn_last_ended = battle_actor_turn_bs.end_current_actor_turn()
+		battle_actor_turn_wrap_ok = (
+			battle_actor_turn_to_last
+			and battle_actor_turn_last_begun
+			and battle_actor_turn_last_ended
+			and battle_actor_turn_bs.get_current_turn_index() == 0
+			and battle_actor_turn_bs.get_current_round() == 2
+			and battle_actor_turn_bs.get_current_turn_actor_id() == "battle_sol_a"
+			and not battle_actor_turn_bs.is_actor_turn_in_progress()
+			and battle_actor_turn_bs.get_active_turn_actor_id().is_empty()
+		)
+		battle_actor_turn_phase_ok = (
+			battle_actor_turn_wrap_ok
+			and battle_actor_turn_bs.battle_phase == "active"
+			and battle_actor_turn_bs.battle_phase != "deployment"
+			and battle_actor_turn_bs.battle_phase != "resolved"
+		)
+		battle_actor_turn_deploy_unchanged_ok = (
+			battle_actor_turn_wrap_ok
+			and _battle_deploy_assignment_unchanged(battle_actor_turn_bs, battle_actor_turn_assign)
+		)
+		battle_actor_turn_immutability_ok = (
+			battle_actor_turn_wrap_ok
+			and _battle_campaign_unchanged(
+				battle_actor_turn_game, battle_actor_turn_campaign, battle_actor_turn_force, "battle_mission"
+			)
+			and battle_actor_turn_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battle_actor_turn_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+		var battle_actor_turn_persist_begin: bool = battle_actor_turn_bs.begin_current_actor_turn()
+		var battle_actor_turn_persist_data: Dictionary = battle_actor_turn_game.to_dict()
+		var battle_actor_turn_restored: GameState = GameState.new()
+		battle_actor_turn_restored.from_dict(battle_actor_turn_persist_data)
+		battle_actor_turn_persist_ok = (
+			battle_actor_turn_wrap_ok
+			and battle_actor_turn_persist_begin
+			and battle_actor_turn_bs.is_actor_turn_in_progress()
+			and _battle_serialized_campaign_keys_only(battle_actor_turn_persist_data)
+			and not _battle_data_has_tactical_trace(battle_actor_turn_persist_data)
+			and battle_actor_turn_restored.has_mission("battle_mission")
+			and battle_actor_turn_restored.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		)
+		if battle_actor_turn_persist_begin:
+			battle_actor_turn_bs.end_current_actor_turn()
+	var battle_actor_turn_out_pack: Dictionary = _battle_create_ready_pack()
+	var battle_actor_turn_out_bs: BattleState = battle_actor_turn_out_pack.get("battle_state", null) as BattleState
+	if battle_actor_turn_out_bs != null:
+		var battle_actor_turn_out_deployed: bool = _battle_deploy_standard_attacker(battle_actor_turn_out_bs)
+		var battle_actor_turn_dep_snap: Dictionary = _battle_turn_snapshot(battle_actor_turn_out_bs)
+		var battle_actor_turn_dep_begin: bool = battle_actor_turn_out_bs.begin_current_actor_turn()
+		var battle_actor_turn_dep_end: bool = battle_actor_turn_out_bs.end_current_actor_turn()
+		var battle_actor_turn_dep_ok: bool = (
+			battle_actor_turn_out_deployed
+			and battle_actor_turn_out_bs.battle_phase == "deployment"
+			and not battle_actor_turn_dep_begin
+			and not battle_actor_turn_dep_end
+			and _battle_turn_unchanged(battle_actor_turn_out_bs, battle_actor_turn_dep_snap)
+		)
+		var battle_actor_turn_out_begun: bool = battle_actor_turn_out_bs.begin_battle()
+		var battle_actor_turn_pre_init_snap: Dictionary = _battle_turn_snapshot(battle_actor_turn_out_bs)
+		var battle_actor_turn_pre_init_begin: bool = battle_actor_turn_out_bs.begin_current_actor_turn()
+		var battle_actor_turn_pre_init_ok: bool = (
+			battle_actor_turn_dep_ok
+			and battle_actor_turn_out_begun
+			and battle_actor_turn_out_bs.battle_phase == "active"
+			and not battle_actor_turn_pre_init_begin
+			and _battle_turn_unchanged(battle_actor_turn_out_bs, battle_actor_turn_pre_init_snap)
+		)
+		var battle_actor_turn_out_inited: bool = battle_actor_turn_out_bs.initialize_turn_order()
+		var battle_actor_turn_out_started: bool = battle_actor_turn_out_bs.begin_current_actor_turn()
+		var battle_actor_turn_res_snap: Dictionary = _battle_turn_snapshot(battle_actor_turn_out_bs)
+		battle_actor_turn_out_bs.battle_phase = "resolved"
+		var battle_actor_turn_res_begin: bool = battle_actor_turn_out_bs.begin_current_actor_turn()
+		var battle_actor_turn_res_end: bool = battle_actor_turn_out_bs.end_current_actor_turn()
+		var battle_actor_turn_res_advance: bool = battle_actor_turn_out_bs.advance_turn()
+		var battle_actor_turn_res_reinit: bool = battle_actor_turn_out_bs.initialize_turn_order()
+		battle_actor_turn_outside_ok = (
+			battle_actor_turn_pre_init_ok
+			and battle_actor_turn_out_inited
+			and battle_actor_turn_out_started
+			and not battle_actor_turn_res_begin
+			and not battle_actor_turn_res_end
+			and not battle_actor_turn_res_advance
+			and not battle_actor_turn_res_reinit
+			and battle_actor_turn_out_bs.battle_phase == "resolved"
+			and _battle_turn_unchanged(battle_actor_turn_out_bs, battle_actor_turn_res_snap)
+		)
+	var battle_actor_turn_empty_bs: BattleState = _battle_make_bare_state()
+	if battle_actor_turn_empty_bs != null:
+		var battle_actor_turn_empty_begun: bool = battle_actor_turn_empty_bs.begin_battle()
+		var battle_actor_turn_empty_inited: bool = battle_actor_turn_empty_bs.initialize_turn_order()
+		var battle_actor_turn_empty_snap: Dictionary = _battle_turn_snapshot(battle_actor_turn_empty_bs)
+		var battle_actor_turn_empty_begin: bool = battle_actor_turn_empty_bs.begin_current_actor_turn()
+		var battle_actor_turn_empty_end: bool = battle_actor_turn_empty_bs.end_current_actor_turn()
+		battle_actor_turn_empty_ok = (
+			battle_actor_turn_empty_begun
+			and battle_actor_turn_empty_inited
+			and battle_actor_turn_empty_bs.battle_phase == "active"
+			and not battle_actor_turn_empty_bs.has_current_turn_actor()
+			and not battle_actor_turn_empty_begin
+			and not battle_actor_turn_empty_end
+			and not battle_actor_turn_empty_bs.is_actor_turn_in_progress()
+			and battle_actor_turn_empty_bs.get_active_turn_actor_id().is_empty()
+			and _battle_turn_unchanged(battle_actor_turn_empty_bs, battle_actor_turn_empty_snap)
+		)
+	battle_actor_turn_no_mutate_ok = (
+		battle_actor_turn_end_none_ok
+		and battle_actor_turn_dup_begin_ok
+		and battle_actor_turn_advance_blocked_ok
+		and battle_actor_turn_reinit_blocked_ok
+		and battle_actor_turn_outside_ok
+		and battle_actor_turn_empty_ok
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -7315,6 +7536,22 @@ static func run() -> Dictionary:
 		"battle_turn_phase_ok": battle_turn_phase_ok,
 		"battle_turn_immutability_ok": battle_turn_immutability_ok,
 		"battle_turn_persist_ok": battle_turn_persist_ok,
+		"battle_actor_turn_begin_ok": battle_actor_turn_begin_ok,
+		"battle_actor_turn_snapshot_ok": battle_actor_turn_snapshot_ok,
+		"battle_actor_turn_dup_begin_ok": battle_actor_turn_dup_begin_ok,
+		"battle_actor_turn_end_ok": battle_actor_turn_end_ok,
+		"battle_actor_turn_end_none_ok": battle_actor_turn_end_none_ok,
+		"battle_actor_turn_advance_one_ok": battle_actor_turn_advance_one_ok,
+		"battle_actor_turn_wrap_ok": battle_actor_turn_wrap_ok,
+		"battle_actor_turn_advance_blocked_ok": battle_actor_turn_advance_blocked_ok,
+		"battle_actor_turn_reinit_blocked_ok": battle_actor_turn_reinit_blocked_ok,
+		"battle_actor_turn_outside_ok": battle_actor_turn_outside_ok,
+		"battle_actor_turn_empty_ok": battle_actor_turn_empty_ok,
+		"battle_actor_turn_no_mutate_ok": battle_actor_turn_no_mutate_ok,
+		"battle_actor_turn_phase_ok": battle_actor_turn_phase_ok,
+		"battle_actor_turn_deploy_unchanged_ok": battle_actor_turn_deploy_unchanged_ok,
+		"battle_actor_turn_immutability_ok": battle_actor_turn_immutability_ok,
+		"battle_actor_turn_persist_ok": battle_actor_turn_persist_ok,
 	}
 
 	var passed := true
@@ -8964,6 +9201,10 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "turn_actor_side_ids"
 		or text == "current_turn_index"
 		or text == "current_round"
+		or text == "actor_turn_in_progress"
+		or text == "active_turn_actor_id"
+		or text == "active_turn_actor_type"
+		or text == "active_turn_actor_side_id"
 	)
 
 
@@ -9212,6 +9453,10 @@ static func _battle_turn_snapshot(battle_state: BattleState) -> Dictionary:
 	snap["current_side"] = battle_state.get_current_turn_actor_side_id()
 	snap["has_current"] = battle_state.has_current_turn_actor()
 	snap["count"] = battle_state.get_turn_actor_count()
+	snap["in_progress"] = battle_state.is_actor_turn_in_progress()
+	snap["active_id"] = battle_state.get_active_turn_actor_id()
+	snap["active_type"] = battle_state.get_active_turn_actor_type()
+	snap["active_side"] = battle_state.get_active_turn_actor_side_id()
 	return snap
 
 
@@ -9237,6 +9482,10 @@ static func _battle_turn_unchanged(battle_state: BattleState, snap: Dictionary) 
 		and battle_state.get_current_turn_actor_side_id() == str(snap.get("current_side", ""))
 		and battle_state.has_current_turn_actor() == bool(snap.get("has_current", true))
 		and battle_state.get_turn_actor_count() == int(snap.get("count", -1))
+		and battle_state.is_actor_turn_in_progress() == bool(snap.get("in_progress", true))
+		and battle_state.get_active_turn_actor_id() == str(snap.get("active_id", "__missing__"))
+		and battle_state.get_active_turn_actor_type() == str(snap.get("active_type", "__missing__"))
+		and battle_state.get_active_turn_actor_side_id() == str(snap.get("active_side", "__missing__"))
 	)
 
 

@@ -24,6 +24,10 @@ var turn_actor_types: Array[String] = []
 var turn_actor_side_ids: Array[String] = []
 var current_turn_index: int = -1
 var current_round: int = 1
+var actor_turn_in_progress: bool = false
+var active_turn_actor_id: String = ""
+var active_turn_actor_type: String = ""
+var active_turn_actor_side_id: String = ""
 
 
 func _init(
@@ -350,6 +354,9 @@ func initialize_turn_order() -> bool:
 	if battle_phase != "active":
 		push_error("BattleState.initialize_turn_order: battle phase is '%s', not active." % battle_phase)
 		return false
+	if actor_turn_in_progress:
+		push_error("BattleState.initialize_turn_order: a turn is already in progress.")
+		return false
 	var next_ids: Array[String] = []
 	var next_types: Array[String] = []
 	var next_sides: Array[String] = []
@@ -369,6 +376,7 @@ func initialize_turn_order() -> bool:
 		current_turn_index = -1
 	else:
 		current_turn_index = 0
+	_clear_active_actor_turn()
 	return true
 
 
@@ -439,6 +447,9 @@ func advance_turn() -> bool:
 	if battle_phase != "active":
 		push_error("BattleState.advance_turn: battle phase is '%s', not active." % battle_phase)
 		return false
+	if actor_turn_in_progress:
+		push_error("BattleState.advance_turn: a turn is already in progress.")
+		return false
 	if turn_actor_ids.is_empty() or not has_current_turn_actor():
 		push_error("BattleState.advance_turn: no current actor.")
 		return false
@@ -450,6 +461,66 @@ func advance_turn() -> bool:
 	current_turn_index = next_index
 	current_round = next_round
 	return true
+
+
+func begin_current_actor_turn() -> bool:
+	if battle_phase != "active":
+		push_error("BattleState.begin_current_actor_turn: battle phase is '%s', not active." % battle_phase)
+		return false
+	if not has_current_turn_actor():
+		push_error("BattleState.begin_current_actor_turn: no current actor.")
+		return false
+	if actor_turn_in_progress:
+		push_error("BattleState.begin_current_actor_turn: a turn is already in progress.")
+		return false
+	actor_turn_in_progress = true
+	active_turn_actor_id = get_current_turn_actor_id()
+	active_turn_actor_type = get_current_turn_actor_type()
+	active_turn_actor_side_id = get_current_turn_actor_side_id()
+	return true
+
+
+func is_actor_turn_in_progress() -> bool:
+	return actor_turn_in_progress
+
+
+func get_active_turn_actor_id() -> String:
+	if not actor_turn_in_progress:
+		return ""
+	return active_turn_actor_id
+
+
+func get_active_turn_actor_type() -> String:
+	if not actor_turn_in_progress:
+		return ""
+	return active_turn_actor_type
+
+
+func get_active_turn_actor_side_id() -> String:
+	if not actor_turn_in_progress:
+		return ""
+	return active_turn_actor_side_id
+
+
+func end_current_actor_turn() -> bool:
+	if battle_phase != "active":
+		push_error("BattleState.end_current_actor_turn: battle phase is '%s', not active." % battle_phase)
+		return false
+	if not actor_turn_in_progress:
+		push_error("BattleState.end_current_actor_turn: no turn is in progress.")
+		return false
+	if not has_current_turn_actor():
+		push_error("BattleState.end_current_actor_turn: no current actor.")
+		return false
+	_clear_active_actor_turn()
+	return advance_turn()
+
+
+func _clear_active_actor_turn() -> void:
+	actor_turn_in_progress = false
+	active_turn_actor_id = ""
+	active_turn_actor_type = ""
+	active_turn_actor_side_id = ""
 
 
 func _append_side_turn_actors(
