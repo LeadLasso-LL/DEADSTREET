@@ -41,6 +41,13 @@ const NeighborhoodHQAttackFailureResult := preload("res://campaign/missions/reso
 const NeighborhoodHQAttackFailureResolver := preload("res://campaign/missions/resolvers/neighborhood_hq_attack_failure_resolver.gd")
 const NeighborhoodHQBattleResult := preload("res://campaign/missions/resolvers/neighborhood_hq_battle_result.gd")
 const NeighborhoodHQBattleResolver := preload("res://campaign/missions/resolvers/neighborhood_hq_battle_resolver.gd")
+const BattleSide := preload("res://battle/core/battle_side.gd")
+const BattleParticipant := preload("res://battle/core/battle_participant.gd")
+const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
+const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
+const BattleState := preload("res://battle/core/battle_state.gd")
+const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
+const BattleSetupService := preload("res://battle/core/battle_setup_service.gd")
 
 
 static func run() -> Dictionary:
@@ -5379,6 +5386,501 @@ static func run() -> Dictionary:
 		and hqbattle_chain_win_state.get_mission("hqbattle_chain_win").outcome_code == "neighborhood_hq_captured"
 	)
 
+	var battle_expected_soldiers: Array[String] = ["battle_sol_a", "battle_sol_m", "battle_sol_z"]
+	var battle_expected_vehicles: Array[String] = ["battle_veh_a", "battle_veh_m", "battle_veh_z"]
+	var battle_std_state: GameState = _make_battle_world()
+	DiplomacyService.declare_war(battle_std_state, "battle_a", "battle_b")
+	var battle_std_force: TravelingForce = _battle_add_force_mission(battle_std_state)
+	var battle_std_mission: CampaignMission = battle_std_state.get_mission("battle_mission")
+	var battle_std_hood: Neighborhood = battle_std_state.get_neighborhood("battle_hood")
+	var battle_std_hq: NeighborhoodHQ = battle_std_state.get_map_location("battle_hq") as NeighborhoodHQ
+	var battle_std_biz: Business = battle_std_state.get_map_location("battle_biz") as Business
+	var battle_std_att: MajorGang = battle_std_state.get_faction("battle_a") as MajorGang
+	var battle_std_def: MajorGang = battle_std_state.get_faction("battle_b") as MajorGang
+	var battle_std_sol_a: Soldier = battle_std_state.get_soldier("battle_sol_a")
+	var battle_std_sol_m: Soldier = battle_std_state.get_soldier("battle_sol_m")
+	var battle_std_sol_z: Soldier = battle_std_state.get_soldier("battle_sol_z")
+	var battle_std_veh_a: Vehicle = battle_std_state.get_vehicle("battle_veh_a")
+	var battle_std_veh_m: Vehicle = battle_std_state.get_vehicle("battle_veh_m")
+	var battle_std_veh_z: Vehicle = battle_std_state.get_vehicle("battle_veh_z")
+	var battle_std_snap: Dictionary = _battle_campaign_snapshot(battle_std_state, battle_std_force, "battle_mission")
+	var battle_std_result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		battle_std_state, "battle_mission"
+	)
+	var battle_std_bs: BattleState = battle_std_result.battle_state
+	var battle_std_att_side: BattleSide = null
+	var battle_std_def_side: BattleSide = null
+	var battle_std_att_zone: DeploymentZone = null
+	var battle_std_def_zone: DeploymentZone = null
+	if battle_std_bs != null:
+		battle_std_att_side = battle_std_bs.get_side("attacker")
+		battle_std_def_side = battle_std_bs.get_side("defender")
+		battle_std_att_zone = battle_std_bs.get_deployment_zone("attacker_deployment")
+		battle_std_def_zone = battle_std_bs.get_deployment_zone("defender_deployment")
+	var battle_setup_ok: bool = (
+		battle_std_result.success
+		and battle_std_bs != null
+		and battle_std_result.battle_id == "battle_battle_mission"
+		and battle_std_bs.battle_id == "battle_battle_mission"
+		and battle_std_bs.battle_type_id == "neighborhood_hq_assault"
+		and battle_std_bs.mission_id == "battle_mission"
+		and battle_std_result.mission_id == "battle_mission"
+		and battle_std_bs.location_id == "battle_hq"
+		and battle_std_bs.attacker_side_id == "attacker"
+		and battle_std_bs.defender_side_id == "defender"
+		and battle_std_bs.battle_phase == "deployment"
+		and battle_std_result.error_code.is_empty()
+		and battle_std_result.error_message.is_empty()
+	)
+	var battle_attacker_side_ok: bool = (
+		battle_setup_ok
+		and battle_std_att_side != null
+		and battle_std_bs.has_side("attacker")
+		and battle_std_att_side.faction_id == "battle_a"
+		and battle_std_att_side.force_id == "battle_force"
+		and battle_std_att_side.force_id == battle_std_force.id
+		and battle_std_att_side.is_attacker
+		and battle_std_att_side.deployment_zone_id == "attacker_deployment"
+		and _string_ids_match(battle_std_att_side.participant_ids, battle_expected_soldiers)
+		and _string_ids_match(battle_std_att_side.vehicle_ids, battle_expected_vehicles)
+		and not _string_ids_match(battle_std_force.soldier_group.soldier_ids, battle_expected_soldiers)
+		and not _string_ids_match(battle_std_force.vehicle_group.vehicle_ids, battle_expected_vehicles)
+	)
+	var battle_defender_side_ok: bool = (
+		battle_setup_ok
+		and battle_std_def_side != null
+		and battle_std_bs.has_side("defender")
+		and battle_std_def_side.faction_id == "battle_b"
+		and battle_std_def_side.force_id.is_empty()
+		and not battle_std_def_side.is_attacker
+		and battle_std_def_side.deployment_zone_id == "defender_deployment"
+		and battle_std_def_side.participant_ids.is_empty()
+		and battle_std_def_side.vehicle_ids.is_empty()
+	)
+	var battle_participants_ok: bool = (
+		battle_setup_ok
+		and _battle_participant_matches_soldier(battle_std_bs, battle_std_sol_a)
+		and _battle_participant_matches_soldier(battle_std_bs, battle_std_sol_m)
+		and _battle_participant_matches_soldier(battle_std_bs, battle_std_sol_z)
+		and battle_std_bs.participants.size() == 3
+		and _battle_soldier_matches_dict(battle_std_sol_a, _battle_dict_from_snap(battle_std_snap, "soldiers", "battle_sol_a"))
+		and _battle_soldier_matches_dict(battle_std_sol_m, _battle_dict_from_snap(battle_std_snap, "soldiers", "battle_sol_m"))
+		and _battle_soldier_matches_dict(battle_std_sol_z, _battle_dict_from_snap(battle_std_snap, "soldiers", "battle_sol_z"))
+	)
+	var battle_vehicles_ok: bool = (
+		battle_setup_ok
+		and _battle_vehicle_matches_campaign(battle_std_bs, battle_std_veh_a)
+		and _battle_vehicle_matches_campaign(battle_std_bs, battle_std_veh_m)
+		and _battle_vehicle_matches_campaign(battle_std_bs, battle_std_veh_z)
+		and battle_std_bs.vehicles.size() == 3
+		and _battle_vehicle_matches_dict(battle_std_veh_a, _battle_dict_from_snap(battle_std_snap, "vehicles", "battle_veh_a"))
+		and _battle_vehicle_matches_dict(battle_std_veh_m, _battle_dict_from_snap(battle_std_snap, "vehicles", "battle_veh_m"))
+		and _battle_vehicle_matches_dict(battle_std_veh_z, _battle_dict_from_snap(battle_std_snap, "vehicles", "battle_veh_z"))
+	)
+	var battle_zones_ok: bool = (
+		battle_setup_ok
+		and battle_std_bs.deployment_zones.size() == 2
+		and battle_std_att_zone != null
+		and battle_std_def_zone != null
+		and battle_std_att_zone.zone_id == "attacker_deployment"
+		and battle_std_att_zone.side_id == "attacker"
+		and battle_std_att_zone.zone_type == "attacker_entry"
+		and battle_std_def_zone.zone_id == "defender_deployment"
+		and battle_std_def_zone.side_id == "defender"
+		and battle_std_def_zone.zone_type == "defender_position"
+		and _string_ids_match(battle_std_att_zone.allowed_participant_ids, battle_expected_soldiers)
+		and _string_ids_match(battle_std_att_zone.allowed_vehicle_ids, battle_expected_vehicles)
+		and battle_std_att_zone.allows_participant("battle_sol_a")
+		and battle_std_att_zone.allows_participant("battle_sol_m")
+		and battle_std_att_zone.allows_participant("battle_sol_z")
+		and battle_std_att_zone.allows_vehicle("battle_veh_a")
+		and battle_std_att_zone.allows_vehicle("battle_veh_m")
+		and battle_std_att_zone.allows_vehicle("battle_veh_z")
+		and not battle_std_att_zone.allows_participant("battle_unknown")
+		and not battle_std_att_zone.allows_vehicle("battle_unknown")
+		and not battle_std_att_zone.allows_participant("")
+		and not battle_std_att_zone.allows_vehicle("")
+		and battle_std_def_zone.allowed_participant_ids.is_empty()
+		and battle_std_def_zone.allowed_vehicle_ids.is_empty()
+		and not battle_std_def_zone.allows_participant("battle_sol_a")
+		and not battle_std_def_zone.allows_vehicle("battle_veh_a")
+	)
+	var battle_immutability_ok: bool = (
+		battle_setup_ok
+		and _battle_campaign_unchanged(battle_std_state, battle_std_snap, battle_std_force, "battle_mission")
+		and battle_std_mission.mission_state == "awaiting_resolution"
+		and battle_std_mission.outcome_code.is_empty()
+		and battle_std_hood.owner_faction_id == "battle_b"
+		and battle_std_hq.owner_faction_id == "battle_b"
+		and battle_std_biz.owner_faction_id == "battle_b"
+		and is_equal_approx(battle_std_att.money, float(battle_std_snap.get("money_a", -1.0)))
+		and is_equal_approx(battle_std_def.money, float(battle_std_snap.get("money_b", -1.0)))
+	)
+	var battle_setup_service_probe: BattleSetupService = BattleSetupService.new()
+	var battle_no_combat_ok: bool = (
+		battle_setup_ok
+		and battle_std_bs.battle_phase == "deployment"
+		and not battle_std_bs.has_method("resolve_hit")
+		and not battle_std_bs.has_method("apply_wound")
+		and not battle_std_bs.has_method("apply_kill")
+		and not battle_std_bs.has_method("fire")
+		and not battle_std_bs.has_method("advance_phase")
+		and not battle_std_bs.has_method("simulate_combat")
+		and not battle_setup_service_probe.has_method("simulate_combat")
+		and not battle_setup_service_probe.has_method("resolve_hit")
+		and battle_std_bs.get_participant("battle_sol_a").is_alive
+		and not battle_std_bs.get_participant("battle_sol_a").is_wounded
+		and battle_std_bs.get_vehicle("battle_veh_a").get("hit_points") == null
+		and battle_std_bs.get_vehicle("battle_veh_a").get("damage") == null
+		and battle_std_bs.get_participant("battle_sol_a").get("hit_points") == null
+	)
+	var battle_unclaimed_state: GameState = _make_battle_world("", "")
+	var battle_unclaimed_force: TravelingForce = _battle_add_force_mission(battle_unclaimed_state)
+	var battle_unclaimed_result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		battle_unclaimed_state, "battle_mission"
+	)
+	var battle_unclaimed_bs: BattleState = battle_unclaimed_result.battle_state
+	var battle_unclaimed_def: BattleSide = null
+	if battle_unclaimed_bs != null:
+		battle_unclaimed_def = battle_unclaimed_bs.get_side("defender")
+	var battle_unclaimed_ok: bool = (
+		battle_unclaimed_result.success
+		and battle_unclaimed_bs != null
+		and battle_unclaimed_def != null
+		and battle_unclaimed_def.faction_id.is_empty()
+		and battle_unclaimed_def.force_id.is_empty()
+		and not battle_unclaimed_def.is_attacker
+		and battle_unclaimed_def.participant_ids.is_empty()
+		and battle_unclaimed_def.vehicle_ids.is_empty()
+		and battle_unclaimed_bs.participants.size() == 3
+		and battle_unclaimed_bs.vehicles.size() == 3
+		and battle_unclaimed_state.get_neighborhood("battle_hood").owner_faction_id.is_empty()
+		and (battle_unclaimed_state.get_map_location("battle_hq") as NeighborhoodHQ).owner_faction_id.is_empty()
+	)
+	var battle_reg_state: BattleState = BattleState.new(
+		"battle_reg", "neighborhood_hq_assault", "battle_reg_mission", "battle_hq", "attacker", "defender", "deployment"
+	)
+	var battle_reg_side: BattleSide = BattleSide.new("side_x", "battle_a", "battle_force", true, "zone_x")
+	var battle_reg_part: BattleParticipant = BattleParticipant.new(
+		"part_x", "sol_x", "battle_a", "side_x", "pistol", true, false, ""
+	)
+	var battle_reg_veh: BattleVehicle = BattleVehicle.new(
+		"veh_x", "veh_x", "battle_a", "side_x", "car", ""
+	)
+	var battle_reg_zone: DeploymentZone = DeploymentZone.new("zone_x", "side_x", "attacker_entry")
+	var battle_reg_empty_side: BattleSide = BattleSide.new("", "battle_a", "battle_force", true, "zone_x")
+	var battle_reg_empty_part: BattleParticipant = BattleParticipant.new(
+		"", "sol_y", "battle_a", "side_x", "pistol", true, false, ""
+	)
+	var battle_reg_empty_veh: BattleVehicle = BattleVehicle.new("", "veh_y", "battle_a", "side_x", "car", "")
+	var battle_reg_empty_zone: DeploymentZone = DeploymentZone.new("", "side_x", "attacker_entry")
+	var battle_reg_dup_side: BattleSide = BattleSide.new("side_x", "battle_b", "", false, "")
+	var battle_reg_dup_part: BattleParticipant = BattleParticipant.new(
+		"part_x", "sol_z", "battle_a", "side_x", "rifle", true, false, ""
+	)
+	var battle_reg_dup_veh: BattleVehicle = BattleVehicle.new("veh_x", "veh_z", "battle_a", "side_x", "truck", "")
+	var battle_reg_dup_zone: DeploymentZone = DeploymentZone.new("zone_x", "side_y", "defender_position")
+	var battle_registry_ok: bool = (
+		battle_reg_state.add_side(battle_reg_side)
+		and battle_reg_state.has_side("side_x")
+		and battle_reg_state.get_side("side_x") == battle_reg_side
+		and not battle_reg_state.has_side("missing")
+		and battle_reg_state.get_side("missing") == null
+		and not battle_reg_state.add_side(null)
+		and not battle_reg_state.add_side(battle_reg_empty_side)
+		and not battle_reg_state.add_side(battle_reg_dup_side)
+		and battle_reg_state.add_participant(battle_reg_part)
+		and battle_reg_state.has_participant("part_x")
+		and battle_reg_state.get_participant("part_x") == battle_reg_part
+		and not battle_reg_state.has_participant("missing")
+		and battle_reg_state.get_participant("missing") == null
+		and not battle_reg_state.add_participant(null)
+		and not battle_reg_state.add_participant(battle_reg_empty_part)
+		and not battle_reg_state.add_participant(battle_reg_dup_part)
+		and battle_reg_state.add_vehicle(battle_reg_veh)
+		and battle_reg_state.has_vehicle("veh_x")
+		and battle_reg_state.get_vehicle("veh_x") == battle_reg_veh
+		and not battle_reg_state.has_vehicle("missing")
+		and battle_reg_state.get_vehicle("missing") == null
+		and not battle_reg_state.add_vehicle(null)
+		and not battle_reg_state.add_vehicle(battle_reg_empty_veh)
+		and not battle_reg_state.add_vehicle(battle_reg_dup_veh)
+		and battle_reg_state.add_deployment_zone(battle_reg_zone)
+		and battle_reg_state.has_deployment_zone("zone_x")
+		and battle_reg_state.get_deployment_zone("zone_x") == battle_reg_zone
+		and not battle_reg_state.has_deployment_zone("missing")
+		and battle_reg_state.get_deployment_zone("missing") == null
+		and not battle_reg_state.add_deployment_zone(null)
+		and not battle_reg_state.add_deployment_zone(battle_reg_empty_zone)
+		and not battle_reg_state.add_deployment_zone(battle_reg_dup_zone)
+	)
+	var battle_help_side: BattleSide = BattleSide.new("help_side", "battle_a", "battle_force", true, "zone")
+	var battle_side_helpers_ok: bool = (
+		battle_help_side.add_participant_id("p_b")
+		and battle_help_side.add_participant_id("p_a")
+		and _string_ids_match(battle_help_side.participant_ids, ["p_b", "p_a"])
+		and not battle_help_side.add_participant_id("p_b")
+		and not battle_help_side.add_participant_id("")
+		and battle_help_side.has_participant_id("p_b")
+		and battle_help_side.has_participant_id("p_a")
+		and not battle_help_side.has_participant_id("p_missing")
+		and battle_help_side.add_vehicle_id("v_b")
+		and battle_help_side.add_vehicle_id("v_a")
+		and _string_ids_match(battle_help_side.vehicle_ids, ["v_b", "v_a"])
+		and not battle_help_side.add_vehicle_id("v_b")
+		and not battle_help_side.add_vehicle_id("")
+		and battle_help_side.has_vehicle_id("v_b")
+		and battle_help_side.has_vehicle_id("v_a")
+		and not battle_help_side.has_vehicle_id("v_missing")
+	)
+	var battle_null_res: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(null, "battle_mission")
+	var battle_err_null_ok: bool = (
+		not battle_null_res.success
+		and battle_null_res.battle_state == null
+		and battle_null_res.error_code == "null_game_state"
+	)
+	var battle_empty_state: GameState = _make_battle_world()
+	var battle_empty_force: TravelingForce = _battle_add_force_mission(battle_empty_state)
+	var battle_err_empty_id_ok: bool = _battle_fails_setup(
+		battle_empty_state, "", "empty_mission_id", battle_empty_force
+	)
+	var battle_miss_state: GameState = _make_battle_world()
+	var battle_miss_force: TravelingForce = _battle_add_force_mission(battle_miss_state)
+	var battle_err_invalid_mission_ok: bool = _battle_fails_setup(
+		battle_miss_state, "battle_missing", "invalid_mission", battle_miss_force
+	)
+	var battle_type_state: GameState = _make_battle_world()
+	var battle_type_force: TravelingForce = _battle_add_force_mission(
+		battle_type_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "raid_business"
+	)
+	var battle_err_invalid_type_ok: bool = _battle_fails_setup(
+		battle_type_state, "battle_mission", "invalid_mission_type", battle_type_force
+	)
+	var battle_await_state: GameState = _make_battle_world()
+	var battle_await_force: TravelingForce = _battle_add_force_mission(
+		battle_await_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "traveling_outbound"
+	)
+	var battle_err_not_awaiting_ok: bool = _battle_fails_setup(
+		battle_await_state, "battle_mission", "mission_not_awaiting_resolution", battle_await_force
+	)
+	var battle_bad_force_state: GameState = _make_battle_world()
+	var battle_bad_force: TravelingForce = _battle_add_force_mission(battle_bad_force_state)
+	battle_bad_force_state.get_mission("battle_mission").force_id = "battle_missing_force"
+	var battle_err_invalid_force_ok: bool = _battle_fails_setup(
+		battle_bad_force_state, "battle_mission", "invalid_attacker_force", battle_bad_force
+	)
+	var battle_travel_state: GameState = _make_battle_world()
+	var battle_travel_force: TravelingForce = _battle_add_force_mission(
+		battle_travel_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "traveling_outbound"
+	)
+	var battle_err_not_dest_ok: bool = _battle_fails_setup(
+		battle_travel_state, "battle_mission", "attacker_not_at_destination", battle_travel_force
+	)
+	var battle_fac_state: GameState = _make_battle_world()
+	var battle_fac_force: TravelingForce = _battle_add_force_mission(
+		battle_fac_state, "battle_force", "battle_mission", "battle_b", "battle_a"
+	)
+	var battle_err_faction_ok: bool = _battle_fails_setup(
+		battle_fac_state, "battle_mission", "attacker_faction_mismatch", battle_fac_force
+	)
+	var battle_tgt_state: GameState = _make_battle_world()
+	var battle_tgt_force: TravelingForce = _battle_add_force_mission(battle_tgt_state)
+	battle_tgt_state.get_mission("battle_mission").target_location_id = "battle_missing_loc"
+	var battle_err_missing_target_ok: bool = _battle_fails_setup(
+		battle_tgt_state, "battle_mission", "invalid_target_location", battle_tgt_force
+	)
+	var battle_not_hq_state: GameState = _make_battle_world()
+	var battle_not_hq_force: TravelingForce = _battle_add_force_mission(battle_not_hq_state)
+	battle_not_hq_state.get_mission("battle_mission").target_location_id = "battle_biz"
+	var battle_err_not_hq_ok: bool = _battle_fails_setup(
+		battle_not_hq_state, "battle_mission", "target_not_neighborhood_hq", battle_not_hq_force
+	)
+	var battle_mismatch_state: GameState = _make_battle_world()
+	var battle_mismatch_force: TravelingForce = _battle_add_force_mission(
+		battle_mismatch_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq_b", "battle_hq"
+	)
+	var battle_err_target_mismatch_ok: bool = _battle_fails_setup(
+		battle_mismatch_state, "battle_mission", "attacker_target_mismatch", battle_mismatch_force
+	)
+	var battle_orphan_state: GameState = _make_battle_world()
+	var battle_orphan_force: TravelingForce = _battle_add_force_mission(
+		battle_orphan_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq_orphan", "battle_hq_orphan"
+	)
+	var battle_err_missing_hood_ok: bool = _battle_fails_setup(
+		battle_orphan_state, "battle_mission", "missing_neighborhood", battle_orphan_force
+	)
+	var battle_ghost_state: GameState = _make_battle_world()
+	var battle_ghost_force: TravelingForce = _battle_add_force_mission(
+		battle_ghost_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq_ghost", "battle_hq_ghost"
+	)
+	var battle_err_invalid_hood_ok: bool = _battle_fails_setup(
+		battle_ghost_state, "battle_mission", "invalid_neighborhood", battle_ghost_force
+	)
+	var battle_own_state: GameState = _make_battle_world("battle_b", "battle_a")
+	var battle_own_force: TravelingForce = _battle_add_force_mission(battle_own_state)
+	var battle_err_owner_mismatch_ok: bool = _battle_fails_setup(
+		battle_own_state, "battle_mission", "territory_owner_mismatch", battle_own_force
+	)
+	var battle_bad_sol_state: GameState = _make_battle_world()
+	var battle_bad_sol_ids: Array[String] = ["battle_sol_missing"]
+	var battle_bad_sol_vehs: Array[String] = ["battle_veh_a"]
+	var battle_bad_sol_force: TravelingForce = _battle_add_force_mission_with_units(
+		battle_bad_sol_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "capture_neighborhood_hq",
+		5.0, battle_bad_sol_ids, battle_bad_sol_vehs
+	)
+	var battle_err_invalid_soldier_ok: bool = _battle_fails_setup(
+		battle_bad_sol_state, "battle_mission", "invalid_attacker_soldier", battle_bad_sol_force
+	)
+	var battle_sol_fac_state: GameState = _make_battle_world()
+	var battle_sol_fac_ids: Array[String] = ["battle_sol_enemy"]
+	var battle_sol_fac_vehs: Array[String] = ["battle_veh_a"]
+	var battle_sol_fac_force: TravelingForce = _battle_add_force_mission_with_units(
+		battle_sol_fac_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "capture_neighborhood_hq",
+		5.0, battle_sol_fac_ids, battle_sol_fac_vehs
+	)
+	var battle_err_soldier_faction_ok: bool = _battle_fails_setup(
+		battle_sol_fac_state, "battle_mission", "attacker_soldier_faction_mismatch", battle_sol_fac_force
+	)
+	var battle_bad_veh_state: GameState = _make_battle_world()
+	var battle_bad_veh_ids: Array[String] = ["battle_sol_a"]
+	var battle_bad_veh_vehs: Array[String] = ["battle_veh_missing"]
+	var battle_bad_veh_force: TravelingForce = _battle_add_force_mission_with_units(
+		battle_bad_veh_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "capture_neighborhood_hq",
+		5.0, battle_bad_veh_ids, battle_bad_veh_vehs
+	)
+	var battle_err_invalid_vehicle_ok: bool = _battle_fails_setup(
+		battle_bad_veh_state, "battle_mission", "invalid_attacker_vehicle", battle_bad_veh_force
+	)
+	var battle_veh_fac_state: GameState = _make_battle_world()
+	var battle_veh_fac_ids: Array[String] = ["battle_sol_a"]
+	var battle_veh_fac_vehs: Array[String] = ["battle_veh_enemy"]
+	var battle_veh_fac_force: TravelingForce = _battle_add_force_mission_with_units(
+		battle_veh_fac_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "capture_neighborhood_hq",
+		5.0, battle_veh_fac_ids, battle_veh_fac_vehs
+	)
+	var battle_err_vehicle_faction_ok: bool = _battle_fails_setup(
+		battle_veh_fac_state, "battle_mission", "attacker_vehicle_faction_mismatch", battle_veh_fac_force
+	)
+	var battle_det_a_state: GameState = _make_battle_world()
+	var battle_det_a_sol: Array[String] = ["battle_sol_z", "battle_sol_m", "battle_sol_a"]
+	var battle_det_a_veh: Array[String] = ["battle_veh_z", "battle_veh_m", "battle_veh_a"]
+	_battle_add_force_mission_with_units(
+		battle_det_a_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "capture_neighborhood_hq",
+		5.0, battle_det_a_sol, battle_det_a_veh
+	)
+	var battle_det_b_state: GameState = _make_battle_world()
+	var battle_det_b_sol: Array[String] = ["battle_sol_a", "battle_sol_z", "battle_sol_m"]
+	var battle_det_b_veh: Array[String] = ["battle_veh_m", "battle_veh_a", "battle_veh_z"]
+	_battle_add_force_mission_with_units(
+		battle_det_b_state, "battle_force", "battle_mission", "battle_a", "battle_a",
+		"battle_hq", "battle_hq", "at_destination", "awaiting_resolution", "capture_neighborhood_hq",
+		5.0, battle_det_b_sol, battle_det_b_veh
+	)
+	var battle_det_a_res: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		battle_det_a_state, "battle_mission"
+	)
+	var battle_det_b_res: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		battle_det_b_state, "battle_mission"
+	)
+	var battle_det_a_bs: BattleState = battle_det_a_res.battle_state
+	var battle_det_b_bs: BattleState = battle_det_b_res.battle_state
+	var battle_determinism_ok: bool = false
+	if battle_det_a_bs != null and battle_det_b_bs != null:
+		var battle_det_a_att: BattleSide = battle_det_a_bs.get_side("attacker")
+		var battle_det_b_att: BattleSide = battle_det_b_bs.get_side("attacker")
+		battle_determinism_ok = (
+			battle_det_a_res.success
+			and battle_det_b_res.success
+			and battle_det_a_att != null
+			and battle_det_b_att != null
+			and battle_det_a_bs.battle_id == battle_det_b_bs.battle_id
+			and battle_det_a_bs.battle_id == "battle_battle_mission"
+			and battle_det_a_bs.attacker_side_id == battle_det_b_bs.attacker_side_id
+			and battle_det_a_bs.defender_side_id == battle_det_b_bs.defender_side_id
+			and _string_ids_match(battle_det_a_att.participant_ids, battle_det_b_att.participant_ids)
+			and _string_ids_match(battle_det_a_att.participant_ids, battle_expected_soldiers)
+			and _string_ids_match(battle_det_a_att.vehicle_ids, battle_det_b_att.vehicle_ids)
+			and _string_ids_match(battle_det_a_att.vehicle_ids, battle_expected_vehicles)
+			and _string_ids_match(_battle_sorted_dict_keys(battle_det_a_bs.deployment_zones), _battle_sorted_dict_keys(battle_det_b_bs.deployment_zones))
+			and _string_ids_match(_battle_sorted_dict_keys(battle_det_a_bs.sides), _battle_sorted_dict_keys(battle_det_b_bs.sides))
+		)
+	var battle_persist_data: Dictionary = battle_std_state.to_dict()
+	var battle_restored: GameState = GameState.new()
+	battle_restored.from_dict(battle_persist_data)
+	var battle_persist_ok: bool = (
+		battle_setup_ok
+		and _battle_serialized_campaign_keys_only(battle_persist_data)
+		and not _battle_data_has_tactical_trace(battle_persist_data)
+		and battle_restored.has_mission("battle_mission")
+		and battle_restored.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		and battle_restored.get_mission("battle_mission").outcome_code.is_empty()
+		and battle_restored.has_soldier("battle_sol_a")
+		and battle_restored.has_vehicle("battle_veh_z")
+		and battle_restored.has_traveling_force("battle_force")
+		and battle_restored.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		and (battle_restored.get_map_location("battle_hq") as NeighborhoodHQ).owner_faction_id == "battle_b"
+		and (battle_restored.get_map_location("battle_biz") as Business).owner_faction_id == "battle_b"
+		and battle_restored.has_faction("battle_a")
+		and battle_restored.has_faction("battle_b")
+	)
+	var battle_bound_state: GameState = _make_battle_world()
+	_battle_add_force_mission(battle_bound_state)
+	var battle_bound_setup: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		battle_bound_state, "battle_mission"
+	)
+	var battle_bound_after_setup_awaiting: bool = (
+		battle_bound_setup.success
+		and battle_bound_state.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		and battle_bound_state.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		and (battle_bound_state.get_map_location("battle_hq") as NeighborhoodHQ).owner_faction_id == "battle_b"
+		and (battle_bound_state.get_map_location("battle_biz") as Business).owner_faction_id == "battle_b"
+	)
+	var battle_bound_resolve: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		battle_bound_state, "battle_mission", true
+	)
+	var battle_boundary_ok: bool = (
+		battle_bound_after_setup_awaiting
+		and battle_bound_resolve.success
+		and battle_bound_resolve.attacker_won
+		and battle_bound_state.get_neighborhood("battle_hood").owner_faction_id == "battle_a"
+		and (battle_bound_state.get_map_location("battle_hq") as NeighborhoodHQ).owner_faction_id == "battle_a"
+		and (battle_bound_state.get_map_location("battle_biz") as Business).owner_faction_id.is_empty()
+		and battle_bound_state.get_mission("battle_mission").mission_state == "resolved_success"
+		and battle_bound_state.get_mission("battle_mission").outcome_code == "neighborhood_hq_captured"
+	)
+	var battle_helper_state: BattleState = BattleState.new(
+		"battle_helper", "neighborhood_hq_assault", "battle_helper_mission", "battle_hq", "attacker", "defender", "deployment"
+	)
+	var battle_helper_ok_res: BattleSetupResult = BattleSetupResult.succeeded(battle_helper_state)
+	var battle_helper_fail_res: BattleSetupResult = BattleSetupResult.failed(
+		"invalid_mission", "missing mission", "battle_fail_mission", "battle_fail_id"
+	)
+	var battle_result_helper_ok: bool = (
+		battle_helper_ok_res.success
+		and battle_helper_ok_res.battle_state == battle_helper_state
+		and battle_helper_ok_res.battle_id == "battle_helper"
+		and battle_helper_ok_res.mission_id == "battle_helper_mission"
+		and battle_helper_ok_res.error_code.is_empty()
+		and battle_helper_ok_res.error_message.is_empty()
+		and not battle_helper_fail_res.success
+		and battle_helper_fail_res.battle_state == null
+		and battle_helper_fail_res.battle_id == "battle_fail_id"
+		and battle_helper_fail_res.mission_id == "battle_fail_mission"
+		and battle_helper_fail_res.error_code == "invalid_mission"
+		and battle_helper_fail_res.error_message == "missing mission"
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -6004,6 +6506,39 @@ static func run() -> Dictionary:
 		"hqbattle_chain_loss_ok": hqbattle_chain_loss_ok,
 		"hqbattle_chain_win_ok": hqbattle_chain_win_ok,
 		"hqbattle_no_side_effects_ok": hqbattle_no_side_effects_ok,
+		"battle_setup_ok": battle_setup_ok,
+		"battle_attacker_side_ok": battle_attacker_side_ok,
+		"battle_defender_side_ok": battle_defender_side_ok,
+		"battle_unclaimed_ok": battle_unclaimed_ok,
+		"battle_participants_ok": battle_participants_ok,
+		"battle_vehicles_ok": battle_vehicles_ok,
+		"battle_zones_ok": battle_zones_ok,
+		"battle_registry_ok": battle_registry_ok,
+		"battle_side_helpers_ok": battle_side_helpers_ok,
+		"battle_err_null_ok": battle_err_null_ok,
+		"battle_err_empty_id_ok": battle_err_empty_id_ok,
+		"battle_err_invalid_mission_ok": battle_err_invalid_mission_ok,
+		"battle_err_invalid_type_ok": battle_err_invalid_type_ok,
+		"battle_err_not_awaiting_ok": battle_err_not_awaiting_ok,
+		"battle_err_invalid_force_ok": battle_err_invalid_force_ok,
+		"battle_err_not_dest_ok": battle_err_not_dest_ok,
+		"battle_err_faction_ok": battle_err_faction_ok,
+		"battle_err_missing_target_ok": battle_err_missing_target_ok,
+		"battle_err_not_hq_ok": battle_err_not_hq_ok,
+		"battle_err_target_mismatch_ok": battle_err_target_mismatch_ok,
+		"battle_err_missing_hood_ok": battle_err_missing_hood_ok,
+		"battle_err_invalid_hood_ok": battle_err_invalid_hood_ok,
+		"battle_err_owner_mismatch_ok": battle_err_owner_mismatch_ok,
+		"battle_err_invalid_soldier_ok": battle_err_invalid_soldier_ok,
+		"battle_err_soldier_faction_ok": battle_err_soldier_faction_ok,
+		"battle_err_invalid_vehicle_ok": battle_err_invalid_vehicle_ok,
+		"battle_err_vehicle_faction_ok": battle_err_vehicle_faction_ok,
+		"battle_determinism_ok": battle_determinism_ok,
+		"battle_immutability_ok": battle_immutability_ok,
+		"battle_persist_ok": battle_persist_ok,
+		"battle_boundary_ok": battle_boundary_ok,
+		"battle_result_helper_ok": battle_result_helper_ok,
+		"battle_no_combat_ok": battle_no_combat_ok,
 	}
 
 	var passed := true
@@ -7194,3 +7729,488 @@ static func _hqbattle_fails_atomically(
 		if not is_equal_approx(gang_after.resources.get_amount("Ammo"), ammo_a):
 			return false
 	return true
+
+
+static func _make_battle_world(hood_owner: String = "battle_b", hq_owner: String = "battle_b") -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 11
+	state.current_month = 3
+	state.current_year = 2035
+	var attacker: MajorGang = MajorGang.new("battle_a", "Battle A", "player")
+	attacker.money = 950.0
+	attacker.resources.set_amount("Ammo", 6.5)
+	var defender: MajorGang = MajorGang.new("battle_b", "Battle B", "ai")
+	defender.money = 410.0
+	defender.resources.set_amount("Narcotics", 3.25)
+	state.add_faction(attacker)
+	state.add_faction(defender)
+	state.add_stronghold_region(StrongholdRegion.new("battle_region", "Battle Region"))
+	state.add_police_region(PoliceRegion.new("battle_district", "Battle District"))
+	state.add_neighborhood(Neighborhood.new("battle_hood", "Battle Hood", "battle_region", "battle_district", hood_owner))
+	var keep: Stronghold = Stronghold.new("battle_keep", "Battle Keep", "battle_hood", Vector2(0.0, 0.0), "battle_a", true, 1, 0.0)
+	keep.road_node_id = "battle_node_hq"
+	state.add_map_location(keep)
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new("battle_hq", "Battle HQ", "battle_hood", Vector2(0.2, 0.0), hq_owner, true)
+	hq.road_node_id = "battle_node_hq"
+	state.add_map_location(hq)
+	var hq_b: NeighborhoodHQ = NeighborhoodHQ.new("battle_hq_b", "Battle HQ B", "battle_hood", Vector2(4.0, 0.0), hq_owner, true)
+	hq_b.road_node_id = "battle_node_b"
+	state.add_map_location(hq_b)
+	var hq_orphan: NeighborhoodHQ = NeighborhoodHQ.new("battle_hq_orphan", "Battle Orphan HQ", "", Vector2(20.0, 0.0), hq_owner, true)
+	hq_orphan.road_node_id = "battle_node_orphan"
+	state.add_map_location(hq_orphan)
+	var hq_ghost: NeighborhoodHQ = NeighborhoodHQ.new("battle_hq_ghost", "Battle Ghost HQ", "battle_missing_hood", Vector2(25.0, 0.0), hq_owner, true)
+	hq_ghost.road_node_id = "battle_node_ghost"
+	state.add_map_location(hq_ghost)
+	var biz: Business = Business.new("battle_biz", "Battle Biz", "battle_hood", Vector2(0.3, 0.2), "battle_b", true, "market", 2)
+	biz.road_node_id = "battle_node_hq"
+	state.add_map_location(biz)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("battle_node_hq", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("battle_node_b", Vector2(4.0, 0.0)))
+	graph.add_node(RoadNode.new("battle_node_orphan", Vector2(20.0, 0.0)))
+	graph.add_node(RoadNode.new("battle_node_ghost", Vector2(25.0, 0.0)))
+	graph.add_segment(RoadSegment.new("battle_seg_hq_b", "battle_node_hq", "battle_node_b", 4.0))
+	state.add_soldier(Soldier.new("battle_sol_z", "battle_a", "", "rifle", 1.9, 35.0))
+	state.add_soldier(Soldier.new("battle_sol_m", "battle_a", "", "smg", 1.55, 30.0))
+	state.add_soldier(Soldier.new("battle_sol_a", "battle_a", "", "pistol", 1.0, 20.0))
+	state.add_soldier(Soldier.new("battle_sol_enemy", "battle_b", "", "shotgun", 1.25, 25.0))
+	state.add_vehicle(Vehicle.new("battle_veh_z", "battle_a", "truck", "", 6, 4.0, 40.0))
+	state.add_vehicle(Vehicle.new("battle_veh_m", "battle_a", "van", "", 4, 5.0, 30.0))
+	state.add_vehicle(Vehicle.new("battle_veh_a", "battle_a", "car", "", 2, 6.0, 20.0))
+	state.add_vehicle(Vehicle.new("battle_veh_enemy", "battle_b", "bike", "", 1, 8.0, 10.0))
+	return state
+
+
+static func _battle_default_soldier_ids_out_of_order() -> Array[String]:
+	var ids: Array[String] = []
+	ids.append("battle_sol_z")
+	ids.append("battle_sol_m")
+	ids.append("battle_sol_a")
+	return ids
+
+
+static func _battle_default_vehicle_ids_out_of_order() -> Array[String]:
+	var ids: Array[String] = []
+	ids.append("battle_veh_z")
+	ids.append("battle_veh_m")
+	ids.append("battle_veh_a")
+	return ids
+
+
+static func _battle_add_force_mission(
+	game_state: GameState,
+	force_id: String = "battle_force",
+	mission_id: String = "battle_mission",
+	force_faction_id: String = "battle_a",
+	mission_faction_id: String = "battle_a",
+	destination_id: String = "battle_hq",
+	target_id: String = "battle_hq",
+	travel_state: String = "at_destination",
+	mission_state: String = "awaiting_resolution",
+	mission_type_id: String = "capture_neighborhood_hq",
+	movement_remaining: float = 5.0
+) -> TravelingForce:
+	return _battle_add_force_mission_with_units(
+		game_state,
+		force_id,
+		mission_id,
+		force_faction_id,
+		mission_faction_id,
+		destination_id,
+		target_id,
+		travel_state,
+		mission_state,
+		mission_type_id,
+		movement_remaining,
+		_battle_default_soldier_ids_out_of_order(),
+		_battle_default_vehicle_ids_out_of_order()
+	)
+
+
+static func _battle_add_force_mission_with_units(
+	game_state: GameState,
+	force_id: String,
+	mission_id: String,
+	force_faction_id: String,
+	mission_faction_id: String,
+	destination_id: String,
+	target_id: String,
+	travel_state: String,
+	mission_state: String,
+	mission_type_id: String,
+	movement_remaining: float,
+	soldier_ids: Array[String],
+	vehicle_ids: Array[String]
+) -> TravelingForce:
+	var dest_node: String = "battle_node_hq"
+	var dest_location: MapLocation = game_state.get_map_location(destination_id)
+	if dest_location != null and not dest_location.road_node_id.is_empty():
+		dest_node = dest_location.road_node_id
+	var route: Array[String] = []
+	route.append(dest_node)
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		force_faction_id,
+		"battle_keep",
+		destination_id,
+		route,
+		5.0,
+		travel_state
+	)
+	force.route_segment_index = 0
+	force.distance_into_segment = 0.0
+	force.movement_remaining = movement_remaining
+	for soldier_id: String in soldier_ids:
+		force.soldier_group.add_soldier_id(soldier_id)
+	for vehicle_id: String in vehicle_ids:
+		force.vehicle_group.add_vehicle_id(vehicle_id)
+	game_state.add_traveling_force(force)
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		mission_faction_id,
+		force_id,
+		"battle_keep",
+		target_id,
+		mission_state,
+		""
+	)
+	game_state.add_mission(mission)
+	return force
+
+
+static func _battle_campaign_snapshot(game_state: GameState, force: TravelingForce, mission_id: String) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["has_mission"] = game_state.has_mission(mission_id)
+	if game_state.has_mission(mission_id):
+		var mission: CampaignMission = game_state.get_mission(mission_id)
+		snap["mission_state"] = mission.mission_state
+		snap["outcome_code"] = mission.outcome_code
+		snap["mission_type"] = mission.mission_type_id
+		snap["mission_force"] = mission.force_id
+		snap["mission_target"] = mission.target_location_id
+	else:
+		snap["mission_state"] = ""
+		snap["outcome_code"] = ""
+		snap["mission_type"] = ""
+		snap["mission_force"] = ""
+		snap["mission_target"] = ""
+	var mission_states: Dictionary = {}
+	for mid: String in game_state.missions:
+		var listed: CampaignMission = game_state.get_mission(mid)
+		if listed != null:
+			mission_states[mid] = listed.mission_state + "|" + listed.outcome_code
+	snap["mission_states"] = mission_states
+	snap["mission_count"] = game_state.missions.size()
+	snap["force_count"] = game_state.traveling_forces.size()
+	snap["soldier_count"] = game_state.soldiers.size()
+	snap["vehicle_count"] = game_state.vehicles.size()
+	snap["rel_count"] = game_state.relationships.size()
+	var rel_keys: Array[String] = []
+	for rel_key: String in game_state.relationships:
+		rel_keys.append(rel_key)
+	rel_keys.sort()
+	snap["rel_keys"] = rel_keys
+	var hood_owners: Dictionary = {}
+	for hood_id: String in game_state.neighborhoods:
+		var hood: Neighborhood = game_state.get_neighborhood(hood_id)
+		if hood != null:
+			hood_owners[hood_id] = hood.owner_faction_id
+	snap["hood_owners"] = hood_owners
+	var loc_owners: Dictionary = {}
+	for loc_id: String in game_state.map_locations:
+		var location: MapLocation = game_state.get_map_location(loc_id)
+		if location != null:
+			loc_owners[loc_id] = location.owner_faction_id
+	snap["loc_owners"] = loc_owners
+	var soldier_data: Dictionary = {}
+	for soldier_id: String in game_state.soldiers:
+		var soldier: Soldier = game_state.get_soldier(soldier_id)
+		if soldier != null:
+			soldier_data[soldier_id] = soldier.to_dict()
+	snap["soldiers"] = soldier_data
+	var vehicle_data: Dictionary = {}
+	for vehicle_id: String in game_state.vehicles:
+		var vehicle: Vehicle = game_state.get_vehicle(vehicle_id)
+		if vehicle != null:
+			vehicle_data[vehicle_id] = vehicle.to_dict()
+	snap["vehicles"] = vehicle_data
+	snap["money_a"] = 0.0
+	snap["ammo_a"] = 0.0
+	snap["money_b"] = 0.0
+	snap["narc_b"] = 0.0
+	if game_state.has_faction("battle_a") and game_state.get_faction("battle_a") is MajorGang:
+		var gang_a: MajorGang = game_state.get_faction("battle_a") as MajorGang
+		snap["money_a"] = gang_a.money
+		snap["ammo_a"] = gang_a.resources.get_amount("Ammo")
+	if game_state.has_faction("battle_b") and game_state.get_faction("battle_b") is MajorGang:
+		var gang_b: MajorGang = game_state.get_faction("battle_b") as MajorGang
+		snap["money_b"] = gang_b.money
+		snap["narc_b"] = gang_b.resources.get_amount("Narcotics")
+	if force != null:
+		snap["force"] = _force_travel_snapshot(force)
+	return snap
+
+
+static func _battle_campaign_unchanged(
+	game_state: GameState,
+	snap: Dictionary,
+	force: TravelingForce,
+	mission_id: String
+) -> bool:
+	if game_state == null:
+		return false
+	if game_state.has_mission(mission_id) != bool(snap.get("has_mission", false)):
+		return false
+	if game_state.has_mission(mission_id):
+		var mission: CampaignMission = game_state.get_mission(mission_id)
+		if mission.mission_state != str(snap.get("mission_state", "")):
+			return false
+		if mission.outcome_code != str(snap.get("outcome_code", "")):
+			return false
+		if mission.mission_type_id != str(snap.get("mission_type", "")):
+			return false
+		if mission.force_id != str(snap.get("mission_force", "")):
+			return false
+		if mission.target_location_id != str(snap.get("mission_target", "")):
+			return false
+	if game_state.missions.size() != int(snap.get("mission_count", -1)):
+		return false
+	if game_state.traveling_forces.size() != int(snap.get("force_count", -1)):
+		return false
+	if game_state.soldiers.size() != int(snap.get("soldier_count", -1)):
+		return false
+	if game_state.vehicles.size() != int(snap.get("vehicle_count", -1)):
+		return false
+	if game_state.relationships.size() != int(snap.get("rel_count", -1)):
+		return false
+	var expected_rel_keys: Array[String] = []
+	var rel_key_data: Variant = snap.get("rel_keys", [])
+	if rel_key_data is Array:
+		for rel_key: Variant in rel_key_data:
+			expected_rel_keys.append(str(rel_key))
+	var actual_rel_keys: Array[String] = []
+	for rel_key: String in game_state.relationships:
+		actual_rel_keys.append(rel_key)
+	actual_rel_keys.sort()
+	if not _string_ids_match(actual_rel_keys, expected_rel_keys):
+		return false
+	var hood_owners: Variant = snap.get("hood_owners", {})
+	if hood_owners is Dictionary:
+		for hood_id: Variant in hood_owners:
+			var hood: Neighborhood = game_state.get_neighborhood(str(hood_id))
+			if hood == null or hood.owner_faction_id != str(hood_owners[hood_id]):
+				return false
+	var loc_owners: Variant = snap.get("loc_owners", {})
+	if loc_owners is Dictionary:
+		for loc_id: Variant in loc_owners:
+			var location: MapLocation = game_state.get_map_location(str(loc_id))
+			if location == null or location.owner_faction_id != str(loc_owners[loc_id]):
+				return false
+	var soldier_data: Variant = snap.get("soldiers", {})
+	if soldier_data is Dictionary:
+		for soldier_id: Variant in soldier_data:
+			var soldier: Soldier = game_state.get_soldier(str(soldier_id))
+			var soldier_fields: Variant = soldier_data[soldier_id]
+			if soldier == null or not (soldier_fields is Dictionary):
+				return false
+			if not _battle_soldier_matches_dict(soldier, soldier_fields as Dictionary):
+				return false
+	var vehicle_data: Variant = snap.get("vehicles", {})
+	if vehicle_data is Dictionary:
+		for vehicle_id: Variant in vehicle_data:
+			var vehicle: Vehicle = game_state.get_vehicle(str(vehicle_id))
+			var vehicle_fields: Variant = vehicle_data[vehicle_id]
+			if vehicle == null or not (vehicle_fields is Dictionary):
+				return false
+			if not _battle_vehicle_matches_dict(vehicle, vehicle_fields as Dictionary):
+				return false
+	if game_state.has_faction("battle_a") and game_state.get_faction("battle_a") is MajorGang:
+		var gang_a: MajorGang = game_state.get_faction("battle_a") as MajorGang
+		if not is_equal_approx(gang_a.money, float(snap.get("money_a", -1.0))):
+			return false
+		if not is_equal_approx(gang_a.resources.get_amount("Ammo"), float(snap.get("ammo_a", -1.0))):
+			return false
+	if game_state.has_faction("battle_b") and game_state.get_faction("battle_b") is MajorGang:
+		var gang_b: MajorGang = game_state.get_faction("battle_b") as MajorGang
+		if not is_equal_approx(gang_b.money, float(snap.get("money_b", -1.0))):
+			return false
+		if not is_equal_approx(gang_b.resources.get_amount("Narcotics"), float(snap.get("narc_b", -1.0))):
+			return false
+	if force != null:
+		var force_snap: Variant = snap.get("force", {})
+		if not (force_snap is Dictionary):
+			return false
+		if not _force_travel_unchanged(force, force_snap):
+			return false
+	return true
+
+
+static func _battle_fails_setup(
+	game_state: GameState,
+	mission_id: String,
+	expected_error: String,
+	force: TravelingForce
+) -> bool:
+	if game_state == null:
+		return false
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, mission_id)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(game_state, mission_id)
+	if result.success:
+		return false
+	if result.battle_state != null:
+		return false
+	if result.error_code != expected_error:
+		return false
+	if not _battle_campaign_unchanged(game_state, snap, force, mission_id):
+		return false
+	return true
+
+
+static func _battle_soldier_matches_dict(soldier: Soldier, data: Dictionary) -> bool:
+	if soldier == null:
+		return false
+	return (
+		soldier.id == str(data.get("id", ""))
+		and soldier.faction_id == str(data.get("faction_id", ""))
+		and soldier.home_stronghold_id == str(data.get("home_stronghold_id", ""))
+		and soldier.weapon_type_id == str(data.get("weapon_type_id", ""))
+		and is_equal_approx(soldier.strategic_strength, float(data.get("strategic_strength", -1.0)))
+		and is_equal_approx(soldier.upkeep_per_turn, float(data.get("upkeep_per_turn", -1.0)))
+	)
+
+
+static func _battle_vehicle_matches_dict(vehicle: Vehicle, data: Dictionary) -> bool:
+	if vehicle == null:
+		return false
+	return (
+		vehicle.id == str(data.get("id", ""))
+		and vehicle.faction_id == str(data.get("faction_id", ""))
+		and vehicle.vehicle_type_id == str(data.get("vehicle_type_id", ""))
+		and vehicle.home_stronghold_id == str(data.get("home_stronghold_id", ""))
+		and vehicle.passenger_capacity == int(data.get("passenger_capacity", -1))
+		and is_equal_approx(vehicle.movement_per_turn, float(data.get("movement_per_turn", -1.0)))
+		and is_equal_approx(vehicle.upkeep_per_turn, float(data.get("upkeep_per_turn", -1.0)))
+	)
+
+
+static func _battle_participant_matches_soldier(battle_state: BattleState, soldier: Soldier) -> bool:
+	if battle_state == null or soldier == null:
+		return false
+	if not battle_state.has_participant(soldier.id):
+		return false
+	var participant: BattleParticipant = battle_state.get_participant(soldier.id)
+	if participant == null:
+		return false
+	return (
+		participant.participant_id == soldier.id
+		and participant.campaign_soldier_id == soldier.id
+		and participant.faction_id == soldier.faction_id
+		and participant.side_id == "attacker"
+		and participant.weapon_type == soldier.weapon_type_id
+		and participant.is_alive
+		and not participant.is_wounded
+		and participant.deployment_slot_id.is_empty()
+	)
+
+
+static func _battle_vehicle_matches_campaign(battle_state: BattleState, vehicle: Vehicle) -> bool:
+	if battle_state == null or vehicle == null:
+		return false
+	if not battle_state.has_vehicle(vehicle.id):
+		return false
+	var battle_vehicle: BattleVehicle = battle_state.get_vehicle(vehicle.id)
+	if battle_vehicle == null:
+		return false
+	return (
+		battle_vehicle.battle_vehicle_id == vehicle.id
+		and battle_vehicle.campaign_vehicle_id == vehicle.id
+		and battle_vehicle.faction_id == vehicle.faction_id
+		and battle_vehicle.side_id == "attacker"
+		and battle_vehicle.vehicle_type_id == vehicle.vehicle_type_id
+		and battle_vehicle.deployment_slot_id.is_empty()
+	)
+
+
+static func _battle_sorted_dict_keys(data: Dictionary) -> Array[String]:
+	var keys: Array[String] = []
+	for key: Variant in data:
+		keys.append(str(key))
+	keys.sort()
+	return keys
+
+
+static func _battle_serialized_campaign_keys_only(data: Dictionary) -> bool:
+	var allowed: Dictionary = {
+		"current_turn": true,
+		"current_year": true,
+		"current_month": true,
+		"factions": true,
+		"relationships": true,
+		"neighborhoods": true,
+		"stronghold_regions": true,
+		"police_regions": true,
+		"road_graph": true,
+		"map_locations": true,
+		"vehicles": true,
+		"soldiers": true,
+		"traveling_forces": true,
+		"missions": true,
+	}
+	for key: Variant in data:
+		if not allowed.has(str(key)):
+			return false
+	for allowed_key: String in allowed:
+		if not data.has(allowed_key):
+			return false
+	return true
+
+
+static func _battle_is_tactical_token(text: String) -> bool:
+	return (
+		text == "battle_phase"
+		or text == "battle_type_id"
+		or text == "deployment_zones"
+		or text == "attacker_side_id"
+		or text == "defender_side_id"
+		or text == "battle_state"
+		or text == "neighborhood_hq_assault"
+		or text == "attacker_deployment"
+		or text == "defender_deployment"
+		or text == "attacker_entry"
+		or text == "defender_position"
+	)
+
+
+static func _battle_data_has_tactical_trace(value: Variant) -> bool:
+	if value is Dictionary:
+		var data: Dictionary = value
+		for key: Variant in data:
+			if _battle_is_tactical_token(str(key)):
+				return true
+			if _battle_data_has_tactical_trace(data[key]):
+				return true
+		return false
+	if value is Array:
+		var items: Array = value
+		for item: Variant in items:
+			if _battle_data_has_tactical_trace(item):
+				return true
+		return false
+	if typeof(value) == TYPE_STRING:
+		return _battle_is_tactical_token(str(value))
+	return false
+
+
+static func _battle_dict_from_snap(snap: Dictionary, section: String, item_id: String) -> Dictionary:
+	var empty: Dictionary = {}
+	var section_data: Variant = snap.get(section, {})
+	if not (section_data is Dictionary):
+		return empty
+	var section_dict: Dictionary = section_data as Dictionary
+	var item_data: Variant = section_dict.get(item_id, {})
+	if not (item_data is Dictionary):
+		return empty
+	return item_data as Dictionary
+
