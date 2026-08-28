@@ -6333,6 +6333,285 @@ static func run() -> Dictionary:
 			and battle_ready_det_a.battle_phase == "active"
 		)
 
+	var battle_turn_init_active_ok: bool = false
+	var battle_turn_attacker_first_ok: bool = false
+	var battle_turn_participant_first_ok: bool = false
+	var battle_turn_id_order_ok: bool = false
+	var battle_turn_insert_order_ok: bool = false
+	var battle_turn_current_start_ok: bool = false
+	var battle_turn_advance_ok: bool = false
+	var battle_turn_wrap_ok: bool = false
+	var battle_turn_empty_ok: bool = false
+	var battle_turn_advance_empty_ok: bool = false
+	var battle_turn_reinit_ok: bool = false
+	var battle_turn_deploy_unchanged_ok: bool = false
+	var battle_turn_phase_ok: bool = false
+	var battle_turn_immutability_ok: bool = false
+	var battle_turn_persist_ok: bool = false
+	var battle_turn_expected_ids: Array[String] = [
+		"battle_sol_a",
+		"battle_sol_m",
+		"battle_sol_z",
+		"battle_veh_a",
+		"battle_veh_m",
+		"battle_veh_z",
+	]
+	var battle_turn_expected_types: Array[String] = [
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_VEHICLE,
+		BattleState.TURN_ACTOR_TYPE_VEHICLE,
+		BattleState.TURN_ACTOR_TYPE_VEHICLE,
+	]
+	var battle_turn_expected_sides: Array[String] = [
+		"attacker",
+		"attacker",
+		"attacker",
+		"attacker",
+		"attacker",
+		"attacker",
+	]
+	var battle_turn_pack: Dictionary = _battle_create_ready_pack()
+	var battle_turn_game: GameState = battle_turn_pack.get("game_state", null) as GameState
+	var battle_turn_force: TravelingForce = battle_turn_pack.get("force", null) as TravelingForce
+	var battle_turn_bs: BattleState = battle_turn_pack.get("battle_state", null) as BattleState
+	var battle_turn_snap: Dictionary = _battle_campaign_snapshot(
+		battle_turn_game, battle_turn_force, "battle_mission"
+	)
+	if battle_turn_bs != null:
+		var battle_turn_deployed: bool = _battle_deploy_standard_attacker(battle_turn_bs)
+		var battle_turn_assign_before: Dictionary = _battle_deploy_assignment_snapshot(battle_turn_bs)
+		var battle_turn_early_init: bool = battle_turn_bs.initialize_turn_order()
+		var battle_turn_early_advance: bool = battle_turn_bs.advance_turn()
+		var battle_turn_early_empty: bool = (
+			battle_turn_bs.get_turn_actor_count() == 0
+			and battle_turn_bs.get_current_turn_index() == -1
+			and not battle_turn_bs.has_current_turn_actor()
+			and battle_turn_bs.get_current_turn_actor_id().is_empty()
+			and battle_turn_bs.battle_phase == "deployment"
+			and _battle_deploy_assignment_unchanged(battle_turn_bs, battle_turn_assign_before)
+		)
+		var battle_turn_begun: bool = battle_turn_bs.begin_battle()
+		var battle_turn_before_init: Dictionary = _battle_turn_snapshot(battle_turn_bs)
+		var battle_turn_uninited_advance: bool = battle_turn_bs.advance_turn()
+		var battle_turn_uninited_unchanged: bool = _battle_turn_unchanged(battle_turn_bs, battle_turn_before_init)
+		var battle_turn_assign_active: Dictionary = _battle_deploy_assignment_snapshot(battle_turn_bs)
+		var battle_turn_inited: bool = battle_turn_bs.initialize_turn_order()
+		battle_turn_init_active_ok = (
+			battle_turn_deployed
+			and not battle_turn_early_init
+			and not battle_turn_early_advance
+			and battle_turn_early_empty
+			and battle_turn_begun
+			and battle_turn_bs.battle_phase == "active"
+			and not battle_turn_uninited_advance
+			and battle_turn_uninited_unchanged
+			and battle_turn_inited
+		)
+		battle_turn_id_order_ok = (
+			battle_turn_init_active_ok
+			and _string_ids_match(battle_turn_bs.get_turn_actor_ids(), battle_turn_expected_ids)
+			and _string_ids_match(battle_turn_bs.get_turn_actor_types(), battle_turn_expected_types)
+			and _string_ids_match(battle_turn_bs.get_turn_actor_side_ids(), battle_turn_expected_sides)
+			and battle_turn_bs.get_turn_actor_count() == 6
+		)
+		battle_turn_participant_first_ok = (
+			battle_turn_id_order_ok
+			and _battle_turn_participants_before_vehicles(battle_turn_bs)
+		)
+		battle_turn_current_start_ok = (
+			battle_turn_id_order_ok
+			and battle_turn_bs.has_current_turn_actor()
+			and battle_turn_bs.get_current_turn_index() == 0
+			and battle_turn_bs.get_current_round() == 1
+			and battle_turn_bs.get_current_turn_actor_id() == "battle_sol_a"
+			and battle_turn_bs.get_current_turn_actor_type() == BattleState.TURN_ACTOR_TYPE_PARTICIPANT
+			and battle_turn_bs.get_current_turn_actor_side_id() == "attacker"
+		)
+		var battle_turn_first_advance: bool = battle_turn_bs.advance_turn()
+		battle_turn_advance_ok = (
+			battle_turn_current_start_ok
+			and battle_turn_first_advance
+			and battle_turn_bs.get_current_turn_index() == 1
+			and battle_turn_bs.get_current_round() == 1
+			and battle_turn_bs.get_current_turn_actor_id() == "battle_sol_m"
+			and battle_turn_bs.get_current_turn_actor_type() == BattleState.TURN_ACTOR_TYPE_PARTICIPANT
+			and battle_turn_bs.get_current_turn_actor_side_id() == "attacker"
+		)
+		var battle_turn_wrap_ready: bool = battle_turn_advance_ok
+		if battle_turn_wrap_ready:
+			var battle_turn_mid_ok: bool = true
+			var battle_turn_step: int = 2
+			while battle_turn_step < 6:
+				if not battle_turn_bs.advance_turn():
+					battle_turn_mid_ok = false
+					break
+				if battle_turn_bs.get_current_turn_index() != battle_turn_step:
+					battle_turn_mid_ok = false
+					break
+				if battle_turn_bs.get_current_round() != 1:
+					battle_turn_mid_ok = false
+					break
+				if battle_turn_bs.get_current_turn_actor_id() != battle_turn_expected_ids[battle_turn_step]:
+					battle_turn_mid_ok = false
+					break
+				battle_turn_step += 1
+			var battle_turn_wrapped: bool = battle_turn_bs.advance_turn()
+			battle_turn_wrap_ok = (
+				battle_turn_mid_ok
+				and battle_turn_wrapped
+				and battle_turn_bs.get_current_turn_index() == 0
+				and battle_turn_bs.get_current_round() == 2
+				and battle_turn_bs.get_current_turn_actor_id() == "battle_sol_a"
+				and battle_turn_bs.get_current_turn_actor_type() == BattleState.TURN_ACTOR_TYPE_PARTICIPANT
+				and battle_turn_bs.get_current_turn_actor_side_id() == "attacker"
+			)
+		var battle_turn_reinit: bool = battle_turn_bs.initialize_turn_order()
+		battle_turn_reinit_ok = (
+			battle_turn_wrap_ok
+			and battle_turn_reinit
+			and _string_ids_match(battle_turn_bs.get_turn_actor_ids(), battle_turn_expected_ids)
+			and _string_ids_match(battle_turn_bs.get_turn_actor_types(), battle_turn_expected_types)
+			and _string_ids_match(battle_turn_bs.get_turn_actor_side_ids(), battle_turn_expected_sides)
+			and battle_turn_bs.get_current_turn_index() == 0
+			and battle_turn_bs.get_current_round() == 1
+			and battle_turn_bs.get_current_turn_actor_id() == "battle_sol_a"
+		)
+		battle_turn_deploy_unchanged_ok = (
+			battle_turn_reinit_ok
+			and _battle_deploy_assignment_unchanged(battle_turn_bs, battle_turn_assign_active)
+		)
+		battle_turn_phase_ok = (
+			battle_turn_reinit_ok
+			and battle_turn_bs.battle_phase == "active"
+			and battle_turn_bs.battle_phase != "deployment"
+			and battle_turn_bs.battle_phase != "resolved"
+		)
+		battle_turn_immutability_ok = (
+			battle_turn_reinit_ok
+			and _battle_campaign_unchanged(battle_turn_game, battle_turn_snap, battle_turn_force, "battle_mission")
+			and battle_turn_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battle_turn_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+		var battle_turn_persist_data: Dictionary = battle_turn_game.to_dict()
+		var battle_turn_restored: GameState = GameState.new()
+		battle_turn_restored.from_dict(battle_turn_persist_data)
+		battle_turn_persist_ok = (
+			battle_turn_reinit_ok
+			and _battle_serialized_campaign_keys_only(battle_turn_persist_data)
+			and not _battle_data_has_tactical_trace(battle_turn_persist_data)
+			and battle_turn_restored.has_mission("battle_mission")
+			and battle_turn_restored.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		)
+		var battle_turn_resolved_before: Dictionary = _battle_turn_snapshot(battle_turn_bs)
+		battle_turn_bs.battle_phase = "resolved"
+		var battle_turn_resolved_init: bool = battle_turn_bs.initialize_turn_order()
+		var battle_turn_resolved_advance: bool = battle_turn_bs.advance_turn()
+		battle_turn_init_active_ok = (
+			battle_turn_init_active_ok
+			and not battle_turn_resolved_init
+			and not battle_turn_resolved_advance
+			and battle_turn_bs.battle_phase == "resolved"
+			and _battle_turn_unchanged(battle_turn_bs, battle_turn_resolved_before)
+		)
+		battle_turn_bs.battle_phase = "active"
+	var battle_turn_mixed_a: BattleState = _battle_make_bare_state()
+	var battle_turn_mixed_b: BattleState = _battle_make_bare_state()
+	var battle_turn_mixed_ids: Array[String] = [
+		"att_p_a",
+		"att_p_z",
+		"att_v_a",
+		"att_v_z",
+		"def_p_a",
+		"def_p_z",
+		"def_v_m",
+	]
+	var battle_turn_mixed_types: Array[String] = [
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_VEHICLE,
+		BattleState.TURN_ACTOR_TYPE_VEHICLE,
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_PARTICIPANT,
+		BattleState.TURN_ACTOR_TYPE_VEHICLE,
+	]
+	var battle_turn_mixed_sides: Array[String] = [
+		"attacker",
+		"attacker",
+		"attacker",
+		"attacker",
+		"defender",
+		"defender",
+		"defender",
+	]
+	if battle_turn_mixed_a != null and battle_turn_mixed_b != null:
+		var battle_turn_mixed_a_ready: bool = _battle_populate_mixed_turn_actors(battle_turn_mixed_a, false)
+		var battle_turn_mixed_b_ready: bool = _battle_populate_mixed_turn_actors(battle_turn_mixed_b, true)
+		var battle_turn_mixed_a_begun: bool = battle_turn_mixed_a.begin_battle()
+		var battle_turn_mixed_b_begun: bool = battle_turn_mixed_b.begin_battle()
+		var battle_turn_mixed_a_init: bool = battle_turn_mixed_a.initialize_turn_order()
+		var battle_turn_mixed_b_init: bool = battle_turn_mixed_b.initialize_turn_order()
+		battle_turn_insert_order_ok = (
+			battle_turn_mixed_a_ready
+			and battle_turn_mixed_b_ready
+			and battle_turn_mixed_a_begun
+			and battle_turn_mixed_b_begun
+			and battle_turn_mixed_a_init
+			and battle_turn_mixed_b_init
+			and _string_ids_match(battle_turn_mixed_a.get_turn_actor_ids(), battle_turn_mixed_ids)
+			and _string_ids_match(battle_turn_mixed_b.get_turn_actor_ids(), battle_turn_mixed_ids)
+			and _string_ids_match(battle_turn_mixed_a.get_turn_actor_types(), battle_turn_mixed_types)
+			and _string_ids_match(battle_turn_mixed_b.get_turn_actor_types(), battle_turn_mixed_types)
+			and _string_ids_match(battle_turn_mixed_a.get_turn_actor_side_ids(), battle_turn_mixed_sides)
+			and _string_ids_match(battle_turn_mixed_b.get_turn_actor_side_ids(), battle_turn_mixed_sides)
+		)
+		battle_turn_attacker_first_ok = (
+			battle_turn_insert_order_ok
+			and _battle_turn_attacker_before_defender(battle_turn_mixed_a)
+			and _battle_turn_attacker_before_defender(battle_turn_mixed_b)
+			and battle_turn_mixed_a.get_current_turn_actor_id() == "att_p_a"
+			and battle_turn_mixed_a.get_current_turn_actor_side_id() == "attacker"
+		)
+		if battle_turn_insert_order_ok:
+			battle_turn_participant_first_ok = (
+				battle_turn_participant_first_ok
+				and _battle_turn_participants_before_vehicles(battle_turn_mixed_a)
+				and _battle_turn_participants_before_vehicles(battle_turn_mixed_b)
+			)
+			battle_turn_id_order_ok = (
+				battle_turn_id_order_ok
+				and _battle_turn_ids_ascending(battle_turn_mixed_a)
+				and _battle_turn_ids_ascending(battle_turn_mixed_b)
+			)
+	var battle_turn_empty_bs: BattleState = _battle_make_bare_state()
+	if battle_turn_empty_bs != null:
+		var battle_turn_empty_begun: bool = battle_turn_empty_bs.begin_battle()
+		var battle_turn_empty_init: bool = battle_turn_empty_bs.initialize_turn_order()
+		battle_turn_empty_ok = (
+			battle_turn_empty_begun
+			and battle_turn_empty_init
+			and battle_turn_empty_bs.battle_phase == "active"
+			and battle_turn_empty_bs.get_turn_actor_count() == 0
+			and battle_turn_empty_bs.get_turn_actor_ids().is_empty()
+			and battle_turn_empty_bs.get_turn_actor_types().is_empty()
+			and battle_turn_empty_bs.get_turn_actor_side_ids().is_empty()
+			and battle_turn_empty_bs.get_current_turn_index() == -1
+			and battle_turn_empty_bs.get_current_round() == 1
+			and not battle_turn_empty_bs.has_current_turn_actor()
+			and battle_turn_empty_bs.get_current_turn_actor_id().is_empty()
+			and battle_turn_empty_bs.get_current_turn_actor_type().is_empty()
+			and battle_turn_empty_bs.get_current_turn_actor_side_id().is_empty()
+		)
+		var battle_turn_empty_before: Dictionary = _battle_turn_snapshot(battle_turn_empty_bs)
+		var battle_turn_empty_advance: bool = battle_turn_empty_bs.advance_turn()
+		battle_turn_advance_empty_ok = (
+			battle_turn_empty_ok
+			and not battle_turn_empty_advance
+			and _battle_turn_unchanged(battle_turn_empty_bs, battle_turn_empty_before)
+			and battle_turn_empty_bs.battle_phase == "active"
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -7021,6 +7300,21 @@ static func run() -> Dictionary:
 		"battle_ready_determinism_ok": battle_ready_determinism_ok,
 		"battle_ready_immutability_ok": battle_ready_immutability_ok,
 		"battle_ready_persist_ok": battle_ready_persist_ok,
+		"battle_turn_init_active_ok": battle_turn_init_active_ok,
+		"battle_turn_attacker_first_ok": battle_turn_attacker_first_ok,
+		"battle_turn_participant_first_ok": battle_turn_participant_first_ok,
+		"battle_turn_id_order_ok": battle_turn_id_order_ok,
+		"battle_turn_insert_order_ok": battle_turn_insert_order_ok,
+		"battle_turn_current_start_ok": battle_turn_current_start_ok,
+		"battle_turn_advance_ok": battle_turn_advance_ok,
+		"battle_turn_wrap_ok": battle_turn_wrap_ok,
+		"battle_turn_empty_ok": battle_turn_empty_ok,
+		"battle_turn_advance_empty_ok": battle_turn_advance_empty_ok,
+		"battle_turn_reinit_ok": battle_turn_reinit_ok,
+		"battle_turn_deploy_unchanged_ok": battle_turn_deploy_unchanged_ok,
+		"battle_turn_phase_ok": battle_turn_phase_ok,
+		"battle_turn_immutability_ok": battle_turn_immutability_ok,
+		"battle_turn_persist_ok": battle_turn_persist_ok,
 	}
 
 	var passed := true
@@ -8665,6 +8959,11 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "deployed_participant_ids"
 		or text == "deployed_vehicle_ids"
 		or text == "deployment_slot_id"
+		or text == "turn_actor_ids"
+		or text == "turn_actor_types"
+		or text == "turn_actor_side_ids"
+		or text == "current_turn_index"
+		or text == "current_round"
 	)
 
 
@@ -8897,4 +9196,158 @@ static func _battle_deploy_standard_attacker(battle_state: BattleState) -> bool:
 	if not battle_state.deploy_vehicle("battle_veh_m", "attacker_deployment"):
 		return false
 	return true
+
+
+static func _battle_turn_snapshot(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	snap["ids"] = battle_state.get_turn_actor_ids()
+	snap["types"] = battle_state.get_turn_actor_types()
+	snap["sides"] = battle_state.get_turn_actor_side_ids()
+	snap["index"] = battle_state.get_current_turn_index()
+	snap["round"] = battle_state.get_current_round()
+	snap["current_id"] = battle_state.get_current_turn_actor_id()
+	snap["current_type"] = battle_state.get_current_turn_actor_type()
+	snap["current_side"] = battle_state.get_current_turn_actor_side_id()
+	snap["has_current"] = battle_state.has_current_turn_actor()
+	snap["count"] = battle_state.get_turn_actor_count()
+	return snap
+
+
+static func _battle_variant_to_ids(value: Variant) -> Array[String]:
+	var ids: Array[String] = []
+	if value is Array:
+		for item: Variant in value:
+			ids.append(str(item))
+	return ids
+
+
+static func _battle_turn_unchanged(battle_state: BattleState, snap: Dictionary) -> bool:
+	if battle_state == null:
+		return false
+	return (
+		_string_ids_match(battle_state.get_turn_actor_ids(), _battle_variant_to_ids(snap.get("ids", [])))
+		and _string_ids_match(battle_state.get_turn_actor_types(), _battle_variant_to_ids(snap.get("types", [])))
+		and _string_ids_match(battle_state.get_turn_actor_side_ids(), _battle_variant_to_ids(snap.get("sides", [])))
+		and battle_state.get_current_turn_index() == int(snap.get("index", -2))
+		and battle_state.get_current_round() == int(snap.get("round", -1))
+		and battle_state.get_current_turn_actor_id() == str(snap.get("current_id", ""))
+		and battle_state.get_current_turn_actor_type() == str(snap.get("current_type", ""))
+		and battle_state.get_current_turn_actor_side_id() == str(snap.get("current_side", ""))
+		and battle_state.has_current_turn_actor() == bool(snap.get("has_current", true))
+		and battle_state.get_turn_actor_count() == int(snap.get("count", -1))
+	)
+
+
+static func _battle_turn_attacker_before_defender(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var seen_defender: bool = false
+	for side_id: String in battle_state.get_turn_actor_side_ids():
+		if side_id == battle_state.defender_side_id:
+			seen_defender = true
+		elif side_id == battle_state.attacker_side_id:
+			if seen_defender:
+				return false
+		else:
+			return false
+	return true
+
+
+static func _battle_turn_participants_before_vehicles(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var actor_ids: Array[String] = battle_state.get_turn_actor_ids()
+	var actor_types: Array[String] = battle_state.get_turn_actor_types()
+	var actor_sides: Array[String] = battle_state.get_turn_actor_side_ids()
+	if actor_ids.size() != actor_types.size() or actor_ids.size() != actor_sides.size():
+		return false
+	var last_type_by_side: Dictionary = {}
+	for i in actor_ids.size():
+		var side_id: String = actor_sides[i]
+		var actor_type: String = actor_types[i]
+		if last_type_by_side.has(side_id):
+			if str(last_type_by_side[side_id]) == BattleState.TURN_ACTOR_TYPE_VEHICLE:
+				if actor_type == BattleState.TURN_ACTOR_TYPE_PARTICIPANT:
+					return false
+		last_type_by_side[side_id] = actor_type
+	return true
+
+
+static func _battle_turn_ids_ascending(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var actor_ids: Array[String] = battle_state.get_turn_actor_ids()
+	var actor_types: Array[String] = battle_state.get_turn_actor_types()
+	var actor_sides: Array[String] = battle_state.get_turn_actor_side_ids()
+	if actor_ids.size() != actor_types.size() or actor_ids.size() != actor_sides.size():
+		return false
+	var last_id_by_key: Dictionary = {}
+	for i in actor_ids.size():
+		var key: String = "%s:%s" % [actor_sides[i], actor_types[i]]
+		if last_id_by_key.has(key):
+			if actor_ids[i] <= str(last_id_by_key[key]):
+				return false
+		last_id_by_key[key] = actor_ids[i]
+	return true
+
+
+static func _battle_register_and_deploy_participant(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	zone_id: String
+) -> bool:
+	if not _battle_register_participant(battle_state, participant_id, side_id, zone_id):
+		return false
+	return battle_state.deploy_participant(participant_id, zone_id)
+
+
+static func _battle_register_and_deploy_vehicle(
+	battle_state: BattleState,
+	vehicle_id: String,
+	side_id: String,
+	zone_id: String
+) -> bool:
+	if not _battle_register_vehicle(battle_state, vehicle_id, side_id, zone_id):
+		return false
+	return battle_state.deploy_vehicle(vehicle_id, zone_id)
+
+
+static func _battle_populate_mixed_turn_actors(battle_state: BattleState, scrambled: bool) -> bool:
+	if battle_state == null:
+		return false
+	if scrambled:
+		if not _battle_register_and_deploy_vehicle(battle_state, "def_v_m", "defender", "defender_deployment"):
+			return false
+		if not _battle_register_and_deploy_vehicle(battle_state, "att_v_a", "attacker", "attacker_deployment"):
+			return false
+		if not _battle_register_and_deploy_participant(battle_state, "def_p_a", "defender", "defender_deployment"):
+			return false
+		if not _battle_register_and_deploy_participant(battle_state, "att_p_a", "attacker", "attacker_deployment"):
+			return false
+		if not _battle_register_and_deploy_vehicle(battle_state, "att_v_z", "attacker", "attacker_deployment"):
+			return false
+		if not _battle_register_and_deploy_participant(battle_state, "def_p_z", "defender", "defender_deployment"):
+			return false
+		if not _battle_register_and_deploy_participant(battle_state, "att_p_z", "attacker", "attacker_deployment"):
+			return false
+		return true
+	if not _battle_register_and_deploy_participant(battle_state, "att_p_z", "attacker", "attacker_deployment"):
+		return false
+	if not _battle_register_and_deploy_participant(battle_state, "att_p_a", "attacker", "attacker_deployment"):
+		return false
+	if not _battle_register_and_deploy_vehicle(battle_state, "att_v_z", "attacker", "attacker_deployment"):
+		return false
+	if not _battle_register_and_deploy_vehicle(battle_state, "att_v_a", "attacker", "attacker_deployment"):
+		return false
+	if not _battle_register_and_deploy_participant(battle_state, "def_p_z", "defender", "defender_deployment"):
+		return false
+	if not _battle_register_and_deploy_participant(battle_state, "def_p_a", "defender", "defender_deployment"):
+		return false
+	if not _battle_register_and_deploy_vehicle(battle_state, "def_v_m", "defender", "defender_deployment"):
+		return false
+	return true
+
 

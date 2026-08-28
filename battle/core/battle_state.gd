@@ -5,6 +5,8 @@ const BattleSide := preload("res://battle/core/battle_side.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
+const TURN_ACTOR_TYPE_PARTICIPANT := "participant"
+const TURN_ACTOR_TYPE_VEHICLE := "vehicle"
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -17,6 +19,11 @@ var participants: Dictionary[String, BattleParticipant] = {}
 var vehicles: Dictionary[String, BattleVehicle] = {}
 var deployment_zones: Dictionary[String, DeploymentZone] = {}
 var battle_phase: String = "deployment"
+var turn_actor_ids: Array[String] = []
+var turn_actor_types: Array[String] = []
+var turn_actor_side_ids: Array[String] = []
+var current_turn_index: int = -1
+var current_round: int = 1
 
 
 func _init(
@@ -337,3 +344,146 @@ func _vehicle_assignment_is_valid(vehicle_id: String, expected_side_id: String) 
 	if not zone.has_deployed_vehicle(vehicle_id):
 		return false
 	return true
+
+
+func initialize_turn_order() -> bool:
+	if battle_phase != "active":
+		push_error("BattleState.initialize_turn_order: battle phase is '%s', not active." % battle_phase)
+		return false
+	var next_ids: Array[String] = []
+	var next_types: Array[String] = []
+	var next_sides: Array[String] = []
+	_append_side_turn_actors(attacker_side_id, next_ids, next_types, next_sides)
+	_append_side_turn_actors(defender_side_id, next_ids, next_types, next_sides)
+	turn_actor_ids.clear()
+	turn_actor_types.clear()
+	turn_actor_side_ids.clear()
+	for actor_id: String in next_ids:
+		turn_actor_ids.append(actor_id)
+	for actor_type: String in next_types:
+		turn_actor_types.append(actor_type)
+	for side_id: String in next_sides:
+		turn_actor_side_ids.append(side_id)
+	current_round = 1
+	if turn_actor_ids.is_empty():
+		current_turn_index = -1
+	else:
+		current_turn_index = 0
+	return true
+
+
+func get_turn_actor_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for actor_id: String in turn_actor_ids:
+		ids.append(actor_id)
+	return ids
+
+
+func get_turn_actor_types() -> Array[String]:
+	var types: Array[String] = []
+	for actor_type: String in turn_actor_types:
+		types.append(actor_type)
+	return types
+
+
+func get_turn_actor_side_ids() -> Array[String]:
+	var side_ids: Array[String] = []
+	for side_id: String in turn_actor_side_ids:
+		side_ids.append(side_id)
+	return side_ids
+
+
+func get_turn_actor_count() -> int:
+	return turn_actor_ids.size()
+
+
+func has_current_turn_actor() -> bool:
+	if current_turn_index < 0:
+		return false
+	if current_turn_index >= turn_actor_ids.size():
+		return false
+	return true
+
+
+func get_current_turn_index() -> int:
+	return current_turn_index
+
+
+func get_current_round() -> int:
+	return current_round
+
+
+func get_current_turn_actor_id() -> String:
+	if not has_current_turn_actor():
+		return ""
+	return turn_actor_ids[current_turn_index]
+
+
+func get_current_turn_actor_type() -> String:
+	if not has_current_turn_actor():
+		return ""
+	if current_turn_index >= turn_actor_types.size():
+		return ""
+	return turn_actor_types[current_turn_index]
+
+
+func get_current_turn_actor_side_id() -> String:
+	if not has_current_turn_actor():
+		return ""
+	if current_turn_index >= turn_actor_side_ids.size():
+		return ""
+	return turn_actor_side_ids[current_turn_index]
+
+
+func advance_turn() -> bool:
+	if battle_phase != "active":
+		push_error("BattleState.advance_turn: battle phase is '%s', not active." % battle_phase)
+		return false
+	if turn_actor_ids.is_empty() or not has_current_turn_actor():
+		push_error("BattleState.advance_turn: no current actor.")
+		return false
+	var next_index: int = current_turn_index + 1
+	var next_round: int = current_round
+	if next_index >= turn_actor_ids.size():
+		next_index = 0
+		next_round += 1
+	current_turn_index = next_index
+	current_round = next_round
+	return true
+
+
+func _append_side_turn_actors(
+	side_id: String,
+	actor_ids: Array[String],
+	actor_types: Array[String],
+	actor_side_ids: Array[String]
+) -> void:
+	if side_id.is_empty() or not has_side(side_id):
+		return
+	var side: BattleSide = get_side(side_id)
+	var participant_ids: Array[String] = _sorted_existing_ids(side.participant_ids, true)
+	for participant_id: String in participant_ids:
+		actor_ids.append(participant_id)
+		actor_types.append(TURN_ACTOR_TYPE_PARTICIPANT)
+		actor_side_ids.append(side_id)
+	var vehicle_ids: Array[String] = _sorted_existing_ids(side.vehicle_ids, false)
+	for vehicle_id: String in vehicle_ids:
+		actor_ids.append(vehicle_id)
+		actor_types.append(TURN_ACTOR_TYPE_VEHICLE)
+		actor_side_ids.append(side_id)
+
+
+func _sorted_existing_ids(source_ids: Array[String], as_participant: bool) -> Array[String]:
+	var ids: Array[String] = []
+	for item_id: String in source_ids:
+		if item_id.is_empty():
+			continue
+		if ids.has(item_id):
+			continue
+		if as_participant:
+			if has_participant(item_id):
+				ids.append(item_id)
+		elif has_vehicle(item_id):
+			ids.append(item_id)
+	ids.sort()
+	return ids
