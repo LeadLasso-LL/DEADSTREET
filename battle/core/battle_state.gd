@@ -5,6 +5,7 @@ const BattleSide := preload("res://battle/core/battle_side.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
+const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -18,6 +19,7 @@ var vehicles: Dictionary[String, BattleVehicle] = {}
 var deployment_zones: Dictionary[String, DeploymentZone] = {}
 var battle_phase: String = "deployment"
 var elapsed_time_seconds: float = 0.0
+var battlefield_geometry: BattlefieldGeometry = null
 
 
 func _init(
@@ -285,12 +287,41 @@ func is_battle_ready() -> bool:
 	return true
 
 
+func is_spatially_ready() -> bool:
+	if battlefield_geometry == null or not battlefield_geometry.is_valid():
+		return false
+	if attacker_side_id.is_empty() or defender_side_id.is_empty():
+		return false
+	if not has_side(attacker_side_id) or not has_side(defender_side_id):
+		return false
+	var attacker_side: BattleSide = get_side(attacker_side_id)
+	var defender_side: BattleSide = get_side(defender_side_id)
+	if attacker_side == null or defender_side == null:
+		return false
+	if not _zone_is_spatially_ready(
+		attacker_side.deployment_zone_id,
+		attacker_side_id,
+		battlefield_geometry.attacker_deployment_rect
+	):
+		return false
+	if not _zone_is_spatially_ready(
+		defender_side.deployment_zone_id,
+		defender_side_id,
+		battlefield_geometry.defender_deployment_rect
+	):
+		return false
+	return true
+
+
 func begin_battle() -> bool:
 	if battle_phase != "deployment":
 		push_error("BattleState.begin_battle: battle phase is '%s', not deployment." % battle_phase)
 		return false
 	if not is_battle_ready():
 		push_error("BattleState.begin_battle: battle is not ready.")
+		return false
+	if not is_spatially_ready():
+		push_error("BattleState.begin_battle: battlefield is not spatially ready.")
 		return false
 	battle_phase = "active"
 	return true
@@ -337,4 +368,47 @@ func _vehicle_assignment_is_valid(vehicle_id: String, expected_side_id: String) 
 		return false
 	if not zone.has_deployed_vehicle(vehicle_id):
 		return false
+	return true
+
+
+func _zone_is_spatially_ready(
+	zone_id: String,
+	expected_side_id: String,
+	expected_rect: Rect2
+) -> bool:
+	if zone_id.is_empty() or expected_side_id.is_empty():
+		return false
+	if not has_deployment_zone(zone_id):
+		return false
+	var zone: DeploymentZone = get_deployment_zone(zone_id)
+	if zone == null or zone.side_id != expected_side_id:
+		return false
+	if not zone.deployment_rect.position.is_equal_approx(expected_rect.position):
+		return false
+	if not zone.deployment_rect.size.is_equal_approx(expected_rect.size):
+		return false
+	for participant_id: String in zone.deployed_participant_ids:
+		if not has_participant(participant_id):
+			return false
+		var participant: BattleParticipant = get_participant(participant_id)
+		if participant == null or not participant.has_battle_position:
+			return false
+		if not is_finite(participant.battle_position.x) or not is_finite(participant.battle_position.y):
+			return false
+		if participant.deployment_slot_id != zone.zone_id:
+			return false
+		if not BattlefieldGeometry.rect_contains_point(zone.deployment_rect, participant.battle_position):
+			return false
+	for vehicle_id: String in zone.deployed_vehicle_ids:
+		if not has_vehicle(vehicle_id):
+			return false
+		var vehicle: BattleVehicle = get_vehicle(vehicle_id)
+		if vehicle == null or not vehicle.has_battle_position:
+			return false
+		if not is_finite(vehicle.battle_position.x) or not is_finite(vehicle.battle_position.y):
+			return false
+		if vehicle.deployment_slot_id != zone.zone_id:
+			return false
+		if not BattlefieldGeometry.rect_contains_point(zone.deployment_rect, vehicle.battle_position):
+			return false
 	return true

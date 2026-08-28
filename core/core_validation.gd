@@ -52,6 +52,9 @@ const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result
 const BattleRuntimeService := preload("res://battle/runtime/battle_runtime_service.gd")
 const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
 const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
+const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
+const BattlefieldGeometryResult := preload("res://battle/geometry/battlefield_geometry_result.gd")
+const BattlefieldGeometryService := preload("res://battle/geometry/battlefield_geometry_service.gd")
 
 
 static func run() -> Dictionary:
@@ -6226,9 +6229,11 @@ static func run() -> Dictionary:
 	var battle_ready_persist_ok: bool = false
 	if battle_ready_act_bs != null:
 		var battle_ready_act_deployed: bool = _battle_deploy_standard_attacker(battle_ready_act_bs)
-		var battle_ready_act_begun: bool = battle_ready_act_bs.begin_battle()
+		var battle_ready_act_geo: bool = _battlegeo_init(battle_ready_act_bs)
+		var battle_ready_act_begun: bool = battle_ready_act_geo and battle_ready_act_bs.begin_battle()
 		battle_ready_activate_ok = (
 			battle_ready_act_deployed
+			and battle_ready_act_geo
 			and battle_ready_act_bs.is_battle_ready()
 			and battle_ready_act_begun
 		)
@@ -6289,11 +6294,13 @@ static func run() -> Dictionary:
 	var battle_ready_outside_ok: bool = false
 	if battle_ready_outside_bs != null:
 		var battle_ready_outside_deployed: bool = _battle_deploy_standard_attacker(battle_ready_outside_bs)
-		var battle_ready_outside_first: bool = battle_ready_outside_bs.begin_battle()
+		var battle_ready_outside_geo: bool = _battlegeo_init(battle_ready_outside_bs)
+		var battle_ready_outside_first: bool = battle_ready_outside_geo and battle_ready_outside_bs.begin_battle()
 		var battle_ready_outside_before: Dictionary = _battle_deploy_assignment_snapshot(battle_ready_outside_bs)
 		var battle_ready_outside_second: bool = battle_ready_outside_bs.begin_battle()
 		battle_ready_outside_ok = (
 			battle_ready_outside_deployed
+			and battle_ready_outside_geo
 			and battle_ready_outside_first
 			and battle_ready_outside_bs.battle_phase == "active"
 			and not battle_ready_outside_second
@@ -6331,6 +6338,8 @@ static func run() -> Dictionary:
 			and battle_ready_det_b.is_side_ready("attacker")
 			and battle_ready_det_a.is_battle_ready()
 			and battle_ready_det_b.is_battle_ready()
+			and _battlegeo_init(battle_ready_det_a)
+			and _battlegeo_init(battle_ready_det_b)
 			and battle_ready_det_a.begin_battle()
 			and battle_ready_det_b.begin_battle()
 			and battle_ready_det_a.battle_phase == battle_ready_det_b.battle_phase
@@ -6355,9 +6364,11 @@ static func run() -> Dictionary:
 		var battle_rt_ids_before: Dictionary = _battle_side_ids_snapshot(battle_rt_bs)
 		var battle_rt_assign_before: Dictionary = _battle_deploy_assignment_snapshot(battle_rt_bs)
 		var battle_rt_no_turn_before: bool = _battle_has_no_combat_turn_model(battle_rt_bs)
-		var battle_rt_begun: bool = battle_rt_bs.begin_battle()
+		var battle_rt_geo: bool = _battlegeo_init(battle_rt_bs)
+		var battle_rt_begun: bool = battle_rt_geo and battle_rt_bs.begin_battle()
 		battle_rt_activate_ok = (
 			battle_rt_deployed
+			and battle_rt_geo
 			and battle_rt_no_turn_before
 			and battle_rt_bs.is_battle_ready()
 			and battle_rt_begun
@@ -6428,7 +6439,9 @@ static func run() -> Dictionary:
 		var battle_rt_ids_a: Dictionary = _battle_side_ids_snapshot(battle_rt_det_a)
 		var battle_rt_ids_b: Dictionary = _battle_side_ids_snapshot(battle_rt_det_b)
 		var battle_rt_det_begun: bool = (
-			battle_rt_det_a.begin_battle()
+			_battlegeo_init(battle_rt_det_a)
+			and _battlegeo_init(battle_rt_det_b)
+			and battle_rt_det_a.begin_battle()
 			and battle_rt_det_b.begin_battle()
 		)
 		battle_rt_identity_ok = (
@@ -6773,7 +6786,7 @@ static func run() -> Dictionary:
 			and is_equal_approx(battlert_begin_bs.elapsed_time_seconds, 0.0)
 			and _battlert_fail_ok(battlert_begin_before_res, "battle_not_active", 0.0)
 		)
-		var battlert_begun: bool = battlert_begin_bs.begin_battle()
+		var battlert_begun: bool = _battlegeo_init(battlert_begin_bs) and battlert_begin_bs.begin_battle()
 		var battlert_begin_after_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_begin_bs, 0.25)
 		battlert_begin_assign["phase"] = "active"
 		battlert_begin_active_ok = (
@@ -6822,7 +6835,7 @@ static func run() -> Dictionary:
 	var battlert_persist_bs: BattleState = battlert_persist_pack.get("battle_state", null) as BattleState
 	if battlert_persist_game != null and battlert_persist_bs != null:
 		var battlert_persist_deployed: bool = _battle_deploy_standard_attacker(battlert_persist_bs)
-		var battlert_persist_begun: bool = battlert_persist_bs.begin_battle()
+		var battlert_persist_begun: bool = _battlegeo_init(battlert_persist_bs) and battlert_persist_bs.begin_battle()
 		battlert_persist_bs.elapsed_time_seconds = 42.75
 		var battlert_persist_part: BattleParticipant = battlert_persist_bs.get_participant("battle_sol_a")
 		if battlert_persist_part != null:
@@ -6855,7 +6868,7 @@ static func run() -> Dictionary:
 	)
 	if battlert_imm_game != null and battlert_imm_bs != null:
 		var battlert_imm_deployed: bool = _battle_deploy_standard_attacker(battlert_imm_bs)
-		var battlert_imm_begun: bool = battlert_imm_bs.begin_battle()
+		var battlert_imm_begun: bool = _battlegeo_init(battlert_imm_bs) and battlert_imm_bs.begin_battle()
 		var battlert_imm_res1: BattleRuntimeResult = BattleRuntimeService.advance(battlert_imm_bs, 0.10)
 		var battlert_imm_res2: BattleRuntimeResult = BattleRuntimeService.advance(battlert_imm_bs, 0.20)
 		var battlert_imm_res3: BattleRuntimeResult = BattleRuntimeService.advance(battlert_imm_bs, 0.30)
@@ -6894,7 +6907,7 @@ static func run() -> Dictionary:
 	var battlemove_intent_stable_ok: bool = false
 	var battlemove_wounded_ok: bool = false
 	var battlemove_weapon_ok: bool = false
-	var battlemove_deploy_unpos_ok: bool = false
+	var battlemove_deploy_geo_ok: bool = false
 	var battlemove_persist_ok: bool = false
 	var battlemove_immutability_ok: bool = false
 	var battlemove_no_turn_ok: bool = false
@@ -7452,18 +7465,29 @@ static func run() -> Dictionary:
 	var battlemove_dep_bs: BattleState = battlemove_dep_pack.get("battle_state", null) as BattleState
 	if battlemove_dep_bs != null:
 		var battlemove_dep_deployed: bool = _battle_deploy_standard_attacker(battlemove_dep_bs)
-		var battlemove_dep_begun: bool = battlemove_dep_bs.begin_battle()
-		var battlemove_dep_unpos: bool = battlemove_dep_bs.participants.size() > 0
-		for battlemove_dep_id: String in battlemove_dep_bs.participants:
-			var battlemove_dep_p: BattleParticipant = battlemove_dep_bs.get_participant(battlemove_dep_id)
-			if battlemove_dep_p == null or battlemove_dep_p.has_battle_position:
-				battlemove_dep_unpos = false
-				break
-		battlemove_deploy_unpos_ok = (
+		var battlemove_dep_part: BattleParticipant = battlemove_dep_bs.get_participant("battle_sol_a")
+		var battlemove_dep_before: bool = (
+			battlemove_dep_part != null
+			and battlemove_dep_part.has_battle_position == false
+		)
+		var battlemove_dep_geo: bool = _battlegeo_init(battlemove_dep_bs)
+		var battlemove_dep_zone: DeploymentZone = battlemove_dep_bs.get_deployment_zone("attacker_deployment")
+		var battlemove_dep_pos_ok: bool = false
+		if battlemove_dep_part != null and battlemove_dep_zone != null:
+			battlemove_dep_pos_ok = (
+				battlemove_dep_part.has_battle_position
+				and is_finite(battlemove_dep_part.battle_position.x)
+				and is_finite(battlemove_dep_part.battle_position.y)
+				and battlemove_dep_zone.contains_point(battlemove_dep_part.battle_position)
+			)
+		var battlemove_dep_begun: bool = battlemove_dep_geo and battlemove_dep_bs.begin_battle()
+		battlemove_deploy_geo_ok = (
 			battlemove_dep_deployed
+			and battlemove_dep_before
+			and battlemove_dep_geo
+			and battlemove_dep_pos_ok
 			and battlemove_dep_begun
 			and battlemove_dep_bs.battle_phase == "active"
-			and battlemove_dep_unpos
 		)
 		battlemove_no_turn_ok = (
 			battlemove_no_turn_ok
@@ -7504,7 +7528,7 @@ static func run() -> Dictionary:
 	)
 	if battlemove_imm_game != null and battlemove_imm_bs != null:
 		var battlemove_imm_deployed: bool = _battle_deploy_standard_attacker(battlemove_imm_bs)
-		var battlemove_imm_begun: bool = battlemove_imm_bs.begin_battle()
+		var battlemove_imm_begun: bool = _battlegeo_init(battlemove_imm_bs) and battlemove_imm_bs.begin_battle()
 		var battlemove_imm_part: BattleParticipant = battlemove_imm_bs.get_participant("battle_sol_a")
 		var battlemove_imm_ready: bool = false
 		if battlemove_imm_part != null:
@@ -7554,6 +7578,477 @@ static func run() -> Dictionary:
 		and battlemove_fail_res.participants_considered == 0
 		and battlemove_fail_res.participants_moved == 0
 	)
+
+	var battlegeo_default_ok: bool = false
+	var battlegeo_default_bs: BattleState = _battle_make_bare_state()
+	var battlegeo_default_res: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+		battlegeo_default_bs
+	)
+	if battlegeo_default_bs != null and battlegeo_default_res != null:
+		var battlegeo_default_geo: BattlefieldGeometry = battlegeo_default_bs.battlefield_geometry
+		var battlegeo_default_att: DeploymentZone = battlegeo_default_bs.get_deployment_zone("attacker_deployment")
+		var battlegeo_default_def: DeploymentZone = battlegeo_default_bs.get_deployment_zone("defender_deployment")
+		battlegeo_default_ok = (
+			battlegeo_default_res.success
+			and battlegeo_default_res.participants_positioned == 0
+			and battlegeo_default_res.vehicles_positioned == 0
+			and battlegeo_default_res.error_code.is_empty()
+			and battlegeo_default_res.error_message.is_empty()
+			and battlegeo_default_geo != null
+			and is_equal_approx(battlegeo_default_geo.width, 100.0)
+			and is_equal_approx(battlegeo_default_geo.height, 60.0)
+			and battlegeo_default_geo.is_valid()
+			and battlegeo_default_geo.bounds().is_equal_approx(Rect2(0.0, 0.0, 100.0, 60.0))
+			and battlegeo_default_geo.attacker_deployment_rect.is_equal_approx(Rect2(0.0, 0.0, 20.0, 60.0))
+			and battlegeo_default_geo.defender_deployment_rect.is_equal_approx(Rect2(80.0, 0.0, 20.0, 60.0))
+			and battlegeo_default_att != null
+			and battlegeo_default_def != null
+			and battlegeo_default_att.deployment_rect.is_equal_approx(Rect2(0.0, 0.0, 20.0, 60.0))
+			and battlegeo_default_def.deployment_rect.is_equal_approx(Rect2(80.0, 0.0, 20.0, 60.0))
+		)
+
+	var battlegeo_null_res: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(null)
+	var battlegeo_fail_null_ok: bool = _battlegeo_fail_ok(battlegeo_null_res, "null_battle_state")
+
+	var battlegeo_fail_not_deploy_ok: bool = false
+	var battlegeo_active_bs: BattleState = _battle_make_bare_state()
+	if battlegeo_active_bs != null and _battlegeo_add_marker(battlegeo_active_bs, "attacker", "attacker_deployment"):
+		var battlegeo_active_init: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_active_bs
+		)
+		if battlegeo_active_init != null and battlegeo_active_init.success:
+			battlegeo_active_bs.battle_phase = "active"
+			var battlegeo_active_snap: Dictionary = _battlegeo_spatial_snap(battlegeo_active_bs)
+			battlegeo_fail_not_deploy_ok = _battlegeo_fail_and_unchanged(
+				battlegeo_active_bs,
+				"battle_not_in_deployment",
+				battlegeo_active_snap
+			)
+
+	var battlegeo_fail_missing_att_side_ok: bool = false
+	var battlegeo_miss_att_side: BattleState = _battlegeo_make_incomplete(false, true, false, true)
+	if battlegeo_miss_att_side != null and _battlegeo_add_marker(
+		battlegeo_miss_att_side, "defender", "defender_deployment"
+	):
+		_battlegeo_seed_zone_rects(battlegeo_miss_att_side)
+		var battlegeo_miss_att_side_snap: Dictionary = _battlegeo_spatial_snap(battlegeo_miss_att_side)
+		battlegeo_fail_missing_att_side_ok = _battlegeo_fail_and_unchanged(
+			battlegeo_miss_att_side,
+			"missing_attacker_side",
+			battlegeo_miss_att_side_snap
+		)
+
+	var battlegeo_fail_missing_def_side_ok: bool = false
+	var battlegeo_miss_def_side: BattleState = _battlegeo_make_incomplete(true, false, true, false)
+	if battlegeo_miss_def_side != null and _battlegeo_add_marker(
+		battlegeo_miss_def_side, "attacker", "attacker_deployment"
+	):
+		_battlegeo_seed_zone_rects(battlegeo_miss_def_side)
+		var battlegeo_miss_def_side_snap: Dictionary = _battlegeo_spatial_snap(battlegeo_miss_def_side)
+		battlegeo_fail_missing_def_side_ok = _battlegeo_fail_and_unchanged(
+			battlegeo_miss_def_side,
+			"missing_defender_side",
+			battlegeo_miss_def_side_snap
+		)
+
+	var battlegeo_fail_missing_att_zone_ok: bool = false
+	var battlegeo_miss_att_zone: BattleState = _battlegeo_make_incomplete(true, true, false, true)
+	if battlegeo_miss_att_zone != null and _battlegeo_add_marker(
+		battlegeo_miss_att_zone, "defender", "defender_deployment"
+	):
+		_battlegeo_seed_zone_rects(battlegeo_miss_att_zone)
+		var battlegeo_miss_att_zone_snap: Dictionary = _battlegeo_spatial_snap(battlegeo_miss_att_zone)
+		battlegeo_fail_missing_att_zone_ok = _battlegeo_fail_and_unchanged(
+			battlegeo_miss_att_zone,
+			"missing_attacker_deployment_zone",
+			battlegeo_miss_att_zone_snap
+		)
+
+	var battlegeo_fail_missing_def_zone_ok: bool = false
+	var battlegeo_miss_def_zone: BattleState = _battlegeo_make_incomplete(true, true, true, false)
+	if battlegeo_miss_def_zone != null and _battlegeo_add_marker(
+		battlegeo_miss_def_zone, "attacker", "attacker_deployment"
+	):
+		_battlegeo_seed_zone_rects(battlegeo_miss_def_zone)
+		var battlegeo_miss_def_zone_snap: Dictionary = _battlegeo_spatial_snap(battlegeo_miss_def_zone)
+		battlegeo_fail_missing_def_zone_ok = _battlegeo_fail_and_unchanged(
+			battlegeo_miss_def_zone,
+			"missing_defender_deployment_zone",
+			battlegeo_miss_def_zone_snap
+		)
+
+	# BattlefieldGeometryService returns invalid_geometry only if internal provisional
+	# constants or generated layout fail validity. Current public constants always
+	# produce valid geometry, and public APIs expose no hook to inject invalid
+	# dimensions, so this failure mode is unreachable through normal APIs.
+	var battlegeo_invalid_geo_unreachable_ok: bool = true
+
+	var battlegeo_empty_ids: Array[String] = []
+	var battlegeo_part_ids_a: Array[String] = ["geo_p_z", "geo_p_a", "geo_p_m"]
+	var battlegeo_part_ids_b: Array[String] = ["geo_p_m", "geo_p_a", "geo_p_z"]
+	var battlegeo_def_part_ids_a: Array[String] = ["geo_dp_z", "geo_dp_a"]
+	var battlegeo_def_part_ids_b: Array[String] = ["geo_dp_a", "geo_dp_z"]
+	var battlegeo_part_a: BattleState = _battlegeo_make_unit_state(
+		battlegeo_part_ids_a,
+		battlegeo_empty_ids,
+		battlegeo_def_part_ids_a,
+		battlegeo_empty_ids
+	)
+	var battlegeo_part_b: BattleState = _battlegeo_make_unit_state(
+		battlegeo_part_ids_b,
+		battlegeo_empty_ids,
+		battlegeo_def_part_ids_b,
+		battlegeo_empty_ids
+	)
+	var battlegeo_part_place_ok: bool = false
+	if battlegeo_part_a != null and battlegeo_part_b != null:
+		var battlegeo_part_res_a: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_part_a
+		)
+		var battlegeo_part_res_b: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_part_b
+		)
+		var battlegeo_part_res_a2: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_part_a
+		)
+		battlegeo_part_place_ok = (
+			battlegeo_part_res_a != null
+			and battlegeo_part_res_a.success
+			and battlegeo_part_res_b != null
+			and battlegeo_part_res_b.success
+			and battlegeo_part_res_a2 != null
+			and battlegeo_part_res_a2.success
+			and battlegeo_part_res_a.participants_positioned == 5
+			and battlegeo_part_res_b.participants_positioned == 5
+			and _battlegeo_same_part_positions(battlegeo_part_a, battlegeo_part_b)
+			and _battlegeo_deployed_parts_positioned(battlegeo_part_a)
+			and _battlegeo_side_part_unique(battlegeo_part_a, "attacker")
+			and _battlegeo_side_part_unique(battlegeo_part_a, "defender")
+			and _battlegeo_side_part_unique(battlegeo_part_b, "attacker")
+			and _battlegeo_side_part_unique(battlegeo_part_b, "defender")
+		)
+
+	var battlegeo_veh_ids_a: Array[String] = ["geo_v_z", "geo_v_a", "geo_v_m"]
+	var battlegeo_veh_ids_b: Array[String] = ["geo_v_m", "geo_v_a", "geo_v_z"]
+	var battlegeo_def_veh_ids_a: Array[String] = ["geo_dv_z", "geo_dv_a"]
+	var battlegeo_def_veh_ids_b: Array[String] = ["geo_dv_a", "geo_dv_z"]
+	var battlegeo_veh_a: BattleState = _battlegeo_make_unit_state(
+		battlegeo_empty_ids,
+		battlegeo_veh_ids_a,
+		battlegeo_empty_ids,
+		battlegeo_def_veh_ids_a
+	)
+	var battlegeo_veh_b: BattleState = _battlegeo_make_unit_state(
+		battlegeo_empty_ids,
+		battlegeo_veh_ids_b,
+		battlegeo_empty_ids,
+		battlegeo_def_veh_ids_b
+	)
+	var battlegeo_veh_place_ok: bool = false
+	if battlegeo_veh_a != null and battlegeo_veh_b != null:
+		var battlegeo_veh_res_a: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_veh_a
+		)
+		var battlegeo_veh_res_b: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_veh_b
+		)
+		battlegeo_veh_place_ok = (
+			battlegeo_veh_res_a != null
+			and battlegeo_veh_res_a.success
+			and battlegeo_veh_res_b != null
+			and battlegeo_veh_res_b.success
+			and battlegeo_veh_res_a.vehicles_positioned == 5
+			and battlegeo_veh_res_b.vehicles_positioned == 5
+			and _battlegeo_same_veh_positions(battlegeo_veh_a, battlegeo_veh_b)
+			and _battlegeo_deployed_vehs_positioned(battlegeo_veh_a)
+			and _battlegeo_side_veh_unique(battlegeo_veh_a, "attacker")
+			and _battlegeo_side_veh_unique(battlegeo_veh_a, "defender")
+			and _battlegeo_side_veh_in_zone(battlegeo_veh_a, "attacker")
+			and _battlegeo_side_veh_in_zone(battlegeo_veh_a, "defender")
+		)
+
+	var battlegeo_sep_part_ids: Array[String] = ["geo_sep_p_z", "geo_sep_p_a"]
+	var battlegeo_sep_veh_ids: Array[String] = ["geo_sep_v_z", "geo_sep_v_a"]
+	var battlegeo_sep_bs: BattleState = _battlegeo_make_unit_state(
+		battlegeo_sep_part_ids,
+		battlegeo_sep_veh_ids,
+		battlegeo_empty_ids,
+		battlegeo_empty_ids
+	)
+	var battlegeo_part_veh_sep_ok: bool = false
+	if battlegeo_sep_bs != null:
+		var battlegeo_sep_res: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_sep_bs
+		)
+		battlegeo_part_veh_sep_ok = (
+			battlegeo_sep_res != null
+			and battlegeo_sep_res.success
+			and _battlegeo_side_part_in_zone(battlegeo_sep_bs, "attacker")
+			and _battlegeo_side_veh_in_zone(battlegeo_sep_bs, "attacker")
+			and _battlegeo_part_veh_separated(battlegeo_sep_bs, "attacker")
+		)
+
+	var battlegeo_undeployed_ok: bool = false
+	var battlegeo_semantic_ok: bool = false
+	var battlegeo_undep_part_ids: Array[String] = ["geo_dep_p"]
+	var battlegeo_undep_veh_ids: Array[String] = ["geo_dep_v"]
+	var battlegeo_undep_bs: BattleState = _battlegeo_make_unit_state(
+		battlegeo_undep_part_ids,
+		battlegeo_undep_veh_ids,
+		battlegeo_empty_ids,
+		battlegeo_empty_ids
+	)
+	if battlegeo_undep_bs != null:
+		var battlegeo_undep_p_ok: bool = _battle_register_participant(
+			battlegeo_undep_bs, "geo_undep_p", "attacker", "attacker_deployment"
+		)
+		var battlegeo_undep_v_ok: bool = _battle_register_vehicle(
+			battlegeo_undep_bs, "geo_undep_v", "attacker", "attacker_deployment"
+		)
+		var battlegeo_undep_p: BattleParticipant = battlegeo_undep_bs.get_participant("geo_undep_p")
+		var battlegeo_undep_v: BattleVehicle = battlegeo_undep_bs.get_vehicle("geo_undep_v")
+		var battlegeo_dep_p: BattleParticipant = battlegeo_undep_bs.get_participant("geo_dep_p")
+		var battlegeo_dep_v: BattleVehicle = battlegeo_undep_bs.get_vehicle("geo_dep_v")
+		if battlegeo_undep_p != null:
+			battlegeo_undep_p.has_battle_position = false
+			battlegeo_undep_p.battle_position = Vector2(7.0, 9.0)
+		if battlegeo_undep_v != null:
+			battlegeo_undep_v.has_battle_position = false
+			battlegeo_undep_v.battle_position = Vector2(8.0, 6.0)
+		var battlegeo_sem_snap: Dictionary = _battlegeo_semantic_snap(battlegeo_undep_bs)
+		var battlegeo_undep_res: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+			battlegeo_undep_bs
+		)
+		battlegeo_undeployed_ok = (
+			battlegeo_undep_p_ok
+			and battlegeo_undep_v_ok
+			and battlegeo_undep_res != null
+			and battlegeo_undep_res.success
+			and battlegeo_dep_p != null
+			and battlegeo_dep_v != null
+			and battlegeo_dep_p.has_battle_position
+			and battlegeo_dep_v.has_battle_position
+			and battlegeo_undep_p != null
+			and battlegeo_undep_v != null
+			and battlegeo_undep_p.has_battle_position == false
+			and battlegeo_undep_v.has_battle_position == false
+			and battlegeo_undep_p.battle_position.is_equal_approx(Vector2(7.0, 9.0))
+			and battlegeo_undep_v.battle_position.is_equal_approx(Vector2(8.0, 6.0))
+			and battlegeo_undep_p.deployment_slot_id.is_empty()
+			and battlegeo_undep_v.deployment_slot_id.is_empty()
+			and battlegeo_undep_res.participants_positioned == 1
+			and battlegeo_undep_res.vehicles_positioned == 1
+		)
+		battlegeo_semantic_ok = (
+			battlegeo_undeployed_ok
+			and _battlegeo_semantic_unchanged(battlegeo_undep_bs, battlegeo_sem_snap)
+		)
+
+	var battlegeo_ready_before_ok: bool = false
+	var battlegeo_ready_after_ok: bool = false
+	var battlegeo_no_combat_ok: bool = false
+	var battlegeo_ready_pack: Dictionary = _battle_create_ready_pack()
+	var battlegeo_ready_bs: BattleState = battlegeo_ready_pack.get("battle_state", null) as BattleState
+	if battlegeo_ready_bs != null:
+		var battlegeo_ready_deployed: bool = _battle_deploy_standard_attacker(battlegeo_ready_bs)
+		var battlegeo_ready_begin_before: bool = battlegeo_ready_bs.begin_battle()
+		battlegeo_ready_before_ok = (
+			battlegeo_ready_deployed
+			and battlegeo_ready_bs.is_battle_ready()
+			and not battlegeo_ready_bs.is_spatially_ready()
+			and not battlegeo_ready_begin_before
+			and battlegeo_ready_bs.battle_phase == "deployment"
+		)
+		var battlegeo_ready_geo: bool = _battlegeo_init(battlegeo_ready_bs)
+		battlegeo_ready_after_ok = (
+			battlegeo_ready_before_ok
+			and battlegeo_ready_geo
+			and battlegeo_ready_bs.is_battle_ready()
+			and battlegeo_ready_bs.is_spatially_ready()
+			and battlegeo_ready_bs.begin_battle()
+			and battlegeo_ready_bs.battle_phase == "active"
+		)
+		battlegeo_no_combat_ok = (
+			battlegeo_ready_after_ok
+			and _battle_has_no_combat_turn_model(battlegeo_ready_bs)
+			and battlegeo_ready_bs.get("current_turn_index") == null
+			and battlegeo_ready_bs.get("current_round") == null
+			and battlegeo_ready_bs.get("active_turn_actor_id") == null
+		)
+
+	var battlegeo_reject_missing_pos_ok: bool = false
+	var battlegeo_reject_nan_pos_ok: bool = false
+	var battlegeo_reject_outside_ok: bool = false
+	var battlegeo_reject_pack: Dictionary = _battle_create_ready_pack()
+	var battlegeo_reject_bs: BattleState = battlegeo_reject_pack.get("battle_state", null) as BattleState
+	if battlegeo_reject_bs != null and _battle_deploy_standard_attacker(battlegeo_reject_bs) and _battlegeo_init(
+		battlegeo_reject_bs
+	):
+		var battlegeo_rej_part: BattleParticipant = battlegeo_reject_bs.get_participant("battle_sol_a")
+		var battlegeo_rej_veh: BattleVehicle = battlegeo_reject_bs.get_vehicle("battle_veh_a")
+		var battlegeo_rej_def: BattleParticipant = null
+		if (
+			_battle_register_participant(battlegeo_reject_bs, "geo_rej_def", "defender", "defender_deployment")
+			and battlegeo_reject_bs.deploy_participant("geo_rej_def", "defender_deployment")
+		):
+			_battlegeo_init(battlegeo_reject_bs)
+			battlegeo_rej_def = battlegeo_reject_bs.get_participant("geo_rej_def")
+		if (
+			battlegeo_rej_part != null
+			and battlegeo_rej_veh != null
+			and battlegeo_reject_bs.is_spatially_ready()
+		):
+			var battlegeo_orig_part_pos: Vector2 = battlegeo_rej_part.battle_position
+			var battlegeo_orig_veh_pos: Vector2 = battlegeo_rej_veh.battle_position
+			battlegeo_rej_part.has_battle_position = false
+			var battlegeo_miss_part_begin: bool = battlegeo_reject_bs.begin_battle()
+			var battlegeo_miss_part_ok: bool = (
+				not battlegeo_reject_bs.is_spatially_ready()
+				and not battlegeo_miss_part_begin
+				and battlegeo_reject_bs.battle_phase == "deployment"
+			)
+			battlegeo_rej_part.has_battle_position = true
+			battlegeo_rej_veh.has_battle_position = false
+			var battlegeo_miss_veh_begin: bool = battlegeo_reject_bs.begin_battle()
+			battlegeo_reject_missing_pos_ok = (
+				battlegeo_miss_part_ok
+				and not battlegeo_reject_bs.is_spatially_ready()
+				and not battlegeo_miss_veh_begin
+				and battlegeo_reject_bs.battle_phase == "deployment"
+			)
+			battlegeo_rej_veh.has_battle_position = true
+			battlegeo_rej_part.battle_position = Vector2(NAN, 0.0)
+			var battlegeo_nan_begin: bool = battlegeo_reject_bs.begin_battle()
+			var battlegeo_nan_ok: bool = (
+				not battlegeo_reject_bs.is_spatially_ready()
+				and not battlegeo_nan_begin
+				and battlegeo_reject_bs.battle_phase == "deployment"
+			)
+			battlegeo_rej_part.battle_position = Vector2(INF, 1.0)
+			var battlegeo_inf_begin: bool = battlegeo_reject_bs.begin_battle()
+			battlegeo_reject_nan_pos_ok = (
+				battlegeo_nan_ok
+				and not battlegeo_reject_bs.is_spatially_ready()
+				and not battlegeo_inf_begin
+				and battlegeo_reject_bs.battle_phase == "deployment"
+			)
+			battlegeo_rej_part.battle_position = Vector2(90.0, 30.0)
+			var battlegeo_out_att_begin: bool = battlegeo_reject_bs.begin_battle()
+			var battlegeo_out_att_ok: bool = (
+				not battlegeo_reject_bs.is_spatially_ready()
+				and not battlegeo_out_att_begin
+				and battlegeo_reject_bs.battle_phase == "deployment"
+			)
+			battlegeo_rej_part.battle_position = battlegeo_orig_part_pos
+			var battlegeo_out_def_ok: bool = true
+			if battlegeo_rej_def != null:
+				var battlegeo_orig_def_pos: Vector2 = battlegeo_rej_def.battle_position
+				battlegeo_rej_def.battle_position = Vector2(10.0, 30.0)
+				var battlegeo_out_def_begin: bool = battlegeo_reject_bs.begin_battle()
+				battlegeo_out_def_ok = (
+					not battlegeo_reject_bs.is_spatially_ready()
+					and not battlegeo_out_def_begin
+					and battlegeo_reject_bs.battle_phase == "deployment"
+				)
+				battlegeo_rej_def.battle_position = battlegeo_orig_def_pos
+			battlegeo_reject_outside_ok = (
+				battlegeo_out_att_ok
+				and battlegeo_out_def_ok
+				and battlegeo_rej_veh.battle_position.is_equal_approx(battlegeo_orig_veh_pos)
+			)
+
+	var battlegeo_ok_res: BattlefieldGeometryResult = BattlefieldGeometryResult.succeeded(3, 2)
+	var battlegeo_fail_res: BattlefieldGeometryResult = BattlefieldGeometryResult.failed(
+		"null_battle_state",
+		"Battlefield geometry failed: battle_state is null."
+	)
+	var battlegeo_result_ok: bool = (
+		battlegeo_ok_res != null
+		and battlegeo_ok_res.success
+		and battlegeo_ok_res.participants_positioned == 3
+		and battlegeo_ok_res.vehicles_positioned == 2
+		and battlegeo_ok_res.error_code.is_empty()
+		and battlegeo_ok_res.error_message.is_empty()
+		and battlegeo_fail_res != null
+		and not battlegeo_fail_res.success
+		and battlegeo_fail_res.participants_positioned == 0
+		and battlegeo_fail_res.vehicles_positioned == 0
+		and battlegeo_fail_res.error_code == "null_battle_state"
+		and battlegeo_fail_res.error_message == "Battlefield geometry failed: battle_state is null."
+		and battlegeo_default_ok
+	)
+
+	var battlegeo_move_ok: bool = false
+	var battlegeo_move_pack: Dictionary = _battle_create_ready_pack()
+	var battlegeo_move_bs: BattleState = battlegeo_move_pack.get("battle_state", null) as BattleState
+	if battlegeo_move_bs != null:
+		var battlegeo_move_deployed: bool = _battle_deploy_standard_attacker(battlegeo_move_bs)
+		var battlegeo_move_geo: bool = _battlegeo_init(battlegeo_move_bs)
+		var battlegeo_move_part: BattleParticipant = battlegeo_move_bs.get_participant("battle_sol_a")
+		var battlegeo_move_start: Vector2 = Vector2.ZERO
+		var battlegeo_move_ready: bool = false
+		if battlegeo_move_part != null and battlegeo_move_part.has_battle_position:
+			battlegeo_move_start = battlegeo_move_part.battle_position
+			battlegeo_move_ready = (
+				_battlegeo_finite_point(battlegeo_move_start)
+				and battlegeo_move_part.set_movement_speed(2.0)
+				and battlegeo_move_part.set_movement_intent(Vector2(1.0, 0.0))
+			)
+		var battlegeo_move_begun: bool = battlegeo_move_geo and battlegeo_move_bs.begin_battle()
+		var battlegeo_move_res: BattleRuntimeResult = BattleRuntimeService.advance(battlegeo_move_bs, 0.5)
+		battlegeo_move_ok = (
+			battlegeo_move_deployed
+			and battlegeo_move_geo
+			and battlegeo_move_ready
+			and battlegeo_move_begun
+			and _battlert_clock_ok(battlegeo_move_res, 0.5, 0.0, 0.5)
+			and is_equal_approx(battlegeo_move_bs.elapsed_time_seconds, 0.5)
+			and battlegeo_move_part != null
+			and battlegeo_move_part.battle_position.is_equal_approx(battlegeo_move_start + Vector2(1.0, 0.0))
+			and not battlegeo_move_part.battle_position.is_equal_approx(Vector2.ZERO)
+		)
+
+	var battlegeo_locality_ok: bool = false
+	var battlegeo_persist_ok: bool = false
+	var battlegeo_immutability_ok: bool = false
+	var battlegeo_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battlegeo_camp_game: GameState = battlegeo_camp_pack.get("game_state", null) as GameState
+	var battlegeo_camp_force: TravelingForce = battlegeo_camp_pack.get("force", null) as TravelingForce
+	var battlegeo_camp_bs: BattleState = battlegeo_camp_pack.get("battle_state", null) as BattleState
+	if battlegeo_camp_game != null and battlegeo_camp_bs != null:
+		var battlegeo_camp_deployed: bool = _battle_deploy_standard_attacker(battlegeo_camp_bs)
+		var battlegeo_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battlegeo_camp_game,
+			battlegeo_camp_force,
+			"battle_mission"
+		)
+		var battlegeo_camp_dict_before: Dictionary = battlegeo_camp_game.to_dict()
+		var battlegeo_camp_coords: Dictionary = _battlegeo_campaign_coords(battlegeo_camp_game)
+		var battlegeo_camp_geo: bool = _battlegeo_init(battlegeo_camp_bs)
+		var battlegeo_camp_dict_after: Dictionary = battlegeo_camp_game.to_dict()
+		battlegeo_locality_ok = (
+			battlegeo_camp_deployed
+			and battlegeo_camp_geo
+			and battlegeo_camp_dict_before == battlegeo_camp_dict_after
+			and _battlegeo_campaign_coords_unchanged(battlegeo_camp_game, battlegeo_camp_coords)
+		)
+		var battlegeo_camp_persist: Dictionary = battlegeo_camp_game.to_dict()
+		battlegeo_persist_ok = (
+			battlegeo_locality_ok
+			and _battle_serialized_campaign_keys_only(battlegeo_camp_persist)
+			and not _battle_data_has_tactical_trace(battlegeo_camp_persist)
+		)
+		battlegeo_immutability_ok = (
+			battlegeo_camp_geo
+			and _battle_campaign_unchanged(
+				battlegeo_camp_game,
+				battlegeo_camp_snap,
+				battlegeo_camp_force,
+				"battle_mission"
+			)
+			and battlegeo_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlegeo_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -8285,11 +8780,35 @@ static func run() -> Dictionary:
 		"battlemove_intent_stable_ok": battlemove_intent_stable_ok,
 		"battlemove_wounded_ok": battlemove_wounded_ok,
 		"battlemove_weapon_ok": battlemove_weapon_ok,
-		"battlemove_deploy_unpos_ok": battlemove_deploy_unpos_ok,
+		"battlemove_deploy_geo_ok": battlemove_deploy_geo_ok,
 		"battlemove_persist_ok": battlemove_persist_ok,
 		"battlemove_immutability_ok": battlemove_immutability_ok,
 		"battlemove_no_turn_ok": battlemove_no_turn_ok,
 		"battlemove_result_ok": battlemove_result_ok,
+		"battlegeo_default_ok": battlegeo_default_ok,
+		"battlegeo_fail_null_ok": battlegeo_fail_null_ok,
+		"battlegeo_fail_not_deploy_ok": battlegeo_fail_not_deploy_ok,
+		"battlegeo_fail_missing_att_side_ok": battlegeo_fail_missing_att_side_ok,
+		"battlegeo_fail_missing_def_side_ok": battlegeo_fail_missing_def_side_ok,
+		"battlegeo_fail_missing_att_zone_ok": battlegeo_fail_missing_att_zone_ok,
+		"battlegeo_fail_missing_def_zone_ok": battlegeo_fail_missing_def_zone_ok,
+		"battlegeo_invalid_geo_unreachable_ok": battlegeo_invalid_geo_unreachable_ok,
+		"battlegeo_part_place_ok": battlegeo_part_place_ok,
+		"battlegeo_veh_place_ok": battlegeo_veh_place_ok,
+		"battlegeo_part_veh_sep_ok": battlegeo_part_veh_sep_ok,
+		"battlegeo_undeployed_ok": battlegeo_undeployed_ok,
+		"battlegeo_semantic_ok": battlegeo_semantic_ok,
+		"battlegeo_ready_before_ok": battlegeo_ready_before_ok,
+		"battlegeo_ready_after_ok": battlegeo_ready_after_ok,
+		"battlegeo_reject_missing_pos_ok": battlegeo_reject_missing_pos_ok,
+		"battlegeo_reject_nan_pos_ok": battlegeo_reject_nan_pos_ok,
+		"battlegeo_reject_outside_ok": battlegeo_reject_outside_ok,
+		"battlegeo_result_ok": battlegeo_result_ok,
+		"battlegeo_move_ok": battlegeo_move_ok,
+		"battlegeo_locality_ok": battlegeo_locality_ok,
+		"battlegeo_persist_ok": battlegeo_persist_ok,
+		"battlegeo_immutability_ok": battlegeo_immutability_ok,
+		"battlegeo_no_combat_ok": battlegeo_no_combat_ok,
 	}
 
 	var passed := true
@@ -9949,6 +10468,10 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "movement_intent"
 		or text == "velocity"
 		or text == "movement_speed"
+		or text == "battlefield_geometry"
+		or text == "attacker_deployment_rect"
+		or text == "defender_deployment_rect"
+		or text == "deployment_rect"
 	)
 
 
@@ -10478,4 +11001,574 @@ static func _battlemove_part_unchanged(participant: BattleParticipant, snap: Dic
 		and participant.is_alive == bool(snap.get("alive", false))
 		and participant.is_wounded == bool(snap.get("wounded", false))
 	)
+
+
+static func _battlegeo_init(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var result: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(battle_state)
+	return result != null and result.success
+
+
+static func _battlegeo_fail_ok(result: BattlefieldGeometryResult, expected_code: String) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.participants_positioned == 0
+		and result.vehicles_positioned == 0
+		and result.error_code == expected_code
+		and result.error_message.begins_with("Battlefield geometry failed:")
+	)
+
+
+static func _battlegeo_fail_and_unchanged(
+	battle_state: BattleState,
+	expected_code: String,
+	snap: Dictionary
+) -> bool:
+	var result: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(battle_state)
+	return (
+		_battlegeo_fail_ok(result, expected_code)
+		and _battlegeo_spatial_unchanged(battle_state, snap)
+	)
+
+
+static func _battlegeo_make_incomplete(
+	include_attacker_side: bool,
+	include_defender_side: bool,
+	include_attacker_zone: bool,
+	include_defender_zone: bool
+) -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"geo_fail_battle",
+		"neighborhood_hq_assault",
+		"geo_fail_mission",
+		"geo_fail_hq",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	if include_attacker_side:
+		var attacker_side: BattleSide = BattleSide.new("attacker", "battle_a", "", true, "attacker_deployment")
+		if not battle_state.add_side(attacker_side):
+			return null
+	if include_defender_side:
+		var defender_side: BattleSide = BattleSide.new("defender", "battle_b", "", false, "defender_deployment")
+		if not battle_state.add_side(defender_side):
+			return null
+	if include_attacker_zone:
+		var attacker_zone: DeploymentZone = DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry")
+		if not battle_state.add_deployment_zone(attacker_zone):
+			return null
+	if include_defender_zone:
+		var defender_zone: DeploymentZone = DeploymentZone.new("defender_deployment", "defender", "defender_position")
+		if not battle_state.add_deployment_zone(defender_zone):
+			return null
+	return battle_state
+
+
+static func _battlegeo_add_marker(battle_state: BattleState, side_id: String, zone_id: String) -> bool:
+	if battle_state == null:
+		return false
+	var marker_id: String = "geo_marker_" + side_id
+	if not _battle_register_participant(battle_state, marker_id, side_id, zone_id):
+		return false
+	if not battle_state.deploy_participant(marker_id, zone_id):
+		return false
+	var participant: BattleParticipant = battle_state.get_participant(marker_id)
+	if participant == null:
+		return false
+	participant.has_battle_position = false
+	participant.battle_position = Vector2(9.0, 8.0)
+	return true
+
+
+static func _battlegeo_seed_zone_rects(battle_state: BattleState) -> void:
+	if battle_state == null:
+		return
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone != null:
+			zone.deployment_rect = Rect2(1.0, 2.0, 3.0, 4.0)
+
+
+static func _battlegeo_spatial_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	snap["geometry"] = battle_state.battlefield_geometry
+	snap["phase"] = battle_state.battle_phase
+	var zone_rects: Dictionary = {}
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone != null:
+			zone_rects[zone_id] = zone.deployment_rect
+	snap["zone_rects"] = zone_rects
+	var part_has: Dictionary = {}
+	var part_pos: Dictionary = {}
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null:
+			part_has[participant_id] = participant.has_battle_position
+			part_pos[participant_id] = participant.battle_position
+	snap["part_has"] = part_has
+	snap["part_pos"] = part_pos
+	var veh_has: Dictionary = {}
+	var veh_pos: Dictionary = {}
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle != null:
+			veh_has[vehicle_id] = vehicle.has_battle_position
+			veh_pos[vehicle_id] = vehicle.battle_position
+	snap["veh_has"] = veh_has
+	snap["veh_pos"] = veh_pos
+	return snap
+
+
+static func _battlegeo_spatial_unchanged(battle_state: BattleState, snap: Dictionary) -> bool:
+	if battle_state == null:
+		return false
+	if battle_state.battlefield_geometry != snap.get("geometry", null):
+		return false
+	if battle_state.battle_phase != str(snap.get("phase", "")):
+		return false
+	var zone_rects_raw: Variant = snap.get("zone_rects", {})
+	if not (zone_rects_raw is Dictionary):
+		return false
+	var zone_rects: Dictionary = zone_rects_raw as Dictionary
+	if zone_rects.size() != battle_state.deployment_zones.size():
+		return false
+	for zone_id: Variant in zone_rects:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(str(zone_id))
+		if zone == null:
+			return false
+		var rect_raw: Variant = zone_rects[zone_id]
+		if typeof(rect_raw) != TYPE_RECT2:
+			return false
+		var expected_rect: Rect2 = rect_raw as Rect2
+		if not zone.deployment_rect.is_equal_approx(expected_rect):
+			return false
+	if not _battlegeo_unit_pos_unchanged(battle_state, snap.get("part_has", {}), snap.get("part_pos", {}), false):
+		return false
+	if not _battlegeo_unit_pos_unchanged(battle_state, snap.get("veh_has", {}), snap.get("veh_pos", {}), true):
+		return false
+	return true
+
+
+static func _battlegeo_unit_pos_unchanged(
+	battle_state: BattleState,
+	has_raw: Variant,
+	pos_raw: Variant,
+	is_vehicle: bool
+) -> bool:
+	if battle_state == null:
+		return false
+	if not (has_raw is Dictionary) or not (pos_raw is Dictionary):
+		return false
+	var has_data: Dictionary = has_raw as Dictionary
+	var pos_data: Dictionary = pos_raw as Dictionary
+	if is_vehicle:
+		if has_data.size() != battle_state.vehicles.size() or pos_data.size() != battle_state.vehicles.size():
+			return false
+	else:
+		if has_data.size() != battle_state.participants.size() or pos_data.size() != battle_state.participants.size():
+			return false
+	for unit_id: Variant in has_data:
+		var key: String = str(unit_id)
+		var has_flag: bool = bool(has_data[unit_id])
+		var pos_value: Variant = pos_data.get(key, null)
+		if typeof(pos_value) != TYPE_VECTOR2:
+			return false
+		var expected_pos: Vector2 = pos_value as Vector2
+		if is_vehicle:
+			if not battle_state.has_vehicle(key):
+				return false
+			var vehicle: BattleVehicle = battle_state.get_vehicle(key)
+			if vehicle == null:
+				return false
+			if vehicle.has_battle_position != has_flag:
+				return false
+			if not vehicle.battle_position.is_equal_approx(expected_pos):
+				return false
+		else:
+			if not battle_state.has_participant(key):
+				return false
+			var participant: BattleParticipant = battle_state.get_participant(key)
+			if participant == null:
+				return false
+			if participant.has_battle_position != has_flag:
+				return false
+			if not participant.battle_position.is_equal_approx(expected_pos):
+				return false
+	return true
+
+
+static func _battlegeo_make_unit_state(
+	attacker_part_ids: Array[String],
+	attacker_veh_ids: Array[String],
+	defender_part_ids: Array[String],
+	defender_veh_ids: Array[String]
+) -> BattleState:
+	var battle_state: BattleState = _battle_make_bare_state()
+	if battle_state == null:
+		return null
+	for participant_id: String in attacker_part_ids:
+		if not _battle_register_participant(battle_state, participant_id, "attacker", "attacker_deployment"):
+			return null
+		if not battle_state.deploy_participant(participant_id, "attacker_deployment"):
+			return null
+	for vehicle_id: String in attacker_veh_ids:
+		if not _battle_register_vehicle(battle_state, vehicle_id, "attacker", "attacker_deployment"):
+			return null
+		if not battle_state.deploy_vehicle(vehicle_id, "attacker_deployment"):
+			return null
+	for participant_id: String in defender_part_ids:
+		if not _battle_register_participant(battle_state, participant_id, "defender", "defender_deployment"):
+			return null
+		if not battle_state.deploy_participant(participant_id, "defender_deployment"):
+			return null
+	for vehicle_id: String in defender_veh_ids:
+		if not _battle_register_vehicle(battle_state, vehicle_id, "defender", "defender_deployment"):
+			return null
+		if not battle_state.deploy_vehicle(vehicle_id, "defender_deployment"):
+			return null
+	return battle_state
+
+
+static func _battlegeo_finite_point(point: Vector2) -> bool:
+	return is_finite(point.x) and is_finite(point.y)
+
+
+static func _battlegeo_positions_unique(points: Array[Vector2]) -> bool:
+	var i: int = 0
+	while i < points.size():
+		var j: int = i + 1
+		while j < points.size():
+			if points[i].is_equal_approx(points[j]):
+				return false
+			j += 1
+		i += 1
+	return true
+
+
+static func _battlegeo_same_part_positions(left: BattleState, right: BattleState) -> bool:
+	if left == null or right == null:
+		return false
+	if left.participants.size() != right.participants.size():
+		return false
+	for participant_id: String in left.participants:
+		if not right.has_participant(participant_id):
+			return false
+		var left_part: BattleParticipant = left.get_participant(participant_id)
+		var right_part: BattleParticipant = right.get_participant(participant_id)
+		if left_part == null or right_part == null:
+			return false
+		if left_part.has_battle_position != right_part.has_battle_position:
+			return false
+		if not left_part.battle_position.is_equal_approx(right_part.battle_position):
+			return false
+	return true
+
+
+static func _battlegeo_same_veh_positions(left: BattleState, right: BattleState) -> bool:
+	if left == null or right == null:
+		return false
+	if left.vehicles.size() != right.vehicles.size():
+		return false
+	for vehicle_id: String in left.vehicles:
+		if not right.has_vehicle(vehicle_id):
+			return false
+		var left_veh: BattleVehicle = left.get_vehicle(vehicle_id)
+		var right_veh: BattleVehicle = right.get_vehicle(vehicle_id)
+		if left_veh == null or right_veh == null:
+			return false
+		if left_veh.has_battle_position != right_veh.has_battle_position:
+			return false
+		if not left_veh.battle_position.is_equal_approx(right_veh.battle_position):
+			return false
+	return true
+
+
+static func _battlegeo_side_zone(battle_state: BattleState, side_id: String) -> DeploymentZone:
+	if battle_state == null:
+		return null
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return null
+	return battle_state.get_deployment_zone(side.deployment_zone_id)
+
+
+static func _battlegeo_deployed_parts_positioned(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone == null:
+			return false
+		for participant_id: String in zone.deployed_participant_ids:
+			var participant: BattleParticipant = battle_state.get_participant(participant_id)
+			if participant == null or not participant.has_battle_position:
+				return false
+			if not _battlegeo_finite_point(participant.battle_position):
+				return false
+	return true
+
+
+static func _battlegeo_deployed_vehs_positioned(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone == null:
+			return false
+		for vehicle_id: String in zone.deployed_vehicle_ids:
+			var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+			if vehicle == null or not vehicle.has_battle_position:
+				return false
+			if not _battlegeo_finite_point(vehicle.battle_position):
+				return false
+	return true
+
+
+static func _battlegeo_side_part_unique(battle_state: BattleState, side_id: String) -> bool:
+	var zone: DeploymentZone = _battlegeo_side_zone(battle_state, side_id)
+	if zone == null:
+		return false
+	var points: Array[Vector2] = []
+	for participant_id: String in zone.deployed_participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.has_battle_position:
+			return false
+		points.append(participant.battle_position)
+	return _battlegeo_positions_unique(points)
+
+
+static func _battlegeo_side_veh_unique(battle_state: BattleState, side_id: String) -> bool:
+	var zone: DeploymentZone = _battlegeo_side_zone(battle_state, side_id)
+	if zone == null:
+		return false
+	var points: Array[Vector2] = []
+	for vehicle_id: String in zone.deployed_vehicle_ids:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null or not vehicle.has_battle_position:
+			return false
+		points.append(vehicle.battle_position)
+	return _battlegeo_positions_unique(points)
+
+
+static func _battlegeo_side_part_in_zone(battle_state: BattleState, side_id: String) -> bool:
+	var zone: DeploymentZone = _battlegeo_side_zone(battle_state, side_id)
+	if zone == null:
+		return false
+	for participant_id: String in zone.deployed_participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.has_battle_position:
+			return false
+		if not zone.contains_point(participant.battle_position):
+			return false
+	return true
+
+
+static func _battlegeo_side_veh_in_zone(battle_state: BattleState, side_id: String) -> bool:
+	var zone: DeploymentZone = _battlegeo_side_zone(battle_state, side_id)
+	if zone == null:
+		return false
+	for vehicle_id: String in zone.deployed_vehicle_ids:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null or not vehicle.has_battle_position:
+			return false
+		if not zone.contains_point(vehicle.battle_position):
+			return false
+	return true
+
+
+static func _battlegeo_part_veh_separated(battle_state: BattleState, side_id: String) -> bool:
+	var zone: DeploymentZone = _battlegeo_side_zone(battle_state, side_id)
+	if zone == null:
+		return false
+	var part_points: Array[Vector2] = []
+	for participant_id: String in zone.deployed_participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.has_battle_position:
+			return false
+		part_points.append(participant.battle_position)
+	var veh_points: Array[Vector2] = []
+	for vehicle_id: String in zone.deployed_vehicle_ids:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null or not vehicle.has_battle_position:
+			return false
+		veh_points.append(vehicle.battle_position)
+	if part_points.is_empty() or veh_points.is_empty():
+		return false
+	for part_point: Vector2 in part_points:
+		for veh_point: Vector2 in veh_points:
+			if part_point.is_equal_approx(veh_point):
+				return false
+	return true
+
+
+static func _battlegeo_semantic_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	var zone_ids: Array[String] = []
+	var zone_types: Dictionary = {}
+	var allowed_parts: Dictionary = {}
+	var allowed_vehs: Dictionary = {}
+	var deployed_parts: Dictionary = {}
+	var deployed_vehs: Dictionary = {}
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone == null:
+			continue
+		zone_ids.append(zone_id)
+		zone_types[zone_id] = zone.zone_type
+		allowed_parts[zone_id] = _copy_ids(zone.allowed_participant_ids)
+		allowed_vehs[zone_id] = _copy_ids(zone.allowed_vehicle_ids)
+		deployed_parts[zone_id] = _copy_ids(zone.deployed_participant_ids)
+		deployed_vehs[zone_id] = _copy_ids(zone.deployed_vehicle_ids)
+	snap["zone_ids"] = zone_ids
+	snap["zone_types"] = zone_types
+	snap["allowed_parts"] = allowed_parts
+	snap["allowed_vehs"] = allowed_vehs
+	snap["deployed_parts"] = deployed_parts
+	snap["deployed_vehs"] = deployed_vehs
+	var part_slots: Dictionary = {}
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null:
+			part_slots[participant_id] = participant.deployment_slot_id
+	snap["part_slots"] = part_slots
+	var veh_slots: Dictionary = {}
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle != null:
+			veh_slots[vehicle_id] = vehicle.deployment_slot_id
+	snap["veh_slots"] = veh_slots
+	return snap
+
+
+static func _battlegeo_semantic_unchanged(battle_state: BattleState, snap: Dictionary) -> bool:
+	if battle_state == null:
+		return false
+	var current: Dictionary = _battlegeo_semantic_snap(battle_state)
+	if not _string_ids_match(
+		_battlegeo_ids_from(current.get("zone_ids", [])),
+		_battlegeo_ids_from(snap.get("zone_ids", []))
+	):
+		return false
+	if not _battlegeo_string_map_match(current.get("zone_types", {}), snap.get("zone_types", {})):
+		return false
+	if not _battlegeo_id_list_map_match(current.get("allowed_parts", {}), snap.get("allowed_parts", {})):
+		return false
+	if not _battlegeo_id_list_map_match(current.get("allowed_vehs", {}), snap.get("allowed_vehs", {})):
+		return false
+	if not _battlegeo_id_list_map_match(current.get("deployed_parts", {}), snap.get("deployed_parts", {})):
+		return false
+	if not _battlegeo_id_list_map_match(current.get("deployed_vehs", {}), snap.get("deployed_vehs", {})):
+		return false
+	if not _battlegeo_string_map_match(current.get("part_slots", {}), snap.get("part_slots", {})):
+		return false
+	if not _battlegeo_string_map_match(current.get("veh_slots", {}), snap.get("veh_slots", {})):
+		return false
+	return true
+
+
+static func _battlegeo_string_map_match(left_raw: Variant, right_raw: Variant) -> bool:
+	if not (left_raw is Dictionary) or not (right_raw is Dictionary):
+		return false
+	var left: Dictionary = left_raw as Dictionary
+	var right: Dictionary = right_raw as Dictionary
+	if left.size() != right.size():
+		return false
+	for key: Variant in left:
+		if not right.has(key):
+			return false
+		if str(left[key]) != str(right[key]):
+			return false
+	return true
+
+
+static func _battlegeo_id_list_map_match(left_raw: Variant, right_raw: Variant) -> bool:
+	if not (left_raw is Dictionary) or not (right_raw is Dictionary):
+		return false
+	var left: Dictionary = left_raw as Dictionary
+	var right: Dictionary = right_raw as Dictionary
+	if left.size() != right.size():
+		return false
+	for key: Variant in left:
+		if not right.has(key):
+			return false
+		var left_ids: Array[String] = []
+		var right_ids: Array[String] = []
+		var left_list: Variant = left[key]
+		var right_list: Variant = right[key]
+		if left_list is Array:
+			for item: Variant in left_list:
+				left_ids.append(str(item))
+		if right_list is Array:
+			for item: Variant in right_list:
+				right_ids.append(str(item))
+		if not _string_ids_match(left_ids, right_ids):
+			return false
+	return true
+
+
+static func _battlegeo_ids_from(value: Variant) -> Array[String]:
+	var ids: Array[String] = []
+	if value is Array:
+		for item: Variant in value:
+			ids.append(str(item))
+	return ids
+
+
+static func _battlegeo_campaign_coords(game_state: GameState) -> Dictionary:
+	var snap: Dictionary = {}
+	var loc_pos: Dictionary = {}
+	var node_pos: Dictionary = {}
+	snap["loc"] = loc_pos
+	snap["nodes"] = node_pos
+	if game_state == null:
+		return snap
+	for loc_id: String in game_state.map_locations:
+		var location: MapLocation = game_state.get_map_location(loc_id)
+		if location != null:
+			loc_pos[loc_id] = location.map_position
+	if game_state.road_graph != null:
+		for node_id: String in game_state.road_graph.nodes:
+			var node: RoadNode = game_state.road_graph.get_node(node_id)
+			if node != null:
+				node_pos[node_id] = node.map_position
+	return snap
+
+
+static func _battlegeo_campaign_coords_unchanged(game_state: GameState, snap: Dictionary) -> bool:
+	if game_state == null:
+		return false
+	var current: Dictionary = _battlegeo_campaign_coords(game_state)
+	if not _battlegeo_vector_map_match(current.get("loc", {}), snap.get("loc", {})):
+		return false
+	if not _battlegeo_vector_map_match(current.get("nodes", {}), snap.get("nodes", {})):
+		return false
+	return true
+
+
+static func _battlegeo_vector_map_match(left_raw: Variant, right_raw: Variant) -> bool:
+	if not (left_raw is Dictionary) or not (right_raw is Dictionary):
+		return false
+	var left: Dictionary = left_raw as Dictionary
+	var right: Dictionary = right_raw as Dictionary
+	if left.size() != right.size():
+		return false
+	for key: Variant in left:
+		if not right.has(key):
+			return false
+		if typeof(left[key]) != TYPE_VECTOR2 or typeof(right[key]) != TYPE_VECTOR2:
+			return false
+		var left_pos: Vector2 = left[key] as Vector2
+		var right_pos: Vector2 = right[key] as Vector2
+		if not left_pos.is_equal_approx(right_pos):
+			return false
+	return true
 

@@ -7,6 +7,8 @@ var faction_id: String = ""
 var side_id: String = ""
 var vehicle_type_id: String = ""
 var deployment_slot_id: String = ""
+var has_battle_position: bool = false
+var battle_position: Vector2 = Vector2.ZERO
 
 
 func _init(
