@@ -5881,6 +5881,244 @@ static func run() -> Dictionary:
 		and battle_helper_fail_res.error_message == "missing mission"
 	)
 
+	var battle_dep_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_game: GameState = battle_dep_pack.get("game_state", null) as GameState
+	var battle_dep_force: TravelingForce = battle_dep_pack.get("force", null) as TravelingForce
+	var battle_dep_bs: BattleState = battle_dep_pack.get("battle_state", null) as BattleState
+	var battle_dep_snap: Dictionary = _battle_campaign_snapshot(battle_dep_game, battle_dep_force, "battle_mission")
+	var battle_dep_att_zone_id: String = "attacker_deployment"
+	var battle_dep_def_zone_id: String = "defender_deployment"
+	var battle_deploy_participant_ok: bool = false
+	var battle_deploy_vehicle_ok: bool = false
+	var battle_deploy_query_ok: bool = false
+	var battle_deploy_phase_stays_ok: bool = false
+	if battle_dep_bs != null:
+		var battle_dep_p_z: bool = battle_dep_bs.deploy_participant("battle_sol_z", battle_dep_att_zone_id)
+		var battle_dep_p_a: bool = battle_dep_bs.deploy_participant("battle_sol_a", battle_dep_att_zone_id)
+		battle_deploy_participant_ok = (
+			battle_dep_p_z
+			and battle_dep_p_a
+			and battle_dep_bs.get_participant("battle_sol_z").deployment_slot_id == battle_dep_att_zone_id
+			and battle_dep_bs.get_participant("battle_sol_a").deployment_slot_id == battle_dep_att_zone_id
+			and battle_dep_bs.get_participant("battle_sol_m").deployment_slot_id.is_empty()
+			and battle_dep_bs.get_participant("battle_sol_z").is_alive
+			and not battle_dep_bs.get_participant("battle_sol_z").is_wounded
+		)
+		var battle_dep_v_z: bool = battle_dep_bs.deploy_vehicle("battle_veh_z", battle_dep_att_zone_id)
+		var battle_dep_v_a: bool = battle_dep_bs.deploy_vehicle("battle_veh_a", battle_dep_att_zone_id)
+		battle_deploy_vehicle_ok = (
+			battle_dep_v_z
+			and battle_dep_v_a
+			and battle_dep_bs.get_vehicle("battle_veh_z").deployment_slot_id == battle_dep_att_zone_id
+			and battle_dep_bs.get_vehicle("battle_veh_a").deployment_slot_id == battle_dep_att_zone_id
+			and battle_dep_bs.get_vehicle("battle_veh_m").deployment_slot_id.is_empty()
+		)
+		var battle_dep_p_ids: Array[String] = battle_dep_bs.get_zone_deployed_participant_ids(battle_dep_att_zone_id)
+		var battle_dep_v_ids: Array[String] = battle_dep_bs.get_zone_deployed_vehicle_ids(battle_dep_att_zone_id)
+		var battle_dep_p_expected: Array[String] = ["battle_sol_z", "battle_sol_a"]
+		var battle_dep_v_expected: Array[String] = ["battle_veh_z", "battle_veh_a"]
+		battle_deploy_query_ok = (
+			battle_deploy_participant_ok
+			and battle_deploy_vehicle_ok
+			and battle_dep_bs.is_participant_deployed("battle_sol_z")
+			and battle_dep_bs.is_participant_deployed("battle_sol_a")
+			and not battle_dep_bs.is_participant_deployed("battle_sol_m")
+			and not battle_dep_bs.is_participant_deployed("battle_missing")
+			and battle_dep_bs.get_participant_deployment_zone_id("battle_sol_z") == battle_dep_att_zone_id
+			and battle_dep_bs.get_participant_deployment_zone_id("battle_sol_a") == battle_dep_att_zone_id
+			and battle_dep_bs.get_participant_deployment_zone_id("battle_sol_m").is_empty()
+			and battle_dep_bs.get_participant_deployment_zone_id("battle_missing").is_empty()
+			and battle_dep_bs.is_vehicle_deployed("battle_veh_z")
+			and battle_dep_bs.is_vehicle_deployed("battle_veh_a")
+			and not battle_dep_bs.is_vehicle_deployed("battle_veh_m")
+			and not battle_dep_bs.is_vehicle_deployed("battle_missing")
+			and battle_dep_bs.get_vehicle_deployment_zone_id("battle_veh_z") == battle_dep_att_zone_id
+			and battle_dep_bs.get_vehicle_deployment_zone_id("battle_veh_a") == battle_dep_att_zone_id
+			and battle_dep_bs.get_vehicle_deployment_zone_id("battle_veh_m").is_empty()
+			and _string_ids_match(battle_dep_p_ids, battle_dep_p_expected)
+			and _string_ids_match(battle_dep_v_ids, battle_dep_v_expected)
+			and battle_dep_bs.get_zone_deployed_participant_ids(battle_dep_def_zone_id).is_empty()
+			and battle_dep_bs.get_zone_deployed_vehicle_ids(battle_dep_def_zone_id).is_empty()
+			and battle_dep_bs.get_zone_deployed_participant_ids("missing_zone").is_empty()
+			and battle_dep_bs.get_deployment_zone(battle_dep_att_zone_id).has_deployed_participant("battle_sol_z")
+			and battle_dep_bs.get_deployment_zone(battle_dep_att_zone_id).has_deployed_vehicle("battle_veh_a")
+		)
+		battle_dep_p_ids.append("mutated")
+		battle_deploy_query_ok = (
+			battle_deploy_query_ok
+			and _string_ids_match(
+				battle_dep_bs.get_zone_deployed_participant_ids(battle_dep_att_zone_id),
+				battle_dep_p_expected
+			)
+		)
+		battle_deploy_phase_stays_ok = (
+			battle_deploy_participant_ok
+			and battle_deploy_vehicle_ok
+			and battle_dep_bs.battle_phase == "deployment"
+			and not battle_dep_bs.has_method("advance_phase")
+		)
+	var battle_deploy_immutability_ok: bool = (
+		battle_deploy_participant_ok
+		and battle_deploy_vehicle_ok
+		and _battle_campaign_unchanged(battle_dep_game, battle_dep_snap, battle_dep_force, "battle_mission")
+		and battle_dep_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		and battle_dep_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		and (battle_dep_game.get_map_location("battle_hq") as NeighborhoodHQ).owner_faction_id == "battle_b"
+	)
+	var battle_dep_persist_data: Dictionary = battle_dep_game.to_dict()
+	var battle_dep_restored: GameState = GameState.new()
+	battle_dep_restored.from_dict(battle_dep_persist_data)
+	var battle_deploy_persist_ok: bool = (
+		battle_deploy_participant_ok
+		and _battle_serialized_campaign_keys_only(battle_dep_persist_data)
+		and not _battle_data_has_tactical_trace(battle_dep_persist_data)
+		and battle_dep_restored.has_mission("battle_mission")
+		and battle_dep_restored.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		and battle_dep_restored.has_soldier("battle_sol_z")
+		and battle_dep_restored.get_soldier("battle_sol_z").to_dict().get("deployment_slot_id", null) == null
+	)
+
+	var battle_dep_side_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_side_bs: BattleState = battle_dep_side_pack.get("battle_state", null) as BattleState
+	var battle_deploy_wrong_side_ok: bool = false
+	if battle_dep_side_bs != null:
+		var battle_dep_side_def: DeploymentZone = battle_dep_side_bs.get_deployment_zone("defender_deployment")
+		battle_dep_side_def.allowed_participant_ids.append("battle_sol_a")
+		battle_dep_side_def.allowed_vehicle_ids.append("battle_veh_a")
+		var battle_dep_side_before: Dictionary = _battle_deploy_assignment_snapshot(battle_dep_side_bs)
+		var battle_dep_side_p: bool = battle_dep_side_bs.deploy_participant("battle_sol_a", "defender_deployment")
+		var battle_dep_side_v: bool = battle_dep_side_bs.deploy_vehicle("battle_veh_a", "defender_deployment")
+		battle_deploy_wrong_side_ok = (
+			not battle_dep_side_p
+			and not battle_dep_side_v
+			and _battle_deploy_assignment_unchanged(battle_dep_side_bs, battle_dep_side_before)
+		)
+
+	var battle_dep_unk_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_unk_bs: BattleState = battle_dep_unk_pack.get("battle_state", null) as BattleState
+	var battle_deploy_unknown_ok: bool = false
+	if battle_dep_unk_bs != null:
+		var battle_dep_unk_before: Dictionary = _battle_deploy_assignment_snapshot(battle_dep_unk_bs)
+		battle_deploy_unknown_ok = (
+			not battle_dep_unk_bs.deploy_participant("", "attacker_deployment")
+			and not battle_dep_unk_bs.deploy_participant("battle_sol_a", "")
+			and not battle_dep_unk_bs.deploy_participant("battle_missing_sol", "attacker_deployment")
+			and not battle_dep_unk_bs.deploy_participant("battle_sol_a", "missing_zone")
+			and not battle_dep_unk_bs.deploy_vehicle("", "attacker_deployment")
+			and not battle_dep_unk_bs.deploy_vehicle("battle_veh_a", "")
+			and not battle_dep_unk_bs.deploy_vehicle("battle_missing_veh", "attacker_deployment")
+			and not battle_dep_unk_bs.deploy_vehicle("battle_veh_a", "missing_zone")
+			and _battle_deploy_assignment_unchanged(battle_dep_unk_bs, battle_dep_unk_before)
+		)
+
+	var battle_dep_deny_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_deny_bs: BattleState = battle_dep_deny_pack.get("battle_state", null) as BattleState
+	var battle_deploy_disallowed_ok: bool = false
+	if battle_dep_deny_bs != null:
+		var battle_dep_deny_zone: DeploymentZone = battle_dep_deny_bs.get_deployment_zone("attacker_deployment")
+		battle_dep_deny_zone.allowed_participant_ids.erase("battle_sol_a")
+		battle_dep_deny_zone.allowed_vehicle_ids.erase("battle_veh_a")
+		var battle_dep_deny_before: Dictionary = _battle_deploy_assignment_snapshot(battle_dep_deny_bs)
+		battle_deploy_disallowed_ok = (
+			not battle_dep_deny_bs.deploy_participant("battle_sol_a", "attacker_deployment")
+			and not battle_dep_deny_bs.deploy_vehicle("battle_veh_a", "attacker_deployment")
+			and _battle_deploy_assignment_unchanged(battle_dep_deny_bs, battle_dep_deny_before)
+			and battle_dep_deny_bs.deploy_participant("battle_sol_z", "attacker_deployment")
+			and battle_dep_deny_bs.deploy_vehicle("battle_veh_z", "attacker_deployment")
+		)
+
+	var battle_dep_dup_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_dup_bs: BattleState = battle_dep_dup_pack.get("battle_state", null) as BattleState
+	var battle_deploy_duplicate_ok: bool = false
+	if battle_dep_dup_bs != null:
+		var battle_dep_dup_first_p: bool = battle_dep_dup_bs.deploy_participant("battle_sol_a", "attacker_deployment")
+		var battle_dep_dup_first_v: bool = battle_dep_dup_bs.deploy_vehicle("battle_veh_a", "attacker_deployment")
+		var battle_dep_dup_before: Dictionary = _battle_deploy_assignment_snapshot(battle_dep_dup_bs)
+		battle_deploy_duplicate_ok = (
+			battle_dep_dup_first_p
+			and battle_dep_dup_first_v
+			and not battle_dep_dup_bs.deploy_participant("battle_sol_a", "attacker_deployment")
+			and not battle_dep_dup_bs.deploy_vehicle("battle_veh_a", "attacker_deployment")
+			and _battle_deploy_assignment_unchanged(battle_dep_dup_bs, battle_dep_dup_before)
+			and _string_ids_match(battle_dep_dup_bs.get_zone_deployed_participant_ids("attacker_deployment"), ["battle_sol_a"])
+			and _string_ids_match(battle_dep_dup_bs.get_zone_deployed_vehicle_ids("attacker_deployment"), ["battle_veh_a"])
+		)
+
+	var battle_dep_phase_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_phase_bs: BattleState = battle_dep_phase_pack.get("battle_state", null) as BattleState
+	var battle_deploy_phase_ok: bool = false
+	if battle_dep_phase_bs != null:
+		battle_dep_phase_bs.battle_phase = "active"
+		var battle_dep_phase_before: Dictionary = _battle_deploy_assignment_snapshot(battle_dep_phase_bs)
+		battle_deploy_phase_ok = (
+			not battle_dep_phase_bs.deploy_participant("battle_sol_a", "attacker_deployment")
+			and not battle_dep_phase_bs.deploy_vehicle("battle_veh_a", "attacker_deployment")
+			and _battle_deploy_assignment_unchanged(battle_dep_phase_bs, battle_dep_phase_before)
+			and battle_dep_phase_bs.battle_phase == "active"
+		)
+
+	var battle_dep_partial_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_partial_game: GameState = battle_dep_partial_pack.get("game_state", null) as GameState
+	var battle_dep_partial_force: TravelingForce = battle_dep_partial_pack.get("force", null) as TravelingForce
+	var battle_dep_partial_bs: BattleState = battle_dep_partial_pack.get("battle_state", null) as BattleState
+	var battle_dep_partial_campaign: Dictionary = _battle_campaign_snapshot(
+		battle_dep_partial_game, battle_dep_partial_force, "battle_mission"
+	)
+	var battle_deploy_no_partial_ok: bool = false
+	if battle_dep_partial_bs != null:
+		var battle_dep_partial_before: Dictionary = _battle_deploy_assignment_snapshot(battle_dep_partial_bs)
+		var battle_dep_partial_failed: bool = (
+			not battle_dep_partial_bs.deploy_participant("battle_sol_a", "defender_deployment")
+			and not battle_dep_partial_bs.deploy_vehicle("battle_veh_a", "defender_deployment")
+			and not battle_dep_partial_bs.deploy_participant("battle_missing", "attacker_deployment")
+			and not battle_dep_partial_bs.deploy_vehicle("battle_missing", "attacker_deployment")
+			and not battle_dep_partial_bs.deploy_participant("battle_sol_a", "missing_zone")
+			and not battle_dep_partial_bs.deploy_vehicle("battle_veh_a", "missing_zone")
+		)
+		battle_deploy_no_partial_ok = (
+			battle_dep_partial_failed
+			and _battle_deploy_assignment_unchanged(battle_dep_partial_bs, battle_dep_partial_before)
+			and _battle_campaign_unchanged(
+				battle_dep_partial_game, battle_dep_partial_campaign, battle_dep_partial_force, "battle_mission"
+			)
+			and battle_dep_partial_bs.battle_phase == "deployment"
+		)
+
+	var battle_dep_det_a_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_det_b_pack: Dictionary = _battle_create_ready_pack()
+	var battle_dep_det_a: BattleState = battle_dep_det_a_pack.get("battle_state", null) as BattleState
+	var battle_dep_det_b: BattleState = battle_dep_det_b_pack.get("battle_state", null) as BattleState
+	var battle_deploy_determinism_ok: bool = false
+	if battle_dep_det_a != null and battle_dep_det_b != null:
+		var battle_dep_det_a_ok: bool = (
+			battle_dep_det_a.deploy_participant("battle_sol_z", "attacker_deployment")
+			and battle_dep_det_a.deploy_participant("battle_sol_a", "attacker_deployment")
+			and battle_dep_det_a.deploy_participant("battle_sol_m", "attacker_deployment")
+			and battle_dep_det_a.deploy_vehicle("battle_veh_z", "attacker_deployment")
+			and battle_dep_det_a.deploy_vehicle("battle_veh_a", "attacker_deployment")
+			and battle_dep_det_a.deploy_vehicle("battle_veh_m", "attacker_deployment")
+		)
+		var battle_dep_det_b_ok: bool = (
+			battle_dep_det_b.deploy_participant("battle_sol_z", "attacker_deployment")
+			and battle_dep_det_b.deploy_participant("battle_sol_a", "attacker_deployment")
+			and battle_dep_det_b.deploy_participant("battle_sol_m", "attacker_deployment")
+			and battle_dep_det_b.deploy_vehicle("battle_veh_z", "attacker_deployment")
+			and battle_dep_det_b.deploy_vehicle("battle_veh_a", "attacker_deployment")
+			and battle_dep_det_b.deploy_vehicle("battle_veh_m", "attacker_deployment")
+		)
+		var battle_dep_det_p_order: Array[String] = ["battle_sol_z", "battle_sol_a", "battle_sol_m"]
+		var battle_dep_det_v_order: Array[String] = ["battle_veh_z", "battle_veh_a", "battle_veh_m"]
+		battle_deploy_determinism_ok = (
+			battle_dep_det_a_ok
+			and battle_dep_det_b_ok
+			and _string_ids_match(battle_dep_det_a.get_zone_deployed_participant_ids("attacker_deployment"), battle_dep_det_p_order)
+			and _string_ids_match(battle_dep_det_b.get_zone_deployed_participant_ids("attacker_deployment"), battle_dep_det_p_order)
+			and _string_ids_match(battle_dep_det_a.get_zone_deployed_vehicle_ids("attacker_deployment"), battle_dep_det_v_order)
+			and _string_ids_match(battle_dep_det_b.get_zone_deployed_vehicle_ids("attacker_deployment"), battle_dep_det_v_order)
+			and battle_dep_det_a.get_participant_deployment_zone_id("battle_sol_z") == battle_dep_det_b.get_participant_deployment_zone_id("battle_sol_z")
+			and battle_dep_det_a.get_vehicle_deployment_zone_id("battle_veh_m") == battle_dep_det_b.get_vehicle_deployment_zone_id("battle_veh_m")
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -6539,6 +6777,19 @@ static func run() -> Dictionary:
 		"battle_boundary_ok": battle_boundary_ok,
 		"battle_result_helper_ok": battle_result_helper_ok,
 		"battle_no_combat_ok": battle_no_combat_ok,
+		"battle_deploy_participant_ok": battle_deploy_participant_ok,
+		"battle_deploy_vehicle_ok": battle_deploy_vehicle_ok,
+		"battle_deploy_query_ok": battle_deploy_query_ok,
+		"battle_deploy_wrong_side_ok": battle_deploy_wrong_side_ok,
+		"battle_deploy_unknown_ok": battle_deploy_unknown_ok,
+		"battle_deploy_disallowed_ok": battle_deploy_disallowed_ok,
+		"battle_deploy_duplicate_ok": battle_deploy_duplicate_ok,
+		"battle_deploy_phase_ok": battle_deploy_phase_ok,
+		"battle_deploy_no_partial_ok": battle_deploy_no_partial_ok,
+		"battle_deploy_determinism_ok": battle_deploy_determinism_ok,
+		"battle_deploy_immutability_ok": battle_deploy_immutability_ok,
+		"battle_deploy_persist_ok": battle_deploy_persist_ok,
+		"battle_deploy_phase_stays_ok": battle_deploy_phase_stays_ok,
 	}
 
 	var passed := true
@@ -8178,8 +8429,11 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "neighborhood_hq_assault"
 		or text == "attacker_deployment"
 		or text == "defender_deployment"
-		or text == "attacker_entry"
+		or 		text == "attacker_entry"
 		or text == "defender_position"
+		or text == "deployed_participant_ids"
+		or text == "deployed_vehicle_ids"
+		or text == "deployment_slot_id"
 	)
 
 
@@ -8213,4 +8467,100 @@ static func _battle_dict_from_snap(snap: Dictionary, section: String, item_id: S
 	if not (item_data is Dictionary):
 		return empty
 	return item_data as Dictionary
+
+
+static func _battle_create_ready_pack() -> Dictionary:
+	var game_state: GameState = _make_battle_world()
+	DiplomacyService.declare_war(game_state, "battle_a", "battle_b")
+	var force: TravelingForce = _battle_add_force_mission(game_state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(game_state, "battle_mission")
+	var pack: Dictionary = {}
+	pack["game_state"] = game_state
+	pack["force"] = force
+	pack["result"] = result
+	pack["battle_state"] = result.battle_state
+	return pack
+
+
+static func _battle_deploy_assignment_snapshot(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	snap["phase"] = battle_state.battle_phase
+	var participant_slots: Dictionary = {}
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null:
+			participant_slots[participant_id] = participant.deployment_slot_id
+	snap["participant_slots"] = participant_slots
+	var vehicle_slots: Dictionary = {}
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle != null:
+			vehicle_slots[vehicle_id] = vehicle.deployment_slot_id
+	snap["vehicle_slots"] = vehicle_slots
+	var zone_participants: Dictionary = {}
+	var zone_vehicles: Dictionary = {}
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone != null:
+			zone_participants[zone_id] = _copy_ids(zone.deployed_participant_ids)
+			zone_vehicles[zone_id] = _copy_ids(zone.deployed_vehicle_ids)
+	snap["zone_participants"] = zone_participants
+	snap["zone_vehicles"] = zone_vehicles
+	return snap
+
+
+static func _battle_deploy_assignment_unchanged(battle_state: BattleState, snap: Dictionary) -> bool:
+	if battle_state == null:
+		return false
+	if battle_state.battle_phase != str(snap.get("phase", "")):
+		return false
+	var participant_slots: Variant = snap.get("participant_slots", {})
+	if not (participant_slots is Dictionary):
+		return false
+	var participant_slot_data: Dictionary = participant_slots as Dictionary
+	if participant_slot_data.size() != battle_state.participants.size():
+		return false
+	for participant_id: Variant in participant_slot_data:
+		var participant: BattleParticipant = battle_state.get_participant(str(participant_id))
+		if participant == null or participant.deployment_slot_id != str(participant_slot_data[participant_id]):
+			return false
+	var vehicle_slots: Variant = snap.get("vehicle_slots", {})
+	if not (vehicle_slots is Dictionary):
+		return false
+	var vehicle_slot_data: Dictionary = vehicle_slots as Dictionary
+	if vehicle_slot_data.size() != battle_state.vehicles.size():
+		return false
+	for vehicle_id: Variant in vehicle_slot_data:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(str(vehicle_id))
+		if vehicle == null or vehicle.deployment_slot_id != str(vehicle_slot_data[vehicle_id]):
+			return false
+	var zone_participants: Variant = snap.get("zone_participants", {})
+	var zone_vehicles: Variant = snap.get("zone_vehicles", {})
+	if not (zone_participants is Dictionary) or not (zone_vehicles is Dictionary):
+		return false
+	var zone_participant_data: Dictionary = zone_participants as Dictionary
+	var zone_vehicle_data: Dictionary = zone_vehicles as Dictionary
+	if zone_participant_data.size() != battle_state.deployment_zones.size():
+		return false
+	for zone_id: Variant in zone_participant_data:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(str(zone_id))
+		if zone == null:
+			return false
+		var expected_participants: Array[String] = []
+		var participant_data: Variant = zone_participant_data[zone_id]
+		if participant_data is Array:
+			for participant_id: Variant in participant_data:
+				expected_participants.append(str(participant_id))
+		if not _string_ids_match(zone.deployed_participant_ids, expected_participants):
+			return false
+		var expected_vehicles: Array[String] = []
+		var vehicle_data: Variant = (zone_vehicle_data as Dictionary).get(str(zone_id), [])
+		if vehicle_data is Array:
+			for vehicle_id: Variant in vehicle_data:
+				expected_vehicles.append(str(vehicle_id))
+		if not _string_ids_match(zone.deployed_vehicle_ids, expected_vehicles):
+			return false
+	return true
 

@@ -6,6 +6,8 @@ var side_id: String = ""
 var zone_type: String = ""
 var allowed_participant_ids: Array[String] = []
 var allowed_vehicle_ids: Array[String] = []
+var deployed_participant_ids: Array[String] = []
+var deployed_vehicle_ids: Array[String] = []
 
 
 func _init(
@@ -28,3 +30,15 @@ func allows_vehicle(vehicle_id: String) -> bool:
 	if vehicle_id.is_empty():
 		return false
 	return allowed_vehicle_ids.has(vehicle_id)
+
+
+func has_deployed_participant(participant_id: String) -> bool:
+	if participant_id.is_empty():
+		return false
+	return deployed_participant_ids.has(participant_id)
+
+
+func has_deployed_vehicle(vehicle_id: String) -> bool:
+	if vehicle_id.is_empty():
+		return false
+	return deployed_vehicle_ids.has(vehicle_id)
