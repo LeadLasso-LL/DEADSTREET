@@ -61,6 +61,8 @@ const BattleSpatialService := preload("res://battle/geometry/battle_spatial_serv
 const BattleNavigationRequest := preload("res://battle/navigation/battle_navigation_request.gd")
 const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
 const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
+const BattlePathFollowResult := preload("res://battle/navigation/battle_path_follow_result.gd")
+const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
 
 
 static func run() -> Dictionary:
@@ -9631,6 +9633,8 @@ static func run() -> Dictionary:
 		and battlenav_fresh.navigation_waypoint_index == 0
 		and not battlenav_fresh.has_active_navigation_path()
 		and battlenav_fresh.get_current_navigation_waypoint().is_equal_approx(Vector2.ZERO)
+		and battlenav_fresh.has_movement_target_position == false
+		and battlenav_fresh.movement_target_position.is_equal_approx(Vector2.ZERO)
 	)
 	var battlenav_store_p: BattleParticipant = BattleParticipant.new()
 	var battlenav_caller_path: Array[Vector2] = [Vector2(12.0, 8.0), Vector2(18.0, 8.0), Vector2(22.0, 14.0)]
@@ -9693,64 +9697,79 @@ static func run() -> Dictionary:
 		and not battlenav_store_p.has_active_navigation_path()
 	)
 
-	var battlenav_no_steer_ok: bool = false
-	var battlenav_intent_wins_ok: bool = false
-	var battlenav_steer_bs: BattleState = _battlemove_make_state("active")
-	if battlenav_steer_bs != null:
-		var battlenav_steer_p: BattleParticipant = _battlemove_add_participant(
-			battlenav_steer_bs,
-			"nav_steer_p",
+	var battlenav_plan_readonly_ok: bool = false
+	var battlenav_follow_owns_intent_ok: bool = false
+	var battlenav_plan_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_plan_bs != null:
+		var battlenav_plan_p: BattleParticipant = _battlemove_add_participant(
+			battlenav_plan_bs,
+			"nav_plan_p",
 			"attacker"
 		)
-		if battlenav_steer_p != null:
-			battlenav_steer_p.has_battle_position = true
-			battlenav_steer_p.battle_position = Vector2(10.0, 10.0)
-			var battlenav_steer_speed: bool = battlenav_steer_p.set_movement_speed(5.0)
-			var battlenav_steer_intent: bool = battlenav_steer_p.set_movement_intent(Vector2.ZERO)
-			var battlenav_steer_path: Array[Vector2] = [Vector2(40.0, 10.0)]
-			var battlenav_steer_stored: bool = battlenav_steer_p.set_navigation_path(Vector2(40.0, 10.0), battlenav_steer_path)
-			var battlenav_steer_res: BattleRuntimeResult = BattleRuntimeService.advance(battlenav_steer_bs, 1.0)
-			battlenav_no_steer_ok = (
-				battlenav_steer_speed
-				and battlenav_steer_intent
-				and battlenav_steer_stored
-				and battlenav_steer_res != null
-				and battlenav_steer_res.success
-				and battlenav_steer_p.movement_intent.is_equal_approx(Vector2.ZERO)
-				and battlenav_steer_p.velocity.is_equal_approx(Vector2.ZERO)
-				and battlenav_steer_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
-				and battlenav_steer_p.has_navigation_destination
-				and battlenav_steer_p.navigation_destination.is_equal_approx(Vector2(40.0, 10.0))
-				and battlenav_steer_p.navigation_waypoints.size() == 1
+		if battlenav_plan_p != null:
+			battlenav_plan_p.has_battle_position = true
+			battlenav_plan_p.battle_position = Vector2(10.0, 10.0)
+			var battlenav_plan_speed: bool = battlenav_plan_p.set_movement_speed(5.0)
+			var battlenav_plan_intent: bool = battlenav_plan_p.set_movement_intent(Vector2.ZERO)
+			var battlenav_plan_find: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_plan_bs,
+				Vector2(10.0, 10.0),
+				Vector2(40.0, 10.0)
 			)
-		var battlenav_intent_bs: BattleState = _battlemove_make_state("active")
-		var battlenav_intent_p: BattleParticipant = _battlemove_add_participant(
-			battlenav_intent_bs,
-			"nav_intent_p",
+			var battlenav_plan_found: bool = (
+				battlenav_plan_find != null
+				and battlenav_plan_find.success
+				and battlenav_plan_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and battlenav_plan_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+			)
+			var battlenav_plan_stored: bool = false
+			if battlenav_plan_found:
+				battlenav_plan_stored = battlenav_plan_p.set_navigation_path(
+					Vector2(40.0, 10.0),
+					battlenav_plan_find.waypoints
+				)
+			var battlenav_plan_stored_idle: bool = (
+				battlenav_plan_stored
+				and battlenav_plan_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and battlenav_plan_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+				and not battlenav_plan_p.has_movement_target_position
+			)
+			var battlenav_plan_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlenav_plan_bs, 1.0)
+			battlenav_plan_readonly_ok = (
+				battlenav_plan_speed
+				and battlenav_plan_intent
+				and battlenav_plan_found
+				and battlenav_plan_stored_idle
+				and battlenav_plan_rt != null
+				and battlenav_plan_rt.success
+				and battlenav_plan_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlenav_plan_p.battle_position.is_equal_approx(Vector2(15.0, 10.0))
+			)
+		var battlenav_own_bs: BattleState = _battlemove_make_state("active")
+		var battlenav_own_p: BattleParticipant = _battlemove_add_participant(
+			battlenav_own_bs,
+			"nav_own_p",
 			"attacker"
 		)
-		if battlenav_intent_p != null:
-			battlenav_intent_p.has_battle_position = true
-			battlenav_intent_p.battle_position = Vector2(10.0, 10.0)
-			var battlenav_intent_speed: bool = battlenav_intent_p.set_movement_speed(4.0)
-			var battlenav_intent_set: bool = battlenav_intent_p.set_movement_intent(Vector2(0.0, 1.0))
-			var battlenav_intent_path: Array[Vector2] = [Vector2(40.0, 10.0)]
-			var battlenav_intent_stored: bool = battlenav_intent_p.set_navigation_path(
-				Vector2(40.0, 10.0),
-				battlenav_intent_path
-			)
-			var battlenav_intent_res: BattleRuntimeResult = BattleRuntimeService.advance(battlenav_intent_bs, 1.0)
-			battlenav_intent_wins_ok = (
-				battlenav_intent_speed
-				and battlenav_intent_set
-				and battlenav_intent_stored
-				and battlenav_intent_res != null
-				and battlenav_intent_res.success
-				and battlenav_intent_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
-				and battlenav_intent_p.velocity.is_equal_approx(Vector2(0.0, 4.0))
-				and battlenav_intent_p.battle_position.is_equal_approx(Vector2(10.0, 14.0))
-				and battlenav_intent_p.has_navigation_destination
-				and battlenav_intent_p.navigation_destination.is_equal_approx(Vector2(40.0, 10.0))
+		if battlenav_own_p != null:
+			battlenav_own_p.has_battle_position = true
+			battlenav_own_p.battle_position = Vector2(10.0, 10.0)
+			var battlenav_own_speed: bool = battlenav_own_p.set_movement_speed(4.0)
+			var battlenav_own_intent: bool = battlenav_own_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlenav_own_path: Array[Vector2] = [Vector2(40.0, 10.0)]
+			var battlenav_own_stored: bool = battlenav_own_p.set_navigation_path(Vector2(40.0, 10.0), battlenav_own_path)
+			var battlenav_own_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlenav_own_bs, 1.0)
+			battlenav_follow_owns_intent_ok = (
+				battlenav_own_speed
+				and battlenav_own_intent
+				and battlenav_own_stored
+				and battlenav_own_rt != null
+				and battlenav_own_rt.success
+				and battlenav_own_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlenav_own_p.velocity.is_equal_approx(Vector2(4.0, 0.0))
+				and battlenav_own_p.battle_position.is_equal_approx(Vector2(14.0, 10.0))
+				and battlenav_own_p.has_navigation_destination
+				and battlenav_own_p.navigation_destination.is_equal_approx(Vector2(40.0, 10.0))
 			)
 
 	var battlenav_persist_ok: bool = false
@@ -9856,6 +9875,862 @@ static func run() -> Dictionary:
 		and battlenav_fail_res.error_code == "no_path"
 		and battlenav_fail_res.error_message == "Battle navigation failed: no legal path exists."
 	)
+
+	var battlefollow_default_ok: bool = false
+	var battlefollow_fresh: BattleParticipant = BattleParticipant.new()
+	battlefollow_default_ok = (
+		battlefollow_fresh.has_movement_target_position == false
+		and battlefollow_fresh.movement_target_position.is_equal_approx(Vector2.ZERO)
+		and battlefollow_fresh.has_navigation_destination == false
+		and battlefollow_fresh.navigation_waypoints.is_empty()
+		and battlefollow_fresh.navigation_waypoint_index == 0
+		and not battlefollow_fresh.has_active_navigation_path()
+	)
+
+	var battlefollow_fail_null_ok: bool = _battlefollow_fail_ok(
+		BattlePathFollowService.advance(null),
+		"null_battle_state"
+	)
+	var battlefollow_fail_not_active_ok: bool = false
+	var battlefollow_fail_missing_geo_ok: bool = false
+	var battlefollow_fail_invalid_geo_ok: bool = false
+	var battlefollow_deploy_bs: BattleState = _battlemove_make_state("deployment")
+	if battlefollow_deploy_bs != null:
+		var battlefollow_deploy_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_deploy_bs,
+			"follow_dep_p",
+			"attacker"
+		)
+		if battlefollow_deploy_p != null:
+			var battlefollow_dep_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_dep_stored: bool = battlefollow_deploy_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_dep_path
+			)
+			var battlefollow_dep_intent: bool = battlefollow_deploy_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlefollow_dep_target: bool = battlefollow_deploy_p.set_movement_target_position(Vector2(20.0, 10.0))
+			var battlefollow_dep_snap: Dictionary = _battlefollow_part_snap(battlefollow_deploy_p)
+			var battlefollow_dep_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_deploy_bs)
+			battlefollow_fail_not_active_ok = (
+				battlefollow_dep_stored
+				and battlefollow_dep_intent
+				and battlefollow_dep_target
+				and _battlefollow_fail_ok(battlefollow_dep_res, "battle_not_active")
+				and _battlefollow_part_unchanged(battlefollow_deploy_p, battlefollow_dep_snap)
+			)
+	var battlefollow_miss_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_miss_bs != null:
+		var battlefollow_miss_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_miss_bs,
+			"follow_miss_p",
+			"attacker"
+		)
+		if battlefollow_miss_p != null:
+			var battlefollow_miss_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_miss_stored: bool = battlefollow_miss_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_miss_path
+			)
+			var battlefollow_miss_intent: bool = battlefollow_miss_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlefollow_miss_snap: Dictionary = _battlefollow_part_snap(battlefollow_miss_p)
+			battlefollow_miss_bs.battlefield_geometry = null
+			var battlefollow_miss_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_miss_bs)
+			battlefollow_fail_missing_geo_ok = (
+				battlefollow_miss_stored
+				and battlefollow_miss_intent
+				and _battlefollow_fail_ok(battlefollow_miss_res, "missing_battlefield_geometry")
+				and _battlefollow_part_unchanged(battlefollow_miss_p, battlefollow_miss_snap)
+			)
+	var battlefollow_badgeo_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_badgeo_bs != null:
+		var battlefollow_badgeo_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_badgeo_bs,
+			"follow_badgeo_p",
+			"attacker"
+		)
+		if battlefollow_badgeo_p != null:
+			var battlefollow_badgeo_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_badgeo_stored: bool = battlefollow_badgeo_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_badgeo_path
+			)
+			var battlefollow_badgeo_intent: bool = battlefollow_badgeo_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlefollow_badgeo_snap: Dictionary = _battlefollow_part_snap(battlefollow_badgeo_p)
+			battlefollow_badgeo_bs.battlefield_geometry = BattlefieldGeometry.new()
+			var battlefollow_badgeo_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_badgeo_bs)
+			battlefollow_fail_invalid_geo_ok = (
+				battlefollow_badgeo_stored
+				and battlefollow_badgeo_intent
+				and _battlefollow_fail_ok(battlefollow_badgeo_res, "invalid_battlefield_geometry")
+				and _battlefollow_part_unchanged(battlefollow_badgeo_p, battlefollow_badgeo_snap)
+			)
+
+	var battlefollow_nopath_intent_ok: bool = false
+	var battlefollow_manual_intent_ok: bool = false
+	var battlefollow_nopath_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_nopath_bs != null:
+		var battlefollow_nopath_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_nopath_bs,
+			"follow_nopath_p",
+			"attacker"
+		)
+		if battlefollow_nopath_p != null:
+			battlefollow_nopath_p.has_battle_position = true
+			battlefollow_nopath_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_nopath_intent: bool = battlefollow_nopath_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlefollow_nopath_speed: bool = battlefollow_nopath_p.set_movement_speed(4.0)
+			var battlefollow_nopath_stale: bool = battlefollow_nopath_p.set_movement_target_position(Vector2(20.0, 10.0))
+			var battlefollow_nopath_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_nopath_bs)
+			battlefollow_nopath_intent_ok = (
+				battlefollow_nopath_intent
+				and battlefollow_nopath_speed
+				and battlefollow_nopath_stale
+				and _battlefollow_ok(battlefollow_nopath_res, 1, 0, 0)
+				and battlefollow_nopath_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and not battlefollow_nopath_p.has_navigation_destination
+				and battlefollow_nopath_p.navigation_waypoints.is_empty()
+				and not battlefollow_nopath_p.has_movement_target_position
+			)
+			var battlefollow_manual_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_nopath_bs, 1.0)
+			battlefollow_manual_intent_ok = (
+				battlefollow_nopath_intent_ok
+				and battlefollow_manual_rt != null
+				and battlefollow_manual_rt.success
+				and battlefollow_nopath_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and battlefollow_nopath_p.battle_position.is_equal_approx(Vector2(10.0, 14.0))
+			)
+
+	var battlefollow_intent_ok: bool = false
+	var battlefollow_norm_ok: bool = false
+	var battlefollow_intent_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_intent_bs != null:
+		var battlefollow_intent_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_intent_bs,
+			"follow_intent_p",
+			"attacker"
+		)
+		if battlefollow_intent_p != null:
+			battlefollow_intent_p.has_battle_position = true
+			battlefollow_intent_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_intent_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_intent_stored: bool = battlefollow_intent_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_intent_path
+			)
+			var battlefollow_intent_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_intent_bs)
+			battlefollow_intent_ok = (
+				battlefollow_intent_stored
+				and _battlefollow_ok(battlefollow_intent_res, 1, 1, 0)
+				and battlefollow_intent_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_intent_p.has_movement_target_position
+				and battlefollow_intent_p.movement_target_position.is_equal_approx(Vector2(20.0, 10.0))
+				and battlefollow_intent_p.navigation_waypoint_index == 0
+				and battlefollow_intent_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+			)
+		var battlefollow_norm_bs: BattleState = _battlemove_make_state("active")
+		var battlefollow_norm_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_norm_bs,
+			"follow_norm_p",
+			"attacker"
+		)
+		if battlefollow_norm_p != null:
+			battlefollow_norm_p.has_battle_position = true
+			battlefollow_norm_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_norm_path: Array[Vector2] = [Vector2(13.0, 14.0)]
+			var battlefollow_norm_stored: bool = battlefollow_norm_p.set_navigation_path(
+				Vector2(13.0, 14.0),
+				battlefollow_norm_path
+			)
+			var battlefollow_norm_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_norm_bs)
+			battlefollow_norm_ok = (
+				battlefollow_norm_stored
+				and battlefollow_norm_res != null
+				and battlefollow_norm_res.success
+				and battlefollow_norm_p.movement_intent.is_equal_approx(Vector2(0.6, 0.8))
+				and is_equal_approx(battlefollow_norm_p.movement_intent.length(), 1.0)
+			)
+
+	var battlefollow_dead_ok: bool = false
+	var battlefollow_unpos_ok: bool = false
+	var battlefollow_malformed_ok: bool = false
+	var battlefollow_dead_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_dead_bs != null:
+		var battlefollow_dead_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_dead_bs,
+			"follow_dead_p",
+			"attacker"
+		)
+		var battlefollow_dead_sib: BattleParticipant = _battlemove_add_participant(
+			battlefollow_dead_bs,
+			"follow_dead_sib",
+			"attacker"
+		)
+		if battlefollow_dead_p != null and battlefollow_dead_sib != null:
+			battlefollow_dead_p.has_battle_position = true
+			battlefollow_dead_p.battle_position = Vector2(10.0, 10.0)
+			battlefollow_dead_p.is_alive = false
+			var battlefollow_dead_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_dead_stored: bool = battlefollow_dead_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_dead_path
+			)
+			var battlefollow_dead_intent: bool = battlefollow_dead_p.set_movement_intent(Vector2(1.0, 0.0))
+			battlefollow_dead_sib.has_battle_position = true
+			battlefollow_dead_sib.battle_position = Vector2(12.0, 12.0)
+			var battlefollow_dead_sib_path: Array[Vector2] = [Vector2(22.0, 12.0)]
+			var battlefollow_dead_sib_stored: bool = battlefollow_dead_sib.set_navigation_path(
+				Vector2(22.0, 12.0),
+				battlefollow_dead_sib_path
+			)
+			var battlefollow_dead_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_dead_bs)
+			battlefollow_dead_ok = (
+				battlefollow_dead_stored
+				and battlefollow_dead_intent
+				and battlefollow_dead_sib_stored
+				and _battlefollow_ok(battlefollow_dead_res, 2, 2, 0)
+				and battlefollow_dead_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and not battlefollow_dead_p.has_movement_target_position
+				and battlefollow_dead_p.navigation_waypoint_index == 0
+				and battlefollow_dead_p.has_active_navigation_path()
+				and battlefollow_dead_sib.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+	var battlefollow_unpos_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_unpos_bs != null:
+		var battlefollow_unpos_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_unpos_bs,
+			"follow_unpos_p",
+			"attacker"
+		)
+		var battlefollow_unpos_sib: BattleParticipant = _battlemove_add_participant(
+			battlefollow_unpos_bs,
+			"follow_unpos_sib",
+			"attacker"
+		)
+		if battlefollow_unpos_p != null and battlefollow_unpos_sib != null:
+			battlefollow_unpos_p.has_battle_position = false
+			var battlefollow_unpos_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_unpos_stored: bool = battlefollow_unpos_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_unpos_path
+			)
+			var battlefollow_unpos_intent: bool = battlefollow_unpos_p.set_movement_intent(Vector2(1.0, 0.0))
+			battlefollow_unpos_sib.has_battle_position = true
+			battlefollow_unpos_sib.battle_position = Vector2(8.0, 8.0)
+			var battlefollow_unpos_sib_path: Array[Vector2] = [Vector2(18.0, 8.0)]
+			var battlefollow_unpos_sib_stored: bool = battlefollow_unpos_sib.set_navigation_path(
+				Vector2(18.0, 8.0),
+				battlefollow_unpos_sib_path
+			)
+			var battlefollow_unpos_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_unpos_bs)
+			battlefollow_unpos_ok = (
+				battlefollow_unpos_stored
+				and battlefollow_unpos_intent
+				and battlefollow_unpos_sib_stored
+				and _battlefollow_ok(battlefollow_unpos_res, 2, 2, 0)
+				and battlefollow_unpos_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and not battlefollow_unpos_p.has_movement_target_position
+				and battlefollow_unpos_p.navigation_waypoint_index == 0
+				and battlefollow_unpos_p.has_active_navigation_path()
+				and battlefollow_unpos_sib.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+	var battlefollow_mal_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_mal_bs != null:
+		var battlefollow_mal_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_mal_bs,
+			"follow_mal_p",
+			"attacker"
+		)
+		var battlefollow_mal_sib: BattleParticipant = _battlemove_add_participant(
+			battlefollow_mal_bs,
+			"follow_mal_sib",
+			"attacker"
+		)
+		if battlefollow_mal_p != null and battlefollow_mal_sib != null:
+			battlefollow_mal_p.has_battle_position = true
+			battlefollow_mal_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_mal_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_mal_stored: bool = battlefollow_mal_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_mal_path
+			)
+			if battlefollow_mal_stored and not battlefollow_mal_p.navigation_waypoints.is_empty():
+				battlefollow_mal_p.navigation_waypoints[0] = Vector2(NAN, 10.0)
+			battlefollow_mal_sib.has_battle_position = true
+			battlefollow_mal_sib.battle_position = Vector2(6.0, 6.0)
+			var battlefollow_mal_sib_path: Array[Vector2] = [Vector2(16.0, 6.0)]
+			var battlefollow_mal_sib_stored: bool = battlefollow_mal_sib.set_navigation_path(
+				Vector2(16.0, 6.0),
+				battlefollow_mal_sib_path
+			)
+			var battlefollow_mal_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_mal_bs)
+			battlefollow_malformed_ok = (
+				battlefollow_mal_stored
+				and battlefollow_mal_sib_stored
+				and battlefollow_mal_res != null
+				and battlefollow_mal_res.success
+				and _battlefollow_ok(battlefollow_mal_res, 2, 2, 0)
+				and battlefollow_mal_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and not battlefollow_mal_p.has_movement_target_position
+				and battlefollow_mal_p.navigation_waypoint_index == 0
+				and battlefollow_mal_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+				and battlefollow_mal_sib.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+
+	var battlefollow_reached_first_ok: bool = false
+	var battlefollow_reached_multi_ok: bool = false
+	var battlefollow_complete_ok: bool = false
+	var battlefollow_reach_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_reach_bs != null:
+		var battlefollow_reach_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_reach_bs,
+			"follow_reach_p",
+			"attacker"
+		)
+		if battlefollow_reach_p != null:
+			battlefollow_reach_p.has_battle_position = true
+			battlefollow_reach_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_reach_path: Array[Vector2] = [Vector2(10.0, 10.0), Vector2(20.0, 10.0)]
+			var battlefollow_reach_stored: bool = battlefollow_reach_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_reach_path
+			)
+			var battlefollow_reach_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_reach_bs)
+			battlefollow_reached_first_ok = (
+				battlefollow_reach_stored
+				and _battlefollow_ok(battlefollow_reach_res, 1, 1, 0)
+				and battlefollow_reach_p.navigation_waypoint_index == 1
+				and battlefollow_reach_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_reach_p.movement_target_position.is_equal_approx(Vector2(20.0, 10.0))
+				and battlefollow_reach_p.has_active_navigation_path()
+			)
+	var battlefollow_multi_reach_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_multi_reach_bs != null:
+		var battlefollow_multi_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_multi_reach_bs,
+			"follow_multi_p",
+			"attacker"
+		)
+		if battlefollow_multi_p != null:
+			battlefollow_multi_p.has_battle_position = true
+			battlefollow_multi_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_multi_path: Array[Vector2] = [Vector2(12.0, 10.0), Vector2(14.0, 10.0), Vector2(30.0, 10.0)]
+			var battlefollow_multi_stored: bool = battlefollow_multi_p.set_navigation_path(
+				Vector2(30.0, 10.0),
+				battlefollow_multi_path
+			)
+			if battlefollow_multi_stored and battlefollow_multi_p.navigation_waypoints.size() == 3:
+				battlefollow_multi_p.navigation_waypoints[0] = Vector2(10.0, 10.0)
+				battlefollow_multi_p.navigation_waypoints[1] = Vector2(10.0, 10.0)
+			var battlefollow_multi_res: BattlePathFollowResult = BattlePathFollowService.advance(
+				battlefollow_multi_reach_bs
+			)
+			battlefollow_reached_multi_ok = (
+				battlefollow_multi_stored
+				and _battlefollow_ok(battlefollow_multi_res, 1, 1, 0)
+				and battlefollow_multi_p.navigation_waypoint_index == 2
+				and battlefollow_multi_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_multi_p.movement_target_position.is_equal_approx(Vector2(30.0, 10.0))
+			)
+	var battlefollow_done_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_done_bs != null:
+		var battlefollow_done_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_done_bs,
+			"follow_done_p",
+			"attacker"
+		)
+		if battlefollow_done_p != null:
+			battlefollow_done_p.has_battle_position = true
+			battlefollow_done_p.battle_position = Vector2(20.0, 10.0)
+			var battlefollow_done_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_done_stored: bool = battlefollow_done_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_done_path
+			)
+			var battlefollow_done_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_done_bs)
+			battlefollow_complete_ok = (
+				battlefollow_done_stored
+				and _battlefollow_ok(battlefollow_done_res, 1, 1, 1)
+				and battlefollow_done_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and not battlefollow_done_p.has_movement_target_position
+				and not battlefollow_done_p.has_navigation_destination
+				and battlefollow_done_p.navigation_waypoints.is_empty()
+				and battlefollow_done_p.navigation_waypoint_index == 0
+				and battlefollow_done_p.battle_position.is_equal_approx(Vector2(20.0, 10.0))
+			)
+
+	var battlefollow_overshoot_final_ok: bool = false
+	var battlefollow_speed_cap_ok: bool = false
+	var battlefollow_runtime_order_ok: bool = false
+	var battlefollow_complete_next_ok: bool = false
+	var battlefollow_cap_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_cap_bs != null:
+		var battlefollow_cap_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_cap_bs,
+			"follow_cap_p",
+			"attacker"
+		)
+		if battlefollow_cap_p != null:
+			battlefollow_cap_p.has_battle_position = true
+			battlefollow_cap_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_cap_speed: bool = battlefollow_cap_p.set_movement_speed(10.0)
+			var battlefollow_cap_intent: bool = battlefollow_cap_p.set_movement_intent(Vector2.ZERO)
+			var battlefollow_cap_path: Array[Vector2] = [Vector2(11.0, 10.0)]
+			var battlefollow_cap_stored: bool = battlefollow_cap_p.set_navigation_path(
+				Vector2(11.0, 10.0),
+				battlefollow_cap_path
+			)
+			var battlefollow_cap_rt1: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_cap_bs, 1.0)
+			battlefollow_overshoot_final_ok = (
+				battlefollow_cap_speed
+				and battlefollow_cap_intent
+				and battlefollow_cap_stored
+				and battlefollow_cap_rt1 != null
+				and battlefollow_cap_rt1.success
+				and battlefollow_cap_p.velocity.is_equal_approx(Vector2(10.0, 0.0))
+				and battlefollow_cap_p.battle_position.is_equal_approx(Vector2(11.0, 10.0))
+				and is_equal_approx(battlefollow_cap_p.movement_speed, 10.0)
+				and battlefollow_cap_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_cap_p.has_active_navigation_path()
+			)
+			battlefollow_speed_cap_ok = battlefollow_overshoot_final_ok
+			battlefollow_runtime_order_ok = battlefollow_overshoot_final_ok
+			var battlefollow_cap_rt2: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_cap_bs, 1.0)
+			battlefollow_complete_next_ok = (
+				battlefollow_overshoot_final_ok
+				and battlefollow_cap_rt2 != null
+				and battlefollow_cap_rt2.success
+				and not battlefollow_cap_p.has_active_navigation_path()
+				and battlefollow_cap_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and not battlefollow_cap_p.has_movement_target_position
+				and battlefollow_cap_p.battle_position.is_equal_approx(Vector2(11.0, 10.0))
+			)
+
+	var battlefollow_overshoot_mid_ok: bool = false
+	var battlefollow_mid_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_mid_bs != null:
+		var battlefollow_mid_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_mid_bs,
+			"follow_mid_p",
+			"attacker"
+		)
+		if battlefollow_mid_p != null:
+			battlefollow_mid_p.has_battle_position = true
+			battlefollow_mid_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_mid_speed: bool = battlefollow_mid_p.set_movement_speed(10.0)
+			var battlefollow_mid_path: Array[Vector2] = [Vector2(11.0, 10.0), Vector2(11.0, 20.0)]
+			var battlefollow_mid_stored: bool = battlefollow_mid_p.set_navigation_path(
+				Vector2(11.0, 20.0),
+				battlefollow_mid_path
+			)
+			var battlefollow_mid_rt1: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_mid_bs, 1.0)
+			var battlefollow_mid_first: bool = (
+				battlefollow_mid_speed
+				and battlefollow_mid_stored
+				and battlefollow_mid_rt1 != null
+				and battlefollow_mid_rt1.success
+				and battlefollow_mid_p.battle_position.is_equal_approx(Vector2(11.0, 10.0))
+				and battlefollow_mid_p.navigation_waypoint_index == 0
+			)
+			var battlefollow_mid_follow: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_mid_bs)
+			battlefollow_overshoot_mid_ok = (
+				battlefollow_mid_first
+				and battlefollow_mid_follow != null
+				and battlefollow_mid_follow.success
+				and battlefollow_mid_p.navigation_waypoint_index == 1
+				and battlefollow_mid_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and battlefollow_mid_p.movement_target_position.is_equal_approx(Vector2(11.0, 20.0))
+			)
+
+	var battlefollow_collision_ok: bool = false
+	var battlefollow_no_replan_ok: bool = false
+	var battlefollow_col_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_col_bs != null and battlefollow_col_bs.battlefield_geometry != null:
+		var battlefollow_col_wall: BattleObstacle = BattleObstacle.new(
+			"follow_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlefollow_col_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_col_bs,
+			"follow_col_p",
+			"attacker"
+		)
+		if battlefollow_col_p != null and battlefollow_col_bs.battlefield_geometry.add_obstacle(battlefollow_col_wall):
+			battlefollow_col_p.has_battle_position = true
+			battlefollow_col_p.battle_position = Vector2(30.0, 30.0)
+			var battlefollow_col_speed: bool = battlefollow_col_p.set_movement_speed(20.0)
+			var battlefollow_col_path: Array[Vector2] = [Vector2(60.0, 30.0)]
+			var battlefollow_col_stored: bool = battlefollow_col_p.set_navigation_path(
+				Vector2(60.0, 30.0),
+				battlefollow_col_path
+			)
+			var battlefollow_col_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_col_bs, 1.0)
+			battlefollow_collision_ok = (
+				battlefollow_col_speed
+				and battlefollow_col_stored
+				and battlefollow_col_rt != null
+				and battlefollow_col_rt.success
+				and battlefollow_col_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_col_p.has_movement_target_position
+				and battlefollow_col_p.movement_target_position.is_equal_approx(Vector2(60.0, 30.0))
+				and battlefollow_col_p.battle_position.x < 40.0
+				and not battlefollow_col_p.battle_position.is_equal_approx(Vector2(60.0, 30.0))
+				and battlefollow_col_p.has_active_navigation_path()
+				and battlefollow_col_p.navigation_waypoint_index == 0
+			)
+			var battlefollow_col_index: int = battlefollow_col_p.navigation_waypoint_index
+			var battlefollow_col_wp: Vector2 = battlefollow_col_p.get_current_navigation_waypoint()
+			var battlefollow_col_rt2: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_col_bs, 1.0)
+			battlefollow_no_replan_ok = (
+				battlefollow_collision_ok
+				and battlefollow_col_rt2 != null
+				and battlefollow_col_rt2.success
+				and battlefollow_col_p.navigation_waypoint_index == battlefollow_col_index
+				and battlefollow_col_p.get_current_navigation_waypoint().is_equal_approx(battlefollow_col_wp)
+				and battlefollow_col_p.has_active_navigation_path()
+				and battlefollow_col_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+
+	var battlefollow_clear_target_ok: bool = false
+	var battlefollow_replace_path_ok: bool = false
+	var battlefollow_stale_target_ok: bool = false
+	var battlefollow_clear_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_clear_bs != null:
+		var battlefollow_clear_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_clear_bs,
+			"follow_clear_p",
+			"attacker"
+		)
+		if battlefollow_clear_p != null:
+			battlefollow_clear_p.has_battle_position = true
+			battlefollow_clear_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_clear_speed: bool = battlefollow_clear_p.set_movement_speed(5.0)
+			var battlefollow_clear_path: Array[Vector2] = [Vector2(11.0, 10.0)]
+			var battlefollow_clear_stored: bool = battlefollow_clear_p.set_navigation_path(
+				Vector2(11.0, 10.0),
+				battlefollow_clear_path
+			)
+			var battlefollow_clear_follow: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_clear_bs)
+			var battlefollow_clear_had_target: bool = battlefollow_clear_p.has_movement_target_position
+			battlefollow_clear_p.clear_navigation_path()
+			var battlefollow_clear_intent: bool = battlefollow_clear_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlefollow_clear_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_clear_bs, 1.0)
+			battlefollow_clear_target_ok = (
+				battlefollow_clear_speed
+				and battlefollow_clear_stored
+				and battlefollow_clear_follow != null
+				and battlefollow_clear_follow.success
+				and battlefollow_clear_had_target
+				and not battlefollow_clear_p.has_navigation_destination
+				and not battlefollow_clear_p.has_movement_target_position
+				and battlefollow_clear_intent
+				and battlefollow_clear_rt != null
+				and battlefollow_clear_rt.success
+				and battlefollow_clear_p.battle_position.is_equal_approx(Vector2(15.0, 10.0))
+			)
+	var battlefollow_rep_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_rep_bs != null:
+		var battlefollow_rep_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_rep_bs,
+			"follow_rep_p",
+			"attacker"
+		)
+		if battlefollow_rep_p != null:
+			battlefollow_rep_p.has_battle_position = true
+			battlefollow_rep_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_rep_a: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_rep_stored_a: bool = battlefollow_rep_p.set_navigation_path(Vector2(20.0, 10.0), battlefollow_rep_a)
+			var battlefollow_rep_follow_a: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_rep_bs)
+			var battlefollow_rep_b: Array[Vector2] = [Vector2(10.0, 20.0)]
+			var battlefollow_rep_stored_b: bool = battlefollow_rep_p.set_navigation_path(Vector2(10.0, 20.0), battlefollow_rep_b)
+			var battlefollow_rep_cleared: bool = not battlefollow_rep_p.has_movement_target_position
+			var battlefollow_rep_follow_b: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_rep_bs)
+			battlefollow_replace_path_ok = (
+				battlefollow_rep_stored_a
+				and battlefollow_rep_follow_a != null
+				and battlefollow_rep_follow_a.success
+				and battlefollow_rep_stored_b
+				and battlefollow_rep_cleared
+				and battlefollow_rep_follow_b != null
+				and battlefollow_rep_follow_b.success
+				and battlefollow_rep_p.movement_target_position.is_equal_approx(Vector2(10.0, 20.0))
+				and battlefollow_rep_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+			)
+	var battlefollow_stale_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_stale_bs != null:
+		var battlefollow_stale_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_stale_bs,
+			"follow_stale_p",
+			"attacker"
+		)
+		if battlefollow_stale_p != null:
+			battlefollow_stale_p.has_battle_position = true
+			battlefollow_stale_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_stale_intent: bool = battlefollow_stale_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlefollow_stale_target: bool = battlefollow_stale_p.set_movement_target_position(Vector2(20.0, 10.0))
+			var battlefollow_stale_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_stale_bs)
+			battlefollow_stale_target_ok = (
+				battlefollow_stale_intent
+				and battlefollow_stale_target
+				and _battlefollow_ok(battlefollow_stale_res, 1, 0, 0)
+				and not battlefollow_stale_p.has_movement_target_position
+				and battlefollow_stale_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+			)
+
+	var battlefollow_zero_delta_ok: bool = false
+	var battlefollow_zero_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_zero_bs != null:
+		var battlefollow_zero_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_zero_bs,
+			"follow_zero_p",
+			"attacker"
+		)
+		if battlefollow_zero_p != null:
+			battlefollow_zero_p.has_battle_position = true
+			battlefollow_zero_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_zero_speed: bool = battlefollow_zero_p.set_movement_speed(5.0)
+			var battlefollow_zero_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_zero_stored: bool = battlefollow_zero_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_zero_path
+			)
+			battlefollow_zero_bs.elapsed_time_seconds = 3.0
+			var battlefollow_zero_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_zero_bs, 0.0)
+			var battlefollow_zero_far: bool = (
+				battlefollow_zero_speed
+				and battlefollow_zero_stored
+				and battlefollow_zero_rt != null
+				and battlefollow_zero_rt.success
+				and battlefollow_zero_p.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_zero_p.movement_target_position.is_equal_approx(Vector2(20.0, 10.0))
+				and battlefollow_zero_p.velocity.is_equal_approx(Vector2(5.0, 0.0))
+				and battlefollow_zero_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+				and is_equal_approx(battlefollow_zero_bs.elapsed_time_seconds, 3.0)
+			)
+			var battlefollow_zero_done_bs: BattleState = _battlemove_make_state("active")
+			var battlefollow_zero_done_p: BattleParticipant = _battlemove_add_participant(
+				battlefollow_zero_done_bs,
+				"follow_zero_done_p",
+				"attacker"
+			)
+			var battlefollow_zero_done: bool = false
+			if battlefollow_zero_done_p != null:
+				battlefollow_zero_done_p.has_battle_position = true
+				battlefollow_zero_done_p.battle_position = Vector2(20.0, 10.0)
+				var battlefollow_zero_done_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+				var battlefollow_zero_done_stored: bool = battlefollow_zero_done_p.set_navigation_path(
+					Vector2(20.0, 10.0),
+					battlefollow_zero_done_path
+				)
+				battlefollow_zero_done_bs.elapsed_time_seconds = 2.0
+				var battlefollow_zero_done_rt: BattleRuntimeResult = BattleRuntimeService.advance(
+					battlefollow_zero_done_bs,
+					0.0
+				)
+				battlefollow_zero_done = (
+					battlefollow_zero_done_stored
+					and battlefollow_zero_done_rt != null
+					and battlefollow_zero_done_rt.success
+					and not battlefollow_zero_done_p.has_active_navigation_path()
+					and battlefollow_zero_done_p.battle_position.is_equal_approx(Vector2(20.0, 10.0))
+					and is_equal_approx(battlefollow_zero_done_bs.elapsed_time_seconds, 2.0)
+				)
+			battlefollow_zero_delta_ok = battlefollow_zero_far and battlefollow_zero_done
+
+	var battlefollow_runtime_tx_ok: bool = false
+	var battlefollow_move_after_follow_ok: bool = false
+	var battlefollow_tx_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_tx_bs != null:
+		var battlefollow_tx_p: BattleParticipant = _battlemove_add_participant(
+			battlefollow_tx_bs,
+			"follow_tx_p",
+			"attacker"
+		)
+		if battlefollow_tx_p != null:
+			battlefollow_tx_p.has_battle_position = true
+			battlefollow_tx_p.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_tx_speed: bool = battlefollow_tx_p.set_movement_speed(5.0)
+			var battlefollow_tx_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battlefollow_tx_stored: bool = battlefollow_tx_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battlefollow_tx_path
+			)
+			var battlefollow_tx_intent: bool = battlefollow_tx_p.set_movement_intent(Vector2.ZERO)
+			battlefollow_tx_bs.elapsed_time_seconds = 4.0
+			var battlefollow_tx_snap: Dictionary = _battlefollow_part_snap(battlefollow_tx_p)
+			battlefollow_tx_bs.battlefield_geometry = null
+			var battlefollow_tx_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_tx_bs, 0.5)
+			battlefollow_runtime_tx_ok = (
+				battlefollow_tx_speed
+				and battlefollow_tx_stored
+				and battlefollow_tx_intent
+				and _battlert_fail_ok(battlefollow_tx_rt, "missing_battlefield_geometry", 4.0)
+				and is_equal_approx(battlefollow_tx_bs.elapsed_time_seconds, 4.0)
+				and _battlefollow_part_unchanged(battlefollow_tx_p, battlefollow_tx_snap)
+			)
+			_battlespatial_attach_open_geometry(battlefollow_tx_bs)
+			var battlefollow_tx_ok_rt: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_tx_bs, 0.5)
+			battlefollow_move_after_follow_ok = (
+				battlefollow_runtime_tx_ok
+				and battlefollow_tx_ok_rt != null
+				and battlefollow_tx_ok_rt.success
+				and battlefollow_tx_p.battle_position.x > 10.0
+			)
+
+	var battlefollow_multi_ok: bool = false
+	var battlefollow_counts_ok: bool = false
+	var battlefollow_count_bs: BattleState = _battlemove_make_state("active")
+	if battlefollow_count_bs != null:
+		var battlefollow_z_none: BattleParticipant = _battlemove_add_participant(
+			battlefollow_count_bs,
+			"z_none",
+			"attacker"
+		)
+		var battlefollow_m_done: BattleParticipant = _battlemove_add_participant(
+			battlefollow_count_bs,
+			"m_done",
+			"attacker"
+		)
+		var battlefollow_d_dead: BattleParticipant = _battlemove_add_participant(
+			battlefollow_count_bs,
+			"d_dead",
+			"defender"
+		)
+		var battlefollow_a_active: BattleParticipant = _battlemove_add_participant(
+			battlefollow_count_bs,
+			"a_active",
+			"attacker"
+		)
+		if (
+			battlefollow_z_none != null
+			and battlefollow_m_done != null
+			and battlefollow_d_dead != null
+			and battlefollow_a_active != null
+		):
+			battlefollow_z_none.has_battle_position = true
+			battlefollow_z_none.battle_position = Vector2(8.0, 8.0)
+			var battlefollow_z_intent: bool = battlefollow_z_none.set_movement_intent(Vector2(0.0, 1.0))
+			battlefollow_m_done.has_battle_position = true
+			battlefollow_m_done.battle_position = Vector2(16.0, 10.0)
+			var battlefollow_m_path: Array[Vector2] = [Vector2(16.0, 10.0)]
+			var battlefollow_m_stored: bool = battlefollow_m_done.set_navigation_path(Vector2(16.0, 10.0), battlefollow_m_path)
+			battlefollow_d_dead.has_battle_position = true
+			battlefollow_d_dead.battle_position = Vector2(12.0, 12.0)
+			battlefollow_d_dead.is_alive = false
+			var battlefollow_d_path: Array[Vector2] = [Vector2(22.0, 12.0)]
+			var battlefollow_d_stored: bool = battlefollow_d_dead.set_navigation_path(Vector2(22.0, 12.0), battlefollow_d_path)
+			battlefollow_a_active.has_battle_position = true
+			battlefollow_a_active.battle_position = Vector2(10.0, 10.0)
+			var battlefollow_a_path: Array[Vector2] = [Vector2(30.0, 10.0)]
+			var battlefollow_a_stored: bool = battlefollow_a_active.set_navigation_path(
+				Vector2(30.0, 10.0),
+				battlefollow_a_path
+			)
+			var battlefollow_count_res: BattlePathFollowResult = BattlePathFollowService.advance(battlefollow_count_bs)
+			battlefollow_counts_ok = (
+				battlefollow_z_intent
+				and battlefollow_m_stored
+				and battlefollow_d_stored
+				and battlefollow_a_stored
+				and _battlefollow_ok(battlefollow_count_res, 4, 3, 1)
+			)
+			battlefollow_multi_ok = (
+				battlefollow_counts_ok
+				and battlefollow_z_none.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and not battlefollow_z_none.has_active_navigation_path()
+				and not battlefollow_m_done.has_active_navigation_path()
+				and battlefollow_d_dead.has_active_navigation_path()
+				and battlefollow_d_dead.navigation_waypoint_index == 0
+				and battlefollow_a_active.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlefollow_a_active.movement_target_position.is_equal_approx(Vector2(30.0, 10.0))
+			)
+
+	var battlefollow_ok_res: BattlePathFollowResult = BattlePathFollowResult.succeeded(4, 3, 1)
+	var battlefollow_fail_res: BattlePathFollowResult = BattlePathFollowResult.failed(
+		"null_battle_state",
+		"Battle path follow failed: battle_state is null."
+	)
+	var battlefollow_result_helper_ok: bool = (
+		battlefollow_ok_res != null
+		and battlefollow_ok_res.success
+		and battlefollow_ok_res.participants_considered == 4
+		and battlefollow_ok_res.participants_with_paths == 3
+		and battlefollow_ok_res.participants_completed_paths == 1
+		and battlefollow_ok_res.error_code.is_empty()
+		and battlefollow_ok_res.error_message.is_empty()
+		and battlefollow_fail_res != null
+		and not battlefollow_fail_res.success
+		and battlefollow_fail_res.participants_considered == 0
+		and battlefollow_fail_res.participants_with_paths == 0
+		and battlefollow_fail_res.participants_completed_paths == 0
+		and battlefollow_fail_res.error_code == "null_battle_state"
+		and battlefollow_fail_res.error_message == "Battle path follow failed: battle_state is null."
+	)
+
+	var battlefollow_persist_ok: bool = false
+	var battlefollow_immutability_ok: bool = false
+	var battlefollow_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battlefollow_camp_game: GameState = battlefollow_camp_pack.get("game_state", null) as GameState
+	var battlefollow_camp_force: TravelingForce = battlefollow_camp_pack.get("force", null) as TravelingForce
+	var battlefollow_camp_bs: BattleState = battlefollow_camp_pack.get("battle_state", null) as BattleState
+	if battlefollow_camp_game != null and battlefollow_camp_bs != null:
+		var battlefollow_camp_deployed: bool = _battle_deploy_standard_attacker(battlefollow_camp_bs)
+		var battlefollow_camp_geo: bool = _battlegeo_init(battlefollow_camp_bs)
+		var battlefollow_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battlefollow_camp_game,
+			battlefollow_camp_force,
+			"battle_mission"
+		)
+		var battlefollow_camp_part: BattleParticipant = battlefollow_camp_bs.get_participant("battle_sol_a")
+		var battlefollow_camp_ready: bool = false
+		if battlefollow_camp_part != null and battlefollow_camp_part.has_battle_position:
+			var battlefollow_camp_dest: Vector2 = battlefollow_camp_part.battle_position + Vector2(6.0, 0.0)
+			var battlefollow_camp_path: Array[Vector2] = [battlefollow_camp_dest]
+			battlefollow_camp_ready = (
+				battlefollow_camp_part.set_navigation_path(battlefollow_camp_dest, battlefollow_camp_path)
+				and battlefollow_camp_part.set_movement_intent(Vector2(1.0, 0.0))
+				and battlefollow_camp_part.set_movement_target_position(battlefollow_camp_dest)
+				and battlefollow_camp_part.set_movement_speed(2.0)
+			)
+		var battlefollow_camp_persist: Dictionary = battlefollow_camp_game.to_dict()
+		battlefollow_persist_ok = (
+			battlefollow_camp_deployed
+			and battlefollow_camp_geo
+			and battlefollow_camp_ready
+			and _battle_serialized_campaign_keys_only(battlefollow_camp_persist)
+			and not _battle_data_has_tactical_trace(battlefollow_camp_persist)
+		)
+		var battlefollow_camp_begun: bool = battlefollow_camp_bs.begin_battle()
+		var battlefollow_camp_adv: BattleRuntimeResult = BattleRuntimeService.advance(battlefollow_camp_bs, 0.25)
+		battlefollow_immutability_ok = (
+			battlefollow_persist_ok
+			and battlefollow_camp_begun
+			and battlefollow_camp_adv != null
+			and battlefollow_camp_adv.success
+			and _battle_campaign_unchanged(
+				battlefollow_camp_game,
+				battlefollow_camp_snap,
+				battlefollow_camp_force,
+				"battle_mission"
+			)
+			and battlefollow_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlefollow_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
+	var battlefollow_no_combat_ok: bool = false
+	var battlefollow_no_combat_bs: BattleState = _battlemove_make_state("active")
+	var battlefollow_no_combat_svc: BattlePathFollowService = BattlePathFollowService.new()
+	if battlefollow_no_combat_bs != null:
+		battlefollow_no_combat_ok = (
+			_battle_has_no_combat_turn_model(battlefollow_no_combat_bs)
+			and battlefollow_no_combat_bs.get("find_path") == null
+			and battlefollow_no_combat_bs.get("cover_value") == null
+			and battlefollow_no_combat_bs.get("current_turn_index") == null
+			and not battlefollow_no_combat_svc.has_method("find_path")
+			and not battlefollow_no_combat_svc.has_method("replan")
+			and not battlefollow_no_combat_svc.has_method("select_destination")
+			and not battlefollow_no_combat_svc.has_method("select_cover")
+		)
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -10700,12 +11575,46 @@ static func run() -> Dictionary:
 		"battlenav_store_tx_ok": battlenav_store_tx_ok,
 		"battlenav_store_strip_ok": battlenav_store_strip_ok,
 		"battlenav_store_clear_ok": battlenav_store_clear_ok,
-		"battlenav_no_steer_ok": battlenav_no_steer_ok,
-		"battlenav_intent_wins_ok": battlenav_intent_wins_ok,
+		"battlenav_plan_readonly_ok": battlenav_plan_readonly_ok,
+		"battlenav_follow_owns_intent_ok": battlenav_follow_owns_intent_ok,
 		"battlenav_persist_ok": battlenav_persist_ok,
 		"battlenav_immutability_ok": battlenav_immutability_ok,
 		"battlenav_no_combat_ok": battlenav_no_combat_ok,
 		"battlenav_result_helper_ok": battlenav_result_helper_ok,
+		"battlefollow_default_ok": battlefollow_default_ok,
+		"battlefollow_fail_null_ok": battlefollow_fail_null_ok,
+		"battlefollow_fail_not_active_ok": battlefollow_fail_not_active_ok,
+		"battlefollow_fail_missing_geo_ok": battlefollow_fail_missing_geo_ok,
+		"battlefollow_fail_invalid_geo_ok": battlefollow_fail_invalid_geo_ok,
+		"battlefollow_nopath_intent_ok": battlefollow_nopath_intent_ok,
+		"battlefollow_intent_ok": battlefollow_intent_ok,
+		"battlefollow_norm_ok": battlefollow_norm_ok,
+		"battlefollow_dead_ok": battlefollow_dead_ok,
+		"battlefollow_unpos_ok": battlefollow_unpos_ok,
+		"battlefollow_malformed_ok": battlefollow_malformed_ok,
+		"battlefollow_reached_first_ok": battlefollow_reached_first_ok,
+		"battlefollow_reached_multi_ok": battlefollow_reached_multi_ok,
+		"battlefollow_complete_ok": battlefollow_complete_ok,
+		"battlefollow_complete_next_ok": battlefollow_complete_next_ok,
+		"battlefollow_overshoot_final_ok": battlefollow_overshoot_final_ok,
+		"battlefollow_overshoot_mid_ok": battlefollow_overshoot_mid_ok,
+		"battlefollow_speed_cap_ok": battlefollow_speed_cap_ok,
+		"battlefollow_collision_ok": battlefollow_collision_ok,
+		"battlefollow_no_replan_ok": battlefollow_no_replan_ok,
+		"battlefollow_clear_target_ok": battlefollow_clear_target_ok,
+		"battlefollow_replace_path_ok": battlefollow_replace_path_ok,
+		"battlefollow_stale_target_ok": battlefollow_stale_target_ok,
+		"battlefollow_zero_delta_ok": battlefollow_zero_delta_ok,
+		"battlefollow_runtime_order_ok": battlefollow_runtime_order_ok,
+		"battlefollow_runtime_tx_ok": battlefollow_runtime_tx_ok,
+		"battlefollow_move_after_follow_ok": battlefollow_move_after_follow_ok,
+		"battlefollow_multi_ok": battlefollow_multi_ok,
+		"battlefollow_counts_ok": battlefollow_counts_ok,
+		"battlefollow_result_helper_ok": battlefollow_result_helper_ok,
+		"battlefollow_manual_intent_ok": battlefollow_manual_intent_ok,
+		"battlefollow_persist_ok": battlefollow_persist_ok,
+		"battlefollow_immutability_ok": battlefollow_immutability_ok,
+		"battlefollow_no_combat_ok": battlefollow_no_combat_ok,
 	}
 
 	var passed := true
@@ -12379,6 +13288,8 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "navigation_waypoints"
 		or text == "navigation_waypoint_index"
 		or text == "used_detour"
+		or text == "movement_target_position"
+		or text == "has_movement_target_position"
 	)
 
 
@@ -13793,5 +14704,90 @@ static func _battlenav_rect_short_detour_length(bounds: Rect2, start_position: V
 	if top_length < bottom_length:
 		return top_length
 	return bottom_length
+
+
+static func _battlefollow_ok(
+	result: BattlePathFollowResult,
+	considered: int,
+	with_paths: int,
+	completed: int
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+		and result.participants_considered == considered
+		and result.participants_with_paths == with_paths
+		and result.participants_completed_paths == completed
+	)
+
+
+static func _battlefollow_fail_ok(result: BattlePathFollowResult, expected_code: String) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.error_code == expected_code
+		and result.error_message.begins_with("Battle path follow failed:")
+		and result.participants_considered == 0
+		and result.participants_with_paths == 0
+		and result.participants_completed_paths == 0
+	)
+
+
+static func _battlefollow_part_snap(participant: BattleParticipant) -> Dictionary:
+	var snap: Dictionary = {}
+	if participant == null:
+		return snap
+	snap["intent"] = participant.movement_intent
+	snap["speed"] = participant.movement_speed
+	snap["has_target"] = participant.has_movement_target_position
+	snap["target"] = participant.movement_target_position
+	snap["has_dest"] = participant.has_navigation_destination
+	snap["dest"] = participant.navigation_destination
+	snap["index"] = participant.navigation_waypoint_index
+	snap["waypoints"] = _battlenav_copy_points(participant.navigation_waypoints)
+	snap["has_pos"] = participant.has_battle_position
+	snap["pos"] = participant.battle_position
+	snap["alive"] = participant.is_alive
+	return snap
+
+
+static func _battlefollow_part_unchanged(participant: BattleParticipant, snap: Dictionary) -> bool:
+	if participant == null:
+		return false
+	var intent_raw: Variant = snap.get("intent", Vector2.ZERO)
+	var target_raw: Variant = snap.get("target", Vector2.ZERO)
+	var dest_raw: Variant = snap.get("dest", Vector2.ZERO)
+	var pos_raw: Variant = snap.get("pos", Vector2.ZERO)
+	if typeof(intent_raw) != TYPE_VECTOR2 or typeof(target_raw) != TYPE_VECTOR2:
+		return false
+	if typeof(dest_raw) != TYPE_VECTOR2 or typeof(pos_raw) != TYPE_VECTOR2:
+		return false
+	var intent: Vector2 = intent_raw as Vector2
+	var target: Vector2 = target_raw as Vector2
+	var dest: Vector2 = dest_raw as Vector2
+	var pos: Vector2 = pos_raw as Vector2
+	var waypoints_raw: Variant = snap.get("waypoints", [])
+	var expected_waypoints: Array[Vector2] = []
+	if waypoints_raw is Array:
+		for item: Variant in waypoints_raw:
+			if typeof(item) == TYPE_VECTOR2:
+				expected_waypoints.append(item as Vector2)
+	return (
+		participant.movement_intent.is_equal_approx(intent)
+		and is_equal_approx(participant.movement_speed, float(snap.get("speed", 0.0)))
+		and participant.has_movement_target_position == bool(snap.get("has_target", false))
+		and participant.movement_target_position.is_equal_approx(target)
+		and participant.has_navigation_destination == bool(snap.get("has_dest", false))
+		and participant.navigation_destination.is_equal_approx(dest)
+		and participant.navigation_waypoint_index == int(snap.get("index", -1))
+		and _battlenav_waypoints_match(participant.navigation_waypoints, expected_waypoints)
+		and participant.has_battle_position == bool(snap.get("has_pos", false))
+		and participant.battle_position.is_equal_approx(pos)
+		and participant.is_alive == bool(snap.get("alive", false))
+	)
 
 

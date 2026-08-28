@@ -93,6 +93,9 @@ static func _advance_participant(
 	if not _is_finite_vector(displacement):
 		return false
 	var start_position: Vector2 = participant.battle_position
+	displacement = _capped_displacement(participant, start_position, displacement)
+	if not _is_finite_vector(displacement):
+		return false
 	var spatial: BattleSpatialResult = BattleSpatialService.resolve_translation(
 		battle_state,
 		start_position,
@@ -104,6 +107,30 @@ static func _advance_participant(
 		return false
 	participant.battle_position = spatial.final_position
 	return not start_position.is_equal_approx(spatial.final_position)
+
+
+static func _capped_displacement(
+	participant: BattleParticipant,
+	start_position: Vector2,
+	displacement: Vector2
+) -> Vector2:
+	if not participant.has_movement_target_position:
+		return displacement
+	if not _is_finite_vector(participant.movement_target_position):
+		return displacement
+	var to_target: Vector2 = participant.movement_target_position - start_position
+	if not _is_finite_vector(to_target):
+		return displacement
+	var remaining: float = to_target.length()
+	if not is_finite(remaining):
+		return displacement
+	if is_zero_approx(remaining):
+		return Vector2.ZERO
+	if displacement.length() < remaining:
+		return displacement
+	if displacement.dot(to_target) <= 0.0:
+		return displacement
+	return to_target
 
 
 static func _resolved_direction(intent: Vector2) -> Vector2:

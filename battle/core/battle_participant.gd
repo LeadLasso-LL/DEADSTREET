@@ -14,6 +14,8 @@ var battle_position: Vector2 = Vector2.ZERO
 var velocity: Vector2 = Vector2.ZERO
 var movement_intent: Vector2 = Vector2.ZERO
 var movement_speed: float = 0.0
+var movement_target_position: Vector2 = Vector2.ZERO
+var has_movement_target_position: bool = false
 var navigation_destination: Vector2 = Vector2.ZERO
 var has_navigation_destination: bool = false
 var navigation_waypoints: Array[Vector2] = []
@@ -63,6 +65,20 @@ func set_movement_speed(value: float) -> bool:
 	return true
 
 
+func set_movement_target_position(target: Vector2) -> bool:
+	if not is_finite(target.x) or not is_finite(target.y):
+		push_error("BattleParticipant.set_movement_target_position: target is not finite.")
+		return false
+	movement_target_position = target
+	has_movement_target_position = true
+	return true
+
+
+func clear_movement_target_position() -> void:
+	movement_target_position = Vector2.ZERO
+	has_movement_target_position = false
+
+
 func set_navigation_path(destination: Vector2, waypoints: Array[Vector2]) -> bool:
 	if not is_finite(destination.x) or not is_finite(destination.y):
 		push_error("BattleParticipant.set_navigation_path: destination is not finite.")
@@ -78,6 +94,7 @@ func set_navigation_path(destination: Vector2, waypoints: Array[Vector2]) -> boo
 	has_navigation_destination = true
 	navigation_waypoints = copied
 	navigation_waypoint_index = 0
+	clear_movement_target_position()
 	return true
 
 
@@ -86,6 +103,7 @@ func clear_navigation_path() -> void:
 	has_navigation_destination = false
 	navigation_waypoints = []
 	navigation_waypoint_index = 0
+	clear_movement_target_position()
 
 
 func has_active_navigation_path() -> bool:
@@ -100,3 +118,16 @@ func get_current_navigation_waypoint() -> Vector2:
 	if not has_active_navigation_path():
 		return Vector2.ZERO
 	return navigation_waypoints[navigation_waypoint_index]
+
+
+func advance_navigation_waypoint() -> bool:
+	if not has_active_navigation_path():
+		return false
+	navigation_waypoint_index += 1
+	return true
+
+
+func has_reached_navigation_end() -> bool:
+	if not has_navigation_destination:
+		return false
+	return navigation_waypoint_index >= navigation_waypoints.size()

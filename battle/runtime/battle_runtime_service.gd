@@ -3,6 +3,8 @@ extends RefCounted
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
+const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
+const BattlePathFollowResult := preload("res://battle/navigation/battle_path_follow_result.gd")
 const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
 const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
 
@@ -34,6 +36,21 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 		return BattleRuntimeResult.failed(
 			"invalid_elapsed_time",
 			"Battle runtime failed: elapsed_time_seconds is invalid.",
+			delta_seconds,
+			elapsed_before
+		)
+	var path_follow_result: BattlePathFollowResult = BattlePathFollowService.advance(battle_state)
+	if path_follow_result == null or not path_follow_result.success:
+		var follow_error_code: String = "invalid_delta"
+		var follow_error_message: String = "Battle runtime failed: path following failed."
+		if path_follow_result != null:
+			if not path_follow_result.error_code.is_empty():
+				follow_error_code = path_follow_result.error_code
+			if not path_follow_result.error_message.is_empty():
+				follow_error_message = path_follow_result.error_message
+		return BattleRuntimeResult.failed(
+			follow_error_code,
+			follow_error_message,
 			delta_seconds,
 			elapsed_before
 		)
