@@ -58,6 +58,9 @@ const BattlefieldGeometryService := preload("res://battle/geometry/battlefield_g
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
 const BattleSpatialService := preload("res://battle/geometry/battle_spatial_service.gd")
+const BattleNavigationRequest := preload("res://battle/navigation/battle_navigation_request.gd")
+const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
+const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
 
 
 static func run() -> Dictionary:
@@ -8992,6 +8995,868 @@ static func run() -> Dictionary:
 		and battlespatial_fail_res.blocking_obstacle_id == "wall_a"
 	)
 
+	var battlenav_req_ok: BattleNavigationRequest = BattleNavigationRequest.new(
+		Vector2(10.0, 10.0),
+		Vector2(30.0, 20.0)
+	)
+	var battlenav_req_nan_start: BattleNavigationRequest = BattleNavigationRequest.new(
+		Vector2(NAN, 10.0),
+		Vector2(30.0, 20.0)
+	)
+	var battlenav_req_inf_start: BattleNavigationRequest = BattleNavigationRequest.new(
+		Vector2(INF, 10.0),
+		Vector2(30.0, 20.0)
+	)
+	var battlenav_req_nan_dest: BattleNavigationRequest = BattleNavigationRequest.new(
+		Vector2(10.0, 10.0),
+		Vector2(NAN, 20.0)
+	)
+	var battlenav_req_inf_dest: BattleNavigationRequest = BattleNavigationRequest.new(
+		Vector2(10.0, 10.0),
+		Vector2(INF, 20.0)
+	)
+	var battlenav_request_ok: bool = (
+		battlenav_req_ok != null
+		and battlenav_req_ok.is_valid()
+		and battlenav_req_ok.start_position.is_equal_approx(Vector2(10.0, 10.0))
+		and battlenav_req_ok.destination.is_equal_approx(Vector2(30.0, 20.0))
+		and not battlenav_req_nan_start.is_valid()
+		and not battlenav_req_inf_start.is_valid()
+		and not battlenav_req_nan_dest.is_valid()
+		and not battlenav_req_inf_dest.is_valid()
+		and not battlenav_req_ok.has_method("to_dict")
+		and not battlenav_req_ok.has_method("from_dict")
+		and battlenav_req_ok.get("force_id") == null
+		and battlenav_req_ok.get("mission_id") == null
+	)
+
+	var battlenav_direct_ok: bool = false
+	var battlenav_same_point_ok: bool = false
+	var battlenav_length_direct_ok: bool = false
+	var battlenav_clear_direct_ok: bool = false
+	var battlenav_no_dup_ok: bool = true
+	var battlenav_open_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_open_bs != null:
+		var battlenav_direct_res: BattleNavigationResult = BattleNavigationService.find_path(
+			battlenav_open_bs,
+			Vector2(10.0, 10.0),
+			Vector2(30.0, 20.0)
+		)
+		var battlenav_direct_len: float = _battlenav_route_length(Vector2(10.0, 10.0), battlenav_direct_res.waypoints)
+		battlenav_direct_ok = (
+			_battlenav_success_ok(battlenav_direct_res, Vector2(10.0, 10.0), Vector2(30.0, 20.0), false)
+			and battlenav_direct_res.waypoints.size() == 1
+			and battlenav_direct_res.waypoints[0].is_equal_approx(Vector2(30.0, 20.0))
+			and _battlenav_segments_clear(battlenav_open_bs, Vector2(10.0, 10.0), battlenav_direct_res.waypoints)
+		)
+		battlenav_clear_direct_ok = battlenav_direct_ok
+		battlenav_length_direct_ok = (
+			battlenav_direct_ok
+			and is_finite(battlenav_direct_len)
+			and battlenav_direct_len >= 0.0
+			and is_equal_approx(battlenav_direct_len, Vector2(10.0, 10.0).distance_to(Vector2(30.0, 20.0)))
+		)
+		battlenav_no_dup_ok = battlenav_no_dup_ok and _battlenav_no_duplicate_waypoints(battlenav_direct_res)
+		var battlenav_same_res: BattleNavigationResult = BattleNavigationService.find_path(
+			battlenav_open_bs,
+			Vector2(12.0, 14.0),
+			Vector2(12.0, 14.0)
+		)
+		battlenav_same_point_ok = (
+			_battlenav_success_ok(battlenav_same_res, Vector2(12.0, 14.0), Vector2(12.0, 14.0), false)
+			and battlenav_same_res.waypoints.size() == 1
+			and battlenav_same_res.waypoints[0].is_equal_approx(Vector2(12.0, 14.0))
+			and _battlenav_segments_clear(battlenav_open_bs, Vector2(12.0, 14.0), battlenav_same_res.waypoints)
+		)
+
+	var battlenav_null_res: BattleNavigationResult = BattleNavigationService.find_path(
+		null,
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var battlenav_fail_null_ok: bool = _battlenav_fail_ok(
+		battlenav_null_res,
+		"null_battle_state",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+
+	var battlenav_fail_missing_geo_ok: bool = false
+	var battlenav_miss_bs: BattleState = BattleState.new(
+		"nav_miss",
+		"nav_type",
+		"nav_mission",
+		"nav_loc",
+		"attacker",
+		"defender",
+		"active"
+	)
+	var battlenav_miss_res: BattleNavigationResult = BattleNavigationService.find_path(
+		battlenav_miss_bs,
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	battlenav_fail_missing_geo_ok = (
+		_battlenav_fail_ok(battlenav_miss_res, "missing_battlefield_geometry", Vector2(10.0, 10.0), Vector2(20.0, 10.0))
+		and battlenav_miss_bs.battlefield_geometry == null
+	)
+
+	var battlenav_fail_invalid_geo_ok: bool = false
+	var battlenav_fail_bad_start_ok: bool = false
+	var battlenav_fail_bad_dest_ok: bool = false
+	var battlenav_fail_start_out_ok: bool = false
+	var battlenav_fail_dest_out_ok: bool = false
+	var battlenav_fail_start_inside_ok: bool = false
+	var battlenav_fail_dest_inside_ok: bool = false
+	var battlenav_err_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_err_bs != null and battlenav_err_bs.battlefield_geometry != null:
+		var battlenav_err_wall: BattleObstacle = BattleObstacle.new(
+			"nav_err_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlenav_err_added: bool = battlenav_err_bs.battlefield_geometry.add_obstacle(battlenav_err_wall)
+		var battlenav_err_part: BattleParticipant = _battlemove_add_participant(
+			battlenav_err_bs,
+			"nav_err_p",
+			"attacker"
+		)
+		if battlenav_err_added and battlenav_err_part != null:
+			battlenav_err_part.has_battle_position = true
+			battlenav_err_part.battle_position = Vector2(10.0, 10.0)
+			var battlenav_err_geo_snap: Dictionary = _battlenav_geo_snap(battlenav_err_bs.battlefield_geometry)
+			var battlenav_err_part_snap: Dictionary = _battlemove_part_snap(battlenav_err_part)
+			var battlenav_badgeo_bs: BattleState = _battlemove_make_state("active")
+			if battlenav_badgeo_bs != null:
+				battlenav_badgeo_bs.battlefield_geometry = BattlefieldGeometry.new()
+				var battlenav_badgeo_res: BattleNavigationResult = BattleNavigationService.find_path(
+					battlenav_badgeo_bs,
+					Vector2(10.0, 10.0),
+					Vector2(20.0, 10.0)
+				)
+				battlenav_fail_invalid_geo_ok = (
+					_battlenav_fail_ok(
+						battlenav_badgeo_res,
+						"invalid_battlefield_geometry",
+						Vector2(10.0, 10.0),
+						Vector2(20.0, 10.0)
+					)
+					and battlenav_badgeo_bs.battlefield_geometry != null
+					and not battlenav_badgeo_bs.battlefield_geometry.is_valid()
+					and is_equal_approx(battlenav_badgeo_bs.battlefield_geometry.width, 0.0)
+				)
+			var battlenav_nan_start: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(NAN, 10.0),
+				Vector2(20.0, 10.0)
+			)
+			var battlenav_inf_start: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(INF, 10.0),
+				Vector2(20.0, 10.0)
+			)
+			battlenav_fail_bad_start_ok = (
+				_battlenav_fail_ok(battlenav_nan_start, "invalid_start_position", Vector2(NAN, 10.0), Vector2(20.0, 10.0))
+				and _battlenav_fail_ok(battlenav_inf_start, "invalid_start_position", Vector2(INF, 10.0), Vector2(20.0, 10.0))
+			)
+			var battlenav_nan_dest: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(10.0, 10.0),
+				Vector2(NAN, 10.0)
+			)
+			var battlenav_inf_dest: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(10.0, 10.0),
+				Vector2(INF, 10.0)
+			)
+			battlenav_fail_bad_dest_ok = (
+				_battlenav_fail_ok(battlenav_nan_dest, "invalid_destination", Vector2(10.0, 10.0), Vector2(NAN, 10.0))
+				and _battlenav_fail_ok(battlenav_inf_dest, "invalid_destination", Vector2(10.0, 10.0), Vector2(INF, 10.0))
+			)
+			var battlenav_start_out: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(-1.0, 10.0),
+				Vector2(20.0, 10.0)
+			)
+			battlenav_fail_start_out_ok = _battlenav_fail_ok(
+				battlenav_start_out,
+				"start_outside_battlefield",
+				Vector2(-1.0, 10.0),
+				Vector2(20.0, 10.0)
+			)
+			var battlenav_dest_out: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(10.0, 10.0),
+				Vector2(120.0, 10.0)
+			)
+			battlenav_fail_dest_out_ok = _battlenav_fail_ok(
+				battlenav_dest_out,
+				"destination_outside_battlefield",
+				Vector2(10.0, 10.0),
+				Vector2(120.0, 10.0)
+			)
+			var battlenav_start_in: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(45.0, 30.0),
+				Vector2(20.0, 10.0)
+			)
+			battlenav_fail_start_inside_ok = _battlenav_fail_ok(
+				battlenav_start_in,
+				"start_inside_blocking_obstacle",
+				Vector2(45.0, 30.0),
+				Vector2(20.0, 10.0)
+			)
+			var battlenav_dest_in: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_err_bs,
+				Vector2(10.0, 10.0),
+				Vector2(45.0, 30.0)
+			)
+			battlenav_fail_dest_inside_ok = _battlenav_fail_ok(
+				battlenav_dest_in,
+				"destination_inside_blocking_obstacle",
+				Vector2(10.0, 10.0),
+				Vector2(45.0, 30.0)
+			)
+			battlenav_fail_bad_start_ok = (
+				battlenav_fail_bad_start_ok
+				and _battlenav_geo_unchanged(battlenav_err_bs.battlefield_geometry, battlenav_err_geo_snap)
+				and _battlemove_part_unchanged(battlenav_err_part, battlenav_err_part_snap)
+			)
+			battlenav_fail_bad_dest_ok = (
+				battlenav_fail_bad_dest_ok
+				and _battlenav_geo_unchanged(battlenav_err_bs.battlefield_geometry, battlenav_err_geo_snap)
+			)
+			battlenav_fail_start_out_ok = (
+				battlenav_fail_start_out_ok
+				and _battlenav_geo_unchanged(battlenav_err_bs.battlefield_geometry, battlenav_err_geo_snap)
+			)
+			battlenav_fail_dest_out_ok = (
+				battlenav_fail_dest_out_ok
+				and _battlenav_geo_unchanged(battlenav_err_bs.battlefield_geometry, battlenav_err_geo_snap)
+			)
+			battlenav_fail_start_inside_ok = (
+				battlenav_fail_start_inside_ok
+				and _battlenav_geo_unchanged(battlenav_err_bs.battlefield_geometry, battlenav_err_geo_snap)
+			)
+			battlenav_fail_dest_inside_ok = (
+				battlenav_fail_dest_inside_ok
+				and _battlenav_geo_unchanged(battlenav_err_bs.battlefield_geometry, battlenav_err_geo_snap)
+				and _battlemove_part_unchanged(battlenav_err_part, battlenav_err_part_snap)
+			)
+
+	var battlenav_detour_ok: bool = false
+	var battlenav_length_detour_ok: bool = false
+	var battlenav_clear_detour_ok: bool = false
+	var battlenav_corner_ok: bool = false
+	var battlenav_detour_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_detour_bs != null and battlenav_detour_bs.battlefield_geometry != null:
+		var battlenav_detour_wall: BattleObstacle = BattleObstacle.new(
+			"nav_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		if battlenav_detour_bs.battlefield_geometry.add_obstacle(battlenav_detour_wall):
+			var battlenav_detour_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_detour_bs,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			var battlenav_detour_len: float = _battlenav_route_length(
+				Vector2(30.0, 30.0),
+				battlenav_detour_res.waypoints
+			)
+			var battlenav_straight: float = Vector2(30.0, 30.0).distance_to(Vector2(60.0, 30.0))
+			battlenav_detour_ok = (
+				_battlenav_success_ok(battlenav_detour_res, Vector2(30.0, 30.0), Vector2(60.0, 30.0), true)
+				and battlenav_detour_res.waypoints.size() >= 2
+				and _battlenav_waypoints_legal(battlenav_detour_bs, battlenav_detour_res.waypoints, Vector2(60.0, 30.0))
+				and _battlenav_segments_clear(battlenav_detour_bs, Vector2(30.0, 30.0), battlenav_detour_res.waypoints)
+			)
+			battlenav_clear_detour_ok = battlenav_detour_ok
+			battlenav_length_detour_ok = (
+				battlenav_detour_ok
+				and is_finite(battlenav_detour_len)
+				and battlenav_detour_len >= 0.0
+				and battlenav_detour_len > battlenav_straight
+			)
+			battlenav_corner_ok = (
+				battlenav_detour_ok
+				and _battlenav_corners_clear(battlenav_detour_bs, Vector2(30.0, 30.0), battlenav_detour_res.waypoints)
+			)
+			battlenav_no_dup_ok = battlenav_no_dup_ok and _battlenav_no_duplicate_waypoints(battlenav_detour_res)
+
+	var battlenav_short_side_ok: bool = false
+	var battlenav_short_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_short_bs != null and battlenav_short_bs.battlefield_geometry != null:
+		var battlenav_short_wall: BattleObstacle = BattleObstacle.new(
+			"nav_short_wall",
+			Rect2(40.0, 8.0, 10.0, 32.0),
+			true
+		)
+		if battlenav_short_bs.battlefield_geometry.add_obstacle(battlenav_short_wall):
+			var battlenav_short_start: Vector2 = Vector2(30.0, 12.0)
+			var battlenav_short_dest: Vector2 = Vector2(60.0, 12.0)
+			var battlenav_short_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_short_bs,
+				battlenav_short_start,
+				battlenav_short_dest
+			)
+			var battlenav_short_len: float = _battlenav_route_length(
+				battlenav_short_start,
+				battlenav_short_res.waypoints
+			)
+			var battlenav_expected_short: float = _battlenav_rect_short_detour_length(
+				battlenav_short_wall.bounds,
+				battlenav_short_start,
+				battlenav_short_dest
+			)
+			battlenav_short_side_ok = (
+				_battlenav_success_ok(battlenav_short_res, battlenav_short_start, battlenav_short_dest, true)
+				and _battlenav_segments_clear(battlenav_short_bs, battlenav_short_start, battlenav_short_res.waypoints)
+				and is_finite(battlenav_expected_short)
+				and is_equal_approx(battlenav_short_len, battlenav_expected_short)
+			)
+
+	var battlenav_equal_cost_ok: bool = false
+	var battlenav_eq_a: BattleState = _battlemove_make_state("active")
+	var battlenav_eq_b: BattleState = _battlemove_make_state("active")
+	if (
+		battlenav_eq_a != null
+		and battlenav_eq_b != null
+		and battlenav_eq_a.battlefield_geometry != null
+		and battlenav_eq_b.battlefield_geometry != null
+	):
+		var battlenav_eq_wall_a: BattleObstacle = BattleObstacle.new(
+			"mid_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlenav_eq_dummy_z: BattleObstacle = BattleObstacle.new("z_dummy", Rect2(90.0, 55.0, 2.0, 2.0), true)
+		var battlenav_eq_dummy_a: BattleObstacle = BattleObstacle.new("a_dummy", Rect2(2.0, 2.0, 2.0, 2.0), true)
+		var battlenav_eq_wall_b: BattleObstacle = BattleObstacle.new(
+			"mid_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlenav_eq_dummy_z2: BattleObstacle = BattleObstacle.new("z_dummy", Rect2(90.0, 55.0, 2.0, 2.0), true)
+		var battlenav_eq_dummy_a2: BattleObstacle = BattleObstacle.new("a_dummy", Rect2(2.0, 2.0, 2.0, 2.0), true)
+		var battlenav_eq_added: bool = (
+			battlenav_eq_a.battlefield_geometry.add_obstacle(battlenav_eq_wall_a)
+			and battlenav_eq_a.battlefield_geometry.add_obstacle(battlenav_eq_dummy_z)
+			and battlenav_eq_a.battlefield_geometry.add_obstacle(battlenav_eq_dummy_a)
+			and battlenav_eq_b.battlefield_geometry.add_obstacle(battlenav_eq_dummy_a2)
+			and battlenav_eq_b.battlefield_geometry.add_obstacle(battlenav_eq_dummy_z2)
+			and battlenav_eq_b.battlefield_geometry.add_obstacle(battlenav_eq_wall_b)
+		)
+		if battlenav_eq_added:
+			var battlenav_eq_res_a: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_eq_a,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			var battlenav_eq_res_b: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_eq_b,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			battlenav_equal_cost_ok = (
+				_battlenav_success_ok(battlenav_eq_res_a, Vector2(30.0, 30.0), Vector2(60.0, 30.0), true)
+				and _battlenav_success_ok(battlenav_eq_res_b, Vector2(30.0, 30.0), Vector2(60.0, 30.0), true)
+				and _battlenav_waypoints_match(battlenav_eq_res_a.waypoints, battlenav_eq_res_b.waypoints)
+				and _battlenav_segments_clear(battlenav_eq_a, Vector2(30.0, 30.0), battlenav_eq_res_a.waypoints)
+			)
+
+	var battlenav_multi_ok: bool = false
+	var battlenav_clear_multi_ok: bool = false
+	var battlenav_simplify_ok: bool = false
+	var battlenav_multi_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_multi_bs != null and battlenav_multi_bs.battlefield_geometry != null:
+		var battlenav_multi_a: BattleObstacle = BattleObstacle.new("nav_multi_a", Rect2(25.0, 0.0, 10.0, 40.0), true)
+		var battlenav_multi_b: BattleObstacle = BattleObstacle.new("nav_multi_b", Rect2(55.0, 20.0, 10.0, 40.0), true)
+		if (
+			battlenav_multi_bs.battlefield_geometry.add_obstacle(battlenav_multi_b)
+			and battlenav_multi_bs.battlefield_geometry.add_obstacle(battlenav_multi_a)
+		):
+			var battlenav_multi_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_multi_bs,
+				Vector2(10.0, 20.0),
+				Vector2(80.0, 40.0)
+			)
+			battlenav_multi_ok = (
+				_battlenav_success_ok(battlenav_multi_res, Vector2(10.0, 20.0), Vector2(80.0, 40.0), true)
+				and _battlenav_waypoints_legal(battlenav_multi_bs, battlenav_multi_res.waypoints, Vector2(80.0, 40.0))
+				and _battlenav_segments_clear(battlenav_multi_bs, Vector2(10.0, 20.0), battlenav_multi_res.waypoints)
+			)
+			battlenav_clear_multi_ok = battlenav_multi_ok
+			battlenav_simplify_ok = (
+				battlenav_multi_ok
+				and battlenav_multi_res.waypoints.size() < 9
+				and _battlenav_is_simplified(battlenav_multi_bs, Vector2(10.0, 20.0), battlenav_multi_res.waypoints)
+			)
+			battlenav_no_dup_ok = battlenav_no_dup_ok and _battlenav_no_duplicate_waypoints(battlenav_multi_res)
+
+	var battlenav_corridor_ok: bool = false
+	var battlenav_clear_corridor_ok: bool = false
+	var battlenav_corridor_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_corridor_bs != null and battlenav_corridor_bs.battlefield_geometry != null:
+		var battlenav_cor_n: BattleObstacle = BattleObstacle.new("nav_cor_n", Rect2(40.0, 0.0, 10.0, 22.0), true)
+		var battlenav_cor_s: BattleObstacle = BattleObstacle.new("nav_cor_s", Rect2(40.0, 38.0, 10.0, 22.0), true)
+		if (
+			battlenav_corridor_bs.battlefield_geometry.add_obstacle(battlenav_cor_n)
+			and battlenav_corridor_bs.battlefield_geometry.add_obstacle(battlenav_cor_s)
+		):
+			var battlenav_cor_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_corridor_bs,
+				Vector2(20.0, 30.0),
+				Vector2(70.0, 30.0)
+			)
+			battlenav_corridor_ok = (
+				_battlenav_success_ok(battlenav_cor_res, Vector2(20.0, 30.0), Vector2(70.0, 30.0), false)
+				and battlenav_cor_res.waypoints.size() == 1
+				and _battlenav_waypoints_legal(battlenav_corridor_bs, battlenav_cor_res.waypoints, Vector2(70.0, 30.0))
+				and _battlenav_segments_clear(battlenav_corridor_bs, Vector2(20.0, 30.0), battlenav_cor_res.waypoints)
+				and not battlenav_cor_n.contains_point(Vector2(20.0, 30.0))
+				and not battlenav_cor_s.contains_point(Vector2(70.0, 30.0))
+			)
+			battlenav_clear_corridor_ok = battlenav_corridor_ok
+			battlenav_no_dup_ok = battlenav_no_dup_ok and _battlenav_no_duplicate_waypoints(battlenav_cor_res)
+
+	var battlenav_barrier_ok: bool = false
+	var battlenav_barrier_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_barrier_bs != null and battlenav_barrier_bs.battlefield_geometry != null:
+		var battlenav_barrier: BattleObstacle = BattleObstacle.new(
+			"nav_barrier",
+			Rect2(0.0, 25.0, 100.0, 10.0),
+			true
+		)
+		if battlenav_barrier_bs.battlefield_geometry.add_obstacle(battlenav_barrier):
+			var battlenav_barrier_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_barrier_bs,
+				Vector2(50.0, 10.0),
+				Vector2(50.0, 50.0)
+			)
+			battlenav_barrier_ok = _battlenav_fail_ok(
+				battlenav_barrier_res,
+				"no_path",
+				Vector2(50.0, 10.0),
+				Vector2(50.0, 50.0)
+			)
+
+	var battlenav_edge_ok: bool = false
+	var battlenav_edge_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_edge_bs != null and battlenav_edge_bs.battlefield_geometry != null:
+		var battlenav_edge_wall: BattleObstacle = BattleObstacle.new(
+			"nav_edge_wall",
+			Rect2(40.0, 0.0, 10.0, 40.0),
+			true
+		)
+		if battlenav_edge_bs.battlefield_geometry.add_obstacle(battlenav_edge_wall):
+			var battlenav_edge_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_edge_bs,
+				Vector2(30.0, 20.0),
+				Vector2(60.0, 20.0)
+			)
+			var battlenav_edge_via_bottom: bool = false
+			for battlenav_edge_wp: Vector2 in battlenav_edge_res.waypoints:
+				if battlenav_edge_wp.is_equal_approx(Vector2(60.0, 20.0)):
+					continue
+				if battlenav_edge_wp.y >= 40.0:
+					battlenav_edge_via_bottom = true
+				else:
+					battlenav_edge_via_bottom = false
+					break
+			battlenav_edge_ok = (
+				_battlenav_success_ok(battlenav_edge_res, Vector2(30.0, 20.0), Vector2(60.0, 20.0), true)
+				and _battlenav_waypoints_legal(battlenav_edge_bs, battlenav_edge_res.waypoints, Vector2(60.0, 20.0))
+				and _battlenav_segments_clear(battlenav_edge_bs, Vector2(30.0, 20.0), battlenav_edge_res.waypoints)
+				and battlenav_edge_via_bottom
+			)
+
+	var battlenav_nonblock_ok: bool = false
+	var battlenav_nonblock_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_nonblock_bs != null and battlenav_nonblock_bs.battlefield_geometry != null:
+		var battlenav_soft: BattleObstacle = BattleObstacle.new(
+			"nav_soft",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			false
+		)
+		if battlenav_nonblock_bs.battlefield_geometry.add_obstacle(battlenav_soft):
+			var battlenav_soft_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_nonblock_bs,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			battlenav_nonblock_ok = (
+				_battlenav_success_ok(battlenav_soft_res, Vector2(30.0, 30.0), Vector2(60.0, 30.0), false)
+				and battlenav_soft_res.waypoints.size() == 1
+				and battlenav_soft_res.waypoints[0].is_equal_approx(Vector2(60.0, 30.0))
+				and _battlenav_segments_clear(battlenav_nonblock_bs, Vector2(30.0, 30.0), battlenav_soft_res.waypoints)
+			)
+
+	var battlenav_mixed_ok: bool = false
+	var battlenav_mixed_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_mixed_bs != null and battlenav_mixed_bs.battlefield_geometry != null:
+		var battlenav_mix_hard: BattleObstacle = BattleObstacle.new(
+			"nav_mix_hard",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlenav_mix_soft: BattleObstacle = BattleObstacle.new(
+			"nav_mix_soft",
+			Rect2(10.0, 40.0, 20.0, 10.0),
+			false
+		)
+		if (
+			battlenav_mixed_bs.battlefield_geometry.add_obstacle(battlenav_mix_soft)
+			and battlenav_mixed_bs.battlefield_geometry.add_obstacle(battlenav_mix_hard)
+		):
+			var battlenav_mix_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_mixed_bs,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			var battlenav_hard_only: BattleState = _battlemove_make_state("active")
+			var battlenav_hard_match: bool = false
+			if battlenav_hard_only != null and battlenav_hard_only.battlefield_geometry != null:
+				var battlenav_hard_copy: BattleObstacle = BattleObstacle.new(
+					"nav_mix_hard",
+					Rect2(40.0, 20.0, 10.0, 20.0),
+					true
+				)
+				if battlenav_hard_only.battlefield_geometry.add_obstacle(battlenav_hard_copy):
+					var battlenav_hard_res: BattleNavigationResult = BattleNavigationService.find_path(
+						battlenav_hard_only,
+						Vector2(30.0, 30.0),
+						Vector2(60.0, 30.0)
+					)
+					battlenav_hard_match = _battlenav_waypoints_match(
+						battlenav_mix_res.waypoints,
+						battlenav_hard_res.waypoints
+					)
+			battlenav_mixed_ok = (
+				_battlenav_success_ok(battlenav_mix_res, Vector2(30.0, 30.0), Vector2(60.0, 30.0), true)
+				and battlenav_hard_match
+				and _battlenav_segments_clear(battlenav_mixed_bs, Vector2(30.0, 30.0), battlenav_mix_res.waypoints)
+			)
+
+	var battlenav_readonly_ok: bool = false
+	var battlenav_ro_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_ro_bs != null and battlenav_ro_bs.battlefield_geometry != null:
+		var battlenav_ro_wall: BattleObstacle = BattleObstacle.new(
+			"nav_ro_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		var battlenav_ro_part: BattleParticipant = _battlemove_add_participant(
+			battlenav_ro_bs,
+			"nav_ro_p",
+			"attacker"
+		)
+		if battlenav_ro_part != null and battlenav_ro_bs.battlefield_geometry.add_obstacle(battlenav_ro_wall):
+			battlenav_ro_part.has_battle_position = true
+			battlenav_ro_part.battle_position = Vector2(12.0, 12.0)
+			var battlenav_ro_geo_snap: Dictionary = _battlenav_geo_snap(battlenav_ro_bs.battlefield_geometry)
+			var battlenav_ro_part_snap: Dictionary = _battlemove_part_snap(battlenav_ro_part)
+			var battlenav_ro_phase: String = battlenav_ro_bs.battle_phase
+			var battlenav_ro_elapsed: float = battlenav_ro_bs.elapsed_time_seconds
+			var battlenav_ro_res1: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_ro_bs,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			var battlenav_ro_res2: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_ro_bs,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			battlenav_readonly_ok = (
+				battlenav_ro_res1 != null
+				and battlenav_ro_res2 != null
+				and battlenav_ro_res1.success
+				and _battlenav_waypoints_match(battlenav_ro_res1.waypoints, battlenav_ro_res2.waypoints)
+				and _battlenav_geo_unchanged(battlenav_ro_bs.battlefield_geometry, battlenav_ro_geo_snap)
+				and _battlemove_part_unchanged(battlenav_ro_part, battlenav_ro_part_snap)
+				and battlenav_ro_bs.battle_phase == battlenav_ro_phase
+				and is_equal_approx(battlenav_ro_bs.elapsed_time_seconds, battlenav_ro_elapsed)
+			)
+
+	var battlenav_equiv_ok: bool = false
+	var battlenav_eqs_a: BattleState = _battlemove_make_state("active")
+	var battlenav_eqs_b: BattleState = _battlemove_make_state("active")
+	if (
+		battlenav_eqs_a != null
+		and battlenav_eqs_b != null
+		and battlenav_eqs_a.battlefield_geometry != null
+		and battlenav_eqs_b.battlefield_geometry != null
+	):
+		var battlenav_eqs_w1: BattleObstacle = BattleObstacle.new("eqs_wall", Rect2(40.0, 20.0, 10.0, 20.0), true)
+		var battlenav_eqs_d1: BattleObstacle = BattleObstacle.new("eqs_dummy", Rect2(90.0, 2.0, 2.0, 2.0), true)
+		var battlenav_eqs_w2: BattleObstacle = BattleObstacle.new("eqs_wall", Rect2(40.0, 20.0, 10.0, 20.0), true)
+		var battlenav_eqs_d2: BattleObstacle = BattleObstacle.new("eqs_dummy", Rect2(90.0, 2.0, 2.0, 2.0), true)
+		if (
+			battlenav_eqs_a.battlefield_geometry.add_obstacle(battlenav_eqs_w1)
+			and battlenav_eqs_a.battlefield_geometry.add_obstacle(battlenav_eqs_d1)
+			and battlenav_eqs_b.battlefield_geometry.add_obstacle(battlenav_eqs_d2)
+			and battlenav_eqs_b.battlefield_geometry.add_obstacle(battlenav_eqs_w2)
+		):
+			var battlenav_eqs_ra: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_eqs_a,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			var battlenav_eqs_rb: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_eqs_b,
+				Vector2(30.0, 30.0),
+				Vector2(60.0, 30.0)
+			)
+			battlenav_equiv_ok = (
+				battlenav_eqs_ra != null
+				and battlenav_eqs_rb != null
+				and battlenav_eqs_ra.success == battlenav_eqs_rb.success
+				and battlenav_eqs_ra.used_detour == battlenav_eqs_rb.used_detour
+				and battlenav_eqs_ra.waypoints.size() == battlenav_eqs_rb.waypoints.size()
+				and _battlenav_waypoints_match(battlenav_eqs_ra.waypoints, battlenav_eqs_rb.waypoints)
+			)
+
+	var battlenav_store_default_ok: bool = false
+	var battlenav_store_set_ok: bool = false
+	var battlenav_store_alias_ok: bool = false
+	var battlenav_store_tx_ok: bool = false
+	var battlenav_store_strip_ok: bool = false
+	var battlenav_store_clear_ok: bool = false
+	var battlenav_fresh: BattleParticipant = BattleParticipant.new()
+	battlenav_store_default_ok = (
+		battlenav_fresh.has_navigation_destination == false
+		and battlenav_fresh.navigation_waypoints.is_empty()
+		and battlenav_fresh.navigation_waypoint_index == 0
+		and not battlenav_fresh.has_active_navigation_path()
+		and battlenav_fresh.get_current_navigation_waypoint().is_equal_approx(Vector2.ZERO)
+	)
+	var battlenav_store_p: BattleParticipant = BattleParticipant.new()
+	var battlenav_caller_path: Array[Vector2] = [Vector2(12.0, 8.0), Vector2(18.0, 8.0), Vector2(22.0, 14.0)]
+	var battlenav_set_ok: bool = battlenav_store_p.set_navigation_path(Vector2(22.0, 14.0), battlenav_caller_path)
+	battlenav_store_set_ok = (
+		battlenav_set_ok
+		and battlenav_store_p.has_navigation_destination
+		and battlenav_store_p.navigation_destination.is_equal_approx(Vector2(22.0, 14.0))
+		and battlenav_store_p.navigation_waypoints.size() == 3
+		and battlenav_store_p.navigation_waypoints[0].is_equal_approx(Vector2(12.0, 8.0))
+		and battlenav_store_p.navigation_waypoints[1].is_equal_approx(Vector2(18.0, 8.0))
+		and battlenav_store_p.navigation_waypoints[2].is_equal_approx(Vector2(22.0, 14.0))
+		and battlenav_store_p.navigation_waypoint_index == 0
+		and battlenav_store_p.get_current_navigation_waypoint().is_equal_approx(Vector2(12.0, 8.0))
+		and battlenav_store_p.has_active_navigation_path()
+	)
+	battlenav_caller_path[0] = Vector2(99.0, 99.0)
+	battlenav_store_alias_ok = (
+		battlenav_store_set_ok
+		and battlenav_store_p.navigation_waypoints[0].is_equal_approx(Vector2(12.0, 8.0))
+		and not battlenav_store_p.navigation_waypoints[0].is_equal_approx(Vector2(99.0, 99.0))
+	)
+	var battlenav_tx_dest: Vector2 = battlenav_store_p.navigation_destination
+	var battlenav_tx_flag: bool = battlenav_store_p.has_navigation_destination
+	var battlenav_tx_index: int = battlenav_store_p.navigation_waypoint_index
+	var battlenav_tx_copy: Array[Vector2] = _battlenav_copy_points(battlenav_store_p.navigation_waypoints)
+	var battlenav_bad_dest: bool = battlenav_store_p.set_navigation_path(Vector2(NAN, 1.0), battlenav_tx_copy)
+	var battlenav_bad_wp: Array[Vector2] = [Vector2(1.0, 1.0), Vector2(INF, 2.0)]
+	var battlenav_bad_wp_set: bool = battlenav_store_p.set_navigation_path(Vector2(4.0, 4.0), battlenav_bad_wp)
+	battlenav_store_tx_ok = (
+		not battlenav_bad_dest
+		and not battlenav_bad_wp_set
+		and battlenav_store_p.has_navigation_destination == battlenav_tx_flag
+		and battlenav_store_p.navigation_destination.is_equal_approx(battlenav_tx_dest)
+		and battlenav_store_p.navigation_waypoint_index == battlenav_tx_index
+		and _battlenav_waypoints_match(battlenav_store_p.navigation_waypoints, battlenav_tx_copy)
+	)
+	var battlenav_dup_in: Array[Vector2] = [
+		Vector2(1.0, 1.0),
+		Vector2(1.0, 1.0),
+		Vector2(4.0, 2.0),
+		Vector2(4.0, 2.0),
+		Vector2(6.0, 3.0)
+	]
+	var battlenav_strip_p: BattleParticipant = BattleParticipant.new()
+	var battlenav_strip_ok: bool = battlenav_strip_p.set_navigation_path(Vector2(6.0, 3.0), battlenav_dup_in)
+	battlenav_store_strip_ok = (
+		battlenav_strip_ok
+		and battlenav_strip_p.navigation_waypoints.size() == 3
+		and battlenav_strip_p.navigation_waypoints[0].is_equal_approx(Vector2(1.0, 1.0))
+		and battlenav_strip_p.navigation_waypoints[1].is_equal_approx(Vector2(4.0, 2.0))
+		and battlenav_strip_p.navigation_waypoints[2].is_equal_approx(Vector2(6.0, 3.0))
+	)
+	battlenav_store_p.clear_navigation_path()
+	battlenav_store_clear_ok = (
+		battlenav_store_p.has_navigation_destination == false
+		and battlenav_store_p.navigation_destination.is_equal_approx(Vector2.ZERO)
+		and battlenav_store_p.navigation_waypoints.is_empty()
+		and battlenav_store_p.navigation_waypoint_index == 0
+		and not battlenav_store_p.has_active_navigation_path()
+	)
+
+	var battlenav_no_steer_ok: bool = false
+	var battlenav_intent_wins_ok: bool = false
+	var battlenav_steer_bs: BattleState = _battlemove_make_state("active")
+	if battlenav_steer_bs != null:
+		var battlenav_steer_p: BattleParticipant = _battlemove_add_participant(
+			battlenav_steer_bs,
+			"nav_steer_p",
+			"attacker"
+		)
+		if battlenav_steer_p != null:
+			battlenav_steer_p.has_battle_position = true
+			battlenav_steer_p.battle_position = Vector2(10.0, 10.0)
+			var battlenav_steer_speed: bool = battlenav_steer_p.set_movement_speed(5.0)
+			var battlenav_steer_intent: bool = battlenav_steer_p.set_movement_intent(Vector2.ZERO)
+			var battlenav_steer_path: Array[Vector2] = [Vector2(40.0, 10.0)]
+			var battlenav_steer_stored: bool = battlenav_steer_p.set_navigation_path(Vector2(40.0, 10.0), battlenav_steer_path)
+			var battlenav_steer_res: BattleRuntimeResult = BattleRuntimeService.advance(battlenav_steer_bs, 1.0)
+			battlenav_no_steer_ok = (
+				battlenav_steer_speed
+				and battlenav_steer_intent
+				and battlenav_steer_stored
+				and battlenav_steer_res != null
+				and battlenav_steer_res.success
+				and battlenav_steer_p.movement_intent.is_equal_approx(Vector2.ZERO)
+				and battlenav_steer_p.velocity.is_equal_approx(Vector2.ZERO)
+				and battlenav_steer_p.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+				and battlenav_steer_p.has_navigation_destination
+				and battlenav_steer_p.navigation_destination.is_equal_approx(Vector2(40.0, 10.0))
+				and battlenav_steer_p.navigation_waypoints.size() == 1
+			)
+		var battlenav_intent_bs: BattleState = _battlemove_make_state("active")
+		var battlenav_intent_p: BattleParticipant = _battlemove_add_participant(
+			battlenav_intent_bs,
+			"nav_intent_p",
+			"attacker"
+		)
+		if battlenav_intent_p != null:
+			battlenav_intent_p.has_battle_position = true
+			battlenav_intent_p.battle_position = Vector2(10.0, 10.0)
+			var battlenav_intent_speed: bool = battlenav_intent_p.set_movement_speed(4.0)
+			var battlenav_intent_set: bool = battlenav_intent_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battlenav_intent_path: Array[Vector2] = [Vector2(40.0, 10.0)]
+			var battlenav_intent_stored: bool = battlenav_intent_p.set_navigation_path(
+				Vector2(40.0, 10.0),
+				battlenav_intent_path
+			)
+			var battlenav_intent_res: BattleRuntimeResult = BattleRuntimeService.advance(battlenav_intent_bs, 1.0)
+			battlenav_intent_wins_ok = (
+				battlenav_intent_speed
+				and battlenav_intent_set
+				and battlenav_intent_stored
+				and battlenav_intent_res != null
+				and battlenav_intent_res.success
+				and battlenav_intent_p.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and battlenav_intent_p.velocity.is_equal_approx(Vector2(0.0, 4.0))
+				and battlenav_intent_p.battle_position.is_equal_approx(Vector2(10.0, 14.0))
+				and battlenav_intent_p.has_navigation_destination
+				and battlenav_intent_p.navigation_destination.is_equal_approx(Vector2(40.0, 10.0))
+			)
+
+	var battlenav_persist_ok: bool = false
+	var battlenav_immutability_ok: bool = false
+	var battlenav_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battlenav_camp_game: GameState = battlenav_camp_pack.get("game_state", null) as GameState
+	var battlenav_camp_force: TravelingForce = battlenav_camp_pack.get("force", null) as TravelingForce
+	var battlenav_camp_bs: BattleState = battlenav_camp_pack.get("battle_state", null) as BattleState
+	if battlenav_camp_game != null and battlenav_camp_bs != null:
+		var battlenav_camp_deployed: bool = _battle_deploy_standard_attacker(battlenav_camp_bs)
+		var battlenav_camp_geo: bool = _battlegeo_init(battlenav_camp_bs)
+		var battlenav_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battlenav_camp_game,
+			battlenav_camp_force,
+			"battle_mission"
+		)
+		var battlenav_camp_part: BattleParticipant = battlenav_camp_bs.get_participant("battle_sol_a")
+		var battlenav_camp_planned: bool = false
+		if battlenav_camp_part != null and battlenav_camp_part.has_battle_position:
+			var battlenav_camp_dest: Vector2 = battlenav_camp_part.battle_position + Vector2(8.0, 0.0)
+			var battlenav_camp_res: BattleNavigationResult = BattleNavigationService.find_path(
+				battlenav_camp_bs,
+				battlenav_camp_part.battle_position,
+				battlenav_camp_dest
+			)
+			if battlenav_camp_res != null and battlenav_camp_res.success:
+				battlenav_camp_planned = battlenav_camp_part.set_navigation_path(
+					battlenav_camp_dest,
+					battlenav_camp_res.waypoints
+				)
+		var battlenav_camp_persist: Dictionary = battlenav_camp_game.to_dict()
+		battlenav_persist_ok = (
+			battlenav_camp_deployed
+			and battlenav_camp_geo
+			and battlenav_camp_planned
+			and _battle_serialized_campaign_keys_only(battlenav_camp_persist)
+			and not _battle_data_has_tactical_trace(battlenav_camp_persist)
+		)
+		battlenav_immutability_ok = (
+			battlenav_persist_ok
+			and _battle_campaign_unchanged(
+				battlenav_camp_game,
+				battlenav_camp_snap,
+				battlenav_camp_force,
+				"battle_mission"
+			)
+			and battlenav_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlenav_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
+	var battlenav_no_combat_ok: bool = false
+	var battlenav_no_combat_bs: BattleState = _battlemove_make_state("active")
+	var battlenav_no_combat_rt: BattleRuntimeService = BattleRuntimeService.new()
+	var battlenav_no_combat_mv: BattleMovementService = BattleMovementService.new()
+	var battlenav_no_combat_p: BattleParticipant = BattleParticipant.new()
+	if battlenav_no_combat_bs != null:
+		battlenav_no_combat_ok = (
+			_battle_has_no_combat_turn_model(battlenav_no_combat_bs)
+			and battlenav_no_combat_bs.get("current_turn_index") == null
+			and battlenav_no_combat_bs.get("current_round") == null
+			and battlenav_no_combat_bs.get("active_turn_actor_id") == null
+			and battlenav_no_combat_bs.get("find_path") == null
+			and battlenav_no_combat_bs.get("cover_value") == null
+			and not battlenav_no_combat_rt.has_method("find_path")
+			and not battlenav_no_combat_rt.has_method("follow_path")
+			and not battlenav_no_combat_rt.has_method("advance_navigation")
+			and not battlenav_no_combat_mv.has_method("follow_path")
+			and not battlenav_no_combat_p.has_method("follow_navigation")
+			and not battlenav_no_combat_p.has_method("apply_navigation_intent")
+		)
+
+	var battlenav_helper_wps: Array[Vector2] = [Vector2(1.0, 2.0), Vector2(3.0, 4.0)]
+	var battlenav_ok_res: BattleNavigationResult = BattleNavigationResult.succeeded(
+		Vector2(0.0, 0.0),
+		Vector2(3.0, 4.0),
+		battlenav_helper_wps,
+		true
+	)
+	battlenav_helper_wps[0] = Vector2(9.0, 9.0)
+	var battlenav_fail_res: BattleNavigationResult = BattleNavigationResult.failed(
+		"no_path",
+		"Battle navigation failed: no legal path exists.",
+		Vector2(1.0, 1.0),
+		Vector2(2.0, 2.0)
+	)
+	var battlenav_result_helper_ok: bool = (
+		battlenav_ok_res != null
+		and battlenav_ok_res.success
+		and battlenav_ok_res.start_position.is_equal_approx(Vector2(0.0, 0.0))
+		and battlenav_ok_res.destination.is_equal_approx(Vector2(3.0, 4.0))
+		and battlenav_ok_res.used_detour
+		and battlenav_ok_res.waypoints.size() == 2
+		and battlenav_ok_res.waypoints[0].is_equal_approx(Vector2(1.0, 2.0))
+		and battlenav_ok_res.waypoints[1].is_equal_approx(Vector2(3.0, 4.0))
+		and battlenav_ok_res.error_code.is_empty()
+		and battlenav_ok_res.error_message.is_empty()
+		and battlenav_fail_res != null
+		and not battlenav_fail_res.success
+		and battlenav_fail_res.start_position.is_equal_approx(Vector2(1.0, 1.0))
+		and battlenav_fail_res.destination.is_equal_approx(Vector2(2.0, 2.0))
+		and battlenav_fail_res.waypoints.is_empty()
+		and battlenav_fail_res.used_detour == false
+		and battlenav_fail_res.error_code == "no_path"
+		and battlenav_fail_res.error_message == "Battle navigation failed: no legal path exists."
+	)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -9797,6 +10662,50 @@ static func run() -> Dictionary:
 		"battlespatial_no_part_collision_ok": battlespatial_no_part_collision_ok,
 		"battlespatial_no_combat_ok": battlespatial_no_combat_ok,
 		"battlespatial_result_helper_ok": battlespatial_result_helper_ok,
+		"battlenav_request_ok": battlenav_request_ok,
+		"battlenav_direct_ok": battlenav_direct_ok,
+		"battlenav_same_point_ok": battlenav_same_point_ok,
+		"battlenav_fail_null_ok": battlenav_fail_null_ok,
+		"battlenav_fail_missing_geo_ok": battlenav_fail_missing_geo_ok,
+		"battlenav_fail_invalid_geo_ok": battlenav_fail_invalid_geo_ok,
+		"battlenav_fail_bad_start_ok": battlenav_fail_bad_start_ok,
+		"battlenav_fail_bad_dest_ok": battlenav_fail_bad_dest_ok,
+		"battlenav_fail_start_out_ok": battlenav_fail_start_out_ok,
+		"battlenav_fail_dest_out_ok": battlenav_fail_dest_out_ok,
+		"battlenav_fail_start_inside_ok": battlenav_fail_start_inside_ok,
+		"battlenav_fail_dest_inside_ok": battlenav_fail_dest_inside_ok,
+		"battlenav_detour_ok": battlenav_detour_ok,
+		"battlenav_short_side_ok": battlenav_short_side_ok,
+		"battlenav_equal_cost_ok": battlenav_equal_cost_ok,
+		"battlenav_multi_ok": battlenav_multi_ok,
+		"battlenav_corridor_ok": battlenav_corridor_ok,
+		"battlenav_barrier_ok": battlenav_barrier_ok,
+		"battlenav_edge_ok": battlenav_edge_ok,
+		"battlenav_nonblock_ok": battlenav_nonblock_ok,
+		"battlenav_mixed_ok": battlenav_mixed_ok,
+		"battlenav_corner_ok": battlenav_corner_ok,
+		"battlenav_clear_direct_ok": battlenav_clear_direct_ok,
+		"battlenav_clear_detour_ok": battlenav_clear_detour_ok,
+		"battlenav_clear_multi_ok": battlenav_clear_multi_ok,
+		"battlenav_clear_corridor_ok": battlenav_clear_corridor_ok,
+		"battlenav_simplify_ok": battlenav_simplify_ok,
+		"battlenav_no_dup_ok": battlenav_no_dup_ok,
+		"battlenav_length_direct_ok": battlenav_length_direct_ok,
+		"battlenav_length_detour_ok": battlenav_length_detour_ok,
+		"battlenav_readonly_ok": battlenav_readonly_ok,
+		"battlenav_equiv_ok": battlenav_equiv_ok,
+		"battlenav_store_default_ok": battlenav_store_default_ok,
+		"battlenav_store_set_ok": battlenav_store_set_ok,
+		"battlenav_store_alias_ok": battlenav_store_alias_ok,
+		"battlenav_store_tx_ok": battlenav_store_tx_ok,
+		"battlenav_store_strip_ok": battlenav_store_strip_ok,
+		"battlenav_store_clear_ok": battlenav_store_clear_ok,
+		"battlenav_no_steer_ok": battlenav_no_steer_ok,
+		"battlenav_intent_wins_ok": battlenav_intent_wins_ok,
+		"battlenav_persist_ok": battlenav_persist_ok,
+		"battlenav_immutability_ok": battlenav_immutability_ok,
+		"battlenav_no_combat_ok": battlenav_no_combat_ok,
+		"battlenav_result_helper_ok": battlenav_result_helper_ok,
 	}
 
 	var passed := true
@@ -11465,6 +12374,11 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "blocks_movement"
 		or text == "blocking_obstacle_id"
 		or text == "was_blocked"
+		or text == "navigation_destination"
+		or text == "has_navigation_destination"
+		or text == "navigation_waypoints"
+		or text == "navigation_waypoint_index"
+		or text == "used_detour"
 	)
 
 
@@ -12608,4 +13522,276 @@ static func _battlespatial_collinear(resolved: Vector2, requested: Vector2) -> b
 	if requested.is_equal_approx(Vector2.ZERO):
 		return false
 	return is_equal_approx(resolved.cross(requested), 0.0) and resolved.dot(requested) >= 0.0
+
+
+static func _battlenav_success_ok(
+	result: BattleNavigationResult,
+	start_position: Vector2,
+	destination: Vector2,
+	used_detour: bool
+) -> bool:
+	if result == null:
+		return false
+	if not result.success:
+		return false
+	if result.used_detour != used_detour:
+		return false
+	if not result.error_code.is_empty() or not result.error_message.is_empty():
+		return false
+	if not result.start_position.is_equal_approx(start_position):
+		return false
+	if not result.destination.is_equal_approx(destination):
+		return false
+	if result.waypoints.is_empty():
+		return false
+	return result.waypoints[result.waypoints.size() - 1].is_equal_approx(destination)
+
+
+static func _battlenav_fail_ok(
+	result: BattleNavigationResult,
+	expected_code: String,
+	start_position: Vector2,
+	destination: Vector2
+) -> bool:
+	if result == null:
+		return false
+	if result.success:
+		return false
+	if result.error_code != expected_code:
+		return false
+	if not result.error_message.begins_with("Battle navigation failed:"):
+		return false
+	if not result.waypoints.is_empty():
+		return false
+	if result.used_detour:
+		return false
+	if BattlefieldGeometry.is_finite_point(start_position) and not result.start_position.is_equal_approx(start_position):
+		return false
+	if BattlefieldGeometry.is_finite_point(destination) and not result.destination.is_equal_approx(destination):
+		return false
+	return true
+
+
+static func _battlenav_segments_clear(
+	battle_state: BattleState,
+	start_position: Vector2,
+	waypoints: Array[Vector2]
+) -> bool:
+	if battle_state == null:
+		return false
+	var current: Vector2 = start_position
+	for waypoint: Vector2 in waypoints:
+		if not BattleSpatialService.is_translation_clear(battle_state, current, waypoint):
+			return false
+		current = waypoint
+	return true
+
+
+static func _battlenav_waypoints_legal(
+	battle_state: BattleState,
+	waypoints: Array[Vector2],
+	destination: Vector2
+) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if waypoints.is_empty():
+		return false
+	if not waypoints[waypoints.size() - 1].is_equal_approx(destination):
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	for waypoint: Vector2 in waypoints:
+		if not BattlefieldGeometry.is_finite_point(waypoint):
+			return false
+		if not geometry.contains_point(waypoint):
+			return false
+		if _battlenav_inside_blocker(geometry, waypoint):
+			return false
+	return true
+
+
+static func _battlenav_inside_blocker(geometry: BattlefieldGeometry, point: Vector2) -> bool:
+	if geometry == null:
+		return false
+	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
+	for obstacle_id: String in obstacle_ids:
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null or not obstacle.blocks_movement:
+			continue
+		if obstacle.contains_point(point):
+			return true
+	return false
+
+
+static func _battlenav_no_duplicate_waypoints(result: BattleNavigationResult) -> bool:
+	if result == null:
+		return false
+	for i: int in range(result.waypoints.size()):
+		if i > 0 and result.waypoints[i].is_equal_approx(result.waypoints[i - 1]):
+			return false
+	if result.success and result.waypoints.size() >= 2:
+		if result.waypoints[result.waypoints.size() - 1].is_equal_approx(result.destination):
+			if result.waypoints[result.waypoints.size() - 2].is_equal_approx(result.destination):
+				return false
+	return true
+
+
+static func _battlenav_route_length(start_position: Vector2, waypoints: Array[Vector2]) -> float:
+	var length: float = 0.0
+	var current: Vector2 = start_position
+	for waypoint: Vector2 in waypoints:
+		length += current.distance_to(waypoint)
+		current = waypoint
+	return length
+
+
+static func _battlenav_copy_points(source: Array[Vector2]) -> Array[Vector2]:
+	var copied: Array[Vector2] = []
+	for point: Vector2 in source:
+		copied.append(point)
+	return copied
+
+
+static func _battlenav_waypoints_match(left: Array[Vector2], right: Array[Vector2]) -> bool:
+	if left.size() != right.size():
+		return false
+	for i: int in range(left.size()):
+		if not left[i].is_equal_approx(right[i]):
+			return false
+	return true
+
+
+static func _battlenav_geo_snap(geometry: BattlefieldGeometry) -> Dictionary:
+	var snap: Dictionary = {}
+	if geometry == null:
+		snap["null"] = true
+		return snap
+	snap["null"] = false
+	snap["w"] = geometry.width
+	snap["h"] = geometry.height
+	snap["count"] = geometry.obstacles.size()
+	var ids: Array[String] = geometry.get_sorted_obstacle_ids()
+	snap["ids"] = ids
+	var bounds: Dictionary = {}
+	var blocking: Dictionary = {}
+	for obstacle_id: String in ids:
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null:
+			continue
+		bounds[obstacle_id] = obstacle.bounds
+		blocking[obstacle_id] = obstacle.blocks_movement
+	snap["bounds"] = bounds
+	snap["blocking"] = blocking
+	return snap
+
+
+static func _battlenav_geo_unchanged(geometry: BattlefieldGeometry, snap: Dictionary) -> bool:
+	if geometry == null:
+		return bool(snap.get("null", false))
+	if bool(snap.get("null", false)):
+		return false
+	if not is_equal_approx(geometry.width, float(snap.get("w", -1.0))):
+		return false
+	if not is_equal_approx(geometry.height, float(snap.get("h", -1.0))):
+		return false
+	if geometry.obstacles.size() != int(snap.get("count", -1)):
+		return false
+	var expected_ids: Array[String] = []
+	var id_data: Variant = snap.get("ids", [])
+	if id_data is Array:
+		for item: Variant in id_data:
+			expected_ids.append(str(item))
+	if not _string_ids_match(geometry.get_sorted_obstacle_ids(), expected_ids):
+		return false
+	var bounds_raw: Variant = snap.get("bounds", {})
+	var blocking_raw: Variant = snap.get("blocking", {})
+	if not (bounds_raw is Dictionary) or not (blocking_raw is Dictionary):
+		return false
+	var bounds: Dictionary = bounds_raw as Dictionary
+	var blocking: Dictionary = blocking_raw as Dictionary
+	for obstacle_id: String in expected_ids:
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null:
+			return false
+		if not bounds.has(obstacle_id) or typeof(bounds[obstacle_id]) != TYPE_RECT2:
+			return false
+		var expected_bounds: Rect2 = bounds[obstacle_id] as Rect2
+		if obstacle.bounds != expected_bounds:
+			return false
+		if obstacle.blocks_movement != bool(blocking.get(obstacle_id, not obstacle.blocks_movement)):
+			return false
+	return true
+
+
+static func _battlenav_corners_clear(
+	battle_state: BattleState,
+	start_position: Vector2,
+	waypoints: Array[Vector2]
+) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if waypoints.is_empty():
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var current: Vector2 = start_position
+	for waypoint: Vector2 in waypoints:
+		if not BattlefieldGeometry.is_finite_point(waypoint):
+			return false
+		if not geometry.contains_point(waypoint):
+			return false
+		if _battlenav_inside_blocker(geometry, waypoint):
+			return false
+		if not BattleSpatialService.is_translation_clear(battle_state, current, waypoint):
+			return false
+		current = waypoint
+	return true
+
+
+static func _battlenav_is_simplified(
+	battle_state: BattleState,
+	start_position: Vector2,
+	waypoints: Array[Vector2]
+) -> bool:
+	if battle_state == null or waypoints.is_empty():
+		return false
+	var current: Vector2 = start_position
+	var index: int = 0
+	while index < waypoints.size():
+		var farthest: int = index
+		var probe: int = waypoints.size() - 1
+		while probe > index:
+			if BattleSpatialService.is_translation_clear(battle_state, current, waypoints[probe]):
+				farthest = probe
+				break
+			probe -= 1
+		if farthest != index:
+			return false
+		current = waypoints[index]
+		index += 1
+	return true
+
+
+static func _battlenav_rect_short_detour_length(bounds: Rect2, start_position: Vector2, destination: Vector2) -> float:
+	var epsilon: float = BattleNavigationService.NAVIGATION_CLEARANCE_EPSILON
+	var min_x: float = bounds.position.x
+	var min_y: float = bounds.position.y
+	var max_x: float = bounds.position.x + bounds.size.x
+	var max_y: float = bounds.position.y + bounds.size.y
+	var top_left: Vector2 = Vector2(min_x - epsilon, min_y - epsilon)
+	var top_right: Vector2 = Vector2(max_x + epsilon, min_y - epsilon)
+	var bottom_left: Vector2 = Vector2(min_x - epsilon, max_y + epsilon)
+	var bottom_right: Vector2 = Vector2(max_x + epsilon, max_y + epsilon)
+	var top_length: float = (
+		start_position.distance_to(top_left)
+		+ top_left.distance_to(top_right)
+		+ top_right.distance_to(destination)
+	)
+	var bottom_length: float = (
+		start_position.distance_to(bottom_left)
+		+ bottom_left.distance_to(bottom_right)
+		+ bottom_right.distance_to(destination)
+	)
+	if top_length < bottom_length:
+		return top_length
+	return bottom_length
+
 

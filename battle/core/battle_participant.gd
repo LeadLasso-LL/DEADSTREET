@@ -14,6 +14,10 @@ var battle_position: Vector2 = Vector2.ZERO
 var velocity: Vector2 = Vector2.ZERO
 var movement_intent: Vector2 = Vector2.ZERO
 var movement_speed: float = 0.0
+var navigation_destination: Vector2 = Vector2.ZERO
+var has_navigation_destination: bool = false
+var navigation_waypoints: Array[Vector2] = []
+var navigation_waypoint_index: int = 0
 
 
 func _init(
@@ -57,3 +61,42 @@ func set_movement_speed(value: float) -> bool:
 		return false
 	movement_speed = value
 	return true
+
+
+func set_navigation_path(destination: Vector2, waypoints: Array[Vector2]) -> bool:
+	if not is_finite(destination.x) or not is_finite(destination.y):
+		push_error("BattleParticipant.set_navigation_path: destination is not finite.")
+		return false
+	var copied: Array[Vector2] = []
+	for waypoint: Vector2 in waypoints:
+		if not is_finite(waypoint.x) or not is_finite(waypoint.y):
+			push_error("BattleParticipant.set_navigation_path: waypoint is not finite.")
+			return false
+		if copied.is_empty() or not copied[copied.size() - 1].is_equal_approx(waypoint):
+			copied.append(waypoint)
+	navigation_destination = destination
+	has_navigation_destination = true
+	navigation_waypoints = copied
+	navigation_waypoint_index = 0
+	return true
+
+
+func clear_navigation_path() -> void:
+	navigation_destination = Vector2.ZERO
+	has_navigation_destination = false
+	navigation_waypoints = []
+	navigation_waypoint_index = 0
+
+
+func has_active_navigation_path() -> bool:
+	if not has_navigation_destination:
+		return false
+	if navigation_waypoint_index < 0:
+		return false
+	return navigation_waypoint_index < navigation_waypoints.size()
+
+
+func get_current_navigation_waypoint() -> Vector2:
+	if not has_active_navigation_path():
+		return Vector2.ZERO
+	return navigation_waypoints[navigation_waypoint_index]

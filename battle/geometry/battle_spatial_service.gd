@@ -81,6 +81,30 @@ static func resolve_translation(
 	return _resolve_legal_translation(geometry, start_position, requested_displacement)
 
 
+static func is_translation_clear(
+	battle_state: BattleState,
+	start_position: Vector2,
+	destination: Vector2
+) -> bool:
+	if not BattlefieldGeometry.is_finite_point(start_position):
+		return false
+	if not BattlefieldGeometry.is_finite_point(destination):
+		return false
+	var displacement: Vector2 = destination - start_position
+	if not BattlefieldGeometry.is_finite_point(displacement):
+		return false
+	var result: BattleSpatialResult = resolve_translation(
+		battle_state,
+		start_position,
+		displacement
+	)
+	if result == null or not result.success:
+		return false
+	if result.was_blocked:
+		return false
+	return result.final_position.is_equal_approx(destination)
+
+
 static func _resolve_legal_translation(
 	geometry: BattlefieldGeometry,
 	start_position: Vector2,
