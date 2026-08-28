@@ -48,6 +48,8 @@ const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
 const BattleSetupService := preload("res://battle/core/battle_setup_service.gd")
+const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
+const BattleRuntimeService := preload("res://battle/runtime/battle_runtime_service.gd")
 
 
 static func run() -> Dictionary:
@@ -6441,6 +6443,437 @@ static func run() -> Dictionary:
 			and _battle_has_no_combat_turn_model(battle_rt_det_b)
 		)
 
+	var battlert_default_ok: bool = false
+	var battlert_reject_deploy_ok: bool = false
+	var battlert_advance_ok: bool = false
+	var battlert_zero_delta_ok: bool = false
+	var battlert_invalid_delta_ok: bool = false
+	var battlert_invalid_elapsed_ok: bool = false
+	var battlert_null_ok: bool = false
+	var battlert_intent_norm_ok: bool = false
+	var battlert_intent_zero_ok: bool = false
+	var battlert_intent_invalid_ok: bool = false
+	var battlert_no_move_ok: bool = false
+	var battlert_combat_state_ok: bool = false
+	var battlert_multi_ok: bool = false
+	var battlert_begin_active_ok: bool = false
+	var battlert_no_turn_ok: bool = false
+	var battlert_result_ok: bool = false
+	var battlert_persist_ok: bool = false
+	var battlert_immutability_ok: bool = false
+
+	var battlert_fresh_state: BattleState = BattleState.new()
+	var battlert_fresh_part: BattleParticipant = BattleParticipant.new()
+	battlert_default_ok = (
+		is_equal_approx(battlert_fresh_state.elapsed_time_seconds, 0.0)
+		and battlert_fresh_part.has_battle_position == false
+		and battlert_fresh_part.battle_position.is_equal_approx(Vector2.ZERO)
+		and battlert_fresh_part.velocity.is_equal_approx(Vector2.ZERO)
+		and battlert_fresh_part.movement_intent.is_equal_approx(Vector2.ZERO)
+		and not (
+			battlert_fresh_part.battle_position.is_equal_approx(Vector2.ZERO)
+			and battlert_fresh_part.has_battle_position
+		)
+	)
+
+	var battlert_deploy_state: BattleState = _battlert_make_state("deployment")
+	if battlert_deploy_state != null:
+		var battlert_deploy_elapsed: float = battlert_deploy_state.elapsed_time_seconds
+		var battlert_deploy_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_deploy_state, 0.1)
+		battlert_reject_deploy_ok = (
+			_battlert_fail_ok(battlert_deploy_res, "battle_not_active", battlert_deploy_elapsed)
+			and battlert_deploy_res.error_message == "Battle runtime failed: battle phase is 'deployment', not active."
+			and is_equal_approx(battlert_deploy_elapsed, 0.0)
+			and is_equal_approx(battlert_deploy_state.elapsed_time_seconds, battlert_deploy_elapsed)
+			and battlert_deploy_state.battle_phase == "deployment"
+		)
+
+	var battlert_clock: BattleState = _battlert_make_state("active")
+	if battlert_clock != null:
+		var battlert_adv1: BattleRuntimeResult = BattleRuntimeService.advance(battlert_clock, 0.25)
+		var battlert_adv1_ok: bool = (
+			_battlert_clock_ok(battlert_adv1, 0.25, 0.0, 0.25)
+			and is_equal_approx(battlert_clock.elapsed_time_seconds, 0.25)
+		)
+		var battlert_adv2: BattleRuntimeResult = BattleRuntimeService.advance(battlert_clock, 0.50)
+		battlert_advance_ok = (
+			battlert_adv1_ok
+			and _battlert_clock_ok(battlert_adv2, 0.50, 0.25, 0.75)
+			and is_equal_approx(battlert_clock.elapsed_time_seconds, 0.75)
+		)
+		battlert_no_turn_ok = _battle_has_no_combat_turn_model(battlert_clock)
+
+	var battlert_zero_state: BattleState = _battlert_make_state("active")
+	if battlert_zero_state != null:
+		battlert_zero_state.elapsed_time_seconds = 1.25
+		var battlert_zero_part: BattleParticipant = _battlert_add_participant(
+			battlert_zero_state,
+			"battlert_zero_p",
+			"attacker"
+		)
+		if battlert_zero_part != null:
+			battlert_zero_part.has_battle_position = true
+			battlert_zero_part.battle_position = Vector2(4.0, 5.0)
+			battlert_zero_part.velocity = Vector2(0.0, 1.0)
+			var battlert_zero_intent_ok: bool = battlert_zero_part.set_movement_intent(Vector2(0.0, 1.0))
+			var battlert_zero_alive: bool = battlert_zero_part.is_alive
+			var battlert_zero_wounded: bool = battlert_zero_part.is_wounded
+			var battlert_zero_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_zero_state, 0.0)
+			battlert_zero_delta_ok = (
+				battlert_zero_intent_ok
+				and _battlert_clock_ok(battlert_zero_res, 0.0, 1.25, 1.25)
+				and is_equal_approx(battlert_zero_state.elapsed_time_seconds, 1.25)
+				and battlert_zero_part.has_battle_position
+				and battlert_zero_part.battle_position.is_equal_approx(Vector2(4.0, 5.0))
+				and battlert_zero_part.velocity.is_equal_approx(Vector2(0.0, 1.0))
+				and battlert_zero_part.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and battlert_zero_part.is_alive == battlert_zero_alive
+				and battlert_zero_part.is_wounded == battlert_zero_wounded
+			)
+
+	var battlert_delta_state: BattleState = _battlert_make_state("active")
+	if battlert_delta_state != null:
+		battlert_delta_state.elapsed_time_seconds = 0.40
+		var battlert_neg_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_delta_state, -0.1)
+		var battlert_neg_ok: bool = (
+			_battlert_fail_ok(battlert_neg_res, "invalid_delta", 0.40)
+			and battlert_neg_res.error_message == "Battle runtime failed: delta_seconds is invalid."
+			and is_equal_approx(battlert_neg_res.delta_seconds, -0.1)
+			and is_equal_approx(battlert_delta_state.elapsed_time_seconds, 0.40)
+		)
+		var battlert_nan_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_delta_state, NAN)
+		var battlert_nan_ok: bool = (
+			battlert_nan_res != null
+			and not battlert_nan_res.success
+			and battlert_nan_res.error_code == "invalid_delta"
+			and battlert_nan_res.error_message == "Battle runtime failed: delta_seconds is invalid."
+			and is_nan(battlert_nan_res.delta_seconds)
+			and is_equal_approx(battlert_nan_res.elapsed_time_before, 0.40)
+			and is_equal_approx(battlert_nan_res.elapsed_time_after, 0.40)
+			and is_equal_approx(battlert_delta_state.elapsed_time_seconds, 0.40)
+		)
+		var battlert_inf_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_delta_state, INF)
+		var battlert_inf_ok: bool = (
+			battlert_inf_res != null
+			and not battlert_inf_res.success
+			and battlert_inf_res.error_code == "invalid_delta"
+			and battlert_inf_res.error_message == "Battle runtime failed: delta_seconds is invalid."
+			and is_inf(battlert_inf_res.delta_seconds)
+			and is_equal_approx(battlert_inf_res.elapsed_time_before, 0.40)
+			and is_equal_approx(battlert_inf_res.elapsed_time_after, 0.40)
+			and is_equal_approx(battlert_delta_state.elapsed_time_seconds, 0.40)
+		)
+		battlert_invalid_delta_ok = battlert_neg_ok and battlert_nan_ok and battlert_inf_ok
+
+	var battlert_elapsed_state: BattleState = _battlert_make_state("active")
+	if battlert_elapsed_state != null:
+		battlert_elapsed_state.elapsed_time_seconds = -1.0
+		var battlert_bad_elapsed_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_elapsed_state, 0.1)
+		var battlert_neg_elapsed_ok: bool = (
+			_battlert_fail_ok(battlert_bad_elapsed_res, "invalid_elapsed_time", -1.0)
+			and battlert_bad_elapsed_res.error_message == "Battle runtime failed: elapsed_time_seconds is invalid."
+			and is_equal_approx(battlert_elapsed_state.elapsed_time_seconds, -1.0)
+		)
+		battlert_elapsed_state.elapsed_time_seconds = NAN
+		var battlert_nan_elapsed_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_elapsed_state, 0.1)
+		var battlert_nan_elapsed_ok: bool = (
+			battlert_nan_elapsed_res != null
+			and not battlert_nan_elapsed_res.success
+			and battlert_nan_elapsed_res.error_code == "invalid_elapsed_time"
+			and battlert_nan_elapsed_res.error_message == "Battle runtime failed: elapsed_time_seconds is invalid."
+			and is_nan(battlert_nan_elapsed_res.elapsed_time_before)
+			and is_nan(battlert_nan_elapsed_res.elapsed_time_after)
+			and is_nan(battlert_elapsed_state.elapsed_time_seconds)
+		)
+		battlert_elapsed_state.elapsed_time_seconds = INF
+		var battlert_inf_elapsed_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_elapsed_state, 0.1)
+		var battlert_inf_elapsed_ok: bool = (
+			battlert_inf_elapsed_res != null
+			and not battlert_inf_elapsed_res.success
+			and battlert_inf_elapsed_res.error_code == "invalid_elapsed_time"
+			and battlert_inf_elapsed_res.error_message == "Battle runtime failed: elapsed_time_seconds is invalid."
+			and is_inf(battlert_inf_elapsed_res.elapsed_time_before)
+			and is_inf(battlert_inf_elapsed_res.elapsed_time_after)
+			and is_inf(battlert_elapsed_state.elapsed_time_seconds)
+		)
+		battlert_invalid_elapsed_ok = (
+			battlert_neg_elapsed_ok
+			and battlert_nan_elapsed_ok
+			and battlert_inf_elapsed_ok
+		)
+
+	var battlert_null_state: BattleState = null
+	var battlert_null_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_null_state, 0.1)
+	battlert_null_ok = (
+		_battlert_fail_ok(battlert_null_res, "null_battle_state", 0.0)
+		and battlert_null_res.error_message == "Battle runtime failed: battle_state is null."
+		and is_equal_approx(battlert_null_res.delta_seconds, 0.1)
+	)
+
+	var battlert_intent_part: BattleParticipant = BattleParticipant.new(
+		"battlert_intent_p",
+		"battlert_intent_soldier",
+		"battlert_a",
+		"attacker",
+		"pistol",
+		true,
+		false,
+		""
+	)
+	var battlert_intent_set: bool = battlert_intent_part.set_movement_intent(Vector2(3.0, 4.0))
+	battlert_intent_norm_ok = (
+		battlert_intent_set
+		and battlert_intent_part.movement_intent.is_equal_approx(Vector2(0.6, 0.8))
+		and is_equal_approx(battlert_intent_part.movement_intent.length(), 1.0)
+	)
+	var battlert_intent_zero_set: bool = battlert_intent_part.set_movement_intent(Vector2.ZERO)
+	var battlert_intent_zero_after_set: bool = battlert_intent_part.movement_intent.is_equal_approx(Vector2.ZERO)
+	var battlert_intent_reset: bool = battlert_intent_part.set_movement_intent(Vector2(3.0, 4.0))
+	battlert_intent_part.clear_movement_intent()
+	battlert_intent_zero_ok = (
+		battlert_intent_norm_ok
+		and battlert_intent_zero_set
+		and battlert_intent_zero_after_set
+		and battlert_intent_reset
+		and battlert_intent_part.movement_intent.is_equal_approx(Vector2.ZERO)
+	)
+	var battlert_intent_restore: bool = battlert_intent_part.set_movement_intent(Vector2(3.0, 4.0))
+	var battlert_intent_before_invalid: Vector2 = battlert_intent_part.movement_intent
+	var battlert_nan_intent: Vector2 = Vector2(NAN, 0.0)
+	var battlert_inf_intent: Vector2 = Vector2(INF, 1.0)
+	var battlert_nan_intent_set: bool = battlert_intent_part.set_movement_intent(battlert_nan_intent)
+	var battlert_after_nan: Vector2 = battlert_intent_part.movement_intent
+	var battlert_inf_intent_set: bool = battlert_intent_part.set_movement_intent(battlert_inf_intent)
+	battlert_intent_invalid_ok = (
+		battlert_intent_restore
+		and not battlert_nan_intent_set
+		and not battlert_inf_intent_set
+		and battlert_after_nan.is_equal_approx(battlert_intent_before_invalid)
+		and battlert_intent_part.movement_intent.is_equal_approx(battlert_intent_before_invalid)
+		and battlert_intent_part.movement_intent.is_equal_approx(Vector2(0.6, 0.8))
+	)
+
+	var battlert_move_state: BattleState = _battlert_make_state("active")
+	if battlert_move_state != null:
+		var battlert_move_part: BattleParticipant = _battlert_add_participant(
+			battlert_move_state,
+			"battlert_move_p",
+			"attacker"
+		)
+		if battlert_move_part != null:
+			battlert_move_part.has_battle_position = true
+			battlert_move_part.battle_position = Vector2(10.0, 20.0)
+			battlert_move_part.velocity = Vector2.ZERO
+			var battlert_move_intent_ok: bool = battlert_move_part.set_movement_intent(Vector2(1.0, 0.0))
+			var battlert_move_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_move_state, 1.0)
+			battlert_no_move_ok = (
+				battlert_move_intent_ok
+				and _battlert_clock_ok(battlert_move_res, 1.0, 0.0, 1.0)
+				and is_equal_approx(battlert_move_state.elapsed_time_seconds, 1.0)
+				and battlert_move_part.has_battle_position
+				and battlert_move_part.battle_position.is_equal_approx(Vector2(10.0, 20.0))
+				and battlert_move_part.velocity.is_equal_approx(Vector2.ZERO)
+				and battlert_move_part.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+			)
+
+	var battlert_combat_state: BattleState = _battlert_make_state("active")
+	if battlert_combat_state != null:
+		var battlert_combat_part: BattleParticipant = _battlert_add_participant(
+			battlert_combat_state,
+			"battlert_combat_p",
+			"attacker"
+		)
+		if battlert_combat_part != null:
+			battlert_combat_part.deployment_slot_id = "battlert_slot"
+			battlert_combat_part.is_alive = true
+			battlert_combat_part.is_wounded = true
+			var battlert_combat_alive: bool = battlert_combat_part.is_alive
+			var battlert_combat_wounded: bool = battlert_combat_part.is_wounded
+			var battlert_combat_slot: String = battlert_combat_part.deployment_slot_id
+			var battlert_combat_side: String = battlert_combat_part.side_id
+			var battlert_combat_soldier: String = battlert_combat_part.campaign_soldier_id
+			var battlert_combat_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_combat_state, 0.5)
+			battlert_combat_state_ok = (
+				_battlert_clock_ok(battlert_combat_res, 0.5, 0.0, 0.5)
+				and battlert_combat_part.is_alive == battlert_combat_alive
+				and battlert_combat_part.is_wounded == battlert_combat_wounded
+				and battlert_combat_part.deployment_slot_id == battlert_combat_slot
+				and battlert_combat_part.side_id == battlert_combat_side
+				and battlert_combat_part.campaign_soldier_id == battlert_combat_soldier
+				and battlert_combat_part.is_alive == true
+				and battlert_combat_part.is_wounded == true
+				and battlert_combat_part.deployment_slot_id == "battlert_slot"
+				and battlert_combat_part.side_id == "attacker"
+				and battlert_combat_part.campaign_soldier_id == "battlert_soldier_battlert_combat_p"
+			)
+
+	var battlert_multi_state: BattleState = _battlert_make_state("active")
+	if battlert_multi_state != null:
+		var battlert_multi_a: BattleParticipant = _battlert_add_participant(
+			battlert_multi_state,
+			"battlert_multi_a",
+			"attacker"
+		)
+		var battlert_multi_b: BattleParticipant = _battlert_add_participant(
+			battlert_multi_state,
+			"battlert_multi_b",
+			"attacker"
+		)
+		var battlert_multi_c: BattleParticipant = _battlert_add_participant(
+			battlert_multi_state,
+			"battlert_multi_c",
+			"defender"
+		)
+		if battlert_multi_a != null and battlert_multi_b != null and battlert_multi_c != null:
+			battlert_multi_a.has_battle_position = true
+			battlert_multi_a.battle_position = Vector2(10.0, 20.0)
+			battlert_multi_a.velocity = Vector2.ZERO
+			var battlert_multi_a_intent: bool = battlert_multi_a.set_movement_intent(Vector2(1.0, 0.0))
+			battlert_multi_b.has_battle_position = true
+			battlert_multi_b.battle_position = Vector2(30.0, 40.0)
+			battlert_multi_b.velocity = Vector2(0.0, 2.0)
+			var battlert_multi_b_intent: bool = battlert_multi_b.set_movement_intent(Vector2(0.0, 1.0))
+			battlert_multi_c.has_battle_position = true
+			battlert_multi_c.battle_position = Vector2(50.0, 60.0)
+			battlert_multi_c.velocity = Vector2(-1.0, 0.0)
+			var battlert_multi_c_intent: bool = battlert_multi_c.set_movement_intent(Vector2(-3.0, -4.0))
+			var battlert_multi_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_multi_state, 0.40)
+			battlert_multi_ok = (
+				battlert_multi_a_intent
+				and battlert_multi_b_intent
+				and battlert_multi_c_intent
+				and _battlert_clock_ok(battlert_multi_res, 0.40, 0.0, 0.40)
+				and is_equal_approx(battlert_multi_state.elapsed_time_seconds, 0.40)
+				and battlert_multi_a.battle_position.is_equal_approx(Vector2(10.0, 20.0))
+				and battlert_multi_a.velocity.is_equal_approx(Vector2.ZERO)
+				and battlert_multi_a.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battlert_multi_b.battle_position.is_equal_approx(Vector2(30.0, 40.0))
+				and battlert_multi_b.velocity.is_equal_approx(Vector2(0.0, 2.0))
+				and battlert_multi_b.movement_intent.is_equal_approx(Vector2(0.0, 1.0))
+				and battlert_multi_c.battle_position.is_equal_approx(Vector2(50.0, 60.0))
+				and battlert_multi_c.velocity.is_equal_approx(Vector2(-1.0, 0.0))
+				and battlert_multi_c.movement_intent.is_equal_approx(Vector2(-0.6, -0.8))
+			)
+			battlert_no_turn_ok = (
+				battlert_no_turn_ok
+				and _battle_has_no_combat_turn_model(battlert_multi_state)
+			)
+
+	var battlert_begin_pack: Dictionary = _battle_create_ready_pack()
+	var battlert_begin_bs: BattleState = battlert_begin_pack.get("battle_state", null) as BattleState
+	if battlert_begin_bs != null:
+		var battlert_begin_deployed: bool = _battle_deploy_standard_attacker(battlert_begin_bs)
+		var battlert_begin_assign: Dictionary = _battle_deploy_assignment_snapshot(battlert_begin_bs)
+		var battlert_begin_before_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_begin_bs, 0.1)
+		var battlert_begin_blocked: bool = (
+			battlert_begin_deployed
+			and battlert_begin_bs.battle_phase == "deployment"
+			and is_equal_approx(battlert_begin_bs.elapsed_time_seconds, 0.0)
+			and _battlert_fail_ok(battlert_begin_before_res, "battle_not_active", 0.0)
+		)
+		var battlert_begun: bool = battlert_begin_bs.begin_battle()
+		var battlert_begin_after_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_begin_bs, 0.25)
+		battlert_begin_assign["phase"] = "active"
+		battlert_begin_active_ok = (
+			battlert_begin_blocked
+			and battlert_begun
+			and battlert_begin_bs.battle_phase == "active"
+			and _battlert_clock_ok(battlert_begin_after_res, 0.25, 0.0, 0.25)
+			and is_equal_approx(battlert_begin_bs.elapsed_time_seconds, 0.25)
+			and _battle_deploy_assignment_unchanged(battlert_begin_bs, battlert_begin_assign)
+		)
+		battlert_no_turn_ok = (
+			battlert_no_turn_ok
+			and _battle_has_no_combat_turn_model(battlert_begin_bs)
+			and battlert_begin_bs.get("current_turn_index") == null
+			and battlert_begin_bs.get("current_round") == null
+			and battlert_begin_bs.get("actor_turn_in_progress") == null
+			and battlert_begin_bs.get("active_turn_actor_id") == null
+		)
+
+	var battlert_ok_res: BattleRuntimeResult = BattleRuntimeResult.succeeded(0.25, 0.0, 0.25)
+	var battlert_fail_res: BattleRuntimeResult = BattleRuntimeResult.failed(
+		"invalid_delta",
+		"Battle runtime failed: delta_seconds is invalid.",
+		-1.0,
+		0.4
+	)
+	battlert_result_ok = (
+		battlert_ok_res != null
+		and battlert_ok_res.success
+		and is_equal_approx(battlert_ok_res.delta_seconds, 0.25)
+		and is_equal_approx(battlert_ok_res.elapsed_time_before, 0.0)
+		and is_equal_approx(battlert_ok_res.elapsed_time_after, 0.25)
+		and battlert_ok_res.error_code.is_empty()
+		and battlert_ok_res.error_message.is_empty()
+		and battlert_fail_res != null
+		and not battlert_fail_res.success
+		and battlert_fail_res.error_code == "invalid_delta"
+		and battlert_fail_res.error_message == "Battle runtime failed: delta_seconds is invalid."
+		and is_equal_approx(battlert_fail_res.delta_seconds, -1.0)
+		and is_equal_approx(battlert_fail_res.elapsed_time_before, 0.4)
+		and is_equal_approx(battlert_fail_res.elapsed_time_after, 0.4)
+	)
+
+	var battlert_persist_pack: Dictionary = _battle_create_ready_pack()
+	var battlert_persist_game: GameState = battlert_persist_pack.get("game_state", null) as GameState
+	var battlert_persist_bs: BattleState = battlert_persist_pack.get("battle_state", null) as BattleState
+	if battlert_persist_game != null and battlert_persist_bs != null:
+		var battlert_persist_deployed: bool = _battle_deploy_standard_attacker(battlert_persist_bs)
+		var battlert_persist_begun: bool = battlert_persist_bs.begin_battle()
+		battlert_persist_bs.elapsed_time_seconds = 42.75
+		var battlert_persist_part: BattleParticipant = battlert_persist_bs.get_participant("battle_sol_a")
+		if battlert_persist_part != null:
+			battlert_persist_part.has_battle_position = true
+			battlert_persist_part.battle_position = Vector2(123.0, 456.0)
+			battlert_persist_part.velocity = Vector2(7.0, 8.0)
+			var battlert_persist_intent: bool = battlert_persist_part.set_movement_intent(Vector2(1.0, 0.0))
+			var battlert_persist_data: Dictionary = battlert_persist_game.to_dict()
+			battlert_persist_ok = (
+				battlert_persist_deployed
+				and battlert_persist_begun
+				and battlert_persist_intent
+				and is_equal_approx(battlert_persist_bs.elapsed_time_seconds, 42.75)
+				and battlert_persist_part.has_battle_position
+				and battlert_persist_part.battle_position.is_equal_approx(Vector2(123.0, 456.0))
+				and battlert_persist_part.velocity.is_equal_approx(Vector2(7.0, 8.0))
+				and battlert_persist_part.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and _battle_serialized_campaign_keys_only(battlert_persist_data)
+				and not _battle_data_has_tactical_trace(battlert_persist_data)
+			)
+
+	var battlert_imm_pack: Dictionary = _battle_create_ready_pack()
+	var battlert_imm_game: GameState = battlert_imm_pack.get("game_state", null) as GameState
+	var battlert_imm_force: TravelingForce = battlert_imm_pack.get("force", null) as TravelingForce
+	var battlert_imm_bs: BattleState = battlert_imm_pack.get("battle_state", null) as BattleState
+	var battlert_imm_campaign: Dictionary = _battle_campaign_snapshot(
+		battlert_imm_game,
+		battlert_imm_force,
+		"battle_mission"
+	)
+	if battlert_imm_game != null and battlert_imm_bs != null:
+		var battlert_imm_deployed: bool = _battle_deploy_standard_attacker(battlert_imm_bs)
+		var battlert_imm_begun: bool = battlert_imm_bs.begin_battle()
+		var battlert_imm_res1: BattleRuntimeResult = BattleRuntimeService.advance(battlert_imm_bs, 0.10)
+		var battlert_imm_res2: BattleRuntimeResult = BattleRuntimeService.advance(battlert_imm_bs, 0.20)
+		var battlert_imm_res3: BattleRuntimeResult = BattleRuntimeService.advance(battlert_imm_bs, 0.30)
+		battlert_immutability_ok = (
+			battlert_imm_deployed
+			and battlert_imm_begun
+			and _battlert_clock_ok(battlert_imm_res1, 0.10, 0.0, 0.10)
+			and _battlert_clock_ok(battlert_imm_res2, 0.20, 0.10, 0.30)
+			and _battlert_clock_ok(battlert_imm_res3, 0.30, 0.30, 0.60)
+			and is_equal_approx(battlert_imm_bs.elapsed_time_seconds, 0.60)
+			and _battle_campaign_unchanged(
+				battlert_imm_game,
+				battlert_imm_campaign,
+				battlert_imm_force,
+				"battle_mission"
+			)
+			and battlert_imm_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlert_imm_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -7135,6 +7568,24 @@ static func run() -> Dictionary:
 		"battle_rt_identity_ok": battle_rt_identity_ok,
 		"battle_rt_deploy_unchanged_ok": battle_rt_deploy_unchanged_ok,
 		"battle_rt_immutability_ok": battle_rt_immutability_ok,
+		"battlert_default_ok": battlert_default_ok,
+		"battlert_reject_deploy_ok": battlert_reject_deploy_ok,
+		"battlert_advance_ok": battlert_advance_ok,
+		"battlert_zero_delta_ok": battlert_zero_delta_ok,
+		"battlert_invalid_delta_ok": battlert_invalid_delta_ok,
+		"battlert_invalid_elapsed_ok": battlert_invalid_elapsed_ok,
+		"battlert_null_ok": battlert_null_ok,
+		"battlert_intent_norm_ok": battlert_intent_norm_ok,
+		"battlert_intent_zero_ok": battlert_intent_zero_ok,
+		"battlert_intent_invalid_ok": battlert_intent_invalid_ok,
+		"battlert_no_move_ok": battlert_no_move_ok,
+		"battlert_combat_state_ok": battlert_combat_state_ok,
+		"battlert_multi_ok": battlert_multi_ok,
+		"battlert_begin_active_ok": battlert_begin_active_ok,
+		"battlert_no_turn_ok": battlert_no_turn_ok,
+		"battlert_result_ok": battlert_result_ok,
+		"battlert_persist_ok": battlert_persist_ok,
+		"battlert_immutability_ok": battlert_immutability_ok,
 	}
 
 	var passed := true
@@ -8788,6 +9239,11 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "active_turn_actor_id"
 		or text == "active_turn_actor_type"
 		or text == "active_turn_actor_side_id"
+		or text == "elapsed_time_seconds"
+		or text == "has_battle_position"
+		or text == "battle_position"
+		or text == "movement_intent"
+		or text == "velocity"
 	)
 
 
@@ -9117,7 +9573,85 @@ static func _battle_side_ids_match(battle_state: BattleState, snap: Dictionary) 
 	return (
 		_string_ids_match(_battle_variant_to_ids(current.get("att_p", [])), _battle_variant_to_ids(snap.get("att_p", [])))
 		and _string_ids_match(_battle_variant_to_ids(current.get("att_v", [])), _battle_variant_to_ids(snap.get("att_v", [])))
-		and _string_ids_match(_battle_variant_to_ids(current.get("def_p", [])), _battle_variant_to_ids(snap.get("def_p", [])))
+		and 		_string_ids_match(_battle_variant_to_ids(current.get("def_p", [])), _battle_variant_to_ids(snap.get("def_p", [])))
 		and _string_ids_match(_battle_variant_to_ids(current.get("def_v", [])), _battle_variant_to_ids(snap.get("def_v", [])))
+	)
+
+
+static func _battlert_make_state(p_phase: String) -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"battlert_battle",
+		"battlert_type",
+		"battlert_mission",
+		"battlert_location",
+		"attacker",
+		"defender",
+		p_phase
+	)
+	var attacker_side: BattleSide = BattleSide.new("attacker", "battlert_a", "", true, "")
+	var defender_side: BattleSide = BattleSide.new("defender", "battlert_b", "", false, "")
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	return battle_state
+
+
+static func _battlert_add_participant(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String
+) -> BattleParticipant:
+	if battle_state == null:
+		return null
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"battlert_soldier_" + participant_id,
+		"battlert_a",
+		side_id,
+		"pistol",
+		true,
+		false,
+		""
+	)
+	if side_id == "defender":
+		participant.faction_id = "battlert_b"
+	if not battle_state.add_participant(participant):
+		return null
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null or not side.add_participant_id(participant_id):
+		return null
+	return participant
+
+
+static func _battlert_clock_ok(
+	result: BattleRuntimeResult,
+	delta_seconds: float,
+	elapsed_before: float,
+	elapsed_after: float
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+		and is_equal_approx(result.delta_seconds, delta_seconds)
+		and is_equal_approx(result.elapsed_time_before, elapsed_before)
+		and is_equal_approx(result.elapsed_time_after, elapsed_after)
+	)
+
+
+static func _battlert_fail_ok(
+	result: BattleRuntimeResult,
+	error_code: String,
+	elapsed_before: float
+) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.error_code == error_code
+		and not result.error_message.is_empty()
+		and is_equal_approx(result.elapsed_time_before, elapsed_before)
+		and is_equal_approx(result.elapsed_time_after, elapsed_before)
 	)
 

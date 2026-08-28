@@ -17,6 +17,7 @@ var participants: Dictionary[String, BattleParticipant] = {}
 var vehicles: Dictionary[String, BattleVehicle] = {}
 var deployment_zones: Dictionary[String, DeploymentZone] = {}
 var battle_phase: String = "deployment"
+var elapsed_time_seconds: float = 0.0
 
 
 func _init(
