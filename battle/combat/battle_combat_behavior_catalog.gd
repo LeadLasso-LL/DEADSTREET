@@ -20,6 +20,10 @@ const SNIPER_PREFERRED_MAX := 60.0
 # Used only when a mobile combat participant has no usable movement speed yet.
 const DEFAULT_COMBAT_MOVEMENT_SPEED := 4.0
 
+# Provisional wounded limp speed for autonomous combat movement.
+# Not a fire-rate, accuracy, or reaction penalty.
+const WOUNDED_COMBAT_MOVEMENT_SPEED := 2.0
+
 # Replan combat-owned paths when the tracked destination drifts this far.
 const REPLAN_DISTANCE_EPSILON := 0.5
 

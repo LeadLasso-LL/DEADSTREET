@@ -10,6 +10,7 @@ const BattleFireControlResult := preload("res://battle/combat/battle_fire_contro
 const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
 const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
 const BattleAttackResult := preload("res://battle/combat/battle_attack_result.gd")
+const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
 
 
 static func resolve_attack(
@@ -111,7 +112,7 @@ static func resolve_attack(
 			"shot_commit_failed",
 			"Battle attack resolution failed: weapon cycling could not be committed."
 		)
-	_apply_outcome(target, outcome)
+	_apply_outcome(battle_state, target, outcome)
 	var attack_event: BattleAttackEvent = BattleAttackEvent.new(
 		source.participant_id,
 		target.participant_id,
@@ -126,7 +127,11 @@ static func resolve_attack(
 	return BattleAttackResult.executed(attack_event)
 
 
-static func _apply_outcome(target: BattleParticipant, outcome: String) -> void:
+static func _apply_outcome(
+	battle_state: BattleState,
+	target: BattleParticipant,
+	outcome: String
+) -> void:
 	if target == null:
 		return
 	match outcome:
@@ -134,5 +139,6 @@ static func _apply_outcome(target: BattleParticipant, outcome: String) -> void:
 			target.is_wounded = true
 		BattleAttackProfile.OUTCOME_KILL:
 			target.is_alive = false
+			BattleCoverService.release_all_for_participant(battle_state, target.participant_id)
 		_:
 			pass

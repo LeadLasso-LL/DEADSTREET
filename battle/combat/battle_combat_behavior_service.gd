@@ -5,6 +5,10 @@ const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
+const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
+const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
+const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
+const BattleCoverQueryResult := preload("res://battle/geometry/battle_cover_query_result.gd")
 const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
 const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
 const BattleFireControlService := preload("res://battle/combat/battle_fire_control_service.gd")
@@ -21,6 +25,12 @@ const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_b
 const MOVE_HOLD := "hold"
 const MOVE_APPROACH := "approach"
 const MOVE_RETREAT := "retreat"
+const MOVE_SEEK_COVER := "seek_cover"
+
+const WOUNDED_HOLD_COVER := "hold_cover"
+const WOUNDED_SEEK_COVER := "seek_cover"
+const WOUNDED_THREAT_OVERRIDE := "threat_override"
+const WOUNDED_FALLBACK := "fallback"
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
@@ -61,6 +71,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var kills: int = 0
 	var participants_repositioning: int = 0
 	var participants_holding_defend_position: int = 0
+	var wounded_seeking_cover: int = 0
+	var wounded_holding_cover: int = 0
+	var wounded_threat_override: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -79,14 +92,28 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 				if defended_shot != null:
 					attack_events.append(defended_shot)
 			continue
+		if participant.is_wounded:
+			var wounded_action: String = _update_wounded_cover_behavior(battle_state, participant)
+			if wounded_action == WOUNDED_HOLD_COVER:
+				wounded_holding_cover += 1
+				if execute_autonomous_attacks:
+					var cover_shot: BattleAttackEvent = _try_execute_shot(battle_state, participant)
+					if cover_shot != null:
+						attack_events.append(cover_shot)
+				continue
+			if wounded_action == WOUNDED_SEEK_COVER:
+				wounded_seeking_cover += 1
+				participants_repositioning += 1
+				continue
+			if wounded_action == WOUNDED_THREAT_OVERRIDE:
+				wounded_threat_override += 1
+			# Threat override and no-cover fallback use normal fire-then-move.
 		if execute_autonomous_attacks:
 			var executed_event: BattleAttackEvent = _try_execute_shot(battle_state, participant)
 			if executed_event != null:
 				attack_events.append(executed_event)
 				_clear_owned_combat_navigation(participant)
 				continue
-		if _wounded_behavior_applies(participant):
-			continue
 		if _update_combat_movement(battle_state, participant):
 			participants_repositioning += 1
 	shots_executed = attack_events.size()
@@ -109,7 +136,10 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		kills,
 		participants_repositioning,
 		participants_holding_defend_position,
-		attack_events
+		attack_events,
+		wounded_seeking_cover,
+		wounded_holding_cover,
+		wounded_threat_override
 	)
 
 
@@ -150,8 +180,232 @@ static func _try_execute_shot(
 	return attack_result.attack_event
 
 
-static func _wounded_behavior_applies(_participant: BattleParticipant) -> bool:
-	return false
+static func _update_wounded_cover_behavior(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> String:
+	_reconcile_cover_state(battle_state, participant)
+	if _has_valid_occupancy(battle_state, participant):
+		_clear_owned_combat_navigation(participant)
+		return WOUNDED_HOLD_COVER
+	if _has_external_navigation(participant):
+		_release_owned_reservation(battle_state, participant)
+		return WOUNDED_FALLBACK
+	var cover_slot: BattleCoverSlot = _wounded_cover_candidate(battle_state, participant)
+	if cover_slot == null:
+		_release_owned_reservation(battle_state, participant)
+		return WOUNDED_FALLBACK
+	var cover_distance_sq: float = participant.battle_position.distance_squared_to(cover_slot.position)
+	if not is_finite(cover_distance_sq):
+		_release_owned_reservation(battle_state, participant)
+		return WOUNDED_FALLBACK
+	var hostile_distance_sq: float = _nearest_hostile_distance_sq(battle_state, participant)
+	if is_finite(hostile_distance_sq) and hostile_distance_sq < cover_distance_sq:
+		_release_owned_reservation(battle_state, participant)
+		return WOUNDED_THREAT_OVERRIDE
+	if not _ensure_cover_reservation(battle_state, participant, cover_slot):
+		var retry_slot: BattleCoverSlot = _query_nearest_reachable_cover(battle_state, participant)
+		if retry_slot == null or not _ensure_cover_reservation(battle_state, participant, retry_slot):
+			_release_owned_reservation(battle_state, participant)
+			return WOUNDED_FALLBACK
+		cover_slot = retry_slot
+	if participant.battle_position.distance_to(cover_slot.position) <= BattleCoverService.COVER_OCCUPANCY_EPSILON:
+		var occupy: BattleCoverResult = BattleCoverService.occupy_slot(
+			battle_state,
+			participant.participant_id,
+			cover_slot.cover_slot_id
+		)
+		if occupy != null and occupy.success:
+			_clear_owned_combat_navigation(participant)
+			return WOUNDED_HOLD_COVER
+	if _navigate_to_cover(battle_state, participant, cover_slot):
+		return WOUNDED_SEEK_COVER
+	_release_owned_reservation(battle_state, participant)
+	return WOUNDED_FALLBACK
+
+
+static func _reconcile_cover_state(battle_state: BattleState, participant: BattleParticipant) -> void:
+	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if not participant.occupied_cover_slot_id.is_empty():
+		var occupied: BattleCoverSlot = geometry.get_cover_slot(participant.occupied_cover_slot_id)
+		if occupied == null or occupied.occupied_by_participant_id != participant.participant_id:
+			participant.occupied_cover_slot_id = ""
+	if not participant.reserved_cover_slot_id.is_empty():
+		var reserved: BattleCoverSlot = geometry.get_cover_slot(participant.reserved_cover_slot_id)
+		if reserved == null or reserved.reserved_by_participant_id != participant.participant_id:
+			participant.reserved_cover_slot_id = ""
+
+
+static func _has_valid_occupancy(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if participant.occupied_cover_slot_id.is_empty():
+		return false
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(participant.occupied_cover_slot_id)
+	if slot == null or not slot.is_valid():
+		return false
+	return slot.occupied_by_participant_id == participant.participant_id
+
+
+static func _has_valid_reservation(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if participant.reserved_cover_slot_id.is_empty():
+		return false
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(participant.reserved_cover_slot_id)
+	if slot == null or not slot.is_valid():
+		return false
+	if slot.occupied_by_participant_id != "" and slot.occupied_by_participant_id != participant.participant_id:
+		return false
+	return slot.reserved_by_participant_id == participant.participant_id
+
+
+static func _wounded_cover_candidate(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> BattleCoverSlot:
+	if _has_valid_reservation(battle_state, participant):
+		return battle_state.battlefield_geometry.get_cover_slot(participant.reserved_cover_slot_id)
+	return _query_nearest_reachable_cover(battle_state, participant)
+
+
+static func _query_nearest_reachable_cover(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> BattleCoverSlot:
+	if participant == null:
+		return null
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		participant.participant_id,
+		true
+	)
+	if query == null or not query.success or query.cover_slot_id.is_empty():
+		return null
+	if battle_state.battlefield_geometry == null:
+		return null
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(query.cover_slot_id)
+	if slot == null or not slot.is_valid() or not slot.is_available():
+		return null
+	return slot
+
+
+static func _ensure_cover_reservation(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	slot: BattleCoverSlot
+) -> bool:
+	if participant == null or slot == null:
+		return false
+	if (
+		participant.reserved_cover_slot_id == slot.cover_slot_id
+		and slot.reserved_by_participant_id == participant.participant_id
+	):
+		return true
+	var reserved: BattleCoverResult = BattleCoverService.reserve_slot(
+		battle_state,
+		participant.participant_id,
+		slot.cover_slot_id
+	)
+	return reserved != null and reserved.success
+
+
+static func _release_owned_reservation(battle_state: BattleState, participant: BattleParticipant) -> void:
+	if participant == null or participant.reserved_cover_slot_id.is_empty():
+		return
+	BattleCoverService.release_reservation(battle_state, participant.participant_id)
+
+
+static func _navigate_to_cover(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	slot: BattleCoverSlot
+) -> bool:
+	if participant == null or slot == null:
+		return false
+	if _has_external_navigation(participant):
+		return false
+	if slot.position.is_equal_approx(participant.battle_position):
+		return false
+	if _should_keep_cover_path(participant, slot):
+		_ensure_combat_movement_speed(participant)
+		return true
+	if not _is_valid_navigation_destination(battle_state, slot.position):
+		return false
+	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		participant.battle_position,
+		slot.position
+	)
+	if navigation == null or not navigation.success:
+		return false
+	if not participant.set_navigation_path(
+		navigation.destination,
+		navigation.waypoints,
+		BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	):
+		return false
+	participant.combat_move_mode = MOVE_SEEK_COVER
+	participant.combat_move_target_id = slot.cover_slot_id
+	_ensure_combat_movement_speed(participant)
+	return true
+
+
+static func _should_keep_cover_path(participant: BattleParticipant, slot: BattleCoverSlot) -> bool:
+	if participant == null or slot == null:
+		return false
+	if participant.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT:
+		return false
+	if not participant.has_active_navigation_path():
+		return false
+	if participant.combat_move_mode != MOVE_SEEK_COVER:
+		return false
+	if participant.combat_move_target_id != slot.cover_slot_id:
+		return false
+	var drift: float = participant.navigation_destination.distance_to(slot.position)
+	if not is_finite(drift):
+		return false
+	return drift <= BattleCombatBehaviorCatalog.REPLAN_DISTANCE_EPSILON
+
+
+static func _nearest_hostile_distance_sq(battle_state: BattleState, source: BattleParticipant) -> float:
+	if battle_state == null or source == null:
+		return INF
+	var best_distance: float = INF
+	var best_id: String = ""
+	for participant_id: String in _sorted_participant_ids(battle_state):
+		var candidate: BattleParticipant = battle_state.get_participant(participant_id)
+		if not _is_eligible_threat(battle_state, source, candidate):
+			continue
+		var distance: float = source.battle_position.distance_squared_to(candidate.battle_position)
+		if not is_finite(distance):
+			continue
+		if best_id.is_empty() or distance < best_distance:
+			best_distance = distance
+			best_id = participant_id
+	return best_distance
+
+
+static func _is_eligible_threat(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	candidate: BattleParticipant
+) -> bool:
+	if source == null or candidate == null:
+		return false
+	if candidate.participant_id == source.participant_id:
+		return false
+	if not candidate.is_alive:
+		return false
+	if not _is_positioned(candidate):
+		return false
+	if source.side_id.is_empty() or candidate.side_id.is_empty():
+		return false
+	if not battle_state.has_side(source.side_id) or not battle_state.has_side(candidate.side_id):
+		return false
+	return source.side_id != candidate.side_id
 
 
 static func _update_combat_movement(
@@ -188,6 +442,7 @@ static func _update_combat_movement(
 		_clear_owned_combat_navigation(participant)
 		return false
 	if _should_keep_combat_path(participant, target, move_mode, destination):
+		_ensure_combat_movement_speed(participant)
 		return true
 	if not _is_valid_navigation_destination(battle_state, destination):
 		_clear_owned_combat_navigation(participant)
@@ -339,9 +594,23 @@ static func _clear_owned_combat_navigation(participant: BattleParticipant) -> vo
 static func _ensure_combat_movement_speed(participant: BattleParticipant) -> void:
 	if participant == null:
 		return
+	if participant.is_wounded:
+		_ensure_wounded_combat_movement_speed(participant)
+		return
 	if is_finite(participant.movement_speed) and participant.movement_speed > 0.0:
 		return
 	participant.set_movement_speed(BattleCombatBehaviorCatalog.DEFAULT_COMBAT_MOVEMENT_SPEED)
+
+
+static func _ensure_wounded_combat_movement_speed(participant: BattleParticipant) -> void:
+	if participant == null:
+		return
+	var wounded_speed: float = BattleCombatBehaviorCatalog.WOUNDED_COMBAT_MOVEMENT_SPEED
+	if not is_finite(participant.movement_speed) or participant.movement_speed <= 0.0:
+		participant.set_movement_speed(wounded_speed)
+		return
+	if participant.movement_speed > wounded_speed:
+		participant.set_movement_speed(wounded_speed)
 
 
 static func _is_positioned(participant: BattleParticipant) -> bool:
