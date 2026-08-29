@@ -4,16 +4,19 @@ extends RefCounted
 var obstacle_id: String = ""
 var bounds: Rect2 = Rect2()
 var blocks_movement: bool = true
+var blocks_line_of_sight: bool = true
 
 
 func _init(
 	p_obstacle_id: String = "",
 	p_bounds: Rect2 = Rect2(),
-	p_blocks_movement: bool = true
+	p_blocks_movement: bool = true,
+	p_blocks_line_of_sight: bool = true
 ) -> void:
 	obstacle_id = p_obstacle_id
 	bounds = p_bounds
 	blocks_movement = p_blocks_movement
+	blocks_line_of_sight = p_blocks_line_of_sight
 
 
 func is_valid() -> bool:

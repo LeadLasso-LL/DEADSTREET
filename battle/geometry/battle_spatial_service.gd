@@ -81,6 +81,51 @@ static func resolve_translation(
 	return _resolve_legal_translation(geometry, start_position, requested_displacement)
 
 
+# Raw AABB slab overlap for start + t * displacement.
+# Returns Vector2(t_enter, t_exit). A miss is encoded as t_enter > t_exit.
+static func segment_aabb_overlap_t(
+	start_position: Vector2,
+	displacement: Vector2,
+	rect: Rect2
+) -> Vector2:
+	var miss: Vector2 = Vector2(INF, -INF)
+	if not BattlefieldGeometry.rect_is_usable(rect):
+		return miss
+	var min_x: float = rect.position.x
+	var min_y: float = rect.position.y
+	var max_x: float = rect.position.x + rect.size.x
+	var max_y: float = rect.position.y + rect.size.y
+	var t_enter: float = -INF
+	var t_exit: float = INF
+	if is_zero_approx(displacement.x):
+		if start_position.x < min_x or start_position.x > max_x:
+			return miss
+	else:
+		var t1: float = (min_x - start_position.x) / displacement.x
+		var t2: float = (max_x - start_position.x) / displacement.x
+		if t1 > t2:
+			var swap_t: float = t1
+			t1 = t2
+			t2 = swap_t
+		t_enter = maxf(t_enter, t1)
+		t_exit = minf(t_exit, t2)
+	if is_zero_approx(displacement.y):
+		if start_position.y < min_y or start_position.y > max_y:
+			return miss
+	else:
+		var t1y: float = (min_y - start_position.y) / displacement.y
+		var t2y: float = (max_y - start_position.y) / displacement.y
+		if t1y > t2y:
+			var swap_y: float = t1y
+			t1y = t2y
+			t2y = swap_y
+		t_enter = maxf(t_enter, t1y)
+		t_exit = minf(t_exit, t2y)
+	if t_enter > t_exit:
+		return miss
+	return Vector2(t_enter, t_exit)
+
+
 static func is_translation_clear(
 	battle_state: BattleState,
 	start_position: Vector2,
@@ -242,36 +287,9 @@ static func _segment_rect_entry_t(
 	displacement: Vector2,
 	rect: Rect2
 ) -> float:
-	var min_x: float = rect.position.x
-	var min_y: float = rect.position.y
-	var max_x: float = rect.position.x + rect.size.x
-	var max_y: float = rect.position.y + rect.size.y
-	var t_enter: float = -INF
-	var t_exit: float = INF
-	if is_zero_approx(displacement.x):
-		if start_position.x < min_x or start_position.x > max_x:
-			return NO_HIT
-	else:
-		var t1: float = (min_x - start_position.x) / displacement.x
-		var t2: float = (max_x - start_position.x) / displacement.x
-		if t1 > t2:
-			var swap_t: float = t1
-			t1 = t2
-			t2 = swap_t
-		t_enter = maxf(t_enter, t1)
-		t_exit = minf(t_exit, t2)
-	if is_zero_approx(displacement.y):
-		if start_position.y < min_y or start_position.y > max_y:
-			return NO_HIT
-	else:
-		var t1y: float = (min_y - start_position.y) / displacement.y
-		var t2y: float = (max_y - start_position.y) / displacement.y
-		if t1y > t2y:
-			var swap_y: float = t1y
-			t1y = t2y
-			t2y = swap_y
-		t_enter = maxf(t_enter, t1y)
-		t_exit = minf(t_exit, t2y)
+	var overlap: Vector2 = segment_aabb_overlap_t(start_position, displacement, rect)
+	var t_enter: float = overlap.x
+	var t_exit: float = overlap.y
 	if t_enter > t_exit:
 		return NO_HIT
 	if t_exit < 0.0:

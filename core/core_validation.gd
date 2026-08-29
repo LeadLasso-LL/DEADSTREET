@@ -65,6 +65,8 @@ const BattlePathFollowResult := preload("res://battle/navigation/battle_path_fol
 const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
 const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
 const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
+const BattleLineOfSightResult := preload("res://battle/combat/battle_line_of_sight_result.gd")
+const BattleLineOfSightService := preload("res://battle/combat/battle_line_of_sight_service.gd")
 
 
 static func run() -> Dictionary:
@@ -11876,6 +11878,969 @@ static func run() -> Dictionary:
 			and not battletarget_no_combat_svc.has_method("resolve_hit")
 		)
 
+	var battlelos_clear_ok: bool = false
+	var battlelos_clear_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_clear_bs != null:
+		var battlelos_clear_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_clear_bs,
+			"los_clear_a",
+			"attacker"
+		)
+		var battlelos_clear_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_clear_bs,
+			"los_clear_b",
+			"defender"
+		)
+		if battlelos_clear_a != null and battlelos_clear_b != null:
+			_battletarget_place(battlelos_clear_a, Vector2(10.0, 10.0))
+			_battletarget_place(battlelos_clear_b, Vector2(40.0, 10.0))
+			var battlelos_clear_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_clear_bs,
+				"los_clear_a",
+				"los_clear_b"
+			)
+			battlelos_clear_ok = _battlelos_clear_ok(battlelos_clear_res, "los_clear_a", "los_clear_b")
+
+	var battlelos_blocked_ok: bool = false
+	var battlelos_block_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_block_bs != null and battlelos_block_bs.battlefield_geometry != null:
+		var battlelos_block_wall: BattleObstacle = BattleObstacle.new(
+			"los_block_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true,
+			true
+		)
+		var battlelos_block_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_block_bs,
+			"los_block_a",
+			"attacker"
+		)
+		var battlelos_block_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_block_bs,
+			"los_block_b",
+			"defender"
+		)
+		if (
+			battlelos_block_a != null
+			and battlelos_block_b != null
+			and battlelos_block_bs.battlefield_geometry.add_obstacle(battlelos_block_wall)
+		):
+			_battletarget_place(battlelos_block_a, Vector2(20.0, 30.0))
+			_battletarget_place(battlelos_block_b, Vector2(70.0, 30.0))
+			var battlelos_block_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_block_bs,
+				"los_block_a",
+				"los_block_b"
+			)
+			battlelos_blocked_ok = _battlelos_blocked_ok(
+				battlelos_block_res,
+				"los_block_a",
+				"los_block_b",
+				"los_block_wall"
+			)
+
+	var battlelos_fail_null_ok: bool = _battlelos_fail_ok(
+		BattleLineOfSightService.check_participant_to_participant(null, "a", "b"),
+		"null_battle_state"
+	)
+	var battlelos_fail_missing_geo_ok: bool = false
+	var battlelos_fail_invalid_geo_ok: bool = false
+	var battlelos_fail_src_missing_ok: bool = false
+	var battlelos_fail_tgt_missing_ok: bool = false
+	var battlelos_fail_src_ineligible_ok: bool = false
+	var battlelos_fail_tgt_ineligible_ok: bool = false
+	var battlelos_fail_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_fail_bs != null:
+		var battlelos_fail_src: BattleParticipant = _battlemove_add_participant(
+			battlelos_fail_bs,
+			"los_fail_src",
+			"attacker"
+		)
+		var battlelos_fail_tgt: BattleParticipant = _battlemove_add_participant(
+			battlelos_fail_bs,
+			"los_fail_tgt",
+			"defender"
+		)
+		if battlelos_fail_src != null and battlelos_fail_tgt != null:
+			_battletarget_place(battlelos_fail_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlelos_fail_tgt, Vector2(20.0, 10.0))
+			var battlelos_fail_src_snap: Dictionary = _battletarget_part_snap(battlelos_fail_src)
+			var battlelos_fail_tgt_snap: Dictionary = _battletarget_part_snap(battlelos_fail_tgt)
+			battlelos_fail_bs.battlefield_geometry = null
+			var battlelos_miss_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_fail_bs,
+				"los_fail_src",
+				"los_fail_tgt"
+			)
+			battlelos_fail_missing_geo_ok = (
+				_battlelos_fail_ok(battlelos_miss_res, "missing_battlefield_geometry")
+				and _battletarget_part_unchanged(battlelos_fail_src, battlelos_fail_src_snap)
+				and _battletarget_part_unchanged(battlelos_fail_tgt, battlelos_fail_tgt_snap)
+			)
+	var battlelos_badgeo_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_badgeo_bs != null:
+		var battlelos_badgeo_src: BattleParticipant = _battlemove_add_participant(
+			battlelos_badgeo_bs,
+			"los_badgeo_src",
+			"attacker"
+		)
+		var battlelos_badgeo_tgt: BattleParticipant = _battlemove_add_participant(
+			battlelos_badgeo_bs,
+			"los_badgeo_tgt",
+			"defender"
+		)
+		if battlelos_badgeo_src != null and battlelos_badgeo_tgt != null:
+			_battletarget_place(battlelos_badgeo_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlelos_badgeo_tgt, Vector2(18.0, 10.0))
+			var battlelos_badgeo_src_snap: Dictionary = _battletarget_part_snap(battlelos_badgeo_src)
+			battlelos_badgeo_bs.battlefield_geometry = BattlefieldGeometry.new()
+			var battlelos_badgeo_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_badgeo_bs,
+				"los_badgeo_src",
+				"los_badgeo_tgt"
+			)
+			battlelos_fail_invalid_geo_ok = (
+				_battlelos_fail_ok(battlelos_badgeo_res, "invalid_battlefield_geometry")
+				and _battletarget_part_unchanged(battlelos_badgeo_src, battlelos_badgeo_src_snap)
+			)
+	var battlelos_missp_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_missp_bs != null:
+		var battlelos_missp_tgt: BattleParticipant = _battlemove_add_participant(
+			battlelos_missp_bs,
+			"los_missp_tgt",
+			"defender"
+		)
+		var battlelos_missp_src: BattleParticipant = _battlemove_add_participant(
+			battlelos_missp_bs,
+			"los_missp_src",
+			"attacker"
+		)
+		if battlelos_missp_tgt != null and battlelos_missp_src != null:
+			_battletarget_place(battlelos_missp_tgt, Vector2(20.0, 10.0))
+			_battletarget_place(battlelos_missp_src, Vector2(10.0, 10.0))
+			var battlelos_missp_snap: Dictionary = _battletarget_part_snap(battlelos_missp_tgt)
+			var battlelos_src_miss: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_missp_bs,
+				"no_such_src",
+				"los_missp_tgt"
+			)
+			var battlelos_tgt_miss: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_missp_bs,
+				"los_missp_src",
+				"no_such_tgt"
+			)
+			battlelos_fail_src_missing_ok = (
+				_battlelos_fail_ok(battlelos_src_miss, "source_not_found")
+				and _battletarget_part_unchanged(battlelos_missp_tgt, battlelos_missp_snap)
+			)
+			battlelos_fail_tgt_missing_ok = (
+				_battlelos_fail_ok(battlelos_tgt_miss, "target_not_found")
+				and _battletarget_part_unchanged(battlelos_missp_src, _battletarget_part_snap(battlelos_missp_src))
+			)
+	var battlelos_inel_src_dead: bool = false
+	var battlelos_inel_src_unpos: bool = false
+	var battlelos_inel_src_nan: bool = false
+	var battlelos_inel_tgt_dead: bool = false
+	var battlelos_inel_tgt_unpos: bool = false
+	var battlelos_inel_tgt_nan: bool = false
+	var battlelos_inel_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_inel_bs != null:
+		var battlelos_inel_src: BattleParticipant = _battlemove_add_participant(
+			battlelos_inel_bs,
+			"los_inel_src",
+			"attacker"
+		)
+		var battlelos_inel_tgt: BattleParticipant = _battlemove_add_participant(
+			battlelos_inel_bs,
+			"los_inel_tgt",
+			"defender"
+		)
+		if battlelos_inel_src != null and battlelos_inel_tgt != null:
+			_battletarget_place(battlelos_inel_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlelos_inel_tgt, Vector2(22.0, 10.0))
+			battlelos_inel_src.is_alive = false
+			var battlelos_inel_src_dead_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_inel_bs,
+				"los_inel_src",
+				"los_inel_tgt"
+			)
+			battlelos_inel_src_dead = _battlelos_fail_ok(battlelos_inel_src_dead_res, "source_not_eligible")
+			battlelos_inel_src.is_alive = true
+			battlelos_inel_src.has_battle_position = false
+			var battlelos_inel_src_unpos_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_inel_bs,
+				"los_inel_src",
+				"los_inel_tgt"
+			)
+			battlelos_inel_src_unpos = _battlelos_fail_ok(battlelos_inel_src_unpos_res, "source_not_eligible")
+			battlelos_inel_src.has_battle_position = true
+			battlelos_inel_src.battle_position = Vector2(NAN, 10.0)
+			var battlelos_inel_src_nan_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_inel_bs,
+				"los_inel_src",
+				"los_inel_tgt"
+			)
+			battlelos_inel_src_nan = _battlelos_fail_ok(battlelos_inel_src_nan_res, "source_not_eligible")
+			_battletarget_place(battlelos_inel_src, Vector2(10.0, 10.0))
+			battlelos_inel_tgt.is_alive = false
+			var battlelos_inel_tgt_dead_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_inel_bs,
+				"los_inel_src",
+				"los_inel_tgt"
+			)
+			battlelos_inel_tgt_dead = _battlelos_fail_ok(battlelos_inel_tgt_dead_res, "target_not_eligible")
+			battlelos_inel_tgt.is_alive = true
+			battlelos_inel_tgt.has_battle_position = false
+			var battlelos_inel_tgt_unpos_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_inel_bs,
+				"los_inel_src",
+				"los_inel_tgt"
+			)
+			battlelos_inel_tgt_unpos = _battlelos_fail_ok(battlelos_inel_tgt_unpos_res, "target_not_eligible")
+			battlelos_inel_tgt.has_battle_position = true
+			battlelos_inel_tgt.battle_position = Vector2(INF, 10.0)
+			var battlelos_inel_tgt_nan_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_inel_bs,
+				"los_inel_src",
+				"los_inel_tgt"
+			)
+			battlelos_inel_tgt_nan = _battlelos_fail_ok(battlelos_inel_tgt_nan_res, "target_not_eligible")
+	battlelos_fail_src_ineligible_ok = (
+		battlelos_inel_src_dead and battlelos_inel_src_unpos and battlelos_inel_src_nan
+	)
+	battlelos_fail_tgt_ineligible_ok = (
+		battlelos_inel_tgt_dead and battlelos_inel_tgt_unpos and battlelos_inel_tgt_nan
+	)
+
+	var battlelos_wounded_ok: bool = false
+	var battlelos_wnd_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_wnd_bs != null:
+		var battlelos_wnd_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_wnd_bs,
+			"los_wnd_a",
+			"attacker"
+		)
+		var battlelos_wnd_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_wnd_bs,
+			"los_wnd_b",
+			"defender"
+		)
+		if battlelos_wnd_a != null and battlelos_wnd_b != null:
+			_battletarget_place(battlelos_wnd_a, Vector2(12.0, 12.0))
+			_battletarget_place(battlelos_wnd_b, Vector2(28.0, 12.0))
+			battlelos_wnd_a.is_wounded = true
+			battlelos_wnd_b.is_wounded = true
+			var battlelos_wnd_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_wnd_bs,
+				"los_wnd_a",
+				"los_wnd_b"
+			)
+			battlelos_wounded_ok = _battlelos_clear_ok(battlelos_wnd_res, "los_wnd_a", "los_wnd_b")
+
+	var battlelos_side_independent_ok: bool = false
+	var battlelos_same_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_same_bs != null:
+		var battlelos_same_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_same_bs,
+			"los_same_a",
+			"attacker"
+		)
+		var battlelos_same_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_same_bs,
+			"los_same_b",
+			"attacker"
+		)
+		if battlelos_same_a != null and battlelos_same_b != null:
+			_battletarget_place(battlelos_same_a, Vector2(8.0, 8.0))
+			_battletarget_place(battlelos_same_b, Vector2(24.0, 8.0))
+			var battlelos_same_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_same_bs,
+				"los_same_a",
+				"los_same_b"
+			)
+			battlelos_side_independent_ok = (
+				_battlelos_clear_ok(battlelos_same_res, "los_same_a", "los_same_b")
+				and battlelos_clear_ok
+			)
+
+	var battlelos_same_pos_ok: bool = false
+	var battlelos_sp_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_sp_bs != null:
+		var battlelos_sp_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_sp_bs,
+			"los_sp_a",
+			"attacker"
+		)
+		var battlelos_sp_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_sp_bs,
+			"los_sp_b",
+			"defender"
+		)
+		if battlelos_sp_a != null and battlelos_sp_b != null:
+			_battletarget_place(battlelos_sp_a, Vector2(16.0, 16.0))
+			_battletarget_place(battlelos_sp_b, Vector2(16.0, 16.0))
+			var battlelos_sp_res: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_sp_bs,
+				"los_sp_a",
+				"los_sp_b"
+			)
+			battlelos_same_pos_ok = _battlelos_clear_ok(battlelos_sp_res, "los_sp_a", "los_sp_b")
+
+	var battlelos_move_block_sight_clear_ok: bool = false
+	var battlelos_fence_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_fence_bs != null and battlelos_fence_bs.battlefield_geometry != null:
+		var battlelos_fence: BattleObstacle = BattleObstacle.new(
+			"los_fence",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true,
+			false
+		)
+		var battlelos_fence_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_fence_bs,
+			"los_fence_a",
+			"attacker"
+		)
+		var battlelos_fence_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_fence_bs,
+			"los_fence_b",
+			"defender"
+		)
+		if (
+			battlelos_fence_a != null
+			and battlelos_fence_b != null
+			and battlelos_fence_bs.battlefield_geometry.add_obstacle(battlelos_fence)
+		):
+			_battletarget_place(battlelos_fence_a, Vector2(20.0, 30.0))
+			_battletarget_place(battlelos_fence_b, Vector2(70.0, 30.0))
+			var battlelos_fence_move: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlelos_fence_bs,
+				Vector2(20.0, 30.0),
+				Vector2(50.0, 0.0)
+			)
+			var battlelos_fence_los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_fence_bs,
+				"los_fence_a",
+				"los_fence_b"
+			)
+			battlelos_move_block_sight_clear_ok = (
+				battlelos_fence.blocks_movement
+				and not battlelos_fence.blocks_line_of_sight
+				and battlelos_fence_move != null
+				and battlelos_fence_move.success
+				and battlelos_fence_move.was_blocked
+				and battlelos_fence_move.blocking_obstacle_id == "los_fence"
+				and _battlelos_clear_ok(battlelos_fence_los, "los_fence_a", "los_fence_b")
+			)
+
+	var battlelos_sight_block_move_clear_ok: bool = false
+	var battlelos_glass_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_glass_bs != null and battlelos_glass_bs.battlefield_geometry != null:
+		var battlelos_glass: BattleObstacle = BattleObstacle.new(
+			"los_glass",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			false,
+			true
+		)
+		var battlelos_glass_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_glass_bs,
+			"los_glass_a",
+			"attacker"
+		)
+		var battlelos_glass_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_glass_bs,
+			"los_glass_b",
+			"defender"
+		)
+		if (
+			battlelos_glass_a != null
+			and battlelos_glass_b != null
+			and battlelos_glass_bs.battlefield_geometry.add_obstacle(battlelos_glass)
+		):
+			_battletarget_place(battlelos_glass_a, Vector2(20.0, 30.0))
+			_battletarget_place(battlelos_glass_b, Vector2(70.0, 30.0))
+			var battlelos_glass_move: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlelos_glass_bs,
+				Vector2(20.0, 30.0),
+				Vector2(50.0, 0.0)
+			)
+			var battlelos_glass_los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_glass_bs,
+				"los_glass_a",
+				"los_glass_b"
+			)
+			battlelos_sight_block_move_clear_ok = (
+				not battlelos_glass.blocks_movement
+				and battlelos_glass.blocks_line_of_sight
+				and battlelos_glass_move != null
+				and battlelos_glass_move.success
+				and battlelos_glass_move.was_blocked == false
+				and battlelos_glass_move.final_position.is_equal_approx(Vector2(70.0, 30.0))
+				and _battlelos_blocked_ok(battlelos_glass_los, "los_glass_a", "los_glass_b", "los_glass")
+			)
+
+	var battlelos_neither_block_ok: bool = false
+	var battlelos_soft_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_soft_bs != null and battlelos_soft_bs.battlefield_geometry != null:
+		var battlelos_soft: BattleObstacle = BattleObstacle.new(
+			"los_soft",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			false,
+			false
+		)
+		var battlelos_soft_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_soft_bs,
+			"los_soft_a",
+			"attacker"
+		)
+		var battlelos_soft_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_soft_bs,
+			"los_soft_b",
+			"defender"
+		)
+		if (
+			battlelos_soft_a != null
+			and battlelos_soft_b != null
+			and battlelos_soft_bs.battlefield_geometry.add_obstacle(battlelos_soft)
+		):
+			_battletarget_place(battlelos_soft_a, Vector2(20.0, 30.0))
+			_battletarget_place(battlelos_soft_b, Vector2(70.0, 30.0))
+			var battlelos_soft_move: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlelos_soft_bs,
+				Vector2(20.0, 30.0),
+				Vector2(50.0, 0.0)
+			)
+			var battlelos_soft_los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_soft_bs,
+				"los_soft_a",
+				"los_soft_b"
+			)
+			battlelos_neither_block_ok = (
+				not battlelos_soft.blocks_movement
+				and not battlelos_soft.blocks_line_of_sight
+				and battlelos_soft_move != null
+				and battlelos_soft_move.success
+				and battlelos_soft_move.was_blocked == false
+				and battlelos_soft_move.final_position.is_equal_approx(Vector2(70.0, 30.0))
+				and _battlelos_clear_ok(battlelos_soft_los, "los_soft_a", "los_soft_b")
+			)
+
+	var battlelos_interior_ok: bool = battlelos_blocked_ok
+
+	var battlelos_graze_ok: bool = false
+	var battlelos_corner_ok: bool = false
+	var battlelos_endpoint_ok: bool = false
+	var battlelos_edge_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_edge_bs != null and battlelos_edge_bs.battlefield_geometry != null:
+		var battlelos_edge_wall: BattleObstacle = BattleObstacle.new(
+			"los_edge_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true,
+			true
+		)
+		if battlelos_edge_bs.battlefield_geometry.add_obstacle(battlelos_edge_wall):
+			var battlelos_graze_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_edge_bs,
+				Vector2(30.0, 20.0),
+				Vector2(70.0, 20.0)
+			)
+			battlelos_graze_ok = _battlelos_segment_clear_ok(battlelos_graze_res)
+			var battlelos_corner_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_edge_bs,
+				Vector2(30.0, 20.0),
+				Vector2(40.0, 10.0)
+			)
+			battlelos_corner_ok = _battlelos_segment_clear_ok(battlelos_corner_res)
+			var battlelos_end_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_edge_bs,
+				Vector2(40.0, 30.0),
+				Vector2(20.0, 30.0)
+			)
+			battlelos_endpoint_ok = _battlelos_segment_clear_ok(battlelos_end_res)
+
+	var battlelos_tunnel_ok: bool = false
+	var battlelos_tun_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_tun_bs != null and battlelos_tun_bs.battlefield_geometry != null:
+		var battlelos_tun_wall: BattleObstacle = BattleObstacle.new(
+			"los_thin_wall",
+			Rect2(49.8, 29.8, 0.4, 0.4),
+			true,
+			true
+		)
+		if battlelos_tun_bs.battlefield_geometry.add_obstacle(battlelos_tun_wall):
+			var battlelos_tun_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_tun_bs,
+				Vector2(5.0, 30.0),
+				Vector2(95.0, 30.0)
+			)
+			battlelos_tunnel_ok = _battlelos_blocked_ok(battlelos_tun_res, "", "", "los_thin_wall")
+
+	var battlelos_earliest_ok: bool = false
+	var battlelos_insert_order_ok: bool = false
+	var battlelos_early_order_a: Array[String] = ["los_far", "los_near"]
+	var battlelos_early_order_b: Array[String] = ["los_near", "los_far"]
+	var battlelos_early_a: String = _battlelos_earliest_blocker(battlelos_early_order_a)
+	var battlelos_early_b: String = _battlelos_earliest_blocker(battlelos_early_order_b)
+	battlelos_earliest_ok = battlelos_early_a == "los_near" and battlelos_early_b == "los_near"
+	battlelos_insert_order_ok = battlelos_earliest_ok
+
+	var battlelos_tie_ok: bool = false
+	var battlelos_tie_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_tie_bs != null and battlelos_tie_bs.battlefield_geometry != null:
+		var battlelos_tie_z: BattleObstacle = BattleObstacle.new(
+			"z_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true,
+			true
+		)
+		var battlelos_tie_a: BattleObstacle = BattleObstacle.new(
+			"a_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true,
+			true
+		)
+		if (
+			battlelos_tie_bs.battlefield_geometry.add_obstacle(battlelos_tie_z)
+			and battlelos_tie_bs.battlefield_geometry.add_obstacle(battlelos_tie_a)
+		):
+			var battlelos_tie_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_tie_bs,
+				Vector2(20.0, 30.0),
+				Vector2(70.0, 30.0)
+			)
+			battlelos_tie_ok = _battlelos_blocked_ok(battlelos_tie_res, "", "", "a_wall")
+
+	var battlelos_reverse_ok: bool = false
+	var battlelos_rev_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_rev_bs != null and battlelos_rev_bs.battlefield_geometry != null:
+		var battlelos_rev_near: BattleObstacle = BattleObstacle.new(
+			"los_rev_near",
+			Rect2(30.0, 20.0, 8.0, 20.0),
+			true,
+			true
+		)
+		var battlelos_rev_far: BattleObstacle = BattleObstacle.new(
+			"los_rev_far",
+			Rect2(55.0, 20.0, 8.0, 20.0),
+			true,
+			true
+		)
+		var battlelos_rev_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_rev_bs,
+			"los_rev_a",
+			"attacker"
+		)
+		var battlelos_rev_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_rev_bs,
+			"los_rev_b",
+			"defender"
+		)
+		if (
+			battlelos_rev_a != null
+			and battlelos_rev_b != null
+			and battlelos_rev_bs.battlefield_geometry.add_obstacle(battlelos_rev_far)
+			and battlelos_rev_bs.battlefield_geometry.add_obstacle(battlelos_rev_near)
+		):
+			_battletarget_place(battlelos_rev_a, Vector2(15.0, 30.0))
+			_battletarget_place(battlelos_rev_b, Vector2(80.0, 30.0))
+			var battlelos_fwd: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_rev_bs,
+				"los_rev_a",
+				"los_rev_b"
+			)
+			var battlelos_back: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_rev_bs,
+				"los_rev_b",
+				"los_rev_a"
+			)
+			battlelos_reverse_ok = (
+				_battlelos_blocked_ok(battlelos_fwd, "los_rev_a", "los_rev_b", "los_rev_near")
+				and _battlelos_blocked_ok(battlelos_back, "los_rev_b", "los_rev_a", "los_rev_far")
+			)
+
+	var battlelos_mixed_ok: bool = false
+	var battlelos_mix_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_mix_bs != null and battlelos_mix_bs.battlefield_geometry != null:
+		var battlelos_mix_fence: BattleObstacle = BattleObstacle.new(
+			"los_mix_fence",
+			Rect2(28.0, 20.0, 6.0, 20.0),
+			true,
+			false
+		)
+		var battlelos_mix_soft: BattleObstacle = BattleObstacle.new(
+			"los_mix_soft",
+			Rect2(38.0, 20.0, 6.0, 20.0),
+			false,
+			false
+		)
+		var battlelos_mix_hard: BattleObstacle = BattleObstacle.new(
+			"los_mix_hard",
+			Rect2(52.0, 20.0, 6.0, 20.0),
+			false,
+			true
+		)
+		if (
+			battlelos_mix_bs.battlefield_geometry.add_obstacle(battlelos_mix_fence)
+			and battlelos_mix_bs.battlefield_geometry.add_obstacle(battlelos_mix_soft)
+			and battlelos_mix_bs.battlefield_geometry.add_obstacle(battlelos_mix_hard)
+		):
+			var battlelos_mix_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_mix_bs,
+				Vector2(15.0, 30.0),
+				Vector2(80.0, 30.0)
+			)
+			battlelos_mixed_ok = _battlelos_blocked_ok(battlelos_mix_res, "", "", "los_mix_hard")
+
+	var battlelos_segment_ok: bool = false
+	var battlelos_seg_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_seg_bs != null:
+		var battlelos_seg_res: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+			battlelos_seg_bs,
+			Vector2(10.0, 10.0),
+			Vector2(40.0, 10.0)
+		)
+		battlelos_segment_ok = _battlelos_segment_clear_ok(battlelos_seg_res)
+
+	var battlelos_segment_invalid_ok: bool = false
+	var battlelos_segi_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_segi_bs != null:
+		var battlelos_segi_geo: Dictionary = _battlelos_geo_snap(battlelos_segi_bs.battlefield_geometry)
+		var battlelos_segi_nan: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+			battlelos_segi_bs,
+			Vector2(NAN, 10.0),
+			Vector2(40.0, 10.0)
+		)
+		var battlelos_segi_inf: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+			battlelos_segi_bs,
+			Vector2(10.0, 10.0),
+			Vector2(INF, 10.0)
+		)
+		battlelos_segment_invalid_ok = (
+			_battlelos_fail_ok(battlelos_segi_nan, "invalid_segment")
+			and _battlelos_fail_ok(battlelos_segi_inf, "invalid_segment")
+			and _battlelos_geo_unchanged(battlelos_segi_bs.battlefield_geometry, battlelos_segi_geo)
+		)
+
+	var battlelos_spatial_regress_ok: bool = false
+	var battlelos_reg_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_reg_bs != null and battlelos_reg_bs.battlefield_geometry != null:
+		var battlelos_reg_eps: float = BattleSpatialService.COLLISION_EPSILON
+		var battlelos_reg_wall: BattleObstacle = BattleObstacle.new(
+			"wall_a",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true
+		)
+		if battlelos_reg_bs.battlefield_geometry.add_obstacle(battlelos_reg_wall):
+			var battlelos_reg_hit: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlelos_reg_bs,
+				Vector2(30.0, 30.0),
+				Vector2(20.0, 0.0)
+			)
+			var battlelos_reg_tun: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlelos_reg_bs,
+				Vector2(30.0, 30.0),
+				Vector2(100.0, 0.0)
+			)
+			var battlelos_reg_diag: BattleSpatialResult = BattleSpatialService.resolve_translation(
+				battlelos_reg_bs,
+				Vector2(30.0, 25.0),
+				Vector2(20.0, 10.0)
+			)
+			battlelos_spatial_regress_ok = (
+				battlelos_reg_hit != null
+				and battlelos_reg_hit.success
+				and battlelos_reg_hit.was_blocked
+				and battlelos_reg_hit.blocking_obstacle_id == "wall_a"
+				and is_equal_approx(battlelos_reg_hit.final_position.x, 40.0 - battlelos_reg_eps)
+				and battlelos_reg_tun != null
+				and battlelos_reg_tun.success
+				and battlelos_reg_tun.was_blocked
+				and battlelos_reg_tun.blocking_obstacle_id == "wall_a"
+				and battlelos_reg_tun.final_position.x < 40.0
+				and battlelos_reg_diag != null
+				and battlelos_reg_diag.success
+				and battlelos_reg_diag.was_blocked
+				and battlelos_reg_diag.blocking_obstacle_id == "wall_a"
+				and not battlelos_reg_wall.contains_point(battlelos_reg_diag.final_position)
+				and _battlespatial_collinear(battlelos_reg_diag.resolved_displacement, Vector2(20.0, 10.0))
+			)
+
+	var battlelos_target_blocked_ok: bool = false
+	var battlelos_pref_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_pref_bs != null and battlelos_pref_bs.battlefield_geometry != null:
+		var battlelos_pref_wall: BattleObstacle = BattleObstacle.new(
+			"target_pre_los_wall",
+			Rect2(28.0, 18.0, 20.0, 10.0),
+			true,
+			true
+		)
+		var battlelos_pref_src: BattleParticipant = _battlemove_add_participant(
+			battlelos_pref_bs,
+			"pre_los_src",
+			"attacker"
+		)
+		var battlelos_pref_near: BattleParticipant = _battlemove_add_participant(
+			battlelos_pref_bs,
+			"pre_los_behind_wall",
+			"defender"
+		)
+		var battlelos_pref_far: BattleParticipant = _battlemove_add_participant(
+			battlelos_pref_bs,
+			"pre_los_open_far",
+			"defender"
+		)
+		if (
+			battlelos_pref_src != null
+			and battlelos_pref_near != null
+			and battlelos_pref_far != null
+			and battlelos_pref_bs.battlefield_geometry.add_obstacle(battlelos_pref_wall)
+		):
+			_battletarget_place(battlelos_pref_src, Vector2(30.0, 10.0))
+			_battletarget_place(battlelos_pref_near, Vector2(30.0, 40.0))
+			_battletarget_place(battlelos_pref_far, Vector2(80.0, 10.0))
+			var battlelos_pref_sel: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battlelos_pref_bs
+			)
+			var battlelos_pref_los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_pref_bs,
+				"pre_los_src",
+				"pre_los_behind_wall"
+			)
+			battlelos_target_blocked_ok = (
+				battlelos_pref_sel != null
+				and battlelos_pref_sel.success
+				and _battletarget_has(battlelos_pref_src, "pre_los_behind_wall")
+				and _battlelos_blocked_ok(
+					battlelos_pref_los,
+					"pre_los_src",
+					"pre_los_behind_wall",
+					"target_pre_los_wall"
+				)
+			)
+
+	var battlelos_no_target_mutate_ok: bool = false
+	var battlelos_no_move_mutate_ok: bool = false
+	var battlelos_geo_readonly_ok: bool = false
+	var battlelos_mut_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_mut_bs != null and battlelos_mut_bs.battlefield_geometry != null:
+		var battlelos_mut_wall: BattleObstacle = BattleObstacle.new(
+			"los_mut_wall",
+			Rect2(40.0, 20.0, 10.0, 20.0),
+			true,
+			true
+		)
+		var battlelos_mut_src: BattleParticipant = _battlemove_add_participant(
+			battlelos_mut_bs,
+			"los_mut_src",
+			"attacker"
+		)
+		var battlelos_mut_tgt: BattleParticipant = _battlemove_add_participant(
+			battlelos_mut_bs,
+			"los_mut_tgt",
+			"defender"
+		)
+		if (
+			battlelos_mut_src != null
+			and battlelos_mut_tgt != null
+			and battlelos_mut_bs.battlefield_geometry.add_obstacle(battlelos_mut_wall)
+		):
+			_battletarget_place(battlelos_mut_src, Vector2(20.0, 30.0))
+			_battletarget_place(battlelos_mut_tgt, Vector2(70.0, 30.0))
+			var battlelos_mut_nav: bool = battlelos_mut_src.set_navigation_path(
+				Vector2(20.0, 18.0),
+				[Vector2(20.0, 18.0)]
+			)
+			var battlelos_mut_intent: bool = battlelos_mut_src.set_movement_intent(Vector2(0.0, 1.0))
+			var battlelos_mut_speed: bool = battlelos_mut_src.set_movement_speed(3.0)
+			var battlelos_mut_cap: bool = battlelos_mut_src.set_movement_target_position(Vector2(20.0, 18.0))
+			var battlelos_mut_tgt_set: bool = battlelos_mut_src.set_target_participant("los_mut_tgt")
+			battlelos_mut_src.velocity = Vector2(0.0, 3.0)
+			var battlelos_mut_snap: Dictionary = _battletarget_part_snap(battlelos_mut_src)
+			var battlelos_mut_geo: Dictionary = _battlelos_geo_snap(battlelos_mut_bs.battlefield_geometry)
+			var battlelos_mut_res1: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_mut_bs,
+				"los_mut_src",
+				"los_mut_tgt"
+			)
+			var battlelos_mut_res2: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+				battlelos_mut_bs,
+				"los_mut_src",
+				"los_mut_tgt"
+			)
+			battlelos_no_target_mutate_ok = (
+				battlelos_mut_nav
+				and battlelos_mut_intent
+				and battlelos_mut_speed
+				and battlelos_mut_cap
+				and battlelos_mut_tgt_set
+				and battlelos_mut_res1 != null
+				and battlelos_mut_res1.success
+				and battlelos_mut_res2 != null
+				and battlelos_mut_res2.success
+				and _battletarget_has(battlelos_mut_src, "los_mut_tgt")
+				and _battletarget_part_unchanged(battlelos_mut_src, battlelos_mut_snap)
+			)
+			battlelos_no_move_mutate_ok = battlelos_no_target_mutate_ok
+			battlelos_geo_readonly_ok = (
+				battlelos_no_move_mutate_ok
+				and _battlelos_geo_unchanged(battlelos_mut_bs.battlefield_geometry, battlelos_mut_geo)
+			)
+
+	var battlelos_no_cache_ok: bool = false
+	var battlelos_cache_p: BattleParticipant = BattleParticipant.new("los_cache_p")
+	battlelos_no_cache_ok = (
+		battlelos_cache_p.get("visible_enemy_ids") == null
+		and battlelos_cache_p.get("visible_participant_ids") == null
+		and battlelos_cache_p.get("los_candidate_ids") == null
+		and battlelos_cache_p.get("has_line_of_sight") == null
+		and not battlelos_cache_p.has_method("set_visible_enemies")
+		and not battlelos_cache_p.has_method("get_visible_enemies")
+	)
+
+	var battlelos_no_runtime_refresh_ok: bool = false
+	var battlelos_rt_bs: BattleState = _battlemove_make_state("active")
+	if battlelos_rt_bs != null:
+		var battlelos_rt_a: BattleParticipant = _battlemove_add_participant(
+			battlelos_rt_bs,
+			"los_rt_a",
+			"attacker"
+		)
+		var battlelos_rt_b: BattleParticipant = _battlemove_add_participant(
+			battlelos_rt_bs,
+			"los_rt_b",
+			"defender"
+		)
+		if battlelos_rt_a != null and battlelos_rt_b != null:
+			_battletarget_place(battlelos_rt_a, Vector2(10.0, 10.0))
+			_battletarget_place(battlelos_rt_b, Vector2(20.0, 10.0))
+			var battlelos_rt_res: BattleRuntimeResult = BattleRuntimeService.advance(battlelos_rt_bs, 0.0)
+			battlelos_no_runtime_refresh_ok = (
+				battlelos_rt_res != null
+				and battlelos_rt_res.success
+				and battlelos_rt_a.get("visible_enemy_ids") == null
+				and battlelos_rt_a.get("has_line_of_sight") == null
+				and battlelos_rt_b.get("visible_enemy_ids") == null
+				and not battlelos_rt_a.has_method("refresh_line_of_sight")
+			)
+
+	var battlelos_persist_ok: bool = false
+	var battlelos_immutability_ok: bool = false
+	var battlelos_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battlelos_camp_game: GameState = battlelos_camp_pack.get("game_state", null) as GameState
+	var battlelos_camp_force: TravelingForce = battlelos_camp_pack.get("force", null) as TravelingForce
+	var battlelos_camp_bs: BattleState = battlelos_camp_pack.get("battle_state", null) as BattleState
+	if battlelos_camp_game != null and battlelos_camp_bs != null:
+		var battlelos_camp_deployed: bool = _battle_deploy_standard_attacker(battlelos_camp_bs)
+		var battlelos_camp_geo: bool = _battlegeo_init(battlelos_camp_bs)
+		var battlelos_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battlelos_camp_game,
+			battlelos_camp_force,
+			"battle_mission"
+		)
+		var battlelos_camp_wall: BattleObstacle = BattleObstacle.new(
+			"los_camp_fence",
+			Rect2(40.0, 20.0, 8.0, 8.0),
+			true,
+			false
+		)
+		var battlelos_camp_added: bool = false
+		if battlelos_camp_bs.battlefield_geometry != null:
+			battlelos_camp_added = battlelos_camp_bs.battlefield_geometry.add_obstacle(battlelos_camp_wall)
+		var battlelos_camp_persist: Dictionary = battlelos_camp_game.to_dict()
+		battlelos_persist_ok = (
+			battlelos_camp_deployed
+			and battlelos_camp_geo
+			and battlelos_camp_added
+			and _battle_serialized_campaign_keys_only(battlelos_camp_persist)
+			and not _battle_data_has_tactical_trace(battlelos_camp_persist)
+		)
+		var battlelos_camp_part: BattleParticipant = battlelos_camp_bs.get_participant("battle_sol_a")
+		var battlelos_camp_los_ok: bool = false
+		if battlelos_camp_part != null and battlelos_camp_part.has_battle_position:
+			var battlelos_camp_seg: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battlelos_camp_bs,
+				battlelos_camp_part.battle_position,
+				battlelos_camp_part.battle_position + Vector2(4.0, 0.0)
+			)
+			battlelos_camp_los_ok = battlelos_camp_seg != null and battlelos_camp_seg.success
+		battlelos_immutability_ok = (
+			battlelos_persist_ok
+			and battlelos_camp_los_ok
+			and _battle_campaign_unchanged(
+				battlelos_camp_game,
+				battlelos_camp_snap,
+				battlelos_camp_force,
+				"battle_mission"
+			)
+			and battlelos_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battlelos_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
+	var battlelos_flat_ok: bool = false
+	var battlelos_flat_p: BattleParticipant = BattleParticipant.new("los_flat_p")
+	var battlelos_flat_svc: BattleLineOfSightService = BattleLineOfSightService.new()
+	battlelos_flat_ok = (
+		battlelos_flat_p.get("elevation_level") == null
+		and battlelos_flat_p.get("elevation") == null
+		and not battlelos_flat_p.has_method("set_elevation_level")
+		and not battlelos_flat_svc.has_method("check_elevation")
+		and typeof(battlelos_flat_p.battle_position) == TYPE_VECTOR2
+	)
+
+	var battlelos_ok_clear: BattleLineOfSightResult = BattleLineOfSightResult.succeeded(
+		true,
+		"src_h",
+		"tgt_h",
+		""
+	)
+	var battlelos_ok_block: BattleLineOfSightResult = BattleLineOfSightResult.succeeded(
+		false,
+		"src_h",
+		"tgt_h",
+		"wall_h"
+	)
+	var battlelos_fail_h: BattleLineOfSightResult = BattleLineOfSightResult.failed(
+		"null_battle_state",
+		"Battle line of sight failed: battle_state is null.",
+		"src_h",
+		"tgt_h"
+	)
+	var battlelos_result_helper_ok: bool = (
+		battlelos_ok_clear != null
+		and battlelos_ok_clear.success
+		and battlelos_ok_clear.has_line_of_sight
+		and battlelos_ok_clear.source_participant_id == "src_h"
+		and battlelos_ok_clear.target_participant_id == "tgt_h"
+		and battlelos_ok_clear.blocking_obstacle_id.is_empty()
+		and battlelos_ok_clear.error_code.is_empty()
+		and battlelos_ok_clear.error_message.is_empty()
+		and battlelos_ok_block != null
+		and battlelos_ok_block.success
+		and battlelos_ok_block.has_line_of_sight == false
+		and battlelos_ok_block.blocking_obstacle_id == "wall_h"
+		and battlelos_fail_h != null
+		and not battlelos_fail_h.success
+		and battlelos_fail_h.has_line_of_sight == false
+		and battlelos_fail_h.error_code == "null_battle_state"
+		and battlelos_fail_h.error_message == "Battle line of sight failed: battle_state is null."
+		and battlelos_fail_h.blocking_obstacle_id.is_empty()
+	)
+
+	var battlelos_no_combat_ok: bool = false
+	var battlelos_no_combat_bs: BattleState = _battlemove_make_state("active")
+	var battlelos_no_combat_svc: BattleLineOfSightService = BattleLineOfSightService.new()
+	if battlelos_no_combat_bs != null:
+		battlelos_no_combat_ok = (
+			_battle_has_no_combat_turn_model(battlelos_no_combat_bs)
+			and not battlelos_no_combat_svc.has_method("fire")
+			and not battlelos_no_combat_svc.has_method("apply_damage")
+			and not battlelos_no_combat_svc.has_method("resolve_hit")
+			and not battlelos_no_combat_svc.has_method("compute_perception")
+			and not battlelos_no_combat_svc.has_method("select_cover")
+			and not battlelos_no_combat_svc.has_method("find_path")
+			and battlelos_no_combat_bs.get("fog_of_war") == null
+			and battlelos_no_combat_bs.get("perception_radius") == null
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -12797,6 +13762,45 @@ static func run() -> Dictionary:
 		"battletarget_persist_ok": battletarget_persist_ok,
 		"battletarget_immutability_ok": battletarget_immutability_ok,
 		"battletarget_no_combat_ok": battletarget_no_combat_ok,
+		"battlelos_clear_ok": battlelos_clear_ok,
+		"battlelos_blocked_ok": battlelos_blocked_ok,
+		"battlelos_fail_null_ok": battlelos_fail_null_ok,
+		"battlelos_fail_missing_geo_ok": battlelos_fail_missing_geo_ok,
+		"battlelos_fail_invalid_geo_ok": battlelos_fail_invalid_geo_ok,
+		"battlelos_fail_src_missing_ok": battlelos_fail_src_missing_ok,
+		"battlelos_fail_tgt_missing_ok": battlelos_fail_tgt_missing_ok,
+		"battlelos_fail_src_ineligible_ok": battlelos_fail_src_ineligible_ok,
+		"battlelos_fail_tgt_ineligible_ok": battlelos_fail_tgt_ineligible_ok,
+		"battlelos_wounded_ok": battlelos_wounded_ok,
+		"battlelos_side_independent_ok": battlelos_side_independent_ok,
+		"battlelos_same_pos_ok": battlelos_same_pos_ok,
+		"battlelos_move_block_sight_clear_ok": battlelos_move_block_sight_clear_ok,
+		"battlelos_sight_block_move_clear_ok": battlelos_sight_block_move_clear_ok,
+		"battlelos_neither_block_ok": battlelos_neither_block_ok,
+		"battlelos_interior_ok": battlelos_interior_ok,
+		"battlelos_graze_ok": battlelos_graze_ok,
+		"battlelos_corner_ok": battlelos_corner_ok,
+		"battlelos_endpoint_ok": battlelos_endpoint_ok,
+		"battlelos_tunnel_ok": battlelos_tunnel_ok,
+		"battlelos_earliest_ok": battlelos_earliest_ok,
+		"battlelos_tie_ok": battlelos_tie_ok,
+		"battlelos_reverse_ok": battlelos_reverse_ok,
+		"battlelos_mixed_ok": battlelos_mixed_ok,
+		"battlelos_segment_ok": battlelos_segment_ok,
+		"battlelos_segment_invalid_ok": battlelos_segment_invalid_ok,
+		"battlelos_spatial_regress_ok": battlelos_spatial_regress_ok,
+		"battlelos_target_blocked_ok": battlelos_target_blocked_ok,
+		"battlelos_no_target_mutate_ok": battlelos_no_target_mutate_ok,
+		"battlelos_no_move_mutate_ok": battlelos_no_move_mutate_ok,
+		"battlelos_geo_readonly_ok": battlelos_geo_readonly_ok,
+		"battlelos_insert_order_ok": battlelos_insert_order_ok,
+		"battlelos_no_cache_ok": battlelos_no_cache_ok,
+		"battlelos_no_runtime_refresh_ok": battlelos_no_runtime_refresh_ok,
+		"battlelos_persist_ok": battlelos_persist_ok,
+		"battlelos_immutability_ok": battlelos_immutability_ok,
+		"battlelos_flat_ok": battlelos_flat_ok,
+		"battlelos_result_helper_ok": battlelos_result_helper_ok,
+		"battlelos_no_combat_ok": battlelos_no_combat_ok,
 	}
 
 	var passed := true
@@ -14463,6 +15467,8 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "obstacles"
 		or text == "obstacle_id"
 		or text == "blocks_movement"
+		or text == "blocks_line_of_sight"
+		or text == "has_line_of_sight"
 		or text == "blocking_obstacle_id"
 		or text == "was_blocked"
 		or text == "navigation_destination"
@@ -16124,5 +17130,147 @@ static func _battletarget_multi_run(add_order: Array[String]) -> bool:
 		and _battletarget_has(m_enemy, "z_src")
 		and _battletarget_has(b_enemy, "a_src")
 	)
+
+
+static func _battlelos_clear_ok(
+	result: BattleLineOfSightResult,
+	source_id: String,
+	target_id: String
+) -> bool:
+	if result == null:
+		return false
+	if not result.success or not result.has_line_of_sight:
+		return false
+	if not result.blocking_obstacle_id.is_empty():
+		return false
+	if not result.error_code.is_empty() or not result.error_message.is_empty():
+		return false
+	if not source_id.is_empty() and result.source_participant_id != source_id:
+		return false
+	if not target_id.is_empty() and result.target_participant_id != target_id:
+		return false
+	return true
+
+
+static func _battlelos_blocked_ok(
+	result: BattleLineOfSightResult,
+	source_id: String,
+	target_id: String,
+	blocker_id: String
+) -> bool:
+	if result == null:
+		return false
+	if not result.success:
+		return false
+	if result.has_line_of_sight:
+		return false
+	if result.blocking_obstacle_id != blocker_id:
+		return false
+	if not result.error_code.is_empty() or not result.error_message.is_empty():
+		return false
+	if not source_id.is_empty() and result.source_participant_id != source_id:
+		return false
+	if not target_id.is_empty() and result.target_participant_id != target_id:
+		return false
+	return true
+
+
+static func _battlelos_segment_clear_ok(result: BattleLineOfSightResult) -> bool:
+	return _battlelos_clear_ok(result, "", "")
+
+
+static func _battlelos_fail_ok(result: BattleLineOfSightResult, expected_code: String) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.has_line_of_sight == false
+		and result.error_code == expected_code
+		and result.error_message.begins_with("Battle line of sight failed:")
+		and result.blocking_obstacle_id.is_empty()
+	)
+
+
+static func _battlelos_geo_snap(geometry: BattlefieldGeometry) -> Dictionary:
+	var snap: Dictionary = {}
+	if geometry == null:
+		snap["null"] = true
+		return snap
+	snap["null"] = false
+	snap["ids"] = geometry.get_sorted_obstacle_ids()
+	var bounds: Dictionary = {}
+	var move_flags: Dictionary = {}
+	var los_flags: Dictionary = {}
+	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null:
+			continue
+		bounds[obstacle_id] = obstacle.bounds
+		move_flags[obstacle_id] = obstacle.blocks_movement
+		los_flags[obstacle_id] = obstacle.blocks_line_of_sight
+	snap["bounds"] = bounds
+	snap["move"] = move_flags
+	snap["los"] = los_flags
+	return snap
+
+
+static func _battlelos_geo_unchanged(geometry: BattlefieldGeometry, snap: Dictionary) -> bool:
+	if geometry == null:
+		return bool(snap.get("null", false))
+	if bool(snap.get("null", false)):
+		return false
+	var ids_raw: Variant = snap.get("ids", [])
+	var expected_ids: Array[String] = []
+	if ids_raw is Array:
+		for item: Variant in ids_raw:
+			expected_ids.append(str(item))
+	if not _string_ids_match(geometry.get_sorted_obstacle_ids(), expected_ids):
+		return false
+	var bounds_raw: Variant = snap.get("bounds", {})
+	var move_raw: Variant = snap.get("move", {})
+	var los_raw: Variant = snap.get("los", {})
+	if not (bounds_raw is Dictionary) or not (move_raw is Dictionary) or not (los_raw is Dictionary):
+		return false
+	var bounds: Dictionary = bounds_raw as Dictionary
+	var move_flags: Dictionary = move_raw as Dictionary
+	var los_flags: Dictionary = los_raw as Dictionary
+	for obstacle_id: String in expected_ids:
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null:
+			return false
+		if not bounds.has(obstacle_id) or typeof(bounds[obstacle_id]) != TYPE_RECT2:
+			return false
+		var expected_bounds: Rect2 = bounds[obstacle_id] as Rect2
+		if not obstacle.bounds.position.is_equal_approx(expected_bounds.position):
+			return false
+		if not obstacle.bounds.size.is_equal_approx(expected_bounds.size):
+			return false
+		if obstacle.blocks_movement != bool(move_flags.get(obstacle_id, not obstacle.blocks_movement)):
+			return false
+		if obstacle.blocks_line_of_sight != bool(los_flags.get(obstacle_id, not obstacle.blocks_line_of_sight)):
+			return false
+	return true
+
+
+static func _battlelos_earliest_blocker(add_order: Array[String]) -> String:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return ""
+	for obstacle_id: String in add_order:
+		var bounds: Rect2 = Rect2(55.0, 20.0, 8.0, 20.0)
+		if obstacle_id == "los_near":
+			bounds = Rect2(30.0, 20.0, 8.0, 20.0)
+		var obstacle: BattleObstacle = BattleObstacle.new(obstacle_id, bounds, true, true)
+		if not battle_state.battlefield_geometry.add_obstacle(obstacle):
+			return ""
+	var result: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		battle_state,
+		Vector2(15.0, 30.0),
+		Vector2(80.0, 30.0)
+	)
+	if result == null or not result.success or result.has_line_of_sight:
+		return ""
+	return result.blocking_obstacle_id
+
 
 
