@@ -20,6 +20,8 @@ var navigation_destination: Vector2 = Vector2.ZERO
 var has_navigation_destination: bool = false
 var navigation_waypoints: Array[Vector2] = []
 var navigation_waypoint_index: int = 0
+var has_target_participant: bool = false
+var target_participant_id: String = ""
 
 
 func _init(
@@ -131,3 +133,17 @@ func has_reached_navigation_end() -> bool:
 	if not has_navigation_destination:
 		return false
 	return navigation_waypoint_index >= navigation_waypoints.size()
+
+
+func set_target_participant(participant_id: String) -> bool:
+	if participant_id.is_empty():
+		push_error("BattleParticipant.set_target_participant: participant id is empty.")
+		return false
+	target_participant_id = participant_id
+	has_target_participant = true
+	return true
+
+
+func clear_target_participant() -> void:
+	target_participant_id = ""
+	has_target_participant = false

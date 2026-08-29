@@ -63,6 +63,8 @@ const BattleNavigationResult := preload("res://battle/navigation/battle_navigati
 const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
 const BattlePathFollowResult := preload("res://battle/navigation/battle_path_follow_result.gd")
 const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
+const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
+const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
 
 
 static func run() -> Dictionary:
@@ -10732,6 +10734,1148 @@ static func run() -> Dictionary:
 			and not battlefollow_no_combat_svc.has_method("select_cover")
 		)
 
+	var battletarget_default_ok: bool = false
+	var battletarget_fresh: BattleParticipant = BattleParticipant.new()
+	battletarget_default_ok = (
+		battletarget_fresh.has_target_participant == false
+		and battletarget_fresh.target_participant_id == ""
+	)
+
+	var battletarget_helper_ok: bool = false
+	var battletarget_helper_p: BattleParticipant = BattleParticipant.new("helper_src")
+	var battletarget_helper_set: bool = battletarget_helper_p.set_target_participant("enemy_a")
+	var battletarget_helper_empty: bool = battletarget_helper_p.set_target_participant("")
+	var battletarget_helper_after_empty: bool = (
+		battletarget_helper_p.has_target_participant
+		and battletarget_helper_p.target_participant_id == "enemy_a"
+	)
+	battletarget_helper_p.clear_target_participant()
+	battletarget_helper_ok = (
+		battletarget_helper_set
+		and battletarget_helper_after_empty
+		and battletarget_helper_empty == false
+		and not battletarget_helper_p.has_target_participant
+		and battletarget_helper_p.target_participant_id.is_empty()
+	)
+
+	var battletarget_fail_null_ok: bool = _battletarget_fail_ok(
+		BattleTargetSelectionService.advance(null),
+		"null_battle_state"
+	)
+	var battletarget_fail_not_active_ok: bool = false
+	var battletarget_fail_missing_geo_ok: bool = false
+	var battletarget_fail_invalid_geo_ok: bool = false
+	var battletarget_deploy_bs: BattleState = _battlemove_make_state("deployment")
+	if battletarget_deploy_bs != null:
+		var battletarget_deploy_p: BattleParticipant = _battlemove_add_participant(
+			battletarget_deploy_bs,
+			"target_dep_p",
+			"attacker"
+		)
+		if battletarget_deploy_p != null:
+			_battletarget_place(battletarget_deploy_p, Vector2(10.0, 10.0))
+			var battletarget_dep_intent: bool = battletarget_deploy_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battletarget_dep_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battletarget_dep_nav: bool = battletarget_deploy_p.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battletarget_dep_path
+			)
+			var battletarget_dep_tgt: bool = battletarget_deploy_p.set_target_participant("enemy_a")
+			var battletarget_dep_snap: Dictionary = _battletarget_part_snap(battletarget_deploy_p)
+			var battletarget_dep_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_deploy_bs
+			)
+			battletarget_fail_not_active_ok = (
+				battletarget_dep_intent
+				and battletarget_dep_nav
+				and battletarget_dep_tgt
+				and _battletarget_fail_ok(battletarget_dep_res, "battle_not_active")
+				and _battletarget_part_unchanged(battletarget_deploy_p, battletarget_dep_snap)
+			)
+	var battletarget_miss_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_miss_bs != null:
+		var battletarget_miss_p: BattleParticipant = _battlemove_add_participant(
+			battletarget_miss_bs,
+			"target_miss_p",
+			"attacker"
+		)
+		if battletarget_miss_p != null:
+			_battletarget_place(battletarget_miss_p, Vector2(10.0, 10.0))
+			var battletarget_miss_intent: bool = battletarget_miss_p.set_movement_intent(Vector2(0.0, 1.0))
+			var battletarget_miss_path: Array[Vector2] = [Vector2(10.0, 20.0)]
+			var battletarget_miss_nav: bool = battletarget_miss_p.set_navigation_path(
+				Vector2(10.0, 20.0),
+				battletarget_miss_path
+			)
+			var battletarget_miss_tgt: bool = battletarget_miss_p.set_target_participant("enemy_b")
+			var battletarget_miss_snap: Dictionary = _battletarget_part_snap(battletarget_miss_p)
+			battletarget_miss_bs.battlefield_geometry = null
+			var battletarget_miss_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_miss_bs
+			)
+			battletarget_fail_missing_geo_ok = (
+				battletarget_miss_intent
+				and battletarget_miss_nav
+				and battletarget_miss_tgt
+				and _battletarget_fail_ok(battletarget_miss_res, "missing_battlefield_geometry")
+				and _battletarget_part_unchanged(battletarget_miss_p, battletarget_miss_snap)
+			)
+	var battletarget_badgeo_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_badgeo_bs != null:
+		var battletarget_badgeo_p: BattleParticipant = _battlemove_add_participant(
+			battletarget_badgeo_bs,
+			"target_badgeo_p",
+			"attacker"
+		)
+		if battletarget_badgeo_p != null:
+			_battletarget_place(battletarget_badgeo_p, Vector2(10.0, 10.0))
+			var battletarget_badgeo_intent: bool = battletarget_badgeo_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battletarget_badgeo_path: Array[Vector2] = [Vector2(18.0, 10.0)]
+			var battletarget_badgeo_nav: bool = battletarget_badgeo_p.set_navigation_path(
+				Vector2(18.0, 10.0),
+				battletarget_badgeo_path
+			)
+			var battletarget_badgeo_tgt: bool = battletarget_badgeo_p.set_target_participant("enemy_c")
+			var battletarget_badgeo_snap: Dictionary = _battletarget_part_snap(battletarget_badgeo_p)
+			battletarget_badgeo_bs.battlefield_geometry = BattlefieldGeometry.new()
+			var battletarget_badgeo_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_badgeo_bs
+			)
+			battletarget_fail_invalid_geo_ok = (
+				battletarget_badgeo_intent
+				and battletarget_badgeo_nav
+				and battletarget_badgeo_tgt
+				and _battletarget_fail_ok(battletarget_badgeo_res, "invalid_battlefield_geometry")
+				and _battletarget_part_unchanged(battletarget_badgeo_p, battletarget_badgeo_snap)
+			)
+
+	var battletarget_two_side_ok: bool = false
+	var battletarget_two_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_two_bs != null:
+		var battletarget_two_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_two_bs,
+			"alpha_src",
+			"attacker"
+		)
+		var battletarget_two_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_two_bs,
+			"beta_src",
+			"defender"
+		)
+		if battletarget_two_a != null and battletarget_two_b != null:
+			_battletarget_place(battletarget_two_a, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_two_b, Vector2(20.0, 10.0))
+			var battletarget_two_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_two_bs
+			)
+			battletarget_two_side_ok = (
+				_battletarget_ok(battletarget_two_res, 2, 2, 2, 2)
+				and _battletarget_has(battletarget_two_a, "beta_src")
+				and _battletarget_has(battletarget_two_b, "alpha_src")
+			)
+
+	var battletarget_same_side_ok: bool = false
+	var battletarget_same_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_same_bs != null:
+		var battletarget_same_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_same_bs,
+			"same_a",
+			"attacker"
+		)
+		var battletarget_same_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_same_bs,
+			"same_b",
+			"attacker"
+		)
+		if battletarget_same_a != null and battletarget_same_b != null:
+			_battletarget_place(battletarget_same_a, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_same_b, Vector2(16.0, 10.0))
+			var battletarget_same_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_same_bs
+			)
+			battletarget_same_side_ok = (
+				_battletarget_ok(battletarget_same_res, 2, 0, 0, 0)
+				and _battletarget_none(battletarget_same_a)
+				and _battletarget_none(battletarget_same_b)
+			)
+
+	var battletarget_nearest_ok: bool = false
+	var battletarget_near_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_near_bs != null:
+		var battletarget_near_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_near_bs,
+			"near_src",
+			"attacker"
+		)
+		var battletarget_near_close: BattleParticipant = _battlemove_add_participant(
+			battletarget_near_bs,
+			"near_close",
+			"defender"
+		)
+		var battletarget_near_far: BattleParticipant = _battlemove_add_participant(
+			battletarget_near_bs,
+			"near_far",
+			"defender"
+		)
+		if (
+			battletarget_near_src != null
+			and battletarget_near_close != null
+			and battletarget_near_far != null
+		):
+			_battletarget_place(battletarget_near_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_near_close, Vector2(16.0, 10.0))
+			_battletarget_place(battletarget_near_far, Vector2(40.0, 10.0))
+			var battletarget_near_src_d2: float = battletarget_near_src.battle_position.distance_squared_to(
+				battletarget_near_close.battle_position
+			)
+			var battletarget_near_far_d2: float = battletarget_near_src.battle_position.distance_squared_to(
+				battletarget_near_far.battle_position
+			)
+			var battletarget_near_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_near_bs
+			)
+			battletarget_nearest_ok = (
+				battletarget_near_src_d2 < battletarget_near_far_d2
+				and battletarget_near_res != null
+				and battletarget_near_res.success
+				and _battletarget_has(battletarget_near_src, "near_close")
+			)
+
+	var battletarget_tiebreak_ok: bool = false
+	var battletarget_tie_first: String = _battletarget_tie_selected("z_enemy", "a_enemy")
+	var battletarget_tie_second: String = _battletarget_tie_selected("a_enemy", "z_enemy")
+	battletarget_tiebreak_ok = (
+		battletarget_tie_first == "a_enemy"
+		and battletarget_tie_second == "a_enemy"
+	)
+
+	var battletarget_dead_src_ok: bool = false
+	var battletarget_dead_src_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_dead_src_bs != null:
+		var battletarget_dead_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_dead_src_bs,
+			"dead_src",
+			"attacker"
+		)
+		var battletarget_dead_sib: BattleParticipant = _battlemove_add_participant(
+			battletarget_dead_src_bs,
+			"dead_sib",
+			"attacker"
+		)
+		var battletarget_dead_def: BattleParticipant = _battlemove_add_participant(
+			battletarget_dead_src_bs,
+			"dead_def",
+			"defender"
+		)
+		if (
+			battletarget_dead_src != null
+			and battletarget_dead_sib != null
+			and battletarget_dead_def != null
+		):
+			_battletarget_place(battletarget_dead_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_dead_sib, Vector2(12.0, 12.0))
+			_battletarget_place(battletarget_dead_def, Vector2(20.0, 10.0))
+			var battletarget_dead_src_set: bool = battletarget_dead_src.set_target_participant("dead_def")
+			battletarget_dead_src.is_alive = false
+			var battletarget_dead_src_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_dead_src_bs
+			)
+			battletarget_dead_src_ok = (
+				battletarget_dead_src_set
+				and _battletarget_ok(battletarget_dead_src_res, 3, 2, 2, 3)
+				and _battletarget_none(battletarget_dead_src)
+				and _battletarget_has(battletarget_dead_sib, "dead_def")
+				and _battletarget_has(battletarget_dead_def, "dead_sib")
+			)
+
+	var battletarget_dead_hostile_ok: bool = false
+	var battletarget_dead_h_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_dead_h_bs != null:
+		var battletarget_dead_h_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_dead_h_bs,
+			"dead_h_src",
+			"attacker"
+		)
+		var battletarget_dead_h_close: BattleParticipant = _battlemove_add_participant(
+			battletarget_dead_h_bs,
+			"dead_h_close",
+			"defender"
+		)
+		var battletarget_dead_h_far: BattleParticipant = _battlemove_add_participant(
+			battletarget_dead_h_bs,
+			"dead_h_far",
+			"defender"
+		)
+		if (
+			battletarget_dead_h_src != null
+			and battletarget_dead_h_close != null
+			and battletarget_dead_h_far != null
+		):
+			_battletarget_place(battletarget_dead_h_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_dead_h_close, Vector2(12.0, 10.0))
+			_battletarget_place(battletarget_dead_h_far, Vector2(30.0, 10.0))
+			battletarget_dead_h_close.is_alive = false
+			var battletarget_dead_h_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_dead_h_bs
+			)
+			battletarget_dead_hostile_ok = (
+				battletarget_dead_h_res != null
+				and battletarget_dead_h_res.success
+				and _battletarget_has(battletarget_dead_h_src, "dead_h_far")
+			)
+
+	var battletarget_wounded_src_ok: bool = false
+	var battletarget_wounded_hostile_ok: bool = false
+	var battletarget_wnd_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_wnd_bs != null:
+		var battletarget_wnd_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_wnd_bs,
+			"wnd_src",
+			"attacker"
+		)
+		var battletarget_wnd_h: BattleParticipant = _battlemove_add_participant(
+			battletarget_wnd_bs,
+			"wnd_hostile",
+			"defender"
+		)
+		if battletarget_wnd_src != null and battletarget_wnd_h != null:
+			_battletarget_place(battletarget_wnd_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_wnd_h, Vector2(18.0, 10.0))
+			battletarget_wnd_src.is_wounded = true
+			battletarget_wnd_h.is_wounded = true
+			var battletarget_wnd_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_wnd_bs
+			)
+			battletarget_wounded_src_ok = (
+				_battletarget_ok(battletarget_wnd_res, 2, 2, 2, 2)
+				and _battletarget_has(battletarget_wnd_src, "wnd_hostile")
+			)
+			battletarget_wounded_hostile_ok = (
+				battletarget_wounded_src_ok
+				and _battletarget_has(battletarget_wnd_h, "wnd_src")
+			)
+
+	var battletarget_unpos_src_ok: bool = false
+	var battletarget_unpos_src_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_unpos_src_bs != null:
+		var battletarget_unpos_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_unpos_src_bs,
+			"unpos_src",
+			"attacker"
+		)
+		var battletarget_unpos_sib: BattleParticipant = _battlemove_add_participant(
+			battletarget_unpos_src_bs,
+			"unpos_sib",
+			"attacker"
+		)
+		var battletarget_unpos_def: BattleParticipant = _battlemove_add_participant(
+			battletarget_unpos_src_bs,
+			"unpos_def",
+			"defender"
+		)
+		if (
+			battletarget_unpos_src != null
+			and battletarget_unpos_sib != null
+			and battletarget_unpos_def != null
+		):
+			_battletarget_place(battletarget_unpos_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_unpos_sib, Vector2(14.0, 10.0))
+			_battletarget_place(battletarget_unpos_def, Vector2(22.0, 10.0))
+			var battletarget_unpos_set: bool = battletarget_unpos_src.set_target_participant("unpos_def")
+			battletarget_unpos_src.has_battle_position = false
+			var battletarget_unpos_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_unpos_src_bs
+			)
+			battletarget_unpos_src_ok = (
+				battletarget_unpos_set
+				and battletarget_unpos_res != null
+				and battletarget_unpos_res.success
+				and _battletarget_none(battletarget_unpos_src)
+				and _battletarget_has(battletarget_unpos_sib, "unpos_def")
+			)
+
+	var battletarget_unpos_hostile_ok: bool = false
+	var battletarget_unpos_h_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_unpos_h_bs != null:
+		var battletarget_unpos_h_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_unpos_h_bs,
+			"unpos_h_src",
+			"attacker"
+		)
+		var battletarget_unpos_h_close: BattleParticipant = _battlemove_add_participant(
+			battletarget_unpos_h_bs,
+			"unpos_h_close",
+			"defender"
+		)
+		var battletarget_unpos_h_far: BattleParticipant = _battlemove_add_participant(
+			battletarget_unpos_h_bs,
+			"unpos_h_far",
+			"defender"
+		)
+		if (
+			battletarget_unpos_h_src != null
+			and battletarget_unpos_h_close != null
+			and battletarget_unpos_h_far != null
+		):
+			_battletarget_place(battletarget_unpos_h_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_unpos_h_close, Vector2(12.0, 10.0))
+			_battletarget_place(battletarget_unpos_h_far, Vector2(28.0, 10.0))
+			battletarget_unpos_h_close.has_battle_position = false
+			var battletarget_unpos_h_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_unpos_h_bs
+			)
+			battletarget_unpos_hostile_ok = (
+				battletarget_unpos_h_res != null
+				and battletarget_unpos_h_res.success
+				and _battletarget_has(battletarget_unpos_h_src, "unpos_h_far")
+			)
+
+	var battletarget_malformed_src_ok: bool = false
+	var battletarget_mal_src_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_mal_src_bs != null:
+		var battletarget_mal_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_mal_src_bs,
+			"mal_src",
+			"attacker"
+		)
+		var battletarget_mal_sib: BattleParticipant = _battlemove_add_participant(
+			battletarget_mal_src_bs,
+			"mal_sib",
+			"attacker"
+		)
+		var battletarget_mal_def: BattleParticipant = _battlemove_add_participant(
+			battletarget_mal_src_bs,
+			"mal_def",
+			"defender"
+		)
+		if (
+			battletarget_mal_src != null
+			and battletarget_mal_sib != null
+			and battletarget_mal_def != null
+		):
+			_battletarget_place(battletarget_mal_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_mal_sib, Vector2(8.0, 8.0))
+			_battletarget_place(battletarget_mal_def, Vector2(20.0, 10.0))
+			var battletarget_mal_set: bool = battletarget_mal_src.set_target_participant("mal_def")
+			battletarget_mal_src.battle_position = Vector2(NAN, 10.0)
+			var battletarget_mal_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_mal_src_bs
+			)
+			battletarget_malformed_src_ok = (
+				battletarget_mal_set
+				and battletarget_mal_res != null
+				and battletarget_mal_res.success
+				and _battletarget_none(battletarget_mal_src)
+				and _battletarget_has(battletarget_mal_sib, "mal_def")
+			)
+
+	var battletarget_malformed_hostile_ok: bool = false
+	var battletarget_mal_h_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_mal_h_bs != null:
+		var battletarget_mal_h_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_mal_h_bs,
+			"mal_h_src",
+			"attacker"
+		)
+		var battletarget_mal_h_close: BattleParticipant = _battlemove_add_participant(
+			battletarget_mal_h_bs,
+			"mal_h_close",
+			"defender"
+		)
+		var battletarget_mal_h_far: BattleParticipant = _battlemove_add_participant(
+			battletarget_mal_h_bs,
+			"mal_h_far",
+			"defender"
+		)
+		if (
+			battletarget_mal_h_src != null
+			and battletarget_mal_h_close != null
+			and battletarget_mal_h_far != null
+		):
+			_battletarget_place(battletarget_mal_h_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_mal_h_close, Vector2(12.0, 10.0))
+			_battletarget_place(battletarget_mal_h_far, Vector2(26.0, 10.0))
+			battletarget_mal_h_close.battle_position = Vector2(INF, 10.0)
+			var battletarget_mal_h_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_mal_h_bs
+			)
+			battletarget_malformed_hostile_ok = (
+				battletarget_mal_h_res != null
+				and battletarget_mal_h_res.success
+				and _battletarget_has(battletarget_mal_h_src, "mal_h_far")
+			)
+
+	var battletarget_invalid_src_side_ok: bool = false
+	var battletarget_inv_src_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_inv_src_bs != null:
+		var battletarget_inv_empty: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_src_bs,
+			"inv_empty_src",
+			"attacker"
+		)
+		var battletarget_inv_ghost: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_src_bs,
+			"inv_ghost_src",
+			"attacker"
+		)
+		var battletarget_inv_sib: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_src_bs,
+			"inv_sib",
+			"attacker"
+		)
+		var battletarget_inv_def: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_src_bs,
+			"inv_def",
+			"defender"
+		)
+		if (
+			battletarget_inv_empty != null
+			and battletarget_inv_ghost != null
+			and battletarget_inv_sib != null
+			and battletarget_inv_def != null
+		):
+			_battletarget_place(battletarget_inv_empty, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_inv_ghost, Vector2(11.0, 10.0))
+			_battletarget_place(battletarget_inv_sib, Vector2(12.0, 10.0))
+			_battletarget_place(battletarget_inv_def, Vector2(24.0, 10.0))
+			var battletarget_inv_empty_set: bool = battletarget_inv_empty.set_target_participant("inv_def")
+			var battletarget_inv_ghost_set: bool = battletarget_inv_ghost.set_target_participant("inv_def")
+			battletarget_inv_empty.side_id = ""
+			battletarget_inv_ghost.side_id = "missing_side"
+			var battletarget_inv_src_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_inv_src_bs
+			)
+			battletarget_invalid_src_side_ok = (
+				battletarget_inv_empty_set
+				and battletarget_inv_ghost_set
+				and battletarget_inv_src_res != null
+				and battletarget_inv_src_res.success
+				and _battletarget_none(battletarget_inv_empty)
+				and _battletarget_none(battletarget_inv_ghost)
+				and _battletarget_has(battletarget_inv_sib, "inv_def")
+			)
+
+	var battletarget_invalid_hostile_side_ok: bool = false
+	var battletarget_inv_h_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_inv_h_bs != null:
+		var battletarget_inv_h_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_h_bs,
+			"inv_h_src",
+			"attacker"
+		)
+		var battletarget_inv_h_empty: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_h_bs,
+			"inv_h_empty",
+			"defender"
+		)
+		var battletarget_inv_h_ghost: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_h_bs,
+			"inv_h_ghost",
+			"defender"
+		)
+		var battletarget_inv_h_ok: BattleParticipant = _battlemove_add_participant(
+			battletarget_inv_h_bs,
+			"inv_h_ok",
+			"defender"
+		)
+		if (
+			battletarget_inv_h_src != null
+			and battletarget_inv_h_empty != null
+			and battletarget_inv_h_ghost != null
+			and battletarget_inv_h_ok != null
+		):
+			_battletarget_place(battletarget_inv_h_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_inv_h_empty, Vector2(12.0, 10.0))
+			_battletarget_place(battletarget_inv_h_ghost, Vector2(14.0, 10.0))
+			_battletarget_place(battletarget_inv_h_ok, Vector2(30.0, 10.0))
+			battletarget_inv_h_empty.side_id = ""
+			battletarget_inv_h_ghost.side_id = "missing_side"
+			var battletarget_inv_h_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_inv_h_bs
+			)
+			battletarget_invalid_hostile_side_ok = (
+				battletarget_inv_h_res != null
+				and battletarget_inv_h_res.success
+				and _battletarget_has(battletarget_inv_h_src, "inv_h_ok")
+			)
+
+	var battletarget_clear_none_ok: bool = false
+	var battletarget_clear_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_clear_bs != null:
+		var battletarget_clear_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_clear_bs,
+			"clear_src",
+			"attacker"
+		)
+		var battletarget_clear_mate: BattleParticipant = _battlemove_add_participant(
+			battletarget_clear_bs,
+			"clear_mate",
+			"attacker"
+		)
+		if battletarget_clear_src != null and battletarget_clear_mate != null:
+			_battletarget_place(battletarget_clear_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_clear_mate, Vector2(16.0, 10.0))
+			var battletarget_clear_set: bool = battletarget_clear_src.set_target_participant("stale_enemy")
+			var battletarget_clear_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_clear_bs
+			)
+			battletarget_clear_none_ok = (
+				battletarget_clear_set
+				and _battletarget_ok(battletarget_clear_res, 2, 0, 0, 1)
+				and _battletarget_none(battletarget_clear_src)
+			)
+
+	var battletarget_unchanged_ok: bool = false
+	var battletarget_hold_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_hold_bs != null:
+		var battletarget_hold_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_hold_bs,
+			"hold_a",
+			"attacker"
+		)
+		var battletarget_hold_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_hold_bs,
+			"hold_b",
+			"defender"
+		)
+		if battletarget_hold_a != null and battletarget_hold_b != null:
+			_battletarget_place(battletarget_hold_a, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_hold_b, Vector2(20.0, 10.0))
+			var battletarget_hold_first: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_hold_bs
+			)
+			var battletarget_hold_second: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_hold_bs
+			)
+			battletarget_unchanged_ok = (
+				_battletarget_ok(battletarget_hold_first, 2, 2, 2, 2)
+				and _battletarget_ok(battletarget_hold_second, 2, 2, 2, 0)
+				and _battletarget_has(battletarget_hold_a, "hold_b")
+				and _battletarget_has(battletarget_hold_b, "hold_a")
+			)
+
+	var battletarget_switch_nearer_ok: bool = false
+	var battletarget_sw_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_sw_bs != null:
+		var battletarget_sw_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_sw_bs,
+			"sw_src",
+			"attacker"
+		)
+		var battletarget_sw_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_sw_bs,
+			"sw_a",
+			"defender"
+		)
+		var battletarget_sw_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_sw_bs,
+			"sw_b",
+			"defender"
+		)
+		if battletarget_sw_src != null and battletarget_sw_a != null and battletarget_sw_b != null:
+			_battletarget_place(battletarget_sw_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_sw_a, Vector2(20.0, 10.0))
+			_battletarget_place(battletarget_sw_b, Vector2(40.0, 10.0))
+			var battletarget_sw_first: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_sw_bs
+			)
+			var battletarget_sw_first_ok: bool = (
+				battletarget_sw_first != null
+				and battletarget_sw_first.success
+				and _battletarget_has(battletarget_sw_src, "sw_a")
+			)
+			_battletarget_place(battletarget_sw_b, Vector2(12.0, 10.0))
+			var battletarget_sw_second: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_sw_bs
+			)
+			battletarget_switch_nearer_ok = (
+				battletarget_sw_first_ok
+				and battletarget_sw_second != null
+				and battletarget_sw_second.success
+				and _battletarget_has(battletarget_sw_src, "sw_b")
+				and battletarget_sw_second.targets_changed >= 1
+			)
+
+	var battletarget_replace_dead_ok: bool = false
+	var battletarget_rep_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_rep_bs != null:
+		var battletarget_rep_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_rep_bs,
+			"rep_src",
+			"attacker"
+		)
+		var battletarget_rep_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_rep_bs,
+			"rep_a",
+			"defender"
+		)
+		var battletarget_rep_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_rep_bs,
+			"rep_b",
+			"defender"
+		)
+		if battletarget_rep_src != null and battletarget_rep_a != null and battletarget_rep_b != null:
+			_battletarget_place(battletarget_rep_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_rep_a, Vector2(16.0, 10.0))
+			_battletarget_place(battletarget_rep_b, Vector2(32.0, 10.0))
+			var battletarget_rep_first: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_rep_bs
+			)
+			var battletarget_rep_first_ok: bool = (
+				battletarget_rep_first != null
+				and battletarget_rep_first.success
+				and _battletarget_has(battletarget_rep_src, "rep_a")
+			)
+			battletarget_rep_a.is_alive = false
+			var battletarget_rep_second: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_rep_bs
+			)
+			var battletarget_rep_second_ok: bool = (
+				battletarget_rep_second != null
+				and battletarget_rep_second.success
+				and _battletarget_has(battletarget_rep_src, "rep_b")
+			)
+			battletarget_rep_b.is_alive = false
+			var battletarget_rep_third: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_rep_bs
+			)
+			battletarget_replace_dead_ok = (
+				battletarget_rep_first_ok
+				and battletarget_rep_second_ok
+				and battletarget_rep_third != null
+				and battletarget_rep_third.success
+				and _battletarget_none(battletarget_rep_src)
+			)
+
+	var battletarget_multi_side_ok: bool = false
+	var battletarget_ms_sides: Array[String] = ["alpha", "beta", "gamma"]
+	var battletarget_ms_bs: BattleState = _battletarget_make_state_with_sides(
+		"active",
+		battletarget_ms_sides
+	)
+	if battletarget_ms_bs != null:
+		var battletarget_ms_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_ms_bs,
+			"ms_alpha",
+			"alpha"
+		)
+		var battletarget_ms_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_ms_bs,
+			"ms_beta",
+			"beta"
+		)
+		var battletarget_ms_g: BattleParticipant = _battlemove_add_participant(
+			battletarget_ms_bs,
+			"ms_gamma",
+			"gamma"
+		)
+		if battletarget_ms_a != null and battletarget_ms_b != null and battletarget_ms_g != null:
+			_battletarget_place(battletarget_ms_a, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_ms_b, Vector2(30.0, 10.0))
+			_battletarget_place(battletarget_ms_g, Vector2(14.0, 10.0))
+			var battletarget_ms_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_ms_bs
+			)
+			battletarget_multi_side_ok = (
+				battletarget_ms_res != null
+				and battletarget_ms_res.success
+				and _battletarget_has(battletarget_ms_a, "ms_gamma")
+				and battletarget_ms_a.target_participant_id != "ms_beta"
+			)
+
+	var battletarget_pre_los_wall_ok: bool = false
+	var battletarget_wall_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_wall_bs != null and battletarget_wall_bs.battlefield_geometry != null:
+		var battletarget_wall: BattleObstacle = BattleObstacle.new(
+			"target_pre_los_wall",
+			Rect2(28.0, 18.0, 20.0, 10.0),
+			true
+		)
+		var battletarget_wall_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_wall_bs,
+			"pre_los_src",
+			"attacker"
+		)
+		var battletarget_wall_near: BattleParticipant = _battlemove_add_participant(
+			battletarget_wall_bs,
+			"pre_los_behind_wall",
+			"defender"
+		)
+		var battletarget_wall_far: BattleParticipant = _battlemove_add_participant(
+			battletarget_wall_bs,
+			"pre_los_open_far",
+			"defender"
+		)
+		if (
+			battletarget_wall_src != null
+			and battletarget_wall_near != null
+			and battletarget_wall_far != null
+			and battletarget_wall_bs.battlefield_geometry.add_obstacle(battletarget_wall)
+		):
+			_battletarget_place(battletarget_wall_src, Vector2(30.0, 10.0))
+			_battletarget_place(battletarget_wall_near, Vector2(30.0, 40.0))
+			_battletarget_place(battletarget_wall_far, Vector2(80.0, 10.0))
+			var battletarget_wall_near_d2: float = battletarget_wall_src.battle_position.distance_squared_to(
+				battletarget_wall_near.battle_position
+			)
+			var battletarget_wall_far_d2: float = battletarget_wall_src.battle_position.distance_squared_to(
+				battletarget_wall_far.battle_position
+			)
+			var battletarget_wall_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_wall_bs
+			)
+			battletarget_pre_los_wall_ok = (
+				battletarget_wall_near_d2 < battletarget_wall_far_d2
+				and battletarget_wall_res != null
+				and battletarget_wall_res.success
+				and _battletarget_has(battletarget_wall_src, "pre_los_behind_wall")
+			)
+
+	var battletarget_no_move_ok: bool = false
+	var battletarget_no_nav_ok: bool = false
+	var battletarget_nomut_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_nomut_bs != null:
+		var battletarget_nomut_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_nomut_bs,
+			"nomut_src",
+			"attacker"
+		)
+		var battletarget_nomut_h: BattleParticipant = _battlemove_add_participant(
+			battletarget_nomut_bs,
+			"nomut_h",
+			"defender"
+		)
+		if battletarget_nomut_src != null and battletarget_nomut_h != null:
+			_battletarget_place(battletarget_nomut_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_nomut_h, Vector2(22.0, 10.0))
+			var battletarget_nomut_intent: bool = battletarget_nomut_src.set_movement_intent(Vector2(0.0, 1.0))
+			var battletarget_nomut_speed: bool = battletarget_nomut_src.set_movement_speed(4.0)
+			var battletarget_nomut_path: Array[Vector2] = [Vector2(10.0, 18.0), Vector2(18.0, 18.0)]
+			var battletarget_nomut_nav: bool = battletarget_nomut_src.set_navigation_path(
+				Vector2(18.0, 18.0),
+				battletarget_nomut_path
+			)
+			var battletarget_nomut_cap: bool = battletarget_nomut_src.set_movement_target_position(Vector2(10.0, 18.0))
+			battletarget_nomut_src.velocity = Vector2(0.0, 4.0)
+			var battletarget_nomut_pos: Vector2 = battletarget_nomut_src.battle_position
+			var battletarget_nomut_vel: Vector2 = battletarget_nomut_src.velocity
+			var battletarget_nomut_intent_v: Vector2 = battletarget_nomut_src.movement_intent
+			var battletarget_nomut_move_tgt: Vector2 = battletarget_nomut_src.movement_target_position
+			var battletarget_nomut_dest: Vector2 = battletarget_nomut_src.navigation_destination
+			var battletarget_nomut_index: int = battletarget_nomut_src.navigation_waypoint_index
+			var battletarget_nomut_wps: Array[Vector2] = _battlenav_copy_points(
+				battletarget_nomut_src.navigation_waypoints
+			)
+			var battletarget_nomut_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_nomut_bs
+			)
+			battletarget_no_move_ok = (
+				battletarget_nomut_intent
+				and battletarget_nomut_speed
+				and battletarget_nomut_nav
+				and battletarget_nomut_cap
+				and battletarget_nomut_res != null
+				and battletarget_nomut_res.success
+				and _battletarget_has(battletarget_nomut_src, "nomut_h")
+				and battletarget_nomut_src.battle_position.is_equal_approx(battletarget_nomut_pos)
+				and battletarget_nomut_src.velocity.is_equal_approx(battletarget_nomut_vel)
+				and battletarget_nomut_src.movement_intent.is_equal_approx(battletarget_nomut_intent_v)
+				and battletarget_nomut_src.has_movement_target_position
+				and battletarget_nomut_src.movement_target_position.is_equal_approx(battletarget_nomut_move_tgt)
+			)
+			battletarget_no_nav_ok = (
+				battletarget_no_move_ok
+				and battletarget_nomut_src.has_navigation_destination
+				and battletarget_nomut_src.navigation_destination.is_equal_approx(battletarget_nomut_dest)
+				and battletarget_nomut_src.navigation_waypoint_index == battletarget_nomut_index
+				and _battlenav_waypoints_match(battletarget_nomut_src.navigation_waypoints, battletarget_nomut_wps)
+			)
+
+	var battletarget_runtime_ok: bool = false
+	var battletarget_rt_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_rt_bs != null:
+		var battletarget_rt_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_rt_bs,
+			"rt_src",
+			"attacker"
+		)
+		var battletarget_rt_h: BattleParticipant = _battlemove_add_participant(
+			battletarget_rt_bs,
+			"rt_h",
+			"defender"
+		)
+		if battletarget_rt_src != null and battletarget_rt_h != null:
+			_battletarget_place(battletarget_rt_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_rt_h, Vector2(10.0, 40.0))
+			var battletarget_rt_speed: bool = battletarget_rt_src.set_movement_speed(5.0)
+			var battletarget_rt_path: Array[Vector2] = [Vector2(40.0, 10.0)]
+			var battletarget_rt_nav: bool = battletarget_rt_src.set_navigation_path(
+				Vector2(40.0, 10.0),
+				battletarget_rt_path
+			)
+			var battletarget_rt_res: BattleRuntimeResult = BattleRuntimeService.advance(battletarget_rt_bs, 1.0)
+			battletarget_runtime_ok = (
+				battletarget_rt_speed
+				and battletarget_rt_nav
+				and battletarget_rt_res != null
+				and battletarget_rt_res.success
+				and _battletarget_has(battletarget_rt_src, "rt_h")
+				and battletarget_rt_src.battle_position.is_equal_approx(Vector2(15.0, 10.0))
+				and battletarget_rt_src.movement_intent.is_equal_approx(Vector2(1.0, 0.0))
+				and battletarget_rt_h.battle_position.is_equal_approx(Vector2(10.0, 40.0))
+			)
+
+	var battletarget_zero_delta_ok: bool = false
+	var battletarget_zd_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_zd_bs != null:
+		var battletarget_zd_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_zd_bs,
+			"zd_src",
+			"attacker"
+		)
+		var battletarget_zd_h: BattleParticipant = _battlemove_add_participant(
+			battletarget_zd_bs,
+			"zd_h",
+			"defender"
+		)
+		if battletarget_zd_src != null and battletarget_zd_h != null:
+			_battletarget_place(battletarget_zd_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_zd_h, Vector2(18.0, 10.0))
+			battletarget_zd_bs.elapsed_time_seconds = 3.0
+			var battletarget_zd_res: BattleRuntimeResult = BattleRuntimeService.advance(battletarget_zd_bs, 0.0)
+			battletarget_zero_delta_ok = (
+				battletarget_zd_res != null
+				and battletarget_zd_res.success
+				and _battletarget_has(battletarget_zd_src, "zd_h")
+				and _battletarget_has(battletarget_zd_h, "zd_src")
+				and battletarget_zd_src.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+				and battletarget_zd_h.battle_position.is_equal_approx(Vector2(18.0, 10.0))
+				and is_equal_approx(battletarget_zd_bs.elapsed_time_seconds, 3.0)
+			)
+
+	var battletarget_runtime_tx_ok: bool = false
+	var battletarget_tx_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_tx_bs != null:
+		var battletarget_tx_src: BattleParticipant = _battlemove_add_participant(
+			battletarget_tx_bs,
+			"tx_src",
+			"attacker"
+		)
+		var battletarget_tx_h: BattleParticipant = _battlemove_add_participant(
+			battletarget_tx_bs,
+			"tx_h",
+			"defender"
+		)
+		if battletarget_tx_src != null and battletarget_tx_h != null:
+			_battletarget_place(battletarget_tx_src, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_tx_h, Vector2(20.0, 10.0))
+			var battletarget_tx_speed: bool = battletarget_tx_src.set_movement_speed(5.0)
+			var battletarget_tx_intent: bool = battletarget_tx_src.set_movement_intent(Vector2.ZERO)
+			var battletarget_tx_path: Array[Vector2] = [Vector2(20.0, 10.0)]
+			var battletarget_tx_nav: bool = battletarget_tx_src.set_navigation_path(
+				Vector2(20.0, 10.0),
+				battletarget_tx_path
+			)
+			var battletarget_tx_tgt: bool = battletarget_tx_src.set_target_participant("stale_tx")
+			battletarget_tx_bs.elapsed_time_seconds = 4.0
+			var battletarget_tx_src_snap: Dictionary = _battletarget_part_snap(battletarget_tx_src)
+			var battletarget_tx_h_snap: Dictionary = _battletarget_part_snap(battletarget_tx_h)
+			battletarget_tx_bs.battlefield_geometry = null
+			var battletarget_tx_rt: BattleRuntimeResult = BattleRuntimeService.advance(battletarget_tx_bs, 0.5)
+			battletarget_runtime_tx_ok = (
+				battletarget_tx_speed
+				and battletarget_tx_intent
+				and battletarget_tx_nav
+				and battletarget_tx_tgt
+				and _battlert_fail_ok(battletarget_tx_rt, "missing_battlefield_geometry", 4.0)
+				and is_equal_approx(battletarget_tx_bs.elapsed_time_seconds, 4.0)
+				and _battletarget_part_unchanged(battletarget_tx_src, battletarget_tx_src_snap)
+				and _battletarget_part_unchanged(battletarget_tx_h, battletarget_tx_h_snap)
+			)
+
+	var battletarget_multi_ok: bool = false
+	var battletarget_multi_order_a: Array[String] = ["z_src", "m_enemy", "a_src", "b_enemy"]
+	var battletarget_multi_order_b: Array[String] = ["b_enemy", "a_src", "m_enemy", "z_src"]
+	var battletarget_multi_a: bool = _battletarget_multi_run(battletarget_multi_order_a)
+	var battletarget_multi_b: bool = _battletarget_multi_run(battletarget_multi_order_b)
+	battletarget_multi_ok = battletarget_multi_a and battletarget_multi_b
+
+	# considered = every existing participant
+	# with_hostiles = eligible sources that had at least one eligible hostile this update
+	# with_targets = participants that still have a target after the update
+	# targets_changed = (has_flag, id) pair differed from the start of that participant's update
+	var battletarget_counts_ok: bool = false
+	var battletarget_count_hostiles: bool = false
+	var battletarget_count_none: bool = false
+	var battletarget_cnt_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_cnt_bs != null:
+		var battletarget_cnt_ok: BattleParticipant = _battlemove_add_participant(
+			battletarget_cnt_bs,
+			"cnt_ok",
+			"attacker"
+		)
+		var battletarget_cnt_dead: BattleParticipant = _battlemove_add_participant(
+			battletarget_cnt_bs,
+			"cnt_dead",
+			"attacker"
+		)
+		var battletarget_cnt_mal: BattleParticipant = _battlemove_add_participant(
+			battletarget_cnt_bs,
+			"cnt_mal",
+			"attacker"
+		)
+		var battletarget_cnt_h: BattleParticipant = _battlemove_add_participant(
+			battletarget_cnt_bs,
+			"cnt_h",
+			"defender"
+		)
+		if (
+			battletarget_cnt_ok != null
+			and battletarget_cnt_dead != null
+			and battletarget_cnt_mal != null
+			and battletarget_cnt_h != null
+		):
+			_battletarget_place(battletarget_cnt_ok, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_cnt_dead, Vector2(12.0, 10.0))
+			_battletarget_place(battletarget_cnt_mal, Vector2(14.0, 10.0))
+			_battletarget_place(battletarget_cnt_h, Vector2(24.0, 10.0))
+			var battletarget_cnt_dead_set: bool = battletarget_cnt_dead.set_target_participant("cnt_h")
+			var battletarget_cnt_mal_set: bool = battletarget_cnt_mal.set_target_participant("cnt_h")
+			battletarget_cnt_dead.is_alive = false
+			battletarget_cnt_mal.battle_position = Vector2(NAN, 10.0)
+			var battletarget_cnt_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_cnt_bs
+			)
+			battletarget_count_hostiles = (
+				battletarget_cnt_dead_set
+				and battletarget_cnt_mal_set
+				and _battletarget_ok(battletarget_cnt_res, 4, 2, 2, 4)
+				and _battletarget_has(battletarget_cnt_ok, "cnt_h")
+				and _battletarget_has(battletarget_cnt_h, "cnt_ok")
+				and _battletarget_none(battletarget_cnt_dead)
+				and _battletarget_none(battletarget_cnt_mal)
+			)
+	var battletarget_none_bs: BattleState = _battlemove_make_state("active")
+	if battletarget_none_bs != null:
+		var battletarget_none_a: BattleParticipant = _battlemove_add_participant(
+			battletarget_none_bs,
+			"cnt_none_a",
+			"attacker"
+		)
+		var battletarget_none_b: BattleParticipant = _battlemove_add_participant(
+			battletarget_none_bs,
+			"cnt_none_b",
+			"attacker"
+		)
+		if battletarget_none_a != null and battletarget_none_b != null:
+			_battletarget_place(battletarget_none_a, Vector2(10.0, 10.0))
+			_battletarget_place(battletarget_none_b, Vector2(16.0, 10.0))
+			var battletarget_none_res: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+				battletarget_none_bs
+			)
+			battletarget_count_none = _battletarget_ok(battletarget_none_res, 2, 0, 0, 0)
+	battletarget_counts_ok = battletarget_count_hostiles and battletarget_count_none
+
+	var battletarget_ok_res: BattleTargetSelectionResult = BattleTargetSelectionResult.succeeded(4, 2, 2, 3)
+	var battletarget_fail_res: BattleTargetSelectionResult = BattleTargetSelectionResult.failed(
+		"null_battle_state",
+		"Battle target selection failed: battle_state is null."
+	)
+	var battletarget_result_helper_ok: bool = (
+		battletarget_ok_res != null
+		and battletarget_ok_res.success
+		and battletarget_ok_res.participants_considered == 4
+		and battletarget_ok_res.participants_with_hostiles == 2
+		and battletarget_ok_res.participants_with_targets == 2
+		and battletarget_ok_res.targets_changed == 3
+		and battletarget_ok_res.error_code.is_empty()
+		and battletarget_ok_res.error_message.is_empty()
+		and battletarget_fail_res != null
+		and not battletarget_fail_res.success
+		and battletarget_fail_res.participants_considered == 0
+		and battletarget_fail_res.participants_with_hostiles == 0
+		and battletarget_fail_res.participants_with_targets == 0
+		and battletarget_fail_res.targets_changed == 0
+		and battletarget_fail_res.error_code == "null_battle_state"
+		and battletarget_fail_res.error_message == "Battle target selection failed: battle_state is null."
+	)
+
+	var battletarget_no_candidate_list_ok: bool = false
+	var battletarget_cand_p: BattleParticipant = BattleParticipant.new("cand_p")
+	battletarget_no_candidate_list_ok = (
+		battletarget_cand_p.get("hostile_candidates") == null
+		and battletarget_cand_p.get("visible_enemies") == null
+		and battletarget_cand_p.get("hostile_ids") == null
+		and not battletarget_cand_p.has_method("get_hostile_candidates")
+		and not battletarget_cand_p.has_method("set_hostile_candidates")
+	)
+
+	var battletarget_persist_ok: bool = false
+	var battletarget_immutability_ok: bool = false
+	var battletarget_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battletarget_camp_game: GameState = battletarget_camp_pack.get("game_state", null) as GameState
+	var battletarget_camp_force: TravelingForce = battletarget_camp_pack.get("force", null) as TravelingForce
+	var battletarget_camp_bs: BattleState = battletarget_camp_pack.get("battle_state", null) as BattleState
+	if battletarget_camp_game != null and battletarget_camp_bs != null:
+		var battletarget_camp_deployed: bool = _battle_deploy_standard_attacker(battletarget_camp_bs)
+		var battletarget_camp_geo: bool = _battlegeo_init(battletarget_camp_bs)
+		var battletarget_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battletarget_camp_game,
+			battletarget_camp_force,
+			"battle_mission"
+		)
+		var battletarget_camp_part: BattleParticipant = battletarget_camp_bs.get_participant("battle_sol_a")
+		var battletarget_camp_ready: bool = false
+		if battletarget_camp_part != null and battletarget_camp_part.has_battle_position:
+			battletarget_camp_ready = battletarget_camp_part.set_target_participant("battle_sol_m")
+		var battletarget_camp_persist: Dictionary = battletarget_camp_game.to_dict()
+		battletarget_persist_ok = (
+			battletarget_camp_deployed
+			and battletarget_camp_geo
+			and battletarget_camp_ready
+			and _battle_serialized_campaign_keys_only(battletarget_camp_persist)
+			and not _battle_data_has_tactical_trace(battletarget_camp_persist)
+		)
+		var battletarget_camp_begun: bool = battletarget_camp_bs.begin_battle()
+		var battletarget_camp_sel: BattleTargetSelectionResult = BattleTargetSelectionService.advance(
+			battletarget_camp_bs
+		)
+		var battletarget_camp_adv: BattleRuntimeResult = BattleRuntimeService.advance(battletarget_camp_bs, 0.25)
+		battletarget_immutability_ok = (
+			battletarget_persist_ok
+			and battletarget_camp_begun
+			and battletarget_camp_sel != null
+			and battletarget_camp_sel.success
+			and battletarget_camp_adv != null
+			and battletarget_camp_adv.success
+			and _battle_campaign_unchanged(
+				battletarget_camp_game,
+				battletarget_camp_snap,
+				battletarget_camp_force,
+				"battle_mission"
+			)
+			and battletarget_camp_game.get_mission("battle_mission").mission_state == "awaiting_resolution"
+			and battletarget_camp_game.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		)
+
+	var battletarget_no_combat_ok: bool = false
+	var battletarget_no_combat_bs: BattleState = _battlemove_make_state("active")
+	var battletarget_no_combat_svc: BattleTargetSelectionService = BattleTargetSelectionService.new()
+	if battletarget_no_combat_bs != null:
+		battletarget_no_combat_ok = (
+			_battle_has_no_combat_turn_model(battletarget_no_combat_bs)
+			and battletarget_no_combat_bs.get("current_turn_index") == null
+			and battletarget_no_combat_bs.get("cover_value") == null
+			and not battletarget_no_combat_svc.has_method("compute_los")
+			and not battletarget_no_combat_svc.has_method("has_line_of_sight")
+			and not battletarget_no_combat_svc.has_method("select_cover")
+			and not battletarget_no_combat_svc.has_method("find_path")
+			and not battletarget_no_combat_svc.has_method("set_movement_intent")
+			and not battletarget_no_combat_svc.has_method("fire")
+			and not battletarget_no_combat_svc.has_method("apply_damage")
+			and not battletarget_no_combat_svc.has_method("resolve_hit")
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -11615,6 +12759,44 @@ static func run() -> Dictionary:
 		"battlefollow_persist_ok": battlefollow_persist_ok,
 		"battlefollow_immutability_ok": battlefollow_immutability_ok,
 		"battlefollow_no_combat_ok": battlefollow_no_combat_ok,
+		"battletarget_default_ok": battletarget_default_ok,
+		"battletarget_helper_ok": battletarget_helper_ok,
+		"battletarget_fail_null_ok": battletarget_fail_null_ok,
+		"battletarget_fail_not_active_ok": battletarget_fail_not_active_ok,
+		"battletarget_fail_missing_geo_ok": battletarget_fail_missing_geo_ok,
+		"battletarget_fail_invalid_geo_ok": battletarget_fail_invalid_geo_ok,
+		"battletarget_two_side_ok": battletarget_two_side_ok,
+		"battletarget_same_side_ok": battletarget_same_side_ok,
+		"battletarget_nearest_ok": battletarget_nearest_ok,
+		"battletarget_tiebreak_ok": battletarget_tiebreak_ok,
+		"battletarget_dead_src_ok": battletarget_dead_src_ok,
+		"battletarget_dead_hostile_ok": battletarget_dead_hostile_ok,
+		"battletarget_wounded_src_ok": battletarget_wounded_src_ok,
+		"battletarget_wounded_hostile_ok": battletarget_wounded_hostile_ok,
+		"battletarget_unpos_src_ok": battletarget_unpos_src_ok,
+		"battletarget_unpos_hostile_ok": battletarget_unpos_hostile_ok,
+		"battletarget_malformed_src_ok": battletarget_malformed_src_ok,
+		"battletarget_malformed_hostile_ok": battletarget_malformed_hostile_ok,
+		"battletarget_invalid_src_side_ok": battletarget_invalid_src_side_ok,
+		"battletarget_invalid_hostile_side_ok": battletarget_invalid_hostile_side_ok,
+		"battletarget_clear_none_ok": battletarget_clear_none_ok,
+		"battletarget_unchanged_ok": battletarget_unchanged_ok,
+		"battletarget_switch_nearer_ok": battletarget_switch_nearer_ok,
+		"battletarget_replace_dead_ok": battletarget_replace_dead_ok,
+		"battletarget_multi_side_ok": battletarget_multi_side_ok,
+		"battletarget_pre_los_wall_ok": battletarget_pre_los_wall_ok,
+		"battletarget_no_move_ok": battletarget_no_move_ok,
+		"battletarget_no_nav_ok": battletarget_no_nav_ok,
+		"battletarget_runtime_ok": battletarget_runtime_ok,
+		"battletarget_zero_delta_ok": battletarget_zero_delta_ok,
+		"battletarget_runtime_tx_ok": battletarget_runtime_tx_ok,
+		"battletarget_multi_ok": battletarget_multi_ok,
+		"battletarget_counts_ok": battletarget_counts_ok,
+		"battletarget_result_helper_ok": battletarget_result_helper_ok,
+		"battletarget_no_candidate_list_ok": battletarget_no_candidate_list_ok,
+		"battletarget_persist_ok": battletarget_persist_ok,
+		"battletarget_immutability_ok": battletarget_immutability_ok,
+		"battletarget_no_combat_ok": battletarget_no_combat_ok,
 	}
 
 	var passed := true
@@ -13290,6 +14472,8 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "used_detour"
 		or text == "movement_target_position"
 		or text == "has_movement_target_position"
+		or text == "has_target_participant"
+		or text == "target_participant_id"
 	)
 
 
@@ -14788,6 +15972,157 @@ static func _battlefollow_part_unchanged(participant: BattleParticipant, snap: D
 		and participant.has_battle_position == bool(snap.get("has_pos", false))
 		and participant.battle_position.is_equal_approx(pos)
 		and participant.is_alive == bool(snap.get("alive", false))
+	)
+
+
+static func _battletarget_place(participant: BattleParticipant, position: Vector2) -> void:
+	if participant == null:
+		return
+	participant.has_battle_position = true
+	participant.battle_position = position
+
+
+static func _battletarget_has(participant: BattleParticipant, expected_id: String) -> bool:
+	if participant == null:
+		return false
+	return participant.has_target_participant and participant.target_participant_id == expected_id
+
+
+static func _battletarget_none(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	return not participant.has_target_participant and participant.target_participant_id.is_empty()
+
+
+static func _battletarget_ok(
+	result: BattleTargetSelectionResult,
+	considered: int,
+	with_hostiles: int,
+	with_targets: int,
+	changed: int
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+		and result.participants_considered == considered
+		and result.participants_with_hostiles == with_hostiles
+		and result.participants_with_targets == with_targets
+		and result.targets_changed == changed
+	)
+
+
+static func _battletarget_fail_ok(result: BattleTargetSelectionResult, expected_code: String) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.error_code == expected_code
+		and result.error_message.begins_with("Battle target selection failed:")
+		and result.participants_considered == 0
+		and result.participants_with_hostiles == 0
+		and result.participants_with_targets == 0
+		and result.targets_changed == 0
+	)
+
+
+static func _battletarget_part_snap(participant: BattleParticipant) -> Dictionary:
+	var snap: Dictionary = _battlefollow_part_snap(participant)
+	if participant == null:
+		return snap
+	snap["vel"] = participant.velocity
+	snap["has_tgt"] = participant.has_target_participant
+	snap["tgt_id"] = participant.target_participant_id
+	return snap
+
+
+static func _battletarget_part_unchanged(participant: BattleParticipant, snap: Dictionary) -> bool:
+	if not _battlefollow_part_unchanged(participant, snap):
+		return false
+	var vel_raw: Variant = snap.get("vel", Vector2.ZERO)
+	if typeof(vel_raw) != TYPE_VECTOR2:
+		return false
+	var vel: Vector2 = vel_raw as Vector2
+	return (
+		participant.velocity.is_equal_approx(vel)
+		and participant.has_target_participant == bool(snap.get("has_tgt", false))
+		and participant.target_participant_id == str(snap.get("tgt_id", ""))
+	)
+
+
+static func _battletarget_make_state_with_sides(p_phase: String, side_ids: Array[String]) -> BattleState:
+	if side_ids.size() < 2:
+		return null
+	var battle_state: BattleState = BattleState.new(
+		"battletarget_battle",
+		"battletarget_type",
+		"battletarget_mission",
+		"battletarget_location",
+		side_ids[0],
+		side_ids[1],
+		p_phase
+	)
+	var index: int = 0
+	for side_id: String in side_ids:
+		var side: BattleSide = BattleSide.new(side_id, "battletarget_f" + str(index), "", index == 0, "")
+		if not battle_state.add_side(side):
+			return null
+		index += 1
+	if not _battlespatial_attach_open_geometry(battle_state):
+		return null
+	return battle_state
+
+
+static func _battletarget_tie_selected(first_id: String, second_id: String) -> String:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return ""
+	var source: BattleParticipant = _battlemove_add_participant(battle_state, "tie_src", "attacker")
+	var first: BattleParticipant = _battlemove_add_participant(battle_state, first_id, "defender")
+	var second: BattleParticipant = _battlemove_add_participant(battle_state, second_id, "defender")
+	if source == null or first == null or second == null:
+		return ""
+	_battletarget_place(source, Vector2(10.0, 10.0))
+	_battletarget_place(first, Vector2(20.0, 10.0))
+	_battletarget_place(second, Vector2(10.0, 20.0))
+	var result: BattleTargetSelectionResult = BattleTargetSelectionService.advance(battle_state)
+	if result == null or not result.success:
+		return ""
+	return source.target_participant_id
+
+
+static func _battletarget_multi_run(add_order: Array[String]) -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var added: Dictionary = {}
+	for participant_id: String in add_order:
+		var side_id: String = "attacker"
+		if participant_id.ends_with("enemy"):
+			side_id = "defender"
+		var participant: BattleParticipant = _battlemove_add_participant(battle_state, participant_id, side_id)
+		if participant == null:
+			return false
+		added[participant_id] = participant
+	var z_src: BattleParticipant = added.get("z_src", null) as BattleParticipant
+	var a_src: BattleParticipant = added.get("a_src", null) as BattleParticipant
+	var m_enemy: BattleParticipant = added.get("m_enemy", null) as BattleParticipant
+	var b_enemy: BattleParticipant = added.get("b_enemy", null) as BattleParticipant
+	if z_src == null or a_src == null or m_enemy == null or b_enemy == null:
+		return false
+	_battletarget_place(z_src, Vector2(10.0, 10.0))
+	_battletarget_place(a_src, Vector2(12.0, 40.0))
+	_battletarget_place(m_enemy, Vector2(18.0, 10.0))
+	_battletarget_place(b_enemy, Vector2(12.0, 48.0))
+	var result: BattleTargetSelectionResult = BattleTargetSelectionService.advance(battle_state)
+	return (
+		_battletarget_ok(result, 4, 4, 4, 4)
+		and _battletarget_has(z_src, "m_enemy")
+		and _battletarget_has(a_src, "b_enemy")
+		and _battletarget_has(m_enemy, "z_src")
+		and _battletarget_has(b_enemy, "a_src")
 	)
 
 

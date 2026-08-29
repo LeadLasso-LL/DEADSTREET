@@ -3,6 +3,8 @@ extends RefCounted
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
+const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
+const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
 const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
 const BattlePathFollowResult := preload("res://battle/navigation/battle_path_follow_result.gd")
 const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
@@ -36,6 +38,21 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 		return BattleRuntimeResult.failed(
 			"invalid_elapsed_time",
 			"Battle runtime failed: elapsed_time_seconds is invalid.",
+			delta_seconds,
+			elapsed_before
+		)
+	var target_result: BattleTargetSelectionResult = BattleTargetSelectionService.advance(battle_state)
+	if target_result == null or not target_result.success:
+		var target_error_code: String = "invalid_delta"
+		var target_error_message: String = "Battle runtime failed: target selection failed."
+		if target_result != null:
+			if not target_result.error_code.is_empty():
+				target_error_code = target_result.error_code
+			if not target_result.error_message.is_empty():
+				target_error_message = target_result.error_message
+		return BattleRuntimeResult.failed(
+			target_error_code,
+			target_error_message,
 			delta_seconds,
 			elapsed_before
 		)
