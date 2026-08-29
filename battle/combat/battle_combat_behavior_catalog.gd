@@ -30,6 +30,11 @@ const WOUNDED_FIRE_RATE_MULTIPLIER := 0.70
 const WOUNDED_ACCURACY_MULTIPLIER := 0.70
 const WOUNDED_REACTION_DELAY_SECONDS := 0.35
 
+# Provisional occupied-cover combat mitigation. Not final balance.
+# At protection_factor 1.0, the pre-cover resolution roll is reduced by this amount.
+# cover_multiplier = 1.0 - (MAX_COVER_ROLL_REDUCTION * protection_factor)
+const MAX_COVER_ROLL_REDUCTION := 0.30
+
 # Replan combat-owned paths when the tracked destination drifts this far.
 const REPLAN_DISTANCE_EPSILON := 0.5
 

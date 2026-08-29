@@ -11,6 +11,10 @@ const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.
 const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
 const BattleAttackResult := preload("res://battle/combat/battle_attack_result.gd")
 const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
+const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
+const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
+const BattleCoverCombatEffectService := preload("res://battle/combat/battle_cover_combat_effect_service.gd")
+const BattleCoverCombatEffectResult := preload("res://battle/combat/battle_cover_combat_effect_result.gd")
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 
 
@@ -81,18 +85,6 @@ static func resolve_attack(
 		return BattleAttackResult.failed(error_code, error_message)
 	if not eligibility.can_fire:
 		return BattleAttackResult.rejected(eligibility.rejection_code)
-	var profile: BattleAttackProfile = BattleAttackProfile.current()
-	if profile == null or not profile.is_valid():
-		return BattleAttackResult.failed(
-			"invalid_attack_profile",
-			"Battle attack resolution failed: attack profile is invalid."
-		)
-	var outcome: String = profile.resolve_outcome(outcome_roll)
-	if outcome.is_empty():
-		return BattleAttackResult.failed(
-			"invalid_attack_profile",
-			"Battle attack resolution failed: outcome could not be resolved."
-		)
 	var source: BattleParticipant = battle_state.get_participant(source_participant_id)
 	var target: BattleParticipant = battle_state.get_participant(target_participant_id)
 	if source == null or target == null or source.weapon_state == null:
@@ -105,6 +97,33 @@ static func resolve_attack(
 		return BattleAttackResult.failed(
 			"invalid_weapon_state",
 			"Battle attack resolution failed: weapon definition is missing."
+		)
+	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	if profile == null or not profile.is_valid():
+		return BattleAttackResult.failed(
+			"invalid_attack_profile",
+			"Battle attack resolution failed: attack profile is invalid."
+		)
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		source.battle_position
+	)
+	var protection_factor: float = 0.0
+	if protection != null and protection.has_applicable_cover:
+		protection_factor = protection.protection_factor
+	var cover_effect: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(
+		outcome_roll,
+		protection_factor
+	)
+	var resolved_roll: float = outcome_roll
+	if cover_effect != null:
+		resolved_roll = cover_effect.post_cover_roll
+	var outcome: String = profile.resolve_outcome(resolved_roll)
+	if outcome.is_empty():
+		return BattleAttackResult.failed(
+			"invalid_attack_profile",
+			"Battle attack resolution failed: outcome could not be resolved."
 		)
 	var fire_rate_multiplier: float = 1.0
 	if source.is_wounded:
@@ -122,7 +141,7 @@ static func resolve_attack(
 		target.participant_id,
 		source.weapon_state.weapon_type_id,
 		outcome,
-		outcome_roll,
+		resolved_roll,
 		target_was_wounded,
 		target.is_wounded,
 		target_was_alive,

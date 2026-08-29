@@ -88,6 +88,8 @@ const BattleCoverQueryResult := preload("res://battle/geometry/battle_cover_quer
 const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
 const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
 const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
+const BattleCoverCombatEffectResult := preload("res://battle/combat/battle_cover_combat_effect_result.gd")
+const BattleCoverCombatEffectService := preload("res://battle/combat/battle_cover_combat_effect_service.gd")
 
 
 static func run() -> Dictionary:
@@ -15440,10 +15442,36 @@ static func run() -> Dictionary:
 	var battlecoverprotection_obstacle_independence_ok: bool = _battlecoverprotection_obstacle_independence_ok()
 	var battlecoverprotection_determinism_ok: bool = _battlecoverprotection_determinism_ok()
 	var battlecoverprotection_query_only_ok: bool = _battlecoverprotection_query_only_ok()
-	var battlecoverprotection_no_combat_effect_ok: bool = _battlecoverprotection_no_combat_effect_ok()
 	var battlecoverprotection_no_ai_effect_ok: bool = _battlecoverprotection_no_ai_effect_ok()
 	var battlecoverprotection_campaign_isolation_ok: bool = _battlecoverprotection_campaign_isolation_ok()
 	var battlecoverprotection_absent_systems_ok: bool = _battlecoverprotection_absent_systems_ok()
+	var battlecovereffect_tuning_ok: bool = _battlecovereffect_tuning_ok()
+	var battlecovereffect_math_ok: bool = _battlecovereffect_math_ok()
+	var battlecovereffect_factor_clamp_ok: bool = _battlecovereffect_factor_clamp_ok()
+	var battlecovereffect_no_cover_ok: bool = _battlecovereffect_no_cover_ok()
+	var battlecovereffect_reservation_only_ok: bool = _battlecovereffect_reservation_only_ok()
+	var battlecovereffect_front_cover_ok: bool = _battlecovereffect_front_cover_ok()
+	var battlecovereffect_partial_angle_ok: bool = _battlecovereffect_partial_angle_ok()
+	var battlecovereffect_perpendicular_ok: bool = _battlecovereffect_perpendicular_ok()
+	var battlecovereffect_rear_ok: bool = _battlecovereffect_rear_ok()
+	var battlecovereffect_does_not_block_fire_ok: bool = _battlecovereffect_does_not_block_fire_ok()
+	var battlecovereffect_not_immunity_ok: bool = _battlecovereffect_not_immunity_ok()
+	var battlecovereffect_explicit_resolver_ok: bool = _battlecovereffect_explicit_resolver_ok()
+	var battlecovereffect_autonomous_healthy_ok: bool = _battlecovereffect_autonomous_healthy_ok()
+	var battlecovereffect_wounded_shooter_ok: bool = _battlecovereffect_wounded_shooter_ok()
+	var battlecovereffect_wounded_defender_ok: bool = _battlecovereffect_wounded_defender_ok()
+	var battlecovereffect_defend_position_ok: bool = _battlecovereffect_defend_position_ok()
+	var battlecovereffect_stale_occupancy_ok: bool = _battlecovereffect_stale_occupancy_ok()
+	var battlecovereffect_same_position_ok: bool = _battlecovereffect_same_position_ok()
+	var battlecovereffect_event_semantics_ok: bool = _battlecovereffect_event_semantics_ok()
+	var battlecovereffect_profile_ok: bool = _battlecovereffect_profile_ok()
+	var battlecovereffect_ammo_cooldown_ok: bool = _battlecovereffect_ammo_cooldown_ok()
+	var battlecovereffect_los_separation_ok: bool = _battlecovereffect_los_separation_ok()
+	var battlecovereffect_ai_unchanged_ok: bool = _battlecovereffect_ai_unchanged_ok()
+	var battlecovereffect_one_roll_ok: bool = _battlecovereffect_one_roll_ok()
+	var battlecovereffect_determinism_ok: bool = _battlecovereffect_determinism_ok()
+	var battlecovereffect_campaign_isolation_ok: bool = _battlecovereffect_campaign_isolation_ok()
+	var battlecovereffect_absent_systems_ok: bool = _battlecovereffect_absent_systems_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -16761,10 +16789,36 @@ static func run() -> Dictionary:
 		"battlecoverprotection_obstacle_independence_ok": battlecoverprotection_obstacle_independence_ok,
 		"battlecoverprotection_determinism_ok": battlecoverprotection_determinism_ok,
 		"battlecoverprotection_query_only_ok": battlecoverprotection_query_only_ok,
-		"battlecoverprotection_no_combat_effect_ok": battlecoverprotection_no_combat_effect_ok,
 		"battlecoverprotection_no_ai_effect_ok": battlecoverprotection_no_ai_effect_ok,
 		"battlecoverprotection_campaign_isolation_ok": battlecoverprotection_campaign_isolation_ok,
 		"battlecoverprotection_absent_systems_ok": battlecoverprotection_absent_systems_ok,
+		"battlecovereffect_tuning_ok": battlecovereffect_tuning_ok,
+		"battlecovereffect_math_ok": battlecovereffect_math_ok,
+		"battlecovereffect_factor_clamp_ok": battlecovereffect_factor_clamp_ok,
+		"battlecovereffect_no_cover_ok": battlecovereffect_no_cover_ok,
+		"battlecovereffect_reservation_only_ok": battlecovereffect_reservation_only_ok,
+		"battlecovereffect_front_cover_ok": battlecovereffect_front_cover_ok,
+		"battlecovereffect_partial_angle_ok": battlecovereffect_partial_angle_ok,
+		"battlecovereffect_perpendicular_ok": battlecovereffect_perpendicular_ok,
+		"battlecovereffect_rear_ok": battlecovereffect_rear_ok,
+		"battlecovereffect_does_not_block_fire_ok": battlecovereffect_does_not_block_fire_ok,
+		"battlecovereffect_not_immunity_ok": battlecovereffect_not_immunity_ok,
+		"battlecovereffect_explicit_resolver_ok": battlecovereffect_explicit_resolver_ok,
+		"battlecovereffect_autonomous_healthy_ok": battlecovereffect_autonomous_healthy_ok,
+		"battlecovereffect_wounded_shooter_ok": battlecovereffect_wounded_shooter_ok,
+		"battlecovereffect_wounded_defender_ok": battlecovereffect_wounded_defender_ok,
+		"battlecovereffect_defend_position_ok": battlecovereffect_defend_position_ok,
+		"battlecovereffect_stale_occupancy_ok": battlecovereffect_stale_occupancy_ok,
+		"battlecovereffect_same_position_ok": battlecovereffect_same_position_ok,
+		"battlecovereffect_event_semantics_ok": battlecovereffect_event_semantics_ok,
+		"battlecovereffect_profile_ok": battlecovereffect_profile_ok,
+		"battlecovereffect_ammo_cooldown_ok": battlecovereffect_ammo_cooldown_ok,
+		"battlecovereffect_los_separation_ok": battlecovereffect_los_separation_ok,
+		"battlecovereffect_ai_unchanged_ok": battlecovereffect_ai_unchanged_ok,
+		"battlecovereffect_one_roll_ok": battlecovereffect_one_roll_ok,
+		"battlecovereffect_determinism_ok": battlecovereffect_determinism_ok,
+		"battlecovereffect_campaign_isolation_ok": battlecovereffect_campaign_isolation_ok,
+		"battlecovereffect_absent_systems_ok": battlecovereffect_absent_systems_ok,
 	}
 
 	var passed := true
@@ -30496,121 +30550,6 @@ static func _battlecoverprotection_query_only_ok() -> bool:
 	)
 
 
-static func _battlecoverprotection_no_combat_effect_ok() -> bool:
-	var cover_pack: Dictionary = _battleattack_make_ready(
-		"cp_nc_src",
-		"cp_nc_tgt",
-		"pistol",
-		Vector2(50.0, 20.0),
-		Vector2(50.0, 30.0)
-	)
-	var open_pack: Dictionary = _battleattack_make_ready(
-		"cp_nc2_src",
-		"cp_nc2_tgt",
-		"pistol",
-		Vector2(50.0, 20.0),
-		Vector2(50.0, 30.0)
-	)
-	var cover_state: BattleState = cover_pack.get("battle_state", null) as BattleState
-	var open_state: BattleState = open_pack.get("battle_state", null) as BattleState
-	var cover_src: BattleParticipant = cover_pack.get("source", null) as BattleParticipant
-	var cover_tgt: BattleParticipant = cover_pack.get("target", null) as BattleParticipant
-	var open_src: BattleParticipant = open_pack.get("source", null) as BattleParticipant
-	if (
-		cover_state == null
-		or open_state == null
-		or cover_src == null
-		or cover_tgt == null
-		or open_src == null
-		or cover_state.battlefield_geometry == null
-	):
-		return false
-	if _battlecover_add_object(cover_state.battlefield_geometry, "cp_nc_obj") == null:
-		return false
-	if _battlecover_add_slot(
-		cover_state.battlefield_geometry,
-		"cp_nc_slot",
-		"cp_nc_obj",
-		Vector2(50.0, 30.0),
-		Vector2.UP
-	) == null:
-		return false
-	if not _battlewounded_occupy(cover_state, cover_tgt, "cp_nc_slot"):
-		return false
-	cover_src.set_target_participant("cp_nc_tgt")
-	open_src.set_target_participant("cp_nc2_tgt")
-	var cover_protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
-		cover_state.battlefield_geometry,
-		cover_tgt,
-		cover_src.battle_position
-	)
-	var open_protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
-		open_state.battlefield_geometry,
-		open_pack.get("target", null) as BattleParticipant,
-		open_src.battle_position
-	)
-	var cover_elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
-		cover_state,
-		"cp_nc_src",
-		"cp_nc_tgt"
-	)
-	var open_elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
-		open_state,
-		"cp_nc2_src",
-		"cp_nc2_tgt"
-	)
-	var cover_fire: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(cover_state)
-	var open_fire: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(open_state)
-	var profile: BattleAttackProfile = BattleAttackProfile.current()
-	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
-		cover_state,
-		"cp_nc_src",
-		"cp_nc_tgt",
-		0.80
-	)
-	var open_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
-		open_state,
-		"cp_nc2_src",
-		"cp_nc2_tgt",
-		0.80
-	)
-	return (
-		cover_protection != null
-		and cover_protection.has_applicable_cover
-		and is_equal_approx(cover_protection.protection_factor, 1.0)
-		and _battlecoverprotection_none(open_protection)
-		and cover_elig != null
-		and open_elig != null
-		and cover_elig.success
-		and open_elig.success
-		and cover_elig.can_fire
-		and open_elig.can_fire
-		and cover_elig.rejection_code == open_elig.rejection_code
-		and cover_fire != null
-		and open_fire != null
-		and cover_fire.success
-		and open_fire.success
-		and cover_fire.participants_eligible_to_fire == open_fire.participants_eligible_to_fire
-		and profile != null
-		and is_equal_approx(profile.miss_probability, BattleAttackProfile.DEFAULT_MISS_PROBABILITY)
-		and is_equal_approx(profile.wound_probability, BattleAttackProfile.DEFAULT_WOUND_PROBABILITY)
-		and cover_attack != null
-		and open_attack != null
-		and cover_attack.success
-		and open_attack.success
-		and cover_attack.attack_event != null
-		and open_attack.attack_event != null
-		and is_equal_approx(cover_attack.attack_event.outcome_roll, 0.80)
-		and cover_attack.attack_event.outcome == open_attack.attack_event.outcome
-		and cover_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
-		and cover_tgt.is_wounded
-		and is_equal_approx(
-			BattleCombatBehaviorCatalog.wounded_effective_outcome_roll(0.80),
-			0.80 * BattleCombatBehaviorCatalog.WOUNDED_ACCURACY_MULTIPLIER
-		)
-	)
-
-
 static func _battlecoverprotection_no_ai_effect_ok() -> bool:
 	var seek_pack: Dictionary = _battlebehavior_pair(
 		"cp_ai_src",
@@ -30789,4 +30728,1052 @@ static func _battlecoverprotection_absent_systems_ok() -> bool:
 		and battle_state.get("current_actor_id") == null
 		and not GameState.new().has_method("apply_tactical_casualty")
 		and _battlecover_interiors_elevation_boundary_ok()
+	)
+
+
+static func _battlecovereffect_expected_post(pre_cover_roll: float, protection_factor: float) -> float:
+	var factor: float = clampf(protection_factor, 0.0, 1.0)
+	return pre_cover_roll * (1.0 - BattleCombatBehaviorCatalog.MAX_COVER_ROLL_REDUCTION * factor)
+
+
+static func _battlecovereffect_pistol_cooldown() -> float:
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	if definition == null:
+		return INF
+	return BattleFireControlService.effective_cooldown_seconds(definition, 1.0)
+
+
+static func _battlecovereffect_occupy_target(
+	battle_state: BattleState,
+	target: BattleParticipant,
+	object_id: String,
+	slot_id: String,
+	position: Vector2,
+	facing: Vector2
+) -> BattleCoverSlot:
+	if battle_state == null or target == null or battle_state.battlefield_geometry == null:
+		return null
+	if _battlecover_add_object(battle_state.battlefield_geometry, object_id) == null:
+		return null
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		slot_id,
+		object_id,
+		position,
+		facing
+	)
+	if slot == null:
+		return null
+	if not _battlewounded_occupy(battle_state, target, slot_id):
+		return null
+	return slot
+
+
+static func _battlecovereffect_front_pack(src_id: String, tgt_id: String) -> Dictionary:
+	var pack: Dictionary = _battleattack_make_ready(
+		src_id,
+		tgt_id,
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null:
+		return {}
+	var slot: BattleCoverSlot = _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		src_id + "_obj",
+		src_id + "_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	)
+	if slot == null:
+		return {}
+	pack["slot"] = slot
+	return pack
+
+
+static func _battlecovereffect_tuning_ok() -> bool:
+	return is_equal_approx(BattleCombatBehaviorCatalog.MAX_COVER_ROLL_REDUCTION, 0.30)
+
+
+static func _battlecovereffect_math_ok() -> bool:
+	var zero: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, 0.0)
+	var half: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, 0.5)
+	var full: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, 1.0)
+	var reduction: float = BattleCombatBehaviorCatalog.MAX_COVER_ROLL_REDUCTION
+	return (
+		zero != null
+		and half != null
+		and full != null
+		and is_equal_approx(zero.cover_multiplier, 1.0)
+		and is_equal_approx(zero.post_cover_roll, 0.80)
+		and is_equal_approx(half.cover_multiplier, 1.0 - reduction * 0.5)
+		and is_equal_approx(half.cover_multiplier, 0.85)
+		and is_equal_approx(half.post_cover_roll, 0.80 * 0.85)
+		and is_equal_approx(full.cover_multiplier, 1.0 - reduction)
+		and is_equal_approx(full.cover_multiplier, 0.70)
+		and is_equal_approx(full.post_cover_roll, 0.80 * 0.70)
+		and is_equal_approx(full.post_cover_roll, 0.56)
+		and is_equal_approx(zero.post_cover_roll, zero.pre_cover_roll * zero.cover_multiplier)
+		and is_equal_approx(half.post_cover_roll, half.pre_cover_roll * half.cover_multiplier)
+		and is_equal_approx(full.post_cover_roll, full.pre_cover_roll * full.cover_multiplier)
+	)
+
+
+static func _battlecovereffect_factor_clamp_ok() -> bool:
+	var negative: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, -1.0)
+	var over: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, 2.0)
+	var full: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, 1.0)
+	var none: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, 0.0)
+	return (
+		negative != null
+		and over != null
+		and full != null
+		and none != null
+		and is_equal_approx(negative.protection_factor, 0.0)
+		and is_equal_approx(negative.cover_multiplier, none.cover_multiplier)
+		and is_equal_approx(negative.post_cover_roll, none.post_cover_roll)
+		and is_equal_approx(over.protection_factor, 1.0)
+		and is_equal_approx(over.cover_multiplier, full.cover_multiplier)
+		and is_equal_approx(over.post_cover_roll, full.post_cover_roll)
+	)
+
+
+static func _battlecovereffect_no_cover_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"ce_nc_src",
+		"ce_nc_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null:
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		Vector2(50.0, 20.0)
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_nc_src",
+		"ce_nc_tgt",
+		0.80
+	)
+	return (
+		_battlecoverprotection_none(protection)
+		and _battleattack_executed_ok(
+			attack,
+			"ce_nc_src",
+			"ce_nc_tgt",
+			"pistol",
+			BattleAttackProfile.OUTCOME_WOUND,
+			0.80,
+			false,
+			true,
+			true,
+			true
+		)
+	)
+
+
+static func _battlecovereffect_reservation_only_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"ce_rs_src",
+		"ce_rs_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "ce_rs_obj") == null:
+		return false
+	if _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"ce_rs_slot",
+		"ce_rs_obj",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "ce_rs_tgt", "ce_rs_slot"),
+		"ce_rs_slot",
+		"ce_rs_tgt"
+	):
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		Vector2(50.0, 20.0)
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_rs_src",
+		"ce_rs_tgt",
+		0.80
+	)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("ce_rs_slot")
+	return (
+		_battlecoverprotection_none(protection)
+		and target.reserved_cover_slot_id == "ce_rs_slot"
+		and target.occupied_cover_slot_id.is_empty()
+		and slot != null
+		and slot.reserved_by_participant_id == "ce_rs_tgt"
+		and is_equal_approx(attack.attack_event.outcome_roll, 0.80)
+		and attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+	)
+
+
+static func _battlecovereffect_front_cover_ok() -> bool:
+	var pack: Dictionary = _battlecovereffect_front_pack("ce_fr_src", "ce_fr_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or source.weapon_state == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		source.battle_position
+	)
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"ce_fr_src",
+		"ce_fr_tgt"
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_fr_src",
+		"ce_fr_tgt",
+		0.80
+	)
+	var expected: float = _battlecovereffect_expected_post(0.80, 1.0)
+	return (
+		protection != null
+		and protection.has_applicable_cover
+		and is_equal_approx(protection.protection_factor, 1.0)
+		and elig != null
+		and elig.success
+		and elig.can_fire
+		and _battleattack_executed_ok(
+			attack,
+			"ce_fr_src",
+			"ce_fr_tgt",
+			"pistol",
+			BattleAttackProfile.OUTCOME_GRAZE,
+			expected,
+			false,
+			false,
+			true,
+			true
+		)
+		and is_equal_approx(expected, 0.56)
+		and source.weapon_state.ammo_in_magazine == ammo_before - 1
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, _battlecovereffect_pistol_cooldown())
+		and not target.is_wounded
+	)
+
+
+static func _battlecovereffect_partial_angle_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"ce_45_src",
+		"ce_45_tgt",
+		"pistol",
+		Vector2(60.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_45_obj",
+		"ce_45_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		source.battle_position
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_45_src",
+		"ce_45_tgt",
+		0.80
+	)
+	if protection == null or attack == null or attack.attack_event == null:
+		return false
+	var expected: float = _battlecovereffect_expected_post(0.80, protection.protection_factor)
+	var front_post: float = _battlecovereffect_expected_post(0.80, 1.0)
+	return (
+		protection.has_applicable_cover
+		and is_equal_approx(protection.protection_factor, sqrt(0.5))
+		and is_equal_approx(attack.attack_event.outcome_roll, expected)
+		and attack.attack_event.outcome_roll < 0.80
+		and attack.attack_event.outcome_roll > front_post
+		and attack.shot_executed
+	)
+
+
+static func _battlecovereffect_perpendicular_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"ce_pr_src",
+		"ce_pr_tgt",
+		"pistol",
+		Vector2(60.0, 30.0),
+		Vector2(50.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_pr_obj",
+		"ce_pr_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		source.battle_position
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_pr_src",
+		"ce_pr_tgt",
+		0.80
+	)
+	return (
+		protection != null
+		and protection.has_applicable_cover
+		and is_equal_approx(protection.protection_factor, 0.0)
+		and attack != null
+		and attack.shot_executed
+		and is_equal_approx(attack.attack_event.outcome_roll, 0.80)
+		and attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+	)
+
+
+static func _battlecovereffect_rear_ok() -> bool:
+	var cover_pack: Dictionary = _battleattack_make_ready(
+		"ce_rr_src",
+		"ce_rr_tgt",
+		"pistol",
+		Vector2(50.0, 40.0),
+		Vector2(50.0, 30.0)
+	)
+	var open_pack: Dictionary = _battleattack_make_ready(
+		"ce_rr2_src",
+		"ce_rr2_tgt",
+		"pistol",
+		Vector2(50.0, 40.0),
+		Vector2(50.0, 30.0)
+	)
+	var cover_state: BattleState = cover_pack.get("battle_state", null) as BattleState
+	var open_state: BattleState = open_pack.get("battle_state", null) as BattleState
+	var cover_src: BattleParticipant = cover_pack.get("source", null) as BattleParticipant
+	var cover_tgt: BattleParticipant = cover_pack.get("target", null) as BattleParticipant
+	if cover_state == null or open_state == null or cover_src == null or cover_tgt == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		cover_state,
+		cover_tgt,
+		"ce_rr_obj",
+		"ce_rr_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		cover_state.battlefield_geometry,
+		cover_tgt,
+		cover_src.battle_position
+	)
+	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		cover_state,
+		"ce_rr_src",
+		"ce_rr_tgt",
+		0.80
+	)
+	var open_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		open_state,
+		"ce_rr2_src",
+		"ce_rr2_tgt",
+		0.80
+	)
+	return (
+		protection != null
+		and protection.has_applicable_cover
+		and is_equal_approx(protection.protection_factor, 0.0)
+		and cover_attack != null
+		and open_attack != null
+		and cover_attack.shot_executed
+		and open_attack.shot_executed
+		and is_equal_approx(cover_attack.attack_event.outcome_roll, 0.80)
+		and is_equal_approx(open_attack.attack_event.outcome_roll, 0.80)
+		and cover_attack.attack_event.outcome == open_attack.attack_event.outcome
+		and cover_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+	)
+
+
+static func _battlecovereffect_does_not_block_fire_ok() -> bool:
+	var pack: Dictionary = _battlecovereffect_front_pack("ce_nf_src", "ce_nf_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"ce_nf_src",
+		"ce_nf_tgt"
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_nf_src",
+		"ce_nf_tgt",
+		0.80
+	)
+	return (
+		elig != null
+		and elig.success
+		and elig.can_fire
+		and elig.rejection_code.is_empty()
+		and attack != null
+		and attack.success
+		and attack.shot_executed
+		and attack.rejection_code.is_empty()
+		and source.weapon_state.ammo_in_magazine == ammo_before - 1
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, _battlecovereffect_pistol_cooldown())
+		and attack.attack_event.outcome != BattleAttackProfile.OUTCOME_MISS
+	)
+
+
+static func _battlecovereffect_not_immunity_ok() -> bool:
+	var pack: Dictionary = _battlecovereffect_front_pack("ce_im_src", "ce_im_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_im_src",
+		"ce_im_tgt",
+		0.90
+	)
+	var expected: float = _battlecovereffect_expected_post(0.90, 1.0)
+	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	return (
+		attack != null
+		and attack.shot_executed
+		and is_equal_approx(expected, 0.63)
+		and is_equal_approx(attack.attack_event.outcome_roll, expected)
+		and attack.attack_event.outcome != BattleAttackProfile.OUTCOME_MISS
+		and attack.attack_event.outcome == profile.resolve_outcome(expected)
+		and attack.attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+	)
+
+
+static func _battlecovereffect_explicit_resolver_ok() -> bool:
+	var cover_pack: Dictionary = _battlecovereffect_front_pack("ce_ex_src", "ce_ex_tgt")
+	var open_pack: Dictionary = _battleattack_make_ready(
+		"ce_ex2_src",
+		"ce_ex2_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var cover_state: BattleState = cover_pack.get("battle_state", null) as BattleState
+	var open_state: BattleState = open_pack.get("battle_state", null) as BattleState
+	if cover_state == null or open_state == null:
+		return false
+	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		cover_state,
+		"ce_ex_src",
+		"ce_ex_tgt",
+		0.80
+	)
+	var open_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		open_state,
+		"ce_ex2_src",
+		"ce_ex2_tgt",
+		0.80
+	)
+	return (
+		cover_attack != null
+		and open_attack != null
+		and cover_attack.shot_executed
+		and open_attack.shot_executed
+		and is_equal_approx(open_attack.attack_event.outcome_roll, 0.80)
+		and is_equal_approx(cover_attack.attack_event.outcome_roll, 0.56)
+		and open_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+		and cover_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+	)
+
+
+static func _battlecovereffect_autonomous_healthy_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"ce_ah_src",
+		"ce_ah_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.combat_random == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_ah_obj",
+		"ce_ah_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	source.set_defend_position(true)
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var expected: float = _battlecovereffect_expected_post(raw_roll, 1.0)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if result == null or not result.success or result.shots_executed != 1 or result.attack_events.size() != 1:
+		return false
+	var attack_event: BattleAttackEvent = result.attack_events[0]
+	return (
+		not source.is_wounded
+		and raw_roll >= 0.80
+		and raw_roll < 0.90
+		and is_equal_approx(attack_event.outcome_roll, expected)
+		and not is_equal_approx(attack_event.outcome_roll, raw_roll)
+		and attack_event.outcome == BattleAttackProfile.current().resolve_outcome(expected)
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+	)
+
+
+static func _battlecovereffect_wounded_shooter_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"ce_ws_src",
+		"ce_ws_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.combat_random == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_ws_obj",
+		"ce_ws_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.0
+	source.set_defend_position(true)
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.90, 0.91):
+		return false
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var pre_cover: float = BattleCombatBehaviorCatalog.wounded_effective_outcome_roll(raw_roll)
+	var expected: float = _battlecovereffect_expected_post(pre_cover, 1.0)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if result == null or not result.success or result.shots_executed != 1 or result.attack_events.size() != 1:
+		return false
+	var attack_event: BattleAttackEvent = result.attack_events[0]
+	return (
+		source.is_wounded
+		and raw_roll >= 0.90
+		and raw_roll < 0.91
+		and is_equal_approx(pre_cover, raw_roll * BattleCombatBehaviorCatalog.WOUNDED_ACCURACY_MULTIPLIER)
+		and is_equal_approx(expected, pre_cover * (1.0 - BattleCombatBehaviorCatalog.MAX_COVER_ROLL_REDUCTION))
+		and is_equal_approx(attack_event.outcome_roll, expected)
+		and not is_equal_approx(attack_event.outcome_roll, raw_roll)
+		and not is_equal_approx(attack_event.outcome_roll, pre_cover)
+		and attack_event.outcome == BattleAttackProfile.current().resolve_outcome(expected)
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+	)
+
+
+static func _battlecovereffect_wounded_defender_ok() -> bool:
+	var healthy_pack: Dictionary = _battlecovereffect_front_pack("ce_wdh_src", "ce_wdh_tgt")
+	var wounded_pack: Dictionary = _battlecovereffect_front_pack("ce_wdw_src", "ce_wdw_tgt")
+	var healthy_state: BattleState = healthy_pack.get("battle_state", null) as BattleState
+	var wounded_state: BattleState = wounded_pack.get("battle_state", null) as BattleState
+	var wounded_tgt: BattleParticipant = wounded_pack.get("target", null) as BattleParticipant
+	if healthy_state == null or wounded_state == null or wounded_tgt == null:
+		return false
+	wounded_tgt.is_wounded = true
+	var healthy_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		healthy_state,
+		"ce_wdh_src",
+		"ce_wdh_tgt",
+		0.80
+	)
+	var wounded_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		wounded_state,
+		"ce_wdw_src",
+		"ce_wdw_tgt",
+		0.80
+	)
+	return (
+		healthy_attack != null
+		and wounded_attack != null
+		and healthy_attack.shot_executed
+		and wounded_attack.shot_executed
+		and is_equal_approx(healthy_attack.attack_event.outcome_roll, 0.56)
+		and is_equal_approx(wounded_attack.attack_event.outcome_roll, 0.56)
+		and healthy_attack.attack_event.outcome == wounded_attack.attack_event.outcome
+	)
+
+
+static func _battlecovereffect_defend_position_ok() -> bool:
+	var dp_pack: Dictionary = _battleattack_make_ready(
+		"ce_dp_src",
+		"ce_dp_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var cover_pack: Dictionary = _battlecovereffect_front_pack("ce_dpc_src", "ce_dpc_tgt")
+	var dp_state: BattleState = dp_pack.get("battle_state", null) as BattleState
+	var cover_state: BattleState = cover_pack.get("battle_state", null) as BattleState
+	var dp_tgt: BattleParticipant = dp_pack.get("target", null) as BattleParticipant
+	var cover_tgt: BattleParticipant = cover_pack.get("target", null) as BattleParticipant
+	if dp_state == null or cover_state == null or dp_tgt == null or cover_tgt == null:
+		return false
+	dp_tgt.set_defend_position(true)
+	if not dp_tgt.set_defend_position_anchor(Vector2(50.0, 30.0)):
+		return false
+	cover_tgt.set_defend_position(true)
+	if not cover_tgt.set_defend_position_anchor(Vector2(50.0, 30.0)):
+		return false
+	var dp_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		dp_state,
+		"ce_dp_src",
+		"ce_dp_tgt",
+		0.80
+	)
+	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		cover_state,
+		"ce_dpc_src",
+		"ce_dpc_tgt",
+		0.80
+	)
+	return (
+		dp_tgt.defend_position
+		and cover_tgt.defend_position
+		and dp_tgt.occupied_cover_slot_id.is_empty()
+		and not cover_tgt.occupied_cover_slot_id.is_empty()
+		and dp_attack != null
+		and cover_attack != null
+		and is_equal_approx(dp_attack.attack_event.outcome_roll, 0.80)
+		and is_equal_approx(cover_attack.attack_event.outcome_roll, 0.56)
+	)
+
+
+static func _battlecovereffect_stale_occupancy_ok() -> bool:
+	var missing_pack: Dictionary = _battleattack_make_ready(
+		"ce_ms_src",
+		"ce_ms_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var missing_state: BattleState = missing_pack.get("battle_state", null) as BattleState
+	var missing_tgt: BattleParticipant = missing_pack.get("target", null) as BattleParticipant
+	if missing_state == null or missing_tgt == null:
+		return false
+	missing_tgt.occupied_cover_slot_id = "ce_ms_ghost"
+	var missing_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		missing_state,
+		"ce_ms_src",
+		"ce_ms_tgt",
+		0.80
+	)
+	var mismatch_pack: Dictionary = _battlecovereffect_front_pack("ce_mm_src", "ce_mm_owner")
+	var mismatch_state: BattleState = mismatch_pack.get("battle_state", null) as BattleState
+	var owner: BattleParticipant = mismatch_pack.get("target", null) as BattleParticipant
+	var slot: BattleCoverSlot = mismatch_pack.get("slot", null) as BattleCoverSlot
+	if mismatch_state == null or owner == null or slot == null:
+		return false
+	var other: BattleParticipant = _battlefire_add(mismatch_state, "ce_mm_tgt", "defender", "pistol")
+	if other == null:
+		return false
+	_battletarget_place(other, Vector2(50.0, 30.0))
+	other.occupied_cover_slot_id = slot.cover_slot_id
+	var mismatch_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		mismatch_state,
+		"ce_mm_src",
+		"ce_mm_tgt",
+		0.80
+	)
+	return (
+		missing_attack != null
+		and missing_attack.shot_executed
+		and is_equal_approx(missing_attack.attack_event.outcome_roll, 0.80)
+		and missing_tgt.occupied_cover_slot_id == "ce_ms_ghost"
+		and mismatch_attack != null
+		and mismatch_attack.shot_executed
+		and is_equal_approx(mismatch_attack.attack_event.outcome_roll, 0.80)
+		and other.occupied_cover_slot_id == slot.cover_slot_id
+		and slot.occupied_by_participant_id == "ce_mm_owner"
+		and owner.occupied_cover_slot_id == slot.cover_slot_id
+	)
+
+
+static func _battlecovereffect_same_position_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"ce_sp_src",
+		"ce_sp_tgt",
+		"pistol",
+		Vector2(50.0, 30.0),
+		Vector2(50.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_sp_obj",
+		"ce_sp_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	_battletarget_place(source, Vector2(50.0, 30.0))
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		source.battle_position
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_sp_src",
+		"ce_sp_tgt",
+		0.80
+	)
+	return (
+		protection != null
+		and protection.has_applicable_cover
+		and is_equal_approx(protection.protection_factor, 0.0)
+		and attack != null
+		and attack.shot_executed
+		and is_equal_approx(attack.attack_event.outcome_roll, 0.80)
+	)
+
+
+static func _battlecovereffect_event_semantics_ok() -> bool:
+	var pack: Dictionary = _battlecovereffect_front_pack("ce_ev_src", "ce_ev_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null:
+		return false
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"ce_ev_src",
+		"ce_ev_tgt",
+		0.80
+	)
+	if attack == null or attack.attack_event == null:
+		return false
+	var attack_event: BattleAttackEvent = attack.attack_event
+	return (
+		is_equal_approx(attack_event.outcome_roll, 0.56)
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+		and attack_event.source_participant_id == "ce_ev_src"
+		and attack_event.target_participant_id == "ce_ev_tgt"
+		and attack_event.weapon_type_id == "pistol"
+		and attack_event.target_was_wounded == false
+		and attack_event.target_is_wounded == false
+		and attack_event.target_was_alive == true
+		and attack_event.target_is_alive == true
+		and attack_event.get("pre_cover_roll") == null
+		and attack_event.get("cover_protection_factor") == null
+		and attack_event.get("cover_multiplier") == null
+	)
+
+
+static func _battlecovereffect_profile_ok() -> bool:
+	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	return (
+		profile != null
+		and is_equal_approx(profile.miss_probability, 0.50)
+		and is_equal_approx(profile.graze_probability, 0.20)
+		and is_equal_approx(profile.wound_probability, 0.25)
+		and is_equal_approx(profile.kill_probability, 0.05)
+		and is_equal_approx(BattleAttackProfile.DEFAULT_MISS_PROBABILITY, 0.50)
+		and profile.resolve_outcome(0.80) == BattleAttackProfile.OUTCOME_WOUND
+		and profile.resolve_outcome(0.56) == BattleAttackProfile.OUTCOME_GRAZE
+	)
+
+
+static func _battlecovereffect_ammo_cooldown_ok() -> bool:
+	var cover_pack: Dictionary = _battlecovereffect_front_pack("ce_ac_src", "ce_ac_tgt")
+	var open_pack: Dictionary = _battleattack_make_ready(
+		"ce_ac2_src",
+		"ce_ac2_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var cover_src: BattleParticipant = cover_pack.get("source", null) as BattleParticipant
+	var open_src: BattleParticipant = open_pack.get("source", null) as BattleParticipant
+	var cover_state: BattleState = cover_pack.get("battle_state", null) as BattleState
+	var open_state: BattleState = open_pack.get("battle_state", null) as BattleState
+	if cover_src == null or open_src == null or cover_state == null or open_state == null:
+		return false
+	var cover_ammo: int = cover_src.weapon_state.ammo_in_magazine
+	var open_ammo: int = open_src.weapon_state.ammo_in_magazine
+	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		cover_state,
+		"ce_ac_src",
+		"ce_ac_tgt",
+		0.80
+	)
+	var open_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		open_state,
+		"ce_ac2_src",
+		"ce_ac2_tgt",
+		0.80
+	)
+	var cooldown: float = _battlecovereffect_pistol_cooldown()
+	return (
+		cover_attack != null
+		and open_attack != null
+		and cover_attack.shot_executed
+		and open_attack.shot_executed
+		and cover_ammo == open_ammo
+		and cover_src.weapon_state.ammo_in_magazine == cover_ammo - 1
+		and open_src.weapon_state.ammo_in_magazine == open_ammo - 1
+		and is_equal_approx(cover_src.weapon_state.cooldown_remaining_seconds, cooldown)
+		and is_equal_approx(open_src.weapon_state.cooldown_remaining_seconds, cooldown)
+	)
+
+
+static func _battlecovereffect_los_separation_ok() -> bool:
+	var blocked_pack: Dictionary = _battlecovereffect_front_pack("ce_ls_src", "ce_ls_tgt")
+	var clear_pack: Dictionary = _battlecovereffect_front_pack("ce_ls2_src", "ce_ls2_tgt")
+	var blocked_state: BattleState = blocked_pack.get("battle_state", null) as BattleState
+	var clear_state: BattleState = clear_pack.get("battle_state", null) as BattleState
+	var blocked_src: BattleParticipant = blocked_pack.get("source", null) as BattleParticipant
+	if blocked_state == null or clear_state == null or blocked_src == null or blocked_state.battlefield_geometry == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("ce_ls_wall", Rect2(40.0, 22.0, 20.0, 6.0), true, true)
+	if not blocked_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var ammo_before: int = blocked_src.weapon_state.ammo_in_magazine
+	var blocked_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		blocked_state,
+		"ce_ls_src",
+		"ce_ls_tgt",
+		0.80
+	)
+	var clear_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		clear_state,
+		"ce_ls2_src",
+		"ce_ls2_tgt",
+		0.80
+	)
+	return (
+		_battleattack_rejected_ok(blocked_attack, "line_of_sight_blocked")
+		and blocked_src.weapon_state.ammo_in_magazine == ammo_before
+		and clear_attack != null
+		and clear_attack.shot_executed
+		and is_equal_approx(clear_attack.attack_event.outcome_roll, 0.56)
+	)
+
+
+static func _battlecovereffect_ai_unchanged_ok() -> bool:
+	return (
+		_battlehealthycover_pistol_nearest_ok()
+		and _battlewounded_basic_cover_seek_ok()
+		and _battlecoverprotection_no_ai_effect_ok()
+	)
+
+
+static func _battlecovereffect_one_roll_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"ce_or_src",
+		"ce_or_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.combat_random == null:
+		return false
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_or_obj",
+		"ce_or_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	source.set_defend_position(true)
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 1
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+	)
+
+
+static func _battlecovereffect_determinism_ok() -> bool:
+	var left: Dictionary = _battlecovereffect_front_pack("ce_dt_src", "ce_dt_tgt")
+	var right: Dictionary = _battlecovereffect_front_pack("ce_dt_src", "ce_dt_tgt")
+	var left_state: BattleState = left.get("battle_state", null) as BattleState
+	var right_state: BattleState = right.get("battle_state", null) as BattleState
+	if left_state == null or right_state == null:
+		return false
+	var left_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		left_state,
+		"ce_dt_src",
+		"ce_dt_tgt",
+		0.80
+	)
+	var right_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		right_state,
+		"ce_dt_src",
+		"ce_dt_tgt",
+		0.80
+	)
+	var left_rng: int = left_state.combat_random.snapshot_state()
+	var right_rng: int = right_state.combat_random.snapshot_state()
+	return (
+		left_attack != null
+		and right_attack != null
+		and is_equal_approx(left_attack.attack_event.outcome_roll, right_attack.attack_event.outcome_roll)
+		and left_attack.attack_event.outcome == right_attack.attack_event.outcome
+		and is_equal_approx(left_attack.attack_event.outcome_roll, 0.56)
+		and left_rng == right_rng
+	)
+
+
+static func _battlecovereffect_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	var source: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	var target: BattleParticipant = battle_state.get_participant("battle_def_sol")
+	if soldier == null or source == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	_battletarget_place(source, Vector2(50.0, 20.0))
+	_battletarget_place(target, Vector2(50.0, 30.0))
+	if _battlecovereffect_occupy_target(
+		battle_state,
+		target,
+		"ce_camp_obj",
+		"ce_camp_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"battle_sol_a",
+		"battle_def_sol",
+		0.80
+	)
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		attack != null
+		and attack.shot_executed
+		and is_equal_approx(attack.attack_event.outcome_roll, 0.56)
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+		and _battlecover_no_cover_trace(persist)
+		and _battlecover_no_cover_trace(soldier_dict)
+	)
+
+
+static func _battlecovereffect_absent_systems_ok() -> bool:
+	var event: BattleAttackEvent = BattleAttackEvent.new()
+	var svc: BattleCoverCombatEffectService = BattleCoverCombatEffectService.new()
+	var behavior: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var participant: BattleParticipant = BattleParticipant.new("ce_ab_p", "", "a", "attacker", "pistol")
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	return (
+		event.get("pre_cover_roll") == null
+		and event.get("immunity") == null
+		and event.get("damage_reduction") == null
+		and event.get("hit_points") == null
+		and event.get("armor") == null
+		and event.get("penetration") == null
+		and event.get("suppression") == null
+		and participant.get("cover_hit_modifier") == null
+		and participant.get("action_points") == null
+		and not svc.has_method("roll_cover")
+		and not svc.has_method("force_miss")
+		and not svc.has_method("grant_immunity")
+		and not svc.has_method("apply_damage_reduction")
+		and not svc.has_method("peek")
+		and not svc.has_method("stack_cover")
+		and not svc.has_method("score_exposed_target")
+		and not behavior.has_method("prefer_uncovered_target")
+		and not behavior.has_method("score_cover_protection")
+		and not battle_state.has_method("resolve_victory")
+		and battle_state.get("winner_side_id") == null
+		and battle_state.get("current_actor_id") == null
+		and not GameState.new().has_method("apply_tactical_casualty")
 	)

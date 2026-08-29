@@ -6,7 +6,7 @@ const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
 
-# Query-only angular cover quality. Does not mutate state or affect combat.
+# Query-only angular cover quality. Does not mutate state or apply combat mitigation.
 # Facing convention: slot.facing_direction points toward the protected approach.
 # protection_factor = clampf(facing.dot(normalize(attacker_position - slot.position)), 0.0, 1.0)
 
