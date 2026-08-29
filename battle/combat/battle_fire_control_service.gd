@@ -125,6 +125,55 @@ static func evaluate_fire_eligibility(battle_state: BattleState) -> BattleFireCo
 	)
 
 
+static func evaluate_participant_target_eligibility(
+	battle_state: BattleState,
+	source_participant_id: String,
+	target_participant_id: String
+) -> BattleFireControlResult:
+	if battle_state == null:
+		return BattleFireControlResult.failed(
+			"null_battle_state",
+			"Battle fire control failed: battle_state is null."
+		)
+	if battle_state.battle_phase != "active":
+		return BattleFireControlResult.failed(
+			"battle_not_active",
+			"Battle fire control failed: battle phase is '%s', not active." % battle_state.battle_phase
+		)
+	if battle_state.battlefield_geometry == null:
+		return BattleFireControlResult.failed(
+			"missing_battlefield_geometry",
+			"Battle fire control failed: battlefield geometry is missing."
+		)
+	if not battle_state.battlefield_geometry.is_valid():
+		return BattleFireControlResult.failed(
+			"invalid_battlefield_geometry",
+			"Battle fire control failed: battlefield geometry is invalid."
+		)
+	if source_participant_id.is_empty() or not battle_state.has_participant(source_participant_id):
+		return BattleFireControlResult.pair_rejected(
+			"source_not_found",
+			source_participant_id,
+			target_participant_id
+		)
+	if target_participant_id.is_empty() or not battle_state.has_participant(target_participant_id):
+		return BattleFireControlResult.pair_rejected(
+			"target_not_found",
+			source_participant_id,
+			target_participant_id
+		)
+	var source: BattleParticipant = battle_state.get_participant(source_participant_id)
+	var target: BattleParticipant = battle_state.get_participant(target_participant_id)
+	var rejection_code: String = _pair_rejection_code(battle_state, source, target)
+	if rejection_code.is_empty():
+		return BattleFireControlResult.pair_eligible(source_participant_id, target_participant_id)
+	return BattleFireControlResult.pair_rejected(
+		rejection_code,
+		source_participant_id,
+		target_participant_id
+	)
+
+
 # Explicit shot commit for a future attack-resolution layer.
 # Runtime does not call this. It does not query LOS, range, or targets.
 static func commit_shot(
@@ -208,90 +257,119 @@ static func _fire_block_reason(
 	battle_state: BattleState,
 	participant: BattleParticipant
 ) -> String:
-	if not _is_fire_source_ready(battle_state, participant):
+	if participant == null:
 		return "not_ready"
-	if not _has_valid_hostile_target(battle_state, participant):
+	if not participant.has_target_participant or participant.target_participant_id.is_empty():
 		return "not_ready"
-	var state: BattleWeaponState = participant.weapon_state
+	if not battle_state.has_participant(participant.target_participant_id):
+		return "not_ready"
+	var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
+	return _aggregate_block_reason(_pair_rejection_code(battle_state, participant, target))
+
+
+static func _aggregate_block_reason(rejection_code: String) -> String:
+	match rejection_code:
+		"":
+			return ""
+		"reloading":
+			return "reloading"
+		"empty_magazine":
+			return "empty"
+		"cooldown":
+			return "cooldown"
+		"out_of_range":
+			return "range"
+		"line_of_sight_blocked":
+			return "los"
+		_:
+			return "not_ready"
+
+
+static func _pair_rejection_code(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> String:
+	var source_rejection: String = _source_rejection_code(battle_state, source)
+	if not source_rejection.is_empty():
+		return source_rejection
+	var target_rejection: String = _target_rejection_code(battle_state, source, target)
+	if not target_rejection.is_empty():
+		return target_rejection
+	var state: BattleWeaponState = source.weapon_state
 	if state.is_reloading:
 		return "reloading"
 	if state.ammo_in_magazine <= 0:
-		return "empty"
+		return "empty_magazine"
 	if not is_finite(state.cooldown_remaining_seconds) or state.cooldown_remaining_seconds > 0.0:
 		return "cooldown"
 	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(state.weapon_type_id)
 	if definition == null:
-		return "not_ready"
-	if not _is_target_in_range(participant, battle_state.get_participant(participant.target_participant_id), definition):
-		return "range"
+		return "invalid_weapon_state"
+	if not _is_target_in_range(source, target, definition):
+		return "out_of_range"
 	var los_result: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
 		battle_state,
-		participant.participant_id,
-		participant.target_participant_id
+		source.participant_id,
+		target.participant_id
 	)
 	if los_result == null or not los_result.success:
-		return "not_ready"
+		return "source_not_eligible"
 	if not los_result.has_line_of_sight:
-		return "los"
+		return "line_of_sight_blocked"
 	return ""
 
 
-static func _is_fire_source_ready(
+static func _source_rejection_code(
 	battle_state: BattleState,
 	participant: BattleParticipant
-) -> bool:
+) -> String:
 	if participant == null:
-		return false
+		return "source_not_eligible"
 	if not participant.is_alive:
-		return false
+		return "source_not_eligible"
 	if not participant.has_battle_position:
-		return false
+		return "source_not_eligible"
 	if not _is_finite_vector(participant.battle_position):
-		return false
+		return "source_not_eligible"
 	if participant.side_id.is_empty() or not battle_state.has_side(participant.side_id):
-		return false
+		return "source_not_eligible"
 	var state: BattleWeaponState = participant.weapon_state
 	if state == null:
-		return false
+		return "invalid_weapon_state"
 	if state.weapon_type_id.is_empty():
-		return false
+		return "invalid_weapon_state"
 	if not participant.weapon_type.is_empty() and participant.weapon_type != state.weapon_type_id:
-		return false
+		return "weapon_type_mismatch"
 	if BattleWeaponCatalog.get_definition(state.weapon_type_id) == null:
-		return false
+		return "invalid_weapon_state"
 	if state.ammo_in_magazine < 0:
-		return false
+		return "invalid_weapon_state"
 	if not is_finite(state.cooldown_remaining_seconds) or not is_finite(state.reload_remaining_seconds):
-		return false
-	return true
+		return "invalid_weapon_state"
+	return ""
 
 
-static func _has_valid_hostile_target(
+static func _target_rejection_code(
 	battle_state: BattleState,
-	source: BattleParticipant
-) -> bool:
-	if source == null:
-		return false
-	if not source.has_target_participant or source.target_participant_id.is_empty():
-		return false
-	if not battle_state.has_participant(source.target_participant_id):
-		return false
-	var target: BattleParticipant = battle_state.get_participant(source.target_participant_id)
-	if target == null:
-		return false
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> String:
+	if source == null or target == null:
+		return "target_not_eligible"
 	if target.participant_id == source.participant_id:
-		return false
+		return "target_not_eligible"
 	if not target.is_alive:
-		return false
+		return "target_not_eligible"
 	if not target.has_battle_position:
-		return false
+		return "target_not_eligible"
 	if not _is_finite_vector(target.battle_position):
-		return false
-	if source.side_id.is_empty() or target.side_id.is_empty():
-		return false
-	if not battle_state.has_side(source.side_id) or not battle_state.has_side(target.side_id):
-		return false
-	return source.side_id != target.side_id
+		return "target_not_eligible"
+	if target.side_id.is_empty() or not battle_state.has_side(target.side_id):
+		return "target_not_eligible"
+	if source.side_id == target.side_id:
+		return "not_hostile"
+	return ""
 
 
 static func _is_target_in_range(

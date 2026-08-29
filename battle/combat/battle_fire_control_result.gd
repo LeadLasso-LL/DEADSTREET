@@ -12,6 +12,10 @@ var participants_reloading: int = 0
 var participants_empty: int = 0
 var error_code: String = ""
 var error_message: String = ""
+var can_fire: bool = false
+var rejection_code: String = ""
+var source_participant_id: String = ""
+var target_participant_id: String = ""
 
 
 static func succeeded(
@@ -34,6 +38,37 @@ static func succeeded(
 	result.participants_blocked_by_cooldown = p_participants_blocked_by_cooldown
 	result.participants_reloading = p_participants_reloading
 	result.participants_empty = p_participants_empty
+	result.error_code = ""
+	result.error_message = ""
+	return result
+
+
+static func pair_eligible(
+	p_source_participant_id: String,
+	p_target_participant_id: String
+) -> BattleFireControlResult:
+	var result := new()
+	result.success = true
+	result.can_fire = true
+	result.source_participant_id = p_source_participant_id
+	result.target_participant_id = p_target_participant_id
+	result.rejection_code = ""
+	result.error_code = ""
+	result.error_message = ""
+	return result
+
+
+static func pair_rejected(
+	p_rejection_code: String,
+	p_source_participant_id: String = "",
+	p_target_participant_id: String = ""
+) -> BattleFireControlResult:
+	var result := new()
+	result.success = true
+	result.can_fire = false
+	result.source_participant_id = p_source_participant_id
+	result.target_participant_id = p_target_participant_id
+	result.rejection_code = p_rejection_code
 	result.error_code = ""
 	result.error_message = ""
 	return result
