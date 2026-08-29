@@ -5,6 +5,7 @@ extends RefCounted
 var cover_slot_id: String = ""
 var cover_object_id: String = ""
 var position: Vector2 = Vector2.ZERO
+# Unit vector toward the protected approach. Attackers from this side receive cover benefit.
 var facing_direction: Vector2 = Vector2.ZERO
 var occupied_by_participant_id: String = ""
 var reserved_by_participant_id: String = ""

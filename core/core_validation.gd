@@ -86,6 +86,8 @@ const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
 const BattleCoverQueryResult := preload("res://battle/geometry/battle_cover_query_result.gd")
 const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
+const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
+const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
 
 
 static func run() -> Dictionary:
@@ -15419,6 +15421,29 @@ static func run() -> Dictionary:
 	var battlehealthycover_no_cover_bonus_ok: bool = _battlehealthycover_no_cover_bonus_ok()
 	var battlehealthycover_campaign_isolation_ok: bool = _battlehealthycover_campaign_isolation_ok()
 	var battlehealthycover_absent_systems_ok: bool = _battlehealthycover_absent_systems_ok()
+	var battlecoverprotection_front_max_ok: bool = _battlecoverprotection_front_max_ok()
+	var battlecoverprotection_partial_45_ok: bool = _battlecoverprotection_partial_45_ok()
+	var battlecoverprotection_perpendicular_ok: bool = _battlecoverprotection_perpendicular_ok()
+	var battlecoverprotection_rear_exposed_ok: bool = _battlecoverprotection_rear_exposed_ok()
+	var battlecoverprotection_factor_bounds_ok: bool = _battlecoverprotection_factor_bounds_ok()
+	var battlecoverprotection_slot_position_origin_ok: bool = _battlecoverprotection_slot_position_origin_ok()
+	var battlecoverprotection_no_occupied_cover_ok: bool = _battlecoverprotection_no_occupied_cover_ok()
+	var battlecoverprotection_missing_slot_ok: bool = _battlecoverprotection_missing_slot_ok()
+	var battlecoverprotection_ownership_mismatch_ok: bool = _battlecoverprotection_ownership_mismatch_ok()
+	var battlecoverprotection_dead_defender_ok: bool = _battlecoverprotection_dead_defender_ok()
+	var battlecoverprotection_unpositioned_defender_ok: bool = _battlecoverprotection_unpositioned_defender_ok()
+	var battlecoverprotection_invalid_facing_ok: bool = _battlecoverprotection_invalid_facing_ok()
+	var battlecoverprotection_invalid_attacker_ok: bool = _battlecoverprotection_invalid_attacker_ok()
+	var battlecoverprotection_same_position_ok: bool = _battlecoverprotection_same_position_ok()
+	var battlecoverprotection_null_geometry_ok: bool = _battlecoverprotection_null_geometry_ok()
+	var battlecoverprotection_los_independence_ok: bool = _battlecoverprotection_los_independence_ok()
+	var battlecoverprotection_obstacle_independence_ok: bool = _battlecoverprotection_obstacle_independence_ok()
+	var battlecoverprotection_determinism_ok: bool = _battlecoverprotection_determinism_ok()
+	var battlecoverprotection_query_only_ok: bool = _battlecoverprotection_query_only_ok()
+	var battlecoverprotection_no_combat_effect_ok: bool = _battlecoverprotection_no_combat_effect_ok()
+	var battlecoverprotection_no_ai_effect_ok: bool = _battlecoverprotection_no_ai_effect_ok()
+	var battlecoverprotection_campaign_isolation_ok: bool = _battlecoverprotection_campaign_isolation_ok()
+	var battlecoverprotection_absent_systems_ok: bool = _battlecoverprotection_absent_systems_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -16717,6 +16742,29 @@ static func run() -> Dictionary:
 		"battlehealthycover_no_cover_bonus_ok": battlehealthycover_no_cover_bonus_ok,
 		"battlehealthycover_campaign_isolation_ok": battlehealthycover_campaign_isolation_ok,
 		"battlehealthycover_absent_systems_ok": battlehealthycover_absent_systems_ok,
+		"battlecoverprotection_front_max_ok": battlecoverprotection_front_max_ok,
+		"battlecoverprotection_partial_45_ok": battlecoverprotection_partial_45_ok,
+		"battlecoverprotection_perpendicular_ok": battlecoverprotection_perpendicular_ok,
+		"battlecoverprotection_rear_exposed_ok": battlecoverprotection_rear_exposed_ok,
+		"battlecoverprotection_factor_bounds_ok": battlecoverprotection_factor_bounds_ok,
+		"battlecoverprotection_slot_position_origin_ok": battlecoverprotection_slot_position_origin_ok,
+		"battlecoverprotection_no_occupied_cover_ok": battlecoverprotection_no_occupied_cover_ok,
+		"battlecoverprotection_missing_slot_ok": battlecoverprotection_missing_slot_ok,
+		"battlecoverprotection_ownership_mismatch_ok": battlecoverprotection_ownership_mismatch_ok,
+		"battlecoverprotection_dead_defender_ok": battlecoverprotection_dead_defender_ok,
+		"battlecoverprotection_unpositioned_defender_ok": battlecoverprotection_unpositioned_defender_ok,
+		"battlecoverprotection_invalid_facing_ok": battlecoverprotection_invalid_facing_ok,
+		"battlecoverprotection_invalid_attacker_ok": battlecoverprotection_invalid_attacker_ok,
+		"battlecoverprotection_same_position_ok": battlecoverprotection_same_position_ok,
+		"battlecoverprotection_null_geometry_ok": battlecoverprotection_null_geometry_ok,
+		"battlecoverprotection_los_independence_ok": battlecoverprotection_los_independence_ok,
+		"battlecoverprotection_obstacle_independence_ok": battlecoverprotection_obstacle_independence_ok,
+		"battlecoverprotection_determinism_ok": battlecoverprotection_determinism_ok,
+		"battlecoverprotection_query_only_ok": battlecoverprotection_query_only_ok,
+		"battlecoverprotection_no_combat_effect_ok": battlecoverprotection_no_combat_effect_ok,
+		"battlecoverprotection_no_ai_effect_ok": battlecoverprotection_no_ai_effect_ok,
+		"battlecoverprotection_campaign_isolation_ok": battlecoverprotection_campaign_isolation_ok,
+		"battlecoverprotection_absent_systems_ok": battlecoverprotection_absent_systems_ok,
 	}
 
 	var passed := true
@@ -29810,3 +29858,935 @@ static func _battlehealthycover_absent_systems_ok() -> bool:
 		and not GameState.new().has_method("apply_tactical_casualty")
 	)
 
+
+static func _battlecoverprotection_none(result: BattleCoverProtectionResult) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.has_applicable_cover
+		and result.cover_slot_id.is_empty()
+		and is_equal_approx(result.protection_factor, 0.0)
+		and is_equal_approx(result.alignment_dot, 0.0)
+	)
+
+
+static func _battlecoverprotection_results_match(
+	left: BattleCoverProtectionResult,
+	right: BattleCoverProtectionResult
+) -> bool:
+	if left == null or right == null:
+		return false
+	return (
+		left.has_applicable_cover == right.has_applicable_cover
+		and left.cover_slot_id == right.cover_slot_id
+		and is_equal_approx(left.alignment_dot, right.alignment_dot)
+		and is_equal_approx(left.protection_factor, right.protection_factor)
+	)
+
+
+static func _battlecoverprotection_expected_alignment(
+	slot_position: Vector2,
+	facing: Vector2,
+	attacker_position: Vector2
+) -> float:
+	var to_attacker: Vector2 = attacker_position - slot_position
+	if to_attacker.is_equal_approx(Vector2.ZERO):
+		return 0.0
+	return facing.normalized().dot(to_attacker.normalized())
+
+
+static func _battlecoverprotection_occupy(
+	defender_id: String,
+	object_id: String,
+	slot_id: String,
+	slot_position: Vector2,
+	facing: Vector2,
+	associated_obstacle_id: String = ""
+) -> Dictionary:
+	var pack: Dictionary = {}
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return pack
+	var defender: BattleParticipant = _battlefire_add(battle_state, defender_id, "defender", "pistol")
+	if defender == null:
+		return pack
+	if _battlecover_add_object(battle_state.battlefield_geometry, object_id, associated_obstacle_id) == null:
+		return pack
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		slot_id,
+		object_id,
+		slot_position,
+		facing
+	)
+	if slot == null:
+		return pack
+	if not _battlewounded_occupy(battle_state, defender, slot_id):
+		return pack
+	pack["battle_state"] = battle_state
+	pack["defender"] = defender
+	pack["slot"] = slot
+	return pack
+
+
+static func _battlecoverprotection_query(
+	pack: Dictionary,
+	attacker_position: Vector2
+) -> BattleCoverProtectionResult:
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	if battle_state == null or defender == null:
+		return null
+	return BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		defender,
+		attacker_position
+	)
+
+
+static func _battlecoverprotection_north_pack(
+	defender_id: String,
+	object_id: String,
+	slot_id: String
+) -> Dictionary:
+	return _battlecoverprotection_occupy(
+		defender_id,
+		object_id,
+		slot_id,
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	)
+
+
+static func _battlecoverprotection_state_snap(
+	defender: BattleParticipant,
+	slot: BattleCoverSlot,
+	geometry: BattlefieldGeometry,
+	rng_state: int
+) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["rng"] = rng_state
+	if defender != null:
+		snap["pos"] = defender.battle_position
+		snap["has_pos"] = defender.has_battle_position
+		snap["alive"] = defender.is_alive
+		snap["occupied"] = defender.occupied_cover_slot_id
+		snap["reserved"] = defender.reserved_cover_slot_id
+	if slot != null:
+		snap["slot_pos"] = slot.position
+		snap["facing"] = slot.facing_direction
+		snap["occupant"] = slot.occupied_by_participant_id
+		snap["reserver"] = slot.reserved_by_participant_id
+	if geometry != null:
+		snap["slot_ids"] = _copy_ids(geometry.get_sorted_cover_slot_ids())
+		snap["object_ids"] = _copy_ids(geometry.get_sorted_cover_object_ids())
+		snap["obstacle_ids"] = _copy_ids(geometry.get_sorted_obstacle_ids())
+	return snap
+
+
+static func _battlecoverprotection_state_unchanged(
+	defender: BattleParticipant,
+	slot: BattleCoverSlot,
+	geometry: BattlefieldGeometry,
+	rng_state: int,
+	snap: Dictionary
+) -> bool:
+	if defender == null or slot == null or geometry == null:
+		return false
+	var pos_raw: Variant = snap.get("pos", Vector2.ZERO)
+	var facing_raw: Variant = snap.get("facing", Vector2.ZERO)
+	var slot_pos_raw: Variant = snap.get("slot_pos", Vector2.ZERO)
+	if typeof(pos_raw) != TYPE_VECTOR2 or typeof(facing_raw) != TYPE_VECTOR2 or typeof(slot_pos_raw) != TYPE_VECTOR2:
+		return false
+	var pos: Vector2 = pos_raw as Vector2
+	var facing: Vector2 = facing_raw as Vector2
+	var slot_pos: Vector2 = slot_pos_raw as Vector2
+	var slot_ids: Array[String] = _battlecover_as_ids(snap.get("slot_ids", []))
+	var object_ids: Array[String] = _battlecover_as_ids(snap.get("object_ids", []))
+	var obstacle_ids: Array[String] = _battlecover_as_ids(snap.get("obstacle_ids", []))
+	return (
+		int(snap.get("rng", -1)) == rng_state
+		and defender.battle_position.is_equal_approx(pos)
+		and defender.has_battle_position == bool(snap.get("has_pos", false))
+		and defender.is_alive == bool(snap.get("alive", false))
+		and defender.occupied_cover_slot_id == str(snap.get("occupied", ""))
+		and defender.reserved_cover_slot_id == str(snap.get("reserved", ""))
+		and slot.position.is_equal_approx(slot_pos)
+		and slot.facing_direction.is_equal_approx(facing)
+		and slot.occupied_by_participant_id == str(snap.get("occupant", ""))
+		and slot.reserved_by_participant_id == str(snap.get("reserver", ""))
+		and _string_ids_match(geometry.get_sorted_cover_slot_ids(), slot_ids)
+		and _string_ids_match(geometry.get_sorted_cover_object_ids(), object_ids)
+		and _string_ids_match(geometry.get_sorted_obstacle_ids(), obstacle_ids)
+	)
+
+
+static func _battlecoverprotection_front_max_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_fr_d", "cp_fr_obj", "cp_fr_slot")
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	return (
+		result != null
+		and slot != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_fr_slot"
+		and is_equal_approx(result.alignment_dot, 1.0)
+		and is_equal_approx(result.protection_factor, 1.0)
+		and is_equal_approx(result.protection_factor, result.alignment_dot)
+		and _battlecover_occupied_sync(
+			pack.get("defender", null) as BattleParticipant,
+			slot,
+			"cp_fr_d",
+			"cp_fr_slot"
+		)
+	)
+
+
+static func _battlecoverprotection_partial_45_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_45_d", "cp_45_obj", "cp_45_slot")
+	var attacker_position: Vector2 = Vector2(60.0, 20.0)
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, attacker_position)
+	var expected: float = sqrt(0.5)
+	return (
+		result != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_45_slot"
+		and is_equal_approx(result.alignment_dot, expected)
+		and is_equal_approx(result.protection_factor, expected)
+		and is_equal_approx(result.protection_factor, result.alignment_dot)
+		and result.protection_factor > 0.0
+		and result.protection_factor < 1.0
+		and is_equal_approx(
+			result.alignment_dot,
+			_battlecoverprotection_expected_alignment(Vector2(50.0, 30.0), Vector2.UP, attacker_position)
+		)
+	)
+
+
+static func _battlecoverprotection_perpendicular_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_pr_d", "cp_pr_obj", "cp_pr_slot")
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(60.0, 30.0))
+	return (
+		result != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_pr_slot"
+		and is_equal_approx(result.alignment_dot, 0.0)
+		and is_equal_approx(result.protection_factor, 0.0)
+	)
+
+
+static func _battlecoverprotection_rear_exposed_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_rr_d", "cp_rr_obj", "cp_rr_slot")
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 40.0))
+	return (
+		result != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_rr_slot"
+		and is_equal_approx(result.alignment_dot, -1.0)
+		and is_equal_approx(result.protection_factor, 0.0)
+		and result.protection_factor > result.alignment_dot
+	)
+
+
+static func _battlecoverprotection_factor_bounds_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_bd_d", "cp_bd_obj", "cp_bd_slot")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	if battle_state == null or defender == null:
+		return false
+	var attackers: Array[Vector2] = [
+		Vector2(50.0, 20.0),
+		Vector2(60.0, 20.0),
+		Vector2(60.0, 30.0),
+		Vector2(60.0, 40.0),
+		Vector2(50.0, 40.0),
+		Vector2(40.0, 40.0),
+		Vector2(40.0, 30.0),
+		Vector2(40.0, 20.0),
+		Vector2(50.0, 25.0),
+		Vector2(55.0, 25.0),
+	]
+	for attacker_position: Vector2 in attackers:
+		var result: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+			battle_state.battlefield_geometry,
+			defender,
+			attacker_position
+		)
+		if result == null or not result.has_applicable_cover:
+			return false
+		if result.protection_factor < 0.0 or result.protection_factor > 1.0:
+			return false
+		var expected_alignment: float = _battlecoverprotection_expected_alignment(
+			Vector2(50.0, 30.0),
+			Vector2.UP,
+			attacker_position
+		)
+		if not is_equal_approx(result.alignment_dot, expected_alignment):
+			return false
+		if not is_equal_approx(result.protection_factor, clampf(expected_alignment, 0.0, 1.0)):
+			return false
+	return true
+
+
+static func _battlecoverprotection_slot_position_origin_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_or_d", "cp_or_obj", "cp_or_slot")
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if defender == null or slot == null:
+		return false
+	var defender_position: Vector2 = Vector2(50.4, 30.0)
+	if defender_position.distance_to(slot.position) > BattleCoverService.COVER_OCCUPANCY_EPSILON:
+		return false
+	_battletarget_place(defender, defender_position)
+	var attacker_position: Vector2 = Vector2(50.4, 29.5)
+	var slot_alignment: float = _battlecoverprotection_expected_alignment(
+		slot.position,
+		Vector2.UP,
+		attacker_position
+	)
+	var defender_alignment: float = _battlecoverprotection_expected_alignment(
+		defender.battle_position,
+		Vector2.UP,
+		attacker_position
+	)
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, attacker_position)
+	return (
+		result != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_or_slot"
+		and not is_equal_approx(slot_alignment, defender_alignment)
+		and is_equal_approx(result.alignment_dot, slot_alignment)
+		and not is_equal_approx(result.alignment_dot, defender_alignment)
+		and is_equal_approx(result.protection_factor, clampf(slot_alignment, 0.0, 1.0))
+		and defender.battle_position.is_equal_approx(defender_position)
+		and slot.position.is_equal_approx(Vector2(50.0, 30.0))
+	)
+
+
+static func _battlecoverprotection_no_occupied_cover_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var defender: BattleParticipant = _battlefire_add(battle_state, "cp_no_d", "defender", "pistol")
+	if defender == null:
+		return false
+	_battletarget_place(defender, Vector2(50.0, 30.0))
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cp_no_obj") == null:
+		return false
+	if _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cp_no_slot",
+		"cp_no_obj",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	var result: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		defender,
+		Vector2(50.0, 20.0)
+	)
+	return (
+		_battlecoverprotection_none(result)
+		and defender.occupied_cover_slot_id.is_empty()
+		and not defender.has_occupied_cover_slot()
+	)
+
+
+static func _battlecoverprotection_missing_slot_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var defender: BattleParticipant = _battlefire_add(battle_state, "cp_ms_d", "defender", "pistol")
+	if defender == null:
+		return false
+	_battletarget_place(defender, Vector2(50.0, 30.0))
+	defender.occupied_cover_slot_id = "cp_ms_ghost"
+	var result: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		defender,
+		Vector2(50.0, 20.0)
+	)
+	return (
+		_battlecoverprotection_none(result)
+		and defender.occupied_cover_slot_id == "cp_ms_ghost"
+		and battle_state.battlefield_geometry.get_cover_slot("cp_ms_ghost") == null
+	)
+
+
+static func _battlecoverprotection_ownership_mismatch_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_ow_owner", "cp_ow_obj", "cp_ow_slot")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var owner: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if battle_state == null or owner == null or slot == null:
+		return false
+	var other: BattleParticipant = _battlefire_add(battle_state, "cp_ow_other", "attacker", "pistol")
+	if other == null:
+		return false
+	_battletarget_place(other, Vector2(50.0, 30.0))
+	other.occupied_cover_slot_id = "cp_ow_slot"
+	var result: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		other,
+		Vector2(50.0, 20.0)
+	)
+	return (
+		_battlecoverprotection_none(result)
+		and _battlecover_occupied_sync(owner, slot, "cp_ow_owner", "cp_ow_slot")
+		and other.occupied_cover_slot_id == "cp_ow_slot"
+		and slot.occupied_by_participant_id == "cp_ow_owner"
+	)
+
+
+static func _battlecoverprotection_dead_defender_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_dd_d", "cp_dd_obj", "cp_dd_slot")
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if defender == null or slot == null:
+		return false
+	defender.is_alive = false
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	return (
+		_battlecoverprotection_none(result)
+		and not defender.is_alive
+		and defender.occupied_cover_slot_id == "cp_dd_slot"
+		and slot.occupied_by_participant_id == "cp_dd_d"
+	)
+
+
+static func _battlecoverprotection_unpositioned_defender_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_up_d", "cp_up_obj", "cp_up_slot")
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if defender == null or slot == null:
+		return false
+	defender.has_battle_position = false
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	return (
+		_battlecoverprotection_none(result)
+		and not defender.has_battle_position
+		and defender.occupied_cover_slot_id == "cp_up_slot"
+		and slot.occupied_by_participant_id == "cp_up_d"
+	)
+
+
+static func _battlecoverprotection_invalid_facing_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_if_d", "cp_if_obj", "cp_if_slot")
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if defender == null or slot == null:
+		return false
+	var occupant_before: String = slot.occupied_by_participant_id
+	slot.facing_direction = Vector2.ZERO
+	var zero_result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	var zero_facing: Vector2 = slot.facing_direction
+	slot.facing_direction = Vector2(NAN, 0.0)
+	var nan_result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	return (
+		_battlecoverprotection_none(zero_result)
+		and _battlecoverprotection_none(nan_result)
+		and zero_facing.is_equal_approx(Vector2.ZERO)
+		and is_nan(slot.facing_direction.x)
+		and is_equal_approx(slot.facing_direction.y, 0.0)
+		and slot.occupied_by_participant_id == occupant_before
+		and defender.occupied_cover_slot_id == "cp_if_slot"
+	)
+
+
+static func _battlecoverprotection_invalid_attacker_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_ia_d", "cp_ia_obj", "cp_ia_slot")
+	var nan_result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(NAN, 20.0))
+	var inf_result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(INF, 20.0))
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	return (
+		_battlecoverprotection_none(nan_result)
+		and _battlecoverprotection_none(inf_result)
+		and _battlecover_occupied_sync(defender, slot, "cp_ia_d", "cp_ia_slot")
+	)
+
+
+static func _battlecoverprotection_same_position_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_sp_d", "cp_sp_obj", "cp_sp_slot")
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 30.0))
+	return (
+		result != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_sp_slot"
+		and is_equal_approx(result.alignment_dot, 0.0)
+		and is_equal_approx(result.protection_factor, 0.0)
+	)
+
+
+static func _battlecoverprotection_null_geometry_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_ng_d", "cp_ng_obj", "cp_ng_slot")
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	if defender == null:
+		return false
+	var result: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		null,
+		defender,
+		Vector2(50.0, 20.0)
+	)
+	return (
+		_battlecoverprotection_none(result)
+		and _battlecover_occupied_sync(
+			defender,
+			pack.get("slot", null) as BattleCoverSlot,
+			"cp_ng_d",
+			"cp_ng_slot"
+		)
+	)
+
+
+static func _battlecoverprotection_los_independence_ok() -> bool:
+	var clear_pack: Dictionary = _battlecoverprotection_north_pack("cp_los_d", "cp_los_obj", "cp_los_slot")
+	var blocked_pack: Dictionary = _battlecoverprotection_north_pack("cp_los_d", "cp_los_obj", "cp_los_slot")
+	var clear_state: BattleState = clear_pack.get("battle_state", null) as BattleState
+	var blocked_state: BattleState = blocked_pack.get("battle_state", null) as BattleState
+	if clear_state == null or blocked_state == null or blocked_state.battlefield_geometry == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("cp_los_wall", Rect2(40.0, 18.0, 20.0, 8.0), true, true)
+	if not blocked_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var attacker_position: Vector2 = Vector2(50.0, 10.0)
+	var clear_result: BattleCoverProtectionResult = _battlecoverprotection_query(clear_pack, attacker_position)
+	var blocked_result: BattleCoverProtectionResult = _battlecoverprotection_query(blocked_pack, attacker_position)
+	var clear_los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		clear_state,
+		Vector2(50.0, 30.0),
+		attacker_position
+	)
+	var blocked_los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		blocked_state,
+		Vector2(50.0, 30.0),
+		attacker_position
+	)
+	return (
+		_battlecoverprotection_results_match(clear_result, blocked_result)
+		and clear_result != null
+		and clear_result.has_applicable_cover
+		and clear_result.cover_slot_id == "cp_los_slot"
+		and is_equal_approx(clear_result.alignment_dot, 1.0)
+		and is_equal_approx(clear_result.protection_factor, 1.0)
+		and clear_los != null
+		and clear_los.success
+		and clear_los.has_line_of_sight
+		and blocked_los != null
+		and blocked_los.success
+		and not blocked_los.has_line_of_sight
+		and blocked_los.blocking_obstacle_id == "cp_los_wall"
+	)
+
+
+static func _battlecoverprotection_obstacle_independence_ok() -> bool:
+	var bare: Dictionary = _battlecoverprotection_occupy(
+		"cp_ob_d",
+		"cp_ob_obj",
+		"cp_ob_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP,
+		""
+	)
+	var linked: Dictionary = _battlecoverprotection_occupy(
+		"cp_ob_d",
+		"cp_ob_obj",
+		"cp_ob_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP,
+		"cp_ob_wall"
+	)
+	var missing: Dictionary = _battlecoverprotection_occupy(
+		"cp_ob_d",
+		"cp_ob_obj",
+		"cp_ob_slot",
+		Vector2(50.0, 30.0),
+		Vector2.UP,
+		"cp_ob_ghost"
+	)
+	var bare_state: BattleState = bare.get("battle_state", null) as BattleState
+	var linked_state: BattleState = linked.get("battle_state", null) as BattleState
+	var missing_state: BattleState = missing.get("battle_state", null) as BattleState
+	if (
+		bare_state == null
+		or linked_state == null
+		or missing_state == null
+		or bare_state.battlefield_geometry == null
+		or linked_state.battlefield_geometry == null
+		or missing_state.battlefield_geometry == null
+	):
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("cp_ob_wall", Rect2(4.0, 4.0, 3.0, 3.0), true, true)
+	if not linked_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var attacker_position: Vector2 = Vector2(50.0, 20.0)
+	var bare_result: BattleCoverProtectionResult = _battlecoverprotection_query(bare, attacker_position)
+	var linked_result: BattleCoverProtectionResult = _battlecoverprotection_query(linked, attacker_position)
+	var missing_result: BattleCoverProtectionResult = _battlecoverprotection_query(missing, attacker_position)
+	var bare_object: BattleCoverObject = bare_state.battlefield_geometry.get_cover_object("cp_ob_obj")
+	var linked_object: BattleCoverObject = linked_state.battlefield_geometry.get_cover_object("cp_ob_obj")
+	var missing_object: BattleCoverObject = missing_state.battlefield_geometry.get_cover_object("cp_ob_obj")
+	return (
+		_battlecoverprotection_results_match(bare_result, linked_result)
+		and _battlecoverprotection_results_match(bare_result, missing_result)
+		and bare_result != null
+		and bare_result.has_applicable_cover
+		and bare_result.cover_slot_id == "cp_ob_slot"
+		and is_equal_approx(bare_result.alignment_dot, 1.0)
+		and is_equal_approx(bare_result.protection_factor, 1.0)
+		and bare_object != null
+		and bare_object.associated_obstacle_id.is_empty()
+		and linked_object != null
+		and linked_object.associated_obstacle_id == "cp_ob_wall"
+		and linked_state.battlefield_geometry.get_obstacle("cp_ob_wall") != null
+		and missing_object != null
+		and missing_object.associated_obstacle_id == "cp_ob_ghost"
+		and missing_state.battlefield_geometry.get_obstacle("cp_ob_ghost") == null
+	)
+
+
+static func _battlecoverprotection_determinism_ok() -> bool:
+	var left: Dictionary = _battlecoverprotection_north_pack("cp_dt_d", "cp_dt_obj", "cp_dt_slot")
+	var right: Dictionary = _battlecoverprotection_north_pack("cp_dt_d", "cp_dt_obj", "cp_dt_slot")
+	var left_state: BattleState = left.get("battle_state", null) as BattleState
+	var right_state: BattleState = right.get("battle_state", null) as BattleState
+	if left_state == null or right_state == null:
+		return false
+	var left_rng: int = left_state.combat_random.snapshot_state()
+	var right_rng: int = right_state.combat_random.snapshot_state()
+	var attacker_position: Vector2 = Vector2(60.0, 20.0)
+	var left_result: BattleCoverProtectionResult = _battlecoverprotection_query(left, attacker_position)
+	var right_result: BattleCoverProtectionResult = _battlecoverprotection_query(right, attacker_position)
+	return (
+		_battlecoverprotection_results_match(left_result, right_result)
+		and left_result != null
+		and left_result.has_applicable_cover
+		and is_equal_approx(left_result.alignment_dot, sqrt(0.5))
+		and left_state.combat_random.snapshot_state() == left_rng
+		and right_state.combat_random.snapshot_state() == right_rng
+	)
+
+
+static func _battlecoverprotection_query_only_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_qo_d", "cp_qo_obj", "cp_qo_slot")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if battle_state == null or defender == null or slot == null or battle_state.battlefield_geometry == null:
+		return false
+	var snap: Dictionary = _battlecoverprotection_state_snap(
+		defender,
+		slot,
+		battle_state.battlefield_geometry,
+		battle_state.combat_random.snapshot_state()
+	)
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	return (
+		result != null
+		and result.has_applicable_cover
+		and is_equal_approx(result.protection_factor, 1.0)
+		and _battlecoverprotection_state_unchanged(
+			defender,
+			slot,
+			battle_state.battlefield_geometry,
+			battle_state.combat_random.snapshot_state(),
+			snap
+		)
+	)
+
+
+static func _battlecoverprotection_no_combat_effect_ok() -> bool:
+	var cover_pack: Dictionary = _battleattack_make_ready(
+		"cp_nc_src",
+		"cp_nc_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var open_pack: Dictionary = _battleattack_make_ready(
+		"cp_nc2_src",
+		"cp_nc2_tgt",
+		"pistol",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0)
+	)
+	var cover_state: BattleState = cover_pack.get("battle_state", null) as BattleState
+	var open_state: BattleState = open_pack.get("battle_state", null) as BattleState
+	var cover_src: BattleParticipant = cover_pack.get("source", null) as BattleParticipant
+	var cover_tgt: BattleParticipant = cover_pack.get("target", null) as BattleParticipant
+	var open_src: BattleParticipant = open_pack.get("source", null) as BattleParticipant
+	if (
+		cover_state == null
+		or open_state == null
+		or cover_src == null
+		or cover_tgt == null
+		or open_src == null
+		or cover_state.battlefield_geometry == null
+	):
+		return false
+	if _battlecover_add_object(cover_state.battlefield_geometry, "cp_nc_obj") == null:
+		return false
+	if _battlecover_add_slot(
+		cover_state.battlefield_geometry,
+		"cp_nc_slot",
+		"cp_nc_obj",
+		Vector2(50.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	if not _battlewounded_occupy(cover_state, cover_tgt, "cp_nc_slot"):
+		return false
+	cover_src.set_target_participant("cp_nc_tgt")
+	open_src.set_target_participant("cp_nc2_tgt")
+	var cover_protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		cover_state.battlefield_geometry,
+		cover_tgt,
+		cover_src.battle_position
+	)
+	var open_protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		open_state.battlefield_geometry,
+		open_pack.get("target", null) as BattleParticipant,
+		open_src.battle_position
+	)
+	var cover_elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		cover_state,
+		"cp_nc_src",
+		"cp_nc_tgt"
+	)
+	var open_elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		open_state,
+		"cp_nc2_src",
+		"cp_nc2_tgt"
+	)
+	var cover_fire: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(cover_state)
+	var open_fire: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(open_state)
+	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		cover_state,
+		"cp_nc_src",
+		"cp_nc_tgt",
+		0.80
+	)
+	var open_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		open_state,
+		"cp_nc2_src",
+		"cp_nc2_tgt",
+		0.80
+	)
+	return (
+		cover_protection != null
+		and cover_protection.has_applicable_cover
+		and is_equal_approx(cover_protection.protection_factor, 1.0)
+		and _battlecoverprotection_none(open_protection)
+		and cover_elig != null
+		and open_elig != null
+		and cover_elig.success
+		and open_elig.success
+		and cover_elig.can_fire
+		and open_elig.can_fire
+		and cover_elig.rejection_code == open_elig.rejection_code
+		and cover_fire != null
+		and open_fire != null
+		and cover_fire.success
+		and open_fire.success
+		and cover_fire.participants_eligible_to_fire == open_fire.participants_eligible_to_fire
+		and profile != null
+		and is_equal_approx(profile.miss_probability, BattleAttackProfile.DEFAULT_MISS_PROBABILITY)
+		and is_equal_approx(profile.wound_probability, BattleAttackProfile.DEFAULT_WOUND_PROBABILITY)
+		and cover_attack != null
+		and open_attack != null
+		and cover_attack.success
+		and open_attack.success
+		and cover_attack.attack_event != null
+		and open_attack.attack_event != null
+		and is_equal_approx(cover_attack.attack_event.outcome_roll, 0.80)
+		and cover_attack.attack_event.outcome == open_attack.attack_event.outcome
+		and cover_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+		and cover_tgt.is_wounded
+		and is_equal_approx(
+			BattleCombatBehaviorCatalog.wounded_effective_outcome_roll(0.80),
+			0.80 * BattleCombatBehaviorCatalog.WOUNDED_ACCURACY_MULTIPLIER
+		)
+	)
+
+
+static func _battlecoverprotection_no_ai_effect_ok() -> bool:
+	var seek_pack: Dictionary = _battlebehavior_pair(
+		"cp_ai_src",
+		"cp_ai_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		true
+	)
+	var seek_state: BattleState = seek_pack.get("battle_state", null) as BattleState
+	var seeker: BattleParticipant = seek_pack.get("source", null) as BattleParticipant
+	if seek_state == null or seeker == null or seek_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(seek_state.battlefield_geometry, "cp_ai_obj", "cp_ai_far", Vector2(18.0, 10.0)) == null:
+		return false
+	if _battlewounded_slot(seek_state.battlefield_geometry, "cp_ai_obj", "cp_ai_near", Vector2(16.0, 10.0)) == null:
+		return false
+	var seek_query: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		seek_state.battlefield_geometry,
+		seeker,
+		Vector2(40.0, 10.0)
+	)
+	var seek_result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(seek_state, 0.2)
+	var near: BattleCoverSlot = seek_state.battlefield_geometry.get_cover_slot("cp_ai_near")
+	var hold_pack: Dictionary = _battlebehavior_pair(
+		"cp_ah_src",
+		"cp_ah_tgt",
+		"pistol",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0),
+		true
+	)
+	var hold_state: BattleState = hold_pack.get("battle_state", null) as BattleState
+	var holder: BattleParticipant = hold_pack.get("source", null) as BattleParticipant
+	if hold_state == null or holder == null or hold_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(hold_state.battlefield_geometry, "cp_ah_obj") == null:
+		return false
+	if _battlecover_add_slot(
+		hold_state.battlefield_geometry,
+		"cp_ah_slot",
+		"cp_ah_obj",
+		Vector2(20.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if not _battlewounded_occupy(hold_state, holder, "cp_ah_slot"):
+		return false
+	var hold_query: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		hold_state.battlefield_geometry,
+		holder,
+		Vector2(32.0, 10.0)
+	)
+	var hold_result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(hold_state, 0.2)
+	var hold_slot: BattleCoverSlot = hold_state.battlefield_geometry.get_cover_slot("cp_ah_slot")
+	var wounded_ok: bool = _battlewounded_basic_cover_seek_ok()
+	var dp_ok: bool = _battlehealthycover_defend_position_ok()
+	return (
+		_battlecoverprotection_none(seek_query)
+		and seek_result != null
+		and seek_result.success
+		and seek_result.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(seeker, near, "cp_ai_src", "cp_ai_near")
+		and hold_query != null
+		and hold_query.has_applicable_cover
+		and is_equal_approx(hold_query.protection_factor, 1.0)
+		and hold_result != null
+		and hold_result.success
+		and hold_result.healthy_holding_cover == 1
+		and _battlecover_occupied_sync(holder, hold_slot, "cp_ah_src", "cp_ah_slot")
+		and wounded_ok
+		and dp_ok
+	)
+
+
+static func _battlecoverprotection_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	if soldier == null or battle_state.battlefield_geometry == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var participant: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	if participant == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cp_camp_obj") == null:
+		return false
+	if _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cp_camp_slot",
+		"cp_camp_obj",
+		Vector2(46.0, 30.0),
+		Vector2.UP
+	) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, participant, "cp_camp_slot"):
+		return false
+	var result: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		participant,
+		Vector2(46.0, 20.0)
+	)
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		result != null
+		and result.has_applicable_cover
+		and result.cover_slot_id == "cp_camp_slot"
+		and is_equal_approx(result.protection_factor, 1.0)
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+		and _battlecover_no_cover_trace(persist)
+		and _battlecover_no_cover_trace(soldier_dict)
+	)
+
+
+static func _battlecoverprotection_absent_systems_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("cp_ab_d", "cp_ab_obj", "cp_ab_slot")
+	var result: BattleCoverProtectionResult = _battlecoverprotection_query(pack, Vector2(50.0, 20.0))
+	var participant: BattleParticipant = BattleParticipant.new("cp_ab_p", "", "a", "attacker", "pistol")
+	var svc: BattleCoverProtectionService = BattleCoverProtectionService.new()
+	var behavior: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var cover_svc: BattleCoverService = BattleCoverService.new()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if result == null or battle_state == null:
+		return false
+	return (
+		result.has_applicable_cover
+		and result.get("immunity") == null
+		and result.get("invulnerable") == null
+		and result.get("accuracy_modifier") == null
+		and result.get("cover_accuracy_modifier") == null
+		and result.get("damage_reduction") == null
+		and result.get("suppression") == null
+		and result.get("armor") == null
+		and result.get("hit_points") == null
+		and result.get("peek_state") == null
+		and result.get("lean") == null
+		and result.get("stacked_cover") == null
+		and result.get("interior_id") == null
+		and result.get("elevation") == null
+		and participant.get("protection_factor") == null
+		and participant.get("cover_hit_modifier") == null
+		and participant.get("hit_points") == null
+		and participant.get("armor") == null
+		and participant.get("action_points") == null
+		and not svc.has_method("apply_cover_bonus")
+		and not svc.has_method("apply_accuracy_modifier")
+		and not svc.has_method("apply_damage_reduction")
+		and not svc.has_method("grant_immunity")
+		and not svc.has_method("peek")
+		and not svc.has_method("lean")
+		and not svc.has_method("stack_cover")
+		and not svc.has_method("destroy_cover")
+		and not svc.has_method("derive_from_obstacle")
+		and not behavior.has_method("apply_cover_bonus")
+		and not cover_svc.has_method("apply_cover_bonus")
+		and not battle_state.has_method("resolve_victory")
+		and battle_state.get("winner_side_id") == null
+		and battle_state.get("current_actor_id") == null
+		and not GameState.new().has_method("apply_tactical_casualty")
+		and _battlecover_interiors_elevation_boundary_ok()
+	)
