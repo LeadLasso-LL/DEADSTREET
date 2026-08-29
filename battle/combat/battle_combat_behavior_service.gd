@@ -167,7 +167,10 @@ static func _try_execute_shot(
 	if combat_random == null:
 		return null
 	var previous_state: int = combat_random.snapshot_state()
-	var outcome_roll: float = combat_random.next_normalized()
+	var raw_roll: float = combat_random.next_normalized()
+	var outcome_roll: float = raw_roll
+	if participant.is_wounded:
+		outcome_roll = BattleCombatBehaviorCatalog.wounded_effective_outcome_roll(raw_roll)
 	var attack_result: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
 		battle_state,
 		participant.participant_id,

@@ -11,6 +11,7 @@ const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.
 const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
 const BattleAttackResult := preload("res://battle/combat/battle_attack_result.gd")
 const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
+const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 
 
 static func resolve_attack(
@@ -105,9 +106,12 @@ static func resolve_attack(
 			"invalid_weapon_state",
 			"Battle attack resolution failed: weapon definition is missing."
 		)
+	var fire_rate_multiplier: float = 1.0
+	if source.is_wounded:
+		fire_rate_multiplier = BattleCombatBehaviorCatalog.WOUNDED_FIRE_RATE_MULTIPLIER
 	var target_was_wounded: bool = target.is_wounded
 	var target_was_alive: bool = target.is_alive
-	if not BattleFireControlService.commit_shot(source, definition):
+	if not BattleFireControlService.commit_shot(source, definition, fire_rate_multiplier):
 		return BattleAttackResult.failed(
 			"shot_commit_failed",
 			"Battle attack resolution failed: weapon cycling could not be committed."
@@ -136,9 +140,15 @@ static func _apply_outcome(
 		return
 	match outcome:
 		BattleAttackProfile.OUTCOME_WOUND:
+			var newly_wounded: bool = not target.is_wounded
 			target.is_wounded = true
+			if newly_wounded:
+				target.wound_reaction_remaining_seconds = (
+					BattleCombatBehaviorCatalog.WOUNDED_REACTION_DELAY_SECONDS
+				)
 		BattleAttackProfile.OUTCOME_KILL:
 			target.is_alive = false
+			target.wound_reaction_remaining_seconds = 0.0
 			BattleCoverService.release_all_for_participant(battle_state, target.participant_id)
 		_:
 			pass

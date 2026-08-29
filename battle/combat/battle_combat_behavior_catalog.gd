@@ -21,8 +21,14 @@ const SNIPER_PREFERRED_MAX := 60.0
 const DEFAULT_COMBAT_MOVEMENT_SPEED := 4.0
 
 # Provisional wounded limp speed for autonomous combat movement.
-# Not a fire-rate, accuracy, or reaction penalty.
+# Independent of wounded fire-rate, accuracy, and reaction delay.
 const WOUNDED_COMBAT_MOVEMENT_SPEED := 2.0
+
+# Provisional wounded combat-performance tuning. Not final balance.
+# Same multipliers for every current weapon type.
+const WOUNDED_FIRE_RATE_MULTIPLIER := 0.70
+const WOUNDED_ACCURACY_MULTIPLIER := 0.70
+const WOUNDED_REACTION_DELAY_SECONDS := 0.35
 
 # Replan combat-owned paths when the tracked destination drifts this far.
 const REPLAN_DISTANCE_EPSILON := 0.5
@@ -37,6 +43,14 @@ static func get_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile:
 
 static func has_profile(weapon_type_id: String) -> bool:
 	return get_profile(weapon_type_id) != null
+
+
+# Deterministic wounded-accuracy mapping. One raw roll in, one effective roll out.
+# effective_roll = raw_roll * WOUNDED_ACCURACY_MULTIPLIER
+static func wounded_effective_outcome_roll(raw_roll: float) -> float:
+	if not is_finite(raw_roll):
+		return raw_roll
+	return raw_roll * WOUNDED_ACCURACY_MULTIPLIER
 
 
 static func _make_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile:

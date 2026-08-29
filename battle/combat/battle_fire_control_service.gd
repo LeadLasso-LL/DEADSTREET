@@ -57,6 +57,7 @@ static func advance_weapon_state(
 		participants_considered += 1
 		if delta_seconds > 0.0:
 			_advance_participant_weapon(participant, delta_seconds)
+			_advance_wound_reaction(participant, delta_seconds)
 	return BattleFireControlResult.succeeded(participants_considered)
 
 
@@ -176,9 +177,11 @@ static func evaluate_participant_target_eligibility(
 
 # Explicit shot commit for a future attack-resolution layer.
 # Runtime does not call this. It does not query LOS, range, or targets.
+# fire_rate_multiplier scales shots/sec. Healthy shots pass 1.0 and keep base cadence.
 static func commit_shot(
 	participant: BattleParticipant,
-	definition: BattleWeaponDefinition
+	definition: BattleWeaponDefinition,
+	fire_rate_multiplier: float = 1.0
 ) -> bool:
 	if participant == null or definition == null:
 		return false
@@ -195,12 +198,23 @@ static func commit_shot(
 		return false
 	if not is_finite(state.cooldown_remaining_seconds) or state.cooldown_remaining_seconds > 0.0:
 		return false
-	var cooldown_seconds: float = definition.cooldown_seconds()
+	var cooldown_seconds: float = effective_cooldown_seconds(definition, fire_rate_multiplier)
 	if not is_finite(cooldown_seconds) or cooldown_seconds < 0.0:
 		return false
 	state.ammo_in_magazine -= 1
 	state.cooldown_remaining_seconds = cooldown_seconds
 	return true
+
+
+static func effective_cooldown_seconds(
+	definition: BattleWeaponDefinition,
+	fire_rate_multiplier: float = 1.0
+) -> float:
+	if definition == null or not definition.is_valid():
+		return INF
+	if not is_finite(fire_rate_multiplier) or fire_rate_multiplier <= 0.0:
+		return INF
+	return definition.cooldown_seconds() / fire_rate_multiplier
 
 
 static func _advance_participant_weapon(
@@ -227,6 +241,21 @@ static func _advance_participant_weapon(
 			state.is_reloading = false
 			_refill_magazine_to_capacity(state, definition)
 	state.cooldown_remaining_seconds = maxf(state.cooldown_remaining_seconds - delta_seconds, 0.0)
+
+
+static func _advance_wound_reaction(participant: BattleParticipant, delta_seconds: float) -> void:
+	if participant == null:
+		return
+	if not is_finite(participant.wound_reaction_remaining_seconds):
+		participant.wound_reaction_remaining_seconds = 0.0
+		return
+	if participant.wound_reaction_remaining_seconds <= 0.0:
+		participant.wound_reaction_remaining_seconds = 0.0
+		return
+	participant.wound_reaction_remaining_seconds = maxf(
+		participant.wound_reaction_remaining_seconds - delta_seconds,
+		0.0
+	)
 
 
 static func _start_reload(state: BattleWeaponState, definition: BattleWeaponDefinition) -> void:
@@ -281,6 +310,8 @@ static func _aggregate_block_reason(rejection_code: String) -> String:
 			return "range"
 		"line_of_sight_blocked":
 			return "los"
+		"wound_reaction":
+			return "not_ready"
 		_:
 			return "not_ready"
 
@@ -347,6 +378,8 @@ static func _source_rejection_code(
 		return "invalid_weapon_state"
 	if not is_finite(state.cooldown_remaining_seconds) or not is_finite(state.reload_remaining_seconds):
 		return "invalid_weapon_state"
+	if participant.has_wound_reaction():
+		return "wound_reaction"
 	return ""
 
 

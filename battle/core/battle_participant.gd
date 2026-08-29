@@ -37,6 +37,7 @@ var combat_move_mode: String = ""
 var combat_move_target_id: String = ""
 var reserved_cover_slot_id: String = ""
 var occupied_cover_slot_id: String = ""
+var wound_reaction_remaining_seconds: float = 0.0
 
 
 func _init(
@@ -200,3 +201,7 @@ func has_reserved_cover_slot() -> bool:
 
 func has_occupied_cover_slot() -> bool:
 	return not occupied_cover_slot_id.is_empty()
+
+
+func has_wound_reaction() -> bool:
+	return is_finite(wound_reaction_remaining_seconds) and wound_reaction_remaining_seconds > 0.0

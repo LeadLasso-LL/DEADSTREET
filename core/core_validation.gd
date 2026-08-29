@@ -15348,15 +15348,40 @@ static func run() -> Dictionary:
 	var battlewounded_healthy_behavior_unchanged_ok: bool = _battlewounded_healthy_behavior_unchanged_ok()
 	var battlewounded_healthy_kill_cleanup_ok: bool = _battlewounded_healthy_kill_cleanup_ok()
 	var battlewounded_no_cover_bonus_ok: bool = _battlewounded_no_cover_bonus_ok()
-	var battlewounded_no_fire_rate_penalty_ok: bool = _battlewounded_no_fire_rate_penalty_ok()
-	var battlewounded_no_accuracy_penalty_ok: bool = _battlewounded_no_accuracy_penalty_ok()
-	var battlewounded_no_reaction_timer_ok: bool = _battlewounded_no_reaction_timer_ok()
+	var battlewounded_fire_rate_penalty_ok: bool = _battlewoundedperformance_wounded_cadence_ok()
+	var battlewounded_accuracy_penalty_ok: bool = _battlewoundedperformance_autonomous_wounded_accuracy_ok()
+	var battlewounded_reaction_timer_ok: bool = _battlewoundedperformance_new_wound_reaction_ok()
 	var battlewounded_determinism_ok: bool = _battlewounded_determinism_ok()
 	var battlewounded_cover_seek_no_rng_ok: bool = _battlewounded_cover_seek_no_rng_ok()
 	var battlewounded_campaign_isolation_ok: bool = _battlewounded_campaign_isolation_ok()
 	var battlewounded_defend_occupied_ok: bool = _battlewounded_defend_occupied_ok()
 	var battlewounded_current_target_independence_ok: bool = _battlewounded_current_target_independence_ok()
 	var battlewounded_no_advanced_systems_ok: bool = _battlewounded_no_advanced_systems_ok()
+	var battlewoundedperformance_tuning_constants_ok: bool = _battlewoundedperformance_tuning_constants_ok()
+	var battlewoundedperformance_healthy_cadence_ok: bool = _battlewoundedperformance_healthy_cadence_ok()
+	var battlewoundedperformance_wounded_cadence_ok: bool = _battlewoundedperformance_wounded_cadence_ok()
+	var battlewoundedperformance_commit_shot_api_ok: bool = _battlewoundedperformance_commit_shot_api_ok()
+	var battlewoundedperformance_cooldown_not_rescaled_ok: bool = _battlewoundedperformance_cooldown_not_rescaled_ok()
+	var battlewoundedperformance_autonomous_healthy_accuracy_ok: bool = _battlewoundedperformance_autonomous_healthy_accuracy_ok()
+	var battlewoundedperformance_autonomous_wounded_accuracy_ok: bool = _battlewoundedperformance_autonomous_wounded_accuracy_ok()
+	var battlewoundedperformance_wounded_target_accuracy_ok: bool = _battlewoundedperformance_wounded_target_accuracy_ok()
+	var battlewoundedperformance_explicit_resolver_ok: bool = _battlewoundedperformance_explicit_resolver_ok()
+	var battlewoundedperformance_new_wound_reaction_ok: bool = _battlewoundedperformance_new_wound_reaction_ok()
+	var battlewoundedperformance_repeat_wound_ok: bool = _battlewoundedperformance_repeat_wound_ok()
+	var battlewoundedperformance_miss_graze_kill_reaction_ok: bool = _battlewoundedperformance_miss_graze_kill_reaction_ok()
+	var battlewoundedperformance_starts_wounded_ok: bool = _battlewoundedperformance_starts_wounded_ok()
+	var battlewoundedperformance_reaction_blocks_fire_ok: bool = _battlewoundedperformance_reaction_blocks_fire_ok()
+	var battlewoundedperformance_reaction_allows_movement_ok: bool = _battlewoundedperformance_reaction_allows_movement_ok()
+	var battlewoundedperformance_timer_advancement_ok: bool = _battlewoundedperformance_timer_advancement_ok()
+	var battlewoundedperformance_runtime_large_delta_ok: bool = _battlewoundedperformance_runtime_large_delta_ok()
+	var battlewoundedperformance_defend_position_ok: bool = _battlewoundedperformance_defend_position_ok()
+	var battlewoundedperformance_cover_seeking_ok: bool = _battlewoundedperformance_cover_seeking_ok()
+	var battlewoundedperformance_occupied_cover_ok: bool = _battlewoundedperformance_occupied_cover_ok()
+	var battlewoundedperformance_determinism_ok: bool = _battlewoundedperformance_determinism_ok()
+	var battlewoundedperformance_one_roll_ok: bool = _battlewoundedperformance_one_roll_ok()
+	var battlewoundedperformance_event_semantics_ok: bool = _battlewoundedperformance_event_semantics_ok()
+	var battlewoundedperformance_campaign_isolation_ok: bool = _battlewoundedperformance_campaign_isolation_ok()
+	var battlewoundedperformance_absent_systems_ok: bool = _battlewoundedperformance_absent_systems_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -16584,15 +16609,40 @@ static func run() -> Dictionary:
 		"battlewounded_healthy_behavior_unchanged_ok": battlewounded_healthy_behavior_unchanged_ok,
 		"battlewounded_healthy_kill_cleanup_ok": battlewounded_healthy_kill_cleanup_ok,
 		"battlewounded_no_cover_bonus_ok": battlewounded_no_cover_bonus_ok,
-		"battlewounded_no_fire_rate_penalty_ok": battlewounded_no_fire_rate_penalty_ok,
-		"battlewounded_no_accuracy_penalty_ok": battlewounded_no_accuracy_penalty_ok,
-		"battlewounded_no_reaction_timer_ok": battlewounded_no_reaction_timer_ok,
+		"battlewounded_fire_rate_penalty_ok": battlewounded_fire_rate_penalty_ok,
+		"battlewounded_accuracy_penalty_ok": battlewounded_accuracy_penalty_ok,
+		"battlewounded_reaction_timer_ok": battlewounded_reaction_timer_ok,
 		"battlewounded_determinism_ok": battlewounded_determinism_ok,
 		"battlewounded_cover_seek_no_rng_ok": battlewounded_cover_seek_no_rng_ok,
 		"battlewounded_campaign_isolation_ok": battlewounded_campaign_isolation_ok,
 		"battlewounded_defend_occupied_ok": battlewounded_defend_occupied_ok,
 		"battlewounded_current_target_independence_ok": battlewounded_current_target_independence_ok,
 		"battlewounded_no_advanced_systems_ok": battlewounded_no_advanced_systems_ok,
+		"battlewoundedperformance_tuning_constants_ok": battlewoundedperformance_tuning_constants_ok,
+		"battlewoundedperformance_healthy_cadence_ok": battlewoundedperformance_healthy_cadence_ok,
+		"battlewoundedperformance_wounded_cadence_ok": battlewoundedperformance_wounded_cadence_ok,
+		"battlewoundedperformance_commit_shot_api_ok": battlewoundedperformance_commit_shot_api_ok,
+		"battlewoundedperformance_cooldown_not_rescaled_ok": battlewoundedperformance_cooldown_not_rescaled_ok,
+		"battlewoundedperformance_autonomous_healthy_accuracy_ok": battlewoundedperformance_autonomous_healthy_accuracy_ok,
+		"battlewoundedperformance_autonomous_wounded_accuracy_ok": battlewoundedperformance_autonomous_wounded_accuracy_ok,
+		"battlewoundedperformance_wounded_target_accuracy_ok": battlewoundedperformance_wounded_target_accuracy_ok,
+		"battlewoundedperformance_explicit_resolver_ok": battlewoundedperformance_explicit_resolver_ok,
+		"battlewoundedperformance_new_wound_reaction_ok": battlewoundedperformance_new_wound_reaction_ok,
+		"battlewoundedperformance_repeat_wound_ok": battlewoundedperformance_repeat_wound_ok,
+		"battlewoundedperformance_miss_graze_kill_reaction_ok": battlewoundedperformance_miss_graze_kill_reaction_ok,
+		"battlewoundedperformance_starts_wounded_ok": battlewoundedperformance_starts_wounded_ok,
+		"battlewoundedperformance_reaction_blocks_fire_ok": battlewoundedperformance_reaction_blocks_fire_ok,
+		"battlewoundedperformance_reaction_allows_movement_ok": battlewoundedperformance_reaction_allows_movement_ok,
+		"battlewoundedperformance_timer_advancement_ok": battlewoundedperformance_timer_advancement_ok,
+		"battlewoundedperformance_runtime_large_delta_ok": battlewoundedperformance_runtime_large_delta_ok,
+		"battlewoundedperformance_defend_position_ok": battlewoundedperformance_defend_position_ok,
+		"battlewoundedperformance_cover_seeking_ok": battlewoundedperformance_cover_seeking_ok,
+		"battlewoundedperformance_occupied_cover_ok": battlewoundedperformance_occupied_cover_ok,
+		"battlewoundedperformance_determinism_ok": battlewoundedperformance_determinism_ok,
+		"battlewoundedperformance_one_roll_ok": battlewoundedperformance_one_roll_ok,
+		"battlewoundedperformance_event_semantics_ok": battlewoundedperformance_event_semantics_ok,
+		"battlewoundedperformance_campaign_isolation_ok": battlewoundedperformance_campaign_isolation_ok,
+		"battlewoundedperformance_absent_systems_ok": battlewoundedperformance_absent_systems_ok,
 	}
 
 	var passed := true
@@ -26969,130 +27019,6 @@ static func _battlewounded_no_cover_bonus_ok() -> bool:
 	)
 
 
-static func _battlewounded_no_fire_rate_penalty_ok() -> bool:
-	var hold_pack: Dictionary = _battlebehavior_pair(
-		"wd_fr_h_src",
-		"wd_fr_h_tgt",
-		"pistol",
-		Vector2(10.0, 10.0),
-		Vector2(20.0, 10.0),
-		true
-	)
-	var hold_state: BattleState = hold_pack.get("battle_state", null) as BattleState
-	var hold_src: BattleParticipant = hold_pack.get("source", null) as BattleParticipant
-	if hold_state == null or hold_src == null or hold_src.weapon_state == null or hold_state.battlefield_geometry == null:
-		return false
-	if _battlewounded_slot(hold_state.battlefield_geometry, "wd_fr_h_obj", "wd_fr_h_slot", Vector2(10.0, 10.0)) == null:
-		return false
-	if not _battlewounded_occupy(hold_state, hold_src, "wd_fr_h_slot"):
-		return false
-	hold_src.is_wounded = true
-	if not _battlebehavior_seek_roll(hold_state.combat_random, 0.0, 0.5):
-		return false
-	var hold_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(hold_state, 0.2)
-	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
-	var threat_pack: Dictionary = _battlebehavior_pair(
-		"wd_fr_t_src",
-		"wd_fr_t_tgt",
-		"pistol",
-		Vector2(10.0, 10.0),
-		Vector2(14.0, 10.0),
-		true
-	)
-	var threat_state: BattleState = threat_pack.get("battle_state", null) as BattleState
-	var threat_src: BattleParticipant = threat_pack.get("source", null) as BattleParticipant
-	if threat_state == null or threat_src == null or threat_src.weapon_state == null or threat_state.battlefield_geometry == null:
-		return false
-	threat_src.is_wounded = true
-	if _battlewounded_slot(threat_state.battlefield_geometry, "wd_fr_t_obj", "wd_fr_t_slot", Vector2(30.0, 10.0)) == null:
-		return false
-	if not _battlebehavior_seek_roll(threat_state.combat_random, 0.0, 0.5):
-		return false
-	var threat_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(threat_state, 0.2)
-	if definition == null:
-		return false
-	var expected: float = definition.cooldown_seconds()
-	return (
-		hold_res != null
-		and hold_res.success
-		and hold_res.shots_executed == 1
-		and is_equal_approx(hold_src.weapon_state.cooldown_remaining_seconds, expected)
-		and threat_res != null
-		and threat_res.success
-		and threat_res.shots_executed == 1
-		and is_equal_approx(threat_src.weapon_state.cooldown_remaining_seconds, expected)
-	)
-
-
-static func _battlewounded_no_accuracy_penalty_ok() -> bool:
-	var healthy_pack: Dictionary = _battlebehavior_pair(
-		"wd_ac_h_src",
-		"wd_ac_h_tgt",
-		"pistol",
-		Vector2(10.0, 10.0),
-		Vector2(20.0, 10.0),
-		true
-	)
-	var wounded_pack: Dictionary = _battlebehavior_pair(
-		"wd_ac_w_src",
-		"wd_ac_w_tgt",
-		"pistol",
-		Vector2(10.0, 10.0),
-		Vector2(20.0, 10.0),
-		true
-	)
-	var healthy_state: BattleState = healthy_pack.get("battle_state", null) as BattleState
-	var wounded_state: BattleState = wounded_pack.get("battle_state", null) as BattleState
-	var wounded_src: BattleParticipant = wounded_pack.get("source", null) as BattleParticipant
-	if healthy_state == null or wounded_state == null or wounded_src == null:
-		return false
-	wounded_src.is_wounded = true
-	var healthy_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
-		healthy_state,
-		"wd_ac_h_src",
-		"wd_ac_h_tgt",
-		0.80
-	)
-	var wounded_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
-		wounded_state,
-		"wd_ac_w_src",
-		"wd_ac_w_tgt",
-		0.80
-	)
-	return (
-		healthy_attack != null
-		and wounded_attack != null
-		and healthy_attack.success
-		and wounded_attack.success
-		and healthy_attack.attack_event != null
-		and wounded_attack.attack_event != null
-		and healthy_attack.attack_event.outcome == wounded_attack.attack_event.outcome
-		and healthy_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
-		and is_equal_approx(healthy_attack.attack_event.outcome_roll, 0.80)
-		and is_equal_approx(wounded_attack.attack_event.outcome_roll, 0.80)
-	)
-
-
-static func _battlewounded_no_reaction_timer_ok() -> bool:
-	var participant: BattleParticipant = BattleParticipant.new("wd_rx_p", "", "a", "attacker", "pistol")
-	participant.is_wounded = true
-	var svc: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
-	var catalog: BattleCombatBehaviorCatalog = BattleCombatBehaviorCatalog.new()
-	return (
-		participant.get("wound_reaction") == null
-		and participant.get("wound_reaction_timer") == null
-		and participant.get("stagger") == null
-		and participant.get("stagger_timer") == null
-		and participant.get("firing_delay") == null
-		and participant.get("reaction_delay") == null
-		and not svc.has_method("apply_wound_reaction")
-		and not svc.has_method("start_stagger")
-		and not svc.has_method("apply_wounded_fire_rate")
-		and catalog.get("WOUNDED_FIRE_RATE") == null
-		and catalog.get("WOUNDED_ACCURACY_PENALTY") == null
-	)
-
-
 static func _battlewounded_determinism_ok() -> bool:
 	var left_pack: Dictionary = _battlebehavior_pair(
 		"wd_dt_src",
@@ -27353,4 +27279,1028 @@ static func _battlewounded_no_advanced_systems_ok() -> bool:
 		and not battle_state.has_method("resolve_victory")
 		and battle_state.get("winner_side_id") == null
 		and not GameState.new().has_method("apply_tactical_casualty")
+	)
+
+
+static func _battlewoundedperformance_peek_roll(rng: BattleCombatRandom) -> float:
+	if rng == null:
+		return -1.0
+	var probe: BattleCombatRandom = BattleCombatRandom.new(rng.seed_value)
+	probe.restore_state(rng.snapshot_state())
+	return probe.next_normalized()
+
+
+static func _battlewoundedperformance_rng_advanced_once(rng: BattleCombatRandom, before: int) -> bool:
+	if rng == null:
+		return false
+	var probe: BattleCombatRandom = BattleCombatRandom.new(rng.seed_value)
+	probe.restore_state(before)
+	probe.next_normalized()
+	return rng.snapshot_state() == probe.snapshot_state()
+
+
+static func _battlewoundedperformance_pistol_wounded_cooldown() -> float:
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	if definition == null:
+		return INF
+	return BattleFireControlService.effective_cooldown_seconds(
+		definition,
+		BattleCombatBehaviorCatalog.WOUNDED_FIRE_RATE_MULTIPLIER
+	)
+
+
+static func _battlewoundedperformance_tuning_constants_ok() -> bool:
+	return (
+		is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_FIRE_RATE_MULTIPLIER, 0.70)
+		and is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_ACCURACY_MULTIPLIER, 0.70)
+		and is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_REACTION_DELAY_SECONDS, 0.35)
+		and is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_COMBAT_MOVEMENT_SPEED, 2.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.DEFAULT_COMBAT_MOVEMENT_SPEED, 4.0)
+	)
+
+
+static func _battlewoundedperformance_healthy_cadence_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_hc_src",
+		"wp_hc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	if definition == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var commit_src: BattleParticipant = BattleParticipant.new("wp_hc_cm", "", "a", "attacker", "pistol")
+	var commit_def: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	if commit_src == null or commit_src.weapon_state == null or commit_def == null:
+		return false
+	var commit_ammo: int = commit_src.weapon_state.ammo_in_magazine
+	var committed: bool = BattleFireControlService.commit_shot(commit_src, commit_def)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 1
+		and not source.is_wounded
+		and source.weapon_state.ammo_in_magazine == ammo_before - 1
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, 0.4)
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, definition.cooldown_seconds())
+		and committed
+		and commit_src.weapon_state.ammo_in_magazine == commit_ammo - 1
+		and is_equal_approx(commit_src.weapon_state.cooldown_remaining_seconds, 0.4)
+	)
+
+
+static func _battlewoundedperformance_wounded_cadence_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_wc_src",
+		"wp_wc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_wc_obj", "wp_wc_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wp_wc_slot"):
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.0
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	var expected: float = _battlewoundedperformance_pistol_wounded_cooldown()
+	if definition == null or not is_finite(expected):
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 1
+		and source.is_wounded
+		and source.weapon_state.ammo_in_magazine == ammo_before - 1
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, expected)
+		and is_equal_approx(expected, definition.cooldown_seconds() / 0.70)
+		and is_equal_approx(expected, 0.5714286)
+	)
+
+
+static func _battlewoundedperformance_commit_shot_api_ok() -> bool:
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	var healthy: BattleParticipant = BattleParticipant.new("wp_cs_h", "", "a", "attacker", "pistol")
+	var explicit: BattleParticipant = BattleParticipant.new("wp_cs_x", "", "a", "attacker", "pistol")
+	var invalid: BattleParticipant = BattleParticipant.new("wp_cs_i", "", "a", "attacker", "pistol")
+	if definition == null or healthy == null or explicit == null or invalid == null:
+		return false
+	if healthy.weapon_state == null or explicit.weapon_state == null or invalid.weapon_state == null:
+		return false
+	var healthy_ok: bool = BattleFireControlService.commit_shot(healthy, definition)
+	var explicit_ok: bool = BattleFireControlService.commit_shot(explicit, definition, 1.0)
+	var wounded_rate: float = BattleFireControlService.effective_cooldown_seconds(
+		definition,
+		BattleCombatBehaviorCatalog.WOUNDED_FIRE_RATE_MULTIPLIER
+	)
+	var invalid_ammo: int = invalid.weapon_state.ammo_in_magazine
+	var zero_ok: bool = BattleFireControlService.commit_shot(invalid, definition, 0.0)
+	var neg_ok: bool = BattleFireControlService.commit_shot(invalid, definition, -1.0)
+	var nan_ok: bool = BattleFireControlService.commit_shot(invalid, definition, NAN)
+	return (
+		healthy_ok
+		and explicit_ok
+		and is_equal_approx(healthy.weapon_state.cooldown_remaining_seconds, 0.4)
+		and is_equal_approx(explicit.weapon_state.cooldown_remaining_seconds, 0.4)
+		and healthy.weapon_state.ammo_in_magazine == 11
+		and explicit.weapon_state.ammo_in_magazine == 11
+		and is_equal_approx(wounded_rate, 0.5714286)
+		and not zero_ok
+		and not neg_ok
+		and not nan_ok
+		and invalid.weapon_state.ammo_in_magazine == invalid_ammo
+		and is_equal_approx(invalid.weapon_state.cooldown_remaining_seconds, 0.0)
+		and not BattleCombatBehaviorService.new().has_method("set_weapon_cooldown")
+	)
+
+
+static func _battlewoundedperformance_cooldown_not_rescaled_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var shooter: BattleParticipant = _battlefire_add(battle_state, "wp_nr_src", "attacker", "pistol")
+	var wounded: BattleParticipant = _battlefire_add(battle_state, "wp_nr_tgt", "defender", "pistol")
+	if shooter == null or wounded == null or shooter.weapon_state == null or wounded.weapon_state == null:
+		return false
+	_battletarget_place(shooter, Vector2(10.0, 10.0))
+	_battletarget_place(wounded, Vector2(20.0, 10.0))
+	wounded.set_target_participant("wp_nr_src")
+	if not wounded.set_movement_speed(4.0):
+		return false
+	wounded.weapon_state.cooldown_remaining_seconds = 0.2
+	var wound: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"wp_nr_src",
+		"wp_nr_tgt",
+		0.80
+	)
+	if wound == null or not wound.shot_executed or not wounded.is_wounded:
+		return false
+	if not is_equal_approx(wounded.weapon_state.cooldown_remaining_seconds, 0.2):
+		return false
+	wounded.wound_reaction_remaining_seconds = 0.0
+	var timers: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 0.2)
+	if timers == null or not timers.success:
+		return false
+	if not is_equal_approx(wounded.weapon_state.cooldown_remaining_seconds, 0.0):
+		return false
+	var next_shot: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"wp_nr_tgt",
+		"wp_nr_src",
+		0.0
+	)
+	var expected: float = _battlewoundedperformance_pistol_wounded_cooldown()
+	return (
+		next_shot != null
+		and next_shot.shot_executed
+		and is_equal_approx(wounded.weapon_state.cooldown_remaining_seconds, expected)
+	)
+
+
+static func _battlewoundedperformance_autonomous_healthy_accuracy_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_ha_src",
+		"wp_ha_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.combat_random == null:
+		return false
+	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	if profile == null or profile.resolve_outcome(0.80) != BattleAttackProfile.OUTCOME_WOUND:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if result == null or not result.success or result.shots_executed != 1 or result.attack_events.size() != 1:
+		return false
+	var attack_event: BattleAttackEvent = result.attack_events[0]
+	return (
+		not source.is_wounded
+		and raw_roll >= 0.80
+		and raw_roll < 0.90
+		and is_equal_approx(attack_event.outcome_roll, raw_roll)
+		and attack_event.outcome == profile.resolve_outcome(raw_roll)
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+	)
+
+
+static func _battlewoundedperformance_autonomous_wounded_accuracy_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_wa_src",
+		"wp_wa_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.combat_random == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_wa_obj", "wp_wa_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wp_wa_slot"):
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.0
+	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	if profile == null:
+		return false
+	if profile.resolve_outcome(0.80) != BattleAttackProfile.OUTCOME_WOUND:
+		return false
+	if profile.resolve_outcome(0.56) != BattleAttackProfile.OUTCOME_GRAZE:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var effective_roll: float = raw_roll * BattleCombatBehaviorCatalog.WOUNDED_ACCURACY_MULTIPLIER
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if result == null or not result.success or result.shots_executed != 1 or result.attack_events.size() != 1:
+		return false
+	var attack_event: BattleAttackEvent = result.attack_events[0]
+	var catalog_profile: BattleAttackProfile = BattleAttackProfile.current()
+	return (
+		source.is_wounded
+		and raw_roll >= 0.80
+		and raw_roll < 0.90
+		and is_equal_approx(attack_event.outcome_roll, effective_roll)
+		and not is_equal_approx(attack_event.outcome_roll, raw_roll)
+		and attack_event.outcome == profile.resolve_outcome(effective_roll)
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+		and is_equal_approx(catalog_profile.miss_probability, 0.50)
+		and is_equal_approx(catalog_profile.graze_probability, 0.20)
+		and is_equal_approx(catalog_profile.wound_probability, 0.25)
+		and is_equal_approx(catalog_profile.kill_probability, 0.05)
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+	)
+
+
+static func _battlewoundedperformance_wounded_target_accuracy_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_wt_src",
+		"wp_wt_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.combat_random == null:
+		return false
+	target.is_wounded = true
+	target.wound_reaction_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if result == null or not result.success or result.attack_events.is_empty():
+		return false
+	var attack_event: BattleAttackEvent = result.attack_events[0]
+	return (
+		not source.is_wounded
+		and target.is_wounded
+		and is_equal_approx(attack_event.outcome_roll, raw_roll)
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+	)
+
+
+static func _battlewoundedperformance_explicit_resolver_ok() -> bool:
+	var ready_pack: Dictionary = _battlebehavior_pair(
+		"wp_ex_src",
+		"wp_ex_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var ready_state: BattleState = ready_pack.get("battle_state", null) as BattleState
+	var ready_src: BattleParticipant = ready_pack.get("source", null) as BattleParticipant
+	if ready_state == null or ready_src == null or ready_src.weapon_state == null:
+		return false
+	ready_src.is_wounded = true
+	ready_src.wound_reaction_remaining_seconds = 0.0
+	var ammo_before: int = ready_src.weapon_state.ammo_in_magazine
+	var ready_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		ready_state,
+		"wp_ex_src",
+		"wp_ex_tgt",
+		0.80
+	)
+	var blocked_pack: Dictionary = _battlebehavior_pair(
+		"wp_exb_src",
+		"wp_exb_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var blocked_state: BattleState = blocked_pack.get("battle_state", null) as BattleState
+	var blocked_src: BattleParticipant = blocked_pack.get("source", null) as BattleParticipant
+	if blocked_state == null or blocked_src == null or blocked_src.weapon_state == null:
+		return false
+	blocked_src.is_wounded = true
+	blocked_src.wound_reaction_remaining_seconds = 0.35
+	var blocked_ammo: int = blocked_src.weapon_state.ammo_in_magazine
+	var blocked_cd: float = blocked_src.weapon_state.cooldown_remaining_seconds
+	var blocked_elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		blocked_state,
+		"wp_exb_src",
+		"wp_exb_tgt"
+	)
+	var blocked_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		blocked_state,
+		"wp_exb_src",
+		"wp_exb_tgt",
+		0.80
+	)
+	return (
+		ready_attack != null
+		and ready_attack.shot_executed
+		and ready_attack.attack_event != null
+		and is_equal_approx(ready_attack.attack_event.outcome_roll, 0.80)
+		and ready_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+		and ready_src.weapon_state.ammo_in_magazine == ammo_before - 1
+		and is_equal_approx(ready_src.weapon_state.cooldown_remaining_seconds, _battlewoundedperformance_pistol_wounded_cooldown())
+		and blocked_elig != null
+		and blocked_elig.success
+		and not blocked_elig.can_fire
+		and blocked_elig.rejection_code == "wound_reaction"
+		and blocked_attack != null
+		and blocked_attack.success
+		and not blocked_attack.shot_executed
+		and blocked_attack.rejection_code == "wound_reaction"
+		and blocked_attack.attack_event == null
+		and blocked_src.weapon_state.ammo_in_magazine == blocked_ammo
+		and is_equal_approx(blocked_src.weapon_state.cooldown_remaining_seconds, blocked_cd)
+	)
+
+
+static func _battlewoundedperformance_new_wound_reaction_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"wp_nw_src",
+		"wp_nw_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null:
+		return false
+	if target.is_wounded or not is_equal_approx(target.wound_reaction_remaining_seconds, 0.0):
+		return false
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"wp_nw_src",
+		"wp_nw_tgt",
+		0.80
+	)
+	return (
+		attack != null
+		and attack.shot_executed
+		and attack.attack_event != null
+		and attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+		and target.is_alive
+		and target.is_wounded
+		and is_equal_approx(target.wound_reaction_remaining_seconds, 0.35)
+		and target.has_wound_reaction()
+	)
+
+
+static func _battlewoundedperformance_repeat_wound_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"wp_rw_src",
+		"wp_rw_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null:
+		return false
+	target.is_wounded = true
+	target.wound_reaction_remaining_seconds = 0.12
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"wp_rw_src",
+		"wp_rw_tgt",
+		0.80
+	)
+	return (
+		attack != null
+		and attack.shot_executed
+		and attack.attack_event != null
+		and attack.attack_event.outcome == BattleAttackProfile.OUTCOME_WOUND
+		and target.is_alive
+		and target.is_wounded
+		and is_equal_approx(target.wound_reaction_remaining_seconds, 0.12)
+		and not is_equal_approx(target.wound_reaction_remaining_seconds, 0.35)
+	)
+
+
+static func _battlewoundedperformance_miss_graze_kill_reaction_ok() -> bool:
+	var miss_pack: Dictionary = _battleattack_make_ready(
+		"wp_mg_m_src",
+		"wp_mg_m_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var miss_state: BattleState = miss_pack.get("battle_state", null) as BattleState
+	var miss_tgt: BattleParticipant = miss_pack.get("target", null) as BattleParticipant
+	if miss_state == null or miss_tgt == null:
+		return false
+	var miss: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		miss_state,
+		"wp_mg_m_src",
+		"wp_mg_m_tgt",
+		0.0
+	)
+	var graze_pack: Dictionary = _battleattack_make_ready(
+		"wp_mg_g_src",
+		"wp_mg_g_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var graze_state: BattleState = graze_pack.get("battle_state", null) as BattleState
+	var graze_tgt: BattleParticipant = graze_pack.get("target", null) as BattleParticipant
+	if graze_state == null or graze_tgt == null:
+		return false
+	var graze: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		graze_state,
+		"wp_mg_g_src",
+		"wp_mg_g_tgt",
+		0.60
+	)
+	var kill_pack: Dictionary = _battleattack_make_ready(
+		"wp_mg_k_src",
+		"wp_mg_k_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var kill_state: BattleState = kill_pack.get("battle_state", null) as BattleState
+	var kill_tgt: BattleParticipant = kill_pack.get("target", null) as BattleParticipant
+	if kill_state == null or kill_tgt == null or kill_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(kill_state.battlefield_geometry, "wp_mg_k_obj", "wp_mg_k_slot", Vector2(20.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(kill_state, kill_tgt, "wp_mg_k_slot"):
+		return false
+	kill_tgt.wound_reaction_remaining_seconds = 0.35
+	var slot: BattleCoverSlot = kill_state.battlefield_geometry.get_cover_slot("wp_mg_k_slot")
+	var kill: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		kill_state,
+		"wp_mg_k_src",
+		"wp_mg_k_tgt",
+		0.95
+	)
+	return (
+		miss != null
+		and miss.shot_executed
+		and miss.attack_event != null
+		and miss.attack_event.outcome == BattleAttackProfile.OUTCOME_MISS
+		and not miss_tgt.is_wounded
+		and is_equal_approx(miss_tgt.wound_reaction_remaining_seconds, 0.0)
+		and graze != null
+		and graze.shot_executed
+		and graze.attack_event != null
+		and graze.attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+		and not graze_tgt.is_wounded
+		and is_equal_approx(graze_tgt.wound_reaction_remaining_seconds, 0.0)
+		and kill != null
+		and kill.shot_executed
+		and kill.attack_event != null
+		and kill.attack_event.outcome == BattleAttackProfile.OUTCOME_KILL
+		and not kill_tgt.is_alive
+		and is_equal_approx(kill_tgt.wound_reaction_remaining_seconds, 0.0)
+		and kill_state.has_participant("wp_mg_k_tgt")
+		and kill_tgt.occupied_cover_slot_id.is_empty()
+		and slot != null
+		and slot.occupied_by_participant_id.is_empty()
+	)
+
+
+static func _battlewoundedperformance_starts_wounded_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_sw_src",
+		"wp_sw_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	source.is_wounded = true
+	var constructed: BattleParticipant = BattleParticipant.new(
+		"wp_sw_c",
+		"",
+		"a",
+		"attacker",
+		"pistol",
+		true,
+		true,
+		""
+	)
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		is_equal_approx(source.wound_reaction_remaining_seconds, 0.0)
+		and not source.has_wound_reaction()
+		and constructed != null
+		and constructed.is_wounded
+		and is_equal_approx(constructed.wound_reaction_remaining_seconds, 0.0)
+		and result != null
+		and result.success
+		and result.shots_executed == 1
+	)
+
+
+static func _battlewoundedperformance_reaction_blocks_fire_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_bf_src",
+		"wp_bf_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.combat_random == null:
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.35
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var cd_before: float = source.weapon_state.cooldown_remaining_seconds
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"wp_bf_src",
+		"wp_bf_tgt"
+	)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		elig != null
+		and elig.success
+		and not elig.can_fire
+		and elig.rejection_code == "wound_reaction"
+		and result != null
+		and result.success
+		and result.shots_executed == 0
+		and result.attack_events.is_empty()
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, cd_before)
+		and battle_state.combat_random.snapshot_state() == rng_before
+	)
+
+
+static func _battlewoundedperformance_reaction_allows_movement_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_mv_src",
+		"wp_mv_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.combat_random == null:
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.35
+	source.set_target_participant("wp_mv_tgt")
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var start: Vector2 = source.battle_position
+	var combat: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.2)
+	return (
+		combat != null
+		and combat.success
+		and combat.shots_executed == 0
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and _battletarget_has(source, "wp_mv_tgt")
+		and _battlebehavior_is_combat_nav(source)
+		and runtime != null
+		and runtime.success
+		and source.battle_position.x > start.x
+		and source.has_wound_reaction()
+	)
+
+
+static func _battlewoundedperformance_timer_advancement_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "wp_tm_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(10.0, 10.0))
+	participant.wound_reaction_remaining_seconds = 0.35
+	var zero: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 0.0)
+	if zero == null or not zero.success:
+		return false
+	if not is_equal_approx(participant.wound_reaction_remaining_seconds, 0.35):
+		return false
+	var tick: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 0.10)
+	if tick == null or not tick.success:
+		return false
+	if not is_equal_approx(participant.wound_reaction_remaining_seconds, 0.25):
+		return false
+	var clamp: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 1.0)
+	if clamp == null or not clamp.success:
+		return false
+	if not is_equal_approx(participant.wound_reaction_remaining_seconds, 0.0):
+		return false
+	if participant.wound_reaction_remaining_seconds < 0.0:
+		return false
+	participant.wound_reaction_remaining_seconds = NAN
+	var nan_tick: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 0.10)
+	return (
+		nan_tick != null
+		and nan_tick.success
+		and is_equal_approx(participant.wound_reaction_remaining_seconds, 0.0)
+	)
+
+
+static func _battlewoundedperformance_runtime_large_delta_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_lg_src",
+		"wp_lg_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_lg_obj", "wp_lg_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wp_lg_slot"):
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.35
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.50)
+	return (
+		result != null
+		and result.success
+		and is_equal_approx(source.wound_reaction_remaining_seconds, 0.0)
+		and source.weapon_state.ammo_in_magazine == 11
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, _battlewoundedperformance_pistol_wounded_cooldown())
+	)
+
+
+static func _battlewoundedperformance_defend_position_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var defender: BattleParticipant = _battlefire_add(battle_state, "wp_dp_d", "defender", "pistol")
+	var attacker: BattleParticipant = _battlefire_add(battle_state, "wp_dp_a", "attacker", "pistol")
+	if defender == null or attacker == null or defender.weapon_state == null:
+		return false
+	_battletarget_place(defender, Vector2(50.0, 30.0))
+	_battletarget_place(attacker, Vector2(40.0, 30.0))
+	defender.set_defend_position(true)
+	if not defender.set_defend_position_anchor(Vector2(50.0, 30.0)):
+		return false
+	defender.is_wounded = true
+	defender.wound_reaction_remaining_seconds = 0.35
+	defender.set_target_participant("wp_dp_a")
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_dp_obj", "wp_dp_slot", Vector2(50.4, 30.0)) == null:
+		return false
+	var blocked: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if blocked == null or not blocked.success or blocked.shots_executed != 0:
+		return false
+	if not defender.defend_position or not defender.has_defend_position_anchor:
+		return false
+	if not defender.reserved_cover_slot_id.is_empty():
+		return false
+	defender.wound_reaction_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var fired: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if fired == null or not fired.success or fired.shots_executed != 1 or fired.attack_events.is_empty():
+		return false
+	var attack_event: BattleAttackEvent = fired.attack_events[0]
+	return (
+		defender.defend_position
+		and defender.defend_position_anchor.is_equal_approx(Vector2(50.0, 30.0))
+		and defender.reserved_cover_slot_id.is_empty()
+		and is_equal_approx(attack_event.outcome_roll, raw_roll * 0.70)
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+		and is_equal_approx(defender.weapon_state.cooldown_remaining_seconds, _battlewoundedperformance_pistol_wounded_cooldown())
+	)
+
+
+static func _battlewoundedperformance_cover_seeking_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_sk_src",
+		"wp_sk_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.combat_random == null or battle_state.battlefield_geometry == null:
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.35
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_sk_obj", "wp_sk_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var timers: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 0.10)
+	var combat: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("wp_sk_slot")
+	return (
+		timers != null
+		and timers.success
+		and is_equal_approx(source.wound_reaction_remaining_seconds, 0.25)
+		and combat != null
+		and combat.success
+		and combat.wounded_seeking_cover == 1
+		and combat.shots_executed == 0
+		and combat.attack_events.is_empty()
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and _battlecover_reserved_sync(source, slot, "wp_sk_src", "wp_sk_slot")
+		and _battlebehavior_is_combat_nav(source)
+	)
+
+
+static func _battlewoundedperformance_occupied_cover_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_oc_src",
+		"wp_oc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_oc_obj", "wp_oc_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wp_oc_slot"):
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.35
+	var blocked: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("wp_oc_slot")
+	if blocked == null or not blocked.success or blocked.shots_executed != 0:
+		return false
+	if not _battlecover_occupied_sync(source, slot, "wp_oc_src", "wp_oc_slot"):
+		return false
+	source.wound_reaction_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var fired: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if fired == null or not fired.success or fired.shots_executed != 1 or fired.attack_events.is_empty():
+		return false
+	var attack_event: BattleAttackEvent = fired.attack_events[0]
+	return (
+		_battlecover_occupied_sync(source, slot, "wp_oc_src", "wp_oc_slot")
+		and is_equal_approx(attack_event.outcome_roll, raw_roll * 0.70)
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+		and is_equal_approx(source.weapon_state.cooldown_remaining_seconds, _battlewoundedperformance_pistol_wounded_cooldown())
+	)
+
+
+static func _battlewoundedperformance_determinism_ok() -> bool:
+	var left_pack: Dictionary = _battlebehavior_pair(
+		"wp_dt_src",
+		"wp_dt_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var right_pack: Dictionary = _battlebehavior_pair(
+		"wp_dt_src",
+		"wp_dt_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var left: BattleState = left_pack.get("battle_state", null) as BattleState
+	var right: BattleState = right_pack.get("battle_state", null) as BattleState
+	var left_src: BattleParticipant = left_pack.get("source", null) as BattleParticipant
+	var right_src: BattleParticipant = right_pack.get("source", null) as BattleParticipant
+	if left == null or right == null or left_src == null or right_src == null:
+		return false
+	if left.battlefield_geometry == null or right.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(left.battlefield_geometry, "wp_dt_obj", "wp_dt_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if _battlewounded_slot(right.battlefield_geometry, "wp_dt_obj", "wp_dt_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(left, left_src, "wp_dt_slot"):
+		return false
+	if not _battlewounded_occupy(right, right_src, "wp_dt_slot"):
+		return false
+	left_src.is_wounded = true
+	right_src.is_wounded = true
+	left_src.wound_reaction_remaining_seconds = 0.0
+	right_src.wound_reaction_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(left.combat_random, 0.80, 0.90):
+		return false
+	if not _battlebehavior_seek_roll(right.combat_random, 0.80, 0.90):
+		return false
+	var left_raw: float = _battlewoundedperformance_peek_roll(left.combat_random)
+	var right_raw: float = _battlewoundedperformance_peek_roll(right.combat_random)
+	var left_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(left, 0.2)
+	var right_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(right, 0.2)
+	if left_res == null or right_res == null or left_res.attack_events.is_empty() or right_res.attack_events.is_empty():
+		return false
+	return (
+		is_equal_approx(left_raw, right_raw)
+		and is_equal_approx(left_res.attack_events[0].outcome_roll, right_res.attack_events[0].outcome_roll)
+		and is_equal_approx(left_res.attack_events[0].outcome_roll, left_raw * 0.70)
+		and left_res.attack_events[0].outcome == right_res.attack_events[0].outcome
+		and left.combat_random.snapshot_state() == right.combat_random.snapshot_state()
+	)
+
+
+static func _battlewoundedperformance_one_roll_ok() -> bool:
+	var fire_ok: bool = _battlewoundedperformance_autonomous_wounded_accuracy_ok()
+	var blocked_ok: bool = _battlewoundedperformance_reaction_blocks_fire_ok()
+	var seek_ok: bool = _battlewoundedperformance_cover_seeking_ok()
+	return fire_ok and blocked_ok and seek_ok
+
+
+static func _battlewoundedperformance_event_semantics_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wp_ev_src",
+		"wp_ev_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "wp_ev_obj", "wp_ev_slot", Vector2(10.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wp_ev_slot"):
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.80, 0.90):
+		return false
+	var raw_roll: float = _battlewoundedperformance_peek_roll(battle_state.combat_random)
+	var target_was_wounded: bool = target.is_wounded
+	var target_was_alive: bool = target.is_alive
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if result == null or result.attack_events.is_empty():
+		return false
+	var attack_event: BattleAttackEvent = result.attack_events[0]
+	return (
+		attack_event.source_participant_id == "wp_ev_src"
+		and attack_event.target_participant_id == "wp_ev_tgt"
+		and attack_event.weapon_type_id == "pistol"
+		and attack_event.outcome == BattleAttackProfile.OUTCOME_GRAZE
+		and is_equal_approx(attack_event.outcome_roll, raw_roll * 0.70)
+		and attack_event.target_was_wounded == target_was_wounded
+		and attack_event.target_is_wounded == target.is_wounded
+		and attack_event.target_was_alive == target_was_alive
+		and attack_event.target_is_alive == target.is_alive
+		and attack_event.get("raw_outcome_roll") == null
+		and attack_event.get("raw_roll") == null
+	)
+
+
+static func _battlewoundedperformance_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	if soldier == null or battle_state.battlefield_geometry == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var participant: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	var defender: BattleParticipant = battle_state.get_participant("battle_def_sol")
+	if participant == null or defender == null:
+		return false
+	_battletarget_place(participant, Vector2(10.0, 10.0))
+	_battletarget_place(defender, Vector2(20.0, 10.0))
+	participant.is_wounded = true
+	participant.wound_reaction_remaining_seconds = 0.35
+	var timers: BattleFireControlResult = BattleFireControlService.advance_weapon_state(battle_state, 0.10)
+	if timers == null or not timers.success:
+		return false
+	participant.wound_reaction_remaining_seconds = 0.0
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"battle_sol_a",
+		"battle_def_sol",
+		0.80
+	)
+	if attack == null or not attack.shot_executed:
+		return false
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		_battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+		and soldier_dict.get("wound_reaction_remaining_seconds") == null
+		and soldier_dict.get("is_wounded") == null
+	)
+
+
+static func _battlewoundedperformance_absent_systems_ok() -> bool:
+	var participant: BattleParticipant = BattleParticipant.new("wp_abs_p", "", "a", "attacker", "pistol")
+	participant.is_wounded = true
+	var svc: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var attack_svc: BattleAttackResolutionService = BattleAttackResolutionService.new()
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	return (
+		_battlebehavior_absent_systems_ok()
+		and participant.get("hit_points") == null
+		and participant.get("armor") == null
+		and participant.get("bleed") == null
+		and participant.get("bleeding") == null
+		and participant.get("suppression") == null
+		and participant.get("heal_timer") == null
+		and participant.get("knockback") == null
+		and participant.get("stagger_vector") == null
+		and participant.velocity.is_equal_approx(Vector2.ZERO)
+		and not svc.has_method("apply_bleed")
+		and not svc.has_method("apply_heal")
+		and not svc.has_method("apply_knockback")
+		and not attack_svc.has_method("apply_second_wound_kill")
+		and not attack_svc.has_method("apply_armor")
+		and not battle_state.has_method("resolve_victory")
+		and battle_state.get("winner_side_id") == null
+		and not GameState.new().has_method("apply_tactical_casualty")
+		and participant.get("action_points") == null
+		and participant.get("interior_id") == null
+		and participant.get("elevation") == null
 	)
