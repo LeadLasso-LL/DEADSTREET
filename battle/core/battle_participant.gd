@@ -1,11 +1,15 @@
 class_name BattleParticipant
 extends RefCounted
 
+const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
+const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
+
 var participant_id: String = ""
 var campaign_soldier_id: String = ""
 var faction_id: String = ""
 var side_id: String = ""
 var weapon_type: String = ""
+var weapon_state: BattleWeaponState = null
 var is_alive: bool = true
 var is_wounded: bool = false
 var deployment_slot_id: String = ""
@@ -39,6 +43,7 @@ func _init(
 	faction_id = p_faction_id
 	side_id = p_side_id
 	weapon_type = p_weapon_type
+	weapon_state = BattleWeaponCatalog.create_initial_state(p_weapon_type)
 	is_alive = p_is_alive
 	is_wounded = p_is_wounded
 	deployment_slot_id = p_deployment_slot_id

@@ -67,6 +67,11 @@ const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_
 const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
 const BattleLineOfSightResult := preload("res://battle/combat/battle_line_of_sight_result.gd")
 const BattleLineOfSightService := preload("res://battle/combat/battle_line_of_sight_service.gd")
+const BattleWeaponDefinition := preload("res://battle/combat/battle_weapon_definition.gd")
+const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
+const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
+const BattleFireControlResult := preload("res://battle/combat/battle_fire_control_result.gd")
+const BattleFireControlService := preload("res://battle/combat/battle_fire_control_service.gd")
 
 
 static func run() -> Dictionary:
@@ -12841,6 +12846,1127 @@ static func run() -> Dictionary:
 			and battlelos_no_combat_bs.get("perception_radius") == null
 		)
 
+	var battlefire_ok_def: BattleWeaponDefinition = BattleWeaponDefinition.new("test_ok", 10.0, 2.0, 8, 1.25)
+	var battlefire_def_ok: bool = (
+		battlefire_ok_def != null
+		and battlefire_ok_def.is_valid()
+		and not BattleWeaponDefinition.new("", 10.0, 2.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 0.0, 2.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", -4.0, 2.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", NAN, 2.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", INF, 2.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, 0.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, -1.0, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, NAN, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, INF, 8, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, 2.0, 0, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, 2.0, -2, 1.0).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, 2.0, 8, -0.1).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, 2.0, 8, NAN).is_valid()
+		and not BattleWeaponDefinition.new("bad", 10.0, 2.0, 8, INF).is_valid()
+		and BattleWeaponDefinition.new("zero_reload", 10.0, 2.0, 8, 0.0).is_valid()
+	)
+
+	var battlefire_pistol_a: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	var battlefire_pistol_b: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	var battlefire_unknown: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("laser")
+	var battlefire_catalog_ok: bool = (
+		_battlefire_catalog_match(battlefire_pistol_a, "pistol", 24.0, 2.5, 12, 1.5)
+		and _battlefire_catalog_match(battlefire_pistol_b, "pistol", 24.0, 2.5, 12, 1.5)
+		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("shotgun"), "shotgun", 12.0, 1.0, 6, 2.5)
+		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("smg"), "smg", 20.0, 8.0, 30, 2.0)
+		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("rifle"), "rifle", 40.0, 2.0, 20, 2.2)
+		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("sniper"), "sniper", 70.0, 0.5, 5, 3.0)
+		and battlefire_unknown == null
+		and BattleWeaponCatalog.get_definition("") == null
+		and not BattleWeaponCatalog.has_definition("laser")
+		and BattleWeaponCatalog.has_definition("pistol")
+	)
+
+	var battlefire_init_ok: bool = (
+		_battlefire_initial_ok(BattleParticipant.new("init_pistol", "", "a", "attacker", "pistol"), "pistol", 12)
+		and _battlefire_initial_ok(BattleParticipant.new("init_shotgun", "", "a", "attacker", "shotgun"), "shotgun", 6)
+		and _battlefire_initial_ok(BattleParticipant.new("init_smg", "", "a", "attacker", "smg"), "smg", 30)
+		and _battlefire_initial_ok(BattleParticipant.new("init_rifle", "", "a", "attacker", "rifle"), "rifle", 20)
+		and _battlefire_initial_ok(BattleParticipant.new("init_sniper", "", "a", "attacker", "sniper"), "sniper", 5)
+	)
+	var battlefire_init_empty: BattleParticipant = BattleParticipant.new("init_empty")
+	var battlefire_init_unknown: BattleParticipant = BattleParticipant.new(
+		"init_unknown", "", "a", "attacker", "laser"
+	)
+	battlefire_init_ok = (
+		battlefire_init_ok
+		and battlefire_init_empty != null
+		and battlefire_init_empty.weapon_state == null
+		and battlefire_init_unknown != null
+		and battlefire_init_unknown.weapon_type == "laser"
+		and battlefire_init_unknown.weapon_state == null
+	)
+
+	var battlefire_own_ok: bool = false
+	var battlefire_own_p: BattleParticipant = BattleParticipant.new("own_p", "", "a", "attacker", "pistol")
+	if battlefire_own_p != null and battlefire_own_p.weapon_state != null:
+		battlefire_own_p.weapon_state.ammo_in_magazine = 3
+		battlefire_own_p.weapon_state.cooldown_remaining_seconds = 0.4
+		battlefire_own_p.weapon_state.reload_remaining_seconds = 0.8
+		battlefire_own_p.weapon_state.is_reloading = true
+		battlefire_own_ok = battlefire_own_p.weapon_type == "pistol"
+	var battlefire_own_pack: Dictionary = _battle_create_ready_pack()
+	var battlefire_own_game: GameState = battlefire_own_pack.get("game_state", null) as GameState
+	var battlefire_own_bs: BattleState = battlefire_own_pack.get("battle_state", null) as BattleState
+	if battlefire_own_ok and battlefire_own_game != null and battlefire_own_bs != null:
+		var battlefire_own_sol: Soldier = battlefire_own_game.get_soldier("battle_sol_a")
+		var battlefire_own_part: BattleParticipant = battlefire_own_bs.get_participant("battle_sol_a")
+		if battlefire_own_sol != null and battlefire_own_part != null and battlefire_own_part.weapon_state != null:
+			var battlefire_own_wpn: String = battlefire_own_sol.weapon_type_id
+			battlefire_own_part.weapon_state.ammo_in_magazine = 1
+			battlefire_own_part.weapon_state.cooldown_remaining_seconds = 0.9
+			battlefire_own_ok = (
+				battlefire_own_part.weapon_type == battlefire_own_wpn
+				and battlefire_own_sol.weapon_type_id == battlefire_own_wpn
+				and battlefire_own_sol.to_dict().get("weapon_type_id", "") == battlefire_own_wpn
+			)
+
+	var battlefire_fail_null_ok: bool = _battlefire_fail_ok(
+		BattleFireControlService.advance_weapon_state(null, 0.1),
+		"null_battle_state"
+	)
+	var battlefire_fail_inactive_ok: bool = false
+	var battlefire_fail_delta_ok: bool = false
+	var battlefire_fail_missing_geo_ok: bool = false
+	var battlefire_fail_invalid_geo_ok: bool = false
+	var battlefire_fail_dep: BattleState = _battlemove_make_state("deployment")
+	if battlefire_fail_dep != null:
+		var battlefire_fail_dep_p: BattleParticipant = _battlefire_add(battlefire_fail_dep, "fire_dep_p", "attacker", "pistol")
+		if battlefire_fail_dep_p != null:
+			_battletarget_place(battlefire_fail_dep_p, Vector2(10.0, 10.0))
+			var battlefire_fail_dep_snap: Dictionary = _battlefire_full_snap(battlefire_fail_dep_p)
+			battlefire_fail_inactive_ok = (
+				_battlefire_fail_ok(
+					BattleFireControlService.advance_weapon_state(battlefire_fail_dep, 0.2),
+					"battle_not_active"
+				)
+				and _battlefire_full_unchanged(battlefire_fail_dep_p, battlefire_fail_dep_snap)
+			)
+	var battlefire_fail_delta_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_fail_delta_bs != null:
+		var battlefire_fail_delta_p: BattleParticipant = _battlefire_add(
+			battlefire_fail_delta_bs, "fire_delta_p", "attacker", "pistol"
+		)
+		if battlefire_fail_delta_p != null and battlefire_fail_delta_p.weapon_state != null:
+			_battletarget_place(battlefire_fail_delta_p, Vector2(12.0, 12.0))
+			battlefire_fail_delta_p.weapon_state.cooldown_remaining_seconds = 0.8
+			var battlefire_fail_delta_snap: Dictionary = _battlefire_full_snap(battlefire_fail_delta_p)
+			battlefire_fail_delta_ok = (
+				_battlefire_fail_ok(
+					BattleFireControlService.advance_weapon_state(battlefire_fail_delta_bs, -0.1),
+					"invalid_delta"
+				)
+				and _battlefire_fail_ok(
+					BattleFireControlService.advance_weapon_state(battlefire_fail_delta_bs, NAN),
+					"invalid_delta"
+				)
+				and _battlefire_fail_ok(
+					BattleFireControlService.advance_weapon_state(battlefire_fail_delta_bs, INF),
+					"invalid_delta"
+				)
+				and _battlefire_full_unchanged(battlefire_fail_delta_p, battlefire_fail_delta_snap)
+			)
+	var battlefire_fail_miss_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_fail_miss_bs != null:
+		var battlefire_fail_miss_p: BattleParticipant = _battlefire_add(
+			battlefire_fail_miss_bs, "fire_miss_p", "attacker", "pistol"
+		)
+		if battlefire_fail_miss_p != null:
+			_battletarget_place(battlefire_fail_miss_p, Vector2(8.0, 8.0))
+			var battlefire_fail_miss_intent: bool = battlefire_fail_miss_p.set_movement_intent(Vector2(1.0, 0.0))
+			var battlefire_fail_miss_snap: Dictionary = _battlefire_full_snap(battlefire_fail_miss_p)
+			battlefire_fail_miss_bs.battlefield_geometry = null
+			battlefire_fail_missing_geo_ok = (
+				battlefire_fail_miss_intent
+				and _battlefire_fail_ok(
+					BattleFireControlService.advance_weapon_state(battlefire_fail_miss_bs, 0.3),
+					"missing_battlefield_geometry"
+				)
+				and _battlefire_full_unchanged(battlefire_fail_miss_p, battlefire_fail_miss_snap)
+			)
+	var battlefire_fail_bad_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_fail_bad_bs != null:
+		var battlefire_fail_bad_p: BattleParticipant = _battlefire_add(
+			battlefire_fail_bad_bs, "fire_bad_p", "attacker", "pistol"
+		)
+		if battlefire_fail_bad_p != null:
+			_battletarget_place(battlefire_fail_bad_p, Vector2(9.0, 9.0))
+			var battlefire_fail_bad_snap: Dictionary = _battlefire_full_snap(battlefire_fail_bad_p)
+			battlefire_fail_bad_bs.battlefield_geometry = BattlefieldGeometry.new()
+			battlefire_fail_invalid_geo_ok = (
+				_battlefire_fail_ok(
+					BattleFireControlService.advance_weapon_state(battlefire_fail_bad_bs, 0.3),
+					"invalid_battlefield_geometry"
+				)
+				and _battlefire_full_unchanged(battlefire_fail_bad_p, battlefire_fail_bad_snap)
+			)
+
+	var battlefire_cooldown_ok: bool = false
+	var battlefire_cd_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_cd_bs != null:
+		var battlefire_cd_p: BattleParticipant = _battlefire_add(battlefire_cd_bs, "fire_cd_p", "attacker", "pistol")
+		if battlefire_cd_p != null and battlefire_cd_p.weapon_state != null:
+			battlefire_cd_p.weapon_state.cooldown_remaining_seconds = 1.0
+			var battlefire_cd_res1: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_cd_bs, 0.25
+			)
+			var battlefire_cd_mid: bool = (
+				battlefire_cd_res1 != null
+				and battlefire_cd_res1.success
+				and is_equal_approx(battlefire_cd_p.weapon_state.cooldown_remaining_seconds, 0.75)
+			)
+			var battlefire_cd_res2: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_cd_bs, 1.0
+			)
+			battlefire_cooldown_ok = (
+				battlefire_cd_mid
+				and battlefire_cd_res2 != null
+				and battlefire_cd_res2.success
+				and is_equal_approx(battlefire_cd_p.weapon_state.cooldown_remaining_seconds, 0.0)
+				and battlefire_cd_p.weapon_state.cooldown_remaining_seconds >= 0.0
+			)
+
+	var battlefire_zero_delta_ok: bool = false
+	var battlefire_zd_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_zd_bs != null:
+		var battlefire_zd_p: BattleParticipant = _battlefire_add(battlefire_zd_bs, "fire_zd_p", "attacker", "pistol")
+		if battlefire_zd_p != null and battlefire_zd_p.weapon_state != null:
+			battlefire_zd_p.weapon_state.ammo_in_magazine = 4
+			battlefire_zd_p.weapon_state.cooldown_remaining_seconds = 0.9
+			battlefire_zd_p.weapon_state.reload_remaining_seconds = 0.6
+			battlefire_zd_p.weapon_state.is_reloading = true
+			var battlefire_zd_snap: Dictionary = _battlefire_weapon_snap(battlefire_zd_p)
+			var battlefire_zd_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_zd_bs, 0.0
+			)
+			battlefire_zero_delta_ok = (
+				battlefire_zd_res != null
+				and battlefire_zd_res.success
+				and _battlefire_weapon_unchanged(battlefire_zd_p, battlefire_zd_snap)
+			)
+
+	var battlefire_reload_start_ok: bool = false
+	var battlefire_rs_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rs_bs != null:
+		var battlefire_rs_p: BattleParticipant = _battlefire_add(battlefire_rs_bs, "fire_rs_p", "attacker", "pistol")
+		if battlefire_rs_p != null and battlefire_rs_p.weapon_state != null:
+			battlefire_rs_p.weapon_state.ammo_in_magazine = 0
+			battlefire_rs_p.weapon_state.is_reloading = false
+			battlefire_rs_p.weapon_state.reload_remaining_seconds = 0.0
+			var battlefire_rs_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_rs_bs, 0.25
+			)
+			# Same-tick contract: reload starts at catalog 1.5s then the same 0.25s is subtracted.
+			battlefire_reload_start_ok = (
+				battlefire_rs_res != null
+				and battlefire_rs_res.success
+				and battlefire_rs_p.weapon_state.is_reloading
+				and battlefire_rs_p.weapon_state.ammo_in_magazine == 0
+				and is_equal_approx(battlefire_rs_p.weapon_state.reload_remaining_seconds, 1.25)
+			)
+
+	var battlefire_reload_mid_ok: bool = false
+	var battlefire_rm_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rm_bs != null:
+		var battlefire_rm_p: BattleParticipant = _battlefire_add(battlefire_rm_bs, "fire_rm_p", "attacker", "pistol")
+		if battlefire_rm_p != null and battlefire_rm_p.weapon_state != null:
+			battlefire_rm_p.weapon_state.ammo_in_magazine = 0
+			battlefire_rm_p.weapon_state.is_reloading = true
+			battlefire_rm_p.weapon_state.reload_remaining_seconds = 1.0
+			var battlefire_rm_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_rm_bs, 0.25
+			)
+			battlefire_reload_mid_ok = (
+				battlefire_rm_res != null
+				and battlefire_rm_res.success
+				and battlefire_rm_p.weapon_state.is_reloading
+				and battlefire_rm_p.weapon_state.ammo_in_magazine == 0
+				and is_equal_approx(battlefire_rm_p.weapon_state.reload_remaining_seconds, 0.75)
+			)
+
+	var battlefire_reload_done_ok: bool = false
+	var battlefire_rd_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rd_bs != null:
+		var battlefire_rd_p: BattleParticipant = _battlefire_add(battlefire_rd_bs, "fire_rd_p", "attacker", "pistol")
+		if battlefire_rd_p != null and battlefire_rd_p.weapon_state != null:
+			battlefire_rd_p.weapon_state.ammo_in_magazine = 0
+			battlefire_rd_p.weapon_state.is_reloading = true
+			battlefire_rd_p.weapon_state.reload_remaining_seconds = 0.2
+			var battlefire_rd_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_rd_bs, 0.2
+			)
+			battlefire_reload_done_ok = (
+				battlefire_rd_res != null
+				and battlefire_rd_res.success
+				and not battlefire_rd_p.weapon_state.is_reloading
+				and is_equal_approx(battlefire_rd_p.weapon_state.reload_remaining_seconds, 0.0)
+				and battlefire_rd_p.weapon_state.ammo_in_magazine == 12
+				and battlefire_rd_p.get("reserve_ammo") == null
+			)
+
+	var battlefire_reload_large_ok: bool = false
+	var battlefire_rl_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rl_bs != null:
+		var battlefire_rl_p: BattleParticipant = _battlefire_add(battlefire_rl_bs, "fire_rl_p", "attacker", "pistol")
+		if battlefire_rl_p != null and battlefire_rl_p.weapon_state != null:
+			battlefire_rl_p.weapon_state.ammo_in_magazine = 0
+			battlefire_rl_p.weapon_state.is_reloading = true
+			battlefire_rl_p.weapon_state.reload_remaining_seconds = 0.5
+			var battlefire_rl_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_rl_bs, 10.0
+			)
+			battlefire_reload_large_ok = (
+				battlefire_rl_res != null
+				and battlefire_rl_res.success
+				and not battlefire_rl_p.weapon_state.is_reloading
+				and battlefire_rl_p.weapon_state.reload_remaining_seconds >= 0.0
+				and is_equal_approx(battlefire_rl_p.weapon_state.reload_remaining_seconds, 0.0)
+				and battlefire_rl_p.weapon_state.ammo_in_magazine == 12
+			)
+
+	var battlefire_zero_reload_def: BattleWeaponDefinition = BattleWeaponDefinition.new(
+		"zero_reload_probe", 10.0, 1.0, 8, 0.0
+	)
+	var battlefire_reload_zero_ok: bool = (
+		battlefire_zero_reload_def != null
+		and battlefire_zero_reload_def.is_valid()
+		and BattleWeaponCatalog.get_definition("pistol").reload_seconds > 0.0
+		and BattleWeaponCatalog.get_definition("shotgun").reload_seconds > 0.0
+		and BattleWeaponCatalog.get_definition("smg").reload_seconds > 0.0
+		and BattleWeaponCatalog.get_definition("rifle").reload_seconds > 0.0
+		and BattleWeaponCatalog.get_definition("sniper").reload_seconds > 0.0
+	)
+
+	var battlefire_neg_repair_ok: bool = false
+	var battlefire_neg_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_neg_bs != null:
+		var battlefire_neg_p: BattleParticipant = _battlefire_add(battlefire_neg_bs, "fire_neg_p", "attacker", "pistol")
+		if battlefire_neg_p != null and battlefire_neg_p.weapon_state != null:
+			battlefire_neg_p.weapon_state.ammo_in_magazine = -3
+			battlefire_neg_p.weapon_state.cooldown_remaining_seconds = -1.0
+			battlefire_neg_p.weapon_state.reload_remaining_seconds = -0.5
+			battlefire_neg_p.weapon_state.is_reloading = false
+			var battlefire_neg_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_neg_bs, 0.25
+			)
+			# Clamp ammo/timers to 0, then empty mag starts reload in the same tick (1.5 - 0.25).
+			battlefire_neg_repair_ok = (
+				battlefire_neg_res != null
+				and battlefire_neg_res.success
+				and battlefire_neg_p.weapon_state.ammo_in_magazine == 0
+				and is_equal_approx(battlefire_neg_p.weapon_state.cooldown_remaining_seconds, 0.0)
+				and battlefire_neg_p.weapon_state.is_reloading
+				and is_equal_approx(battlefire_neg_p.weapon_state.reload_remaining_seconds, 1.25)
+				and is_finite(battlefire_neg_p.weapon_state.cooldown_remaining_seconds)
+				and is_finite(battlefire_neg_p.weapon_state.reload_remaining_seconds)
+			)
+
+	var battlefire_nan_ok: bool = false
+	var battlefire_nan_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_nan_bs != null:
+		var battlefire_nan_bad: BattleParticipant = _battlefire_add(
+			battlefire_nan_bs, "fire_nan_bad", "attacker", "pistol"
+		)
+		var battlefire_nan_okp: BattleParticipant = _battlefire_add(
+			battlefire_nan_bs, "fire_nan_ok", "attacker", "pistol"
+		)
+		if (
+			battlefire_nan_bad != null
+			and battlefire_nan_okp != null
+			and battlefire_nan_bad.weapon_state != null
+			and battlefire_nan_okp.weapon_state != null
+		):
+			battlefire_nan_bad.weapon_state.cooldown_remaining_seconds = NAN
+			battlefire_nan_bad.weapon_state.reload_remaining_seconds = INF
+			battlefire_nan_okp.weapon_state.cooldown_remaining_seconds = 1.0
+			var battlefire_nan_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_nan_bs, 0.25
+			)
+			battlefire_nan_ok = (
+				battlefire_nan_res != null
+				and battlefire_nan_res.success
+				and not is_finite(battlefire_nan_bad.weapon_state.cooldown_remaining_seconds)
+				and not is_finite(battlefire_nan_bad.weapon_state.reload_remaining_seconds)
+				and is_equal_approx(battlefire_nan_okp.weapon_state.cooldown_remaining_seconds, 0.75)
+			)
+
+	var battlefire_unknown_ok: bool = false
+	var battlefire_unk_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_unk_bs != null:
+		var battlefire_unk_p: BattleParticipant = _battlefire_add(battlefire_unk_bs, "fire_unk_p", "attacker", "pistol")
+		if battlefire_unk_p != null:
+			battlefire_unk_p.weapon_type = "laser"
+			battlefire_unk_p.weapon_state = BattleWeaponState.new("laser", 0, 1.0, 0.8, false)
+			var battlefire_unk_res: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_unk_bs, 0.25
+			)
+			battlefire_unknown_ok = (
+				battlefire_unk_res != null
+				and battlefire_unk_res.success
+				and battlefire_unk_p.weapon_state != null
+				and battlefire_unk_p.weapon_state.weapon_type_id == "laser"
+				and battlefire_unk_p.weapon_state.ammo_in_magazine == 0
+				and not battlefire_unk_p.weapon_state.is_reloading
+				and is_equal_approx(battlefire_unk_p.weapon_state.cooldown_remaining_seconds, 0.75)
+				and is_equal_approx(battlefire_unk_p.weapon_state.reload_remaining_seconds, 0.8)
+				and BattleWeaponCatalog.get_definition("laser") == null
+			)
+
+	var battlefire_eligible_ok: bool = false
+	var battlefire_el_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_el_bs != null:
+		var battlefire_el_src: BattleParticipant = _battlefire_add(
+			battlefire_el_bs, "fire_el_src", "attacker", "pistol"
+		)
+		var battlefire_el_tgt: BattleParticipant = _battlefire_add(
+			battlefire_el_bs, "fire_el_tgt", "defender", "pistol"
+		)
+		if battlefire_el_src != null and battlefire_el_tgt != null and battlefire_el_src.weapon_state != null:
+			_battletarget_place(battlefire_el_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_el_tgt, Vector2(20.0, 10.0))
+			var battlefire_el_aimed: bool = battlefire_el_src.set_target_participant("fire_el_tgt")
+			var battlefire_el_ammo: int = battlefire_el_src.weapon_state.ammo_in_magazine
+			var battlefire_el_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_el_bs
+			)
+			battlefire_eligible_ok = (
+				battlefire_el_aimed
+				and _battlefire_eval_counts(battlefire_el_res, 2, 1, 1, 0, 0, 0, 0, 0)
+				and battlefire_el_src.weapon_state.ammo_in_magazine == battlefire_el_ammo
+				and is_equal_approx(battlefire_el_src.weapon_state.cooldown_remaining_seconds, 0.0)
+			)
+
+	var battlefire_query_only_ok: bool = false
+	var battlefire_qo_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_qo_bs != null:
+		var battlefire_qo_src: BattleParticipant = _battlefire_add(
+			battlefire_qo_bs, "fire_qo_src", "attacker", "pistol"
+		)
+		var battlefire_qo_tgt: BattleParticipant = _battlefire_add(
+			battlefire_qo_bs, "fire_qo_tgt", "defender", "pistol"
+		)
+		if battlefire_qo_src != null and battlefire_qo_tgt != null:
+			_battletarget_place(battlefire_qo_src, Vector2(12.0, 12.0))
+			_battletarget_place(battlefire_qo_tgt, Vector2(18.0, 12.0))
+			battlefire_qo_src.set_target_participant("fire_qo_tgt")
+			battlefire_qo_src.set_movement_intent(Vector2(0.0, 1.0))
+			battlefire_qo_src.set_navigation_path(Vector2(12.0, 20.0), [Vector2(12.0, 20.0)])
+			var battlefire_qo_snap: Dictionary = _battlefire_full_snap(battlefire_qo_src)
+			var battlefire_qo_res1: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_qo_bs
+			)
+			var battlefire_qo_res2: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_qo_bs
+			)
+			battlefire_query_only_ok = (
+				battlefire_qo_res1 != null
+				and battlefire_qo_res1.success
+				and battlefire_qo_res2 != null
+				and battlefire_qo_res2.success
+				and _battlefire_full_unchanged(battlefire_qo_src, battlefire_qo_snap)
+			)
+
+	var battlefire_no_target_ok: bool = false
+	var battlefire_nt_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_nt_bs != null:
+		var battlefire_nt_p: BattleParticipant = _battlefire_add(battlefire_nt_bs, "fire_nt_p", "attacker", "pistol")
+		if battlefire_nt_p != null:
+			_battletarget_place(battlefire_nt_p, Vector2(10.0, 10.0))
+			var battlefire_nt_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_nt_bs
+			)
+			battlefire_no_target_ok = _battlefire_eval_counts(battlefire_nt_res, 1, 0, 0, 0, 0, 0, 0, 0)
+
+	var battlefire_stale_target_ok: bool = false
+	var battlefire_st_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_st_bs != null:
+		var battlefire_st_p: BattleParticipant = _battlefire_add(battlefire_st_bs, "fire_st_p", "attacker", "pistol")
+		if battlefire_st_p != null:
+			_battletarget_place(battlefire_st_p, Vector2(10.0, 10.0))
+			battlefire_st_p.has_target_participant = true
+			battlefire_st_p.target_participant_id = "missing_fire_tgt"
+			var battlefire_st_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_st_bs
+			)
+			battlefire_stale_target_ok = (
+				_battlefire_eval_counts(battlefire_st_res, 1, 1, 0, 0, 0, 0, 0, 0)
+				and battlefire_st_p.has_target_participant
+				and battlefire_st_p.target_participant_id == "missing_fire_tgt"
+			)
+
+	var battlefire_same_side_ok: bool = false
+	var battlefire_ss_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_ss_bs != null:
+		var battlefire_ss_a: BattleParticipant = _battlefire_add(battlefire_ss_bs, "fire_ss_a", "attacker", "pistol")
+		var battlefire_ss_b: BattleParticipant = _battlefire_add(battlefire_ss_bs, "fire_ss_b", "attacker", "pistol")
+		if battlefire_ss_a != null and battlefire_ss_b != null:
+			_battletarget_place(battlefire_ss_a, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_ss_b, Vector2(16.0, 10.0))
+			battlefire_ss_a.set_target_participant("fire_ss_b")
+			var battlefire_ss_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_ss_bs
+			)
+			battlefire_same_side_ok = _battlefire_eval_counts(battlefire_ss_res, 2, 1, 0, 0, 0, 0, 0, 0)
+
+	var battlefire_bad_side_ok: bool = false
+	var battlefire_bs_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_bs_bs != null:
+		var battlefire_bs_src: BattleParticipant = _battlefire_add(
+			battlefire_bs_bs, "fire_bs_src", "attacker", "pistol"
+		)
+		var battlefire_bs_tgt: BattleParticipant = _battlefire_add(
+			battlefire_bs_bs, "fire_bs_tgt", "defender", "pistol"
+		)
+		if battlefire_bs_src != null and battlefire_bs_tgt != null:
+			_battletarget_place(battlefire_bs_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_bs_tgt, Vector2(18.0, 10.0))
+			battlefire_bs_src.set_target_participant("fire_bs_tgt")
+			battlefire_bs_src.side_id = ""
+			var battlefire_bs_res1: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_bs_bs
+			)
+			battlefire_bs_src.side_id = "attacker"
+			battlefire_bs_tgt.side_id = "ghost_side"
+			var battlefire_bs_res2: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_bs_bs
+			)
+			battlefire_bad_side_ok = (
+				battlefire_bs_res1 != null
+				and battlefire_bs_res1.success
+				and battlefire_bs_res1.participants_eligible_to_fire == 0
+				and battlefire_bs_res2 != null
+				and battlefire_bs_res2.success
+				and battlefire_bs_res2.participants_eligible_to_fire == 0
+			)
+
+	var battlefire_ineligible_ok: bool = false
+	var battlefire_in_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_in_bs != null:
+		var battlefire_in_ready: BattleParticipant = _battlefire_add(
+			battlefire_in_bs, "fire_in_ready", "attacker", "pistol"
+		)
+		var battlefire_in_dead: BattleParticipant = _battlefire_add(
+			battlefire_in_bs, "fire_in_dead", "attacker", "pistol"
+		)
+		var battlefire_in_unpos: BattleParticipant = _battlefire_add(
+			battlefire_in_bs, "fire_in_unpos", "attacker", "pistol"
+		)
+		var battlefire_in_nan: BattleParticipant = _battlefire_add(
+			battlefire_in_bs, "fire_in_nan", "attacker", "pistol"
+		)
+		var battlefire_in_tgt: BattleParticipant = _battlefire_add(
+			battlefire_in_bs, "fire_in_tgt", "defender", "pistol"
+		)
+		var battlefire_in_dead_t: BattleParticipant = _battlefire_add(
+			battlefire_in_bs, "fire_in_dead_t", "defender", "pistol"
+		)
+		if (
+			battlefire_in_ready != null
+			and battlefire_in_dead != null
+			and battlefire_in_unpos != null
+			and battlefire_in_nan != null
+			and battlefire_in_tgt != null
+			and battlefire_in_dead_t != null
+		):
+			_battletarget_place(battlefire_in_ready, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_in_dead, Vector2(10.0, 12.0))
+			_battletarget_place(battlefire_in_nan, Vector2(10.0, 14.0))
+			_battletarget_place(battlefire_in_tgt, Vector2(18.0, 10.0))
+			_battletarget_place(battlefire_in_dead_t, Vector2(18.0, 16.0))
+			battlefire_in_dead.is_alive = false
+			battlefire_in_unpos.has_battle_position = false
+			battlefire_in_nan.battle_position = Vector2(NAN, 14.0)
+			battlefire_in_dead_t.is_alive = false
+			battlefire_in_ready.set_target_participant("fire_in_tgt")
+			battlefire_in_dead.set_target_participant("fire_in_tgt")
+			battlefire_in_unpos.set_target_participant("fire_in_tgt")
+			battlefire_in_nan.set_target_participant("fire_in_tgt")
+			var battlefire_in_src2: BattleParticipant = _battlefire_add(
+				battlefire_in_bs, "fire_in_src2", "attacker", "pistol"
+			)
+			if battlefire_in_src2 != null:
+				_battletarget_place(battlefire_in_src2, Vector2(10.0, 16.0))
+				battlefire_in_src2.set_target_participant("fire_in_dead_t")
+			var battlefire_in_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_in_bs
+			)
+			battlefire_ineligible_ok = (
+				battlefire_in_res != null
+				and battlefire_in_res.success
+				and battlefire_in_res.participants_eligible_to_fire == 1
+			)
+
+	var battlefire_reload_block_ok: bool = false
+	var battlefire_rb_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rb_bs != null:
+		var battlefire_rb_src: BattleParticipant = _battlefire_add(
+			battlefire_rb_bs, "fire_rb_src", "attacker", "pistol"
+		)
+		var battlefire_rb_tgt: BattleParticipant = _battlefire_add(
+			battlefire_rb_bs, "fire_rb_tgt", "defender", "pistol"
+		)
+		if battlefire_rb_src != null and battlefire_rb_tgt != null and battlefire_rb_src.weapon_state != null:
+			_battletarget_place(battlefire_rb_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_rb_tgt, Vector2(18.0, 10.0))
+			battlefire_rb_src.set_target_participant("fire_rb_tgt")
+			battlefire_rb_src.weapon_state.is_reloading = true
+			battlefire_rb_src.weapon_state.reload_remaining_seconds = 0.9
+			var battlefire_rb_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_rb_bs
+			)
+			battlefire_reload_block_ok = _battlefire_eval_counts(battlefire_rb_res, 2, 1, 0, 0, 0, 0, 1, 0)
+
+	var battlefire_empty_block_ok: bool = false
+	var battlefire_eb_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_eb_bs != null:
+		var battlefire_eb_src: BattleParticipant = _battlefire_add(
+			battlefire_eb_bs, "fire_eb_src", "attacker", "pistol"
+		)
+		var battlefire_eb_tgt: BattleParticipant = _battlefire_add(
+			battlefire_eb_bs, "fire_eb_tgt", "defender", "pistol"
+		)
+		if battlefire_eb_src != null and battlefire_eb_tgt != null and battlefire_eb_src.weapon_state != null:
+			_battletarget_place(battlefire_eb_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_eb_tgt, Vector2(18.0, 10.0))
+			battlefire_eb_src.set_target_participant("fire_eb_tgt")
+			battlefire_eb_src.weapon_state.ammo_in_magazine = 0
+			battlefire_eb_src.weapon_state.is_reloading = false
+			var battlefire_eb_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_eb_bs
+			)
+			battlefire_empty_block_ok = (
+				_battlefire_eval_counts(battlefire_eb_res, 2, 1, 0, 0, 0, 0, 0, 1)
+				and battlefire_eb_src.weapon_state.ammo_in_magazine == 0
+				and not battlefire_eb_src.weapon_state.is_reloading
+			)
+
+	var battlefire_cooldown_block_ok: bool = false
+	var battlefire_cb_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_cb_bs != null:
+		var battlefire_cb_src: BattleParticipant = _battlefire_add(
+			battlefire_cb_bs, "fire_cb_src", "attacker", "pistol"
+		)
+		var battlefire_cb_tgt: BattleParticipant = _battlefire_add(
+			battlefire_cb_bs, "fire_cb_tgt", "defender", "pistol"
+		)
+		if battlefire_cb_src != null and battlefire_cb_tgt != null and battlefire_cb_src.weapon_state != null:
+			_battletarget_place(battlefire_cb_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_cb_tgt, Vector2(18.0, 10.0))
+			battlefire_cb_src.set_target_participant("fire_cb_tgt")
+			battlefire_cb_src.weapon_state.cooldown_remaining_seconds = 0.4
+			var battlefire_cb_hot: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_cb_bs
+			)
+			battlefire_cb_src.weapon_state.cooldown_remaining_seconds = 0.0
+			var battlefire_cb_ready: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_cb_bs
+			)
+			battlefire_cooldown_block_ok = (
+				_battlefire_eval_counts(battlefire_cb_hot, 2, 1, 0, 0, 0, 1, 0, 0)
+				and _battlefire_eval_counts(battlefire_cb_ready, 2, 1, 1, 0, 0, 0, 0, 0)
+			)
+
+	var battlefire_range_ok: bool = false
+	var battlefire_rg_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rg_bs != null:
+		var battlefire_rg_src: BattleParticipant = _battlefire_add(
+			battlefire_rg_bs, "fire_rg_src", "attacker", "pistol"
+		)
+		var battlefire_rg_tgt: BattleParticipant = _battlefire_add(
+			battlefire_rg_bs, "fire_rg_tgt", "defender", "pistol"
+		)
+		if battlefire_rg_src != null and battlefire_rg_tgt != null:
+			_battletarget_place(battlefire_rg_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_rg_tgt, Vector2(34.0, 10.0))
+			battlefire_rg_src.set_target_participant("fire_rg_tgt")
+			var battlefire_rg_edge: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_rg_bs
+			)
+			_battletarget_place(battlefire_rg_tgt, Vector2(34.5, 10.0))
+			var battlefire_rg_out: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_rg_bs
+			)
+			battlefire_range_ok = (
+				is_equal_approx(battlefire_rg_src.battle_position.distance_to(Vector2(34.0, 10.0)), 24.0)
+				and _battlefire_eval_counts(battlefire_rg_edge, 2, 1, 1, 0, 0, 0, 0, 0)
+				and _battlefire_eval_counts(battlefire_rg_out, 2, 1, 0, 0, 1, 0, 0, 0)
+			)
+
+	var battlefire_range_diff_ok: bool = false
+	var battlefire_rdiff_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rdiff_bs != null:
+		var battlefire_rdiff_sg: BattleParticipant = _battlefire_add(
+			battlefire_rdiff_bs, "fire_rdiff_sg", "attacker", "shotgun"
+		)
+		var battlefire_rdiff_rf: BattleParticipant = _battlefire_add(
+			battlefire_rdiff_bs, "fire_rdiff_rf", "attacker", "rifle"
+		)
+		var battlefire_rdiff_t: BattleParticipant = _battlefire_add(
+			battlefire_rdiff_bs, "fire_rdiff_t", "defender", "pistol"
+		)
+		if battlefire_rdiff_sg != null and battlefire_rdiff_rf != null and battlefire_rdiff_t != null:
+			_battletarget_place(battlefire_rdiff_sg, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_rdiff_rf, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_rdiff_t, Vector2(26.0, 10.0))
+			battlefire_rdiff_sg.set_target_participant("fire_rdiff_t")
+			battlefire_rdiff_rf.set_target_participant("fire_rdiff_t")
+			var battlefire_rdiff_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_rdiff_bs
+			)
+			battlefire_range_diff_ok = _battlefire_eval_counts(battlefire_rdiff_res, 3, 2, 1, 0, 1, 0, 0, 0)
+
+	var battlefire_los_block_ok: bool = false
+	var battlefire_lb_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_lb_bs != null and battlefire_lb_bs.battlefield_geometry != null:
+		var battlefire_lb_wall: BattleObstacle = BattleObstacle.new(
+			"fire_los_wall",
+			Rect2(28.0, 20.0, 6.0, 20.0),
+			true,
+			true
+		)
+		var battlefire_lb_src: BattleParticipant = _battlefire_add(
+			battlefire_lb_bs, "fire_lb_src", "attacker", "pistol"
+		)
+		var battlefire_lb_tgt: BattleParticipant = _battlefire_add(
+			battlefire_lb_bs, "fire_lb_tgt", "defender", "pistol"
+		)
+		if (
+			battlefire_lb_src != null
+			and battlefire_lb_tgt != null
+			and battlefire_lb_bs.battlefield_geometry.add_obstacle(battlefire_lb_wall)
+		):
+			_battletarget_place(battlefire_lb_src, Vector2(20.0, 30.0))
+			_battletarget_place(battlefire_lb_tgt, Vector2(40.0, 30.0))
+			battlefire_lb_src.set_target_participant("fire_lb_tgt")
+			var battlefire_lb_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_lb_bs
+			)
+			battlefire_los_block_ok = (
+				battletarget_pre_los_wall_ok
+				and _battletarget_has(battlefire_lb_src, "fire_lb_tgt")
+				and _battlefire_eval_counts(battlefire_lb_res, 2, 1, 0, 1, 0, 0, 0, 0)
+			)
+
+	var battlefire_blocker_indep_ok: bool = false
+	var battlefire_fence_bs: BattleState = _battlemove_make_state("active")
+	var battlefire_glass_bs: BattleState = _battlemove_make_state("active")
+	if (
+		battlefire_fence_bs != null
+		and battlefire_glass_bs != null
+		and battlefire_fence_bs.battlefield_geometry != null
+		and battlefire_glass_bs.battlefield_geometry != null
+	):
+		var battlefire_fence: BattleObstacle = BattleObstacle.new(
+			"fire_fence", Rect2(26.0, 20.0, 4.0, 20.0), true, false
+		)
+		var battlefire_glass: BattleObstacle = BattleObstacle.new(
+			"fire_glass", Rect2(26.0, 20.0, 4.0, 20.0), false, true
+		)
+		var battlefire_fence_src: BattleParticipant = _battlefire_add(
+			battlefire_fence_bs, "fire_fence_src", "attacker", "pistol"
+		)
+		var battlefire_fence_tgt: BattleParticipant = _battlefire_add(
+			battlefire_fence_bs, "fire_fence_tgt", "defender", "pistol"
+		)
+		var battlefire_glass_src: BattleParticipant = _battlefire_add(
+			battlefire_glass_bs, "fire_glass_src", "attacker", "pistol"
+		)
+		var battlefire_glass_tgt: BattleParticipant = _battlefire_add(
+			battlefire_glass_bs, "fire_glass_tgt", "defender", "pistol"
+		)
+		if (
+			battlefire_fence_src != null
+			and battlefire_fence_tgt != null
+			and battlefire_glass_src != null
+			and battlefire_glass_tgt != null
+			and battlefire_fence_bs.battlefield_geometry.add_obstacle(battlefire_fence)
+			and battlefire_glass_bs.battlefield_geometry.add_obstacle(battlefire_glass)
+		):
+			_battletarget_place(battlefire_fence_src, Vector2(20.0, 30.0))
+			_battletarget_place(battlefire_fence_tgt, Vector2(34.0, 30.0))
+			_battletarget_place(battlefire_glass_src, Vector2(20.0, 30.0))
+			_battletarget_place(battlefire_glass_tgt, Vector2(34.0, 30.0))
+			battlefire_fence_src.set_target_participant("fire_fence_tgt")
+			battlefire_glass_src.set_target_participant("fire_glass_tgt")
+			var battlefire_fence_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_fence_bs
+			)
+			var battlefire_glass_res: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_glass_bs
+			)
+			battlefire_blocker_indep_ok = (
+				_battlefire_eval_counts(battlefire_fence_res, 2, 1, 1, 0, 0, 0, 0, 0)
+				and _battlefire_eval_counts(battlefire_glass_res, 2, 1, 0, 1, 0, 0, 0, 0)
+			)
+
+	var battlefire_reason_order_ok: bool = false
+	var battlefire_ro1: BattleFireControlResult = _battlefire_reason_eval(
+		true, 0, 0.0, Vector2(10.0, 10.0), Vector2(18.0, 10.0), false
+	)
+	var battlefire_ro2: BattleFireControlResult = _battlefire_reason_eval(
+		false, 8, 0.5, Vector2(10.0, 10.0), Vector2(50.0, 10.0), false
+	)
+	var battlefire_ro3: BattleFireControlResult = _battlefire_reason_eval(
+		false, 12, 0.0, Vector2(10.0, 10.0), Vector2(50.0, 10.0), true
+	)
+	battlefire_reason_order_ok = (
+		_battlefire_eval_counts(battlefire_ro1, 2, 1, 0, 0, 0, 0, 1, 0)
+		and _battlefire_eval_counts(battlefire_ro2, 2, 1, 0, 0, 0, 1, 0, 0)
+		and _battlefire_eval_counts(battlefire_ro3, 2, 1, 0, 0, 1, 0, 0, 0)
+	)
+
+	var battlefire_drift_ok: bool = false
+	var battlefire_dr_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_dr_bs != null:
+		var battlefire_dr_src: BattleParticipant = _battlefire_add(
+			battlefire_dr_bs, "fire_dr_src", "attacker", "pistol"
+		)
+		var battlefire_dr_tgt: BattleParticipant = _battlefire_add(
+			battlefire_dr_bs, "fire_dr_tgt", "defender", "pistol"
+		)
+		if battlefire_dr_src != null and battlefire_dr_tgt != null and battlefire_dr_src.weapon_state != null:
+			_battletarget_place(battlefire_dr_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_dr_tgt, Vector2(18.0, 10.0))
+			battlefire_dr_src.set_target_participant("fire_dr_tgt")
+			battlefire_dr_src.weapon_state.weapon_type_id = "rifle"
+			battlefire_dr_src.weapon_state.cooldown_remaining_seconds = 1.0
+			var battlefire_dr_eval: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+				battlefire_dr_bs
+			)
+			var battlefire_dr_adv: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+				battlefire_dr_bs, 0.25
+			)
+			battlefire_drift_ok = (
+				battlefire_dr_src.weapon_type == "pistol"
+				and battlefire_dr_src.weapon_state.weapon_type_id == "rifle"
+				and battlefire_dr_eval != null
+				and battlefire_dr_eval.success
+				and battlefire_dr_eval.participants_eligible_to_fire == 0
+				and battlefire_dr_adv != null
+				and battlefire_dr_adv.success
+				and is_equal_approx(battlefire_dr_src.weapon_state.cooldown_remaining_seconds, 0.75)
+			)
+
+	var battlefire_commit_ok: bool = false
+	var battlefire_cm_src: BattleParticipant = BattleParticipant.new("fire_cm_src", "", "a", "attacker", "pistol")
+	var battlefire_cm_def: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	if battlefire_cm_src != null and battlefire_cm_src.weapon_state != null and battlefire_cm_def != null:
+		_battletarget_place(battlefire_cm_src, Vector2(10.0, 10.0))
+		battlefire_cm_src.set_target_participant("ghost")
+		var battlefire_cm_nav: bool = battlefire_cm_src.set_navigation_path(Vector2(10.0, 16.0), [Vector2(10.0, 16.0)])
+		var battlefire_cm_snap: Dictionary = _battlefire_full_snap(battlefire_cm_src)
+		var battlefire_cm_did: bool = BattleFireControlService.commit_shot(battlefire_cm_src, battlefire_cm_def)
+		battlefire_commit_ok = (
+			battlefire_cm_nav
+			and battlefire_cm_did
+			and battlefire_cm_src.weapon_state.ammo_in_magazine == 11
+			and is_equal_approx(battlefire_cm_src.weapon_state.cooldown_remaining_seconds, 0.4)
+			and battlefire_cm_src.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+			and battlefire_cm_src.target_participant_id == "ghost"
+			and battlefire_cm_src.has_navigation_destination
+			and battlefire_cm_src.get("hit_points") == null
+			and battlefire_cm_src.is_alive
+			and not battlefire_cm_src.is_wounded
+		)
+
+	var battlefire_commit_no_combat_ok: bool = false
+	var battlefire_cnc_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_cnc_bs != null and battlefire_cnc_bs.battlefield_geometry != null:
+		var battlefire_cnc_wall: BattleObstacle = BattleObstacle.new(
+			"fire_cnc_wall", Rect2(28.0, 20.0, 6.0, 20.0), true, true
+		)
+		var battlefire_cnc_src: BattleParticipant = _battlefire_add(
+			battlefire_cnc_bs, "fire_cnc_src", "attacker", "pistol"
+		)
+		var battlefire_cnc_tgt: BattleParticipant = _battlefire_add(
+			battlefire_cnc_bs, "fire_cnc_tgt", "defender", "pistol"
+		)
+		if (
+			battlefire_cnc_src != null
+			and battlefire_cnc_tgt != null
+			and battlefire_cnc_src.weapon_state != null
+			and battlefire_cnc_bs.battlefield_geometry.add_obstacle(battlefire_cnc_wall)
+		):
+			_battletarget_place(battlefire_cnc_src, Vector2(20.0, 30.0))
+			_battletarget_place(battlefire_cnc_tgt, Vector2(80.0, 30.0))
+			var battlefire_cnc_def: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+			var battlefire_cnc_did: bool = BattleFireControlService.commit_shot(battlefire_cnc_src, battlefire_cnc_def)
+			var battlefire_cnc_svc: BattleFireControlService = BattleFireControlService.new()
+			battlefire_commit_no_combat_ok = (
+				battlefire_cnc_did
+				and battlefire_cnc_src.weapon_state.ammo_in_magazine == 11
+				and not battlefire_cnc_svc.has_method("apply_damage")
+				and not battlefire_cnc_svc.has_method("resolve_hit")
+				and not battlefire_cnc_svc.has_method("roll_hit")
+				and not battlefire_cnc_svc.has_method("fire")
+			)
+
+	var battlefire_commit_safe_ok: bool = false
+	var battlefire_cs_empty: BattleParticipant = BattleParticipant.new("fire_cs_empty", "", "a", "attacker", "pistol")
+	var battlefire_cs_cd: BattleParticipant = BattleParticipant.new("fire_cs_cd", "", "a", "attacker", "pistol")
+	var battlefire_cs_rl: BattleParticipant = BattleParticipant.new("fire_cs_rl", "", "a", "attacker", "pistol")
+	var battlefire_cs_def: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	if (
+		battlefire_cs_empty != null
+		and battlefire_cs_cd != null
+		and battlefire_cs_rl != null
+		and battlefire_cs_empty.weapon_state != null
+		and battlefire_cs_cd.weapon_state != null
+		and battlefire_cs_rl.weapon_state != null
+		and battlefire_cs_def != null
+	):
+		battlefire_cs_empty.weapon_state.ammo_in_magazine = 0
+		battlefire_cs_cd.weapon_state.cooldown_remaining_seconds = 0.5
+		battlefire_cs_rl.weapon_state.is_reloading = true
+		var battlefire_cs_e: bool = BattleFireControlService.commit_shot(battlefire_cs_empty, battlefire_cs_def)
+		var battlefire_cs_c: bool = BattleFireControlService.commit_shot(battlefire_cs_cd, battlefire_cs_def)
+		var battlefire_cs_r: bool = BattleFireControlService.commit_shot(battlefire_cs_rl, battlefire_cs_def)
+		battlefire_commit_safe_ok = (
+			not battlefire_cs_e
+			and not battlefire_cs_c
+			and not battlefire_cs_r
+			and battlefire_cs_empty.weapon_state.ammo_in_magazine == 0
+			and battlefire_cs_cd.weapon_state.ammo_in_magazine == 12
+			and is_equal_approx(battlefire_cs_cd.weapon_state.cooldown_remaining_seconds, 0.5)
+			and battlefire_cs_rl.weapon_state.ammo_in_magazine == 12
+			and battlefire_cs_rl.weapon_state.is_reloading
+		)
+
+	var battlefire_commit_mismatch_ok: bool = false
+	var battlefire_mm_p: BattleParticipant = BattleParticipant.new("fire_mm_p", "", "a", "attacker", "pistol")
+	var battlefire_mm_rifle: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("rifle")
+	if battlefire_mm_p != null and battlefire_mm_p.weapon_state != null and battlefire_mm_rifle != null:
+		var battlefire_mm_did: bool = BattleFireControlService.commit_shot(battlefire_mm_p, battlefire_mm_rifle)
+		battlefire_commit_mismatch_ok = (
+			not battlefire_mm_did
+			and battlefire_mm_p.weapon_state.ammo_in_magazine == 12
+			and is_equal_approx(battlefire_mm_p.weapon_state.cooldown_remaining_seconds, 0.0)
+			and battlefire_mm_p.weapon_state.weapon_type_id == "pistol"
+		)
+
+	var battlefire_runtime_ok: bool = false
+	var battlefire_runtime_order_ok: bool = false
+	var battlefire_rt_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rt_bs != null:
+		var battlefire_rt_src: BattleParticipant = _battlefire_add(
+			battlefire_rt_bs, "fire_rt_src", "attacker", "pistol"
+		)
+		var battlefire_rt_tgt: BattleParticipant = _battlefire_add(
+			battlefire_rt_bs, "fire_rt_tgt", "defender", "pistol"
+		)
+		if battlefire_rt_src != null and battlefire_rt_tgt != null and battlefire_rt_src.weapon_state != null:
+			_battletarget_place(battlefire_rt_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_rt_tgt, Vector2(20.0, 10.0))
+			battlefire_rt_src.set_movement_speed(2.0)
+			battlefire_rt_src.set_movement_intent(Vector2(1.0, 0.0))
+			battlefire_rt_src.weapon_state.cooldown_remaining_seconds = 1.0
+			var battlefire_rt_res: BattleRuntimeResult = BattleRuntimeService.advance(battlefire_rt_bs, 0.25)
+			battlefire_runtime_ok = (
+				battlefire_rt_res != null
+				and battlefire_rt_res.success
+				and is_equal_approx(battlefire_rt_src.weapon_state.cooldown_remaining_seconds, 0.75)
+				and battlefire_rt_src.battle_position.is_equal_approx(Vector2(10.5, 10.0))
+				and _battletarget_has(battlefire_rt_src, "fire_rt_tgt")
+			)
+			battlefire_runtime_order_ok = battlefire_runtime_ok
+
+	var battlefire_runtime_zero_ok: bool = false
+	var battlefire_rz_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_rz_bs != null:
+		var battlefire_rz_src: BattleParticipant = _battlefire_add(
+			battlefire_rz_bs, "fire_rz_src", "attacker", "pistol"
+		)
+		var battlefire_rz_tgt: BattleParticipant = _battlefire_add(
+			battlefire_rz_bs, "fire_rz_tgt", "defender", "pistol"
+		)
+		if battlefire_rz_src != null and battlefire_rz_tgt != null and battlefire_rz_src.weapon_state != null:
+			_battletarget_place(battlefire_rz_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_rz_tgt, Vector2(22.0, 10.0))
+			battlefire_rz_src.weapon_state.cooldown_remaining_seconds = 0.8
+			battlefire_rz_bs.elapsed_time_seconds = 3.0
+			var battlefire_rz_res: BattleRuntimeResult = BattleRuntimeService.advance(battlefire_rz_bs, 0.0)
+			battlefire_runtime_zero_ok = (
+				battlefire_rz_res != null
+				and battlefire_rz_res.success
+				and is_equal_approx(battlefire_rz_src.weapon_state.cooldown_remaining_seconds, 0.8)
+				and battlefire_rz_src.battle_position.is_equal_approx(Vector2(10.0, 10.0))
+				and is_equal_approx(battlefire_rz_bs.elapsed_time_seconds, 3.0)
+				and _battletarget_has(battlefire_rz_src, "fire_rz_tgt")
+			)
+
+	var battlefire_runtime_tx_ok: bool = false
+	var battlefire_tx_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_tx_bs != null:
+		var battlefire_tx_src: BattleParticipant = _battlefire_add(
+			battlefire_tx_bs, "fire_tx_src", "attacker", "pistol"
+		)
+		var battlefire_tx_tgt: BattleParticipant = _battlefire_add(
+			battlefire_tx_bs, "fire_tx_tgt", "defender", "pistol"
+		)
+		if battlefire_tx_src != null and battlefire_tx_tgt != null and battlefire_tx_src.weapon_state != null:
+			_battletarget_place(battlefire_tx_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_tx_tgt, Vector2(20.0, 10.0))
+			battlefire_tx_src.set_target_participant("fire_tx_tgt")
+			battlefire_tx_src.set_movement_speed(2.0)
+			battlefire_tx_src.set_movement_intent(Vector2(1.0, 0.0))
+			battlefire_tx_src.weapon_state.cooldown_remaining_seconds = 1.0
+			battlefire_tx_bs.elapsed_time_seconds = 4.0
+			var battlefire_tx_snap: Dictionary = _battlefire_full_snap(battlefire_tx_src)
+			battlefire_tx_bs.battlefield_geometry = null
+			var battlefire_tx_res: BattleRuntimeResult = BattleRuntimeService.advance(battlefire_tx_bs, 0.5)
+			battlefire_runtime_tx_ok = (
+				_battlert_fail_ok(battlefire_tx_res, "missing_battlefield_geometry", 4.0)
+				and is_equal_approx(battlefire_tx_bs.elapsed_time_seconds, 4.0)
+				and _battlefire_full_unchanged(battlefire_tx_src, battlefire_tx_snap)
+			)
+
+	var battlefire_counts_ok: bool = false
+	var battlefire_ct_order_a: Array[String] = ["e", "c", "r", "l", "m", "n"]
+	var battlefire_ct_order_b: Array[String] = ["n", "m", "l", "r", "c", "e"]
+	var battlefire_ct_a: BattleFireControlResult = _battlefire_mixed_eval(battlefire_ct_order_a)
+	var battlefire_ct_b: BattleFireControlResult = _battlefire_mixed_eval(battlefire_ct_order_b)
+	battlefire_counts_ok = (
+		_battlefire_eval_counts(battlefire_ct_a, 7, 6, 1, 1, 1, 1, 1, 1)
+		and _battlefire_eval_counts(battlefire_ct_b, 7, 6, 1, 1, 1, 1, 1, 1)
+	)
+
+	var battlefire_ok_res: BattleFireControlResult = BattleFireControlResult.succeeded(4, 3, 1, 1, 0, 1, 0, 1)
+	var battlefire_fail_res: BattleFireControlResult = BattleFireControlResult.failed(
+		"null_battle_state",
+		"Battle fire control failed: battle_state is null."
+	)
+	var battlefire_result_helper_ok: bool = (
+		battlefire_ok_res != null
+		and battlefire_ok_res.success
+		and battlefire_ok_res.participants_considered == 4
+		and battlefire_ok_res.participants_with_targets == 3
+		and battlefire_ok_res.participants_eligible_to_fire == 1
+		and battlefire_ok_res.participants_blocked_by_los == 1
+		and battlefire_ok_res.participants_blocked_by_range == 0
+		and battlefire_ok_res.participants_blocked_by_cooldown == 1
+		and battlefire_ok_res.participants_reloading == 0
+		and battlefire_ok_res.participants_empty == 1
+		and battlefire_ok_res.error_code.is_empty()
+		and battlefire_ok_res.error_message.is_empty()
+		and battlefire_fail_res != null
+		and not battlefire_fail_res.success
+		and battlefire_fail_res.participants_considered == 0
+		and battlefire_fail_res.participants_eligible_to_fire == 0
+		and battlefire_fail_res.error_code == "null_battle_state"
+		and battlefire_fail_res.error_message == "Battle fire control failed: battle_state is null."
+	)
+
+	var battlefire_persist_ok: bool = false
+	var battlefire_immutability_ok: bool = false
+	var battlefire_camp_pack: Dictionary = _battle_create_ready_pack()
+	var battlefire_camp_game: GameState = battlefire_camp_pack.get("game_state", null) as GameState
+	var battlefire_camp_force: TravelingForce = battlefire_camp_pack.get("force", null) as TravelingForce
+	var battlefire_camp_bs: BattleState = battlefire_camp_pack.get("battle_state", null) as BattleState
+	if battlefire_camp_game != null and battlefire_camp_bs != null:
+		var battlefire_camp_deployed: bool = _battle_deploy_standard_attacker(battlefire_camp_bs)
+		var battlefire_camp_geo: bool = _battlegeo_init(battlefire_camp_bs)
+		var battlefire_camp_part: BattleParticipant = battlefire_camp_bs.get_participant("battle_sol_a")
+		if battlefire_camp_part != null and battlefire_camp_part.weapon_state != null:
+			battlefire_camp_part.weapon_state.ammo_in_magazine = 2
+			battlefire_camp_part.weapon_state.cooldown_remaining_seconds = 0.7
+			battlefire_camp_part.weapon_state.is_reloading = true
+			battlefire_camp_part.weapon_state.reload_remaining_seconds = 0.4
+		var battlefire_camp_persist: Dictionary = battlefire_camp_game.to_dict()
+		battlefire_persist_ok = (
+			battlefire_camp_deployed
+			and battlefire_camp_geo
+			and _battle_serialized_campaign_keys_only(battlefire_camp_persist)
+			and not _battle_data_has_tactical_trace(battlefire_camp_persist)
+		)
+		var battlefire_camp_snap: Dictionary = _battle_campaign_snapshot(
+			battlefire_camp_game,
+			battlefire_camp_force,
+			"battle_mission"
+		)
+		var battlefire_camp_soldier: Soldier = battlefire_camp_game.get_soldier("battle_sol_a")
+		var battlefire_camp_wpn: String = ""
+		if battlefire_camp_soldier != null:
+			battlefire_camp_wpn = battlefire_camp_soldier.weapon_type_id
+		var battlefire_camp_begun: bool = battlefire_camp_bs.begin_battle()
+		var battlefire_camp_adv: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+			battlefire_camp_bs, 0.2
+		)
+		var battlefire_camp_eval: BattleFireControlResult = BattleFireControlService.evaluate_fire_eligibility(
+			battlefire_camp_bs
+		)
+		battlefire_immutability_ok = (
+			battlefire_persist_ok
+			and battlefire_camp_begun
+			and battlefire_camp_adv != null
+			and battlefire_camp_adv.success
+			and battlefire_camp_eval != null
+			and battlefire_camp_eval.success
+			and _battle_campaign_unchanged(
+				battlefire_camp_game,
+				battlefire_camp_snap,
+				battlefire_camp_force,
+				"battle_mission"
+			)
+			and battlefire_camp_soldier != null
+			and battlefire_camp_soldier.weapon_type_id == battlefire_camp_wpn
+		)
+
+	var battlefire_no_auto_fire_ok: bool = false
+	var battlefire_naf_bs: BattleState = _battlemove_make_state("active")
+	if battlefire_naf_bs != null:
+		var battlefire_naf_src: BattleParticipant = _battlefire_add(
+			battlefire_naf_bs, "fire_naf_src", "attacker", "pistol"
+		)
+		var battlefire_naf_tgt: BattleParticipant = _battlefire_add(
+			battlefire_naf_bs, "fire_naf_tgt", "defender", "pistol"
+		)
+		if battlefire_naf_src != null and battlefire_naf_tgt != null and battlefire_naf_src.weapon_state != null:
+			_battletarget_place(battlefire_naf_src, Vector2(10.0, 10.0))
+			_battletarget_place(battlefire_naf_tgt, Vector2(20.0, 10.0))
+			var battlefire_naf_r1: BattleRuntimeResult = BattleRuntimeService.advance(battlefire_naf_bs, 0.5)
+			var battlefire_naf_r2: BattleRuntimeResult = BattleRuntimeService.advance(battlefire_naf_bs, 0.5)
+			var battlefire_naf_r3: BattleRuntimeResult = BattleRuntimeService.advance(battlefire_naf_bs, 0.5)
+			battlefire_no_auto_fire_ok = (
+				battlefire_naf_r1 != null
+				and battlefire_naf_r1.success
+				and battlefire_naf_r2 != null
+				and battlefire_naf_r2.success
+				and battlefire_naf_r3 != null
+				and battlefire_naf_r3.success
+				and _battletarget_has(battlefire_naf_src, "fire_naf_tgt")
+				and battlefire_naf_src.weapon_state.ammo_in_magazine == 12
+				and is_equal_approx(battlefire_naf_src.weapon_state.cooldown_remaining_seconds, 0.0)
+			)
+
+	var battlefire_no_combat_ok: bool = false
+	var battlefire_nc_bs: BattleState = _battlemove_make_state("active")
+	var battlefire_nc_svc: BattleFireControlService = BattleFireControlService.new()
+	var battlefire_nc_rt: BattleRuntimeService = BattleRuntimeService.new()
+	var battlefire_nc_p: BattleParticipant = BattleParticipant.new("fire_nc_p", "", "a", "attacker", "pistol")
+	if battlefire_nc_bs != null:
+		battlefire_no_combat_ok = (
+			_battle_has_no_combat_turn_model(battlefire_nc_bs)
+			and not battlefire_nc_svc.has_method("fire")
+			and not battlefire_nc_svc.has_method("apply_damage")
+			and not battlefire_nc_svc.has_method("resolve_hit")
+			and not battlefire_nc_svc.has_method("roll_accuracy")
+			and not battlefire_nc_svc.has_method("spawn_projectile")
+			and not battlefire_nc_rt.has_method("commit_shot")
+			and not battlefire_nc_rt.has_method("fire")
+			and battlefire_nc_p.get("hit_points") == null
+			and battlefire_nc_p.get("cover_value") == null
+			and battlefire_nc_p.get("elevation_level") == null
+			and battlefire_nc_p.get("defend_position") == null
+			and battlefire_nc_bs.get("perception_radius") == null
+			and battlefire_nc_bs.get("fog_of_war") == null
+		)
+
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
 		"year_matches": restored.current_year == original.current_year,
@@ -13801,6 +14927,55 @@ static func run() -> Dictionary:
 		"battlelos_flat_ok": battlelos_flat_ok,
 		"battlelos_result_helper_ok": battlelos_result_helper_ok,
 		"battlelos_no_combat_ok": battlelos_no_combat_ok,
+		"battlefire_def_ok": battlefire_def_ok,
+		"battlefire_catalog_ok": battlefire_catalog_ok,
+		"battlefire_init_ok": battlefire_init_ok,
+		"battlefire_own_ok": battlefire_own_ok,
+		"battlefire_fail_null_ok": battlefire_fail_null_ok,
+		"battlefire_fail_inactive_ok": battlefire_fail_inactive_ok,
+		"battlefire_fail_delta_ok": battlefire_fail_delta_ok,
+		"battlefire_fail_missing_geo_ok": battlefire_fail_missing_geo_ok,
+		"battlefire_fail_invalid_geo_ok": battlefire_fail_invalid_geo_ok,
+		"battlefire_cooldown_ok": battlefire_cooldown_ok,
+		"battlefire_zero_delta_ok": battlefire_zero_delta_ok,
+		"battlefire_reload_start_ok": battlefire_reload_start_ok,
+		"battlefire_reload_mid_ok": battlefire_reload_mid_ok,
+		"battlefire_reload_done_ok": battlefire_reload_done_ok,
+		"battlefire_reload_large_ok": battlefire_reload_large_ok,
+		"battlefire_reload_zero_ok": battlefire_reload_zero_ok,
+		"battlefire_neg_repair_ok": battlefire_neg_repair_ok,
+		"battlefire_nan_ok": battlefire_nan_ok,
+		"battlefire_unknown_ok": battlefire_unknown_ok,
+		"battlefire_eligible_ok": battlefire_eligible_ok,
+		"battlefire_query_only_ok": battlefire_query_only_ok,
+		"battlefire_no_target_ok": battlefire_no_target_ok,
+		"battlefire_stale_target_ok": battlefire_stale_target_ok,
+		"battlefire_same_side_ok": battlefire_same_side_ok,
+		"battlefire_bad_side_ok": battlefire_bad_side_ok,
+		"battlefire_ineligible_ok": battlefire_ineligible_ok,
+		"battlefire_reload_block_ok": battlefire_reload_block_ok,
+		"battlefire_empty_block_ok": battlefire_empty_block_ok,
+		"battlefire_cooldown_block_ok": battlefire_cooldown_block_ok,
+		"battlefire_range_ok": battlefire_range_ok,
+		"battlefire_range_diff_ok": battlefire_range_diff_ok,
+		"battlefire_los_block_ok": battlefire_los_block_ok,
+		"battlefire_blocker_indep_ok": battlefire_blocker_indep_ok,
+		"battlefire_reason_order_ok": battlefire_reason_order_ok,
+		"battlefire_drift_ok": battlefire_drift_ok,
+		"battlefire_commit_ok": battlefire_commit_ok,
+		"battlefire_commit_no_combat_ok": battlefire_commit_no_combat_ok,
+		"battlefire_commit_safe_ok": battlefire_commit_safe_ok,
+		"battlefire_commit_mismatch_ok": battlefire_commit_mismatch_ok,
+		"battlefire_runtime_ok": battlefire_runtime_ok,
+		"battlefire_runtime_order_ok": battlefire_runtime_order_ok,
+		"battlefire_runtime_zero_ok": battlefire_runtime_zero_ok,
+		"battlefire_runtime_tx_ok": battlefire_runtime_tx_ok,
+		"battlefire_counts_ok": battlefire_counts_ok,
+		"battlefire_result_helper_ok": battlefire_result_helper_ok,
+		"battlefire_persist_ok": battlefire_persist_ok,
+		"battlefire_immutability_ok": battlefire_immutability_ok,
+		"battlefire_no_auto_fire_ok": battlefire_no_auto_fire_ok,
+		"battlefire_no_combat_ok": battlefire_no_combat_ok,
 	}
 
 	var passed := true
@@ -15480,6 +16655,19 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "has_movement_target_position"
 		or text == "has_target_participant"
 		or text == "target_participant_id"
+		or text == "weapon_state"
+		or text == "ammo_in_magazine"
+		or text == "cooldown_remaining_seconds"
+		or text == "reload_remaining_seconds"
+		or text == "is_reloading"
+		or text == "shots_per_second"
+		or text == "magazine_capacity"
+		or text == "participants_eligible_to_fire"
+		or text == "participants_blocked_by_los"
+		or text == "participants_blocked_by_range"
+		or text == "participants_blocked_by_cooldown"
+		or text == "participants_reloading"
+		or text == "participants_empty"
 	)
 
 
@@ -17271,6 +18459,234 @@ static func _battlelos_earliest_blocker(add_order: Array[String]) -> String:
 	if result == null or not result.success or result.has_line_of_sight:
 		return ""
 	return result.blocking_obstacle_id
+
+
+static func _battlefire_catalog_match(
+	definition: BattleWeaponDefinition,
+	weapon_id: String,
+	max_range: float,
+	shots_per_second: float,
+	magazine_capacity: int,
+	reload_seconds: float
+) -> bool:
+	if definition == null or not definition.is_valid():
+		return false
+	return (
+		definition.weapon_type_id == weapon_id
+		and is_equal_approx(definition.max_range, max_range)
+		and is_equal_approx(definition.shots_per_second, shots_per_second)
+		and definition.magazine_capacity == magazine_capacity
+		and is_equal_approx(definition.reload_seconds, reload_seconds)
+	)
+
+
+static func _battlefire_initial_ok(
+	participant: BattleParticipant,
+	weapon_id: String,
+	magazine_capacity: int
+) -> bool:
+	if participant == null or participant.weapon_state == null:
+		return false
+	var state: BattleWeaponState = participant.weapon_state
+	return (
+		participant.weapon_type == weapon_id
+		and state.weapon_type_id == weapon_id
+		and state.ammo_in_magazine == magazine_capacity
+		and is_equal_approx(state.cooldown_remaining_seconds, 0.0)
+		and is_equal_approx(state.reload_remaining_seconds, 0.0)
+		and not state.is_reloading
+	)
+
+
+static func _battlefire_fail_ok(result: BattleFireControlResult, expected_code: String) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.error_code == expected_code
+		and result.error_message.begins_with("Battle fire control failed:")
+		and result.participants_considered == 0
+		and result.participants_eligible_to_fire == 0
+	)
+
+
+static func _battlefire_eval_counts(
+	result: BattleFireControlResult,
+	considered: int,
+	with_targets: int,
+	eligible: int,
+	blocked_los: int,
+	blocked_range: int,
+	blocked_cooldown: int,
+	reloading: int,
+	empty: int
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+		and result.participants_considered == considered
+		and result.participants_with_targets == with_targets
+		and result.participants_eligible_to_fire == eligible
+		and result.participants_blocked_by_los == blocked_los
+		and result.participants_blocked_by_range == blocked_range
+		and result.participants_blocked_by_cooldown == blocked_cooldown
+		and result.participants_reloading == reloading
+		and result.participants_empty == empty
+	)
+
+
+static func _battlefire_add(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	weapon_type: String
+) -> BattleParticipant:
+	if battle_state == null:
+		return null
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"battlefire_soldier_" + participant_id,
+		"battlemove_a",
+		side_id,
+		weapon_type,
+		true,
+		false,
+		""
+	)
+	if side_id == "defender":
+		participant.faction_id = "battlemove_b"
+	if not battle_state.add_participant(participant):
+		return null
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null or not side.add_participant_id(participant_id):
+		return null
+	return participant
+
+
+static func _battlefire_weapon_snap(participant: BattleParticipant) -> Dictionary:
+	var snap: Dictionary = {}
+	if participant == null or participant.weapon_state == null:
+		snap["null_state"] = true
+		return snap
+	var state: BattleWeaponState = participant.weapon_state
+	snap["null_state"] = false
+	snap["id"] = state.weapon_type_id
+	snap["ammo"] = state.ammo_in_magazine
+	snap["cooldown"] = state.cooldown_remaining_seconds
+	snap["reload"] = state.reload_remaining_seconds
+	snap["reloading"] = state.is_reloading
+	return snap
+
+
+static func _battlefire_weapon_unchanged(participant: BattleParticipant, snap: Dictionary) -> bool:
+	if participant == null:
+		return false
+	if bool(snap.get("null_state", false)):
+		return participant.weapon_state == null
+	if participant.weapon_state == null:
+		return false
+	var state: BattleWeaponState = participant.weapon_state
+	return (
+		state.weapon_type_id == str(snap.get("id", ""))
+		and state.ammo_in_magazine == int(snap.get("ammo", -1))
+		and is_equal_approx(state.cooldown_remaining_seconds, float(snap.get("cooldown", -1.0)))
+		and is_equal_approx(state.reload_remaining_seconds, float(snap.get("reload", -1.0)))
+		and state.is_reloading == bool(snap.get("reloading", false))
+	)
+
+
+static func _battlefire_full_snap(participant: BattleParticipant) -> Dictionary:
+	var snap: Dictionary = _battletarget_part_snap(participant)
+	var weapon: Dictionary = _battlefire_weapon_snap(participant)
+	for key: Variant in weapon:
+		snap[str(key)] = weapon[key]
+	if participant != null:
+		snap["weapon_type"] = participant.weapon_type
+	return snap
+
+
+static func _battlefire_full_unchanged(participant: BattleParticipant, snap: Dictionary) -> bool:
+	if not _battletarget_part_unchanged(participant, snap):
+		return false
+	if participant != null and participant.weapon_type != str(snap.get("weapon_type", "")):
+		return false
+	return _battlefire_weapon_unchanged(participant, snap)
+
+
+static func _battlefire_reason_eval(
+	is_reloading: bool,
+	ammo: int,
+	cooldown: float,
+	source_position: Vector2,
+	target_position: Vector2,
+	with_wall: bool
+) -> BattleFireControlResult:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return null
+	if with_wall:
+		var wall: BattleObstacle = BattleObstacle.new(
+			"fire_reason_wall",
+			Rect2(28.0, 20.0, 8.0, 20.0),
+			true,
+			true
+		)
+		if not battle_state.battlefield_geometry.add_obstacle(wall):
+			return null
+	var source: BattleParticipant = _battlefire_add(battle_state, "fire_reason_src", "attacker", "pistol")
+	var target: BattleParticipant = _battlefire_add(battle_state, "fire_reason_tgt", "defender", "pistol")
+	if source == null or target == null or source.weapon_state == null:
+		return null
+	_battletarget_place(source, source_position)
+	_battletarget_place(target, target_position)
+	source.set_target_participant("fire_reason_tgt")
+	source.weapon_state.is_reloading = is_reloading
+	source.weapon_state.ammo_in_magazine = ammo
+	source.weapon_state.cooldown_remaining_seconds = cooldown
+	return BattleFireControlService.evaluate_fire_eligibility(battle_state)
+
+
+static func _battlefire_mixed_eval(add_order: Array[String]) -> BattleFireControlResult:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return null
+	var wall: BattleObstacle = BattleObstacle.new("fire_mix_wall", Rect2(29.0, 29.0, 2.0, 2.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(wall):
+		return null
+	var target: BattleParticipant = _battlefire_add(battle_state, "fire_mix_t", "defender", "pistol")
+	if target == null:
+		return null
+	_battletarget_place(target, Vector2(40.0, 30.0))
+	for kind: String in add_order:
+		var source_id: String = "fire_mix_" + kind
+		var source: BattleParticipant = _battlefire_add(battle_state, source_id, "attacker", "pistol")
+		if source == null or source.weapon_state == null:
+			return null
+		source.set_target_participant("fire_mix_t")
+		match kind:
+			"e":
+				_battletarget_place(source, Vector2(30.0, 40.0))
+			"c":
+				_battletarget_place(source, Vector2(30.0, 38.0))
+				source.weapon_state.cooldown_remaining_seconds = 0.5
+			"r":
+				_battletarget_place(source, Vector2(5.0, 30.0))
+			"l":
+				_battletarget_place(source, Vector2(20.0, 30.0))
+			"m":
+				_battletarget_place(source, Vector2(32.0, 40.0))
+				source.weapon_state.ammo_in_magazine = 0
+			"n":
+				_battletarget_place(source, Vector2(28.0, 38.0))
+				source.weapon_state.is_reloading = true
+				source.weapon_state.reload_remaining_seconds = 0.8
+			_:
+				return null
+	return BattleFireControlService.evaluate_fire_eligibility(battle_state)
+
 
 
 

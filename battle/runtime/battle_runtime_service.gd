@@ -3,6 +3,8 @@ extends RefCounted
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
+const BattleFireControlService := preload("res://battle/combat/battle_fire_control_service.gd")
+const BattleFireControlResult := preload("res://battle/combat/battle_fire_control_result.gd")
 const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
 const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
 const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
@@ -38,6 +40,24 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 		return BattleRuntimeResult.failed(
 			"invalid_elapsed_time",
 			"Battle runtime failed: elapsed_time_seconds is invalid.",
+			delta_seconds,
+			elapsed_before
+		)
+	var weapon_result: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
+		battle_state,
+		delta_seconds
+	)
+	if weapon_result == null or not weapon_result.success:
+		var weapon_error_code: String = "invalid_delta"
+		var weapon_error_message: String = "Battle runtime failed: weapon state advancement failed."
+		if weapon_result != null:
+			if not weapon_result.error_code.is_empty():
+				weapon_error_code = weapon_result.error_code
+			if not weapon_result.error_message.is_empty():
+				weapon_error_message = weapon_result.error_message
+		return BattleRuntimeResult.failed(
+			weapon_error_code,
+			weapon_error_message,
 			delta_seconds,
 			elapsed_before
 		)
