@@ -81,6 +81,11 @@ const BattleCombatBehaviorProfile := preload("res://battle/combat/battle_combat_
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
 const BattleCombatBehaviorService := preload("res://battle/combat/battle_combat_behavior_service.gd")
+const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
+const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
+const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
+const BattleCoverQueryResult := preload("res://battle/geometry/battle_cover_query_result.gd")
+const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
 
 
 static func run() -> Dictionary:
@@ -15248,6 +15253,57 @@ static func run() -> Dictionary:
 	var battlebehavior_zero_delta_nav_refresh_ok: bool = _battlebehavior_zero_delta_nav_refresh_ok()
 	var battlebehavior_zero_delta_observed_ok: bool = battlebehavior_zero_delta_no_shot_ok
 	var battlebehavior_absent_systems_ok: bool = _battlebehavior_absent_systems_ok()
+	var battlecover_object_structure_ok: bool = _battlecover_object_structure_ok()
+	var battlecover_slot_structure_ok: bool = _battlecover_slot_structure_ok()
+	var battlecover_facing_ok: bool = _battlecover_facing_ok()
+	var battlecover_registry_ok: bool = _battlecover_registry_ok()
+	var battlecover_membership_ok: bool = _battlecover_membership_ok()
+	var battlecover_slot_legality_ok: bool = _battlecover_slot_legality_ok()
+	var battlecover_obstacle_independence_ok: bool = _battlecover_obstacle_independence_ok()
+	var battlecover_participant_defaults_ok: bool = _battlecover_participant_defaults_ok()
+	var battlecover_basic_reservation_ok: bool = _battlecover_basic_reservation_ok()
+	var battlecover_reservation_no_proximity_ok: bool = _battlecover_reservation_no_proximity_ok()
+	var battlecover_rereserve_ok: bool = _battlecover_rereserve_ok()
+	var battlecover_competing_reservation_ok: bool = _battlecover_competing_reservation_ok()
+	var battlecover_reserve_blocked_by_occupancy_ok: bool = _battlecover_reserve_blocked_by_occupancy_ok()
+	var battlecover_reservation_transfer_ok: bool = _battlecover_reservation_transfer_ok()
+	var battlecover_failed_reservation_transfer_ok: bool = _battlecover_failed_reservation_transfer_ok()
+	var battlecover_release_reservation_ok: bool = _battlecover_release_reservation_ok()
+	var battlecover_basic_occupancy_ok: bool = _battlecover_basic_occupancy_ok()
+	var battlecover_occupancy_epsilon_ok: bool = _battlecover_occupancy_epsilon_ok()
+	var battlecover_no_teleport_ok: bool = _battlecover_no_teleport_ok()
+	var battlecover_reserve_to_occupy_ok: bool = _battlecover_reserve_to_occupy_ok()
+	var battlecover_occupy_reserved_by_other_ok: bool = _battlecover_occupy_reserved_by_other_ok()
+	var battlecover_competing_occupancy_ok: bool = _battlecover_competing_occupancy_ok()
+	var battlecover_occupancy_transfer_ok: bool = _battlecover_occupancy_transfer_ok()
+	var battlecover_failed_occupancy_transfer_ok: bool = _battlecover_failed_occupancy_transfer_ok()
+	var battlecover_vacate_ok: bool = _battlecover_vacate_ok()
+	var battlecover_reservation_occupancy_distinct_ok: bool = _battlecover_reservation_occupancy_distinct_ok()
+	var battlecover_dead_ineligible_ok: bool = _battlecover_dead_ineligible_ok()
+	var battlecover_unpositioned_ineligible_ok: bool = _battlecover_unpositioned_ineligible_ok()
+	var battlecover_release_all_ok: bool = _battlecover_release_all_ok()
+	var battlecover_cleanup_isolation_ok: bool = _battlecover_cleanup_isolation_ok()
+	var battlecover_remove_owned_slot_ok: bool = _battlecover_remove_owned_slot_ok()
+	var battlecover_remove_object_owned_ok: bool = _battlecover_remove_object_owned_ok()
+	var battlecover_geometry_valid_ok: bool = _battlecover_geometry_valid_ok()
+	var battlecover_available_query_ok: bool = _battlecover_available_query_ok()
+	var battlecover_available_determinism_ok: bool = _battlecover_available_determinism_ok()
+	var battlecover_nearest_ok: bool = _battlecover_nearest_ok()
+	var battlecover_nearest_tie_ok: bool = _battlecover_nearest_tie_ok()
+	var battlecover_nearest_ignores_unavailable_ok: bool = _battlecover_nearest_ignores_unavailable_ok()
+	var battlecover_empty_query_ok: bool = _battlecover_empty_query_ok()
+	var battlecover_reachability_disabled_ok: bool = _battlecover_reachability_disabled_ok()
+	var battlecover_reachability_enabled_ok: bool = _battlecover_reachability_enabled_ok()
+	var battlecover_reachability_nav_isolation_ok: bool = _battlecover_reachability_nav_isolation_ok()
+	var battlecover_query_readonly_ok: bool = _battlecover_query_readonly_ok()
+	var battlecover_associated_obstacle_ok: bool = _battlecover_associated_obstacle_ok()
+	var battlecover_facing_no_combat_ok: bool = _battlecover_facing_no_combat_ok()
+	var battlecover_behavior_no_seek_ok: bool = _battlecover_behavior_no_seek_ok()
+	var battlecover_defend_position_ok: bool = _battlecover_defend_position_ok()
+	var battlecover_death_no_auto_cleanup_ok: bool = _battlecover_death_no_auto_cleanup_ok()
+	var battlecover_campaign_isolation_ok: bool = _battlecover_campaign_isolation_ok()
+	var battlecover_interiors_elevation_boundary_ok: bool = _battlecover_interiors_elevation_boundary_ok()
+	var battlecover_no_modifiers_ok: bool = _battlecover_no_modifiers_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -16380,6 +16436,57 @@ static func run() -> Dictionary:
 		"battlebehavior_zero_delta_nav_refresh_ok": battlebehavior_zero_delta_nav_refresh_ok,
 		"battlebehavior_zero_delta_observed_ok": battlebehavior_zero_delta_observed_ok,
 		"battlebehavior_absent_systems_ok": battlebehavior_absent_systems_ok,
+		"battlecover_object_structure_ok": battlecover_object_structure_ok,
+		"battlecover_slot_structure_ok": battlecover_slot_structure_ok,
+		"battlecover_facing_ok": battlecover_facing_ok,
+		"battlecover_registry_ok": battlecover_registry_ok,
+		"battlecover_membership_ok": battlecover_membership_ok,
+		"battlecover_slot_legality_ok": battlecover_slot_legality_ok,
+		"battlecover_obstacle_independence_ok": battlecover_obstacle_independence_ok,
+		"battlecover_participant_defaults_ok": battlecover_participant_defaults_ok,
+		"battlecover_basic_reservation_ok": battlecover_basic_reservation_ok,
+		"battlecover_reservation_no_proximity_ok": battlecover_reservation_no_proximity_ok,
+		"battlecover_rereserve_ok": battlecover_rereserve_ok,
+		"battlecover_competing_reservation_ok": battlecover_competing_reservation_ok,
+		"battlecover_reserve_blocked_by_occupancy_ok": battlecover_reserve_blocked_by_occupancy_ok,
+		"battlecover_reservation_transfer_ok": battlecover_reservation_transfer_ok,
+		"battlecover_failed_reservation_transfer_ok": battlecover_failed_reservation_transfer_ok,
+		"battlecover_release_reservation_ok": battlecover_release_reservation_ok,
+		"battlecover_basic_occupancy_ok": battlecover_basic_occupancy_ok,
+		"battlecover_occupancy_epsilon_ok": battlecover_occupancy_epsilon_ok,
+		"battlecover_no_teleport_ok": battlecover_no_teleport_ok,
+		"battlecover_reserve_to_occupy_ok": battlecover_reserve_to_occupy_ok,
+		"battlecover_occupy_reserved_by_other_ok": battlecover_occupy_reserved_by_other_ok,
+		"battlecover_competing_occupancy_ok": battlecover_competing_occupancy_ok,
+		"battlecover_occupancy_transfer_ok": battlecover_occupancy_transfer_ok,
+		"battlecover_failed_occupancy_transfer_ok": battlecover_failed_occupancy_transfer_ok,
+		"battlecover_vacate_ok": battlecover_vacate_ok,
+		"battlecover_reservation_occupancy_distinct_ok": battlecover_reservation_occupancy_distinct_ok,
+		"battlecover_dead_ineligible_ok": battlecover_dead_ineligible_ok,
+		"battlecover_unpositioned_ineligible_ok": battlecover_unpositioned_ineligible_ok,
+		"battlecover_release_all_ok": battlecover_release_all_ok,
+		"battlecover_cleanup_isolation_ok": battlecover_cleanup_isolation_ok,
+		"battlecover_remove_owned_slot_ok": battlecover_remove_owned_slot_ok,
+		"battlecover_remove_object_owned_ok": battlecover_remove_object_owned_ok,
+		"battlecover_geometry_valid_ok": battlecover_geometry_valid_ok,
+		"battlecover_available_query_ok": battlecover_available_query_ok,
+		"battlecover_available_determinism_ok": battlecover_available_determinism_ok,
+		"battlecover_nearest_ok": battlecover_nearest_ok,
+		"battlecover_nearest_tie_ok": battlecover_nearest_tie_ok,
+		"battlecover_nearest_ignores_unavailable_ok": battlecover_nearest_ignores_unavailable_ok,
+		"battlecover_empty_query_ok": battlecover_empty_query_ok,
+		"battlecover_reachability_disabled_ok": battlecover_reachability_disabled_ok,
+		"battlecover_reachability_enabled_ok": battlecover_reachability_enabled_ok,
+		"battlecover_reachability_nav_isolation_ok": battlecover_reachability_nav_isolation_ok,
+		"battlecover_query_readonly_ok": battlecover_query_readonly_ok,
+		"battlecover_associated_obstacle_ok": battlecover_associated_obstacle_ok,
+		"battlecover_facing_no_combat_ok": battlecover_facing_no_combat_ok,
+		"battlecover_behavior_no_seek_ok": battlecover_behavior_no_seek_ok,
+		"battlecover_defend_position_ok": battlecover_defend_position_ok,
+		"battlecover_death_no_auto_cleanup_ok": battlecover_death_no_auto_cleanup_ok,
+		"battlecover_campaign_isolation_ok": battlecover_campaign_isolation_ok,
+		"battlecover_interiors_elevation_boundary_ok": battlecover_interiors_elevation_boundary_ok,
+		"battlecover_no_modifiers_ok": battlecover_no_modifiers_ok,
 	}
 
 	var passed := true
@@ -22461,3 +22568,2414 @@ static func _battlebehavior_absent_systems_ok() -> bool:
 		and not BattleRuntimeService.new().has_method("request_movement_approval")
 	)
 
+
+static func _battlecover_cmd_ok(
+	result: BattleCoverResult,
+	cover_slot_id: String,
+	participant_id: String
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.cover_slot_id == cover_slot_id
+		and result.participant_id == participant_id
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+	)
+
+
+static func _battlecover_cmd_fail(
+	result: BattleCoverResult,
+	error_code: String,
+	cover_slot_id: String = "",
+	participant_id: String = ""
+) -> bool:
+	if result == null:
+		return false
+	if result.success:
+		return false
+	if result.error_code != error_code:
+		return false
+	if result.error_message.is_empty():
+		return false
+	if not cover_slot_id.is_empty() and result.cover_slot_id != cover_slot_id:
+		return false
+	if not participant_id.is_empty() and result.participant_id != participant_id:
+		return false
+	return true
+
+
+static func _battlecover_query_ok(
+	result: BattleCoverQueryResult,
+	expected_ids: Array[String],
+	expected_slot_id: String = ""
+) -> bool:
+	if result == null or not result.success:
+		return false
+	if not result.error_code.is_empty() or not result.error_message.is_empty():
+		return false
+	if not _string_ids_match(result.cover_slot_ids, expected_ids):
+		return false
+	var slot_id: String = expected_slot_id
+	if slot_id.is_empty() and not expected_ids.is_empty():
+		slot_id = expected_ids[0]
+	return result.cover_slot_id == slot_id
+
+
+static func _battlecover_add_object(
+	geometry: BattlefieldGeometry,
+	object_id: String,
+	associated_obstacle_id: String = ""
+) -> BattleCoverObject:
+	if geometry == null:
+		return null
+	var cover_object: BattleCoverObject = BattleCoverObject.new(object_id, associated_obstacle_id)
+	if not geometry.add_cover_object(cover_object):
+		return null
+	return cover_object
+
+
+static func _battlecover_add_slot(
+	geometry: BattlefieldGeometry,
+	slot_id: String,
+	object_id: String,
+	position: Vector2,
+	facing: Vector2 = Vector2.RIGHT
+) -> BattleCoverSlot:
+	if geometry == null:
+		return null
+	var slot: BattleCoverSlot = BattleCoverSlot.new(slot_id, object_id, position, facing)
+	if not geometry.add_cover_slot(slot):
+		return null
+	return slot
+
+
+static func _battlecover_id_count(ids: Array[String], wanted: String) -> int:
+	var count: int = 0
+	for slot_id: String in ids:
+		if slot_id == wanted:
+			count += 1
+	return count
+
+
+static func _battlecover_as_ids(value: Variant) -> Array[String]:
+	var ids: Array[String] = []
+	if value is Array:
+		var items: Array = value
+		for item: Variant in items:
+			ids.append(str(item))
+	return ids
+
+
+static func _battlecover_reserved_sync(
+	participant: BattleParticipant,
+	slot: BattleCoverSlot,
+	participant_id: String,
+	slot_id: String
+) -> bool:
+	if participant == null or slot == null:
+		return false
+	return (
+		participant.reserved_cover_slot_id == slot_id
+		and participant.has_reserved_cover_slot()
+		and slot.reserved_by_participant_id == participant_id
+		and slot.is_reserved()
+	)
+
+
+static func _battlecover_occupied_sync(
+	participant: BattleParticipant,
+	slot: BattleCoverSlot,
+	participant_id: String,
+	slot_id: String
+) -> bool:
+	if participant == null or slot == null:
+		return false
+	return (
+		participant.occupied_cover_slot_id == slot_id
+		and participant.has_occupied_cover_slot()
+		and slot.occupied_by_participant_id == participant_id
+		and slot.is_occupied()
+	)
+
+
+static func _battlecover_sorted_participant_ids(battle_state: BattleState) -> Array[String]:
+	var ids: Array[String] = []
+	if battle_state == null:
+		return ids
+	for participant_id: String in battle_state.participants:
+		ids.append(participant_id)
+	ids.sort()
+	return ids
+
+
+static func _battlecover_nav_snap(participant: BattleParticipant) -> Dictionary:
+	var snap: Dictionary = {}
+	if participant == null:
+		return snap
+	snap["destination"] = participant.navigation_destination
+	snap["has_destination"] = participant.has_navigation_destination
+	snap["waypoint_index"] = participant.navigation_waypoint_index
+	snap["source"] = participant.navigation_source
+	snap["intent"] = participant.movement_intent
+	var waypoints: Array[Vector2] = []
+	for waypoint: Vector2 in participant.navigation_waypoints:
+		waypoints.append(waypoint)
+	snap["waypoints"] = waypoints
+	return snap
+
+
+static func _battlecover_nav_unchanged(participant: BattleParticipant, snap: Dictionary) -> bool:
+	if participant == null:
+		return false
+	if participant.has_navigation_destination != bool(snap.get("has_destination", false)):
+		return false
+	if not participant.navigation_destination.is_equal_approx(snap.get("destination", Vector2.INF)):
+		return false
+	if participant.navigation_waypoint_index != int(snap.get("waypoint_index", -1)):
+		return false
+	if participant.navigation_source != str(snap.get("source", "missing")):
+		return false
+	if not participant.movement_intent.is_equal_approx(snap.get("intent", Vector2.INF)):
+		return false
+	var waypoints: Variant = snap.get("waypoints", [])
+	if not (waypoints is Array):
+		return false
+	var expected: Array = waypoints as Array
+	if participant.navigation_waypoints.size() != expected.size():
+		return false
+	for i in expected.size():
+		var expected_point: Vector2 = expected[i]
+		if not participant.navigation_waypoints[i].is_equal_approx(expected_point):
+			return false
+	return true
+
+
+static func _battlecover_ownership_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return snap
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	snap["object_ids"] = geometry.get_sorted_cover_object_ids()
+	snap["slot_ids"] = geometry.get_sorted_cover_slot_ids()
+	var slots: Dictionary = {}
+	for slot_id: String in geometry.get_sorted_cover_slot_ids():
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null:
+			continue
+		slots[slot_id] = {
+			"occupied": slot.occupied_by_participant_id,
+			"reserved": slot.reserved_by_participant_id,
+			"position": slot.position,
+			"facing": slot.facing_direction,
+			"object": slot.cover_object_id,
+		}
+	snap["slots"] = slots
+	var participants: Dictionary = {}
+	for participant_id: String in _battlecover_sorted_participant_ids(battle_state):
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		participants[participant_id] = {
+			"reserved": participant.reserved_cover_slot_id,
+			"occupied": participant.occupied_cover_slot_id,
+			"position": participant.battle_position,
+			"has_position": participant.has_battle_position,
+		}
+	snap["participants"] = participants
+	return snap
+
+
+static func _battlecover_ownership_unchanged(battle_state: BattleState, snap: Dictionary) -> bool:
+	var current: Dictionary = _battlecover_ownership_snap(battle_state)
+	if current.is_empty() or snap.is_empty():
+		return false
+	if not _string_ids_match(_battlecover_as_ids(current.get("object_ids", [])), _battlecover_as_ids(snap.get("object_ids", []))):
+		return false
+	if not _string_ids_match(_battlecover_as_ids(current.get("slot_ids", [])), _battlecover_as_ids(snap.get("slot_ids", []))):
+		return false
+	var current_slots: Dictionary = current.get("slots", {})
+	var snap_slots: Dictionary = snap.get("slots", {})
+	if current_slots.size() != snap_slots.size():
+		return false
+	for slot_id: Variant in snap_slots:
+		if not current_slots.has(slot_id):
+			return false
+		var now_slot: Dictionary = current_slots[slot_id]
+		var then_slot: Dictionary = snap_slots[slot_id]
+		if str(now_slot.get("occupied", "")) != str(then_slot.get("occupied", "x")):
+			return false
+		if str(now_slot.get("reserved", "")) != str(then_slot.get("reserved", "x")):
+			return false
+		if str(now_slot.get("object", "")) != str(then_slot.get("object", "x")):
+			return false
+		if not now_slot.get("position", Vector2.INF).is_equal_approx(then_slot.get("position", Vector2.ZERO)):
+			return false
+		if not now_slot.get("facing", Vector2.INF).is_equal_approx(then_slot.get("facing", Vector2.ZERO)):
+			return false
+	var current_parts: Dictionary = current.get("participants", {})
+	var snap_parts: Dictionary = snap.get("participants", {})
+	if current_parts.size() != snap_parts.size():
+		return false
+	for participant_id: Variant in snap_parts:
+		if not current_parts.has(participant_id):
+			return false
+		var now_p: Dictionary = current_parts[participant_id]
+		var then_p: Dictionary = snap_parts[participant_id]
+		if str(now_p.get("reserved", "")) != str(then_p.get("reserved", "x")):
+			return false
+		if str(now_p.get("occupied", "")) != str(then_p.get("occupied", "x")):
+			return false
+		if bool(now_p.get("has_position", false)) != bool(then_p.get("has_position", true)):
+			return false
+		if not now_p.get("position", Vector2.INF).is_equal_approx(then_p.get("position", Vector2.ZERO)):
+			return false
+	return true
+
+
+static func _battlecover_no_cover_trace(value: Variant) -> bool:
+	if value is Dictionary:
+		var data: Dictionary = value
+		for key: Variant in data:
+			var key_text: String = str(key)
+			if (
+				key_text == "cover_object_id"
+				or key_text == "cover_slot_id"
+				or key_text == "reserved_cover_slot_id"
+				or key_text == "occupied_cover_slot_id"
+				or key_text == "cover_objects"
+				or key_text == "cover_slots"
+				or key_text == "associated_obstacle_id"
+				or key_text == "occupied_by_participant_id"
+				or key_text == "reserved_by_participant_id"
+				or key_text == "facing_direction"
+			):
+				return false
+			if not _battlecover_no_cover_trace(data[key]):
+				return false
+		return true
+	if value is Array:
+		var items: Array = value
+		for item: Variant in items:
+			if not _battlecover_no_cover_trace(item):
+				return false
+		return true
+	return true
+
+
+static func _battlecover_object_structure_ok() -> bool:
+	var cover_object: BattleCoverObject = BattleCoverObject.new("cv_obj_struct", "cv_wall")
+	cover_object.slot_ids.append("cv_slot_b")
+	cover_object.slot_ids.append("cv_slot_a")
+	return (
+		cover_object.cover_object_id == "cv_obj_struct"
+		and not cover_object.cover_object_id.is_empty()
+		and cover_object.is_valid()
+		and cover_object.associated_obstacle_id == "cv_wall"
+		and cover_object.slot_ids.size() == 2
+		and cover_object.slot_ids[0] == "cv_slot_b"
+		and cover_object.slot_ids[1] == "cv_slot_a"
+		and cover_object.get("strength") == null
+		and cover_object.get("armor") == null
+		and cover_object.get("durability") == null
+		and cover_object.get("damage_absorption") == null
+		and cover_object.get("absorption") == null
+		and cover_object.get("material") == null
+		and cover_object.get("material_type") == null
+		and not BattleCoverObject.new("").is_valid()
+	)
+
+
+
+static func _battlecover_slot_structure_ok() -> bool:
+	var slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_slot_struct",
+		"cv_obj_struct",
+		Vector2(12.0, 8.0),
+		Vector2(3.0, 4.0)
+	)
+	return (
+		slot.cover_slot_id == "cv_slot_struct"
+		and slot.cover_object_id == "cv_obj_struct"
+		and slot.position.is_equal_approx(Vector2(12.0, 8.0))
+		and is_finite(slot.position.x)
+		and is_finite(slot.position.y)
+		and slot.facing_direction.is_equal_approx(Vector2(0.6, 0.8))
+		and is_equal_approx(slot.facing_direction.length(), 1.0)
+		and slot.occupied_by_participant_id.is_empty()
+		and slot.reserved_by_participant_id.is_empty()
+		and not slot.is_occupied()
+		and not slot.is_reserved()
+		and slot.is_available()
+		and slot.is_valid()
+	)
+
+
+static func _battlecover_facing_ok() -> bool:
+	var slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_slot_face",
+		"cv_obj_face",
+		Vector2(4.0, 4.0),
+		Vector2(0.0, 2.0)
+	)
+	var accepted: bool = slot.facing_direction.is_equal_approx(Vector2(0.0, 1.0))
+	var set_ok: bool = slot.set_facing_direction(Vector2(3.0, 4.0))
+	var stored: Vector2 = slot.facing_direction
+	var zero_rejected: bool = not slot.set_facing_direction(Vector2.ZERO)
+	var nan_rejected: bool = not slot.set_facing_direction(Vector2(NAN, 1.0))
+	var inf_rejected: bool = not slot.set_facing_direction(Vector2(INF, 0.0))
+	var ninf_rejected: bool = not slot.set_facing_direction(Vector2(1.0, -INF))
+	return (
+		accepted
+		and set_ok
+		and stored.is_equal_approx(Vector2(0.6, 0.8))
+		and zero_rejected
+		and nan_rejected
+		and inf_rejected
+		and ninf_rejected
+		and slot.facing_direction.is_equal_approx(stored)
+		and not BattleCoverSlot.new("cv_zero", "cv_obj", Vector2(1.0, 1.0), Vector2.ZERO).is_valid()
+		and not BattleCoverSlot.new("cv_nan", "cv_obj", Vector2(1.0, 1.0), Vector2(NAN, 0.0)).is_valid()
+	)
+
+
+static func _battlecover_registry_ok() -> bool:
+	var geometry: BattlefieldGeometry = _battlespatial_open_geometry()
+	if geometry == null:
+		return false
+	var z_obj: BattleCoverObject = _battlecover_add_object(geometry, "z_obj")
+	var a_obj: BattleCoverObject = _battlecover_add_object(geometry, "a_obj")
+	var m_obj: BattleCoverObject = _battlecover_add_object(geometry, "m_obj")
+	if z_obj == null or a_obj == null or m_obj == null:
+		return false
+	var z_slot: BattleCoverSlot = _battlecover_add_slot(geometry, "z_slot", "z_obj", Vector2(30.0, 10.0))
+	var a_slot: BattleCoverSlot = _battlecover_add_slot(geometry, "a_slot", "a_obj", Vector2(10.0, 10.0))
+	var m_slot: BattleCoverSlot = _battlecover_add_slot(geometry, "m_slot", "m_obj", Vector2(20.0, 10.0))
+	if z_slot == null or a_slot == null or m_slot == null:
+		return false
+	var expected_objects: Array[String] = ["a_obj", "m_obj", "z_obj"]
+	var expected_slots: Array[String] = ["a_slot", "m_slot", "z_slot"]
+	var empty_obj: BattleCoverObject = BattleCoverObject.new("")
+	var dup_obj: BattleCoverObject = BattleCoverObject.new("a_obj")
+	dup_obj.associated_obstacle_id = "should_not_write"
+	var empty_slot: BattleCoverSlot = BattleCoverSlot.new("", "a_obj", Vector2(12.0, 12.0), Vector2.RIGHT)
+	var dup_slot: BattleCoverSlot = BattleCoverSlot.new("a_slot", "a_obj", Vector2(40.0, 40.0), Vector2.UP)
+	var missing_obj_slot: BattleCoverSlot = BattleCoverSlot.new(
+		"orphan_slot",
+		"missing_obj",
+		Vector2(14.0, 14.0),
+		Vector2.RIGHT
+	)
+	var nonempty_slots_obj: BattleCoverObject = BattleCoverObject.new("late_obj")
+	nonempty_slots_obj.slot_ids.append("pretend")
+	return (
+		geometry.has_cover_object("a_obj")
+		and geometry.get_cover_object("a_obj") == a_obj
+		and geometry.has_cover_slot("a_slot")
+		and geometry.get_cover_slot("a_slot") == a_slot
+		and _string_ids_match(geometry.get_sorted_cover_object_ids(), expected_objects)
+		and _string_ids_match(geometry.get_sorted_cover_slot_ids(), expected_slots)
+		and not geometry.add_cover_object(empty_obj)
+		and not geometry.add_cover_object(dup_obj)
+		and not geometry.add_cover_object(nonempty_slots_obj)
+		and geometry.get_cover_object("a_obj") == a_obj
+		and geometry.get_cover_object("a_obj").associated_obstacle_id.is_empty()
+		and not geometry.add_cover_slot(empty_slot)
+		and not geometry.add_cover_slot(dup_slot)
+		and geometry.get_cover_slot("a_slot") == a_slot
+		and geometry.get_cover_slot("a_slot").position.is_equal_approx(Vector2(10.0, 10.0))
+		and not geometry.add_cover_slot(missing_obj_slot)
+		and not geometry.has_cover_slot("orphan_slot")
+		and not geometry.has_cover_object("missing_obj")
+		and not geometry.has_cover_object("late_obj")
+	)
+
+
+static func _battlecover_membership_ok() -> bool:
+	var geometry: BattlefieldGeometry = _battlespatial_open_geometry()
+	if geometry == null:
+		return false
+	var cover_object: BattleCoverObject = _battlecover_add_object(geometry, "cv_mem_obj")
+	if cover_object == null:
+		return false
+	var first: BattleCoverSlot = _battlecover_add_slot(
+		geometry,
+		"cv_mem_b",
+		"cv_mem_obj",
+		Vector2(10.0, 10.0)
+	)
+	var second: BattleCoverSlot = _battlecover_add_slot(
+		geometry,
+		"cv_mem_a",
+		"cv_mem_obj",
+		Vector2(12.0, 10.0)
+	)
+	if first == null or second == null:
+		return false
+	if not (
+		geometry.has_cover_slot("cv_mem_b")
+		and geometry.has_cover_slot("cv_mem_a")
+		and _battlecover_id_count(cover_object.slot_ids, "cv_mem_b") == 1
+		and _battlecover_id_count(cover_object.slot_ids, "cv_mem_a") == 1
+		and cover_object.slot_ids.size() == 2
+		and cover_object.slot_ids[0] == "cv_mem_b"
+		and cover_object.slot_ids[1] == "cv_mem_a"
+	):
+		return false
+	if not geometry.remove_cover_slot("cv_mem_b"):
+		return false
+	return (
+		not geometry.has_cover_slot("cv_mem_b")
+		and geometry.has_cover_slot("cv_mem_a")
+		and _battlecover_id_count(cover_object.slot_ids, "cv_mem_b") == 0
+		and _battlecover_id_count(cover_object.slot_ids, "cv_mem_a") == 1
+		and cover_object.slot_ids.size() == 1
+		and cover_object.slot_ids[0] == "cv_mem_a"
+	)
+
+
+static func _battlecover_slot_legality_ok() -> bool:
+	var geometry: BattlefieldGeometry = _battlespatial_open_geometry()
+	if geometry == null:
+		return false
+	if _battlecover_add_object(geometry, "cv_legal_obj") == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("cv_legal_wall", Rect2(20.0, 20.0, 4.0, 4.0), true, true)
+	if not geometry.add_obstacle(wall):
+		return false
+	var nan_slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_nan_pos",
+		"cv_legal_obj",
+		Vector2(NAN, 10.0),
+		Vector2.RIGHT
+	)
+	var inf_slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_inf_pos",
+		"cv_legal_obj",
+		Vector2(10.0, INF),
+		Vector2.RIGHT
+	)
+	var outside_slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_out_pos",
+		"cv_legal_obj",
+		Vector2(101.0, 10.0),
+		Vector2.RIGHT
+	)
+	var inside_slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_in_wall",
+		"cv_legal_obj",
+		Vector2(22.0, 22.0),
+		Vector2.RIGHT
+	)
+	var legal_slot: BattleCoverSlot = _battlecover_add_slot(
+		geometry,
+		"cv_legal_ok",
+		"cv_legal_obj",
+		Vector2(10.0, 10.0)
+	)
+	var adjacent_slot: BattleCoverSlot = _battlecover_add_slot(
+		geometry,
+		"cv_legal_adj",
+		"cv_legal_obj",
+		Vector2(19.5, 22.0)
+	)
+	return (
+		not geometry.add_cover_slot(nan_slot)
+		and not geometry.add_cover_slot(inf_slot)
+		and not geometry.add_cover_slot(outside_slot)
+		and not geometry.add_cover_slot(inside_slot)
+		and legal_slot != null
+		and adjacent_slot != null
+		and geometry.has_cover_slot("cv_legal_ok")
+		and geometry.has_cover_slot("cv_legal_adj")
+		and not wall.contains_point(Vector2(19.5, 22.0))
+		and wall.contains_point(Vector2(22.0, 22.0))
+	)
+
+
+static func _battlecover_obstacle_independence_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if _battlecover_add_object(geometry, "cv_ind_obj") == null:
+		return false
+	if _battlecover_add_slot(geometry, "cv_ind_slot", "cv_ind_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	var source: BattleParticipant = _battlefire_add(battle_state, "cv_ind_src", "attacker", "pistol")
+	var target: BattleParticipant = _battlefire_add(battle_state, "cv_ind_tgt", "defender", "pistol")
+	if source == null or target == null:
+		return false
+	_battletarget_place(source, Vector2(10.0, 10.0))
+	_battletarget_place(target, Vector2(40.0, 10.0))
+	var move: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battle_state,
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 0.0)
+	)
+	var los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		battle_state,
+		"cv_ind_src",
+		"cv_ind_tgt"
+	)
+	return (
+		move != null
+		and move.success
+		and not move.was_blocked
+		and move.blocking_obstacle_id.is_empty()
+		and move.final_position.is_equal_approx(Vector2(30.0, 10.0))
+		and los != null
+		and los.success
+		and los.has_line_of_sight
+		and geometry.get_cover_object("cv_ind_obj") != null
+		and geometry.get_cover_slot("cv_ind_slot") != null
+	)
+
+
+static func _battlecover_participant_defaults_ok() -> bool:
+	var participant: BattleParticipant = BattleParticipant.new("cv_def_p", "", "a", "attacker", "pistol")
+	return (
+		participant.reserved_cover_slot_id == ""
+		and participant.occupied_cover_slot_id == ""
+		and not participant.has_reserved_cover_slot()
+		and not participant.has_occupied_cover_slot()
+	)
+
+
+static func _battlecover_basic_reservation_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_rsv_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_rsv_slot",
+		"cv_rsv_obj",
+		Vector2(40.0, 20.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_rsv_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, Vector2(10.0, 10.0))
+	var before: Vector2 = participant.battle_position
+	var result: BattleCoverResult = BattleCoverService.reserve_slot(
+		battle_state,
+		"cv_rsv_p",
+		"cv_rsv_slot"
+	)
+	return (
+		_battlecover_cmd_ok(result, "cv_rsv_slot", "cv_rsv_p")
+		and _battlecover_reserved_sync(participant, slot, "cv_rsv_p", "cv_rsv_slot")
+		and participant.occupied_cover_slot_id.is_empty()
+		and slot.occupied_by_participant_id.is_empty()
+		and participant.battle_position.is_equal_approx(before)
+	)
+
+
+static func _battlecover_reservation_no_proximity_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_far_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_far_slot",
+		"cv_far_obj",
+		Vector2(90.0, 50.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_far_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, Vector2(2.0, 2.0))
+	var before: Vector2 = participant.battle_position
+	var result: BattleCoverResult = BattleCoverService.reserve_slot(
+		battle_state,
+		"cv_far_p",
+		"cv_far_slot"
+	)
+	return (
+		_battlecover_cmd_ok(result, "cv_far_slot", "cv_far_p")
+		and _battlecover_reserved_sync(participant, slot, "cv_far_p", "cv_far_slot")
+		and participant.battle_position.is_equal_approx(before)
+		and participant.battle_position.distance_to(slot.position) > 50.0
+	)
+
+
+static func _battlecover_rereserve_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_re_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_re_slot",
+		"cv_re_obj",
+		Vector2(16.0, 12.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_re_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, Vector2(8.0, 8.0))
+	var first: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_re_p", "cv_re_slot")
+	var second: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_re_p", "cv_re_slot")
+	return (
+		_battlecover_cmd_ok(first, "cv_re_slot", "cv_re_p")
+		and _battlecover_cmd_ok(second, "cv_re_slot", "cv_re_p")
+		and _battlecover_reserved_sync(participant, slot, "cv_re_p", "cv_re_slot")
+		and participant.occupied_cover_slot_id.is_empty()
+		and slot.occupied_by_participant_id.is_empty()
+	)
+
+
+static func _battlecover_competing_reservation_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_cmp_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_cmp_slot",
+		"cv_cmp_obj",
+		Vector2(18.0, 14.0)
+	)
+	var participant_a: BattleParticipant = _battlefire_add(battle_state, "cv_cmp_a", "attacker", "pistol")
+	var participant_b: BattleParticipant = _battlefire_add(battle_state, "cv_cmp_b", "defender", "pistol")
+	if slot == null or participant_a == null or participant_b == null:
+		return false
+	_battletarget_place(participant_a, Vector2(8.0, 8.0))
+	_battletarget_place(participant_b, Vector2(9.0, 8.0))
+	var first: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_cmp_a", "cv_cmp_slot")
+	var second: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_cmp_b", "cv_cmp_slot")
+	return (
+		_battlecover_cmd_ok(first, "cv_cmp_slot", "cv_cmp_a")
+		and _battlecover_cmd_fail(second, "cover_slot_reserved", "cv_cmp_slot", "cv_cmp_b")
+		and _battlecover_reserved_sync(participant_a, slot, "cv_cmp_a", "cv_cmp_slot")
+		and participant_b.reserved_cover_slot_id.is_empty()
+		and not participant_b.has_reserved_cover_slot()
+	)
+
+
+static func _battlecover_reserve_blocked_by_occupancy_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_occblock_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_occblock_slot",
+		"cv_occblock_obj",
+		Vector2(14.0, 10.0)
+	)
+	var participant_a: BattleParticipant = _battlefire_add(battle_state, "cv_occblock_a", "attacker", "pistol")
+	var participant_b: BattleParticipant = _battlefire_add(battle_state, "cv_occblock_b", "defender", "pistol")
+	if slot == null or participant_a == null or participant_b == null:
+		return false
+	_battletarget_place(participant_a, slot.position)
+	_battletarget_place(participant_b, Vector2(8.0, 8.0))
+	var occupy: BattleCoverResult = BattleCoverService.occupy_slot(
+		battle_state,
+		"cv_occblock_a",
+		"cv_occblock_slot"
+	)
+	var reserve: BattleCoverResult = BattleCoverService.reserve_slot(
+		battle_state,
+		"cv_occblock_b",
+		"cv_occblock_slot"
+	)
+	return (
+		_battlecover_cmd_ok(occupy, "cv_occblock_slot", "cv_occblock_a")
+		and _battlecover_cmd_fail(reserve, "cover_slot_occupied", "cv_occblock_slot", "cv_occblock_b")
+		and _battlecover_occupied_sync(participant_a, slot, "cv_occblock_a", "cv_occblock_slot")
+		and participant_b.reserved_cover_slot_id.is_empty()
+		and slot.reserved_by_participant_id.is_empty()
+	)
+
+
+static func _battlecover_reservation_transfer_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_txr_obj") == null:
+		return false
+	var slot_a: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_txr_a",
+		"cv_txr_obj",
+		Vector2(10.0, 12.0)
+	)
+	var slot_b: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_txr_b",
+		"cv_txr_obj",
+		Vector2(30.0, 12.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_txr_p", "attacker", "pistol")
+	if slot_a == null or slot_b == null or participant == null:
+		return false
+	_battletarget_place(participant, Vector2(8.0, 8.0))
+	var first: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_txr_p", "cv_txr_a")
+	var second: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_txr_p", "cv_txr_b")
+	return (
+		_battlecover_cmd_ok(first, "cv_txr_a", "cv_txr_p")
+		and _battlecover_cmd_ok(second, "cv_txr_b", "cv_txr_p")
+		and slot_a.reserved_by_participant_id.is_empty()
+		and not slot_a.is_reserved()
+		and _battlecover_reserved_sync(participant, slot_b, "cv_txr_p", "cv_txr_b")
+		and participant.reserved_cover_slot_id == "cv_txr_b"
+	)
+
+
+static func _battlecover_failed_reservation_transfer_ok() -> bool:
+	var occupied_state: BattleState = _battlemove_make_state("active")
+	if occupied_state == null or occupied_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(occupied_state.battlefield_geometry, "cv_ftx_obj") == null:
+		return false
+	var occ_a: BattleCoverSlot = _battlecover_add_slot(
+		occupied_state.battlefield_geometry,
+		"cv_ftx_a",
+		"cv_ftx_obj",
+		Vector2(10.0, 12.0)
+	)
+	var occ_b: BattleCoverSlot = _battlecover_add_slot(
+		occupied_state.battlefield_geometry,
+		"cv_ftx_b",
+		"cv_ftx_obj",
+		Vector2(30.0, 12.0)
+	)
+	var owner: BattleParticipant = _battlefire_add(occupied_state, "cv_ftx_owner", "attacker", "pistol")
+	var occupant: BattleParticipant = _battlefire_add(occupied_state, "cv_ftx_occ", "defender", "pistol")
+	if occ_a == null or occ_b == null or owner == null or occupant == null:
+		return false
+	_battletarget_place(owner, Vector2(8.0, 8.0))
+	_battletarget_place(occupant, occ_b.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(occupied_state, "cv_ftx_owner", "cv_ftx_a"),
+		"cv_ftx_a",
+		"cv_ftx_owner"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(occupied_state, "cv_ftx_occ", "cv_ftx_b"),
+		"cv_ftx_b",
+		"cv_ftx_occ"
+	):
+		return false
+	var occupy_fail: BattleCoverResult = BattleCoverService.reserve_slot(
+		occupied_state,
+		"cv_ftx_owner",
+		"cv_ftx_b"
+	)
+	var occupied_ok: bool = (
+		_battlecover_cmd_fail(occupy_fail, "cover_slot_occupied", "cv_ftx_b", "cv_ftx_owner")
+		and _battlecover_reserved_sync(owner, occ_a, "cv_ftx_owner", "cv_ftx_a")
+		and _battlecover_occupied_sync(occupant, occ_b, "cv_ftx_occ", "cv_ftx_b")
+		and occ_b.reserved_by_participant_id.is_empty()
+	)
+	var reserved_state: BattleState = _battlemove_make_state("active")
+	if reserved_state == null or reserved_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(reserved_state.battlefield_geometry, "cv_ftxr_obj") == null:
+		return false
+	var rsv_a: BattleCoverSlot = _battlecover_add_slot(
+		reserved_state.battlefield_geometry,
+		"cv_ftxr_a",
+		"cv_ftxr_obj",
+		Vector2(10.0, 16.0)
+	)
+	var rsv_b: BattleCoverSlot = _battlecover_add_slot(
+		reserved_state.battlefield_geometry,
+		"cv_ftxr_b",
+		"cv_ftxr_obj",
+		Vector2(30.0, 16.0)
+	)
+	var reserver: BattleParticipant = _battlefire_add(reserved_state, "cv_ftxr_a_p", "attacker", "pistol")
+	var other: BattleParticipant = _battlefire_add(reserved_state, "cv_ftxr_b_p", "defender", "pistol")
+	if rsv_a == null or rsv_b == null or reserver == null or other == null:
+		return false
+	_battletarget_place(reserver, Vector2(8.0, 8.0))
+	_battletarget_place(other, Vector2(9.0, 8.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(reserved_state, "cv_ftxr_a_p", "cv_ftxr_a"),
+		"cv_ftxr_a",
+		"cv_ftxr_a_p"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(reserved_state, "cv_ftxr_b_p", "cv_ftxr_b"),
+		"cv_ftxr_b",
+		"cv_ftxr_b_p"
+	):
+		return false
+	var reserve_fail: BattleCoverResult = BattleCoverService.reserve_slot(
+		reserved_state,
+		"cv_ftxr_a_p",
+		"cv_ftxr_b"
+	)
+	var reserved_ok: bool = (
+		_battlecover_cmd_fail(reserve_fail, "cover_slot_reserved", "cv_ftxr_b", "cv_ftxr_a_p")
+		and _battlecover_reserved_sync(reserver, rsv_a, "cv_ftxr_a_p", "cv_ftxr_a")
+		and _battlecover_reserved_sync(other, rsv_b, "cv_ftxr_b_p", "cv_ftxr_b")
+	)
+	return occupied_ok and reserved_ok
+
+
+static func _battlecover_release_reservation_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_rel_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_rel_slot",
+		"cv_rel_obj",
+		Vector2(12.0, 10.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_rel_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_rel_p", "cv_rel_slot"),
+		"cv_rel_slot",
+		"cv_rel_p"
+	):
+		return false
+	if not _battlecover_add_object(battle_state.battlefield_geometry, "cv_rel_obj2"):
+		return false
+	var other_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_rel_other",
+		"cv_rel_obj2",
+		Vector2(40.0, 10.0)
+	)
+	if other_slot == null:
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_rel_p", "cv_rel_other"),
+		"cv_rel_other",
+		"cv_rel_p"
+	):
+		return false
+	var released: BattleCoverResult = BattleCoverService.release_reservation(battle_state, "cv_rel_p")
+	var empty_release: BattleCoverResult = BattleCoverService.release_reservation(battle_state, "cv_rel_p")
+	return (
+		_battlecover_cmd_ok(released, "cv_rel_other", "cv_rel_p")
+		and participant.reserved_cover_slot_id.is_empty()
+		and other_slot.reserved_by_participant_id.is_empty()
+		and _battlecover_occupied_sync(participant, slot, "cv_rel_p", "cv_rel_slot")
+		and _battlecover_cmd_fail(empty_release, "cover_slot_not_found", "", "cv_rel_p")
+		and participant.occupied_cover_slot_id == "cv_rel_slot"
+	)
+
+
+static func _battlecover_basic_occupancy_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_occ_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_occ_slot",
+		"cv_occ_obj",
+		Vector2(15.0, 12.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_occ_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, slot.position)
+	var before: Vector2 = participant.battle_position
+	var result: BattleCoverResult = BattleCoverService.occupy_slot(
+		battle_state,
+		"cv_occ_p",
+		"cv_occ_slot"
+	)
+	return (
+		_battlecover_cmd_ok(result, "cv_occ_slot", "cv_occ_p")
+		and _battlecover_occupied_sync(participant, slot, "cv_occ_p", "cv_occ_slot")
+		and participant.reserved_cover_slot_id.is_empty()
+		and slot.reserved_by_participant_id.is_empty()
+		and participant.battle_position.is_equal_approx(before)
+	)
+
+
+static func _battlecover_occupancy_epsilon_ok() -> bool:
+	if not is_equal_approx(BattleCoverService.COVER_OCCUPANCY_EPSILON, 0.5):
+		return false
+	var inside_state: BattleState = _battlemove_make_state("active")
+	if inside_state == null or inside_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(inside_state.battlefield_geometry, "cv_eps_obj") == null:
+		return false
+	var inside_slot: BattleCoverSlot = _battlecover_add_slot(
+		inside_state.battlefield_geometry,
+		"cv_eps_slot",
+		"cv_eps_obj",
+		Vector2(20.0, 20.0)
+	)
+	var inside_p: BattleParticipant = _battlefire_add(inside_state, "cv_eps_in", "attacker", "pistol")
+	if inside_slot == null or inside_p == null:
+		return false
+	_battletarget_place(inside_p, Vector2(20.4, 20.0))
+	var inside_res: BattleCoverResult = BattleCoverService.occupy_slot(
+		inside_state,
+		"cv_eps_in",
+		"cv_eps_slot"
+	)
+	var at_state: BattleState = _battlemove_make_state("active")
+	if at_state == null or at_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(at_state.battlefield_geometry, "cv_eps_obj2") == null:
+		return false
+	var at_slot: BattleCoverSlot = _battlecover_add_slot(
+		at_state.battlefield_geometry,
+		"cv_eps_slot2",
+		"cv_eps_obj2",
+		Vector2(20.0, 20.0)
+	)
+	var at_p: BattleParticipant = _battlefire_add(at_state, "cv_eps_at", "attacker", "pistol")
+	if at_slot == null or at_p == null:
+		return false
+	_battletarget_place(at_p, Vector2(20.0, 20.0))
+	var at_res: BattleCoverResult = BattleCoverService.occupy_slot(at_state, "cv_eps_at", "cv_eps_slot2")
+	var outside_state: BattleState = _battlemove_make_state("active")
+	if outside_state == null or outside_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(outside_state.battlefield_geometry, "cv_eps_obj3") == null:
+		return false
+	var outside_slot: BattleCoverSlot = _battlecover_add_slot(
+		outside_state.battlefield_geometry,
+		"cv_eps_slot3",
+		"cv_eps_obj3",
+		Vector2(20.0, 20.0)
+	)
+	var outside_p: BattleParticipant = _battlefire_add(outside_state, "cv_eps_out", "attacker", "pistol")
+	if outside_slot == null or outside_p == null:
+		return false
+	_battletarget_place(outside_p, Vector2(20.75, 20.0))
+	var outside_res: BattleCoverResult = BattleCoverService.occupy_slot(
+		outside_state,
+		"cv_eps_out",
+		"cv_eps_slot3"
+	)
+	return (
+		_battlecover_cmd_ok(inside_res, "cv_eps_slot", "cv_eps_in")
+		and _battlecover_occupied_sync(inside_p, inside_slot, "cv_eps_in", "cv_eps_slot")
+		and _battlecover_cmd_ok(at_res, "cv_eps_slot2", "cv_eps_at")
+		and _battlecover_cmd_fail(outside_res, "participant_not_at_slot", "cv_eps_slot3", "cv_eps_out")
+		and outside_p.occupied_cover_slot_id.is_empty()
+		and outside_slot.occupied_by_participant_id.is_empty()
+	)
+
+
+static func _battlecover_no_teleport_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_tp_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_tp_slot",
+		"cv_tp_obj",
+		Vector2(18.0, 14.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_tp_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, Vector2(18.25, 14.0))
+	var before: Vector2 = participant.battle_position
+	var result: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_tp_p", "cv_tp_slot")
+	return (
+		_battlecover_cmd_ok(result, "cv_tp_slot", "cv_tp_p")
+		and participant.battle_position.is_equal_approx(before)
+		and not participant.battle_position.is_equal_approx(slot.position)
+	)
+
+
+static func _battlecover_reserve_to_occupy_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_r2o_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_r2o_slot",
+		"cv_r2o_obj",
+		Vector2(22.0, 18.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_r2o_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, Vector2(2.0, 2.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_r2o_p", "cv_r2o_slot"),
+		"cv_r2o_slot",
+		"cv_r2o_p"
+	):
+		return false
+	_battletarget_place(participant, slot.position)
+	var occupy: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_r2o_p", "cv_r2o_slot")
+	return (
+		_battlecover_cmd_ok(occupy, "cv_r2o_slot", "cv_r2o_p")
+		and _battlecover_occupied_sync(participant, slot, "cv_r2o_p", "cv_r2o_slot")
+		and participant.reserved_cover_slot_id.is_empty()
+		and slot.reserved_by_participant_id.is_empty()
+		and not participant.has_reserved_cover_slot()
+		and not slot.is_reserved()
+	)
+
+
+static func _battlecover_occupy_reserved_by_other_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_or_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_or_slot",
+		"cv_or_obj",
+		Vector2(16.0, 10.0)
+	)
+	var participant_a: BattleParticipant = _battlefire_add(battle_state, "cv_or_a", "attacker", "pistol")
+	var participant_b: BattleParticipant = _battlefire_add(battle_state, "cv_or_b", "defender", "pistol")
+	if slot == null or participant_a == null or participant_b == null:
+		return false
+	_battletarget_place(participant_a, Vector2(4.0, 4.0))
+	_battletarget_place(participant_b, slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_or_a", "cv_or_slot"),
+		"cv_or_slot",
+		"cv_or_a"
+	):
+		return false
+	var occupy: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_or_b", "cv_or_slot")
+	return (
+		_battlecover_cmd_fail(occupy, "cover_slot_reserved", "cv_or_slot", "cv_or_b")
+		and _battlecover_reserved_sync(participant_a, slot, "cv_or_a", "cv_or_slot")
+		and participant_b.occupied_cover_slot_id.is_empty()
+		and slot.occupied_by_participant_id.is_empty()
+	)
+
+
+static func _battlecover_competing_occupancy_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_co_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_co_slot",
+		"cv_co_obj",
+		Vector2(16.0, 12.0)
+	)
+	var participant_a: BattleParticipant = _battlefire_add(battle_state, "cv_co_a", "attacker", "pistol")
+	var participant_b: BattleParticipant = _battlefire_add(battle_state, "cv_co_b", "defender", "pistol")
+	if slot == null or participant_a == null or participant_b == null:
+		return false
+	_battletarget_place(participant_a, slot.position)
+	_battletarget_place(participant_b, slot.position)
+	var first: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_co_a", "cv_co_slot")
+	var second: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_co_b", "cv_co_slot")
+	return (
+		_battlecover_cmd_ok(first, "cv_co_slot", "cv_co_a")
+		and _battlecover_cmd_fail(second, "cover_slot_occupied", "cv_co_slot", "cv_co_b")
+		and _battlecover_occupied_sync(participant_a, slot, "cv_co_a", "cv_co_slot")
+		and participant_b.occupied_cover_slot_id.is_empty()
+	)
+
+
+static func _battlecover_occupancy_transfer_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_ot_obj") == null:
+		return false
+	var slot_a: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_ot_a",
+		"cv_ot_obj",
+		Vector2(10.0, 12.0)
+	)
+	var slot_b: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_ot_b",
+		"cv_ot_obj",
+		Vector2(30.0, 12.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_ot_p", "attacker", "pistol")
+	if slot_a == null or slot_b == null or participant == null:
+		return false
+	_battletarget_place(participant, slot_a.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_ot_p", "cv_ot_a"),
+		"cv_ot_a",
+		"cv_ot_p"
+	):
+		return false
+	_battletarget_place(participant, slot_b.position)
+	var transfer: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_ot_p", "cv_ot_b")
+	return (
+		_battlecover_cmd_ok(transfer, "cv_ot_b", "cv_ot_p")
+		and slot_a.occupied_by_participant_id.is_empty()
+		and not slot_a.is_occupied()
+		and _battlecover_occupied_sync(participant, slot_b, "cv_ot_p", "cv_ot_b")
+		and participant.occupied_cover_slot_id == "cv_ot_b"
+	)
+
+
+static func _battlecover_failed_occupancy_transfer_ok() -> bool:
+	var far_state: BattleState = _battlemove_make_state("active")
+	if far_state == null or far_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(far_state.battlefield_geometry, "cv_fot_obj") == null:
+		return false
+	var far_a: BattleCoverSlot = _battlecover_add_slot(
+		far_state.battlefield_geometry,
+		"cv_fot_a",
+		"cv_fot_obj",
+		Vector2(10.0, 12.0)
+	)
+	var far_b: BattleCoverSlot = _battlecover_add_slot(
+		far_state.battlefield_geometry,
+		"cv_fot_b",
+		"cv_fot_obj",
+		Vector2(40.0, 12.0)
+	)
+	var far_p: BattleParticipant = _battlefire_add(far_state, "cv_fot_p", "attacker", "pistol")
+	if far_a == null or far_b == null or far_p == null:
+		return false
+	_battletarget_place(far_p, far_a.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(far_state, "cv_fot_p", "cv_fot_a"),
+		"cv_fot_a",
+		"cv_fot_p"
+	):
+		return false
+	var far_fail: BattleCoverResult = BattleCoverService.occupy_slot(far_state, "cv_fot_p", "cv_fot_b")
+	var far_ok: bool = (
+		_battlecover_cmd_fail(far_fail, "participant_not_at_slot", "cv_fot_b", "cv_fot_p")
+		and _battlecover_occupied_sync(far_p, far_a, "cv_fot_p", "cv_fot_a")
+		and far_b.occupied_by_participant_id.is_empty()
+	)
+	var occ_state: BattleState = _battlemove_make_state("active")
+	if occ_state == null or occ_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(occ_state.battlefield_geometry, "cv_foto_obj") == null:
+		return false
+	var occ_a: BattleCoverSlot = _battlecover_add_slot(
+		occ_state.battlefield_geometry,
+		"cv_foto_a",
+		"cv_foto_obj",
+		Vector2(10.0, 14.0)
+	)
+	var occ_b: BattleCoverSlot = _battlecover_add_slot(
+		occ_state.battlefield_geometry,
+		"cv_foto_b",
+		"cv_foto_obj",
+		Vector2(30.0, 14.0)
+	)
+	var occ_p: BattleParticipant = _battlefire_add(occ_state, "cv_foto_p", "attacker", "pistol")
+	var occ_other: BattleParticipant = _battlefire_add(occ_state, "cv_foto_o", "defender", "pistol")
+	if occ_a == null or occ_b == null or occ_p == null or occ_other == null:
+		return false
+	_battletarget_place(occ_p, occ_a.position)
+	_battletarget_place(occ_other, occ_b.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(occ_state, "cv_foto_p", "cv_foto_a"),
+		"cv_foto_a",
+		"cv_foto_p"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(occ_state, "cv_foto_o", "cv_foto_b"),
+		"cv_foto_b",
+		"cv_foto_o"
+	):
+		return false
+	_battletarget_place(occ_p, occ_b.position)
+	var occ_fail: BattleCoverResult = BattleCoverService.occupy_slot(occ_state, "cv_foto_p", "cv_foto_b")
+	var occ_ok: bool = (
+		_battlecover_cmd_fail(occ_fail, "cover_slot_occupied", "cv_foto_b", "cv_foto_p")
+		and _battlecover_occupied_sync(occ_p, occ_a, "cv_foto_p", "cv_foto_a")
+		and _battlecover_occupied_sync(occ_other, occ_b, "cv_foto_o", "cv_foto_b")
+	)
+	var rsv_state: BattleState = _battlemove_make_state("active")
+	if rsv_state == null or rsv_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(rsv_state.battlefield_geometry, "cv_fotr_obj") == null:
+		return false
+	var rsv_a: BattleCoverSlot = _battlecover_add_slot(
+		rsv_state.battlefield_geometry,
+		"cv_fotr_a",
+		"cv_fotr_obj",
+		Vector2(10.0, 16.0)
+	)
+	var rsv_b: BattleCoverSlot = _battlecover_add_slot(
+		rsv_state.battlefield_geometry,
+		"cv_fotr_b",
+		"cv_fotr_obj",
+		Vector2(30.0, 16.0)
+	)
+	var rsv_p: BattleParticipant = _battlefire_add(rsv_state, "cv_fotr_p", "attacker", "pistol")
+	var rsv_other: BattleParticipant = _battlefire_add(rsv_state, "cv_fotr_o", "defender", "pistol")
+	if rsv_a == null or rsv_b == null or rsv_p == null or rsv_other == null:
+		return false
+	_battletarget_place(rsv_p, rsv_a.position)
+	_battletarget_place(rsv_other, Vector2(8.0, 8.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(rsv_state, "cv_fotr_p", "cv_fotr_a"),
+		"cv_fotr_a",
+		"cv_fotr_p"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(rsv_state, "cv_fotr_o", "cv_fotr_b"),
+		"cv_fotr_b",
+		"cv_fotr_o"
+	):
+		return false
+	_battletarget_place(rsv_p, rsv_b.position)
+	var rsv_fail: BattleCoverResult = BattleCoverService.occupy_slot(rsv_state, "cv_fotr_p", "cv_fotr_b")
+	var rsv_ok: bool = (
+		_battlecover_cmd_fail(rsv_fail, "cover_slot_reserved", "cv_fotr_b", "cv_fotr_p")
+		and _battlecover_occupied_sync(rsv_p, rsv_a, "cv_fotr_p", "cv_fotr_a")
+		and _battlecover_reserved_sync(rsv_other, rsv_b, "cv_fotr_o", "cv_fotr_b")
+		and rsv_b.occupied_by_participant_id.is_empty()
+	)
+	return far_ok and occ_ok and rsv_ok
+
+
+static func _battlecover_vacate_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_vac_obj") == null:
+		return false
+	var occ_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_vac_occ",
+		"cv_vac_obj",
+		Vector2(12.0, 10.0)
+	)
+	var rsv_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_vac_rsv",
+		"cv_vac_obj",
+		Vector2(40.0, 10.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_vac_p", "attacker", "pistol")
+	if occ_slot == null or rsv_slot == null or participant == null:
+		return false
+	_battletarget_place(participant, occ_slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_vac_p", "cv_vac_occ"),
+		"cv_vac_occ",
+		"cv_vac_p"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_vac_p", "cv_vac_rsv"),
+		"cv_vac_rsv",
+		"cv_vac_p"
+	):
+		return false
+	var vacated: BattleCoverResult = BattleCoverService.vacate_slot(battle_state, "cv_vac_p")
+	var empty_vacate: BattleCoverResult = BattleCoverService.vacate_slot(battle_state, "cv_vac_p")
+	return (
+		_battlecover_cmd_ok(vacated, "cv_vac_occ", "cv_vac_p")
+		and participant.occupied_cover_slot_id.is_empty()
+		and occ_slot.occupied_by_participant_id.is_empty()
+		and _battlecover_reserved_sync(participant, rsv_slot, "cv_vac_p", "cv_vac_rsv")
+		and _battlecover_cmd_fail(empty_vacate, "cover_slot_not_found", "", "cv_vac_p")
+	)
+
+
+static func _battlecover_reservation_occupancy_distinct_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_dist_obj") == null:
+		return false
+	var occ_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_dist_occ",
+		"cv_dist_obj",
+		Vector2(12.0, 14.0)
+	)
+	var rsv_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_dist_rsv",
+		"cv_dist_obj",
+		Vector2(40.0, 14.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_dist_p", "attacker", "pistol")
+	if occ_slot == null or rsv_slot == null or participant == null:
+		return false
+	_battletarget_place(participant, occ_slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_dist_p", "cv_dist_occ"),
+		"cv_dist_occ",
+		"cv_dist_p"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_dist_p", "cv_dist_rsv"),
+		"cv_dist_rsv",
+		"cv_dist_p"
+	):
+		return false
+	if participant.occupied_cover_slot_id != "cv_dist_occ" or participant.reserved_cover_slot_id != "cv_dist_rsv":
+		return false
+	var released: BattleCoverResult = BattleCoverService.release_reservation(battle_state, "cv_dist_p")
+	var after_release_occ: bool = _battlecover_occupied_sync(participant, occ_slot, "cv_dist_p", "cv_dist_occ")
+	if not _battlecover_cmd_ok(released, "cv_dist_rsv", "cv_dist_p") or not after_release_occ:
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_dist_p", "cv_dist_rsv"),
+		"cv_dist_rsv",
+		"cv_dist_p"
+	):
+		return false
+	var vacated: BattleCoverResult = BattleCoverService.vacate_slot(battle_state, "cv_dist_p")
+	return (
+		_battlecover_cmd_ok(vacated, "cv_dist_occ", "cv_dist_p")
+		and participant.occupied_cover_slot_id.is_empty()
+		and occ_slot.occupied_by_participant_id.is_empty()
+		and _battlecover_reserved_sync(participant, rsv_slot, "cv_dist_p", "cv_dist_rsv")
+	)
+
+
+static func _battlecover_dead_ineligible_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_dead_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_dead_slot",
+		"cv_dead_obj",
+		Vector2(12.0, 10.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_dead_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, slot.position)
+	participant.is_alive = false
+	var reserve: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_dead_p", "cv_dead_slot")
+	var occupy: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_dead_p", "cv_dead_slot")
+	return (
+		_battlecover_cmd_fail(reserve, "participant_not_eligible", "", "cv_dead_p")
+		and _battlecover_cmd_fail(occupy, "participant_not_eligible", "", "cv_dead_p")
+		and participant.reserved_cover_slot_id.is_empty()
+		and participant.occupied_cover_slot_id.is_empty()
+		and slot.is_available()
+	)
+
+
+static func _battlecover_unpositioned_ineligible_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_unp_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_unp_slot",
+		"cv_unp_obj",
+		Vector2(12.0, 10.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_unp_p", "attacker", "pistol")
+	if slot == null or participant == null:
+		return false
+	participant.has_battle_position = false
+	participant.battle_position = Vector2.ZERO
+	var reserve: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, "cv_unp_p", "cv_unp_slot")
+	var occupy: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cv_unp_p", "cv_unp_slot")
+	return (
+		_battlecover_cmd_fail(reserve, "participant_not_eligible", "", "cv_unp_p")
+		and _battlecover_cmd_fail(occupy, "participant_not_eligible", "", "cv_unp_p")
+		and participant.reserved_cover_slot_id.is_empty()
+		and participant.occupied_cover_slot_id.is_empty()
+		and slot.is_available()
+	)
+
+
+static func _battlecover_release_all_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_all_obj") == null:
+		return false
+	var occ_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_all_occ",
+		"cv_all_obj",
+		Vector2(12.0, 10.0)
+	)
+	var rsv_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_all_rsv",
+		"cv_all_obj",
+		Vector2(40.0, 10.0)
+	)
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_all_p", "attacker", "pistol")
+	if occ_slot == null or rsv_slot == null or participant == null:
+		return false
+	_battletarget_place(participant, occ_slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_all_p", "cv_all_occ"),
+		"cv_all_occ",
+		"cv_all_p"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_all_p", "cv_all_rsv"),
+		"cv_all_rsv",
+		"cv_all_p"
+	):
+		return false
+	participant.is_alive = false
+	var cleaned: BattleCoverResult = BattleCoverService.release_all_for_participant(battle_state, "cv_all_p")
+	return (
+		_battlecover_cmd_ok(cleaned, "cv_all_occ", "cv_all_p")
+		and participant.reserved_cover_slot_id.is_empty()
+		and participant.occupied_cover_slot_id.is_empty()
+		and occ_slot.occupied_by_participant_id.is_empty()
+		and rsv_slot.reserved_by_participant_id.is_empty()
+		and not participant.has_reserved_cover_slot()
+		and not participant.has_occupied_cover_slot()
+	)
+
+
+static func _battlecover_cleanup_isolation_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_iso_obj") == null:
+		return false
+	var slot_a: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_iso_a",
+		"cv_iso_obj",
+		Vector2(12.0, 10.0)
+	)
+	var slot_b: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_iso_b",
+		"cv_iso_obj",
+		Vector2(40.0, 10.0)
+	)
+	var participant_a: BattleParticipant = _battlefire_add(battle_state, "cv_iso_pa", "attacker", "pistol")
+	var participant_b: BattleParticipant = _battlefire_add(battle_state, "cv_iso_pb", "defender", "pistol")
+	if slot_a == null or slot_b == null or participant_a == null or participant_b == null:
+		return false
+	_battletarget_place(participant_a, slot_a.position)
+	_battletarget_place(participant_b, slot_b.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_iso_pa", "cv_iso_a"),
+		"cv_iso_a",
+		"cv_iso_pa"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_iso_pb", "cv_iso_b"),
+		"cv_iso_b",
+		"cv_iso_pb"
+	):
+		return false
+	var cleaned: BattleCoverResult = BattleCoverService.release_all_for_participant(battle_state, "cv_iso_pa")
+	return (
+		_battlecover_cmd_ok(cleaned, "cv_iso_a", "cv_iso_pa")
+		and participant_a.occupied_cover_slot_id.is_empty()
+		and slot_a.occupied_by_participant_id.is_empty()
+		and _battlecover_reserved_sync(participant_b, slot_b, "cv_iso_pb", "cv_iso_b")
+	)
+
+
+static func _battlecover_remove_owned_slot_ok() -> bool:
+	var occ_state: BattleState = _battlemove_make_state("active")
+	if occ_state == null or occ_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(occ_state.battlefield_geometry, "cv_rm_obj") == null:
+		return false
+	var occ_slot: BattleCoverSlot = _battlecover_add_slot(
+		occ_state.battlefield_geometry,
+		"cv_rm_occ",
+		"cv_rm_obj",
+		Vector2(12.0, 10.0)
+	)
+	var occ_p: BattleParticipant = _battlefire_add(occ_state, "cv_rm_occ_p", "attacker", "pistol")
+	if occ_slot == null or occ_p == null:
+		return false
+	_battletarget_place(occ_p, occ_slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(occ_state, "cv_rm_occ_p", "cv_rm_occ"),
+		"cv_rm_occ",
+		"cv_rm_occ_p"
+	):
+		return false
+	var occ_blocked: bool = not occ_state.battlefield_geometry.remove_cover_slot("cv_rm_occ")
+	if not occ_blocked or not occ_state.battlefield_geometry.has_cover_slot("cv_rm_occ"):
+		return false
+	if not _battlecover_occupied_sync(occ_p, occ_slot, "cv_rm_occ_p", "cv_rm_occ"):
+		return false
+	if not _battlecover_cmd_ok(BattleCoverService.vacate_slot(occ_state, "cv_rm_occ_p"), "cv_rm_occ", "cv_rm_occ_p"):
+		return false
+	if not occ_state.battlefield_geometry.remove_cover_slot("cv_rm_occ"):
+		return false
+	var rsv_state: BattleState = _battlemove_make_state("active")
+	if rsv_state == null or rsv_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(rsv_state.battlefield_geometry, "cv_rmr_obj") == null:
+		return false
+	var rsv_slot: BattleCoverSlot = _battlecover_add_slot(
+		rsv_state.battlefield_geometry,
+		"cv_rm_rsv",
+		"cv_rmr_obj",
+		Vector2(12.0, 10.0)
+	)
+	var rsv_p: BattleParticipant = _battlefire_add(rsv_state, "cv_rm_rsv_p", "attacker", "pistol")
+	if rsv_slot == null or rsv_p == null:
+		return false
+	_battletarget_place(rsv_p, Vector2(4.0, 4.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(rsv_state, "cv_rm_rsv_p", "cv_rm_rsv"),
+		"cv_rm_rsv",
+		"cv_rm_rsv_p"
+	):
+		return false
+	var rsv_blocked: bool = not rsv_state.battlefield_geometry.remove_cover_slot("cv_rm_rsv")
+	if not rsv_blocked or not rsv_state.battlefield_geometry.has_cover_slot("cv_rm_rsv"):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.release_reservation(rsv_state, "cv_rm_rsv_p"),
+		"cv_rm_rsv",
+		"cv_rm_rsv_p"
+	):
+		return false
+	return rsv_state.battlefield_geometry.remove_cover_slot("cv_rm_rsv")
+
+
+static func _battlecover_remove_object_owned_ok() -> bool:
+	var owned_state: BattleState = _battlemove_make_state("active")
+	if owned_state == null or owned_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(owned_state.battlefield_geometry, "cv_rmo_obj") == null:
+		return false
+	var owned_slot: BattleCoverSlot = _battlecover_add_slot(
+		owned_state.battlefield_geometry,
+		"cv_rmo_slot",
+		"cv_rmo_obj",
+		Vector2(12.0, 10.0)
+	)
+	var owner: BattleParticipant = _battlefire_add(owned_state, "cv_rmo_p", "attacker", "pistol")
+	if owned_slot == null or owner == null:
+		return false
+	_battletarget_place(owner, owned_slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(owned_state, "cv_rmo_p", "cv_rmo_slot"),
+		"cv_rmo_slot",
+		"cv_rmo_p"
+	):
+		return false
+	var refused: bool = not owned_state.battlefield_geometry.remove_cover_object("cv_rmo_obj")
+	var owned_ok: bool = (
+		refused
+		and owned_state.battlefield_geometry.has_cover_object("cv_rmo_obj")
+		and owned_state.battlefield_geometry.has_cover_slot("cv_rmo_slot")
+		and _battlecover_occupied_sync(owner, owned_slot, "cv_rmo_p", "cv_rmo_slot")
+	)
+	var free_geo: BattlefieldGeometry = _battlespatial_open_geometry()
+	if free_geo == null:
+		return false
+	var free_obj: BattleCoverObject = _battlecover_add_object(free_geo, "cv_rmf_obj")
+	var free_slot: BattleCoverSlot = _battlecover_add_slot(
+		free_geo,
+		"cv_rmf_slot",
+		"cv_rmf_obj",
+		Vector2(12.0, 10.0)
+	)
+	if free_obj == null or free_slot == null:
+		return false
+	var removed: bool = free_geo.remove_cover_object("cv_rmf_obj")
+	return (
+		owned_ok
+		and removed
+		and not free_geo.has_cover_object("cv_rmf_obj")
+		and not free_geo.has_cover_slot("cv_rmf_slot")
+	)
+
+
+static func _battlecover_geometry_valid_ok() -> bool:
+	var healthy: BattlefieldGeometry = _battlespatial_open_geometry()
+	if healthy == null:
+		return false
+	if _battlecover_add_object(healthy, "cv_val_obj") == null:
+		return false
+	if _battlecover_add_slot(healthy, "cv_val_slot", "cv_val_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	if not healthy.is_valid():
+		return false
+	var missing_membership: BattlefieldGeometry = _battlespatial_open_geometry()
+	if missing_membership == null:
+		return false
+	var listed: BattleCoverObject = _battlecover_add_object(missing_membership, "cv_miss_obj")
+	if listed == null:
+		return false
+	if _battlecover_add_slot(missing_membership, "cv_miss_slot", "cv_miss_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	listed.slot_ids.append("cv_ghost_slot")
+	var missing_ok: bool = not missing_membership.is_valid()
+	var missing_object: BattlefieldGeometry = _battlespatial_open_geometry()
+	if missing_object == null:
+		return false
+	if _battlecover_add_object(missing_object, "cv_gone_obj") == null:
+		return false
+	if _battlecover_add_slot(missing_object, "cv_gone_slot", "cv_gone_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	missing_object.cover_objects.erase("cv_gone_obj")
+	return missing_ok and not missing_object.is_valid() and healthy.is_valid()
+
+
+static func _battlecover_available_query_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_av_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "z_avail", "cv_av_obj", Vector2(30.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "a_avail", "cv_av_obj", Vector2(10.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "m_reserved", "cv_av_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "c_occupied", "cv_av_obj", Vector2(40.0, 10.0)) == null:
+		return false
+	var reserver: BattleParticipant = _battlefire_add(battle_state, "cv_av_r", "attacker", "pistol")
+	var occupant: BattleParticipant = _battlefire_add(battle_state, "cv_av_o", "defender", "pistol")
+	if reserver == null or occupant == null:
+		return false
+	_battletarget_place(reserver, Vector2(4.0, 4.0))
+	_battletarget_place(occupant, Vector2(40.0, 10.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_av_r", "m_reserved"),
+		"m_reserved",
+		"cv_av_r"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_av_o", "c_occupied"),
+		"c_occupied",
+		"cv_av_o"
+	):
+		return false
+	var snap: Dictionary = _battlecover_ownership_snap(battle_state)
+	var query: BattleCoverQueryResult = BattleCoverService.get_available_slots(battle_state)
+	var expected: Array[String] = ["a_avail", "z_avail"]
+	return _battlecover_query_ok(query, expected) and _battlecover_ownership_unchanged(battle_state, snap)
+
+
+static func _battlecover_available_determinism_ok() -> bool:
+	var first: BattleState = _battlemove_make_state("active")
+	var second: BattleState = _battlemove_make_state("active")
+	if first == null or second == null or first.battlefield_geometry == null or second.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(first.battlefield_geometry, "cv_det_obj") == null:
+		return false
+	if _battlecover_add_slot(first.battlefield_geometry, "z_slot", "cv_det_obj", Vector2(30.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(first.battlefield_geometry, "a_slot", "cv_det_obj", Vector2(10.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(first.battlefield_geometry, "m_slot", "cv_det_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	if _battlecover_add_object(second.battlefield_geometry, "cv_det_obj") == null:
+		return false
+	if _battlecover_add_slot(second.battlefield_geometry, "a_slot", "cv_det_obj", Vector2(10.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(second.battlefield_geometry, "m_slot", "cv_det_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(second.battlefield_geometry, "z_slot", "cv_det_obj", Vector2(30.0, 10.0)) == null:
+		return false
+	var first_q: BattleCoverQueryResult = BattleCoverService.get_available_slots(first)
+	var second_q: BattleCoverQueryResult = BattleCoverService.get_available_slots(second)
+	var expected: Array[String] = ["a_slot", "m_slot", "z_slot"]
+	return _battlecover_query_ok(first_q, expected) and _battlecover_query_ok(second_q, expected)
+
+
+static func _battlecover_nearest_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_near_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "far_slot", "cv_near_obj", Vector2(80.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "near_slot", "cv_near_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "mid_slot", "cv_near_obj", Vector2(40.0, 10.0)) == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_near_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(10.0, 10.0))
+	var snap: Dictionary = _battlecover_ownership_snap(battle_state)
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_near_p"
+	)
+	var expected: Array[String] = ["near_slot"]
+	return (
+		_battlecover_query_ok(query, expected, "near_slot")
+		and participant.reserved_cover_slot_id.is_empty()
+		and _battlecover_ownership_unchanged(battle_state, snap)
+	)
+
+
+static func _battlecover_nearest_tie_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_tie_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "z_slot", "cv_tie_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "a_slot", "cv_tie_obj", Vector2(20.0, 10.0)) == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_tie_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(10.0, 10.0))
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_tie_p"
+	)
+	var expected: Array[String] = ["a_slot"]
+	return _battlecover_query_ok(query, expected, "a_slot")
+
+
+static func _battlecover_nearest_ignores_unavailable_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_ign_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "closest", "cv_ign_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "next_ok", "cv_ign_obj", Vector2(30.0, 10.0)) == null:
+		return false
+	var blocker: BattleParticipant = _battlefire_add(battle_state, "cv_ign_b", "defender", "pistol")
+	var seeker: BattleParticipant = _battlefire_add(battle_state, "cv_ign_s", "attacker", "pistol")
+	if blocker == null or seeker == null:
+		return false
+	_battletarget_place(blocker, Vector2(12.0, 10.0))
+	_battletarget_place(seeker, Vector2(10.0, 10.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_ign_b", "closest"),
+		"closest",
+		"cv_ign_b"
+	):
+		return false
+	var occupied_query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_ign_s"
+	)
+	if not _battlecover_query_ok(occupied_query, _battlecover_as_ids(["next_ok"]), "next_ok"):
+		return false
+	var rsv_state: BattleState = _battlemove_make_state("active")
+	if rsv_state == null or rsv_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(rsv_state.battlefield_geometry, "cv_ignr_obj") == null:
+		return false
+	if _battlecover_add_slot(rsv_state.battlefield_geometry, "closest_r", "cv_ignr_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(rsv_state.battlefield_geometry, "next_r", "cv_ignr_obj", Vector2(30.0, 10.0)) == null:
+		return false
+	var reserver: BattleParticipant = _battlefire_add(rsv_state, "cv_ignr_b", "defender", "pistol")
+	var rsv_seeker: BattleParticipant = _battlefire_add(rsv_state, "cv_ignr_s", "attacker", "pistol")
+	if reserver == null or rsv_seeker == null:
+		return false
+	_battletarget_place(reserver, Vector2(4.0, 4.0))
+	_battletarget_place(rsv_seeker, Vector2(10.0, 10.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(rsv_state, "cv_ignr_b", "closest_r"),
+		"closest_r",
+		"cv_ignr_b"
+	):
+		return false
+	var reserved_query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		rsv_state,
+		"cv_ignr_s"
+	)
+	return _battlecover_query_ok(reserved_query, _battlecover_as_ids(["next_r"]), "next_r")
+
+
+static func _battlecover_empty_query_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_empty_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "cv_empty_slot", "cv_empty_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	var occupant: BattleParticipant = _battlefire_add(battle_state, "cv_empty_o", "attacker", "pistol")
+	var seeker: BattleParticipant = _battlefire_add(battle_state, "cv_empty_s", "defender", "pistol")
+	if occupant == null or seeker == null:
+		return false
+	_battletarget_place(occupant, Vector2(12.0, 10.0))
+	_battletarget_place(seeker, Vector2(20.0, 10.0))
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_empty_o", "cv_empty_slot"),
+		"cv_empty_slot",
+		"cv_empty_o"
+	):
+		return false
+	var available: BattleCoverQueryResult = BattleCoverService.get_available_slots(battle_state)
+	var nearest: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_empty_s"
+	)
+	var none: Array[String] = []
+	return _battlecover_query_ok(available, none) and _battlecover_query_ok(nearest, none)
+
+
+static func _battlecover_reachability_disabled_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var barrier: BattleObstacle = BattleObstacle.new("cv_bar", Rect2(0.0, 25.0, 100.0, 10.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(barrier):
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_reach_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "blocked_near", "cv_reach_obj", Vector2(50.0, 40.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "open_far", "cv_reach_obj", Vector2(90.0, 10.0)) == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_reach_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(50.0, 10.0))
+	var blocked_nav: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		participant.battle_position,
+		Vector2(50.0, 40.0)
+	)
+	var open_nav: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		participant.battle_position,
+		Vector2(90.0, 10.0)
+	)
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_reach_p",
+		false
+	)
+	return (
+		blocked_nav != null
+		and not blocked_nav.success
+		and blocked_nav.error_code == "no_path"
+		and open_nav != null
+		and open_nav.success
+		and _battlecover_query_ok(query, _battlecover_as_ids(["blocked_near"]), "blocked_near")
+		and participant.reserved_cover_slot_id.is_empty()
+	)
+
+
+static func _battlecover_reachability_enabled_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var barrier: BattleObstacle = BattleObstacle.new("cv_bar2", Rect2(0.0, 25.0, 100.0, 10.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(barrier):
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_reach2_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "blocked_near", "cv_reach2_obj", Vector2(50.0, 40.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "open_far", "cv_reach2_obj", Vector2(90.0, 10.0)) == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_reach2_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(50.0, 10.0))
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_reach2_p",
+		true
+	)
+	return (
+		_battlecover_query_ok(query, _battlecover_as_ids(["open_far"]), "open_far")
+		and participant.reserved_cover_slot_id.is_empty()
+		and participant.occupied_cover_slot_id.is_empty()
+	)
+
+
+static func _battlecover_reachability_nav_isolation_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var barrier: BattleObstacle = BattleObstacle.new("cv_bar3", Rect2(0.0, 25.0, 100.0, 10.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(barrier):
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_navi_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "blocked_near", "cv_navi_obj", Vector2(50.0, 40.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "open_far", "cv_navi_obj", Vector2(90.0, 10.0)) == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_navi_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(50.0, 10.0))
+	var waypoints: Array[Vector2] = [Vector2(40.0, 10.0), Vector2(30.0, 10.0)]
+	if not participant.set_navigation_path(Vector2(30.0, 10.0), waypoints, BattleParticipant.NAVIGATION_SOURCE_EXTERNAL):
+		return false
+	if not participant.set_movement_intent(Vector2.LEFT):
+		return false
+	participant.navigation_waypoint_index = 1
+	var snap: Dictionary = _battlecover_nav_snap(participant)
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_navi_p",
+		true
+	)
+	return (
+		_battlecover_query_ok(query, _battlecover_as_ids(["open_far"]), "open_far")
+		and _battlecover_nav_unchanged(participant, snap)
+	)
+
+
+static func _battlecover_query_readonly_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_ro_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "cv_ro_a", "cv_ro_obj", Vector2(12.0, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "cv_ro_b", "cv_ro_obj", Vector2(40.0, 10.0)) == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "cv_ro_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(10.0, 10.0))
+	var snap: Dictionary = _battlecover_ownership_snap(battle_state)
+	var first_available: BattleCoverQueryResult = BattleCoverService.get_available_slots(battle_state)
+	var first_nearest: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_ro_p"
+	)
+	var second_available: BattleCoverQueryResult = BattleCoverService.get_available_slots(battle_state)
+	var second_nearest: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"cv_ro_p"
+	)
+	return (
+		first_available != null
+		and first_available.success
+		and first_nearest != null
+		and first_nearest.success
+		and _string_ids_match(first_available.cover_slot_ids, second_available.cover_slot_ids)
+		and first_nearest.cover_slot_id == second_nearest.cover_slot_id
+		and _battlecover_ownership_unchanged(battle_state, snap)
+	)
+
+
+static func _battlecover_associated_obstacle_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("cv_assoc_wall", Rect2(20.0, 20.0, 4.0, 4.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var cover_object: BattleCoverObject = _battlecover_add_object(
+		battle_state.battlefield_geometry,
+		"cv_assoc_obj",
+		"cv_assoc_wall"
+	)
+	var missing_assoc: BattleCoverObject = _battlecover_add_object(
+		battle_state.battlefield_geometry,
+		"cv_assoc_missing",
+		"no_such_obstacle"
+	)
+	if cover_object == null or missing_assoc == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_assoc_slot",
+		"cv_assoc_obj",
+		Vector2(19.5, 22.0)
+	)
+	if slot == null:
+		return false
+	var source: BattleParticipant = _battlefire_add(battle_state, "cv_assoc_src", "attacker", "pistol")
+	var target: BattleParticipant = _battlefire_add(battle_state, "cv_assoc_tgt", "defender", "pistol")
+	if source == null or target == null:
+		return false
+	_battletarget_place(source, Vector2(10.0, 22.0))
+	_battletarget_place(target, Vector2(40.0, 10.0))
+	var move: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battle_state,
+		Vector2(10.0, 10.0),
+		Vector2(8.0, 0.0)
+	)
+	var los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		battle_state,
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	return (
+		cover_object.associated_obstacle_id == "cv_assoc_wall"
+		and missing_assoc.associated_obstacle_id == "no_such_obstacle"
+		and battle_state.battlefield_geometry.is_valid()
+		and move != null
+		and move.success
+		and not move.was_blocked
+		and los != null
+		and los.success
+		and los.has_line_of_sight
+	)
+
+
+static func _battlecover_facing_no_combat_ok() -> bool:
+	var right_pack: Dictionary = _battleattack_make_ready(
+		"cv_face_src_r",
+		"cv_face_tgt_r",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var left_pack: Dictionary = _battleattack_make_ready(
+		"cv_face_src_l",
+		"cv_face_tgt_l",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var right_state: BattleState = right_pack.get("battle_state", null) as BattleState
+	var left_state: BattleState = left_pack.get("battle_state", null) as BattleState
+	var right_src: BattleParticipant = right_pack.get("source", null) as BattleParticipant
+	var left_src: BattleParticipant = left_pack.get("source", null) as BattleParticipant
+	if right_state == null or left_state == null or right_src == null or left_src == null:
+		return false
+	if _battlecover_add_object(right_state.battlefield_geometry, "cv_face_obj_r") == null:
+		return false
+	if _battlecover_add_object(left_state.battlefield_geometry, "cv_face_obj_l") == null:
+		return false
+	if _battlecover_add_slot(right_state.battlefield_geometry, "cv_face_r", "cv_face_obj_r", Vector2(10.0, 10.0), Vector2.RIGHT) == null:
+		return false
+	if _battlecover_add_slot(left_state.battlefield_geometry, "cv_face_l", "cv_face_obj_l", Vector2(10.0, 10.0), Vector2.LEFT) == null:
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(right_state, "cv_face_src_r", "cv_face_r"),
+		"cv_face_r",
+		"cv_face_src_r"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(left_state, "cv_face_src_l", "cv_face_l"),
+		"cv_face_l",
+		"cv_face_src_l"
+	):
+		return false
+	var right_fire: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		right_state,
+		"cv_face_src_r",
+		"cv_face_tgt_r"
+	)
+	var left_fire: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		left_state,
+		"cv_face_src_l",
+		"cv_face_tgt_l"
+	)
+	var right_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		right_state,
+		"cv_face_src_r",
+		"cv_face_tgt_r",
+		0.0
+	)
+	var left_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		left_state,
+		"cv_face_src_l",
+		"cv_face_tgt_l",
+		0.0
+	)
+	return (
+		right_fire != null
+		and left_fire != null
+		and right_fire.success
+		and left_fire.success
+		and right_fire.can_fire
+		and left_fire.can_fire
+		and right_attack != null
+		and left_attack != null
+		and right_attack.success
+		and left_attack.success
+		and right_attack.attack_event != null
+		and left_attack.attack_event != null
+		and right_attack.attack_event.outcome == left_attack.attack_event.outcome
+		and right_attack.attack_event.outcome == BattleAttackProfile.OUTCOME_MISS
+	)
+
+
+static func _battlecover_behavior_no_seek_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"cv_bhv_src",
+		"cv_bhv_tgt",
+		"rifle",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_bhv_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "cv_bhv_near", "cv_bhv_obj", Vector2(10.5, 10.0)) == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "cv_bhv_mid", "cv_bhv_obj", Vector2(14.0, 10.0)) == null:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var near_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cv_bhv_near")
+	var mid_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cv_bhv_mid")
+	return (
+		result != null
+		and result.success
+		and source.reserved_cover_slot_id.is_empty()
+		and source.occupied_cover_slot_id.is_empty()
+		and target.reserved_cover_slot_id.is_empty()
+		and target.occupied_cover_slot_id.is_empty()
+		and near_slot != null
+		and mid_slot != null
+		and near_slot.is_available()
+		and mid_slot.is_available()
+	)
+
+
+static func _battlecover_defend_position_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var defender: BattleParticipant = _battlefire_add(battle_state, "cv_def_d", "defender", "pistol")
+	var attacker: BattleParticipant = _battlefire_add(battle_state, "cv_def_a", "attacker", "pistol")
+	if defender == null or attacker == null:
+		return false
+	_battletarget_place(defender, Vector2(50.0, 30.0))
+	_battletarget_place(attacker, Vector2(40.0, 30.0))
+	defender.set_defend_position(true)
+	if not defender.set_defend_position_anchor(Vector2(50.0, 30.0)):
+		return false
+	attacker.set_target_participant("cv_def_d")
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_def_obj") == null:
+		return false
+	if _battlecover_add_slot(battle_state.battlefield_geometry, "cv_def_slot", "cv_def_obj", Vector2(50.4, 30.0)) == null:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cv_def_slot")
+	return (
+		result != null
+		and result.success
+		and defender.defend_position
+		and defender.has_defend_position_anchor
+		and defender.defend_position_anchor.is_equal_approx(Vector2(50.0, 30.0))
+		and defender.reserved_cover_slot_id.is_empty()
+		and defender.occupied_cover_slot_id.is_empty()
+		and attacker.reserved_cover_slot_id.is_empty()
+		and attacker.occupied_cover_slot_id.is_empty()
+		and slot != null
+		and slot.is_available()
+	)
+
+
+static func _battlecover_death_no_auto_cleanup_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"cv_kill_src",
+		"cv_kill_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_kill_obj") == null:
+		return false
+	var occ_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_kill_occ",
+		"cv_kill_obj",
+		Vector2(20.0, 10.0)
+	)
+	var rsv_slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_kill_rsv",
+		"cv_kill_obj",
+		Vector2(40.0, 10.0)
+	)
+	if occ_slot == null or rsv_slot == null:
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "cv_kill_tgt", "cv_kill_occ"),
+		"cv_kill_occ",
+		"cv_kill_tgt"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "cv_kill_tgt", "cv_kill_rsv"),
+		"cv_kill_rsv",
+		"cv_kill_tgt"
+	):
+		return false
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cv_kill_src",
+		"cv_kill_tgt",
+		0.95
+	)
+	return (
+		attack != null
+		and attack.success
+		and attack.shot_executed
+		and attack.attack_event != null
+		and attack.attack_event.outcome == BattleAttackProfile.OUTCOME_KILL
+		and not target.is_alive
+		and target.occupied_cover_slot_id == "cv_kill_occ"
+		and target.reserved_cover_slot_id == "cv_kill_rsv"
+		and occ_slot.occupied_by_participant_id == "cv_kill_tgt"
+		and rsv_slot.reserved_by_participant_id == "cv_kill_tgt"
+		and not BattleAttackResolutionService.new().has_method("release_all_for_participant")
+	)
+
+
+static func _battlecover_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	if soldier == null or battle_state.battlefield_geometry == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	if _battlecover_add_object(battle_state.battlefield_geometry, "cv_camp_obj") == null:
+		return false
+	var slot: BattleCoverSlot = _battlecover_add_slot(
+		battle_state.battlefield_geometry,
+		"cv_camp_slot",
+		"cv_camp_obj",
+		Vector2(12.0, 10.0)
+	)
+	var participant: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	if slot == null or participant == null:
+		return false
+	_battletarget_place(participant, slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.reserve_slot(battle_state, "battle_sol_a", "cv_camp_slot"),
+		"cv_camp_slot",
+		"battle_sol_a"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "battle_sol_a", "cv_camp_slot"),
+		"cv_camp_slot",
+		"battle_sol_a"
+	):
+		return false
+	if not _battlecover_cmd_ok(
+		BattleCoverService.vacate_slot(battle_state, "battle_sol_a"),
+		"cv_camp_slot",
+		"battle_sol_a"
+	):
+		return false
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		_battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+		and _battlecover_no_cover_trace(persist)
+		and _battlecover_no_cover_trace(soldier_dict)
+	)
+
+
+static func _battlecover_interiors_elevation_boundary_ok() -> bool:
+	var cover_object: BattleCoverObject = BattleCoverObject.new("cv_fut_obj")
+	var slot: BattleCoverSlot = BattleCoverSlot.new(
+		"cv_fut_slot",
+		"cv_fut_obj",
+		Vector2(8.0, 8.0),
+		Vector2.RIGHT
+	)
+	var svc: BattleCoverService = BattleCoverService.new()
+	return (
+		slot.position.x == 8.0
+		and slot.position.y == 8.0
+		and slot.get("room_id") == null
+		and slot.get("floor_id") == null
+		and slot.get("elevation") == null
+		and slot.get("elevation_level") == null
+		and slot.get("stairs") == null
+		and slot.get("rooftop") == null
+		and cover_object.get("room_id") == null
+		and cover_object.get("interior_id") == null
+		and not svc.has_method("assign_room")
+		and not svc.has_method("set_elevation")
+		and not svc.has_method("use_stairs")
+		and not svc.has_method("occupy_rooftop")
+	)
+
+
+static func _battlecover_no_modifiers_ok() -> bool:
+	var slot: BattleCoverSlot = BattleCoverSlot.new("cv_mod_slot", "cv_mod_obj", Vector2(4.0, 4.0), Vector2.RIGHT)
+	var cover_object: BattleCoverObject = BattleCoverObject.new("cv_mod_obj")
+	var svc: BattleCoverService = BattleCoverService.new()
+	var result: BattleCoverResult = BattleCoverResult.succeeded("cv_mod_slot", "cv_mod_p")
+	return (
+		slot.get("accuracy_bonus") == null
+		and slot.get("hit_modifier") == null
+		and slot.get("protection_angle") == null
+		and slot.get("cover_bonus") == null
+		and cover_object.get("armor") == null
+		and cover_object.get("durability") == null
+		and result.get("damage_reduction") == null
+		and not svc.has_method("apply_cover_bonus")
+		and not svc.has_method("calculate_protection_angle")
+		and not svc.has_method("peek")
+		and not svc.has_method("lean")
+		and not svc.has_method("apply_suppression")
+		and not svc.has_method("destroy_cover")
+		and not BattleCombatBehaviorService.new().has_method("seek_cover")
+	)

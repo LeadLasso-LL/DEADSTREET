@@ -35,6 +35,8 @@ var defend_position_anchor: Vector2 = Vector2.ZERO
 var navigation_source: String = ""
 var combat_move_mode: String = ""
 var combat_move_target_id: String = ""
+var reserved_cover_slot_id: String = ""
+var occupied_cover_slot_id: String = ""
 
 
 func _init(
@@ -190,3 +192,11 @@ func set_defend_position_anchor(position: Vector2) -> bool:
 func clear_defend_position_anchor() -> void:
 	has_defend_position_anchor = false
 	defend_position_anchor = Vector2.ZERO
+
+
+func has_reserved_cover_slot() -> bool:
+	return not reserved_cover_slot_id.is_empty()
+
+
+func has_occupied_cover_slot() -> bool:
+	return not occupied_cover_slot_id.is_empty()
