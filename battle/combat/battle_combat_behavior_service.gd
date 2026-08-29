@@ -1,0 +1,364 @@
+class_name BattleCombatBehaviorService
+extends RefCounted
+
+const BattleState := preload("res://battle/core/battle_state.gd")
+const BattleParticipant := preload("res://battle/core/battle_participant.gd")
+const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
+const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
+const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
+const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
+const BattleFireControlService := preload("res://battle/combat/battle_fire_control_service.gd")
+const BattleFireControlResult := preload("res://battle/combat/battle_fire_control_result.gd")
+const BattleAttackResolutionService := preload("res://battle/combat/battle_attack_resolution_service.gd")
+const BattleAttackResult := preload("res://battle/combat/battle_attack_result.gd")
+const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
+const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
+const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
+const BattleCombatBehaviorProfile := preload("res://battle/combat/battle_combat_behavior_profile.gd")
+const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
+const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
+
+const MOVE_HOLD := "hold"
+const MOVE_APPROACH := "approach"
+const MOVE_RETREAT := "retreat"
+
+
+static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
+	if battle_state == null:
+		return BattleCombatBehaviorResult.failed(
+			"null_battle_state",
+			"Battle combat behavior failed: battle_state is null."
+		)
+	if battle_state.battle_phase != "active":
+		return BattleCombatBehaviorResult.failed(
+			"battle_not_active",
+			"Battle combat behavior failed: battle phase is '%s', not active." % battle_state.battle_phase
+		)
+	if not is_finite(delta_seconds) or delta_seconds < 0.0:
+		return BattleCombatBehaviorResult.failed(
+			"invalid_delta",
+			"Battle combat behavior failed: delta_seconds is invalid."
+		)
+	if battle_state.battlefield_geometry == null:
+		return BattleCombatBehaviorResult.failed(
+			"missing_battlefield_geometry",
+			"Battle combat behavior failed: battlefield geometry is missing."
+		)
+	if not battle_state.battlefield_geometry.is_valid():
+		return BattleCombatBehaviorResult.failed(
+			"invalid_battlefield_geometry",
+			"Battle combat behavior failed: battlefield geometry is invalid."
+		)
+	if battle_state.combat_random == null:
+		battle_state.combat_random = BattleCombatRandom.new(battle_state.combat_rng_seed)
+	# Zero delta is a valid refresh. It is not passage of combat time, so no shot.
+	var execute_autonomous_attacks: bool = delta_seconds > 0.0
+	var participants_considered: int = 0
+	var shots_executed: int = 0
+	var misses: int = 0
+	var grazes: int = 0
+	var wounds: int = 0
+	var kills: int = 0
+	var participants_repositioning: int = 0
+	var participants_holding_defend_position: int = 0
+	var attack_events: Array[BattleAttackEvent] = []
+	for participant_id: String in _sorted_participant_ids(battle_state):
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		participants_considered += 1
+		if not participant.is_alive:
+			continue
+		if not _is_positioned(participant):
+			continue
+		if participant.defend_position:
+			participants_holding_defend_position += 1
+			_clear_owned_combat_navigation(participant)
+			if execute_autonomous_attacks:
+				var defended_shot: BattleAttackEvent = _try_execute_shot(battle_state, participant)
+				if defended_shot != null:
+					attack_events.append(defended_shot)
+			continue
+		if execute_autonomous_attacks:
+			var executed_event: BattleAttackEvent = _try_execute_shot(battle_state, participant)
+			if executed_event != null:
+				attack_events.append(executed_event)
+				_clear_owned_combat_navigation(participant)
+				continue
+		if _wounded_behavior_applies(participant):
+			continue
+		if _update_combat_movement(battle_state, participant):
+			participants_repositioning += 1
+	shots_executed = attack_events.size()
+	for attack_event: BattleAttackEvent in attack_events:
+		match attack_event.outcome:
+			BattleAttackProfile.OUTCOME_MISS:
+				misses += 1
+			BattleAttackProfile.OUTCOME_GRAZE:
+				grazes += 1
+			BattleAttackProfile.OUTCOME_WOUND:
+				wounds += 1
+			BattleAttackProfile.OUTCOME_KILL:
+				kills += 1
+	return BattleCombatBehaviorResult.succeeded(
+		participants_considered,
+		shots_executed,
+		misses,
+		grazes,
+		wounds,
+		kills,
+		participants_repositioning,
+		participants_holding_defend_position,
+		attack_events
+	)
+
+
+static func _try_execute_shot(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> BattleAttackEvent:
+	if participant == null:
+		return null
+	if not participant.has_target_participant or participant.target_participant_id.is_empty():
+		return null
+	if not battle_state.has_participant(participant.target_participant_id):
+		return null
+	var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
+	if target == null or not target.is_alive:
+		return null
+	var eligibility: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		participant.participant_id,
+		participant.target_participant_id
+	)
+	if eligibility == null or not eligibility.success or not eligibility.can_fire:
+		return null
+	var combat_random: BattleCombatRandom = battle_state.combat_random
+	if combat_random == null:
+		return null
+	var previous_state: int = combat_random.snapshot_state()
+	var outcome_roll: float = combat_random.next_normalized()
+	var attack_result: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		participant.participant_id,
+		participant.target_participant_id,
+		outcome_roll
+	)
+	if attack_result == null or not attack_result.shot_executed:
+		combat_random.restore_state(previous_state)
+		return null
+	return attack_result.attack_event
+
+
+static func _wounded_behavior_applies(_participant: BattleParticipant) -> bool:
+	return false
+
+
+static func _update_combat_movement(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> bool:
+	if participant == null:
+		return false
+	if not participant.has_target_participant or participant.target_participant_id.is_empty():
+		_clear_owned_combat_navigation(participant)
+		return false
+	if not battle_state.has_participant(participant.target_participant_id):
+		_clear_owned_combat_navigation(participant)
+		return false
+	var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
+	if target == null or not target.is_alive or not _is_positioned(target):
+		_clear_owned_combat_navigation(participant)
+		return false
+	if _has_external_navigation(participant):
+		return false
+	var move_mode: String = _desired_move_mode(battle_state, participant, target)
+	if move_mode == MOVE_HOLD:
+		_clear_owned_combat_navigation(participant)
+		return false
+	var destination: Vector2 = Vector2.ZERO
+	if move_mode == MOVE_APPROACH:
+		destination = target.battle_position
+	else:
+		destination = _retreat_destination(battle_state, participant, target)
+		if not _is_finite_vector(destination):
+			_clear_owned_combat_navigation(participant)
+			return false
+	if destination.is_equal_approx(participant.battle_position):
+		_clear_owned_combat_navigation(participant)
+		return false
+	if _should_keep_combat_path(participant, target, move_mode, destination):
+		return true
+	if not _is_valid_navigation_destination(battle_state, destination):
+		_clear_owned_combat_navigation(participant)
+		return false
+	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		participant.battle_position,
+		destination
+	)
+	if navigation == null or not navigation.success:
+		_clear_owned_combat_navigation(participant)
+		return false
+	if not participant.set_navigation_path(
+		navigation.destination,
+		navigation.waypoints,
+		BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	):
+		return false
+	participant.combat_move_mode = move_mode
+	participant.combat_move_target_id = target.participant_id
+	_ensure_combat_movement_speed(participant)
+	return true
+
+
+static func _desired_move_mode(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> String:
+	var eligibility: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		source.participant_id,
+		target.participant_id
+	)
+	var rejection_code: String = ""
+	if eligibility != null and eligibility.success:
+		rejection_code = eligibility.rejection_code
+	var distance: float = source.battle_position.distance_to(target.battle_position)
+	if not is_finite(distance):
+		return MOVE_HOLD
+	var weapon_type_id: String = ""
+	if source.weapon_state != null and not source.weapon_state.weapon_type_id.is_empty():
+		weapon_type_id = source.weapon_state.weapon_type_id
+	elif not source.weapon_type.is_empty():
+		weapon_type_id = source.weapon_type
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	if profile == null:
+		if rejection_code == "out_of_range" or rejection_code == "line_of_sight_blocked":
+			return MOVE_APPROACH
+		return MOVE_HOLD
+	if profile.preferred_min_distance > 0.0 and distance < profile.preferred_min_distance:
+		return MOVE_RETREAT
+	if distance > profile.preferred_max_distance or rejection_code == "out_of_range":
+		return MOVE_APPROACH
+	if rejection_code == "line_of_sight_blocked":
+		return MOVE_APPROACH
+	return MOVE_HOLD
+
+
+static func _retreat_destination(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> Vector2:
+	var weapon_type_id: String = ""
+	if source.weapon_state != null and not source.weapon_state.weapon_type_id.is_empty():
+		weapon_type_id = source.weapon_state.weapon_type_id
+	elif not source.weapon_type.is_empty():
+		weapon_type_id = source.weapon_type
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	if profile == null:
+		return Vector2.ZERO
+	var away: Vector2 = source.battle_position - target.battle_position
+	if not _is_finite_vector(away) or away.is_equal_approx(Vector2.ZERO):
+		away = Vector2(1.0, 0.0)
+	away = away.normalized()
+	if not _is_finite_vector(away) or away.is_equal_approx(Vector2.ZERO):
+		return Vector2.ZERO
+	var ideal: Vector2 = target.battle_position + away * profile.preferred_min_distance
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry == null:
+		return Vector2.ZERO
+	ideal.x = clampf(ideal.x, 0.0, geometry.width)
+	ideal.y = clampf(ideal.y, 0.0, geometry.height)
+	var steps: Array[float] = [1.0, 0.75, 0.5, 0.25]
+	for step: float in steps:
+		var candidate: Vector2 = source.battle_position.lerp(ideal, step)
+		if _is_valid_navigation_destination(battle_state, candidate):
+			if not candidate.is_equal_approx(source.battle_position):
+				return candidate
+	return Vector2.ZERO
+
+
+static func _should_keep_combat_path(
+	participant: BattleParticipant,
+	target: BattleParticipant,
+	move_mode: String,
+	destination: Vector2
+) -> bool:
+	if participant.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT:
+		return false
+	if not participant.has_active_navigation_path():
+		return false
+	if participant.combat_move_mode != move_mode:
+		return false
+	if participant.combat_move_target_id != target.participant_id:
+		return false
+	var drift: float = participant.navigation_destination.distance_to(destination)
+	if not is_finite(drift):
+		return false
+	return drift <= BattleCombatBehaviorCatalog.REPLAN_DISTANCE_EPSILON
+
+
+static func _is_valid_navigation_destination(battle_state: BattleState, point: Vector2) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if not BattlefieldGeometry.is_finite_point(point):
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if not geometry.contains_point(point):
+		return false
+	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null or not obstacle.blocks_movement:
+			continue
+		if obstacle.contains_point(point):
+			return false
+	return true
+
+
+static func _has_external_navigation(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	if participant.navigation_source != BattleParticipant.NAVIGATION_SOURCE_EXTERNAL:
+		return false
+	return participant.has_active_navigation_path()
+
+
+static func _clear_owned_combat_navigation(participant: BattleParticipant) -> void:
+	if participant == null:
+		return
+	if participant.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT:
+		participant.combat_move_mode = ""
+		participant.combat_move_target_id = ""
+		return
+	participant.clear_navigation_path()
+
+
+static func _ensure_combat_movement_speed(participant: BattleParticipant) -> void:
+	if participant == null:
+		return
+	if is_finite(participant.movement_speed) and participant.movement_speed > 0.0:
+		return
+	participant.set_movement_speed(BattleCombatBehaviorCatalog.DEFAULT_COMBAT_MOVEMENT_SPEED)
+
+
+static func _is_positioned(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	if not participant.has_battle_position:
+		return false
+	return _is_finite_vector(participant.battle_position)
+
+
+static func _is_finite_vector(value: Vector2) -> bool:
+	return is_finite(value.x) and is_finite(value.y)
+
+
+static func _sorted_participant_ids(battle_state: BattleState) -> Array[String]:
+	var ids: Array[String] = []
+	for participant_id: String in battle_state.participants:
+		ids.append(participant_id)
+	ids.sort()
+	return ids

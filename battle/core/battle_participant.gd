@@ -3,6 +3,9 @@ extends RefCounted
 
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
 const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
+const NAVIGATION_SOURCE_NONE := ""
+const NAVIGATION_SOURCE_EXTERNAL := "external"
+const NAVIGATION_SOURCE_COMBAT := "combat"
 
 var participant_id: String = ""
 var campaign_soldier_id: String = ""
@@ -26,6 +29,12 @@ var navigation_waypoints: Array[Vector2] = []
 var navigation_waypoint_index: int = 0
 var has_target_participant: bool = false
 var target_participant_id: String = ""
+var defend_position: bool = false
+var has_defend_position_anchor: bool = false
+var defend_position_anchor: Vector2 = Vector2.ZERO
+var navigation_source: String = ""
+var combat_move_mode: String = ""
+var combat_move_target_id: String = ""
 
 
 func _init(
@@ -86,7 +95,11 @@ func clear_movement_target_position() -> void:
 	has_movement_target_position = false
 
 
-func set_navigation_path(destination: Vector2, waypoints: Array[Vector2]) -> bool:
+func set_navigation_path(
+	destination: Vector2,
+	waypoints: Array[Vector2],
+	p_source: String = NAVIGATION_SOURCE_EXTERNAL
+) -> bool:
 	if not is_finite(destination.x) or not is_finite(destination.y):
 		push_error("BattleParticipant.set_navigation_path: destination is not finite.")
 		return false
@@ -101,6 +114,10 @@ func set_navigation_path(destination: Vector2, waypoints: Array[Vector2]) -> boo
 	has_navigation_destination = true
 	navigation_waypoints = copied
 	navigation_waypoint_index = 0
+	navigation_source = p_source
+	if p_source != NAVIGATION_SOURCE_COMBAT:
+		combat_move_mode = ""
+		combat_move_target_id = ""
 	clear_movement_target_position()
 	return true
 
@@ -110,6 +127,9 @@ func clear_navigation_path() -> void:
 	has_navigation_destination = false
 	navigation_waypoints = []
 	navigation_waypoint_index = 0
+	navigation_source = NAVIGATION_SOURCE_NONE
+	combat_move_mode = ""
+	combat_move_target_id = ""
 	clear_movement_target_position()
 
 
@@ -152,3 +172,21 @@ func set_target_participant(participant_id: String) -> bool:
 func clear_target_participant() -> void:
 	target_participant_id = ""
 	has_target_participant = false
+
+
+func set_defend_position(enabled: bool) -> void:
+	defend_position = enabled
+
+
+func set_defend_position_anchor(position: Vector2) -> bool:
+	if not is_finite(position.x) or not is_finite(position.y):
+		push_error("BattleParticipant.set_defend_position_anchor: position is not finite.")
+		return false
+	defend_position_anchor = position
+	has_defend_position_anchor = true
+	return true
+
+
+func clear_defend_position_anchor() -> void:
+	has_defend_position_anchor = false
+	defend_position_anchor = Vector2.ZERO

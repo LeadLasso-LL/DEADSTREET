@@ -7,6 +7,8 @@ const BattleFireControlService := preload("res://battle/combat/battle_fire_contr
 const BattleFireControlResult := preload("res://battle/combat/battle_fire_control_result.gd")
 const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
 const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
+const BattleCombatBehaviorService := preload("res://battle/combat/battle_combat_behavior_service.gd")
+const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
 const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
 const BattlePathFollowResult := preload("res://battle/navigation/battle_path_follow_result.gd")
 const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
@@ -73,6 +75,24 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 		return BattleRuntimeResult.failed(
 			target_error_code,
 			target_error_message,
+			delta_seconds,
+			elapsed_before
+		)
+	var combat_result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(
+		battle_state,
+		delta_seconds
+	)
+	if combat_result == null or not combat_result.success:
+		var combat_error_code: String = "invalid_delta"
+		var combat_error_message: String = "Battle runtime failed: combat behavior failed."
+		if combat_result != null:
+			if not combat_result.error_code.is_empty():
+				combat_error_code = combat_result.error_code
+			if not combat_result.error_message.is_empty():
+				combat_error_message = combat_result.error_message
+		return BattleRuntimeResult.failed(
+			combat_error_code,
+			combat_error_message,
 			delta_seconds,
 			elapsed_before
 		)

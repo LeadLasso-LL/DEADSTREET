@@ -6,6 +6,7 @@ const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
+const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -20,6 +21,8 @@ var deployment_zones: Dictionary[String, DeploymentZone] = {}
 var battle_phase: String = "deployment"
 var elapsed_time_seconds: float = 0.0
 var battlefield_geometry: BattlefieldGeometry = null
+var combat_rng_seed: int = 1
+var combat_random: BattleCombatRandom = null
 
 
 func _init(
@@ -38,6 +41,8 @@ func _init(
 	attacker_side_id = p_attacker_side_id
 	defender_side_id = p_defender_side_id
 	battle_phase = p_battle_phase
+	combat_rng_seed = BattleCombatRandom.seed_from_string(p_battle_id)
+	combat_random = BattleCombatRandom.new(combat_rng_seed)
 
 
 func add_side(side: BattleSide) -> bool:
@@ -324,7 +329,26 @@ func begin_battle() -> bool:
 		push_error("BattleState.begin_battle: battlefield is not spatially ready.")
 		return false
 	battle_phase = "active"
+	_initialize_defender_posture()
 	return true
+
+
+func _initialize_defender_posture() -> void:
+	if defender_side_id.is_empty() or not has_side(defender_side_id):
+		return
+	var defender_side: BattleSide = get_side(defender_side_id)
+	if defender_side == null:
+		return
+	for participant_id: String in defender_side.participant_ids:
+		var participant: BattleParticipant = get_participant(participant_id)
+		if participant == null:
+			continue
+		if not participant.has_battle_position:
+			continue
+		if not is_finite(participant.battle_position.x) or not is_finite(participant.battle_position.y):
+			continue
+		participant.set_defend_position_anchor(participant.battle_position)
+		participant.set_defend_position(true)
 
 
 func _participant_assignment_is_valid(participant_id: String, expected_side_id: String) -> bool:
