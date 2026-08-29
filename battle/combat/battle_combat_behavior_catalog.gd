@@ -33,6 +33,15 @@ const WOUNDED_REACTION_DELAY_SECONDS := 0.35
 # Replan combat-owned paths when the tracked destination drifts this far.
 const REPLAN_DISTANCE_EPSILON := 0.5
 
+# Provisional healthy weapon-role cover positioning. Not final balance.
+# Shotgun and SMG do not autonomously seek healthy cover in v1.
+const PISTOL_COVER_SEEK_RADIUS := 10.0
+const PISTOL_COVER_REPLAN_DISTANCE := 3.0
+const RIFLE_COVER_SEEK_RADIUS := 18.0
+const RIFLE_COVER_REPLAN_DISTANCE := 4.0
+const SNIPER_COVER_SEEK_RADIUS := 28.0
+const SNIPER_COVER_REPLAN_DISTANCE := 6.0
+
 
 static func get_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile:
 	var profile: BattleCombatBehaviorProfile = _make_profile(weapon_type_id)
@@ -51,6 +60,51 @@ static func wounded_effective_outcome_roll(raw_roll: float) -> float:
 	if not is_finite(raw_roll):
 		return raw_roll
 	return raw_roll * WOUNDED_ACCURACY_MULTIPLIER
+
+
+static func uses_healthy_role_cover(weapon_type_id: String) -> bool:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_SNIPER:
+			return true
+		_:
+			return false
+
+
+static func healthy_cover_seek_radius(weapon_type_id: String) -> float:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_PISTOL:
+			return PISTOL_COVER_SEEK_RADIUS
+		BattleWeaponCatalog.WEAPON_RIFLE:
+			return RIFLE_COVER_SEEK_RADIUS
+		BattleWeaponCatalog.WEAPON_SNIPER:
+			return SNIPER_COVER_SEEK_RADIUS
+		_:
+			return 0.0
+
+
+static func healthy_cover_replan_distance(weapon_type_id: String) -> float:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_PISTOL:
+			return PISTOL_COVER_REPLAN_DISTANCE
+		BattleWeaponCatalog.WEAPON_RIFLE:
+			return RIFLE_COVER_REPLAN_DISTANCE
+		BattleWeaponCatalog.WEAPON_SNIPER:
+			return SNIPER_COVER_REPLAN_DISTANCE
+		_:
+			return 0.0
+
+
+# Distance from `range_distance` to the nearest point in the weapon preferred band.
+# Zero means the distance is already in-band.
+static func preferred_band_error(weapon_type_id: String, range_distance: float) -> float:
+	var profile: BattleCombatBehaviorProfile = get_profile(weapon_type_id)
+	if profile == null or not is_finite(range_distance):
+		return INF
+	if range_distance < profile.preferred_min_distance:
+		return profile.preferred_min_distance - range_distance
+	if range_distance > profile.preferred_max_distance:
+		return range_distance - profile.preferred_max_distance
+	return 0.0
 
 
 static func _make_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile:
