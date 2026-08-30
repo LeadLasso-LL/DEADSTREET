@@ -43,6 +43,7 @@ const HEALTHY_NONE := ""
 const MOVEMENT_NONE := 0
 const MOVEMENT_REPOSITIONING := 1
 const MOVEMENT_HOLD_CONSTRAINED := 2
+const MOVEMENT_PUSH_PRESSURE := 3
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
@@ -89,6 +90,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var healthy_seeking_cover: int = 0
 	var healthy_holding_cover: int = 0
 	var force_command_hold: int = 0
+	var force_command_push: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -151,6 +153,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			participants_repositioning += 1
 		elif movement_status == MOVEMENT_HOLD_CONSTRAINED:
 			force_command_hold += 1
+		elif movement_status == MOVEMENT_PUSH_PRESSURE:
+			participants_repositioning += 1
+			force_command_push += 1
 	shots_executed = attack_events.size()
 	for attack_event: BattleAttackEvent in attack_events:
 		match attack_event.outcome:
@@ -177,7 +182,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		wounded_threat_override,
 		healthy_seeking_cover,
 		healthy_holding_cover,
-		force_command_hold
+		force_command_hold,
+		force_command_push
 	)
 
 
@@ -760,9 +766,12 @@ static func _update_combat_movement(
 		return MOVEMENT_NONE
 	var move_mode: String = _desired_move_mode(battle_state, participant, target)
 	var hold_constrained: bool = false
+	var push_pressure: bool = false
 	if move_mode == MOVE_APPROACH and _hold_suppresses_target_approach(battle_state, participant):
 		move_mode = MOVE_HOLD
 		hold_constrained = true
+	elif move_mode == MOVE_APPROACH and _push_applies(battle_state, participant):
+		push_pressure = true
 	if move_mode == MOVE_HOLD:
 		_clear_owned_combat_navigation(participant)
 		if hold_constrained:
@@ -770,17 +779,25 @@ static func _update_combat_movement(
 		return MOVEMENT_NONE
 	var destination: Vector2 = Vector2.ZERO
 	if move_mode == MOVE_APPROACH:
-		destination = target.battle_position
+		if push_pressure:
+			destination = _push_approach_destination(battle_state, participant, target)
+		else:
+			destination = target.battle_position
 	else:
 		destination = _retreat_destination(battle_state, participant, target)
 		if not _is_finite_vector(destination):
 			_clear_owned_combat_navigation(participant)
 			return MOVEMENT_NONE
+	if not _is_finite_vector(destination):
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
 	if destination.is_equal_approx(participant.battle_position):
 		_clear_owned_combat_navigation(participant)
 		return MOVEMENT_NONE
 	if _should_keep_combat_path(participant, target, move_mode, destination):
 		_ensure_combat_movement_speed(participant)
+		if push_pressure:
+			return MOVEMENT_PUSH_PRESSURE
 		return MOVEMENT_REPOSITIONING
 	if not _is_valid_navigation_destination(battle_state, destination):
 		_clear_owned_combat_navigation(participant)
@@ -802,6 +819,8 @@ static func _update_combat_movement(
 	participant.combat_move_mode = move_mode
 	participant.combat_move_target_id = target.participant_id
 	_ensure_combat_movement_speed(participant)
+	if push_pressure:
+		return MOVEMENT_PUSH_PRESSURE
 	return MOVEMENT_REPOSITIONING
 
 
@@ -827,6 +846,87 @@ static func _hold_suppresses_target_approach(
 		return false
 	var command_id: String = _participant_force_command_id(battle_state, participant)
 	return command_id == BattleForceCommandCatalog.COMMAND_HOLD
+
+
+static func _push_applies(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	if participant.is_wounded:
+		return false
+	var command_id: String = _participant_force_command_id(battle_state, participant)
+	return command_id == BattleForceCommandCatalog.COMMAND_PUSH
+
+
+static func _push_uses_controlled_advance(weapon_type_id: String) -> bool:
+	return (
+		weapon_type_id == BattleWeaponCatalog.WEAPON_RIFLE
+		or weapon_type_id == BattleWeaponCatalog.WEAPON_SNIPER
+	)
+
+
+static func _push_approach_destination(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> Vector2:
+	if source == null or target == null:
+		return Vector2.ZERO
+	var weapon_type_id: String = _participant_weapon_type_id(source)
+	if not _push_uses_controlled_advance(weapon_type_id):
+		return target.battle_position
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	if profile == null:
+		return source.battle_position
+	var distance: float = source.battle_position.distance_to(target.battle_position)
+	var stand_off_distance: float = profile.preferred_max_distance
+	if is_finite(distance) and distance <= profile.preferred_max_distance:
+		stand_off_distance = profile.preferred_min_distance
+	return _preferred_band_stand_off(
+		battle_state,
+		source,
+		target,
+		profile.preferred_min_distance,
+		stand_off_distance
+	)
+
+
+static func _preferred_band_stand_off(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant,
+	preferred_min_distance: float,
+	stand_off_distance: float
+) -> Vector2:
+	if source == null or target == null:
+		return Vector2.ZERO
+	if not is_finite(preferred_min_distance) or not is_finite(stand_off_distance):
+		return source.battle_position
+	var away: Vector2 = source.battle_position - target.battle_position
+	if not _is_finite_vector(away) or away.is_equal_approx(Vector2.ZERO):
+		away = Vector2(1.0, 0.0)
+	away = away.normalized()
+	if not _is_finite_vector(away) or away.is_equal_approx(Vector2.ZERO):
+		return source.battle_position
+	var ideal: Vector2 = target.battle_position + away * stand_off_distance
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry == null:
+		return source.battle_position
+	ideal.x = clampf(ideal.x, 0.0, geometry.width)
+	ideal.y = clampf(ideal.y, 0.0, geometry.height)
+	var steps: Array[float] = [1.0, 0.75, 0.5, 0.25]
+	for step: float in steps:
+		var candidate: Vector2 = source.battle_position.lerp(ideal, step)
+		if not _is_valid_navigation_destination(battle_state, candidate):
+			continue
+		if candidate.is_equal_approx(source.battle_position):
+			continue
+		var candidate_range: float = candidate.distance_to(target.battle_position)
+		if not is_finite(candidate_range):
+			continue
+		if candidate_range < preferred_min_distance and not is_equal_approx(candidate_range, preferred_min_distance):
+			continue
+		return candidate
+	return source.battle_position
 
 
 static func _desired_move_mode(

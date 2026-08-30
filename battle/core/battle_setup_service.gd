@@ -8,6 +8,7 @@ const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
+const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
 const BattleForceCommandResult := preload("res://battle/core/battle_force_command_result.gd")
 const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
 
@@ -223,6 +224,23 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 		return BattleSetupResult.failed(
 			"battle_insert_failed",
 			"Battle setup failed: could not register tactical force '%s'." % defender_tactical_force_id,
+			mission.id,
+			battle_id
+		)
+	var attacker_push_result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		attacker_tactical_force_id,
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	if not attacker_push_result.success:
+		push_error(
+			"BattleSetupService.create_neighborhood_hq_battle: failed to set attacker opening command '%s'."
+			% BattleForceCommandCatalog.COMMAND_PUSH
+		)
+		return BattleSetupResult.failed(
+			"battle_insert_failed",
+			"Battle setup failed: could not set attacker opening command '%s'."
+			% BattleForceCommandCatalog.COMMAND_PUSH,
 			mission.id,
 			battle_id
 		)
