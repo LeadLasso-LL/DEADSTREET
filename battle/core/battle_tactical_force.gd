@@ -60,3 +60,9 @@ func left_direction() -> Vector2:
 	if right.is_equal_approx(Vector2.ZERO):
 		return Vector2.ZERO
 	return -right
+
+
+func rear_direction() -> Vector2:
+	if not has_valid_forward_direction():
+		return Vector2.ZERO
+	return -forward_direction

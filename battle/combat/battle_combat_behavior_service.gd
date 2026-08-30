@@ -28,6 +28,7 @@ const BattleForceCommandCatalog := preload("res://battle/core/battle_force_comma
 const MOVE_HOLD := "hold"
 const MOVE_APPROACH := "approach"
 const MOVE_RETREAT := "retreat"
+const MOVE_FALL_BACK := "fall_back"
 const MOVE_SEEK_COVER := "seek_cover"
 const MOVE_SEEK_ROLE_COVER := "seek_role_cover"
 
@@ -46,6 +47,7 @@ const MOVEMENT_HOLD_CONSTRAINED := 2
 const MOVEMENT_PUSH_PRESSURE := 3
 const MOVEMENT_FOCUS_LEFT := 4
 const MOVEMENT_FOCUS_RIGHT := 5
+const MOVEMENT_FALL_BACK := 6
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
@@ -96,6 +98,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var force_command_push: int = 0
 	var force_command_focus_left: int = 0
 	var force_command_focus_right: int = 0
+	var force_command_fall_back: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -167,6 +170,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		elif movement_status == MOVEMENT_FOCUS_RIGHT:
 			participants_repositioning += 1
 			force_command_focus_right += 1
+		elif movement_status == MOVEMENT_FALL_BACK:
+			participants_repositioning += 1
+			force_command_fall_back += 1
 	shots_executed = attack_events.size()
 	for attack_event: BattleAttackEvent in attack_events:
 		match attack_event.outcome:
@@ -196,7 +202,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		force_command_hold,
 		force_command_push,
 		force_command_focus_left,
-		force_command_focus_right
+		force_command_focus_right,
+		force_command_fall_back
 	)
 
 
@@ -787,11 +794,15 @@ static func _update_combat_movement(
 		hold_constrained = true
 	elif move_mode == MOVE_APPROACH and _push_applies(battle_state, participant):
 		push_pressure = true
+	elif move_mode != MOVE_RETREAT and _fall_back_applies(battle_state, participant):
+		move_mode = MOVE_FALL_BACK
 	if move_mode == MOVE_HOLD:
 		_clear_owned_combat_navigation(participant)
 		if hold_constrained:
 			return MOVEMENT_HOLD_CONSTRAINED
 		return MOVEMENT_NONE
+	if move_mode == MOVE_FALL_BACK:
+		return _update_fall_back_movement(battle_state, participant, target)
 	var destination: Vector2 = Vector2.ZERO
 	var unbiased_destination: Vector2 = Vector2.ZERO
 	if move_mode == MOVE_APPROACH:
@@ -929,6 +940,177 @@ static func _focus_applies(battle_state: BattleState, participant: BattlePartici
 		participant.participant_id
 	)
 	return BattleForceCommandService.is_valid_forward_direction(forward)
+
+
+static func _fall_back_applies(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	if participant.is_wounded:
+		return false
+	var command_id: String = _participant_force_command_id(battle_state, participant)
+	if command_id != BattleForceCommandCatalog.COMMAND_FALL_BACK:
+		return false
+	var forward: Vector2 = BattleForceCommandService.get_forward_direction_for_participant(
+		battle_state,
+		participant.participant_id
+	)
+	return BattleForceCommandService.is_valid_forward_direction(forward)
+
+
+static func _update_fall_back_movement(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	target: BattleParticipant
+) -> int:
+	if participant == null or target == null:
+		return MOVEMENT_NONE
+	if _should_keep_fall_back_path(battle_state, participant):
+		_ensure_combat_movement_speed(participant)
+		return MOVEMENT_FALL_BACK
+	var sampled: Dictionary = _fall_back_destination(battle_state, participant, target)
+	if not bool(sampled.get("found", false)):
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
+	if typeof(sampled.get("destination", null)) != TYPE_VECTOR2:
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
+	var destination: Vector2 = sampled["destination"] as Vector2
+	if not _is_finite_vector(destination):
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
+	if destination.is_equal_approx(participant.battle_position):
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
+	if not _is_valid_navigation_destination(battle_state, destination):
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
+	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		participant.battle_position,
+		destination
+	)
+	if navigation == null or not navigation.success:
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_NONE
+	if not participant.set_navigation_path(
+		navigation.destination,
+		navigation.waypoints,
+		BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	):
+		return MOVEMENT_NONE
+	participant.combat_move_mode = MOVE_FALL_BACK
+	participant.combat_move_target_id = target.participant_id
+	_ensure_combat_movement_speed(participant)
+	return MOVEMENT_FALL_BACK
+
+
+static func _should_keep_fall_back_path(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> bool:
+	if participant == null:
+		return false
+	if participant.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT:
+		return false
+	if not participant.has_active_navigation_path():
+		return false
+	if participant.combat_move_mode != MOVE_FALL_BACK:
+		return false
+	var destination: Vector2 = participant.navigation_destination
+	if not _is_finite_vector(destination):
+		return false
+	if destination.is_equal_approx(participant.battle_position):
+		return false
+	if not _is_valid_navigation_destination(battle_state, destination):
+		return false
+	var forward: Vector2 = BattleForceCommandService.get_forward_direction_for_participant(
+		battle_state,
+		participant.participant_id
+	)
+	return _is_rearward_or_neutral_displacement(participant.battle_position, destination, forward)
+
+
+static func _fall_back_destination_result(found: bool, destination: Vector2 = Vector2.ZERO) -> Dictionary:
+	var result: Dictionary = {}
+	result["found"] = found
+	if found:
+		result["destination"] = destination
+	return result
+
+
+static func _fall_back_destination(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> Dictionary:
+	if source == null or battle_state == null:
+		return _fall_back_destination_result(false)
+	var rear: Vector2 = BattleForceCommandService.get_rear_direction_for_participant(
+		battle_state,
+		source.participant_id
+	)
+	if not _is_finite_vector(rear) or rear.is_equal_approx(Vector2.ZERO):
+		return _fall_back_destination_result(false)
+	if not is_equal_approx(rear.length_squared(), 1.0):
+		rear = rear.normalized()
+		if not _is_finite_vector(rear) or rear.is_equal_approx(Vector2.ZERO):
+			return _fall_back_destination_result(false)
+	var forward: Vector2 = BattleForceCommandService.get_forward_direction_for_participant(
+		battle_state,
+		source.participant_id
+	)
+	if not BattleForceCommandService.is_valid_forward_direction(forward):
+		return _fall_back_destination_result(false)
+	var distance: float = BattleCombatBehaviorCatalog.FALL_BACK_DISTANCE
+	if not is_finite(distance) or distance <= 0.0:
+		return _fall_back_destination_result(false)
+	var preferred_min: float = 0.0
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(
+		_participant_weapon_type_id(source)
+	)
+	if profile != null and is_finite(profile.preferred_min_distance):
+		preferred_min = profile.preferred_min_distance
+	for step_index: int in range(16, 0, -1):
+		var scale: float = float(step_index) / 16.0
+		var candidate: Vector2 = source.battle_position + rear * (distance * scale)
+		if not _is_finite_vector(candidate):
+			continue
+		if candidate.is_equal_approx(source.battle_position):
+			continue
+		if not _is_rearward_or_neutral_displacement(source.battle_position, candidate, forward):
+			continue
+		if not _is_valid_navigation_destination(battle_state, candidate):
+			continue
+		if preferred_min > 0.0 and target != null and _is_positioned(target):
+			var candidate_range: float = candidate.distance_to(target.battle_position)
+			if (
+				is_finite(candidate_range)
+				and candidate_range < preferred_min
+				and not is_equal_approx(candidate_range, preferred_min)
+			):
+				continue
+		return _fall_back_destination_result(true, candidate)
+	return _fall_back_destination_result(false)
+
+
+static func _is_rearward_or_neutral_displacement(
+	current_position: Vector2,
+	destination: Vector2,
+	forward: Vector2
+) -> bool:
+	if not _is_finite_vector(current_position) or not _is_finite_vector(destination):
+		return false
+	if not BattleForceCommandService.is_valid_forward_direction(forward):
+		return false
+	var offset: Vector2 = destination - current_position
+	if not _is_finite_vector(offset):
+		return false
+	var along_forward: float = offset.dot(forward)
+	if not is_finite(along_forward):
+		return false
+	if along_forward > 0.0 and not is_equal_approx(along_forward, 0.0):
+		return false
+	return true
 
 
 static func _focus_lateral_direction(

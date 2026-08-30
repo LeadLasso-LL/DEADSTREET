@@ -199,6 +199,13 @@ static func get_left_direction(battle_state: BattleState, tactical_force_id: Str
 	return force.left_direction()
 
 
+static func get_rear_direction(battle_state: BattleState, tactical_force_id: String) -> Vector2:
+	var force: BattleTacticalForce = _require_force(battle_state, tactical_force_id)
+	if force == null:
+		return Vector2.ZERO
+	return force.rear_direction()
+
+
 static func get_forward_direction_for_participant(
 	battle_state: BattleState,
 	participant_id: String
@@ -227,6 +234,16 @@ static func get_left_direction_for_participant(
 	if tactical_force_id.is_empty():
 		return Vector2.ZERO
 	return get_left_direction(battle_state, tactical_force_id)
+
+
+static func get_rear_direction_for_participant(
+	battle_state: BattleState,
+	participant_id: String
+) -> Vector2:
+	var tactical_force_id: String = _participant_force_id(battle_state, participant_id)
+	if tactical_force_id.is_empty():
+		return Vector2.ZERO
+	return get_rear_direction(battle_state, tactical_force_id)
 
 
 static func set_forward_direction(
