@@ -15500,7 +15500,51 @@ static func run() -> Dictionary:
 	var battleforcecommand_side_not_force_ok: bool = _battleforcecommand_side_not_force_ok()
 	var battleforcecommand_side_force_id_ok: bool = _battleforcecommand_side_force_id_ok()
 	var battleforcecommand_defend_position_ok: bool = _battleforcecommand_defend_position_ok()
-	var battleforcecommand_no_behavior_effect_ok: bool = _battleforcecommand_no_behavior_effect_ok()
+	var battlehold_approach_suppressed_ok: bool = _battlehold_approach_suppressed_ok()
+	var battlehold_unmapped_contrast_ok: bool = _battlehold_unmapped_contrast_ok()
+	var battlehold_nonhold_contrast_ok: bool = _battlehold_nonhold_contrast_ok()
+	var battlehold_unwired_commands_ok: bool = _battlehold_unwired_commands_ok()
+	var battlehold_shotgun_far_ok: bool = _battlehold_shotgun_far_ok()
+	var battlehold_shotgun_fire_ok: bool = _battlehold_shotgun_fire_ok()
+	var battlehold_shotgun_no_retreat_ok: bool = _battlehold_shotgun_no_retreat_ok()
+	var battlehold_smg_far_ok: bool = _battlehold_smg_far_ok()
+	var battlehold_smg_retreat_ok: bool = _battlehold_smg_retreat_ok()
+	var battlehold_smg_fire_ok: bool = _battlehold_smg_fire_ok()
+	var battlehold_pistol_no_chase_ok: bool = _battlehold_pistol_no_chase_ok()
+	var battlehold_pistol_fire_ok: bool = _battlehold_pistol_fire_ok()
+	var battlehold_pistol_seek_cover_ok: bool = _battlehold_pistol_seek_cover_ok()
+	var battlehold_rifle_no_approach_ok: bool = _battlehold_rifle_no_approach_ok()
+	var battlehold_rifle_seek_cover_ok: bool = _battlehold_rifle_seek_cover_ok()
+	var battlehold_rifle_retreat_ok: bool = _battlehold_rifle_retreat_ok()
+	var battlehold_rifle_fire_ok: bool = _battlehold_rifle_fire_ok()
+	var battlehold_sniper_no_chase_ok: bool = _battlehold_sniper_no_chase_ok()
+	var battlehold_sniper_cover_ok: bool = _battlehold_sniper_cover_ok()
+	var battlehold_sniper_retreat_ok: bool = _battlehold_sniper_retreat_ok()
+	var battlehold_sniper_fire_ok: bool = _battlehold_sniper_fire_ok()
+	var battlehold_fire_wins_ok: bool = _battlehold_fire_wins_ok()
+	var battlehold_fire_while_seeking_ok: bool = _battlehold_fire_while_seeking_ok()
+	var battlehold_existing_role_cover_ok: bool = _battlehold_existing_role_cover_ok()
+	var battlehold_new_local_cover_ok: bool = _battlehold_new_local_cover_ok()
+	var battlehold_occupied_cover_ok: bool = _battlehold_occupied_cover_ok()
+	var battlehold_los_blocked_ok: bool = _battlehold_los_blocked_ok()
+	var battlehold_clears_chase_nav_ok: bool = _battlehold_clears_chase_nav_ok()
+	var battlehold_keeps_external_nav_ok: bool = _battlehold_keeps_external_nav_ok()
+	var battlehold_keeps_wounded_cover_nav_ok: bool = _battlehold_keeps_wounded_cover_nav_ok()
+	var battlehold_external_nav_ok: bool = _battlehold_external_nav_ok()
+	var battlehold_wounded_cover_ok: bool = _battlehold_wounded_cover_ok()
+	var battlehold_wounded_threat_ok: bool = _battlehold_wounded_threat_ok()
+	var battlehold_defend_position_ok: bool = _battlehold_defend_position_ok()
+	var battlehold_same_side_multi_ok: bool = _battlehold_same_side_multi_ok()
+	var battlehold_target_selection_ok: bool = _battlehold_target_selection_ok()
+	var battlehold_cover_fire_attack_regression_ok: bool = _battlehold_cover_fire_attack_regression_ok()
+	var battlehold_zero_delta_ok: bool = _battlehold_zero_delta_ok()
+	var battlehold_counter_ok: bool = _battlehold_counter_ok()
+	var battlehold_hq_default_ok: bool = _battlehold_hq_default_ok()
+	var battlehold_inband_fire_unwired_match_ok: bool = _battlehold_inband_fire_unwired_match_ok()
+	var battlehold_suppression_no_rng_ok: bool = _battlehold_suppression_no_rng_ok()
+	var battlehold_determinism_ok: bool = _battlehold_determinism_ok()
+	var battlehold_campaign_isolation_ok: bool = _battlehold_campaign_isolation_ok()
+	var battlehold_absent_systems_ok: bool = _battlehold_absent_systems_ok()
 	var battleforcecommand_no_rng_ok: bool = _battleforcecommand_no_rng_ok()
 	var battleforcecommand_stable_order_ok: bool = _battleforcecommand_stable_order_ok()
 	var battleforcecommand_campaign_isolation_ok: bool = _battleforcecommand_campaign_isolation_ok()
@@ -16878,7 +16922,51 @@ static func run() -> Dictionary:
 		"battleforcecommand_side_not_force_ok": battleforcecommand_side_not_force_ok,
 		"battleforcecommand_side_force_id_ok": battleforcecommand_side_force_id_ok,
 		"battleforcecommand_defend_position_ok": battleforcecommand_defend_position_ok,
-		"battleforcecommand_no_behavior_effect_ok": battleforcecommand_no_behavior_effect_ok,
+		"battlehold_approach_suppressed_ok": battlehold_approach_suppressed_ok,
+		"battlehold_unmapped_contrast_ok": battlehold_unmapped_contrast_ok,
+		"battlehold_nonhold_contrast_ok": battlehold_nonhold_contrast_ok,
+		"battlehold_unwired_commands_ok": battlehold_unwired_commands_ok,
+		"battlehold_shotgun_far_ok": battlehold_shotgun_far_ok,
+		"battlehold_shotgun_fire_ok": battlehold_shotgun_fire_ok,
+		"battlehold_shotgun_no_retreat_ok": battlehold_shotgun_no_retreat_ok,
+		"battlehold_smg_far_ok": battlehold_smg_far_ok,
+		"battlehold_smg_retreat_ok": battlehold_smg_retreat_ok,
+		"battlehold_smg_fire_ok": battlehold_smg_fire_ok,
+		"battlehold_pistol_no_chase_ok": battlehold_pistol_no_chase_ok,
+		"battlehold_pistol_fire_ok": battlehold_pistol_fire_ok,
+		"battlehold_pistol_seek_cover_ok": battlehold_pistol_seek_cover_ok,
+		"battlehold_rifle_no_approach_ok": battlehold_rifle_no_approach_ok,
+		"battlehold_rifle_seek_cover_ok": battlehold_rifle_seek_cover_ok,
+		"battlehold_rifle_retreat_ok": battlehold_rifle_retreat_ok,
+		"battlehold_rifle_fire_ok": battlehold_rifle_fire_ok,
+		"battlehold_sniper_no_chase_ok": battlehold_sniper_no_chase_ok,
+		"battlehold_sniper_cover_ok": battlehold_sniper_cover_ok,
+		"battlehold_sniper_retreat_ok": battlehold_sniper_retreat_ok,
+		"battlehold_sniper_fire_ok": battlehold_sniper_fire_ok,
+		"battlehold_fire_wins_ok": battlehold_fire_wins_ok,
+		"battlehold_fire_while_seeking_ok": battlehold_fire_while_seeking_ok,
+		"battlehold_existing_role_cover_ok": battlehold_existing_role_cover_ok,
+		"battlehold_new_local_cover_ok": battlehold_new_local_cover_ok,
+		"battlehold_occupied_cover_ok": battlehold_occupied_cover_ok,
+		"battlehold_los_blocked_ok": battlehold_los_blocked_ok,
+		"battlehold_clears_chase_nav_ok": battlehold_clears_chase_nav_ok,
+		"battlehold_keeps_external_nav_ok": battlehold_keeps_external_nav_ok,
+		"battlehold_keeps_wounded_cover_nav_ok": battlehold_keeps_wounded_cover_nav_ok,
+		"battlehold_external_nav_ok": battlehold_external_nav_ok,
+		"battlehold_wounded_cover_ok": battlehold_wounded_cover_ok,
+		"battlehold_wounded_threat_ok": battlehold_wounded_threat_ok,
+		"battlehold_defend_position_ok": battlehold_defend_position_ok,
+		"battlehold_same_side_multi_ok": battlehold_same_side_multi_ok,
+		"battlehold_target_selection_ok": battlehold_target_selection_ok,
+		"battlehold_cover_fire_attack_regression_ok": battlehold_cover_fire_attack_regression_ok,
+		"battlehold_zero_delta_ok": battlehold_zero_delta_ok,
+		"battlehold_counter_ok": battlehold_counter_ok,
+		"battlehold_hq_default_ok": battlehold_hq_default_ok,
+		"battlehold_inband_fire_unwired_match_ok": battlehold_inband_fire_unwired_match_ok,
+		"battlehold_suppression_no_rng_ok": battlehold_suppression_no_rng_ok,
+		"battlehold_determinism_ok": battlehold_determinism_ok,
+		"battlehold_campaign_isolation_ok": battlehold_campaign_isolation_ok,
+		"battlehold_absent_systems_ok": battlehold_absent_systems_ok,
 		"battleforcecommand_no_rng_ok": battleforcecommand_no_rng_ok,
 		"battleforcecommand_stable_order_ok": battleforcecommand_stable_order_ok,
 		"battleforcecommand_campaign_isolation_ok": battleforcecommand_campaign_isolation_ok,
@@ -32536,9 +32624,11 @@ static func _battleforcecommand_behavior_fingerprint(
 	snap["ok"] = result != null and result.success
 	snap["shots"] = 0
 	snap["repositioning"] = 0
+	snap["force_command_hold"] = 0
 	if result != null:
 		snap["shots"] = result.shots_executed
 		snap["repositioning"] = result.participants_repositioning
+		snap["force_command_hold"] = result.force_command_hold
 	snap["src_pos"] = source.battle_position
 	snap["src_intent"] = source.movement_intent
 	snap["src_speed"] = source.movement_speed
@@ -32573,6 +32663,7 @@ static func _battleforcecommand_behavior_same(left: Dictionary, right: Dictionar
 		and bool(right.get("ok", false))
 		and int(left.get("shots", -1)) == int(right.get("shots", -2))
 		and int(left.get("repositioning", -1)) == int(right.get("repositioning", -2))
+		and int(left.get("force_command_hold", -1)) == int(right.get("force_command_hold", -2))
 		and left_pos.is_equal_approx(right_pos)
 		and left_intent.is_equal_approx(right_intent)
 		and is_equal_approx(float(left.get("src_speed", -1.0)), float(right.get("src_speed", -2.0)))
@@ -32620,16 +32711,921 @@ static func _battleforcecommand_run_behavior(command_id: String) -> Dictionary:
 	return _battleforcecommand_behavior_fingerprint(source, target, result)
 
 
-static func _battleforcecommand_no_behavior_effect_ok() -> bool:
-	var baseline: Dictionary = _battleforcecommand_run_behavior(BattleForceCommandCatalog.COMMAND_HOLD)
-	if baseline.is_empty() or not bool(baseline.get("ok", false)):
+static func _battlehold_bind(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	force_id: String,
+	command_id: String
+) -> bool:
+	if battle_state == null or participant == null or force_id.is_empty():
 		return false
-	var expected: Array[String] = _battleforcecommand_expected_ids()
-	for command_id: String in expected:
-		var snap: Dictionary = _battleforcecommand_run_behavior(command_id)
-		if not _battleforcecommand_behavior_same(baseline, snap):
+	if not battle_state.has_tactical_force(force_id):
+		if not BattleForceCommandService.register_force(
+			battle_state,
+			force_id,
+			participant.side_id
+		).success:
+			return false
+	participant.tactical_force_id = force_id
+	if command_id.is_empty():
+		return BattleForceCommandService.get_command_for_participant(
+			battle_state,
+			participant.participant_id
+		) == BattleForceCommandCatalog.COMMAND_HOLD
+	var result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		force_id,
+		command_id
+	)
+	return (
+		result != null
+		and result.success
+		and BattleForceCommandService.get_command_for_participant(
+			battle_state,
+			participant.participant_id
+		) == command_id
+	)
+
+
+static func _battlehold_pair(
+	source_id: String,
+	target_id: String,
+	weapon_type: String,
+	source_position: Vector2,
+	target_position: Vector2,
+	force_id: String = "",
+	command_id: String = ""
+) -> Dictionary:
+	var pack: Dictionary = _battlebehavior_pair(
+		source_id,
+		target_id,
+		weapon_type,
+		source_position,
+		target_position,
+		true
+	)
+	if force_id.is_empty():
+		return pack
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		var empty: Dictionary = {}
+		return empty
+	if not _battlehold_bind(battle_state, source, force_id, command_id):
+		var failed: Dictionary = {}
+		return failed
+	return pack
+
+
+static func _battlehold_add_engaged(
+	battle_state: BattleState,
+	source_id: String,
+	target_id: String,
+	weapon_type: String,
+	source_position: Vector2,
+	target_position: Vector2
+) -> Dictionary:
+	var pack: Dictionary = {}
+	if battle_state == null:
+		return pack
+	var source: BattleParticipant = _battlefire_add(battle_state, source_id, "attacker", weapon_type)
+	var target: BattleParticipant = _battlefire_add(battle_state, target_id, "defender", "pistol")
+	if source == null or target == null:
+		return pack
+	_battletarget_place(source, source_position)
+	_battletarget_place(target, target_position)
+	source.set_target_participant(target_id)
+	target.set_target_participant(source_id)
+	_battlebehavior_hold_hostile(target)
+	pack["source"] = source
+	pack["target"] = target
+	return pack
+
+
+static func _battlehold_is_approaching(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	return (
+		_battlebehavior_is_combat_nav(participant)
+		and participant.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battlehold_no_generic_chase(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	return participant.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+
+
+static func _battlehold_suppressed_ok(
+	result: BattleCombatBehaviorResult,
+	source: BattleParticipant,
+	target_id: String,
+	start_position: Vector2,
+	expected_hold_count: int = 1
+) -> bool:
+	if result == null or source == null:
+		return false
+	return (
+		result.success
+		and result.shots_executed == 0
+		and result.participants_repositioning == 0
+		and result.force_command_hold == expected_hold_count
+		and _battletarget_has(source, target_id)
+		and source.battle_position.is_equal_approx(start_position)
+		and _battlebehavior_no_combat_nav(source)
+		and _battlehold_no_generic_chase(source)
+	)
+
+
+static func _battlehold_approach_ok(
+	result: BattleCombatBehaviorResult,
+	source: BattleParticipant,
+	target_id: String,
+	start_position: Vector2
+) -> bool:
+	if result == null or source == null:
+		return false
+	return (
+		result.success
+		and result.shots_executed == 0
+		and result.participants_repositioning >= 1
+		and result.force_command_hold == 0
+		and _battletarget_has(source, target_id)
+		and source.battle_position.is_equal_approx(start_position)
+		and _battlehold_is_approaching(source)
+	)
+
+
+static func _battlehold_weapon_no_chase(
+	source_id: String,
+	target_id: String,
+	weapon_type: String,
+	source_position: Vector2,
+	target_position: Vector2
+) -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		source_id,
+		target_id,
+		weapon_type,
+		source_position,
+		target_position,
+		source_id + "_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var before: Vector2 = source.battle_position
+	var rng_before: int = 0
+	if battle_state.combat_random != null:
+		rng_before = battle_state.combat_random.snapshot_state()
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	var rng_after: int = 0
+	if battle_state.combat_random != null:
+		rng_after = battle_state.combat_random.snapshot_state()
+	return (
+		_battlehold_suppressed_ok(result, source, target_id, before)
+		and rng_after == rng_before
+		and result.healthy_seeking_cover == 0
+		and result.healthy_holding_cover == 0
+	)
+
+
+static func _battlehold_weapon_may_fire(
+	source_id: String,
+	target_id: String,
+	weapon_type: String,
+	source_position: Vector2,
+	target_position: Vector2
+) -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		source_id,
+		target_id,
+		weapon_type,
+		source_position,
+		target_position,
+		source_id + "_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 1
+		and result.force_command_hold == 0
+		and _battletarget_has(source, target_id)
+		and _battleattack_cycled_once(source, ammo_before, weapon_type)
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+		and _battlehold_no_generic_chase(source)
+	)
+
+
+static func _battlehold_weapon_retreat(
+	source_id: String,
+	target_id: String,
+	weapon_type: String,
+	source_position: Vector2,
+	target_position: Vector2
+) -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		source_id,
+		target_id,
+		weapon_type,
+		source_position,
+		target_position,
+		source_id + "_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	_battlehealthycover_cooldown(source)
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	if result == null or not result.success or not _battlebehavior_is_combat_nav(source):
+		return false
+	var dest: Vector2 = source.navigation_destination
+	var away: Vector2 = dest - before
+	var toward_target: Vector2 = target_position - before
+	return (
+		result.force_command_hold == 0
+		and result.participants_repositioning >= 1
+		and result.shots_executed == 0
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_RETREAT
+		and _battletarget_has(source, target_id)
+		and source.battle_position.is_equal_approx(before)
+		and dest.x < before.x
+		and away.dot(toward_target) < 0.0
+		and battle_state.battlefield_geometry.contains_point(dest)
+		and not _battlenav_inside_blocker(battle_state.battlefield_geometry, dest)
+	)
+
+
+static func _battlehold_approach_suppressed_ok() -> bool:
+	return _battlehold_weapon_no_chase(
+		"bh_ap_src",
+		"bh_ap_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+
+
+static func _battlehold_unmapped_contrast_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_um_src",
+		"bh_um_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not source.tactical_force_id.is_empty():
+		return false
+	if not BattleForceCommandService.get_command_for_participant(
+		battle_state,
+		source.participant_id
+	).is_empty():
+		return false
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return _battlehold_approach_ok(result, source, "bh_um_tgt", before)
+
+
+static func _battlehold_nonhold_contrast_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_nh_src",
+		"bh_nh_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_nh_force",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if BattleForceCommandService.get_command_for_participant(
+		battle_state,
+		source.participant_id
+	) != BattleForceCommandCatalog.COMMAND_PUSH:
+		return false
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return _battlehold_approach_ok(result, source, "bh_nh_tgt", before)
+
+
+static func _battlehold_unwired_commands_ok() -> bool:
+	var commands: Array[String] = [
+		BattleForceCommandCatalog.COMMAND_PUSH,
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT,
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT,
+		BattleForceCommandCatalog.COMMAND_FALL_BACK,
+	]
+	for command_id: String in commands:
+		var pack: Dictionary = _battlehold_pair(
+			"bh_uw_" + command_id + "_src",
+			"bh_uw_" + command_id + "_tgt",
+			"shotgun",
+			Vector2(10.0, 10.0),
+			Vector2(40.0, 10.0),
+			"bh_uw_" + command_id + "_force",
+			command_id
+		)
+		var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+		var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+		if battle_state == null or source == null:
+			return false
+		var before: Vector2 = source.battle_position
+		var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+		if not _battlehold_approach_ok(result, source, "bh_uw_" + command_id + "_tgt", before):
 			return false
 	return true
+
+
+static func _battlehold_shotgun_far_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_sgf_src",
+		"bh_sgf_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_sgf_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_sgf_obj", "bh_sgf_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		_battlehold_suppressed_ok(result, source, "bh_sgf_tgt", before)
+		and result.healthy_seeking_cover == 0
+		and source.reserved_cover_slot_id.is_empty()
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_RETREAT
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_COVER
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+	)
+
+
+static func _battlehold_shotgun_fire_ok() -> bool:
+	return _battlehold_weapon_may_fire(
+		"bh_sgfire_src",
+		"bh_sgfire_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(16.0, 10.0)
+	)
+
+
+static func _battlehold_shotgun_no_retreat_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_sgr_src",
+		"bh_sgr_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(12.0, 10.0),
+		"bh_sgr_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	_battlehealthycover_cooldown(source)
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 0
+		and result.force_command_hold == 0
+		and result.participants_repositioning == 0
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_RETREAT
+		and _battlebehavior_no_combat_nav(source)
+		and source.battle_position.is_equal_approx(before)
+		and _battletarget_has(source, "bh_sgr_tgt")
+	)
+
+
+static func _battlehold_smg_far_ok() -> bool:
+	return _battlehold_weapon_no_chase(
+		"bh_smgf_src",
+		"bh_smgf_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(50.0, 10.0)
+	)
+
+
+static func _battlehold_smg_retreat_ok() -> bool:
+	return _battlehold_weapon_retreat(
+		"bh_smgr_src",
+		"bh_smgr_tgt",
+		"smg",
+		Vector2(40.0, 30.0),
+		Vector2(42.0, 30.0)
+	)
+
+
+static func _battlehold_smg_fire_ok() -> bool:
+	return _battlehold_weapon_may_fire(
+		"bh_smgfire_src",
+		"bh_smgfire_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+
+
+static func _battlehold_pistol_no_chase_ok() -> bool:
+	return _battlehold_weapon_no_chase(
+		"bh_pnc_src",
+		"bh_pnc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+
+
+static func _battlehold_pistol_fire_ok() -> bool:
+	return _battlehold_weapon_may_fire(
+		"bh_pf_src",
+		"bh_pf_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+
+
+static func _battlehold_pistol_seek_cover_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_psc_src",
+		"bh_psc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_psc_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_psc_obj", "bh_psc_far", Vector2(18.0, 10.0)) == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_psc_obj", "bh_psc_near", Vector2(16.0, 10.0)) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var near: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bh_psc_near")
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 1
+		and result.force_command_hold == 0
+		and result.shots_executed == 0
+		and _battletarget_has(source, "bh_psc_tgt")
+		and _battlecover_reserved_sync(source, near, "bh_psc_src", "bh_psc_near")
+		and _battlehealthycover_is_seeking(source)
+		and source.navigation_destination.x > source.battle_position.x
+	)
+
+
+static func _battlehold_rifle_no_approach_ok() -> bool:
+	return _battlehold_weapon_no_chase(
+		"bh_rna_src",
+		"bh_rna_tgt",
+		"rifle",
+		Vector2(10.0, 30.0),
+		Vector2(80.0, 30.0)
+	)
+
+
+static func _battlehold_rifle_seek_cover_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_rsc_src",
+		"bh_rsc_tgt",
+		"rifle",
+		Vector2(10.0, 30.0),
+		Vector2(50.0, 30.0),
+		"bh_rsc_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	_battlehealthycover_cooldown(source)
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_rsc_obj", "bh_rsc_out", Vector2(12.0, 30.0)) == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_rsc_obj", "bh_rsc_in", Vector2(26.0, 30.0)) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var in_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bh_rsc_in")
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 1
+		and result.force_command_hold == 0
+		and _battlecover_reserved_sync(source, in_slot, "bh_rsc_src", "bh_rsc_in")
+		and _battlehealthycover_is_seeking(source)
+		and _battletarget_has(source, "bh_rsc_tgt")
+	)
+
+
+static func _battlehold_rifle_retreat_ok() -> bool:
+	return _battlehold_weapon_retreat(
+		"bh_rr_src",
+		"bh_rr_tgt",
+		"rifle",
+		Vector2(40.0, 30.0),
+		Vector2(45.0, 30.0)
+	)
+
+
+static func _battlehold_rifle_fire_ok() -> bool:
+	return _battlehold_weapon_may_fire(
+		"bh_rf_src",
+		"bh_rf_tgt",
+		"rifle",
+		Vector2(10.0, 30.0),
+		Vector2(34.0, 30.0)
+	)
+
+
+static func _battlehold_sniper_no_chase_ok() -> bool:
+	return _battlehold_weapon_no_chase(
+		"bh_snc_src",
+		"bh_snc_tgt",
+		"sniper",
+		Vector2(10.0, 30.0),
+		Vector2(90.0, 30.0)
+	)
+
+
+static func _battlehold_sniper_cover_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_sncv_src",
+		"bh_sncv_tgt",
+		"sniper",
+		Vector2(10.0, 30.0),
+		Vector2(90.0, 30.0),
+		"bh_sncv_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_sncv_obj", "bh_sncv_out", Vector2(16.0, 30.0)) == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_sncv_obj", "bh_sncv_in", Vector2(36.0, 30.0)) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var in_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bh_sncv_in")
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 1
+		and result.force_command_hold == 0
+		and _battlecover_reserved_sync(source, in_slot, "bh_sncv_src", "bh_sncv_in")
+		and _battlehealthycover_is_seeking(source)
+		and _battletarget_has(source, "bh_sncv_tgt")
+	)
+
+
+static func _battlehold_sniper_retreat_ok() -> bool:
+	return _battlehold_weapon_retreat(
+		"bh_snr_src",
+		"bh_snr_tgt",
+		"sniper",
+		Vector2(40.0, 30.0),
+		Vector2(50.0, 30.0)
+	)
+
+
+static func _battlehold_sniper_fire_ok() -> bool:
+	return _battlehold_weapon_may_fire(
+		"bh_snf_src",
+		"bh_snf_tgt",
+		"sniper",
+		Vector2(10.0, 30.0),
+		Vector2(50.0, 30.0)
+	)
+
+
+static func _battlehold_fire_wins_ok() -> bool:
+	return _battlehold_pistol_fire_ok()
+
+
+static func _battlehold_fire_while_seeking_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_fws_src",
+		"bh_fws_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"bh_fws_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_fws_obj", "bh_fws_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	_battlehealthycover_cooldown(source)
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bh_fws_slot")
+	if first == null or not first.success or first.shots_executed != 0:
+		return false
+	if first.force_command_hold != 0:
+		return false
+	if not _battlecover_reserved_sync(source, slot, "bh_fws_src", "bh_fws_slot"):
+		return false
+	if not _battlehealthycover_is_seeking(source):
+		return false
+	source.weapon_state.cooldown_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var dest_before: Vector2 = source.navigation_destination
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		second != null
+		and second.success
+		and second.shots_executed == 1
+		and second.healthy_seeking_cover == 1
+		and second.force_command_hold == 0
+		and source.weapon_state.ammo_in_magazine == ammo_before - 1
+		and _battlewoundedperformance_rng_advanced_once(battle_state.combat_random, rng_before)
+		and _battlecover_reserved_sync(source, slot, "bh_fws_src", "bh_fws_slot")
+		and _battlehealthycover_is_seeking(source)
+		and source.navigation_destination.is_equal_approx(dest_before)
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+	)
+
+
+static func _battlehold_existing_role_cover_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_erc_src",
+		"bh_erc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_erc_obj", "bh_erc_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or not _battlehealthycover_is_seeking(source):
+		return false
+	var dest_before: Vector2 = source.navigation_destination
+	var reserved_before: String = source.reserved_cover_slot_id
+	if not _battlehold_bind(battle_state, source, "bh_erc_force", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		second != null
+		and second.success
+		and second.force_command_hold == 0
+		and second.healthy_seeking_cover == 1
+		and _battlehealthycover_is_seeking(source)
+		and source.reserved_cover_slot_id == reserved_before
+		and source.navigation_destination.is_equal_approx(dest_before)
+		and source.navigation_source == BattleParticipant.NAVIGATION_SOURCE_COMBAT
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+	)
+
+
+static func _battlehold_new_local_cover_ok() -> bool:
+	return _battlehold_pistol_seek_cover_ok()
+
+
+static func _battlehold_occupied_cover_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_oc_src",
+		"bh_oc_tgt",
+		"pistol",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0),
+		"bh_oc_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_oc_obj", "bh_oc_slot", Vector2(20.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "bh_oc_slot"):
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	_battletarget_place(target, Vector2(80.0, 10.0))
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bh_oc_slot")
+	return (
+		first != null
+		and first.success
+		and first.healthy_holding_cover == 1
+		and first.force_command_hold == 0
+		and first.shots_executed == 1
+		and second != null
+		and second.success
+		and second.healthy_holding_cover == 1
+		and second.force_command_hold == 0
+		and _battlecover_occupied_sync(source, slot, "bh_oc_src", "bh_oc_slot")
+		and source.battle_position.is_equal_approx(Vector2(20.0, 10.0))
+		and _battlebehavior_no_combat_nav(source)
+		and _battletarget_has(source, "bh_oc_tgt")
+	)
+
+
+static func _battlehold_los_blocked_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_los_src",
+		"bh_los_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(34.0, 30.0),
+		"bh_los_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("bh_los_wall", Rect2(26.0, 25.0, 2.0, 10.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var los_before: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		battle_state,
+		"bh_los_src",
+		"bh_los_tgt"
+	)
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	var los_after: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		battle_state,
+		"bh_los_src",
+		"bh_los_tgt"
+	)
+	return (
+		_battlelos_blocked_ok(los_before, "bh_los_src", "bh_los_tgt", "bh_los_wall")
+		and _battlelos_blocked_ok(los_after, "bh_los_src", "bh_los_tgt", "bh_los_wall")
+		and _battlehold_suppressed_ok(result, source, "bh_los_tgt", before)
+	)
+
+
+static func _battlehold_clears_chase_nav_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_ccn_src",
+		"bh_ccn_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not _battlehold_is_approaching(source):
+		return false
+	if not _battlehold_bind(battle_state, source, "bh_ccn_force", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	var before: Vector2 = source.battle_position
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		_battlehold_suppressed_ok(second, source, "bh_ccn_tgt", before)
+		and source.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT
+		and not source.has_active_navigation_path()
+	)
+
+
+static func _battlehold_keeps_external_nav_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_ken_src",
+		"bh_ken_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(80.0, 10.0),
+		"bh_ken_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var path_ok: bool = source.set_navigation_path(Vector2(40.0, 10.0), [Vector2(40.0, 10.0)])
+	var dest_before: Vector2 = source.navigation_destination
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		path_ok
+		and result != null
+		and result.success
+		and result.force_command_hold == 0
+		and result.participants_repositioning == 0
+		and source.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+		and source.navigation_destination.is_equal_approx(dest_before)
+		and source.has_active_navigation_path()
+		and source.combat_move_mode.is_empty()
+		and _battletarget_has(source, "bh_ken_tgt")
+	)
+
+
+static func _battlehold_keeps_wounded_cover_nav_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_kwc_src",
+		"bh_kwc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_kwc_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	source.is_wounded = true
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_kwc_obj", "bh_kwc_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or first.wounded_seeking_cover != 1:
+		return false
+	var dest_before: Vector2 = source.navigation_destination
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		second != null
+		and second.success
+		and second.wounded_seeking_cover == 1
+		and second.force_command_hold == 0
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_COVER
+		and source.navigation_source == BattleParticipant.NAVIGATION_SOURCE_COMBAT
+		and source.navigation_destination.is_equal_approx(dest_before)
+		and source.is_wounded
+	)
+
+
+static func _battlehold_external_nav_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_en_src",
+		"bh_en_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(80.0, 10.0),
+		"bh_en_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not source.set_navigation_path(Vector2(40.0, 10.0), [Vector2(40.0, 10.0)]):
+		return false
+	if not source.set_movement_speed(4.0):
+		return false
+	var combat: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	var start: Vector2 = source.battle_position
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.5)
+	return (
+		combat != null
+		and combat.success
+		and combat.force_command_hold == 0
+		and source.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+		and runtime != null
+		and runtime.success
+		and not source.battle_position.is_equal_approx(start)
+		and source.battle_position.x > start.x
+		and source.battle_position.x < 40.0
+		and source.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+	)
 
 
 static func _battleforcecommand_no_rng_ok() -> bool:
@@ -32814,5 +33810,655 @@ static func _battleforcecommand_absent_systems_ok() -> bool:
 		and battle_state.get("formation_anchor") == null
 		and battle_state.get("lane_geometry") == null
 		and not battle_state.has_method("resolve_victory")
+		and not GameState.new().has_method("apply_tactical_casualty")
+	)
+
+
+static func _battlehold_wounded_cover_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_wdc_src",
+		"bh_wdc_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"bh_wdc_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.battlefield_geometry == null:
+		return false
+	source.is_wounded = true
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_wdc_obj", "bh_wdc_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = 0
+	if battle_state.combat_random != null:
+		rng_before = battle_state.combat_random.snapshot_state()
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bh_wdc_slot")
+	return (
+		result != null
+		and result.success
+		and result.wounded_seeking_cover == 1
+		and result.shots_executed == 0
+		and result.force_command_hold == 0
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and _battlecover_reserved_sync(source, slot, "bh_wdc_src", "bh_wdc_slot")
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_COVER
+		and source.is_wounded
+	)
+
+
+static func _battlehold_wounded_threat_ok() -> bool:
+	var fire_pack: Dictionary = _battlehold_pair(
+		"bh_wth_src",
+		"bh_wth_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(14.0, 10.0),
+		"bh_wth_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var fire_state: BattleState = fire_pack.get("battle_state", null) as BattleState
+	var fire_src: BattleParticipant = fire_pack.get("source", null) as BattleParticipant
+	if fire_state == null or fire_src == null or fire_state.battlefield_geometry == null:
+		return false
+	fire_src.is_wounded = true
+	if _battlewounded_slot(fire_state.battlefield_geometry, "bh_wth_obj", "bh_wth_slot", Vector2(30.0, 10.0)) == null:
+		return false
+	if not _battlebehavior_seek_roll(fire_state.combat_random, 0.0, 0.5):
+		return false
+	var fire_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(fire_state, 0.2)
+	var move_pack: Dictionary = _battlehold_pair(
+		"bh_wtm_src",
+		"bh_wtm_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_wtm_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var move_state: BattleState = move_pack.get("battle_state", null) as BattleState
+	var move_src: BattleParticipant = move_pack.get("source", null) as BattleParticipant
+	if move_state == null or move_src == null:
+		return false
+	move_src.is_wounded = true
+	var move_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(move_state, 0.2)
+	return (
+		fire_res != null
+		and fire_res.success
+		and fire_res.wounded_threat_override == 1
+		and fire_res.shots_executed == 1
+		and fire_res.force_command_hold == 0
+		and move_res != null
+		and move_res.success
+		and move_res.force_command_hold == 0
+		and _battlehold_is_approaching(move_src)
+		and move_src.is_wounded
+	)
+
+
+static func _battlehold_defend_position_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_dp_src",
+		"bh_dp_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_dp_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not source.set_defend_position_anchor(Vector2(10.0, 10.0)):
+		return false
+	source.set_defend_position(true)
+	source.set_navigation_path(
+		Vector2(40.0, 10.0),
+		[Vector2(40.0, 10.0)],
+		BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	)
+	source.combat_move_mode = BattleCombatBehaviorService.MOVE_APPROACH
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.participants_holding_defend_position >= 1
+		and result.force_command_hold == 0
+		and result.participants_repositioning == 0
+		and source.defend_position
+		and source.defend_position_anchor.is_equal_approx(Vector2(10.0, 10.0))
+		and source.battle_position.is_equal_approx(before)
+		and _battlebehavior_no_combat_nav(source)
+		and _battletarget_has(source, "bh_dp_tgt")
+	)
+
+
+static func _battlehold_same_side_multi_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var hold_pack: Dictionary = _battlehold_add_engaged(
+		battle_state,
+		"bh_ssm_hold",
+		"bh_ssm_hold_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var push_pack: Dictionary = _battlehold_add_engaged(
+		battle_state,
+		"bh_ssm_push",
+		"bh_ssm_push_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0)
+	)
+	var hold_src: BattleParticipant = hold_pack.get("source", null) as BattleParticipant
+	var push_src: BattleParticipant = push_pack.get("source", null) as BattleParticipant
+	if hold_src == null or push_src == null:
+		return false
+	if not _battlehold_bind(battle_state, hold_src, "bh_ssm_a", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	if not _battlehold_bind(battle_state, push_src, "bh_ssm_b", BattleForceCommandCatalog.COMMAND_PUSH):
+		return false
+	if hold_src.side_id != push_src.side_id:
+		return false
+	var hold_before: Vector2 = hold_src.battle_position
+	var push_before: Vector2 = push_src.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.force_command_hold == 1
+		and result.participants_repositioning >= 1
+		and _battletarget_has(hold_src, "bh_ssm_hold_tgt")
+		and _battletarget_has(push_src, "bh_ssm_push_tgt")
+		and hold_src.battle_position.is_equal_approx(hold_before)
+		and _battlebehavior_no_combat_nav(hold_src)
+		and _battlehold_no_generic_chase(hold_src)
+		and push_src.battle_position.is_equal_approx(push_before)
+		and _battlehold_is_approaching(push_src)
+		and BattleForceCommandService.get_command(battle_state, "bh_ssm_a") == "hold"
+		and BattleForceCommandService.get_command(battle_state, "bh_ssm_b") == "push"
+	)
+
+
+static func _battlehold_target_selection_ok() -> bool:
+	var hold_state: BattleState = _battlemove_make_state("active")
+	var free_state: BattleState = _battlemove_make_state("active")
+	if hold_state == null or free_state == null:
+		return false
+	var hold_src: BattleParticipant = _battlefire_add(hold_state, "bh_ts_hold", "attacker", "shotgun")
+	var hold_near: BattleParticipant = _battlefire_add(hold_state, "bh_ts_hold_near", "defender", "pistol")
+	var hold_far: BattleParticipant = _battlefire_add(hold_state, "bh_ts_hold_far", "defender", "pistol")
+	var free_src: BattleParticipant = _battlefire_add(free_state, "bh_ts_free", "attacker", "shotgun")
+	var free_near: BattleParticipant = _battlefire_add(free_state, "bh_ts_free_near", "defender", "pistol")
+	var free_far: BattleParticipant = _battlefire_add(free_state, "bh_ts_free_far", "defender", "pistol")
+	if hold_src == null or hold_near == null or hold_far == null:
+		return false
+	if free_src == null or free_near == null or free_far == null:
+		return false
+	_battletarget_place(hold_src, Vector2(10.0, 10.0))
+	_battletarget_place(hold_near, Vector2(20.0, 10.0))
+	_battletarget_place(hold_far, Vector2(80.0, 10.0))
+	_battletarget_place(free_src, Vector2(10.0, 10.0))
+	_battletarget_place(free_near, Vector2(20.0, 10.0))
+	_battletarget_place(free_far, Vector2(80.0, 10.0))
+	if not _battlehold_bind(hold_state, hold_src, "bh_ts_force", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	var hold_sel: BattleTargetSelectionResult = BattleTargetSelectionService.advance(hold_state)
+	var free_sel: BattleTargetSelectionResult = BattleTargetSelectionService.advance(free_state)
+	return (
+		hold_sel != null
+		and hold_sel.success
+		and free_sel != null
+		and free_sel.success
+		and hold_src.target_participant_id == "bh_ts_hold_near"
+		and free_src.target_participant_id == "bh_ts_free_near"
+		and hold_sel.participants_with_targets == free_sel.participants_with_targets
+	)
+
+
+static func _battlehold_cover_fire_attack_regression_ok() -> bool:
+	var hold_pack: Dictionary = _battlehold_pair(
+		"bh_cfr_src",
+		"bh_cfr_tgt",
+		"pistol",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0),
+		"bh_cfr_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var free_pack: Dictionary = _battlehold_pair(
+		"bh_cff_src",
+		"bh_cff_tgt",
+		"pistol",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0)
+	)
+	var hold_state: BattleState = hold_pack.get("battle_state", null) as BattleState
+	var hold_src: BattleParticipant = hold_pack.get("source", null) as BattleParticipant
+	var hold_tgt: BattleParticipant = hold_pack.get("target", null) as BattleParticipant
+	var free_state: BattleState = free_pack.get("battle_state", null) as BattleState
+	var free_src: BattleParticipant = free_pack.get("source", null) as BattleParticipant
+	var free_tgt: BattleParticipant = free_pack.get("target", null) as BattleParticipant
+	if hold_state == null or hold_src == null or hold_tgt == null:
+		return false
+	if free_state == null or free_src == null or free_tgt == null:
+		return false
+	if hold_state.battlefield_geometry == null or free_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(hold_state.battlefield_geometry, "bh_cfr_obj", "bh_cfr_slot", Vector2(20.0, 10.0)) == null:
+		return false
+	if _battlewounded_slot(free_state.battlefield_geometry, "bh_cff_obj", "bh_cff_slot", Vector2(20.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(hold_state, hold_src, "bh_cfr_slot"):
+		return false
+	if not _battlewounded_occupy(free_state, free_src, "bh_cff_slot"):
+		return false
+	var hold_prot: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		hold_state.battlefield_geometry,
+		hold_src,
+		hold_tgt.battle_position
+	)
+	var free_prot: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		free_state.battlefield_geometry,
+		free_src,
+		free_tgt.battle_position
+	)
+	var hold_fx: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.50, 1.0)
+	var free_fx: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.50, 1.0)
+	var pistol_def: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	var los_hold: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		hold_state,
+		"bh_cfr_src",
+		"bh_cfr_tgt"
+	)
+	var los_free: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		free_state,
+		"bh_cff_src",
+		"bh_cff_tgt"
+	)
+	return (
+		hold_prot != null
+		and free_prot != null
+		and hold_prot.has_applicable_cover == free_prot.has_applicable_cover
+		and is_equal_approx(hold_prot.protection_factor, free_prot.protection_factor)
+		and hold_fx != null
+		and free_fx != null
+		and is_equal_approx(hold_fx.cover_multiplier, free_fx.cover_multiplier)
+		and is_equal_approx(hold_fx.post_cover_roll, free_fx.post_cover_roll)
+		and is_equal_approx(BattleCombatBehaviorCatalog.MAX_COVER_ROLL_REDUCTION, 0.30)
+		and is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_ACCURACY_MULTIPLIER, 0.70)
+		and is_equal_approx(BattleCombatBehaviorCatalog.wounded_effective_outcome_roll(1.0), 0.70)
+		and pistol_def != null
+		and is_equal_approx(pistol_def.cooldown_seconds(), 0.4)
+		and BattleAttackProfile.OUTCOME_MISS == "miss"
+		and los_hold != null
+		and los_free != null
+		and los_hold.success
+		and los_free.success
+		and los_hold.has_line_of_sight
+		and los_free.has_line_of_sight
+	)
+
+
+static func _battlehold_zero_delta_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_zd_src",
+		"bh_zd_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	var seeded: bool = source.set_navigation_path(
+		Vector2(40.0, 10.0),
+		[Vector2(40.0, 10.0)],
+		BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	)
+	source.combat_move_mode = BattleCombatBehaviorService.MOVE_APPROACH
+	source.combat_move_target_id = "bh_zd_tgt"
+	if not seeded:
+		return false
+	if not _battlehold_bind(battle_state, source, "bh_zd_force", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	battle_state.elapsed_time_seconds = 1.25
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = 0
+	if battle_state.combat_random != null:
+		rng_before = battle_state.combat_random.snapshot_state()
+	var pos_before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.0)
+	var rng_after: int = 0
+	if battle_state.combat_random != null:
+		rng_after = battle_state.combat_random.snapshot_state()
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 0
+		and result.attack_events.is_empty()
+		and result.force_command_hold == 1
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and rng_after == rng_before
+		and source.battle_position.is_equal_approx(pos_before)
+		and is_equal_approx(battle_state.elapsed_time_seconds, 1.25)
+		and _battlebehavior_no_combat_nav(source)
+		and not source.has_active_navigation_path()
+	)
+
+
+static func _battlehold_counter_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var chase_pack: Dictionary = _battlehold_add_engaged(
+		battle_state,
+		"a_bh_cnt_chase",
+		"bh_cnt_chase_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var fire_pack: Dictionary = _battlehold_add_engaged(
+		battle_state,
+		"m_bh_cnt_fire",
+		"bh_cnt_fire_tgt",
+		"pistol",
+		Vector2(10.0, 25.0),
+		Vector2(20.0, 25.0)
+	)
+	var cover_pack: Dictionary = _battlehold_add_engaged(
+		battle_state,
+		"p_bh_cnt_cover",
+		"bh_cnt_cover_tgt",
+		"pistol",
+		Vector2(20.0, 40.0),
+		Vector2(80.0, 40.0)
+	)
+	var wound_pack: Dictionary = _battlehold_add_engaged(
+		battle_state,
+		"w_bh_cnt_wound",
+		"bh_cnt_wound_tgt",
+		"pistol",
+		Vector2(10.0, 55.0),
+		Vector2(40.0, 55.0)
+	)
+	var chase_src: BattleParticipant = chase_pack.get("source", null) as BattleParticipant
+	var fire_src: BattleParticipant = fire_pack.get("source", null) as BattleParticipant
+	var cover_src: BattleParticipant = cover_pack.get("source", null) as BattleParticipant
+	var wound_src: BattleParticipant = wound_pack.get("source", null) as BattleParticipant
+	if chase_src == null or fire_src == null or cover_src == null or wound_src == null:
+		return false
+	if not _battlehold_bind(battle_state, chase_src, "bh_cnt_hold", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	if not _battlehold_bind(battle_state, fire_src, "bh_cnt_hold", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	if not _battlehold_bind(battle_state, cover_src, "bh_cnt_hold", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	if not _battlehold_bind(battle_state, wound_src, "bh_cnt_hold", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_cnt_cobj", "bh_cnt_cslot", Vector2(20.0, 40.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, cover_src, "bh_cnt_cslot"):
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "bh_cnt_wobj", "bh_cnt_wslot", Vector2(16.0, 55.0)) == null:
+		return false
+	wound_src.is_wounded = true
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.force_command_hold == 1
+		and result.shots_executed == 1
+		and result.healthy_holding_cover == 1
+		and result.wounded_seeking_cover == 1
+		and _battlebehavior_no_combat_nav(chase_src)
+		and _battletarget_has(chase_src, "bh_cnt_chase_tgt")
+		and cover_src.occupied_cover_slot_id == "bh_cnt_cslot"
+		and wound_src.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_COVER
+	)
+
+
+static func _battlehold_hq_default_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if force == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var attacker: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	var defender: BattleParticipant = battle_state.get_participant("battle_def_sol")
+	if attacker == null or defender == null or attacker.weapon_state == null:
+		return false
+	if BattleForceCommandService.get_command(battle_state, force.id) != "hold":
+		return false
+	if BattleForceCommandService.get_command(battle_state, garrison_id) != "hold":
+		return false
+	if attacker.tactical_force_id != force.id:
+		return false
+	attacker.weapon_type = "shotgun"
+	attacker.weapon_state.weapon_type_id = "shotgun"
+	_battletarget_place(attacker, Vector2(10.0, 30.0))
+	_battletarget_place(defender, Vector2(40.0, 30.0))
+	attacker.set_target_participant("battle_def_sol")
+	_battlebehavior_hold_hostile(defender)
+	var before: Vector2 = attacker.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		_battlehold_suppressed_ok(result, attacker, "battle_def_sol", before)
+		and BattleForceCommandService.get_command_for_participant(battle_state, "battle_sol_a") == "hold"
+	)
+
+
+static func _battlehold_inband_fire_unwired_match_ok() -> bool:
+	var baseline: Dictionary = _battleforcecommand_run_behavior(BattleForceCommandCatalog.COMMAND_HOLD)
+	if baseline.is_empty() or not bool(baseline.get("ok", false)):
+		return false
+	if int(baseline.get("shots", 0)) < 1:
+		return false
+	if int(baseline.get("force_command_hold", -1)) != 0:
+		return false
+	var unwired: Array[String] = [
+		BattleForceCommandCatalog.COMMAND_PUSH,
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT,
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT,
+		BattleForceCommandCatalog.COMMAND_FALL_BACK,
+	]
+	for command_id: String in unwired:
+		var snap: Dictionary = _battleforcecommand_run_behavior(command_id)
+		if not _battleforcecommand_behavior_same(baseline, snap):
+			return false
+	return true
+
+
+static func _battlehold_suppression_no_rng_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"bh_rng_src",
+		"bh_rng_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_rng_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.combat_random == null:
+		return false
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.force_command_hold == 1
+		and result.shots_executed == 0
+		and battle_state.combat_random.snapshot_state() == rng_before
+	)
+
+
+static func _battlehold_determinism_ok() -> bool:
+	var left: Dictionary = _battlehold_pair(
+		"bh_det_l_src",
+		"bh_det_l_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_det_l_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var right: Dictionary = _battlehold_pair(
+		"bh_det_r_src",
+		"bh_det_r_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"bh_det_r_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var left_state: BattleState = left.get("battle_state", null) as BattleState
+	var right_state: BattleState = right.get("battle_state", null) as BattleState
+	var left_src: BattleParticipant = left.get("source", null) as BattleParticipant
+	var right_src: BattleParticipant = right.get("source", null) as BattleParticipant
+	if left_state == null or right_state == null or left_src == null or right_src == null:
+		return false
+	var left_rng: int = 0
+	var right_rng: int = 0
+	if left_state.combat_random != null:
+		left_rng = left_state.combat_random.snapshot_state()
+	if right_state.combat_random != null:
+		right_rng = right_state.combat_random.snapshot_state()
+	var left_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(left_state, 0.5)
+	var right_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(right_state, 0.5)
+	var left_rng_after: int = 0
+	var right_rng_after: int = 0
+	if left_state.combat_random != null:
+		left_rng_after = left_state.combat_random.snapshot_state()
+	if right_state.combat_random != null:
+		right_rng_after = right_state.combat_random.snapshot_state()
+	return (
+		left_res != null
+		and right_res != null
+		and left_res.success
+		and right_res.success
+		and left_res.force_command_hold == 1
+		and right_res.force_command_hold == 1
+		and left_res.shots_executed == 0
+		and right_res.shots_executed == 0
+		and left_res.participants_repositioning == 0
+		and right_res.participants_repositioning == 0
+		and left_src.battle_position.is_equal_approx(right_src.battle_position)
+		and left_src.combat_move_mode == right_src.combat_move_mode
+		and left_src.navigation_source == right_src.navigation_source
+		and is_equal_approx(left_src.movement_speed, right_src.movement_speed)
+		and _battlebehavior_no_combat_nav(left_src)
+		and _battlebehavior_no_combat_nav(right_src)
+		and left_rng_after == left_rng
+		and right_rng_after == right_rng
+	)
+
+
+static func _battlehold_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or force == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	var defender: BattleParticipant = battle_state.get_participant("battle_def_sol")
+	if attacker == null or defender == null or attacker.weapon_state == null:
+		return false
+	attacker.weapon_type = "shotgun"
+	attacker.weapon_state.weapon_type_id = "shotgun"
+	_battletarget_place(attacker, Vector2(10.0, 30.0))
+	_battletarget_place(defender, Vector2(40.0, 30.0))
+	attacker.set_target_participant("battle_def_sol")
+	_battlebehavior_hold_hostile(defender)
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	if soldier == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var soldier_ids_before: Array[String] = _copy_ids(force.soldier_group.soldier_ids)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		result != null
+		and result.success
+		and result.force_command_hold >= 1
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _string_ids_match(_copy_ids(force.soldier_group.soldier_ids), soldier_ids_before)
+		and force.get("command_id") == null
+		and force.soldier_group.get("command_id") == null
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+	)
+
+
+static func _battlehold_absent_systems_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	var behavior: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var command_svc: BattleForceCommandService = BattleForceCommandService.new()
+	var participant: BattleParticipant = BattleParticipant.new("bh_abs_p", "", "a", "attacker", "pistol")
+	if battle_state == null:
+		return false
+	return (
+		not behavior.has_method("apply_push")
+		and not behavior.has_method("apply_hold")
+		and not behavior.has_method("apply_focus_left")
+		and not behavior.has_method("apply_focus_right")
+		and not behavior.has_method("apply_fall_back")
+		and not behavior.has_method("issue_force_command")
+		and not behavior.has_method("select_ai_command")
+		and not command_svc.has_method("apply_morale")
+		and not command_svc.has_method("require_captain")
+		and not command_svc.has_method("command_radius")
+		and not command_svc.has_method("issue_flee")
+		and not command_svc.has_method("withdraw")
+		and not command_svc.has_method("queue_command")
+		and participant.get("hold_origin") == null
+		and participant.get("hold_anchor") == null
+		and participant.get("is_holding") == null
+		and participant.get("command_id") == null
+		and participant.get("action_points") == null
+		and battle_state.get("hold_anchor") == null
+		and battle_state.get("formation_anchor") == null
+		and battle_state.get("command_radius") == null
+		and battle_state.get("lane_geometry") == null
+		and battle_state.get("winner_side_id") == null
+		and not BattleForceCommandService.is_valid_command("flee")
 		and not GameState.new().has_method("apply_tactical_casualty")
 	)

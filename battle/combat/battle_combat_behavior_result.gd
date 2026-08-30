@@ -17,6 +17,7 @@ var wounded_holding_cover: int = 0
 var wounded_threat_override: int = 0
 var healthy_seeking_cover: int = 0
 var healthy_holding_cover: int = 0
+var force_command_hold: int = 0
 var attack_events: Array[BattleAttackEvent] = []
 var error_code: String = ""
 var error_message: String = ""
@@ -36,7 +37,8 @@ static func succeeded(
 	p_wounded_holding_cover: int = 0,
 	p_wounded_threat_override: int = 0,
 	p_healthy_seeking_cover: int = 0,
-	p_healthy_holding_cover: int = 0
+	p_healthy_holding_cover: int = 0,
+	p_force_command_hold: int = 0
 ) -> BattleCombatBehaviorResult:
 	var result := new()
 	result.success = true
@@ -53,6 +55,7 @@ static func succeeded(
 	result.wounded_threat_override = p_wounded_threat_override
 	result.healthy_seeking_cover = p_healthy_seeking_cover
 	result.healthy_holding_cover = p_healthy_holding_cover
+	result.force_command_hold = p_force_command_hold
 	result.attack_events = _copy_events(p_attack_events)
 	result.error_code = ""
 	result.error_message = ""
@@ -75,6 +78,7 @@ static func failed(p_error_code: String, p_error_message: String) -> BattleComba
 	result.wounded_threat_override = 0
 	result.healthy_seeking_cover = 0
 	result.healthy_holding_cover = 0
+	result.force_command_hold = 0
 	result.attack_events = []
 	result.error_code = p_error_code
 	result.error_message = p_error_message

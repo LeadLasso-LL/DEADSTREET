@@ -22,6 +22,8 @@ const BattleCombatBehaviorProfile := preload("res://battle/combat/battle_combat_
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
+const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
+const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
 
 const MOVE_HOLD := "hold"
 const MOVE_APPROACH := "approach"
@@ -37,6 +39,10 @@ const WOUNDED_FALLBACK := "fallback"
 const HEALTHY_HOLD_COVER := "hold_cover"
 const HEALTHY_SEEK_COVER := "seek_role_cover"
 const HEALTHY_NONE := ""
+
+const MOVEMENT_NONE := 0
+const MOVEMENT_REPOSITIONING := 1
+const MOVEMENT_HOLD_CONSTRAINED := 2
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
@@ -82,6 +88,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var wounded_threat_override: int = 0
 	var healthy_seeking_cover: int = 0
 	var healthy_holding_cover: int = 0
+	var force_command_hold: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -139,8 +146,11 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 				attack_events.append(executed_event)
 				_clear_owned_combat_navigation(participant)
 				continue
-		if _update_combat_movement(battle_state, participant):
+		var movement_status: int = _update_combat_movement(battle_state, participant)
+		if movement_status == MOVEMENT_REPOSITIONING:
 			participants_repositioning += 1
+		elif movement_status == MOVEMENT_HOLD_CONSTRAINED:
+			force_command_hold += 1
 	shots_executed = attack_events.size()
 	for attack_event: BattleAttackEvent in attack_events:
 		match attack_event.outcome:
@@ -166,7 +176,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		wounded_holding_cover,
 		wounded_threat_override,
 		healthy_seeking_cover,
-		healthy_holding_cover
+		healthy_holding_cover,
+		force_command_hold
 	)
 
 
@@ -732,25 +743,31 @@ static func _is_eligible_threat(
 static func _update_combat_movement(
 	battle_state: BattleState,
 	participant: BattleParticipant
-) -> bool:
+) -> int:
 	if participant == null:
-		return false
+		return MOVEMENT_NONE
 	if not participant.has_target_participant or participant.target_participant_id.is_empty():
 		_clear_owned_combat_navigation(participant)
-		return false
+		return MOVEMENT_NONE
 	if not battle_state.has_participant(participant.target_participant_id):
 		_clear_owned_combat_navigation(participant)
-		return false
+		return MOVEMENT_NONE
 	var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
 	if target == null or not target.is_alive or not _is_positioned(target):
 		_clear_owned_combat_navigation(participant)
-		return false
+		return MOVEMENT_NONE
 	if _has_external_navigation(participant):
-		return false
+		return MOVEMENT_NONE
 	var move_mode: String = _desired_move_mode(battle_state, participant, target)
+	var hold_constrained: bool = false
+	if move_mode == MOVE_APPROACH and _hold_suppresses_target_approach(battle_state, participant):
+		move_mode = MOVE_HOLD
+		hold_constrained = true
 	if move_mode == MOVE_HOLD:
 		_clear_owned_combat_navigation(participant)
-		return false
+		if hold_constrained:
+			return MOVEMENT_HOLD_CONSTRAINED
+		return MOVEMENT_NONE
 	var destination: Vector2 = Vector2.ZERO
 	if move_mode == MOVE_APPROACH:
 		destination = target.battle_position
@@ -758,16 +775,16 @@ static func _update_combat_movement(
 		destination = _retreat_destination(battle_state, participant, target)
 		if not _is_finite_vector(destination):
 			_clear_owned_combat_navigation(participant)
-			return false
+			return MOVEMENT_NONE
 	if destination.is_equal_approx(participant.battle_position):
 		_clear_owned_combat_navigation(participant)
-		return false
+		return MOVEMENT_NONE
 	if _should_keep_combat_path(participant, target, move_mode, destination):
 		_ensure_combat_movement_speed(participant)
-		return true
+		return MOVEMENT_REPOSITIONING
 	if not _is_valid_navigation_destination(battle_state, destination):
 		_clear_owned_combat_navigation(participant)
-		return false
+		return MOVEMENT_NONE
 	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
 		battle_state,
 		participant.battle_position,
@@ -775,17 +792,41 @@ static func _update_combat_movement(
 	)
 	if navigation == null or not navigation.success:
 		_clear_owned_combat_navigation(participant)
-		return false
+		return MOVEMENT_NONE
 	if not participant.set_navigation_path(
 		navigation.destination,
 		navigation.waypoints,
 		BattleParticipant.NAVIGATION_SOURCE_COMBAT
 	):
-		return false
+		return MOVEMENT_NONE
 	participant.combat_move_mode = move_mode
 	participant.combat_move_target_id = target.participant_id
 	_ensure_combat_movement_speed(participant)
-	return true
+	return MOVEMENT_REPOSITIONING
+
+
+static func _participant_force_command_id(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> String:
+	if battle_state == null or participant == null:
+		return ""
+	return BattleForceCommandService.get_command_for_participant(
+		battle_state,
+		participant.participant_id
+	)
+
+
+static func _hold_suppresses_target_approach(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> bool:
+	if participant == null:
+		return false
+	if participant.is_wounded:
+		return false
+	var command_id: String = _participant_force_command_id(battle_state, participant)
+	return command_id == BattleForceCommandCatalog.COMMAND_HOLD
 
 
 static func _desired_move_mode(
