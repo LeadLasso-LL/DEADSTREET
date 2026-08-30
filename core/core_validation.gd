@@ -89,6 +89,12 @@ const BattleCombatPressureCatalog := preload("res://battle/combat/battle_combat_
 const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat_pressure_snapshot.gd")
 const BattleCombatPressureResult := preload("res://battle/combat/battle_combat_pressure_result.gd")
 const BattleCombatPressureService := preload("res://battle/combat/battle_combat_pressure_service.gd")
+const BattleCombatPressureBehaviorPolicy := preload(
+	"res://battle/combat/battle_combat_pressure_behavior_policy.gd"
+)
+const BattleCombatPressureBehaviorPolicyResult := preload(
+	"res://battle/combat/battle_combat_pressure_behavior_policy_result.gd"
+)
 const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
@@ -15694,6 +15700,28 @@ static func run() -> Dictionary:
 	var battlepressure_cover_ok: bool = _battlepressure_cover_ok()
 	var battlepressure_campaign_isolation_ok: bool = _battlepressure_campaign_isolation_ok()
 	var battlepressure_absent_ok: bool = _battlepressure_absent_ok()
+	var battlepressurebehavior_threshold_ok: bool = _battlepressurebehavior_threshold_ok()
+	var battlepressurebehavior_generic_approach_ok: bool = _battlepressurebehavior_generic_approach_ok()
+	var battlepressurebehavior_route_clear_ok: bool = _battlepressurebehavior_route_clear_ok()
+	var battlepressurebehavior_fire_ok: bool = _battlepressurebehavior_fire_ok()
+	var battlepressurebehavior_push_ok: bool = _battlepressurebehavior_push_ok()
+	var battlepressurebehavior_focus_ok: bool = _battlepressurebehavior_focus_ok()
+	var battlepressurebehavior_fallback_ok: bool = _battlepressurebehavior_fallback_ok()
+	var battlepressurebehavior_hold_ok: bool = _battlepressurebehavior_hold_ok()
+	var battlepressurebehavior_retreat_ok: bool = _battlepressurebehavior_retreat_ok()
+	var battlepressurebehavior_cover_ok: bool = _battlepressurebehavior_cover_ok()
+	var battlepressurebehavior_wounded_ok: bool = _battlepressurebehavior_wounded_ok()
+	var battlepressurebehavior_defend_ok: bool = _battlepressurebehavior_defend_ok()
+	var battlepressurebehavior_external_nav_ok: bool = _battlepressurebehavior_external_nav_ok()
+	var battlepressurebehavior_target_selection_ok: bool = _battlepressurebehavior_target_selection_ok()
+	var battlepressurebehavior_los_ok: bool = _battlepressurebehavior_los_ok()
+	var battlepressurebehavior_missing_snapshot_ok: bool = _battlepressurebehavior_missing_snapshot_ok()
+	var battlepressurebehavior_healthy_only_ok: bool = _battlepressurebehavior_healthy_only_ok()
+	var battlepressurebehavior_counters_ok: bool = _battlepressurebehavior_counters_ok()
+	var battlepressurebehavior_zero_delta_ok: bool = _battlepressurebehavior_zero_delta_ok()
+	var battlepressurebehavior_determinism_ok: bool = _battlepressurebehavior_determinism_ok()
+	var battlepressurebehavior_runtime_ok: bool = _battlepressurebehavior_runtime_ok()
+	var battlepressurebehavior_absent_ok: bool = _battlepressurebehavior_absent_ok()
 	var battleforcecommand_no_rng_ok: bool = _battleforcecommand_no_rng_ok()
 	var battleforcecommand_stable_order_ok: bool = _battleforcecommand_stable_order_ok()
 	var battleforcecommand_campaign_isolation_ok: bool = _battleforcecommand_campaign_isolation_ok()
@@ -17261,6 +17289,28 @@ static func run() -> Dictionary:
 		"battlepressure_cover_ok": battlepressure_cover_ok,
 		"battlepressure_campaign_isolation_ok": battlepressure_campaign_isolation_ok,
 		"battlepressure_absent_ok": battlepressure_absent_ok,
+		"battlepressurebehavior_threshold_ok": battlepressurebehavior_threshold_ok,
+		"battlepressurebehavior_generic_approach_ok": battlepressurebehavior_generic_approach_ok,
+		"battlepressurebehavior_route_clear_ok": battlepressurebehavior_route_clear_ok,
+		"battlepressurebehavior_fire_ok": battlepressurebehavior_fire_ok,
+		"battlepressurebehavior_push_ok": battlepressurebehavior_push_ok,
+		"battlepressurebehavior_focus_ok": battlepressurebehavior_focus_ok,
+		"battlepressurebehavior_fallback_ok": battlepressurebehavior_fallback_ok,
+		"battlepressurebehavior_hold_ok": battlepressurebehavior_hold_ok,
+		"battlepressurebehavior_retreat_ok": battlepressurebehavior_retreat_ok,
+		"battlepressurebehavior_cover_ok": battlepressurebehavior_cover_ok,
+		"battlepressurebehavior_wounded_ok": battlepressurebehavior_wounded_ok,
+		"battlepressurebehavior_defend_ok": battlepressurebehavior_defend_ok,
+		"battlepressurebehavior_external_nav_ok": battlepressurebehavior_external_nav_ok,
+		"battlepressurebehavior_target_selection_ok": battlepressurebehavior_target_selection_ok,
+		"battlepressurebehavior_los_ok": battlepressurebehavior_los_ok,
+		"battlepressurebehavior_missing_snapshot_ok": battlepressurebehavior_missing_snapshot_ok,
+		"battlepressurebehavior_healthy_only_ok": battlepressurebehavior_healthy_only_ok,
+		"battlepressurebehavior_counters_ok": battlepressurebehavior_counters_ok,
+		"battlepressurebehavior_zero_delta_ok": battlepressurebehavior_zero_delta_ok,
+		"battlepressurebehavior_determinism_ok": battlepressurebehavior_determinism_ok,
+		"battlepressurebehavior_runtime_ok": battlepressurebehavior_runtime_ok,
+		"battlepressurebehavior_absent_ok": battlepressurebehavior_absent_ok,
 		"battleforcecommand_no_rng_ok": battleforcecommand_no_rng_ok,
 		"battleforcecommand_stable_order_ok": battleforcecommand_stable_order_ok,
 		"battleforcecommand_campaign_isolation_ok": battleforcecommand_campaign_isolation_ok,
@@ -41264,8 +41314,18 @@ static func _battlepressure_observational_ok() -> bool:
 		return false
 	var high_finger: Dictionary = high.get("finger", {})
 	var low_finger: Dictionary = low.get("finger", {})
+	var high_pressure: float = float(high.get("pressure", 1.0))
+	var low_pressure: float = float(low.get("pressure", 1.0))
+	var threshold: float = BattleCombatPressureCatalog.HIGH_PRESSURE_AGGRESSION_THRESHOLD
 	return (
-		float(high.get("pressure", 0.0)) > float(low.get("pressure", 1.0))
+		is_finite(high_pressure)
+		and is_finite(low_pressure)
+		and is_finite(threshold)
+		and high_pressure < threshold
+		and low_pressure < threshold
+		and not is_equal_approx(high_pressure, threshold)
+		and not is_equal_approx(low_pressure, threshold)
+		and high_pressure > low_pressure
 		and bool(high.get("elig", false))
 		and bool(low.get("elig", false))
 		and _battlepressure_subject_same(high_finger, low_finger)
@@ -41541,6 +41601,1048 @@ static func _battlepressure_absent_ok() -> bool:
 		and GameState.new().get("combat_pressure_snapshots") == null
 	)
 
+
+static func _battlepressurebehavior_plant(
+	battle_state: BattleState,
+	participant_id: String,
+	total_pressure: float,
+	snapshot_participant_id: String = ""
+) -> bool:
+	if battle_state == null or participant_id.is_empty():
+		return false
+	var snapshot: BattleCombatPressureSnapshot = BattleCombatPressureSnapshot.new()
+	if snapshot_participant_id.is_empty():
+		snapshot.participant_id = participant_id
+	else:
+		snapshot.participant_id = snapshot_participant_id
+	snapshot.total_pressure = total_pressure
+	battle_state.combat_pressure_snapshots[participant_id] = snapshot
+	return true
+
+
+static func _battlepressurebehavior_policy_suppresses(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> bool:
+	var policy_result: BattleCombatPressureBehaviorPolicyResult = BattleCombatPressureBehaviorPolicy.evaluate(
+		battle_state,
+		participant
+	)
+	return policy_result != null and policy_result.suppress_aggressive_autonomous_movement
+
+
+static func _battlepressurebehavior_approach_pack(
+	source_id: String,
+	target_id: String
+) -> Dictionary:
+	return _battlebehavior_pair(
+		source_id,
+		target_id,
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		true
+	)
+
+
+static func _battlepressurebehavior_no_aggressive_route(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	return (
+		_battlebehavior_no_combat_nav(participant)
+		and participant.combat_move_mode.is_empty()
+		and participant.combat_move_target_id.is_empty()
+		and participant.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT
+		and not participant.has_navigation_destination
+		and participant.navigation_waypoints.is_empty()
+	)
+
+
+static func _battlepressurebehavior_threshold_ok() -> bool:
+	if not is_equal_approx(BattleCombatPressureCatalog.HIGH_PRESSURE_AGGRESSION_THRESHOLD, 0.70):
+		return false
+	var below_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_th_b_src", "pbh_th_b_tgt")
+	var exact_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_th_e_src", "pbh_th_e_tgt")
+	var above_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_th_a_src", "pbh_th_a_tgt")
+	var below_state: BattleState = below_pack.get("battle_state", null) as BattleState
+	var exact_state: BattleState = exact_pack.get("battle_state", null) as BattleState
+	var above_state: BattleState = above_pack.get("battle_state", null) as BattleState
+	var below_src: BattleParticipant = below_pack.get("source", null) as BattleParticipant
+	var exact_src: BattleParticipant = exact_pack.get("source", null) as BattleParticipant
+	var above_src: BattleParticipant = above_pack.get("source", null) as BattleParticipant
+	if (
+		below_state == null
+		or exact_state == null
+		or above_state == null
+		or below_src == null
+		or exact_src == null
+		or above_src == null
+	):
+		return false
+	if not _battlepressurebehavior_plant(below_state, "pbh_th_b_src", 0.699):
+		return false
+	if not _battlepressurebehavior_plant(exact_state, "pbh_th_e_src", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(above_state, "pbh_th_a_src", 0.85):
+		return false
+	var below_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(below_state, 0.5)
+	var exact_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(exact_state, 0.5)
+	var above_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(above_state, 0.5)
+	return (
+		not _battlepressurebehavior_policy_suppresses(below_state, below_src)
+		and _battlepressurebehavior_policy_suppresses(exact_state, exact_src)
+		and _battlepressurebehavior_policy_suppresses(above_state, above_src)
+		and below_res != null
+		and below_res.success
+		and below_res.pressure_aggression_suppressed == 0
+		and _battlebehavior_is_combat_nav(below_src)
+		and below_src.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and exact_res != null
+		and exact_res.success
+		and exact_res.pressure_aggression_suppressed == 1
+		and _battlepressurebehavior_no_aggressive_route(exact_src)
+		and above_res != null
+		and above_res.success
+		and above_res.pressure_aggression_suppressed == 1
+		and _battlepressurebehavior_no_aggressive_route(above_src)
+	)
+
+
+static func _battlepressurebehavior_generic_approach_ok() -> bool:
+	var high_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ga_h_src", "pbh_ga_h_tgt")
+	var low_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ga_l_src", "pbh_ga_l_tgt")
+	var high_state: BattleState = high_pack.get("battle_state", null) as BattleState
+	var low_state: BattleState = low_pack.get("battle_state", null) as BattleState
+	var high_src: BattleParticipant = high_pack.get("source", null) as BattleParticipant
+	var low_src: BattleParticipant = low_pack.get("source", null) as BattleParticipant
+	if high_state == null or low_state == null or high_src == null or low_src == null:
+		return false
+	if not _battlepressurebehavior_plant(high_state, "pbh_ga_h_src", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(low_state, "pbh_ga_l_src", 0.40):
+		return false
+	var high_before: Vector2 = high_src.battle_position
+	var low_before: Vector2 = low_src.battle_position
+	var high_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(high_state, 0.5)
+	var low_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(low_state, 0.5)
+	return (
+		high_res != null
+		and high_res.success
+		and high_res.shots_executed == 0
+		and high_res.pressure_aggression_suppressed == 1
+		and high_res.participants_repositioning == 0
+		and _battletarget_has(high_src, "pbh_ga_h_tgt")
+		and high_src.battle_position.is_equal_approx(high_before)
+		and _battlepressurebehavior_no_aggressive_route(high_src)
+		and low_res != null
+		and low_res.success
+		and low_res.pressure_aggression_suppressed == 0
+		and low_res.participants_repositioning >= 1
+		and low_src.battle_position.is_equal_approx(low_before)
+		and _battlebehavior_is_combat_nav(low_src)
+		and low_src.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battlepressurebehavior_route_clear_ok() -> bool:
+	var pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_rc_src", "pbh_rc_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_rc_src", 0.40):
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	if (
+		first == null
+		or not first.success
+		or first.pressure_aggression_suppressed != 0
+		or not _battlebehavior_is_combat_nav(source)
+		or source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+	):
+		return false
+	var before: Vector2 = source.battle_position
+	if not _battlepressurebehavior_plant(battle_state, "pbh_rc_src", 0.70):
+		return false
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		second != null
+		and second.success
+		and second.pressure_aggression_suppressed == 1
+		and source.battle_position.is_equal_approx(before)
+		and _battletarget_has(source, "pbh_rc_tgt")
+		and _battlepressurebehavior_no_aggressive_route(source)
+	)
+
+
+static func _battlepressurebehavior_fire_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"pbh_fire_src",
+		"pbh_fire_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(30.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or source.weapon_state == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_fire_src", 0.70):
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var probe: BattleCombatRandom = BattleCombatRandom.new(battle_state.combat_random.seed_value)
+	probe.restore_state(rng_before)
+	probe.next_normalized()
+	var fire_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if (
+		fire_res == null
+		or not fire_res.success
+		or fire_res.shots_executed != 1
+		or fire_res.pressure_aggression_suppressed != 0
+		or source.weapon_state.ammo_in_magazine != ammo_before - 1
+		or source.weapon_state.cooldown_remaining_seconds <= 0.0
+		or battle_state.combat_random.snapshot_state() != probe.snapshot_state()
+	):
+		return false
+	_battletarget_place(target, Vector2(50.0, 30.0))
+	var rng_mid: int = battle_state.combat_random.snapshot_state()
+	var later: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		later != null
+		and later.success
+		and later.shots_executed == 0
+		and later.pressure_aggression_suppressed == 1
+		and battle_state.combat_random.snapshot_state() == rng_mid
+		and _battlepressurebehavior_no_aggressive_route(source)
+		and _battletarget_has(source, "pbh_fire_tgt")
+	)
+
+
+static func _battlepressurebehavior_push_ok() -> bool:
+	var pack: Dictionary = _battlefocus_pair(
+		"pbh_push_src",
+		"pbh_push_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_push_src", 0.70):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		_battlepush_pressure_ok(result, source, "pbh_push_tgt", Vector2(10.0, 30.0))
+		and result.pressure_aggression_suppressed == 0
+	)
+
+
+static func _battlepressurebehavior_focus_ok() -> bool:
+	var left_pack: Dictionary = _battlefocus_pair(
+		"pbh_fl_src",
+		"pbh_fl_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+	)
+	var right_pack: Dictionary = _battlefocus_pair(
+		"pbh_fr_src",
+		"pbh_fr_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT
+	)
+	var left_state: BattleState = left_pack.get("battle_state", null) as BattleState
+	var right_state: BattleState = right_pack.get("battle_state", null) as BattleState
+	var left_src: BattleParticipant = left_pack.get("source", null) as BattleParticipant
+	var right_src: BattleParticipant = right_pack.get("source", null) as BattleParticipant
+	if left_state == null or right_state == null or left_src == null or right_src == null:
+		return false
+	if not _battlepressurebehavior_plant(left_state, "pbh_fl_src", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(right_state, "pbh_fr_src", 0.70):
+		return false
+	var left_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(left_state, 0.5)
+	var right_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(right_state, 0.5)
+	return (
+		_battlefocus_pressure_ok(left_res, left_src, "pbh_fl_tgt", Vector2(10.0, 30.0), true)
+		and left_res.pressure_aggression_suppressed == 0
+		and _battlefocus_pressure_ok(right_res, right_src, "pbh_fr_tgt", Vector2(10.0, 30.0), false)
+		and right_res.pressure_aggression_suppressed == 0
+		and not left_src.navigation_destination.is_equal_approx(right_src.navigation_destination)
+	)
+
+
+static func _battlepressurebehavior_fallback_ok() -> bool:
+	var pack: Dictionary = _battlefallback_pair(
+		"pbh_fb_src",
+		"pbh_fb_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_fb_src", 0.70):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		_battlefallback_pressure_ok(result, source, "pbh_fb_tgt", Vector2(10.0, 30.0))
+		and result.pressure_aggression_suppressed == 0
+		and _battlefallback_is_rearward(Vector2(10.0, 30.0), source.navigation_destination, Vector2(1.0, 0.0))
+	)
+
+
+static func _battlepressurebehavior_hold_ok() -> bool:
+	var pack: Dictionary = _battlehold_pair(
+		"pbh_hold_src",
+		"pbh_hold_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		"pbh_hold_force",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_hold_src", 0.70):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		_battlehold_suppressed_ok(result, source, "pbh_hold_tgt", Vector2(10.0, 30.0))
+		and result.pressure_aggression_suppressed == 0
+	)
+
+
+static func _battlepressurebehavior_retreat_ok() -> bool:
+	var high_pack: Dictionary = _battlebehavior_pair(
+		"pbh_rt_h_src",
+		"pbh_rt_h_tgt",
+		"rifle",
+		Vector2(40.0, 30.0),
+		Vector2(45.0, 30.0),
+		true
+	)
+	var low_pack: Dictionary = _battlebehavior_pair(
+		"pbh_rt_l_src",
+		"pbh_rt_l_tgt",
+		"rifle",
+		Vector2(40.0, 30.0),
+		Vector2(45.0, 30.0),
+		true
+	)
+	var high_state: BattleState = high_pack.get("battle_state", null) as BattleState
+	var low_state: BattleState = low_pack.get("battle_state", null) as BattleState
+	var high_src: BattleParticipant = high_pack.get("source", null) as BattleParticipant
+	var low_src: BattleParticipant = low_pack.get("source", null) as BattleParticipant
+	if high_state == null or low_state == null or high_src == null or low_src == null:
+		return false
+	if high_src.weapon_state == null or low_src.weapon_state == null:
+		return false
+	high_src.weapon_state.cooldown_remaining_seconds = 5.0
+	low_src.weapon_state.cooldown_remaining_seconds = 5.0
+	if not _battlepressurebehavior_plant(high_state, "pbh_rt_h_src", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(low_state, "pbh_rt_l_src", 0.20):
+		return false
+	var high_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(high_state, 0.5)
+	var low_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(low_state, 0.5)
+	return (
+		high_res != null
+		and high_res.success
+		and high_res.pressure_aggression_suppressed == 0
+		and high_src.combat_move_mode == BattleCombatBehaviorService.MOVE_RETREAT
+		and _battlebehavior_is_combat_nav(high_src)
+		and low_res != null
+		and low_res.success
+		and low_res.pressure_aggression_suppressed == 0
+		and low_src.combat_move_mode == BattleCombatBehaviorService.MOVE_RETREAT
+		and high_src.navigation_destination.is_equal_approx(low_src.navigation_destination)
+	)
+
+
+static func _battlepressurebehavior_cover_case(
+	source_id: String,
+	target_id: String,
+	weapon_type: String,
+	source_position: Vector2,
+	target_position: Vector2,
+	object_id: String,
+	near_slot_id: String,
+	far_slot_id: String,
+	near_position: Vector2,
+	far_position: Vector2,
+	high_pressure: bool
+) -> Dictionary:
+	var pack: Dictionary = _battlebehavior_pair(
+		source_id,
+		target_id,
+		weapon_type,
+		source_position,
+		target_position,
+		true
+	)
+	var out: Dictionary = {}
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return out
+	_battlehealthycover_cooldown(source)
+	if _battlewounded_slot(battle_state.battlefield_geometry, object_id, far_slot_id, far_position) == null:
+		return out
+	if _battlewounded_slot(battle_state.battlefield_geometry, object_id, near_slot_id, near_position) == null:
+		return out
+	if high_pressure:
+		if not _battlepressurebehavior_plant(battle_state, source_id, 0.70):
+			return out
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	out["result"] = result
+	out["source"] = source
+	out["near"] = battle_state.battlefield_geometry.get_cover_slot(near_slot_id)
+	out["far"] = battle_state.battlefield_geometry.get_cover_slot(far_slot_id)
+	return out
+
+
+static func _battlepressurebehavior_cover_ok() -> bool:
+	var pistol_high: Dictionary = _battlepressurebehavior_cover_case(
+		"pbh_cv_p_h",
+		"pbh_cv_p_ht",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"pbh_cv_p_obj",
+		"pbh_cv_p_near",
+		"pbh_cv_p_far",
+		Vector2(16.0, 10.0),
+		Vector2(18.0, 10.0),
+		true
+	)
+	var pistol_low: Dictionary = _battlepressurebehavior_cover_case(
+		"pbh_cv_p_l",
+		"pbh_cv_p_lt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		"pbh_cv_pl_obj",
+		"pbh_cv_pl_near",
+		"pbh_cv_pl_far",
+		Vector2(16.0, 10.0),
+		Vector2(18.0, 10.0),
+		false
+	)
+	var rifle_high: Dictionary = _battlepressurebehavior_cover_case(
+		"pbh_cv_r_h",
+		"pbh_cv_r_ht",
+		"rifle",
+		Vector2(10.0, 30.0),
+		Vector2(50.0, 30.0),
+		"pbh_cv_r_obj",
+		"pbh_cv_r_in",
+		"pbh_cv_r_out",
+		Vector2(26.0, 30.0),
+		Vector2(12.0, 30.0),
+		true
+	)
+	var sniper_high: Dictionary = _battlepressurebehavior_cover_case(
+		"pbh_cv_s_h",
+		"pbh_cv_s_ht",
+		"sniper",
+		Vector2(10.0, 30.0),
+		Vector2(90.0, 30.0),
+		"pbh_cv_s_obj",
+		"pbh_cv_s_in",
+		"pbh_cv_s_out",
+		Vector2(36.0, 30.0),
+		Vector2(16.0, 30.0),
+		true
+	)
+	var pistol_high_res: BattleCombatBehaviorResult = pistol_high.get("result", null) as BattleCombatBehaviorResult
+	var pistol_low_res: BattleCombatBehaviorResult = pistol_low.get("result", null) as BattleCombatBehaviorResult
+	var rifle_res: BattleCombatBehaviorResult = rifle_high.get("result", null) as BattleCombatBehaviorResult
+	var sniper_res: BattleCombatBehaviorResult = sniper_high.get("result", null) as BattleCombatBehaviorResult
+	var pistol_high_src: BattleParticipant = pistol_high.get("source", null) as BattleParticipant
+	var pistol_low_src: BattleParticipant = pistol_low.get("source", null) as BattleParticipant
+	var rifle_src: BattleParticipant = rifle_high.get("source", null) as BattleParticipant
+	var sniper_src: BattleParticipant = sniper_high.get("source", null) as BattleParticipant
+	var pistol_high_near: BattleCoverSlot = pistol_high.get("near", null) as BattleCoverSlot
+	var pistol_low_near: BattleCoverSlot = pistol_low.get("near", null) as BattleCoverSlot
+	var rifle_in: BattleCoverSlot = rifle_high.get("near", null) as BattleCoverSlot
+	var sniper_in: BattleCoverSlot = sniper_high.get("near", null) as BattleCoverSlot
+	if (
+		pistol_high_res == null
+		or pistol_low_res == null
+		or rifle_res == null
+		or sniper_res == null
+		or pistol_high_src == null
+		or pistol_low_src == null
+		or rifle_src == null
+		or sniper_src == null
+	):
+		return false
+	return (
+		pistol_high_res.success
+		and pistol_low_res.success
+		and pistol_high_res.pressure_aggression_suppressed == 0
+		and pistol_low_res.pressure_aggression_suppressed == 0
+		and pistol_high_res.healthy_seeking_cover == 1
+		and pistol_low_res.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(pistol_high_src, pistol_high_near, "pbh_cv_p_h", "pbh_cv_p_near")
+		and _battlecover_reserved_sync(pistol_low_src, pistol_low_near, "pbh_cv_p_l", "pbh_cv_pl_near")
+		and pistol_high_src.combat_move_target_id == "pbh_cv_p_near"
+		and pistol_low_src.combat_move_target_id == "pbh_cv_pl_near"
+		and _battlehealthycover_is_seeking(pistol_high_src)
+		and _battlehealthycover_is_seeking(pistol_low_src)
+		and rifle_res.success
+		and rifle_res.pressure_aggression_suppressed == 0
+		and rifle_res.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(rifle_src, rifle_in, "pbh_cv_r_h", "pbh_cv_r_in")
+		and _battlehealthycover_is_seeking(rifle_src)
+		and sniper_res.success
+		and sniper_res.pressure_aggression_suppressed == 0
+		and sniper_res.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(sniper_src, sniper_in, "pbh_cv_s_h", "pbh_cv_s_in")
+		and _battlehealthycover_is_seeking(sniper_src)
+	)
+
+
+static func _battlepressurebehavior_wounded_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"pbh_wd_src",
+		"pbh_wd_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	source.is_wounded = true
+	if not _battlepressurebehavior_plant(battle_state, "pbh_wd_src", 0.70):
+		return false
+	if _battlepressurebehavior_policy_suppresses(battle_state, source):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.pressure_aggression_suppressed == 0
+		and source.is_wounded
+		and _battlebehavior_is_combat_nav(source)
+		and is_equal_approx(source.movement_speed, BattleCombatBehaviorCatalog.WOUNDED_COMBAT_MOVEMENT_SPEED)
+	)
+
+
+static func _battlepressurebehavior_defend_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"pbh_def_src",
+		"pbh_def_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(30.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not source.set_defend_position_anchor(source.battle_position):
+		return false
+	source.set_defend_position(true)
+	if not _battlepressurebehavior_plant(battle_state, "pbh_def_src", 0.70):
+		return false
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.participants_holding_defend_position >= 1
+		and result.pressure_aggression_suppressed == 0
+		and result.shots_executed == 1
+		and source.defend_position
+		and source.battle_position.is_equal_approx(before)
+		and _battlebehavior_no_combat_nav(source)
+	)
+
+
+static func _battlepressurebehavior_external_nav_ok() -> bool:
+	var pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ex_src", "pbh_ex_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var waypoints: Array[Vector2] = [Vector2(16.0, 30.0), Vector2(22.0, 30.0)]
+	if not source.set_navigation_path(Vector2(22.0, 30.0), waypoints, BattleParticipant.NAVIGATION_SOURCE_EXTERNAL):
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_ex_src", 0.70):
+		return false
+	var dest_before: Vector2 = source.navigation_destination
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.pressure_aggression_suppressed == 0
+		and source.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+		and source.navigation_destination.is_equal_approx(dest_before)
+		and source.has_navigation_destination
+		and source.combat_move_mode.is_empty()
+	)
+
+
+static func _battlepressurebehavior_target_selection_ok() -> bool:
+	var high_state: BattleState = _battlemove_make_state("active")
+	var low_state: BattleState = _battlemove_make_state("active")
+	if high_state == null or low_state == null:
+		return false
+	var high_src: BattleParticipant = _battlefire_add(high_state, "pbh_ts_src", "attacker", "shotgun")
+	var high_near: BattleParticipant = _battlefire_add(high_state, "pbh_ts_near", "defender", "pistol")
+	var high_far: BattleParticipant = _battlefire_add(high_state, "pbh_ts_far", "defender", "pistol")
+	var low_src: BattleParticipant = _battlefire_add(low_state, "pbh_ts_src", "attacker", "shotgun")
+	var low_near: BattleParticipant = _battlefire_add(low_state, "pbh_ts_near", "defender", "pistol")
+	var low_far: BattleParticipant = _battlefire_add(low_state, "pbh_ts_far", "defender", "pistol")
+	if (
+		high_src == null
+		or high_near == null
+		or high_far == null
+		or low_src == null
+		or low_near == null
+		or low_far == null
+	):
+		return false
+	_battletarget_place(high_src, Vector2(10.0, 30.0))
+	_battletarget_place(high_near, Vector2(40.0, 30.0))
+	_battletarget_place(high_far, Vector2(70.0, 30.0))
+	_battletarget_place(low_src, Vector2(10.0, 30.0))
+	_battletarget_place(low_near, Vector2(40.0, 30.0))
+	_battletarget_place(low_far, Vector2(70.0, 30.0))
+	_battlebehavior_hold_hostile(high_near)
+	_battlebehavior_hold_hostile(high_far)
+	_battlebehavior_hold_hostile(low_near)
+	_battlebehavior_hold_hostile(low_far)
+	if not _battlepressurebehavior_plant(high_state, "pbh_ts_src", 0.70):
+		return false
+	var high_sel: BattleTargetSelectionResult = BattleTargetSelectionService.advance(high_state)
+	var low_sel: BattleTargetSelectionResult = BattleTargetSelectionService.advance(low_state)
+	if high_sel == null or not high_sel.success or low_sel == null or not low_sel.success:
+		return false
+	if not _battletarget_has(high_src, "pbh_ts_near") or not _battletarget_has(low_src, "pbh_ts_near"):
+		return false
+	var high_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(high_state, 0.5)
+	var low_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(low_state, 0.5)
+	return (
+		high_src.target_participant_id == low_src.target_participant_id
+		and high_res != null
+		and high_res.success
+		and high_res.pressure_aggression_suppressed == 1
+		and _battlepressurebehavior_no_aggressive_route(high_src)
+		and low_res != null
+		and low_res.success
+		and low_res.pressure_aggression_suppressed == 0
+		and _battlebehavior_is_combat_nav(low_src)
+		and low_src.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battlepressurebehavior_los_ok() -> bool:
+	var high_pack: Dictionary = _battlebehavior_pair(
+		"pbh_los_h_src",
+		"pbh_los_h_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(34.0, 30.0),
+		true
+	)
+	var low_pack: Dictionary = _battlebehavior_pair(
+		"pbh_los_l_src",
+		"pbh_los_l_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(34.0, 30.0),
+		true
+	)
+	var high_state: BattleState = high_pack.get("battle_state", null) as BattleState
+	var low_state: BattleState = low_pack.get("battle_state", null) as BattleState
+	var high_src: BattleParticipant = high_pack.get("source", null) as BattleParticipant
+	var low_src: BattleParticipant = low_pack.get("source", null) as BattleParticipant
+	if high_state == null or low_state == null or high_src == null or low_src == null:
+		return false
+	if high_state.battlefield_geometry == null or low_state.battlefield_geometry == null:
+		return false
+	var high_wall: BattleObstacle = BattleObstacle.new("pbh_los_h_wall", Rect2(26.0, 25.0, 2.0, 10.0), true, true)
+	var low_wall: BattleObstacle = BattleObstacle.new("pbh_los_l_wall", Rect2(26.0, 25.0, 2.0, 10.0), true, true)
+	if not high_state.battlefield_geometry.add_obstacle(high_wall):
+		return false
+	if not low_state.battlefield_geometry.add_obstacle(low_wall):
+		return false
+	if not _battlepressurebehavior_plant(high_state, "pbh_los_h_src", 0.70):
+		return false
+	var high_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(high_state, 0.5)
+	var low_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(low_state, 0.5)
+	return (
+		low_res != null
+		and low_res.success
+		and low_res.shots_executed == 0
+		and low_res.pressure_aggression_suppressed == 0
+		and _battlebehavior_is_combat_nav(low_src)
+		and low_src.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and high_res != null
+		and high_res.success
+		and high_res.shots_executed == 0
+		and high_res.pressure_aggression_suppressed == 1
+		and _battlepressurebehavior_no_aggressive_route(high_src)
+	)
+
+
+static func _battlepressurebehavior_missing_snapshot_ok() -> bool:
+	var none_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ms_n_src", "pbh_ms_n_tgt")
+	var mismatch_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ms_m_src", "pbh_ms_m_tgt")
+	var nan_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ms_x_src", "pbh_ms_x_tgt")
+	var none_state: BattleState = none_pack.get("battle_state", null) as BattleState
+	var mismatch_state: BattleState = mismatch_pack.get("battle_state", null) as BattleState
+	var nan_state: BattleState = nan_pack.get("battle_state", null) as BattleState
+	var none_src: BattleParticipant = none_pack.get("source", null) as BattleParticipant
+	var mismatch_src: BattleParticipant = mismatch_pack.get("source", null) as BattleParticipant
+	var nan_src: BattleParticipant = nan_pack.get("source", null) as BattleParticipant
+	if (
+		none_state == null
+		or mismatch_state == null
+		or nan_state == null
+		or none_src == null
+		or mismatch_src == null
+		or nan_src == null
+	):
+		return false
+	if not _battlepressurebehavior_plant(mismatch_state, "pbh_ms_m_src", 0.95, "other_id"):
+		return false
+	if not _battlepressurebehavior_plant(nan_state, "pbh_ms_x_src", NAN):
+		return false
+	if _battlepressurebehavior_policy_suppresses(none_state, none_src):
+		return false
+	if _battlepressurebehavior_policy_suppresses(mismatch_state, mismatch_src):
+		return false
+	if _battlepressurebehavior_policy_suppresses(nan_state, nan_src):
+		return false
+	var none_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(none_state, 0.5)
+	var mismatch_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(mismatch_state, 0.5)
+	var nan_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(nan_state, 0.5)
+	return (
+		none_res != null
+		and none_res.success
+		and none_res.pressure_aggression_suppressed == 0
+		and _battlebehavior_is_combat_nav(none_src)
+		and none_src.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and mismatch_res != null
+		and mismatch_res.success
+		and mismatch_res.pressure_aggression_suppressed == 0
+		and _battlebehavior_is_combat_nav(mismatch_src)
+		and nan_res != null
+		and nan_res.success
+		and nan_res.pressure_aggression_suppressed == 0
+		and _battlebehavior_is_combat_nav(nan_src)
+	)
+
+
+static func _battlepressurebehavior_healthy_only_ok() -> bool:
+	var healthy_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ho_h_src", "pbh_ho_h_tgt")
+	var wounded_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_ho_w_src", "pbh_ho_w_tgt")
+	var healthy_state: BattleState = healthy_pack.get("battle_state", null) as BattleState
+	var wounded_state: BattleState = wounded_pack.get("battle_state", null) as BattleState
+	var healthy_src: BattleParticipant = healthy_pack.get("source", null) as BattleParticipant
+	var wounded_src: BattleParticipant = wounded_pack.get("source", null) as BattleParticipant
+	if healthy_state == null or wounded_state == null or healthy_src == null or wounded_src == null:
+		return false
+	wounded_src.is_wounded = true
+	if not _battlepressurebehavior_plant(healthy_state, "pbh_ho_h_src", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(wounded_state, "pbh_ho_w_src", 0.70):
+		return false
+	var healthy_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(healthy_state, 0.5)
+	var wounded_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(wounded_state, 0.5)
+	return (
+		_battlepressurebehavior_policy_suppresses(healthy_state, healthy_src)
+		and not _battlepressurebehavior_policy_suppresses(wounded_state, wounded_src)
+		and healthy_res != null
+		and healthy_res.success
+		and healthy_res.pressure_aggression_suppressed == 1
+		and _battlepressurebehavior_no_aggressive_route(healthy_src)
+		and wounded_res != null
+		and wounded_res.success
+		and wounded_res.pressure_aggression_suppressed == 0
+		and wounded_src.is_wounded
+		and _battlebehavior_is_combat_nav(wounded_src)
+	)
+
+
+static func _battlepressurebehavior_counters_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.combat_random == null:
+		return false
+	var approacher: BattleParticipant = _battlefire_add(battle_state, "a_pbh_cnt_app", "attacker", "shotgun")
+	var firer: BattleParticipant = _battlefire_add(battle_state, "m_pbh_cnt_fire", "attacker", "pistol")
+	var holder: BattleParticipant = _battlefire_add(battle_state, "p_pbh_cnt_hold", "attacker", "shotgun")
+	var coverer: BattleParticipant = _battlefire_add(battle_state, "r_pbh_cnt_cov", "attacker", "pistol")
+	var retreater: BattleParticipant = _battlefire_add(battle_state, "s_pbh_cnt_ret", "attacker", "rifle")
+	var idle: BattleParticipant = _battlefire_add(battle_state, "t_pbh_cnt_idle", "attacker", "pistol")
+	var hostile: BattleParticipant = _battlefire_add(battle_state, "z_pbh_cnt_tgt", "defender", "pistol")
+	if (
+		approacher == null
+		or firer == null
+		or holder == null
+		or coverer == null
+		or retreater == null
+		or idle == null
+		or hostile == null
+	):
+		return false
+	_battletarget_place(approacher, Vector2(10.0, 10.0))
+	_battletarget_place(firer, Vector2(18.0, 20.0))
+	_battletarget_place(holder, Vector2(10.0, 40.0))
+	_battletarget_place(coverer, Vector2(10.0, 50.0))
+	_battletarget_place(retreater, Vector2(40.0, 10.0))
+	_battletarget_place(idle, Vector2(22.0, 20.0))
+	_battletarget_place(hostile, Vector2(40.0, 20.0))
+	if retreater.weapon_state != null:
+		retreater.weapon_state.cooldown_remaining_seconds = 5.0
+	approacher.set_target_participant("z_pbh_cnt_tgt")
+	firer.set_target_participant("z_pbh_cnt_tgt")
+	holder.set_target_participant("z_pbh_cnt_tgt")
+	coverer.set_target_participant("z_pbh_cnt_tgt")
+	retreater.set_target_participant("z_pbh_cnt_tgt")
+	idle.set_target_participant("z_pbh_cnt_tgt")
+	_battlebehavior_hold_hostile(hostile)
+	if not _battlehold_bind(battle_state, holder, "pbh_cnt_hold", BattleForceCommandCatalog.COMMAND_HOLD):
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "pbh_cnt_obj", "pbh_cnt_slot", Vector2(16.0, 50.0)) == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "a_pbh_cnt_app", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "m_pbh_cnt_fire", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "p_pbh_cnt_hold", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "r_pbh_cnt_cov", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "s_pbh_cnt_ret", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "t_pbh_cnt_idle", 0.70):
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.pressure_aggression_suppressed == 1
+		and result.shots_executed >= 1
+		and result.force_command_hold == 1
+		and result.healthy_seeking_cover == 1
+		and _battlepressurebehavior_no_aggressive_route(approacher)
+		and _battlebehavior_is_combat_nav(retreater)
+		and retreater.combat_move_mode == BattleCombatBehaviorService.MOVE_RETREAT
+		and _battlehealthycover_is_seeking(coverer)
+		and _battlebehavior_no_combat_nav(idle)
+	)
+
+
+static func _battlepressurebehavior_zero_delta_ok() -> bool:
+	var pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_zd_src", "pbh_zd_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.combat_random == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "pbh_zd_src", 0.70):
+		return false
+	battle_state.elapsed_time_seconds = 1.25
+	var before: Vector2 = source.battle_position
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.0)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 0
+		and result.pressure_aggression_suppressed == 1
+		and is_equal_approx(battle_state.elapsed_time_seconds, 1.25)
+		and source.battle_position.is_equal_approx(before)
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and _battlepressurebehavior_no_aggressive_route(source)
+	)
+
+
+static func _battlepressurebehavior_determinism_ok() -> bool:
+	var left_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_dt_src", "pbh_dt_tgt")
+	var right_pack: Dictionary = _battlepressurebehavior_approach_pack("pbh_dt_src", "pbh_dt_tgt")
+	var left_state: BattleState = left_pack.get("battle_state", null) as BattleState
+	var right_state: BattleState = right_pack.get("battle_state", null) as BattleState
+	var left_src: BattleParticipant = left_pack.get("source", null) as BattleParticipant
+	var right_src: BattleParticipant = right_pack.get("source", null) as BattleParticipant
+	if left_state == null or right_state == null or left_src == null or right_src == null:
+		return false
+	if not _battlepressurebehavior_plant(left_state, "pbh_dt_src", 0.70):
+		return false
+	if not _battlepressurebehavior_plant(right_state, "pbh_dt_src", 0.70):
+		return false
+	var rng_left: int = left_state.combat_random.snapshot_state()
+	var left_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(left_state, 0.5)
+	var rng_left_after: int = left_state.combat_random.snapshot_state()
+	var right_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(right_state, 0.5)
+	var fire_pack: Dictionary = _battlebehavior_pair(
+		"pbh_dt_f_src",
+		"pbh_dt_f_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(30.0, 30.0),
+		true
+	)
+	var fire_state: BattleState = fire_pack.get("battle_state", null) as BattleState
+	var fire_src: BattleParticipant = fire_pack.get("source", null) as BattleParticipant
+	if fire_state == null or fire_src == null or fire_src.weapon_state == null or fire_state.combat_random == null:
+		return false
+	if not _battlepressurebehavior_plant(fire_state, "pbh_dt_f_src", 0.70):
+		return false
+	if not _battlebehavior_seek_roll(fire_state.combat_random, 0.0, 0.5):
+		return false
+	var fire_rng_before: int = fire_state.combat_random.snapshot_state()
+	var fire_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(fire_state, 0.2)
+	return (
+		left_res != null
+		and right_res != null
+		and left_res.success
+		and right_res.success
+		and left_res.pressure_aggression_suppressed == 1
+		and right_res.pressure_aggression_suppressed == 1
+		and rng_left_after == rng_left
+		and _battlepressurebehavior_no_aggressive_route(left_src)
+		and _battlepressurebehavior_no_aggressive_route(right_src)
+		and _battlepressurebehavior_policy_suppresses(left_state, left_src)
+		and _battlepressurebehavior_policy_suppresses(right_state, right_src)
+		and fire_res != null
+		and fire_res.success
+		and fire_res.shots_executed == 1
+		and fire_res.pressure_aggression_suppressed == 0
+		and _battlewoundedperformance_rng_advanced_once(fire_state.combat_random, fire_rng_before)
+	)
+
+
+static func _battlepressurebehavior_runtime_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var source: BattleParticipant = _battlefire_add(battle_state, "a_pbh_rt_src", "attacker", "shotgun")
+	var hostile_a: BattleParticipant = _battlefire_add(battle_state, "m_pbh_rt_ha", "defender", "pistol")
+	var hostile_b: BattleParticipant = _battlefire_add(battle_state, "z_pbh_rt_hb", "defender", "pistol")
+	if source == null or hostile_a == null or hostile_b == null:
+		return false
+	_battletarget_place(source, Vector2(40.0, 30.0))
+	_battletarget_place(hostile_a, Vector2(55.0, 30.0))
+	_battletarget_place(hostile_b, Vector2(25.0, 30.0))
+	_battlebehavior_hold_hostile(hostile_a)
+	_battlebehavior_hold_hostile(hostile_b)
+	if _battlepressure_add(battle_state, "pbh_rt_d1", "attacker", Vector2(40.0, 38.0), false, false) == null:
+		return false
+	if _battlepressure_add(battle_state, "pbh_rt_d2", "attacker", Vector2(40.0, 22.0), false, false) == null:
+		return false
+	var wounded_a: BattleParticipant = _battlepressure_add(
+		battle_state, "pbh_rt_w1", "attacker", Vector2(56.0, 30.0), true, true
+	)
+	var wounded_b: BattleParticipant = _battlepressure_add(
+		battle_state, "pbh_rt_w2", "attacker", Vector2(24.0, 30.0), true, true
+	)
+	var wounded_c: BattleParticipant = _battlepressure_add(
+		battle_state, "pbh_rt_w3", "attacker", Vector2(40.0, 46.0), true, true
+	)
+	if wounded_a == null or wounded_b == null or wounded_c == null:
+		return false
+	_battlepressure_neutralize(wounded_a)
+	_battlepressure_neutralize(wounded_b)
+	_battlepressure_neutralize(wounded_c)
+	var before: Vector2 = source.battle_position
+	if battle_state.combat_random == null:
+		battle_state.combat_random = BattleCombatRandom.new(battle_state.combat_rng_seed)
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var result: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.5)
+	var snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "a_pbh_rt_src")
+	var low_state: BattleState = _battlemove_make_state("active")
+	if low_state == null:
+		return false
+	var low_src: BattleParticipant = _battlefire_add(low_state, "a_pbh_rt_src", "attacker", "shotgun")
+	var low_hostile: BattleParticipant = _battlefire_add(low_state, "m_pbh_rt_ha", "defender", "pistol")
+	if low_src == null or low_hostile == null:
+		return false
+	_battletarget_place(low_src, Vector2(40.0, 30.0))
+	_battletarget_place(low_hostile, Vector2(55.0, 30.0))
+	_battlebehavior_hold_hostile(low_hostile)
+	var low_result: BattleRuntimeResult = BattleRuntimeService.advance(low_state, 0.5)
+	var low_snap: BattleCombatPressureSnapshot = _battlepressure_snap(low_state, "a_pbh_rt_src")
+	return (
+		result != null
+		and result.success
+		and snap != null
+		and snap.total_pressure >= 0.70
+		and source.has_target_participant
+		and source.battle_position.is_equal_approx(before)
+		and _battlepressurebehavior_no_aggressive_route(source)
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and low_result != null
+		and low_result.success
+		and low_snap != null
+		and low_snap.total_pressure < 0.70
+		and not is_equal_approx(low_snap.total_pressure, 0.70)
+		and _battlebehavior_is_combat_nav(low_src)
+		and low_src.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+
+static func _battlepressurebehavior_absent_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	var policy: BattleCombatPressureBehaviorPolicy = BattleCombatPressureBehaviorPolicy.new()
+	var behavior: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var participant: BattleParticipant = BattleParticipant.new("pbh_abs_p", "", "a", "attacker", "shotgun")
+	if battle_state == null:
+		return false
+	return (
+		not policy.has_method("apply_morale")
+		and not policy.has_method("apply_panic")
+		and not policy.has_method("apply_flee")
+		and not policy.has_method("apply_rout")
+		and not policy.has_method("apply_surrender")
+		and not policy.has_method("apply_hesitation")
+		and not policy.has_method("apply_captain_aura")
+		and not policy.has_method("apply_cohesion")
+		and not policy.has_method("apply_hysteresis")
+		and not policy.has_method("decay_pressure")
+		and not behavior.has_method("apply_panic")
+		and not behavior.has_method("apply_flee")
+		and not behavior.has_method("refuse_command")
+		and not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("surrender")
+		and not BattleForceCommandService.is_valid_command("rout")
+		and participant.get("morale") == null
+		and participant.get("panic") == null
+		and participant.get("accuracy_penalty") == null
+		and participant.get("fire_rate_penalty") == null
+		and participant.get("hesitation") == null
+		and battle_state.get("force_morale") == null
+		and battle_state.get("crisis_state") == null
+		and is_equal_approx(BattleCombatPressureCatalog.HIGH_PRESSURE_AGGRESSION_THRESHOLD, 0.70)
+	)
 
 
 

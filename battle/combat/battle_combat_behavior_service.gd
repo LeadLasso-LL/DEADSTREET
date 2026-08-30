@@ -21,6 +21,12 @@ const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd
 const BattleCombatBehaviorProfile := preload("res://battle/combat/battle_combat_behavior_profile.gd")
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
+const BattleCombatPressureBehaviorPolicy := preload(
+	"res://battle/combat/battle_combat_pressure_behavior_policy.gd"
+)
+const BattleCombatPressureBehaviorPolicyResult := preload(
+	"res://battle/combat/battle_combat_pressure_behavior_policy_result.gd"
+)
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
@@ -48,6 +54,7 @@ const MOVEMENT_PUSH_PRESSURE := 3
 const MOVEMENT_FOCUS_LEFT := 4
 const MOVEMENT_FOCUS_RIGHT := 5
 const MOVEMENT_FALL_BACK := 6
+const MOVEMENT_PRESSURE_SUPPRESSED := 7
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
@@ -99,6 +106,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var force_command_focus_left: int = 0
 	var force_command_focus_right: int = 0
 	var force_command_fall_back: int = 0
+	var pressure_aggression_suppressed: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -173,6 +181,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		elif movement_status == MOVEMENT_FALL_BACK:
 			participants_repositioning += 1
 			force_command_fall_back += 1
+		elif movement_status == MOVEMENT_PRESSURE_SUPPRESSED:
+			pressure_aggression_suppressed += 1
 	shots_executed = attack_events.size()
 	for attack_event: BattleAttackEvent in attack_events:
 		match attack_event.outcome:
@@ -203,7 +213,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		force_command_push,
 		force_command_focus_left,
 		force_command_focus_right,
-		force_command_fall_back
+		force_command_fall_back,
+		pressure_aggression_suppressed
 	)
 
 
@@ -803,6 +814,12 @@ static func _update_combat_movement(
 		return MOVEMENT_NONE
 	if move_mode == MOVE_FALL_BACK:
 		return _update_fall_back_movement(battle_state, participant, target)
+	if (
+		move_mode == MOVE_APPROACH
+		and _should_suppress_autonomous_aggressive_approach(battle_state, participant, push_pressure)
+	):
+		_clear_owned_combat_navigation(participant)
+		return MOVEMENT_PRESSURE_SUPPRESSED
 	var destination: Vector2 = Vector2.ZERO
 	var unbiased_destination: Vector2 = Vector2.ZERO
 	if move_mode == MOVE_APPROACH:
@@ -1228,6 +1245,24 @@ static func _approach_movement_status(
 			return MOVEMENT_FOCUS_LEFT
 		return MOVEMENT_FOCUS_RIGHT
 	return MOVEMENT_REPOSITIONING
+
+
+static func _should_suppress_autonomous_aggressive_approach(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	push_pressure: bool
+) -> bool:
+	if push_pressure:
+		return false
+	if _focus_applies(battle_state, participant):
+		return false
+	var policy_result: BattleCombatPressureBehaviorPolicyResult = BattleCombatPressureBehaviorPolicy.evaluate(
+		battle_state,
+		participant
+	)
+	if policy_result == null:
+		return false
+	return policy_result.suppress_aggressive_autonomous_movement
 
 
 static func _push_uses_controlled_advance(weapon_type_id: String) -> bool:

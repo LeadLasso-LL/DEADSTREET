@@ -19,3 +19,7 @@ const CASUALTY_COUNT_NORMALIZE := 2.0
 const WOUNDED_COUNT_NORMALIZE := 3.0
 const HOSTILE_PROXIMITY_NORMALIZE := 2.0
 const FRIENDLY_SUPPORT_COUNT_NORMALIZE := 3.0
+
+# Provisional v1 behavior threshold. Not final morale balance.
+# High local pressure suppresses healthy autonomous aggressive approach only.
+const HIGH_PRESSURE_AGGRESSION_THRESHOLD := 0.70
