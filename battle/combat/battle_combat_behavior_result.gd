@@ -19,6 +19,8 @@ var healthy_seeking_cover: int = 0
 var healthy_holding_cover: int = 0
 var force_command_hold: int = 0
 var force_command_push: int = 0
+var force_command_focus_left: int = 0
+var force_command_focus_right: int = 0
 var attack_events: Array[BattleAttackEvent] = []
 var error_code: String = ""
 var error_message: String = ""
@@ -40,7 +42,9 @@ static func succeeded(
 	p_healthy_seeking_cover: int = 0,
 	p_healthy_holding_cover: int = 0,
 	p_force_command_hold: int = 0,
-	p_force_command_push: int = 0
+	p_force_command_push: int = 0,
+	p_force_command_focus_left: int = 0,
+	p_force_command_focus_right: int = 0
 ) -> BattleCombatBehaviorResult:
 	var result := new()
 	result.success = true
@@ -59,6 +63,8 @@ static func succeeded(
 	result.healthy_holding_cover = p_healthy_holding_cover
 	result.force_command_hold = p_force_command_hold
 	result.force_command_push = p_force_command_push
+	result.force_command_focus_left = p_force_command_focus_left
+	result.force_command_focus_right = p_force_command_focus_right
 	result.attack_events = _copy_events(p_attack_events)
 	result.error_code = ""
 	result.error_message = ""
@@ -83,6 +89,8 @@ static func failed(p_error_code: String, p_error_message: String) -> BattleComba
 	result.healthy_holding_cover = 0
 	result.force_command_hold = 0
 	result.force_command_push = 0
+	result.force_command_focus_left = 0
+	result.force_command_focus_right = 0
 	result.attack_events = []
 	result.error_code = p_error_code
 	result.error_message = p_error_message

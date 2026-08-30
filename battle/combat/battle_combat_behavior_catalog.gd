@@ -38,6 +38,9 @@ const MAX_COVER_ROLL_REDUCTION := 0.30
 # Replan combat-owned paths when the tracked destination drifts this far.
 const REPLAN_DISTANCE_EPSILON := 0.5
 
+# Provisional Focus Left/Right lateral offset applied to role-safe approach destinations.
+const FOCUS_LATERAL_OFFSET := 8.0
+
 # Provisional healthy weapon-role cover positioning. Not final balance.
 # Shotgun and SMG do not autonomously seek healthy cover in v1.
 const PISTOL_COVER_SEEK_RADIUS := 10.0

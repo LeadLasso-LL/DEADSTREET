@@ -8,6 +8,7 @@ const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattlefieldGeometryResult := preload("res://battle/geometry/battlefield_geometry_result.gd")
+const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 
 const PROVISIONAL_WIDTH := 100.0
 const PROVISIONAL_HEIGHT := 60.0
@@ -154,6 +155,7 @@ static func initialize_default_geometry(battle_state: BattleState) -> Battlefiel
 	battle_state.battlefield_geometry = geometry
 	attacker_zone.deployment_rect = geometry.attacker_deployment_rect
 	defender_zone.deployment_rect = geometry.defender_deployment_rect
+	BattleForceCommandService.initialize_assault_frames_from_geometry(battle_state)
 	_apply_participant_positions(battle_state, attacker_participant_ids, attacker_participant_points)
 	_apply_vehicle_positions(battle_state, attacker_vehicle_ids, attacker_vehicle_points)
 	_apply_participant_positions(battle_state, defender_participant_ids, defender_participant_points)

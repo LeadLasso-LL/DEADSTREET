@@ -44,6 +44,8 @@ const MOVEMENT_NONE := 0
 const MOVEMENT_REPOSITIONING := 1
 const MOVEMENT_HOLD_CONSTRAINED := 2
 const MOVEMENT_PUSH_PRESSURE := 3
+const MOVEMENT_FOCUS_LEFT := 4
+const MOVEMENT_FOCUS_RIGHT := 5
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCombatBehaviorResult:
@@ -74,6 +76,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		)
 	if battle_state.combat_random == null:
 		battle_state.combat_random = BattleCombatRandom.new(battle_state.combat_rng_seed)
+	BattleForceCommandService.initialize_assault_frames_from_geometry(battle_state)
 	# Zero delta is a valid refresh. It is not passage of combat time, so no shot.
 	var execute_autonomous_attacks: bool = delta_seconds > 0.0
 	var participants_considered: int = 0
@@ -91,6 +94,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var healthy_holding_cover: int = 0
 	var force_command_hold: int = 0
 	var force_command_push: int = 0
+	var force_command_focus_left: int = 0
+	var force_command_focus_right: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -156,6 +161,12 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		elif movement_status == MOVEMENT_PUSH_PRESSURE:
 			participants_repositioning += 1
 			force_command_push += 1
+		elif movement_status == MOVEMENT_FOCUS_LEFT:
+			participants_repositioning += 1
+			force_command_focus_left += 1
+		elif movement_status == MOVEMENT_FOCUS_RIGHT:
+			participants_repositioning += 1
+			force_command_focus_right += 1
 	shots_executed = attack_events.size()
 	for attack_event: BattleAttackEvent in attack_events:
 		match attack_event.outcome:
@@ -183,7 +194,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		healthy_seeking_cover,
 		healthy_holding_cover,
 		force_command_hold,
-		force_command_push
+		force_command_push,
+		force_command_focus_left,
+		force_command_focus_right
 	)
 
 
@@ -767,6 +780,8 @@ static func _update_combat_movement(
 	var move_mode: String = _desired_move_mode(battle_state, participant, target)
 	var hold_constrained: bool = false
 	var push_pressure: bool = false
+	var focus_bias_applied: bool = false
+	var focus_left: bool = false
 	if move_mode == MOVE_APPROACH and _hold_suppresses_target_approach(battle_state, participant):
 		move_mode = MOVE_HOLD
 		hold_constrained = true
@@ -778,13 +793,37 @@ static func _update_combat_movement(
 			return MOVEMENT_HOLD_CONSTRAINED
 		return MOVEMENT_NONE
 	var destination: Vector2 = Vector2.ZERO
+	var unbiased_destination: Vector2 = Vector2.ZERO
 	if move_mode == MOVE_APPROACH:
 		if push_pressure:
 			destination = _push_approach_destination(battle_state, participant, target)
+			unbiased_destination = destination
+		elif _focus_applies(battle_state, participant):
+			unbiased_destination = _push_approach_destination(battle_state, participant, target)
+			var biased_destination: Vector2 = _focus_biased_destination(
+				battle_state,
+				participant,
+				target,
+				unbiased_destination
+			)
+			if (
+				_is_finite_vector(biased_destination)
+				and not biased_destination.is_equal_approx(unbiased_destination)
+			):
+				destination = biased_destination
+				focus_bias_applied = true
+				focus_left = (
+					_participant_force_command_id(battle_state, participant)
+					== BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+				)
+			else:
+				destination = unbiased_destination
 		else:
 			destination = target.battle_position
+			unbiased_destination = destination
 	else:
 		destination = _retreat_destination(battle_state, participant, target)
+		unbiased_destination = destination
 		if not _is_finite_vector(destination):
 			_clear_owned_combat_navigation(participant)
 			return MOVEMENT_NONE
@@ -796,20 +835,39 @@ static func _update_combat_movement(
 		return MOVEMENT_NONE
 	if _should_keep_combat_path(participant, target, move_mode, destination):
 		_ensure_combat_movement_speed(participant)
-		if push_pressure:
-			return MOVEMENT_PUSH_PRESSURE
-		return MOVEMENT_REPOSITIONING
+		return _approach_movement_status(push_pressure, focus_bias_applied, focus_left)
 	if not _is_valid_navigation_destination(battle_state, destination):
-		_clear_owned_combat_navigation(participant)
-		return MOVEMENT_NONE
+		if (
+			focus_bias_applied
+			and _is_valid_navigation_destination(battle_state, unbiased_destination)
+			and not unbiased_destination.is_equal_approx(participant.battle_position)
+		):
+			destination = unbiased_destination
+			focus_bias_applied = false
+		else:
+			_clear_owned_combat_navigation(participant)
+			return MOVEMENT_NONE
 	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
 		battle_state,
 		participant.battle_position,
 		destination
 	)
 	if navigation == null or not navigation.success:
-		_clear_owned_combat_navigation(participant)
-		return MOVEMENT_NONE
+		if (
+			focus_bias_applied
+			and _is_valid_navigation_destination(battle_state, unbiased_destination)
+			and not unbiased_destination.is_equal_approx(participant.battle_position)
+		):
+			navigation = BattleNavigationService.find_path(
+				battle_state,
+				participant.battle_position,
+				unbiased_destination
+			)
+			destination = unbiased_destination
+			focus_bias_applied = false
+		if navigation == null or not navigation.success:
+			_clear_owned_combat_navigation(participant)
+			return MOVEMENT_NONE
 	if not participant.set_navigation_path(
 		navigation.destination,
 		navigation.waypoints,
@@ -819,9 +877,7 @@ static func _update_combat_movement(
 	participant.combat_move_mode = move_mode
 	participant.combat_move_target_id = target.participant_id
 	_ensure_combat_movement_speed(participant)
-	if push_pressure:
-		return MOVEMENT_PUSH_PRESSURE
-	return MOVEMENT_REPOSITIONING
+	return _approach_movement_status(push_pressure, focus_bias_applied, focus_left)
 
 
 static func _participant_force_command_id(
@@ -855,6 +911,141 @@ static func _push_applies(battle_state: BattleState, participant: BattleParticip
 		return false
 	var command_id: String = _participant_force_command_id(battle_state, participant)
 	return command_id == BattleForceCommandCatalog.COMMAND_PUSH
+
+
+static func _focus_applies(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	if participant.is_wounded:
+		return false
+	var command_id: String = _participant_force_command_id(battle_state, participant)
+	if (
+		command_id != BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+		and command_id != BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT
+	):
+		return false
+	var forward: Vector2 = BattleForceCommandService.get_forward_direction_for_participant(
+		battle_state,
+		participant.participant_id
+	)
+	return BattleForceCommandService.is_valid_forward_direction(forward)
+
+
+static func _focus_lateral_direction(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> Vector2:
+	var command_id: String = _participant_force_command_id(battle_state, participant)
+	if command_id == BattleForceCommandCatalog.COMMAND_FOCUS_LEFT:
+		return BattleForceCommandService.get_left_direction_for_participant(
+			battle_state,
+			participant.participant_id
+		)
+	if command_id == BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT:
+		return BattleForceCommandService.get_right_direction_for_participant(
+			battle_state,
+			participant.participant_id
+		)
+	return Vector2.ZERO
+
+
+static func _focus_biased_destination(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant,
+	base_destination: Vector2
+) -> Vector2:
+	if source == null or target == null:
+		return base_destination
+	if not _is_finite_vector(base_destination):
+		return base_destination
+	if base_destination.is_equal_approx(source.battle_position):
+		return base_destination
+	var lateral: Vector2 = _focus_lateral_direction(battle_state, source)
+	if not _is_finite_vector(lateral) or lateral.is_equal_approx(Vector2.ZERO):
+		return base_destination
+	if not is_equal_approx(lateral.length_squared(), 1.0):
+		lateral = lateral.normalized()
+		if not _is_finite_vector(lateral) or lateral.is_equal_approx(Vector2.ZERO):
+			return base_destination
+	var offset: float = BattleCombatBehaviorCatalog.FOCUS_LATERAL_OFFSET
+	if not is_finite(offset) or offset <= 0.0:
+		return base_destination
+	var candidate: Vector2 = base_destination + lateral * offset
+	if not _is_finite_vector(candidate):
+		return base_destination
+	var offset_from_target: Vector2 = candidate - target.battle_position
+	var direction: Vector2 = Vector2.ZERO
+	var radius: float = 0.0
+	if _is_finite_vector(offset_from_target) and not offset_from_target.is_equal_approx(Vector2.ZERO):
+		radius = offset_from_target.length()
+		direction = offset_from_target.normalized()
+	if not _is_finite_vector(direction) or direction.is_equal_approx(Vector2.ZERO):
+		direction = lateral
+		radius = 0.0
+	if not _is_finite_vector(direction) or direction.is_equal_approx(Vector2.ZERO):
+		return base_destination
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(
+		_participant_weapon_type_id(source)
+	)
+	if profile != null:
+		var preferred_min: float = profile.preferred_min_distance
+		var preferred_max: float = profile.preferred_max_distance
+		if (
+			is_finite(preferred_min)
+			and is_finite(preferred_max)
+			and preferred_max >= preferred_min
+		):
+			if radius < preferred_min and not is_equal_approx(radius, preferred_min):
+				radius = preferred_min
+			elif radius > preferred_max and not is_equal_approx(radius, preferred_max):
+				radius = preferred_max
+	var projected: Vector2 = target.battle_position + direction * radius
+	if not _is_finite_vector(projected):
+		return base_destination
+	if not _is_valid_navigation_destination(battle_state, projected):
+		return base_destination
+	if profile != null and not _focus_range_is_in_preferred_band(
+		projected.distance_to(target.battle_position),
+		profile
+	):
+		return base_destination
+	if projected.is_equal_approx(source.battle_position):
+		return base_destination
+	return projected
+
+
+static func _focus_range_is_in_preferred_band(
+	range_distance: float,
+	profile: BattleCombatBehaviorProfile
+) -> bool:
+	if profile == null or not is_finite(range_distance):
+		return false
+	if (
+		range_distance < profile.preferred_min_distance
+		and not is_equal_approx(range_distance, profile.preferred_min_distance)
+	):
+		return false
+	if (
+		range_distance > profile.preferred_max_distance
+		and not is_equal_approx(range_distance, profile.preferred_max_distance)
+	):
+		return false
+	return true
+
+
+static func _approach_movement_status(
+	push_pressure: bool,
+	focus_bias_applied: bool,
+	focus_left: bool
+) -> int:
+	if push_pressure:
+		return MOVEMENT_PUSH_PRESSURE
+	if focus_bias_applied:
+		if focus_left:
+			return MOVEMENT_FOCUS_LEFT
+		return MOVEMENT_FOCUS_RIGHT
+	return MOVEMENT_REPOSITIONING
 
 
 static func _push_uses_controlled_advance(weapon_type_id: String) -> bool:
