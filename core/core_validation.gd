@@ -85,6 +85,10 @@ const BattleCombatBehaviorProfile := preload("res://battle/combat/battle_combat_
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
 const BattleCombatBehaviorService := preload("res://battle/combat/battle_combat_behavior_service.gd")
+const BattleCombatPressureCatalog := preload("res://battle/combat/battle_combat_pressure_catalog.gd")
+const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat_pressure_snapshot.gd")
+const BattleCombatPressureResult := preload("res://battle/combat/battle_combat_pressure_result.gd")
+const BattleCombatPressureService := preload("res://battle/combat/battle_combat_pressure_service.gd")
 const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
@@ -15663,6 +15667,33 @@ static func run() -> Dictionary:
 	var battlefallback_hq_opening_ok: bool = _battlefallback_hq_opening_ok()
 	var battlefallback_campaign_isolation_ok: bool = _battlefallback_campaign_isolation_ok()
 	var battlefallback_absent_systems_ok: bool = _battlefallback_absent_systems_ok()
+	var battlepressure_catalog_ok: bool = _battlepressure_catalog_ok()
+	var battlepressure_snapshot_shape_ok: bool = _battlepressure_snapshot_shape_ok()
+	var battlepressure_locality_ok: bool = _battlepressure_locality_ok()
+	var battlepressure_dead_ally_ok: bool = _battlepressure_dead_ally_ok()
+	var battlepressure_wounded_ok: bool = _battlepressure_wounded_ok()
+	var battlepressure_hostile_proximity_ok: bool = _battlepressure_hostile_proximity_ok()
+	var battlepressure_isolation_ok: bool = _battlepressure_isolation_ok()
+	var battlepressure_friendly_support_ok: bool = _battlepressure_friendly_support_ok()
+	var battlepressure_multi_direction_ok: bool = _battlepressure_multi_direction_ok()
+	var battlepressure_total_formula_ok: bool = _battlepressure_total_formula_ok()
+	var battlepressure_count_radii_ok: bool = _battlepressure_count_radii_ok()
+	var battlepressure_side_authority_ok: bool = _battlepressure_side_authority_ok()
+	var battlepressure_dead_participant_ok: bool = _battlepressure_dead_participant_ok()
+	var battlepressure_invalid_ok: bool = _battlepressure_invalid_ok()
+	var battlepressure_query_api_ok: bool = _battlepressure_query_api_ok()
+	var battlepressure_begin_battle_ok: bool = _battlepressure_begin_battle_ok()
+	var battlepressure_runtime_ok: bool = _battlepressure_runtime_ok()
+	var battlepressure_casualty_delay_ok: bool = _battlepressure_casualty_delay_ok()
+	var battlepressure_zero_delta_ok: bool = _battlepressure_zero_delta_ok()
+	var battlepressure_determinism_ok: bool = _battlepressure_determinism_ok()
+	var battlepressure_no_rng_ok: bool = _battlepressure_no_rng_ok()
+	var battlepressure_observational_ok: bool = _battlepressure_observational_ok()
+	var battlepressure_force_command_ok: bool = _battlepressure_force_command_ok()
+	var battlepressure_wounded_regression_ok: bool = _battlepressure_wounded_regression_ok()
+	var battlepressure_cover_ok: bool = _battlepressure_cover_ok()
+	var battlepressure_campaign_isolation_ok: bool = _battlepressure_campaign_isolation_ok()
+	var battlepressure_absent_ok: bool = _battlepressure_absent_ok()
 	var battleforcecommand_no_rng_ok: bool = _battleforcecommand_no_rng_ok()
 	var battleforcecommand_stable_order_ok: bool = _battleforcecommand_stable_order_ok()
 	var battleforcecommand_campaign_isolation_ok: bool = _battleforcecommand_campaign_isolation_ok()
@@ -17203,6 +17234,33 @@ static func run() -> Dictionary:
 		"battlefallback_hq_opening_ok": battlefallback_hq_opening_ok,
 		"battlefallback_campaign_isolation_ok": battlefallback_campaign_isolation_ok,
 		"battlefallback_absent_systems_ok": battlefallback_absent_systems_ok,
+		"battlepressure_catalog_ok": battlepressure_catalog_ok,
+		"battlepressure_snapshot_shape_ok": battlepressure_snapshot_shape_ok,
+		"battlepressure_locality_ok": battlepressure_locality_ok,
+		"battlepressure_dead_ally_ok": battlepressure_dead_ally_ok,
+		"battlepressure_wounded_ok": battlepressure_wounded_ok,
+		"battlepressure_hostile_proximity_ok": battlepressure_hostile_proximity_ok,
+		"battlepressure_isolation_ok": battlepressure_isolation_ok,
+		"battlepressure_friendly_support_ok": battlepressure_friendly_support_ok,
+		"battlepressure_multi_direction_ok": battlepressure_multi_direction_ok,
+		"battlepressure_total_formula_ok": battlepressure_total_formula_ok,
+		"battlepressure_count_radii_ok": battlepressure_count_radii_ok,
+		"battlepressure_side_authority_ok": battlepressure_side_authority_ok,
+		"battlepressure_dead_participant_ok": battlepressure_dead_participant_ok,
+		"battlepressure_invalid_ok": battlepressure_invalid_ok,
+		"battlepressure_query_api_ok": battlepressure_query_api_ok,
+		"battlepressure_begin_battle_ok": battlepressure_begin_battle_ok,
+		"battlepressure_runtime_ok": battlepressure_runtime_ok,
+		"battlepressure_casualty_delay_ok": battlepressure_casualty_delay_ok,
+		"battlepressure_zero_delta_ok": battlepressure_zero_delta_ok,
+		"battlepressure_determinism_ok": battlepressure_determinism_ok,
+		"battlepressure_no_rng_ok": battlepressure_no_rng_ok,
+		"battlepressure_observational_ok": battlepressure_observational_ok,
+		"battlepressure_force_command_ok": battlepressure_force_command_ok,
+		"battlepressure_wounded_regression_ok": battlepressure_wounded_regression_ok,
+		"battlepressure_cover_ok": battlepressure_cover_ok,
+		"battlepressure_campaign_isolation_ok": battlepressure_campaign_isolation_ok,
+		"battlepressure_absent_ok": battlepressure_absent_ok,
 		"battleforcecommand_no_rng_ok": battleforcecommand_no_rng_ok,
 		"battleforcecommand_stable_order_ok": battleforcecommand_stable_order_ok,
 		"battleforcecommand_campaign_isolation_ok": battleforcecommand_campaign_isolation_ok,
@@ -18914,6 +18972,17 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "shots_executed"
 		or text == "participants_repositioning"
 		or text == "participants_holding_defend_position"
+		or text == "combat_pressure_snapshots"
+		or text == "total_pressure"
+		or text == "casualty_pressure"
+		or text == "wounded_pressure"
+		or text == "hostile_pressure"
+		or text == "isolation_pressure"
+		or text == "multi_direction_pressure"
+		or text == "nearby_dead_allies"
+		or text == "nearby_wounded_allies"
+		or text == "nearby_living_allies"
+		or text == "nearby_hostiles"
 	)
 
 
@@ -39926,6 +39995,1551 @@ static func _battlefallback_absent_systems_ok() -> bool:
 		and not GameState.new().has_method("propagate_tactical_casualty")
 	)
 
+
+static func _battlepressure_add(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	position: Vector2,
+	alive: bool = true,
+	wounded: bool = false
+) -> BattleParticipant:
+	var participant: BattleParticipant = _battlemove_add_participant(battle_state, participant_id, side_id)
+	if participant == null:
+		return null
+	participant.is_alive = alive
+	participant.is_wounded = wounded
+	_battletarget_place(participant, position)
+	return participant
+
+
+static func _battlepressure_refresh(battle_state: BattleState) -> bool:
+	var result: BattleCombatPressureResult = BattleCombatPressureService.refresh(battle_state)
+	return result != null and result.success
+
+
+static func _battlepressure_snap(
+	battle_state: BattleState,
+	participant_id: String
+) -> BattleCombatPressureSnapshot:
+	if battle_state == null:
+		return null
+	return BattleCombatPressureService.get_snapshot(battle_state, participant_id)
+
+
+static func _battlepressure_components_finite(snapshot: BattleCombatPressureSnapshot) -> bool:
+	if snapshot == null:
+		return false
+	return (
+		is_finite(snapshot.total_pressure)
+		and is_finite(snapshot.casualty_pressure)
+		and is_finite(snapshot.wounded_pressure)
+		and is_finite(snapshot.hostile_pressure)
+		and is_finite(snapshot.isolation_pressure)
+		and is_finite(snapshot.multi_direction_pressure)
+		and is_finite(snapshot.friendly_support)
+		and snapshot.total_pressure >= 0.0
+		and snapshot.total_pressure <= 1.0
+	)
+
+
+static func _battlepressure_expected_total(
+	casualty: float,
+	wounded: float,
+	hostile: float,
+	isolation: float,
+	multi_direction: float,
+	support: float
+) -> float:
+	var total: float = (
+		casualty * 0.25
+		+ wounded * 0.15
+		+ hostile * 0.25
+		+ isolation * 0.15
+		+ multi_direction * 0.20
+		- support * 0.20
+	)
+	if not is_finite(total):
+		return 0.0
+	return clampf(total, 0.0, 1.0)
+
+
+static func _battlepressure_neutralize(participant: BattleParticipant) -> void:
+	if participant == null:
+		return
+	participant.set_defend_position(true)
+	_battlebehavior_disarm(participant)
+
+
+static func _battlepressure_subject_fingerprint(
+	source: BattleParticipant,
+	result: BattleCombatBehaviorResult
+) -> Dictionary:
+	var snap: Dictionary = {}
+	if source == null:
+		return snap
+	var source_shots: int = 0
+	if result != null:
+		for attack_event: BattleAttackEvent in result.attack_events:
+			if attack_event != null and attack_event.source_participant_id == source.participant_id:
+				source_shots += 1
+	snap["target"] = source.target_participant_id
+	snap["pos"] = source.battle_position
+	snap["nav"] = source.has_navigation_destination
+	snap["nav_pos"] = source.navigation_destination
+	snap["nav_source"] = source.navigation_source
+	snap["mode"] = source.combat_move_mode
+	snap["speed"] = source.movement_speed
+	snap["intent"] = source.movement_intent
+	snap["reserved"] = source.reserved_cover_slot_id
+	snap["occupied"] = source.occupied_cover_slot_id
+	snap["force"] = source.tactical_force_id
+	if source.weapon_state == null:
+		snap["ammo"] = -1
+		snap["cd"] = -1.0
+		snap["reload"] = -1.0
+	else:
+		snap["ammo"] = source.weapon_state.ammo_in_magazine
+		snap["cd"] = source.weapon_state.cooldown_remaining_seconds
+		snap["reload"] = source.weapon_state.reload_remaining_seconds
+	snap["shots"] = source_shots
+	return snap
+
+
+static func _battlepressure_subject_same(left: Dictionary, right: Dictionary) -> bool:
+	if left.is_empty() or right.is_empty():
+		return false
+	var left_pos: Vector2 = left.get("pos", Vector2.INF)
+	var right_pos: Vector2 = right.get("pos", Vector2.INF)
+	var left_nav: Vector2 = left.get("nav_pos", Vector2.INF)
+	var right_nav: Vector2 = right.get("nav_pos", Vector2.INF)
+	var left_intent: Vector2 = left.get("intent", Vector2.INF)
+	var right_intent: Vector2 = right.get("intent", Vector2.INF)
+	return (
+		str(left.get("target", "")) == str(right.get("target", "x"))
+		and left_pos.is_equal_approx(right_pos)
+		and bool(left.get("nav", true)) == bool(right.get("nav", false))
+		and left_nav.is_equal_approx(right_nav)
+		and str(left.get("nav_source", "x")) == str(right.get("nav_source", "y"))
+		and str(left.get("mode", "x")) == str(right.get("mode", "y"))
+		and is_equal_approx(float(left.get("speed", -1.0)), float(right.get("speed", -2.0)))
+		and left_intent.is_equal_approx(right_intent)
+		and str(left.get("reserved", "x")) == str(right.get("reserved", "y"))
+		and str(left.get("occupied", "x")) == str(right.get("occupied", "y"))
+		and str(left.get("force", "x")) == str(right.get("force", "y"))
+		and int(left.get("ammo", -2)) == int(right.get("ammo", -3))
+		and is_equal_approx(float(left.get("cd", -2.0)), float(right.get("cd", -3.0)))
+		and is_equal_approx(float(left.get("reload", -2.0)), float(right.get("reload", -3.0)))
+		and int(left.get("shots", -2)) == int(right.get("shots", -3))
+	)
+
+
+static func _battlepressure_campaign_has_no_pressure(value: Object) -> bool:
+	if value == null:
+		return false
+	return (
+		value.get("combat_pressure_snapshots") == null
+		and value.get("total_pressure") == null
+		and value.get("casualty_pressure") == null
+		and value.get("wounded_pressure") == null
+		and value.get("hostile_pressure") == null
+		and value.get("isolation_pressure") == null
+		and value.get("multi_direction_pressure") == null
+		and value.get("friendly_support") == null
+		and value.get("nearby_dead_allies") == null
+		and not value.has_method("refresh_combat_pressure")
+	)
+
+
+static func _battlepressure_catalog_ok() -> bool:
+	return (
+		is_equal_approx(BattleCombatPressureCatalog.PRESSURE_RADIUS, 20.0)
+		and is_equal_approx(BattleCombatPressureCatalog.FRIENDLY_SUPPORT_RADIUS, 15.0)
+		and is_equal_approx(BattleCombatPressureCatalog.ISOLATION_RADIUS, 12.0)
+		and is_equal_approx(BattleCombatPressureCatalog.CASUALTY_WEIGHT, 0.25)
+		and is_equal_approx(BattleCombatPressureCatalog.WOUNDED_WEIGHT, 0.15)
+		and is_equal_approx(BattleCombatPressureCatalog.HOSTILE_PROXIMITY_WEIGHT, 0.25)
+		and is_equal_approx(BattleCombatPressureCatalog.ISOLATION_WEIGHT, 0.15)
+		and is_equal_approx(BattleCombatPressureCatalog.MULTI_DIRECTION_WEIGHT, 0.20)
+		and is_equal_approx(BattleCombatPressureCatalog.FRIENDLY_SUPPORT_MITIGATION, 0.20)
+		and is_equal_approx(BattleCombatPressureCatalog.CASUALTY_COUNT_NORMALIZE, 2.0)
+		and is_equal_approx(BattleCombatPressureCatalog.WOUNDED_COUNT_NORMALIZE, 3.0)
+		and is_equal_approx(BattleCombatPressureCatalog.HOSTILE_PROXIMITY_NORMALIZE, 2.0)
+		and is_equal_approx(BattleCombatPressureCatalog.FRIENDLY_SUPPORT_COUNT_NORMALIZE, 3.0)
+	)
+
+
+static func _battlepressure_snapshot_shape_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var source: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_shape_src", "attacker", Vector2(40.0, 30.0)
+	)
+	var ally: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_shape_ally", "attacker", Vector2(48.0, 30.0)
+	)
+	var hostile: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_shape_hos", "defender", Vector2(50.0, 30.0)
+	)
+	if source == null or ally == null or hostile == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var snapshot: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_shape_src")
+	if snapshot == null:
+		return false
+	return (
+		snapshot.participant_id == "pr_shape_src"
+		and _battlepressure_components_finite(snapshot)
+		and snapshot.get("morale") == null
+		and snapshot.get("cohesion") == null
+		and snapshot.get("panic") == null
+		and snapshot.get("recent_casualty_time") == null
+	)
+
+
+static func _battlepressure_locality_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var isolated: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_loc_a", "attacker", Vector2(30.0, 30.0)
+	)
+	var supported: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_loc_b", "attacker", Vector2(70.0, 30.0)
+	)
+	var dead_a: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_loc_dead", "attacker", Vector2(32.0, 30.0), false, false
+	)
+	var support_1: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_loc_s1", "attacker", Vector2(72.0, 30.0)
+	)
+	var support_2: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_loc_s2", "attacker", Vector2(70.0, 34.0)
+	)
+	var hostile: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_loc_h", "defender", Vector2(34.0, 30.0)
+	)
+	if (
+		isolated == null
+		or supported == null
+		or dead_a == null
+		or support_1 == null
+		or support_2 == null
+		or hostile == null
+	):
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var snap_a: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_loc_a")
+	var snap_b: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_loc_b")
+	if snap_a == null or snap_b == null:
+		return false
+	return (
+		snap_a.participant_id != snap_b.participant_id
+		and not is_equal_approx(snap_a.total_pressure, snap_b.total_pressure)
+		and snap_a.total_pressure > snap_b.total_pressure
+		and snap_a.nearby_dead_allies >= 1
+		and snap_b.nearby_dead_allies == 0
+		and snap_a.isolation_pressure > snap_b.isolation_pressure
+		and snap_b.friendly_support > snap_a.friendly_support
+		and isolated.side_id == supported.side_id
+	)
+
+
+static func _battlepressure_dead_ally_ok() -> bool:
+	var none_state: BattleState = _battlemove_make_state("active")
+	var one_state: BattleState = _battlemove_make_state("active")
+	var two_state: BattleState = _battlemove_make_state("active")
+	var three_state: BattleState = _battlemove_make_state("active")
+	var hostile_state: BattleState = _battlemove_make_state("active")
+	if (
+		none_state == null
+		or one_state == null
+		or two_state == null
+		or three_state == null
+		or hostile_state == null
+	):
+		return false
+	if _battlepressure_add(none_state, "pr_dead_0", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(one_state, "pr_dead_1s", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(one_state, "pr_dead_1d", "attacker", Vector2(50.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(two_state, "pr_dead_2s", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(two_state, "pr_dead_2a", "attacker", Vector2(50.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(two_state, "pr_dead_2b", "attacker", Vector2(40.0, 40.0), false, false) == null:
+		return false
+	if _battlepressure_add(three_state, "pr_dead_3s", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(three_state, "pr_dead_3a", "attacker", Vector2(50.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(three_state, "pr_dead_3b", "attacker", Vector2(40.0, 40.0), false, false) == null:
+		return false
+	if _battlepressure_add(three_state, "pr_dead_3c", "attacker", Vector2(32.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(hostile_state, "pr_dead_hs", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(hostile_state, "pr_dead_hh", "defender", Vector2(50.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(one_state, "pr_dead_1far", "attacker", Vector2(70.0, 30.0), false, false) == null:
+		return false
+	if not (
+		_battlepressure_refresh(none_state)
+		and _battlepressure_refresh(one_state)
+		and _battlepressure_refresh(two_state)
+		and _battlepressure_refresh(three_state)
+		and _battlepressure_refresh(hostile_state)
+	):
+		return false
+	var none_snap: BattleCombatPressureSnapshot = _battlepressure_snap(none_state, "pr_dead_0")
+	var one_snap: BattleCombatPressureSnapshot = _battlepressure_snap(one_state, "pr_dead_1s")
+	var two_snap: BattleCombatPressureSnapshot = _battlepressure_snap(two_state, "pr_dead_2s")
+	var three_snap: BattleCombatPressureSnapshot = _battlepressure_snap(three_state, "pr_dead_3s")
+	var hostile_snap: BattleCombatPressureSnapshot = _battlepressure_snap(hostile_state, "pr_dead_hs")
+	if (
+		none_snap == null
+		or one_snap == null
+		or two_snap == null
+		or three_snap == null
+		or hostile_snap == null
+	):
+		return false
+	return (
+		none_snap.nearby_dead_allies == 0
+		and is_equal_approx(none_snap.casualty_pressure, 0.0)
+		and one_snap.nearby_dead_allies == 1
+		and is_equal_approx(one_snap.casualty_pressure, 0.5)
+		and two_snap.nearby_dead_allies == 2
+		and is_equal_approx(two_snap.casualty_pressure, 1.0)
+		and three_snap.nearby_dead_allies == 3
+		and is_equal_approx(three_snap.casualty_pressure, 1.0)
+		and hostile_snap.nearby_dead_allies == 0
+		and is_equal_approx(hostile_snap.casualty_pressure, 0.0)
+		and _battlepressure_snap(one_state, "pr_dead_1d") == null
+	)
+
+
+static func _battlepressure_wounded_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var source: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_wnd_src", "attacker", Vector2(40.0, 30.0), true, true
+	)
+	if source == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var self_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_wnd_src")
+	if self_snap == null or self_snap.nearby_wounded_allies != 0:
+		return false
+	if not is_equal_approx(self_snap.wounded_pressure, 0.0):
+		return false
+	if _battlepressure_add(battle_state, "pr_wnd_1", "attacker", Vector2(48.0, 30.0), true, true) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var one_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_wnd_src")
+	if one_snap == null or one_snap.nearby_wounded_allies != 1:
+		return false
+	if not is_equal_approx(one_snap.wounded_pressure, 1.0 / 3.0):
+		return false
+	if _battlepressure_add(battle_state, "pr_wnd_2", "attacker", Vector2(40.0, 38.0), true, true) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var two_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_wnd_src")
+	if two_snap == null or two_snap.nearby_wounded_allies != 2:
+		return false
+	if not is_equal_approx(two_snap.wounded_pressure, 2.0 / 3.0):
+		return false
+	if _battlepressure_add(battle_state, "pr_wnd_3", "attacker", Vector2(32.0, 30.0), true, true) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var three_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_wnd_src")
+	if three_snap == null or three_snap.nearby_wounded_allies != 3:
+		return false
+	if not is_equal_approx(three_snap.wounded_pressure, 1.0):
+		return false
+	var dead_state: BattleState = _battlemove_make_state("active")
+	if dead_state == null:
+		return false
+	if _battlepressure_add(dead_state, "pr_wnd_ds", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(dead_state, "pr_wnd_dd", "attacker", Vector2(48.0, 30.0), false, true) == null:
+		return false
+	if _battlepressure_add(dead_state, "pr_wnd_dh", "defender", Vector2(40.0, 38.0), true, true) == null:
+		return false
+	if not _battlepressure_refresh(dead_state):
+		return false
+	var dead_snap: BattleCombatPressureSnapshot = _battlepressure_snap(dead_state, "pr_wnd_ds")
+	return (
+		dead_snap != null
+		and dead_snap.nearby_wounded_allies == 0
+		and is_equal_approx(dead_snap.wounded_pressure, 0.0)
+		and dead_snap.nearby_dead_allies == 1
+		and dead_snap.nearby_hostiles == 1
+	)
+
+
+static func _battlepressure_hostile_proximity_ok() -> bool:
+	var edge_state: BattleState = _battlemove_make_state("active")
+	var mid_state: BattleState = _battlemove_make_state("active")
+	var close_state: BattleState = _battlemove_make_state("active")
+	var multi_state: BattleState = _battlemove_make_state("active")
+	var out_state: BattleState = _battlemove_make_state("active")
+	if (
+		edge_state == null
+		or mid_state == null
+		or close_state == null
+		or multi_state == null
+		or out_state == null
+	):
+		return false
+	if _battlepressure_add(edge_state, "pr_h_es", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(edge_state, "pr_h_eh", "defender", Vector2(60.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(mid_state, "pr_h_ms", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(mid_state, "pr_h_mh", "defender", Vector2(50.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(close_state, "pr_h_cs", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(close_state, "pr_h_ch", "defender", Vector2(40.5, 30.0)) == null:
+		return false
+	if _battlepressure_add(multi_state, "pr_h_ps", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(multi_state, "pr_h_pa", "defender", Vector2(50.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(multi_state, "pr_h_pb", "defender", Vector2(40.0, 40.0)) == null:
+		return false
+	if _battlepressure_add(out_state, "pr_h_os", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(out_state, "pr_h_oh", "defender", Vector2(61.0, 30.0)) == null:
+		return false
+	if not (
+		_battlepressure_refresh(edge_state)
+		and _battlepressure_refresh(mid_state)
+		and _battlepressure_refresh(close_state)
+		and _battlepressure_refresh(multi_state)
+		and _battlepressure_refresh(out_state)
+	):
+		return false
+	var edge_snap: BattleCombatPressureSnapshot = _battlepressure_snap(edge_state, "pr_h_es")
+	var mid_snap: BattleCombatPressureSnapshot = _battlepressure_snap(mid_state, "pr_h_ms")
+	var close_snap: BattleCombatPressureSnapshot = _battlepressure_snap(close_state, "pr_h_cs")
+	var multi_snap: BattleCombatPressureSnapshot = _battlepressure_snap(multi_state, "pr_h_ps")
+	var out_snap: BattleCombatPressureSnapshot = _battlepressure_snap(out_state, "pr_h_os")
+	if (
+		edge_snap == null
+		or mid_snap == null
+		or close_snap == null
+		or multi_snap == null
+		or out_snap == null
+	):
+		return false
+	var close_proximity: float = 1.0 - (0.5 / 20.0)
+	return (
+		edge_snap.nearby_hostiles == 1
+		and is_equal_approx(edge_snap.hostile_pressure, 0.0)
+		and mid_snap.nearby_hostiles == 1
+		and is_equal_approx(mid_snap.hostile_pressure, 0.25)
+		and close_snap.nearby_hostiles == 1
+		and is_equal_approx(close_snap.hostile_pressure, clampf(close_proximity / 2.0, 0.0, 1.0))
+		and close_snap.hostile_pressure > mid_snap.hostile_pressure
+		and mid_snap.hostile_pressure > edge_snap.hostile_pressure
+		and multi_snap.nearby_hostiles == 2
+		and is_equal_approx(multi_snap.hostile_pressure, 0.5)
+		and out_snap.nearby_hostiles == 0
+		and is_equal_approx(out_snap.hostile_pressure, 0.0)
+	)
+
+
+static func _battlepressure_isolation_ok() -> bool:
+	var none_state: BattleState = _battlemove_make_state("active")
+	var healthy_state: BattleState = _battlemove_make_state("active")
+	var wounded_state: BattleState = _battlemove_make_state("active")
+	var dead_state: BattleState = _battlemove_make_state("active")
+	var outside_state: BattleState = _battlemove_make_state("active")
+	if (
+		none_state == null
+		or healthy_state == null
+		or wounded_state == null
+		or dead_state == null
+		or outside_state == null
+	):
+		return false
+	if _battlepressure_add(none_state, "pr_iso_n", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(healthy_state, "pr_iso_hs", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(healthy_state, "pr_iso_ha", "attacker", Vector2(50.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(wounded_state, "pr_iso_ws", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(wounded_state, "pr_iso_wa", "attacker", Vector2(50.0, 30.0), true, true) == null:
+		return false
+	if _battlepressure_add(dead_state, "pr_iso_ds", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(dead_state, "pr_iso_dd", "attacker", Vector2(50.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(outside_state, "pr_iso_os", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(outside_state, "pr_iso_oa", "attacker", Vector2(52.1, 30.0)) == null:
+		return false
+	if not (
+		_battlepressure_refresh(none_state)
+		and _battlepressure_refresh(healthy_state)
+		and _battlepressure_refresh(wounded_state)
+		and _battlepressure_refresh(dead_state)
+		and _battlepressure_refresh(outside_state)
+	):
+		return false
+	var none_snap: BattleCombatPressureSnapshot = _battlepressure_snap(none_state, "pr_iso_n")
+	var healthy_snap: BattleCombatPressureSnapshot = _battlepressure_snap(healthy_state, "pr_iso_hs")
+	var wounded_snap: BattleCombatPressureSnapshot = _battlepressure_snap(wounded_state, "pr_iso_ws")
+	var dead_snap: BattleCombatPressureSnapshot = _battlepressure_snap(dead_state, "pr_iso_ds")
+	var outside_snap: BattleCombatPressureSnapshot = _battlepressure_snap(outside_state, "pr_iso_os")
+	if (
+		none_snap == null
+		or healthy_snap == null
+		or wounded_snap == null
+		or dead_snap == null
+		or outside_snap == null
+	):
+		return false
+	return (
+		is_equal_approx(none_snap.isolation_pressure, 1.0)
+		and is_equal_approx(healthy_snap.isolation_pressure, 0.0)
+		and is_equal_approx(wounded_snap.isolation_pressure, 0.0)
+		and is_equal_approx(dead_snap.isolation_pressure, 1.0)
+		and is_equal_approx(outside_snap.isolation_pressure, 1.0)
+		and outside_snap.nearby_living_allies == 1
+	)
+
+
+static func _battlepressure_friendly_support_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var source: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_sup_src", "attacker", Vector2(40.0, 30.0)
+	)
+	if source == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var zero_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_sup_src")
+	if zero_snap == null or not is_equal_approx(zero_snap.friendly_support, 0.0):
+		return false
+	if _battlepressure_add(battle_state, "pr_sup_1", "attacker", Vector2(50.0, 30.0), true, true) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var one_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_sup_src")
+	if one_snap == null or not is_equal_approx(one_snap.friendly_support, 1.0 / 3.0):
+		return false
+	if _battlepressure_add(battle_state, "pr_sup_2", "attacker", Vector2(40.0, 40.0)) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var two_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_sup_src")
+	if two_snap == null or not is_equal_approx(two_snap.friendly_support, 2.0 / 3.0):
+		return false
+	if _battlepressure_add(battle_state, "pr_sup_3", "attacker", Vector2(32.0, 30.0)) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var three_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_sup_src")
+	if three_snap == null or not is_equal_approx(three_snap.friendly_support, 1.0):
+		return false
+	var other_state: BattleState = _battlemove_make_state("active")
+	if other_state == null:
+		return false
+	if _battlepressure_add(other_state, "pr_sup_os", "attacker", Vector2(40.0, 30.0), true, true) == null:
+		return false
+	if _battlepressure_add(other_state, "pr_sup_od", "attacker", Vector2(48.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(other_state, "pr_sup_oh", "defender", Vector2(40.0, 38.0)) == null:
+		return false
+	if _battlepressure_add(other_state, "pr_sup_of", "attacker", Vector2(56.0, 30.0)) == null:
+		return false
+	if not _battlepressure_refresh(other_state):
+		return false
+	var other_snap: BattleCombatPressureSnapshot = _battlepressure_snap(other_state, "pr_sup_os")
+	return (
+		other_snap != null
+		and is_equal_approx(other_snap.friendly_support, 0.0)
+		and other_snap.nearby_living_allies == 1
+	)
+
+
+static func _battlepressure_multi_direction_ok() -> bool:
+	var one_state: BattleState = _battlemove_make_state("active")
+	var same_state: BattleState = _battlemove_make_state("active")
+	var right_state: BattleState = _battlemove_make_state("active")
+	var over_state: BattleState = _battlemove_make_state("active")
+	var opp_state: BattleState = _battlemove_make_state("active")
+	var rot_state: BattleState = _battlemove_make_state("active")
+	var zero_state: BattleState = _battlemove_make_state("active")
+	if (
+		one_state == null
+		or same_state == null
+		or right_state == null
+		or over_state == null
+		or opp_state == null
+		or rot_state == null
+		or zero_state == null
+	):
+		return false
+	var origin: Vector2 = Vector2(40.0, 30.0)
+	if _battlepressure_add(one_state, "pr_md_1s", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(one_state, "pr_md_1h", "defender", origin + Vector2(10.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(same_state, "pr_md_ss", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(same_state, "pr_md_sa", "defender", origin + Vector2(10.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(same_state, "pr_md_sb", "defender", origin + Vector2(12.0, 2.0)) == null:
+		return false
+	if _battlepressure_add(right_state, "pr_md_rs", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(right_state, "pr_md_ra", "defender", origin + Vector2(10.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(right_state, "pr_md_rb", "defender", origin + Vector2(0.0, 10.0)) == null:
+		return false
+	if _battlepressure_add(over_state, "pr_md_os", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(over_state, "pr_md_oa", "defender", origin + Vector2(10.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(over_state, "pr_md_ob", "defender", origin + Vector2(-1.0, 10.0)) == null:
+		return false
+	if _battlepressure_add(opp_state, "pr_md_ps", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(opp_state, "pr_md_pa", "defender", origin + Vector2(10.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(opp_state, "pr_md_pb", "defender", origin + Vector2(-10.0, 0.0)) == null:
+		return false
+	var angle: float = deg_to_rad(37.0)
+	if _battlepressure_add(rot_state, "pr_md_ts", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(rot_state, "pr_md_ta", "defender", origin + Vector2(10.0, 0.0).rotated(angle)) == null:
+		return false
+	if _battlepressure_add(rot_state, "pr_md_tb", "defender", origin + Vector2(0.0, 10.0).rotated(angle)) == null:
+		return false
+	if _battlepressure_add(zero_state, "pr_md_zs", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(zero_state, "pr_md_zh", "defender", origin) == null:
+		return false
+	if not (
+		_battlepressure_refresh(one_state)
+		and _battlepressure_refresh(same_state)
+		and _battlepressure_refresh(right_state)
+		and _battlepressure_refresh(over_state)
+		and _battlepressure_refresh(opp_state)
+		and _battlepressure_refresh(rot_state)
+		and _battlepressure_refresh(zero_state)
+	):
+		return false
+	var one_snap: BattleCombatPressureSnapshot = _battlepressure_snap(one_state, "pr_md_1s")
+	var same_snap: BattleCombatPressureSnapshot = _battlepressure_snap(same_state, "pr_md_ss")
+	var right_snap: BattleCombatPressureSnapshot = _battlepressure_snap(right_state, "pr_md_rs")
+	var over_snap: BattleCombatPressureSnapshot = _battlepressure_snap(over_state, "pr_md_os")
+	var opp_snap: BattleCombatPressureSnapshot = _battlepressure_snap(opp_state, "pr_md_ps")
+	var rot_snap: BattleCombatPressureSnapshot = _battlepressure_snap(rot_state, "pr_md_ts")
+	var zero_snap: BattleCombatPressureSnapshot = _battlepressure_snap(zero_state, "pr_md_zs")
+	if (
+		one_snap == null
+		or same_snap == null
+		or right_snap == null
+		or over_snap == null
+		or opp_snap == null
+		or rot_snap == null
+		or zero_snap == null
+	):
+		return false
+	var same_dot: float = Vector2(10.0, 0.0).normalized().dot(Vector2(12.0, 2.0).normalized())
+	var over_dot: float = Vector2(10.0, 0.0).normalized().dot(Vector2(-1.0, 10.0).normalized())
+	return (
+		is_equal_approx(one_snap.multi_direction_pressure, 0.0)
+		and same_dot > 0.0
+		and is_equal_approx(same_snap.multi_direction_pressure, 0.0)
+		and is_equal_approx(right_snap.multi_direction_pressure, 1.0)
+		and over_dot <= 0.0
+		and is_equal_approx(over_snap.multi_direction_pressure, 1.0)
+		and is_equal_approx(opp_snap.multi_direction_pressure, 1.0)
+		and is_equal_approx(rot_snap.multi_direction_pressure, right_snap.multi_direction_pressure)
+		and is_equal_approx(rot_snap.hostile_pressure, right_snap.hostile_pressure)
+		and _battlepressure_components_finite(zero_snap)
+		and is_equal_approx(zero_snap.multi_direction_pressure, 0.0)
+		and zero_snap.nearby_hostiles == 1
+	)
+
+
+static func _battlepressure_total_formula_ok() -> bool:
+	var mid_state: BattleState = _battlemove_make_state("active")
+	var low_state: BattleState = _battlemove_make_state("active")
+	var high_state: BattleState = _battlemove_make_state("active")
+	if mid_state == null or low_state == null or high_state == null:
+		return false
+	var origin: Vector2 = Vector2(40.0, 30.0)
+	if _battlepressure_add(mid_state, "pr_tot_ms", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(mid_state, "pr_tot_md", "attacker", origin + Vector2(10.0, 0.0), false, false) == null:
+		return false
+	if _battlepressure_add(mid_state, "pr_tot_mw", "attacker", origin + Vector2(0.0, 8.0), true, true) == null:
+		return false
+	if _battlepressure_add(mid_state, "pr_tot_ha", "defender", origin + Vector2(0.0, 10.0)) == null:
+		return false
+	if _battlepressure_add(mid_state, "pr_tot_hb", "defender", origin + Vector2(-10.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(low_state, "pr_tot_ls", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(low_state, "pr_tot_l1", "attacker", origin + Vector2(4.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(low_state, "pr_tot_l2", "attacker", origin + Vector2(0.0, 4.0)) == null:
+		return false
+	if _battlepressure_add(low_state, "pr_tot_l3", "attacker", origin + Vector2(-4.0, 0.0)) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hs", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hd1", "attacker", origin + Vector2(8.0, 0.0), false, false) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hd2", "attacker", origin + Vector2(-8.0, 0.0), false, false) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hw1", "attacker", origin + Vector2(16.0, 0.0), true, true) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hw2", "attacker", origin + Vector2(-16.0, 0.0), true, true) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hw3", "attacker", origin + Vector2(0.0, 16.0), true, true) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hh0", "defender", origin) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hh1", "defender", origin + Vector2(0.01, 0.0)) == null:
+		return false
+	if _battlepressure_add(high_state, "pr_tot_hh2", "defender", origin + Vector2(0.0, 0.01)) == null:
+		return false
+	if not (
+		_battlepressure_refresh(mid_state)
+		and _battlepressure_refresh(low_state)
+		and _battlepressure_refresh(high_state)
+	):
+		return false
+	var mid_snap: BattleCombatPressureSnapshot = _battlepressure_snap(mid_state, "pr_tot_ms")
+	var low_snap: BattleCombatPressureSnapshot = _battlepressure_snap(low_state, "pr_tot_ls")
+	var high_snap: BattleCombatPressureSnapshot = _battlepressure_snap(high_state, "pr_tot_hs")
+	if mid_snap == null or low_snap == null or high_snap == null:
+		return false
+	var mid_expected: float = _battlepressure_expected_total(
+		mid_snap.casualty_pressure,
+		mid_snap.wounded_pressure,
+		mid_snap.hostile_pressure,
+		mid_snap.isolation_pressure,
+		mid_snap.multi_direction_pressure,
+		mid_snap.friendly_support
+	)
+	return (
+		_battlepressure_components_finite(mid_snap)
+		and _battlepressure_components_finite(low_snap)
+		and _battlepressure_components_finite(high_snap)
+		and is_equal_approx(mid_snap.casualty_pressure, 0.5)
+		and is_equal_approx(mid_snap.wounded_pressure, 1.0 / 3.0)
+		and is_equal_approx(mid_snap.hostile_pressure, 0.5)
+		and is_equal_approx(mid_snap.isolation_pressure, 0.0)
+		and is_equal_approx(mid_snap.multi_direction_pressure, 1.0)
+		and is_equal_approx(mid_snap.friendly_support, 1.0 / 3.0)
+		and is_equal_approx(mid_snap.total_pressure, mid_expected)
+		and mid_snap.total_pressure > 0.0
+		and mid_snap.total_pressure < 1.0
+		and is_equal_approx(low_snap.friendly_support, 1.0)
+		and is_equal_approx(low_snap.total_pressure, 0.0)
+		and is_equal_approx(high_snap.casualty_pressure, 1.0)
+		and is_equal_approx(high_snap.wounded_pressure, 1.0)
+		and is_equal_approx(high_snap.isolation_pressure, 1.0)
+		and is_equal_approx(high_snap.multi_direction_pressure, 1.0)
+		and is_equal_approx(high_snap.friendly_support, 0.0)
+		and is_equal_approx(high_snap.hostile_pressure, 1.0)
+		and is_equal_approx(high_snap.total_pressure, 1.0)
+	)
+
+
+static func _battlepressure_count_radii_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var origin: Vector2 = Vector2(40.0, 30.0)
+	if _battlepressure_add(battle_state, "pr_cnt_src", "attacker", origin) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cnt_dead_in", "attacker", origin + Vector2(19.9, 0.0), false, false) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cnt_dead_out", "attacker", origin + Vector2(20.1, 0.0), false, false) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cnt_live_18", "attacker", origin + Vector2(0.0, 18.0)) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cnt_wnd_14", "attacker", origin + Vector2(-14.0, 0.0), true, true) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cnt_hos_in", "defender", origin + Vector2(0.0, -19.9)) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cnt_hos_out", "defender", origin + Vector2(0.0, -20.1)) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var snapshot: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_cnt_src")
+	if snapshot == null:
+		return false
+	return (
+		snapshot.nearby_dead_allies == 1
+		and snapshot.nearby_wounded_allies == 1
+		and snapshot.nearby_living_allies == 2
+		and snapshot.nearby_hostiles == 1
+		and is_equal_approx(snapshot.isolation_pressure, 1.0)
+		and is_equal_approx(snapshot.friendly_support, 1.0 / 3.0)
+	)
+
+
+static func _battlepressure_side_authority_ok() -> bool:
+	var battle_state: BattleState = _battletarget_make_state_with_sides("active", ["zeta", "alpha"])
+	if battle_state == null:
+		return false
+	var origin: Vector2 = Vector2(40.0, 30.0)
+	if _battlepressure_add(battle_state, "pr_side_src", "zeta", origin) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_side_ally", "zeta", origin + Vector2(8.0, 0.0), false, false) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_side_hos", "alpha", origin + Vector2(0.0, 8.0)) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var snapshot: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_side_src")
+	if snapshot == null:
+		return false
+	var source: BattleParticipant = battle_state.get_participant("pr_side_src")
+	var ally: BattleParticipant = battle_state.get_participant("pr_side_ally")
+	var hostile: BattleParticipant = battle_state.get_participant("pr_side_hos")
+	if source == null or ally == null or hostile == null:
+		return false
+	return (
+		source.side_id == "zeta"
+		and ally.side_id == "zeta"
+		and hostile.side_id == "alpha"
+		and source.side_id == ally.side_id
+		and source.side_id != hostile.side_id
+		and snapshot.nearby_dead_allies == 1
+		and snapshot.nearby_hostiles == 1
+		and snapshot.nearby_living_allies == 0
+	)
+
+
+static func _battlepressure_dead_participant_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var living: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_dp_live", "attacker", Vector2(40.0, 30.0)
+	)
+	var doomed: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_dp_doomed", "attacker", Vector2(48.0, 30.0)
+	)
+	if living == null or doomed == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	if _battlepressure_snap(battle_state, "pr_dp_live") == null:
+		return false
+	if _battlepressure_snap(battle_state, "pr_dp_doomed") == null:
+		return false
+	doomed.is_alive = false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var live_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_dp_live")
+	return (
+		live_snap != null
+		and live_snap.nearby_dead_allies == 1
+		and is_equal_approx(live_snap.casualty_pressure, 0.5)
+		and _battlepressure_snap(battle_state, "pr_dp_doomed") == null
+		and not battle_state.has_combat_pressure_snapshot("pr_dp_doomed")
+		and doomed.has_battle_position
+	)
+
+
+static func _battlepressure_invalid_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var valid: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_inv_ok", "attacker", Vector2(40.0, 30.0)
+	)
+	var unpositioned: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_inv_up", "attacker", Vector2(48.0, 30.0)
+	)
+	var inf_part: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_inv_inf", "attacker", Vector2(INF, 30.0)
+	)
+	var nan_part: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_inv_nan", "attacker", Vector2(NAN, 30.0)
+	)
+	if valid == null or unpositioned == null or inf_part == null or nan_part == null:
+		return false
+	unpositioned.has_battle_position = false
+	unpositioned.battle_position = Vector2.ZERO
+	var null_result: BattleCombatPressureResult = BattleCombatPressureService.refresh(null)
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var valid_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_inv_ok")
+	return (
+		null_result != null
+		and not null_result.success
+		and valid_snap != null
+		and _battlepressure_components_finite(valid_snap)
+		and _battlepressure_snap(battle_state, "pr_inv_up") == null
+		and _battlepressure_snap(battle_state, "pr_inv_inf") == null
+		and _battlepressure_snap(battle_state, "pr_inv_nan") == null
+		and BattleCombatPressureService.evaluate_participant(battle_state, "pr_inv_up") == null
+		and BattleCombatPressureService.evaluate_participant(battle_state, "pr_inv_inf") == null
+	)
+
+
+static func _battlepressure_query_api_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_q_src", "attacker", Vector2(40.0, 30.0)) == null:
+		return false
+	var evaluated: BattleCombatPressureSnapshot = BattleCombatPressureService.evaluate_participant(
+		battle_state,
+		"pr_q_src"
+	)
+	if evaluated == null:
+		return false
+	if battle_state.has_combat_pressure_snapshot("pr_q_src"):
+		return false
+	if BattleCombatPressureService.get_snapshot(battle_state, "pr_q_src") != null:
+		return false
+	if not is_equal_approx(BattleCombatPressureService.get_total_pressure(battle_state, "pr_q_src"), 0.0):
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var stored: BattleCombatPressureSnapshot = BattleCombatPressureService.get_snapshot(battle_state, "pr_q_src")
+	var before_size: int = battle_state.combat_pressure_snapshots.size()
+	var missing_snap: BattleCombatPressureSnapshot = BattleCombatPressureService.get_snapshot(
+		battle_state,
+		"pr_q_missing"
+	)
+	var missing_total: float = BattleCombatPressureService.get_total_pressure(battle_state, "pr_q_missing")
+	var empty_snap: BattleCombatPressureSnapshot = BattleCombatPressureService.get_snapshot(battle_state, "")
+	var null_snap: BattleCombatPressureSnapshot = BattleCombatPressureService.get_snapshot(null, "pr_q_src")
+	var after_size: int = battle_state.combat_pressure_snapshots.size()
+	return (
+		stored != null
+		and stored.participant_id == "pr_q_src"
+		and is_equal_approx(BattleCombatPressureService.get_total_pressure(battle_state, "pr_q_src"), stored.total_pressure)
+		and missing_snap == null
+		and is_equal_approx(missing_total, 0.0)
+		and empty_snap == null
+		and null_snap == null
+		and after_size == before_size
+		and not battle_state.has_combat_pressure_snapshot("pr_q_missing")
+		and BattleCombatPressureService.evaluate_participant(battle_state, "pr_q_missing") == null
+	)
+
+
+static func _battlepressure_begin_battle_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	var stale: BattleCombatPressureSnapshot = BattleCombatPressureSnapshot.new()
+	stale.participant_id = "stale_pr"
+	stale.total_pressure = 0.9
+	battle_state.combat_pressure_snapshots["stale_pr"] = stale
+	if not battle_state.has_combat_pressure_snapshot("stale_pr"):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	return (
+		battle_state.combat_pressure_snapshots.is_empty()
+		and not battle_state.has_combat_pressure_snapshot("stale_pr")
+		and BattleCombatPressureService.get_snapshot(battle_state, "stale_pr") == null
+		and is_equal_approx(BattleCombatPressureService.get_total_pressure(battle_state, "stale_pr"), 0.0)
+	)
+
+
+static func _battlepressure_runtime_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var source: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_rt_src", "attacker", Vector2(20.0, 30.0)
+	)
+	var target: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_rt_tgt", "defender", Vector2(30.0, 30.0)
+	)
+	if source == null or target == null:
+		return false
+	_battlepressure_neutralize(target)
+	if battle_state.combat_pressure_snapshots.size() != 0:
+		return false
+	var result: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.0)
+	var snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_rt_src")
+	var evaluated: BattleCombatPressureSnapshot = BattleCombatPressureService.evaluate_participant(
+		battle_state,
+		"pr_rt_src"
+	)
+	return (
+		result != null
+		and result.success
+		and _battletarget_has(source, "pr_rt_tgt")
+		and snap != null
+		and evaluated != null
+		and snap.participant_id == "pr_rt_src"
+		and is_equal_approx(snap.total_pressure, evaluated.total_pressure)
+		and snap.nearby_hostiles == 1
+		and source.battle_position.is_equal_approx(Vector2(20.0, 30.0))
+	)
+
+
+static func _battlepressure_casualty_delay_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.combat_random == null:
+		return false
+	var observer: BattleParticipant = _battlefire_add(battle_state, "a_pr_obs", "attacker", "pistol")
+	var victim: BattleParticipant = _battlefire_add(battle_state, "m_pr_vic", "attacker", "pistol")
+	var killer: BattleParticipant = _battlefire_add(battle_state, "z_pr_kill", "defender", "pistol")
+	if observer == null or victim == null or killer == null:
+		return false
+	_battletarget_place(observer, Vector2(30.0, 30.0))
+	_battletarget_place(victim, Vector2(36.0, 30.0))
+	_battletarget_place(killer, Vector2(36.0, 33.0))
+	_battlepressure_neutralize(observer)
+	_battlebehavior_disarm(victim)
+	killer.set_target_participant("m_pr_vic")
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.95, 1.0):
+		return false
+	var first: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.2)
+	var first_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "a_pr_obs")
+	if first == null or not first.success or first_snap == null:
+		return false
+	if victim.is_alive:
+		return false
+	if first_snap.nearby_dead_allies != 0:
+		return false
+	if not is_equal_approx(first_snap.casualty_pressure, 0.0):
+		return false
+	var second: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.0)
+	var second_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "a_pr_obs")
+	return (
+		second != null
+		and second.success
+		and second_snap != null
+		and second_snap.nearby_dead_allies == 1
+		and is_equal_approx(second_snap.casualty_pressure, 0.5)
+		and _battlepressure_snap(battle_state, "m_pr_vic") == null
+	)
+
+
+static func _battlepressure_zero_delta_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.combat_random == null:
+		return false
+	var source: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_zd_src", "attacker", Vector2(40.0, 30.0)
+	)
+	var ally: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_zd_ally", "attacker", Vector2(48.0, 30.0)
+	)
+	var hostile: BattleParticipant = _battlepressure_add(
+		battle_state, "pr_zd_hos", "defender", Vector2(70.0, 30.0)
+	)
+	if source == null or ally == null or hostile == null or source.weapon_state == null:
+		return false
+	_battlepressure_neutralize(source)
+	_battlepressure_neutralize(ally)
+	_battlepressure_neutralize(hostile)
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var before_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_zd_src")
+	if before_snap == null or before_snap.nearby_dead_allies != 0:
+		return false
+	ally.is_alive = false
+	battle_state.elapsed_time_seconds = 1.25
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var src_pos: Vector2 = source.battle_position
+	var ally_pos: Vector2 = ally.battle_position
+	var result: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.0)
+	var after_snap: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_zd_src")
+	return (
+		result != null
+		and result.success
+		and after_snap != null
+		and after_snap.nearby_dead_allies == 1
+		and is_equal_approx(after_snap.casualty_pressure, 0.5)
+		and not is_equal_approx(after_snap.total_pressure, before_snap.total_pressure)
+		and source.battle_position.is_equal_approx(src_pos)
+		and ally.battle_position.is_equal_approx(ally_pos)
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and is_equal_approx(battle_state.elapsed_time_seconds, 1.25)
+	)
+
+
+static func _battlepressure_fill_det(battle_state: BattleState, ids: Array[String]) -> bool:
+	if battle_state == null:
+		return false
+	var positions: Dictionary = {
+		"pr_det_src": Vector2(40.0, 30.0),
+		"pr_det_dead": Vector2(48.0, 30.0),
+		"pr_det_wnd": Vector2(40.0, 38.0),
+		"pr_det_hos": Vector2(32.0, 30.0),
+	}
+	var sides: Dictionary = {
+		"pr_det_src": "attacker",
+		"pr_det_dead": "attacker",
+		"pr_det_wnd": "attacker",
+		"pr_det_hos": "defender",
+	}
+	var alive: Dictionary = {
+		"pr_det_src": true,
+		"pr_det_dead": false,
+		"pr_det_wnd": true,
+		"pr_det_hos": true,
+	}
+	var wounded: Dictionary = {
+		"pr_det_src": false,
+		"pr_det_dead": false,
+		"pr_det_wnd": true,
+		"pr_det_hos": false,
+	}
+	for participant_id: String in ids:
+		var added: BattleParticipant = _battlepressure_add(
+			battle_state,
+			participant_id,
+			str(sides.get(participant_id, "")),
+			positions.get(participant_id, Vector2.ZERO),
+			bool(alive.get(participant_id, true)),
+			bool(wounded.get(participant_id, false))
+		)
+		if added == null:
+			return false
+	return true
+
+
+static func _battlepressure_determinism_ok() -> bool:
+	var first_ids: Array[String] = ["pr_det_hos", "pr_det_src", "pr_det_wnd", "pr_det_dead"]
+	var second_ids: Array[String] = ["pr_det_dead", "pr_det_wnd", "pr_det_hos", "pr_det_src"]
+	var left: BattleState = _battlemove_make_state("active")
+	var right: BattleState = _battlemove_make_state("active")
+	if left == null or right == null:
+		return false
+	if not _battlepressure_fill_det(left, first_ids):
+		return false
+	if not _battlepressure_fill_det(right, second_ids):
+		return false
+	if not _battlepressure_refresh(left) or not _battlepressure_refresh(right):
+		return false
+	var left_snap: BattleCombatPressureSnapshot = _battlepressure_snap(left, "pr_det_src")
+	var right_snap: BattleCombatPressureSnapshot = _battlepressure_snap(right, "pr_det_src")
+	if left_snap == null or right_snap == null:
+		return false
+	return (
+		left_snap.nearby_dead_allies == right_snap.nearby_dead_allies
+		and left_snap.nearby_wounded_allies == right_snap.nearby_wounded_allies
+		and left_snap.nearby_living_allies == right_snap.nearby_living_allies
+		and left_snap.nearby_hostiles == right_snap.nearby_hostiles
+		and is_equal_approx(left_snap.casualty_pressure, right_snap.casualty_pressure)
+		and is_equal_approx(left_snap.wounded_pressure, right_snap.wounded_pressure)
+		and is_equal_approx(left_snap.hostile_pressure, right_snap.hostile_pressure)
+		and is_equal_approx(left_snap.isolation_pressure, right_snap.isolation_pressure)
+		and is_equal_approx(left_snap.multi_direction_pressure, right_snap.multi_direction_pressure)
+		and is_equal_approx(left_snap.friendly_support, right_snap.friendly_support)
+		and is_equal_approx(left_snap.total_pressure, right_snap.total_pressure)
+	)
+
+
+static func _battlepressure_no_rng_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.combat_random == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_rng_src", "attacker", Vector2(20.0, 30.0)) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_rng_tgt", "defender", Vector2(30.0, 30.0)) == null:
+		return false
+	var direct_before: int = battle_state.combat_random.snapshot_state()
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var direct_after: int = battle_state.combat_random.snapshot_state()
+	var runtime_before: int = battle_state.combat_random.snapshot_state()
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.0)
+	var runtime_after: int = battle_state.combat_random.snapshot_state()
+	var eval_before: int = battle_state.combat_random.snapshot_state()
+	var evaluated: BattleCombatPressureSnapshot = BattleCombatPressureService.evaluate_participant(
+		battle_state,
+		"pr_rng_src"
+	)
+	var eval_after: int = battle_state.combat_random.snapshot_state()
+	return (
+		direct_after == direct_before
+		and runtime != null
+		and runtime.success
+		and runtime_after == runtime_before
+		and evaluated != null
+		and eval_after == eval_before
+	)
+
+
+static func _battlepressure_observational_pair(high_pressure: bool) -> Dictionary:
+	var pack: Dictionary = _battlebehavior_pair(
+		"pr_obs_src",
+		"pr_obs_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(30.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return {}
+	if high_pressure:
+		if _battlepressure_add(battle_state, "pr_obs_d1", "attacker", Vector2(20.0, 22.0), false, false) == null:
+			return {}
+		if _battlepressure_add(battle_state, "pr_obs_d2", "attacker", Vector2(20.0, 38.0), false, false) == null:
+			return {}
+		if _battlepressure_add(battle_state, "pr_obs_d3", "attacker", Vector2(12.0, 30.0), false, false) == null:
+			return {}
+	else:
+		var ally_a: BattleParticipant = _battlepressure_add(
+			battle_state, "pr_obs_a1", "attacker", Vector2(20.0, 22.0)
+		)
+		var ally_b: BattleParticipant = _battlepressure_add(
+			battle_state, "pr_obs_a2", "attacker", Vector2(20.0, 38.0)
+		)
+		var ally_c: BattleParticipant = _battlepressure_add(
+			battle_state, "pr_obs_a3", "attacker", Vector2(12.0, 30.0)
+		)
+		if ally_a == null or ally_b == null or ally_c == null:
+			return {}
+		_battlepressure_neutralize(ally_a)
+		_battlepressure_neutralize(ally_b)
+		_battlepressure_neutralize(ally_c)
+	if not _battlepressure_refresh(battle_state):
+		return {}
+	var pressure: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_obs_src")
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"pr_obs_src",
+		"pr_obs_tgt"
+	)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var out: Dictionary = {}
+	out["pressure"] = 0.0
+	if pressure != null:
+		out["pressure"] = pressure.total_pressure
+	out["elig"] = elig != null and elig.success and elig.can_fire
+	out["finger"] = _battlepressure_subject_fingerprint(source, result)
+	out["speed"] = source.movement_speed
+	return out
+
+
+static func _battlepressure_observational_ok() -> bool:
+	var high: Dictionary = _battlepressure_observational_pair(true)
+	var low: Dictionary = _battlepressure_observational_pair(false)
+	if high.is_empty() or low.is_empty():
+		return false
+	var high_finger: Dictionary = high.get("finger", {})
+	var low_finger: Dictionary = low.get("finger", {})
+	return (
+		float(high.get("pressure", 0.0)) > float(low.get("pressure", 1.0))
+		and bool(high.get("elig", false))
+		and bool(low.get("elig", false))
+		and _battlepressure_subject_same(high_finger, low_finger)
+		and int(high_finger.get("shots", -1)) == 1
+	)
+
+
+static func _battlepressure_command_fingerprint(command_id: String, high_pressure: bool) -> Dictionary:
+	var pack: Dictionary = _battlebehavior_pair(
+		"pr_cmd_src",
+		"pr_cmd_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null:
+		return {}
+	if high_pressure:
+		if _battlepressure_add(battle_state, "pr_cmd_d1", "attacker", Vector2(10.0, 22.0), false, false) == null:
+			return {}
+		if _battlepressure_add(battle_state, "pr_cmd_d2", "attacker", Vector2(10.0, 38.0), false, false) == null:
+			return {}
+	if not _battlehold_bind(battle_state, source, "pr_cmd_force", command_id):
+		return {}
+	if not _battlepressure_refresh(battle_state):
+		return {}
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	var snap: Dictionary = _battleforcecommand_behavior_fingerprint(source, target, result)
+	if result != null:
+		snap["focus_left"] = result.force_command_focus_left
+		snap["focus_right"] = result.force_command_focus_right
+		snap["fall_back"] = result.force_command_fall_back
+	snap["command"] = BattleForceCommandService.get_command_for_participant(
+		battle_state,
+		source.participant_id
+	)
+	return snap
+
+
+static func _battlepressure_force_command_ok() -> bool:
+	var commands: Array[String] = [
+		BattleForceCommandCatalog.COMMAND_PUSH,
+		BattleForceCommandCatalog.COMMAND_HOLD,
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT,
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT,
+		BattleForceCommandCatalog.COMMAND_FALL_BACK,
+	]
+	for command_id: String in commands:
+		var baseline: Dictionary = _battlepressure_command_fingerprint(command_id, false)
+		var stressed: Dictionary = _battlepressure_command_fingerprint(command_id, true)
+		if not _battleforcecommand_behavior_same(baseline, stressed):
+			return false
+		if str(baseline.get("command", "")) != command_id:
+			return false
+		if str(stressed.get("command", "")) != command_id:
+			return false
+		if int(baseline.get("focus_left", -1)) != int(stressed.get("focus_left", -2)):
+			return false
+		if int(baseline.get("focus_right", -1)) != int(stressed.get("focus_right", -2)):
+			return false
+		if int(baseline.get("fall_back", -1)) != int(stressed.get("fall_back", -2)):
+			return false
+	return true
+
+
+static func _battlepressure_wounded_regression_ok() -> bool:
+	var fire_pack: Dictionary = _battlebehavior_pair(
+		"pr_wr_src",
+		"pr_wr_tgt",
+		"pistol",
+		Vector2(20.0, 30.0),
+		Vector2(30.0, 30.0),
+		true
+	)
+	var fire_state: BattleState = fire_pack.get("battle_state", null) as BattleState
+	var fire_src: BattleParticipant = fire_pack.get("source", null) as BattleParticipant
+	if fire_state == null or fire_src == null:
+		return false
+	fire_src.is_wounded = true
+	if _battlepressure_add(fire_state, "pr_wr_d1", "attacker", Vector2(20.0, 22.0), false, false) == null:
+		return false
+	if _battlepressure_add(fire_state, "pr_wr_d2", "attacker", Vector2(20.0, 38.0), false, false) == null:
+		return false
+	if not _battlepressure_refresh(fire_state):
+		return false
+	var fire_pressure: BattleCombatPressureSnapshot = _battlepressure_snap(fire_state, "pr_wr_src")
+	var fire_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(fire_state, 0.2)
+	var move_pack: Dictionary = _battlebehavior_pair(
+		"pr_wm_src",
+		"pr_wm_tgt",
+		"shotgun",
+		Vector2(10.0, 30.0),
+		Vector2(40.0, 30.0),
+		true
+	)
+	var move_state: BattleState = move_pack.get("battle_state", null) as BattleState
+	var move_src: BattleParticipant = move_pack.get("source", null) as BattleParticipant
+	if move_state == null or move_src == null:
+		return false
+	move_src.is_wounded = true
+	if _battlepressure_add(move_state, "pr_wm_d1", "attacker", Vector2(10.0, 22.0), false, false) == null:
+		return false
+	var move_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(move_state, 0.2)
+	return (
+		fire_pressure != null
+		and fire_pressure.nearby_dead_allies == 2
+		and fire_res != null
+		and fire_res.success
+		and fire_res.shots_executed == 1
+		and fire_src.is_wounded
+		and fire_src.is_alive
+		and fire_src.get("accuracy_penalty") == null
+		and fire_src.get("fire_rate_penalty") == null
+		and fire_src.get("morale") == null
+		and move_res != null
+		and move_res.success
+		and _battlebehavior_is_combat_nav(move_src)
+		and is_equal_approx(move_src.movement_speed, BattleCombatBehaviorCatalog.WOUNDED_COMBAT_MOVEMENT_SPEED)
+	)
+
+
+static func _battlepressure_cover_ok() -> bool:
+	var pack: Dictionary = _battlecoverprotection_north_pack("pr_cv_d", "pr_cv_obj", "pr_cv_slot")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	if battle_state == null or defender == null:
+		return false
+	var attacker_position: Vector2 = Vector2(50.0, 20.0)
+	var before: BattleCoverProtectionResult = _battlecoverprotection_query(pack, attacker_position)
+	if before == null or not before.has_applicable_cover:
+		return false
+	var before_fx: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, before.protection_factor)
+	if _battlepressure_add(battle_state, "pr_cv_d1", "defender", Vector2(46.0, 30.0), false, false) == null:
+		return false
+	if _battlepressure_add(battle_state, "pr_cv_d2", "defender", Vector2(54.0, 30.0), false, false) == null:
+		return false
+	if not _battlepressure_refresh(battle_state):
+		return false
+	var pressure: BattleCombatPressureSnapshot = _battlepressure_snap(battle_state, "pr_cv_d")
+	var after: BattleCoverProtectionResult = _battlecoverprotection_query(pack, attacker_position)
+	if after == null:
+		return false
+	var after_fx: BattleCoverCombatEffectResult = BattleCoverCombatEffectService.apply(0.80, after.protection_factor)
+	var seek_pack: Dictionary = _battlebehavior_pair(
+		"pr_cv_src",
+		"pr_cv_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0),
+		true
+	)
+	var seek_state: BattleState = seek_pack.get("battle_state", null) as BattleState
+	var seek_src: BattleParticipant = seek_pack.get("source", null) as BattleParticipant
+	if seek_state == null or seek_src == null or seek_state.battlefield_geometry == null:
+		return false
+	seek_src.is_wounded = true
+	if _battlewounded_slot(seek_state.battlefield_geometry, "pr_cv_sobj", "pr_cv_sslot", Vector2(16.0, 10.0)) == null:
+		return false
+	if _battlepressure_add(seek_state, "pr_cv_sd", "attacker", Vector2(10.0, 18.0), false, false) == null:
+		return false
+	var seek_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(seek_state, 0.2)
+	var seek_slot: BattleCoverSlot = seek_state.battlefield_geometry.get_cover_slot("pr_cv_sslot")
+	return (
+		pressure != null
+		and pressure.nearby_dead_allies == 2
+		and is_equal_approx(after.protection_factor, before.protection_factor)
+		and after.cover_slot_id == before.cover_slot_id
+		and before_fx != null
+		and after_fx != null
+		and is_equal_approx(after_fx.cover_multiplier, before_fx.cover_multiplier)
+		and is_equal_approx(after_fx.post_cover_roll, before_fx.post_cover_roll)
+		and seek_res != null
+		and seek_res.success
+		and seek_src.is_wounded
+		and _battlecover_reserved_sync(seek_src, seek_slot, "pr_cv_src", "pr_cv_sslot")
+		and seek_src.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_COVER
+	)
+
+
+static func _battlepressure_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or force == null or battle_state == null:
+		return false
+	if not _battle_register_participant(battle_state, "battle_def_sol", "defender", "defender_deployment"):
+		return false
+	if not battle_state.deploy_participant("battle_def_sol", "defender_deployment"):
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	var defender: BattleParticipant = battle_state.get_participant("battle_def_sol")
+	if attacker == null or defender == null:
+		return false
+	_battletarget_place(attacker, Vector2(20.0, 30.0))
+	_battletarget_place(defender, Vector2(30.0, 30.0))
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	if soldier == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var soldier_ids_before: Array[String] = _copy_ids(force.soldier_group.soldier_ids)
+	var hq: NeighborhoodHQ = game_state.get_map_location("battle_hq") as NeighborhoodHQ
+	var result: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.0)
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		result != null
+		and result.success
+		and _battlepressure_snap(battle_state, "battle_sol_a") != null
+		and _battlepressure_campaign_has_no_pressure(soldier)
+		and _battlepressure_campaign_has_no_pressure(force)
+		and _battlepressure_campaign_has_no_pressure(force.soldier_group)
+		and _battlepressure_campaign_has_no_pressure(game_state)
+		and (hq == null or _battlepressure_campaign_has_no_pressure(hq))
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _string_ids_match(_copy_ids(force.soldier_group.soldier_ids), soldier_ids_before)
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+	)
+
+
+static func _battlepressure_absent_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	var snapshot: BattleCombatPressureSnapshot = BattleCombatPressureSnapshot.new()
+	var svc: BattleCombatPressureService = BattleCombatPressureService.new()
+	var behavior: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var participant: BattleParticipant = BattleParticipant.new("pr_abs_p", "", "a", "attacker", "pistol")
+	if battle_state == null:
+		return false
+	return (
+		not svc.has_method("apply_morale")
+		and not svc.has_method("apply_panic")
+		and not svc.has_method("apply_suppression")
+		and not svc.has_method("apply_hesitation")
+		and not svc.has_method("apply_rout")
+		and not svc.has_method("apply_surrender")
+		and not svc.has_method("apply_flee")
+		and not svc.has_method("apply_captain_aura")
+		and not svc.has_method("apply_leadership")
+		and not svc.has_method("apply_cohesion")
+		and not svc.has_method("weight_weapon_threat")
+		and not svc.has_method("weight_line_of_sight")
+		and not svc.has_method("weight_cover")
+		and not behavior.has_method("apply_pressure_behavior")
+		and not behavior.has_method("apply_morale")
+		and not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("surrender")
+		and not BattleForceCommandService.is_valid_command("rout")
+		and snapshot.get("morale") == null
+		and snapshot.get("cohesion") == null
+		and snapshot.get("panic") == null
+		and snapshot.get("suppression") == null
+		and snapshot.get("recent_casualty_time") == null
+		and snapshot.get("weapon_threat") == null
+		and participant.get("morale") == null
+		and participant.get("panic") == null
+		and participant.get("suppression") == null
+		and participant.get("hesitation") == null
+		and battle_state.get("force_morale") == null
+		and battle_state.get("crisis_state") == null
+		and not battle_state.has_method("apply_force_morale")
+		and GameState.new().get("combat_pressure_snapshots") == null
+	)
 
 
 

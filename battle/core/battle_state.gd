@@ -9,6 +9,7 @@ const BattleForceCommandCatalog := preload("res://battle/core/battle_force_comma
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
+const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat_pressure_snapshot.gd")
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -26,6 +27,7 @@ var elapsed_time_seconds: float = 0.0
 var battlefield_geometry: BattlefieldGeometry = null
 var combat_rng_seed: int = 1
 var combat_random: BattleCombatRandom = null
+var combat_pressure_snapshots: Dictionary[String, BattleCombatPressureSnapshot] = {}
 
 
 func _init(
@@ -118,6 +120,18 @@ func get_vehicle(vehicle_id: String) -> BattleVehicle:
 
 func has_vehicle(vehicle_id: String) -> bool:
 	return vehicles.has(vehicle_id)
+
+
+func get_combat_pressure_snapshot(participant_id: String) -> BattleCombatPressureSnapshot:
+	if participant_id.is_empty() or not combat_pressure_snapshots.has(participant_id):
+		return null
+	return combat_pressure_snapshots[participant_id]
+
+
+func has_combat_pressure_snapshot(participant_id: String) -> bool:
+	if participant_id.is_empty():
+		return false
+	return combat_pressure_snapshots.has(participant_id)
 
 
 func add_tactical_force(force: BattleTacticalForce) -> bool:
@@ -375,6 +389,7 @@ func begin_battle() -> bool:
 		push_error("BattleState.begin_battle: battlefield is not spatially ready.")
 		return false
 	battle_phase = "active"
+	combat_pressure_snapshots.clear()
 	_initialize_defender_posture()
 	return true
 

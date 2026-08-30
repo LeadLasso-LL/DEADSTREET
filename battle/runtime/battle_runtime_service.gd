@@ -7,6 +7,8 @@ const BattleFireControlService := preload("res://battle/combat/battle_fire_contr
 const BattleFireControlResult := preload("res://battle/combat/battle_fire_control_result.gd")
 const BattleTargetSelectionService := preload("res://battle/combat/battle_target_selection_service.gd")
 const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
+const BattleCombatPressureService := preload("res://battle/combat/battle_combat_pressure_service.gd")
+const BattleCombatPressureResult := preload("res://battle/combat/battle_combat_pressure_result.gd")
 const BattleCombatBehaviorService := preload("res://battle/combat/battle_combat_behavior_service.gd")
 const BattleCombatBehaviorResult := preload("res://battle/combat/battle_combat_behavior_result.gd")
 const BattlePathFollowService := preload("res://battle/navigation/battle_path_follow_service.gd")
@@ -75,6 +77,21 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 		return BattleRuntimeResult.failed(
 			target_error_code,
 			target_error_message,
+			delta_seconds,
+			elapsed_before
+		)
+	var pressure_result: BattleCombatPressureResult = BattleCombatPressureService.refresh(battle_state)
+	if pressure_result == null or not pressure_result.success:
+		var pressure_error_code: String = "invalid_delta"
+		var pressure_error_message: String = "Battle runtime failed: combat pressure refresh failed."
+		if pressure_result != null:
+			if not pressure_result.error_code.is_empty():
+				pressure_error_code = pressure_result.error_code
+			if not pressure_result.error_message.is_empty():
+				pressure_error_message = pressure_result.error_message
+		return BattleRuntimeResult.failed(
+			pressure_error_code,
+			pressure_error_message,
 			delta_seconds,
 			elapsed_before
 		)
