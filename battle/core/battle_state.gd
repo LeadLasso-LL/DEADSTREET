@@ -4,6 +4,8 @@ extends RefCounted
 const BattleSide := preload("res://battle/core/battle_side.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
+const BattleTacticalForce := preload("res://battle/core/battle_tactical_force.gd")
+const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
@@ -17,6 +19,7 @@ var defender_side_id: String = ""
 var sides: Dictionary[String, BattleSide] = {}
 var participants: Dictionary[String, BattleParticipant] = {}
 var vehicles: Dictionary[String, BattleVehicle] = {}
+var tactical_forces: Dictionary[String, BattleTacticalForce] = {}
 var deployment_zones: Dictionary[String, DeploymentZone] = {}
 var battle_phase: String = "deployment"
 var elapsed_time_seconds: float = 0.0
@@ -115,6 +118,49 @@ func get_vehicle(vehicle_id: String) -> BattleVehicle:
 
 func has_vehicle(vehicle_id: String) -> bool:
 	return vehicles.has(vehicle_id)
+
+
+func add_tactical_force(force: BattleTacticalForce) -> bool:
+	if force == null:
+		push_error("BattleState.add_tactical_force: force is null.")
+		return false
+	if force.tactical_force_id.is_empty():
+		push_error("BattleState.add_tactical_force: tactical force id is empty.")
+		return false
+	if tactical_forces.has(force.tactical_force_id):
+		push_error(
+			"BattleState.add_tactical_force: duplicate tactical force id '%s'."
+			% force.tactical_force_id
+		)
+		return false
+	if force.command_id.is_empty():
+		force.command_id = BattleForceCommandCatalog.DEFAULT_COMMAND
+	if not BattleForceCommandCatalog.is_valid_command(force.command_id):
+		push_error(
+			"BattleState.add_tactical_force: invalid command id '%s' for tactical force '%s'."
+			% [force.command_id, force.tactical_force_id]
+		)
+		return false
+	tactical_forces[force.tactical_force_id] = force
+	return true
+
+
+func get_tactical_force(tactical_force_id: String) -> BattleTacticalForce:
+	if tactical_forces.has(tactical_force_id):
+		return tactical_forces[tactical_force_id]
+	return null
+
+
+func has_tactical_force(tactical_force_id: String) -> bool:
+	return tactical_forces.has(tactical_force_id)
+
+
+func get_sorted_tactical_force_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for tactical_force_id: String in tactical_forces:
+		ids.append(tactical_force_id)
+	ids.sort()
+	return ids
 
 
 func add_deployment_zone(zone: DeploymentZone) -> bool:

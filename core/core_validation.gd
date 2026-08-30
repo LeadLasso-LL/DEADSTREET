@@ -48,6 +48,10 @@ const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
 const BattleSetupService := preload("res://battle/core/battle_setup_service.gd")
+const BattleTacticalForce := preload("res://battle/core/battle_tactical_force.gd")
+const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
+const BattleForceCommandResult := preload("res://battle/core/battle_force_command_result.gd")
+const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
 const BattleRuntimeService := preload("res://battle/runtime/battle_runtime_service.gd")
 const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
@@ -15472,6 +15476,37 @@ static func run() -> Dictionary:
 	var battlecovereffect_determinism_ok: bool = _battlecovereffect_determinism_ok()
 	var battlecovereffect_campaign_isolation_ok: bool = _battlecovereffect_campaign_isolation_ok()
 	var battlecovereffect_absent_systems_ok: bool = _battlecovereffect_absent_systems_ok()
+	var battleforcecommand_catalog_ok: bool = _battleforcecommand_catalog_ok()
+	var battleforcecommand_valid_ids_ok: bool = _battleforcecommand_valid_ids_ok()
+	var battleforcecommand_invalid_ids_ok: bool = _battleforcecommand_invalid_ids_ok()
+	var battleforcecommand_register_ok: bool = _battleforcecommand_register_ok()
+	var battleforcecommand_duplicate_register_ok: bool = _battleforcecommand_duplicate_register_ok()
+	var battleforcecommand_register_null_ok: bool = _battleforcecommand_register_null_ok()
+	var battleforcecommand_register_empty_id_ok: bool = _battleforcecommand_register_empty_id_ok()
+	var battleforcecommand_get_command_ok: bool = _battleforcecommand_get_command_ok()
+	var battleforcecommand_set_push_ok: bool = _battleforcecommand_set_push_ok()
+	var battleforcecommand_set_fall_back_ok: bool = _battleforcecommand_set_fall_back_ok()
+	var battleforcecommand_idempotent_set_ok: bool = _battleforcecommand_idempotent_set_ok()
+	var battleforcecommand_invalid_command_ok: bool = _battleforcecommand_invalid_command_ok()
+	var battleforcecommand_invalid_force_ok: bool = _battleforcecommand_invalid_force_ok()
+	var battleforcecommand_participant_lookup_ok: bool = _battleforcecommand_participant_lookup_ok()
+	var battleforcecommand_same_side_multi_ok: bool = _battleforcecommand_same_side_multi_ok()
+	var battleforcecommand_cross_side_ok: bool = _battleforcecommand_cross_side_ok()
+	var battleforcecommand_garrison_id_ok: bool = _battleforcecommand_garrison_id_ok()
+	var battleforcecommand_hq_setup_forces_ok: bool = _battleforcecommand_hq_setup_forces_ok()
+	var battleforcecommand_attacker_mapping_ok: bool = _battleforcecommand_attacker_mapping_ok()
+	var battleforcecommand_defender_garrison_ok: bool = _battleforcecommand_defender_garrison_ok()
+	var battleforcecommand_hq_independent_mutation_ok: bool = _battleforcecommand_hq_independent_mutation_ok()
+	var battleforcecommand_side_not_force_ok: bool = _battleforcecommand_side_not_force_ok()
+	var battleforcecommand_side_force_id_ok: bool = _battleforcecommand_side_force_id_ok()
+	var battleforcecommand_defend_position_ok: bool = _battleforcecommand_defend_position_ok()
+	var battleforcecommand_no_behavior_effect_ok: bool = _battleforcecommand_no_behavior_effect_ok()
+	var battleforcecommand_no_rng_ok: bool = _battleforcecommand_no_rng_ok()
+	var battleforcecommand_stable_order_ok: bool = _battleforcecommand_stable_order_ok()
+	var battleforcecommand_campaign_isolation_ok: bool = _battleforcecommand_campaign_isolation_ok()
+	var battleforcecommand_no_fake_garrison_ok: bool = _battleforcecommand_no_fake_garrison_ok()
+	var battleforcecommand_no_queue_ok: bool = _battleforcecommand_no_queue_ok()
+	var battleforcecommand_absent_systems_ok: bool = _battleforcecommand_absent_systems_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -16819,6 +16854,37 @@ static func run() -> Dictionary:
 		"battlecovereffect_determinism_ok": battlecovereffect_determinism_ok,
 		"battlecovereffect_campaign_isolation_ok": battlecovereffect_campaign_isolation_ok,
 		"battlecovereffect_absent_systems_ok": battlecovereffect_absent_systems_ok,
+		"battleforcecommand_catalog_ok": battleforcecommand_catalog_ok,
+		"battleforcecommand_valid_ids_ok": battleforcecommand_valid_ids_ok,
+		"battleforcecommand_invalid_ids_ok": battleforcecommand_invalid_ids_ok,
+		"battleforcecommand_register_ok": battleforcecommand_register_ok,
+		"battleforcecommand_duplicate_register_ok": battleforcecommand_duplicate_register_ok,
+		"battleforcecommand_register_null_ok": battleforcecommand_register_null_ok,
+		"battleforcecommand_register_empty_id_ok": battleforcecommand_register_empty_id_ok,
+		"battleforcecommand_get_command_ok": battleforcecommand_get_command_ok,
+		"battleforcecommand_set_push_ok": battleforcecommand_set_push_ok,
+		"battleforcecommand_set_fall_back_ok": battleforcecommand_set_fall_back_ok,
+		"battleforcecommand_idempotent_set_ok": battleforcecommand_idempotent_set_ok,
+		"battleforcecommand_invalid_command_ok": battleforcecommand_invalid_command_ok,
+		"battleforcecommand_invalid_force_ok": battleforcecommand_invalid_force_ok,
+		"battleforcecommand_participant_lookup_ok": battleforcecommand_participant_lookup_ok,
+		"battleforcecommand_same_side_multi_ok": battleforcecommand_same_side_multi_ok,
+		"battleforcecommand_cross_side_ok": battleforcecommand_cross_side_ok,
+		"battleforcecommand_garrison_id_ok": battleforcecommand_garrison_id_ok,
+		"battleforcecommand_hq_setup_forces_ok": battleforcecommand_hq_setup_forces_ok,
+		"battleforcecommand_attacker_mapping_ok": battleforcecommand_attacker_mapping_ok,
+		"battleforcecommand_defender_garrison_ok": battleforcecommand_defender_garrison_ok,
+		"battleforcecommand_hq_independent_mutation_ok": battleforcecommand_hq_independent_mutation_ok,
+		"battleforcecommand_side_not_force_ok": battleforcecommand_side_not_force_ok,
+		"battleforcecommand_side_force_id_ok": battleforcecommand_side_force_id_ok,
+		"battleforcecommand_defend_position_ok": battleforcecommand_defend_position_ok,
+		"battleforcecommand_no_behavior_effect_ok": battleforcecommand_no_behavior_effect_ok,
+		"battleforcecommand_no_rng_ok": battleforcecommand_no_rng_ok,
+		"battleforcecommand_stable_order_ok": battleforcecommand_stable_order_ok,
+		"battleforcecommand_campaign_isolation_ok": battleforcecommand_campaign_isolation_ok,
+		"battleforcecommand_no_fake_garrison_ok": battleforcecommand_no_fake_garrison_ok,
+		"battleforcecommand_no_queue_ok": battleforcecommand_no_queue_ok,
+		"battleforcecommand_absent_systems_ok": battleforcecommand_absent_systems_ok,
 	}
 
 	var passed := true
@@ -31775,5 +31841,978 @@ static func _battlecovereffect_absent_systems_ok() -> bool:
 		and not battle_state.has_method("resolve_victory")
 		and battle_state.get("winner_side_id") == null
 		and battle_state.get("current_actor_id") == null
+		and not GameState.new().has_method("apply_tactical_casualty")
+	)
+
+
+static func _battleforcecommand_expected_ids() -> Array[String]:
+	var ids: Array[String] = [
+		BattleForceCommandCatalog.COMMAND_PUSH,
+		BattleForceCommandCatalog.COMMAND_HOLD,
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT,
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT,
+		BattleForceCommandCatalog.COMMAND_FALL_BACK,
+	]
+	return ids
+
+
+static func _battleforcecommand_success_ok(
+	result: BattleForceCommandResult,
+	tactical_force_id: String,
+	previous_command_id: String,
+	command_id: String
+) -> bool:
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.tactical_force_id == tactical_force_id
+		and result.previous_command_id == previous_command_id
+		and result.command_id == command_id
+		and result.rejection_reason.is_empty()
+		and result.error_code.is_empty()
+		and result.error_message.is_empty()
+	)
+
+
+static func _battleforcecommand_fail_ok(
+	result: BattleForceCommandResult,
+	rejection_reason: String,
+	tactical_force_id: String = "",
+	previous_command_id: String = "",
+	command_id: String = ""
+) -> bool:
+	if result == null:
+		return false
+	return (
+		not result.success
+		and result.rejection_reason == rejection_reason
+		and result.error_code == rejection_reason
+		and not result.error_message.is_empty()
+		and result.tactical_force_id == tactical_force_id
+		and result.previous_command_id == previous_command_id
+		and result.command_id == command_id
+	)
+
+
+static func _battleforcecommand_catalog_ok() -> bool:
+	var catalog_ids: Array[String] = BattleForceCommandCatalog.command_ids()
+	var service_ids: Array[String] = BattleForceCommandService.get_command_ids()
+	var expected: Array[String] = _battleforcecommand_expected_ids()
+	return (
+		catalog_ids.size() == 5
+		and service_ids.size() == 5
+		and expected.size() == 5
+		and _string_ids_match(catalog_ids, expected)
+		and _string_ids_match(service_ids, expected)
+		and BattleForceCommandCatalog.COMMAND_PUSH == "push"
+		and BattleForceCommandCatalog.COMMAND_HOLD == "hold"
+		and BattleForceCommandCatalog.COMMAND_FOCUS_LEFT == "focus_left"
+		and BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT == "focus_right"
+		and BattleForceCommandCatalog.COMMAND_FALL_BACK == "fall_back"
+		and BattleForceCommandCatalog.DEFAULT_COMMAND == BattleForceCommandCatalog.COMMAND_HOLD
+		and BattleForceCommandCatalog.DEFAULT_COMMAND == "hold"
+		and not catalog_ids.has("flee")
+		and not catalog_ids.has("withdraw")
+		and not catalog_ids.has("retreat")
+		and not catalog_ids.has("retreat_from_battle")
+		and not BattleForceCommandCatalog.is_valid_command("flee")
+		and not BattleForceCommandCatalog.is_valid_command("withdraw")
+		and not BattleForceCommandCatalog.is_valid_command("retreat")
+	)
+
+
+static func _battleforcecommand_valid_ids_ok() -> bool:
+	var expected: Array[String] = _battleforcecommand_expected_ids()
+	for command_id: String in expected:
+		if not BattleForceCommandCatalog.is_valid_command(command_id):
+			return false
+		if not BattleForceCommandService.is_valid_command(command_id):
+			return false
+	return expected.size() == 5
+
+
+static func _battleforcecommand_invalid_ids_ok() -> bool:
+	var invalid_ids: Array[String] = [
+		"",
+		"unknown_command",
+		"flee",
+		"withdraw",
+		"retreat",
+		"retreat_from_battle",
+		"Push",
+		"Fall Back",
+		"hold_position",
+	]
+	for command_id: String in invalid_ids:
+		if BattleForceCommandCatalog.is_valid_command(command_id):
+			return false
+		if BattleForceCommandService.is_valid_command(command_id):
+			return false
+	return true
+
+
+static func _battleforcecommand_register_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var result: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		"fc_reg",
+		"attacker"
+	)
+	var force: BattleTacticalForce = battle_state.get_tactical_force("fc_reg")
+	return (
+		_battleforcecommand_success_ok(
+			result,
+			"fc_reg",
+			"",
+			BattleForceCommandCatalog.DEFAULT_COMMAND
+		)
+		and battle_state.has_tactical_force("fc_reg")
+		and battle_state.tactical_forces.has("fc_reg")
+		and force != null
+		and force.tactical_force_id == "fc_reg"
+		and force.side_id == "attacker"
+		and force.command_id == BattleForceCommandCatalog.COMMAND_HOLD
+		and BattleForceCommandService.get_command(battle_state, "fc_reg") == "hold"
+		and battle_state.tactical_forces.size() == 1
+	)
+
+
+static func _battleforcecommand_duplicate_register_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var first: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		"fc_dup",
+		"defender"
+	)
+	var mutated: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_dup",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var duplicate: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		"fc_dup",
+		"attacker"
+	)
+	var force: BattleTacticalForce = battle_state.get_tactical_force("fc_dup")
+	return (
+		_battleforcecommand_success_ok(first, "fc_dup", "", "hold")
+		and _battleforcecommand_success_ok(mutated, "fc_dup", "hold", "push")
+		and _battleforcecommand_fail_ok(
+			duplicate,
+			BattleForceCommandService.REJECTION_DUPLICATE_FORCE_ID,
+			"fc_dup",
+			"push",
+			"push"
+		)
+		and force != null
+		and force.tactical_force_id == "fc_dup"
+		and force.side_id == "defender"
+		and force.command_id == "push"
+		and battle_state.tactical_forces.size() == 1
+	)
+
+
+static func _battleforcecommand_register_null_ok() -> bool:
+	var result: BattleForceCommandResult = BattleForceCommandService.register_force(null, "fc_null")
+	return _battleforcecommand_fail_ok(
+		result,
+		BattleForceCommandService.REJECTION_NULL_BATTLE_STATE
+	)
+
+
+static func _battleforcecommand_register_empty_id_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var before_size: int = battle_state.tactical_forces.size()
+	var result: BattleForceCommandResult = BattleForceCommandService.register_force(battle_state, "")
+	return (
+		_battleforcecommand_fail_ok(result, BattleForceCommandService.REJECTION_EMPTY_FORCE_ID)
+		and battle_state.tactical_forces.size() == before_size
+		and not battle_state.has_tactical_force("")
+	)
+
+
+static func _battleforcecommand_get_command_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_read", "attacker").success:
+		return false
+	var initial: String = BattleForceCommandService.get_command(battle_state, "fc_read")
+	var set_result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_read",
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+	)
+	return (
+		initial == "hold"
+		and _battleforcecommand_success_ok(set_result, "fc_read", "hold", "focus_left")
+		and BattleForceCommandService.get_command(battle_state, "fc_read") == "focus_left"
+		and BattleForceCommandService.get_command(battle_state, "missing_force").is_empty()
+		and BattleForceCommandService.get_command(battle_state, "").is_empty()
+		and BattleForceCommandService.get_command(null, "fc_read").is_empty()
+		and BattleForceCommandService.get_command(battle_state, "missing_force") != "hold"
+	)
+
+
+static func _battleforcecommand_set_push_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "fc_push_p", "attacker", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(12.0, 8.0))
+	participant.set_movement_intent(Vector2.RIGHT)
+	if not BattleForceCommandService.register_force(battle_state, "fc_push", "attacker").success:
+		return false
+	participant.tactical_force_id = "fc_push"
+	var result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_push",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var force: BattleTacticalForce = battle_state.get_tactical_force("fc_push")
+	return (
+		_battleforcecommand_success_ok(result, "fc_push", "hold", "push")
+		and force != null
+		and force.command_id == "push"
+		and BattleForceCommandService.get_command(battle_state, "fc_push") == "push"
+		and participant.battle_position.is_equal_approx(Vector2(12.0, 8.0))
+		and participant.movement_intent.is_equal_approx(Vector2.RIGHT)
+		and participant.tactical_force_id == "fc_push"
+		and not participant.is_wounded
+	)
+
+
+static func _battleforcecommand_set_fall_back_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_fb", "defender").success:
+		return false
+	var result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_fb",
+		BattleForceCommandCatalog.COMMAND_FALL_BACK
+	)
+	return (
+		_battleforcecommand_success_ok(result, "fc_fb", "hold", "fall_back")
+		and BattleForceCommandService.get_command(battle_state, "fc_fb") == "fall_back"
+		and battle_state.get_tactical_force("fc_fb").command_id == "fall_back"
+	)
+
+
+static func _battleforcecommand_idempotent_set_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_idemp", "attacker").success:
+		return false
+	var first: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_idemp",
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT
+	)
+	var repeat: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_idemp",
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT
+	)
+	return (
+		_battleforcecommand_success_ok(first, "fc_idemp", "hold", "focus_right")
+		and _battleforcecommand_success_ok(repeat, "fc_idemp", "focus_right", "focus_right")
+		and repeat.previous_command_id == repeat.command_id
+		and BattleForceCommandService.get_command(battle_state, "fc_idemp") == "focus_right"
+		and battle_state.tactical_forces.size() == 1
+	)
+
+
+static func _battleforcecommand_invalid_command_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_badcmd", "attacker").success:
+		return false
+	var set_push: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_badcmd",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var empty: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_badcmd",
+		""
+	)
+	var unknown: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_badcmd",
+		"unknown_command"
+	)
+	var flee: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_badcmd",
+		"flee"
+	)
+	return (
+		_battleforcecommand_success_ok(set_push, "fc_badcmd", "hold", "push")
+		and _battleforcecommand_fail_ok(
+			empty,
+			BattleForceCommandService.REJECTION_EMPTY_COMMAND_ID,
+			"fc_badcmd",
+			"push",
+			""
+		)
+		and _battleforcecommand_fail_ok(
+			unknown,
+			BattleForceCommandService.REJECTION_INVALID_COMMAND,
+			"fc_badcmd",
+			"push",
+			"unknown_command"
+		)
+		and _battleforcecommand_fail_ok(
+			flee,
+			BattleForceCommandService.REJECTION_INVALID_COMMAND,
+			"fc_badcmd",
+			"push",
+			"flee"
+		)
+		and BattleForceCommandService.get_command(battle_state, "fc_badcmd") == "push"
+		and BattleForceCommandService.get_command(battle_state, "fc_badcmd") != "hold"
+	)
+
+
+static func _battleforcecommand_invalid_force_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_known", "attacker").success:
+		return false
+	var before_size: int = battle_state.tactical_forces.size()
+	var result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_ghost",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	return (
+		_battleforcecommand_fail_ok(
+			result,
+			BattleForceCommandService.REJECTION_FORCE_NOT_FOUND,
+			"fc_ghost",
+			"",
+			"push"
+		)
+		and not battle_state.has_tactical_force("fc_ghost")
+		and battle_state.tactical_forces.size() == before_size
+		and BattleForceCommandService.get_command(battle_state, "fc_known") == "hold"
+	)
+
+
+static func _battleforcecommand_participant_lookup_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "force_a", "attacker").success:
+		return false
+	var mapped: BattleParticipant = _battlefire_add(battle_state, "fc_lookup_p", "attacker", "pistol")
+	var orphan: BattleParticipant = _battlefire_add(battle_state, "fc_lookup_empty", "attacker", "pistol")
+	var dangling: BattleParticipant = _battlefire_add(battle_state, "fc_lookup_miss", "attacker", "pistol")
+	if mapped == null or orphan == null or dangling == null:
+		return false
+	mapped.tactical_force_id = "force_a"
+	dangling.tactical_force_id = "missing_force"
+	var set_result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"force_a",
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+	)
+	return (
+		_battleforcecommand_success_ok(set_result, "force_a", "hold", "focus_left")
+		and BattleForceCommandService.get_command_for_participant(battle_state, "fc_lookup_p") == "focus_left"
+		and BattleForceCommandService.get_command_for_participant(battle_state, "fc_lookup_empty").is_empty()
+		and BattleForceCommandService.get_command_for_participant(battle_state, "fc_lookup_miss").is_empty()
+		and BattleForceCommandService.get_command_for_participant(battle_state, "missing_participant").is_empty()
+		and BattleForceCommandService.get_command_for_participant(null, "fc_lookup_p").is_empty()
+		and orphan.tactical_force_id.is_empty()
+	)
+
+
+static func _battleforcecommand_same_side_multi_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var a: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		"force_a",
+		"attacker"
+	)
+	var b: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		"force_b",
+		"attacker"
+	)
+	var set_a: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"force_a",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var set_b: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"force_b",
+		BattleForceCommandCatalog.COMMAND_FALL_BACK
+	)
+	var force_a: BattleTacticalForce = battle_state.get_tactical_force("force_a")
+	var force_b: BattleTacticalForce = battle_state.get_tactical_force("force_b")
+	return (
+		_battleforcecommand_success_ok(a, "force_a", "", "hold")
+		and _battleforcecommand_success_ok(b, "force_b", "", "hold")
+		and _battleforcecommand_success_ok(set_a, "force_a", "hold", "push")
+		and _battleforcecommand_success_ok(set_b, "force_b", "hold", "fall_back")
+		and force_a != null
+		and force_b != null
+		and force_a.side_id == "attacker"
+		and force_b.side_id == "attacker"
+		and force_a.command_id == "push"
+		and force_b.command_id == "fall_back"
+		and BattleForceCommandService.get_command(battle_state, "force_a") == "push"
+		and BattleForceCommandService.get_command(battle_state, "force_b") == "fall_back"
+	)
+
+
+static func _battleforcecommand_cross_side_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_att", "attacker").success:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_def", "defender").success:
+		return false
+	var def_push: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_def",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var att_hold: String = BattleForceCommandService.get_command(battle_state, "fc_att")
+	var att_fall: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_att",
+		BattleForceCommandCatalog.COMMAND_FALL_BACK
+	)
+	return (
+		_battleforcecommand_success_ok(def_push, "fc_def", "hold", "push")
+		and att_hold == "hold"
+		and _battleforcecommand_success_ok(att_fall, "fc_att", "hold", "fall_back")
+		and BattleForceCommandService.get_command(battle_state, "fc_def") == "push"
+		and BattleForceCommandService.get_command(battle_state, "fc_att") == "fall_back"
+		and battle_state.get_tactical_force("fc_def").side_id == "defender"
+		and battle_state.get_tactical_force("fc_att").side_id == "attacker"
+	)
+
+
+static func _battleforcecommand_garrison_id_ok() -> bool:
+	var first: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var again: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var other: String = BattleForceCommandService.garrison_tactical_force_id("battle_keep")
+	var empty: String = BattleForceCommandService.garrison_tactical_force_id("")
+	return (
+		first == "garrison:battle_hq"
+		and again == "garrison:battle_hq"
+		and first == again
+		and other == "garrison:battle_keep"
+		and first != other
+		and empty.is_empty()
+	)
+
+
+static func _battleforcecommand_hq_setup_forces_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var result: BattleSetupResult = pack.get("result", null) as BattleSetupResult
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if force == null or result == null or battle_state == null or not result.success:
+		return false
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var attacker_force: BattleTacticalForce = battle_state.get_tactical_force(force.id)
+	var defender_force: BattleTacticalForce = battle_state.get_tactical_force(garrison_id)
+	return (
+		force.id == "battle_force"
+		and garrison_id == "garrison:battle_hq"
+		and battle_state.has_tactical_force(force.id)
+		and battle_state.has_tactical_force(garrison_id)
+		and battle_state.tactical_forces.size() == 2
+		and attacker_force != null
+		and defender_force != null
+		and attacker_force.command_id == "hold"
+		and defender_force.command_id == "hold"
+		and attacker_force.side_id == "attacker"
+		and defender_force.side_id == "defender"
+		and BattleForceCommandService.get_command(battle_state, force.id) == "hold"
+		and BattleForceCommandService.get_command(battle_state, garrison_id) == "hold"
+	)
+
+
+static func _battleforcecommand_attacker_mapping_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if force == null or battle_state == null:
+		return false
+	if battle_state.participants.size() != 3:
+		return false
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			return false
+		if participant.side_id != "attacker":
+			return false
+		if participant.tactical_force_id != force.id:
+			return false
+		if participant.tactical_force_id.is_empty():
+			return false
+		if BattleForceCommandService.get_command_for_participant(battle_state, participant_id) != "hold":
+			return false
+	return (
+		battle_state.get_participant("battle_sol_a").tactical_force_id == "battle_force"
+		and battle_state.get_participant("battle_sol_m").tactical_force_id == "battle_force"
+		and battle_state.get_participant("battle_sol_z").tactical_force_id == "battle_force"
+	)
+
+
+static func _battleforcecommand_defender_garrison_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var defender_side: BattleSide = battle_state.get_side("defender")
+	return (
+		battle_state.has_tactical_force(garrison_id)
+		and BattleForceCommandService.get_command(battle_state, garrison_id) == "hold"
+		and defender_side != null
+		and defender_side.participant_ids.is_empty()
+	)
+
+
+static func _battleforcecommand_hq_independent_mutation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if force == null or battle_state == null:
+		return false
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var def_set: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		garrison_id,
+		BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT
+	)
+	var attacker_after_def: String = BattleForceCommandService.get_command(battle_state, force.id)
+	var att_set: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		force.id,
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	return (
+		_battleforcecommand_success_ok(def_set, garrison_id, "hold", "focus_right")
+		and attacker_after_def == "hold"
+		and _battleforcecommand_success_ok(att_set, force.id, "hold", "push")
+		and BattleForceCommandService.get_command(battle_state, garrison_id) == "focus_right"
+		and BattleForceCommandService.get_command(battle_state, force.id) == "push"
+	)
+
+
+static func _battleforcecommand_side_not_force_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_side_a", "defender").success:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_side_b", "defender").success:
+		return false
+	var set_a: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_side_a",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	var set_b: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_side_b",
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+	)
+	var force_a: BattleTacticalForce = battle_state.get_tactical_force("fc_side_a")
+	var force_b: BattleTacticalForce = battle_state.get_tactical_force("fc_side_b")
+	return (
+		_battleforcecommand_success_ok(set_a, "fc_side_a", "hold", "hold")
+		and _battleforcecommand_success_ok(set_b, "fc_side_b", "hold", "focus_left")
+		and force_a != null
+		and force_b != null
+		and force_a.tactical_force_id != force_b.tactical_force_id
+		and force_a.side_id == force_b.side_id
+		and force_a.side_id == "defender"
+		and force_a.command_id != force_b.command_id
+	)
+
+
+static func _battleforcecommand_side_force_id_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if force == null or battle_state == null:
+		return false
+	var attacker_side: BattleSide = battle_state.get_side("attacker")
+	var defender_side: BattleSide = battle_state.get_side("defender")
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	if attacker_side == null or defender_side == null:
+		return false
+	var before_att_force_id: String = attacker_side.force_id
+	var before_def_force_id: String = defender_side.force_id
+	var def_set: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		garrison_id,
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var att_set: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		force.id,
+		BattleForceCommandCatalog.COMMAND_FALL_BACK
+	)
+	return (
+		before_att_force_id == force.id
+		and before_def_force_id.is_empty()
+		and _battleforcecommand_success_ok(def_set, garrison_id, "hold", "push")
+		and _battleforcecommand_success_ok(att_set, force.id, "hold", "fall_back")
+		and attacker_side.force_id == before_att_force_id
+		and defender_side.force_id.is_empty()
+		and battle_state.has_tactical_force(garrison_id)
+		and BattleForceCommandService.get_command(battle_state, garrison_id) == "push"
+		and BattleForceCommandService.get_command(battle_state, force.id) == "fall_back"
+	)
+
+
+static func _battleforcecommand_defend_position_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	var participant: BattleParticipant = _battlefire_add(battle_state, "fc_dp_p", "defender", "pistol")
+	if participant == null:
+		return false
+	_battletarget_place(participant, Vector2(80.0, 20.0))
+	if not participant.set_defend_position_anchor(Vector2(80.0, 20.0)):
+		return false
+	participant.set_defend_position(true)
+	if not BattleForceCommandService.register_force(battle_state, "fc_dp", "defender").success:
+		return false
+	participant.tactical_force_id = "fc_dp"
+	var set_push: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_dp",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	)
+	var posture_after_command: bool = participant.defend_position
+	var anchor_after_command: Vector2 = participant.defend_position_anchor
+	participant.set_defend_position(false)
+	return (
+		_battleforcecommand_success_ok(set_push, "fc_dp", "hold", "push")
+		and posture_after_command
+		and anchor_after_command.is_equal_approx(Vector2(80.0, 20.0))
+		and not participant.defend_position
+		and BattleForceCommandService.get_command(battle_state, "fc_dp") == "push"
+		and BattleForceCommandCatalog.COMMAND_HOLD != "defend_position"
+	)
+
+
+static func _battleforcecommand_behavior_fingerprint(
+	source: BattleParticipant,
+	target: BattleParticipant,
+	result: BattleCombatBehaviorResult
+) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["ok"] = result != null and result.success
+	snap["shots"] = 0
+	snap["repositioning"] = 0
+	if result != null:
+		snap["shots"] = result.shots_executed
+		snap["repositioning"] = result.participants_repositioning
+	snap["src_pos"] = source.battle_position
+	snap["src_intent"] = source.movement_intent
+	snap["src_speed"] = source.movement_speed
+	snap["src_target"] = source.target_participant_id
+	snap["src_defend"] = source.defend_position
+	snap["src_reserved"] = source.reserved_cover_slot_id
+	snap["src_occupied"] = source.occupied_cover_slot_id
+	snap["src_wounded"] = source.is_wounded
+	snap["src_alive"] = source.is_alive
+	snap["src_nav"] = source.has_navigation_destination
+	snap["src_nav_pos"] = source.navigation_destination
+	snap["src_mode"] = source.combat_move_mode
+	snap["tgt_alive"] = target.is_alive
+	snap["tgt_wounded"] = target.is_wounded
+	snap["tgt_pos"] = target.battle_position
+	return snap
+
+
+static func _battleforcecommand_behavior_same(left: Dictionary, right: Dictionary) -> bool:
+	if left.is_empty() or right.is_empty():
+		return false
+	var left_pos: Vector2 = left.get("src_pos", Vector2.INF)
+	var right_pos: Vector2 = right.get("src_pos", Vector2.INF)
+	var left_intent: Vector2 = left.get("src_intent", Vector2.INF)
+	var right_intent: Vector2 = right.get("src_intent", Vector2.INF)
+	var left_nav: Vector2 = left.get("src_nav_pos", Vector2.INF)
+	var right_nav: Vector2 = right.get("src_nav_pos", Vector2.INF)
+	var left_tgt_pos: Vector2 = left.get("tgt_pos", Vector2.INF)
+	var right_tgt_pos: Vector2 = right.get("tgt_pos", Vector2.INF)
+	return (
+		bool(left.get("ok", false))
+		and bool(right.get("ok", false))
+		and int(left.get("shots", -1)) == int(right.get("shots", -2))
+		and int(left.get("repositioning", -1)) == int(right.get("repositioning", -2))
+		and left_pos.is_equal_approx(right_pos)
+		and left_intent.is_equal_approx(right_intent)
+		and is_equal_approx(float(left.get("src_speed", -1.0)), float(right.get("src_speed", -2.0)))
+		and str(left.get("src_target", "")) == str(right.get("src_target", "x"))
+		and bool(left.get("src_defend", true)) == bool(right.get("src_defend", false))
+		and str(left.get("src_reserved", "x")) == str(right.get("src_reserved", "y"))
+		and str(left.get("src_occupied", "x")) == str(right.get("src_occupied", "y"))
+		and bool(left.get("src_wounded", true)) == bool(right.get("src_wounded", false))
+		and bool(left.get("src_alive", false)) == bool(right.get("src_alive", true))
+		and bool(left.get("src_nav", true)) == bool(right.get("src_nav", false))
+		and left_nav.is_equal_approx(right_nav)
+		and str(left.get("src_mode", "x")) == str(right.get("src_mode", "y"))
+		and bool(left.get("tgt_alive", false)) == bool(right.get("tgt_alive", true))
+		and bool(left.get("tgt_wounded", true)) == bool(right.get("tgt_wounded", false))
+		and left_tgt_pos.is_equal_approx(right_tgt_pos)
+	)
+
+
+static func _battleforcecommand_run_behavior(command_id: String) -> Dictionary:
+	var pack: Dictionary = _battlebehavior_pair(
+		"fc_bhv_src",
+		"fc_bhv_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	var empty: Dictionary = {}
+	if battle_state == null or source == null or target == null:
+		return empty
+	if not BattleForceCommandService.register_force(battle_state, "fc_bhv", "attacker").success:
+		return empty
+	source.tactical_force_id = "fc_bhv"
+	var set_result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_bhv",
+		command_id
+	)
+	if not set_result.success:
+		return empty
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return _battleforcecommand_behavior_fingerprint(source, target, result)
+
+
+static func _battleforcecommand_no_behavior_effect_ok() -> bool:
+	var baseline: Dictionary = _battleforcecommand_run_behavior(BattleForceCommandCatalog.COMMAND_HOLD)
+	if baseline.is_empty() or not bool(baseline.get("ok", false)):
+		return false
+	var expected: Array[String] = _battleforcecommand_expected_ids()
+	for command_id: String in expected:
+		var snap: Dictionary = _battleforcecommand_run_behavior(command_id)
+		if not _battleforcecommand_behavior_same(baseline, snap):
+			return false
+	return true
+
+
+static func _battleforcecommand_no_rng_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.combat_random == null:
+		return false
+	var before_register: int = battle_state.combat_random.snapshot_state()
+	if not BattleForceCommandService.register_force(battle_state, "fc_rng", "attacker").success:
+		return false
+	var after_register: int = battle_state.combat_random.snapshot_state()
+	var _ignored_get: String = BattleForceCommandService.get_command(battle_state, "fc_rng")
+	var after_get: int = battle_state.combat_random.snapshot_state()
+	if not BattleForceCommandService.set_command(
+		battle_state,
+		"fc_rng",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	).success:
+		return false
+	var after_set: int = battle_state.combat_random.snapshot_state()
+	if not BattleForceCommandService.set_command(
+		battle_state,
+		"fc_rng",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	).success:
+		return false
+	var after_repeat: int = battle_state.combat_random.snapshot_state()
+	var _ignored_invalid: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_rng",
+		"flee"
+	)
+	var after_invalid: int = battle_state.combat_random.snapshot_state()
+	return (
+		after_register == before_register
+		and after_get == before_register
+		and after_set == before_register
+		and after_repeat == before_register
+		and after_invalid == before_register
+	)
+
+
+static func _battleforcecommand_stable_order_ok() -> bool:
+	var expected: Array[String] = _battleforcecommand_expected_ids()
+	if not _string_ids_match(BattleForceCommandService.get_command_ids(), expected):
+		return false
+	if not _string_ids_match(BattleForceCommandCatalog.command_ids(), expected):
+		return false
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_z", "attacker").success:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_a", "defender").success:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_m", "attacker").success:
+		return false
+	var sorted_ids: Array[String] = BattleForceCommandService.get_tactical_force_ids(battle_state)
+	var expected_forces: Array[String] = []
+	expected_forces.append("fc_a")
+	expected_forces.append("fc_m")
+	expected_forces.append("fc_z")
+	return _string_ids_match(sorted_ids, expected_forces)
+
+
+static func _battleforcecommand_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or force == null or battle_state == null:
+		return false
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var soldier_ids_before: Array[String] = _copy_ids(force.soldier_group.soldier_ids)
+	var vehicle_ids_before: Array[String] = _copy_ids(force.vehicle_group.vehicle_ids)
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	if not BattleForceCommandService.set_command(
+		battle_state,
+		force.id,
+		BattleForceCommandCatalog.COMMAND_PUSH
+	).success:
+		return false
+	if not BattleForceCommandService.set_command(
+		battle_state,
+		garrison_id,
+		BattleForceCommandCatalog.COMMAND_FOCUS_LEFT
+	).success:
+		return false
+	var persist: Dictionary = game_state.to_dict()
+	return (
+		_battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _string_ids_match(_copy_ids(force.soldier_group.soldier_ids), soldier_ids_before)
+		and _string_ids_match(_copy_ids(force.vehicle_group.vehicle_ids), vehicle_ids_before)
+		and force.get("command_id") == null
+		and force.soldier_group.get("command_id") == null
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+	)
+
+
+static func _battleforcecommand_no_fake_garrison_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or force == null or battle_state == null:
+		return false
+	var garrison_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var defender_side: BattleSide = battle_state.get_side("defender")
+	return (
+		garrison_id == "garrison:battle_hq"
+		and battle_state.has_tactical_force(garrison_id)
+		and not game_state.has_traveling_force(garrison_id)
+		and game_state.traveling_forces.size() == 1
+		and game_state.has_traveling_force(force.id)
+		and defender_side != null
+		and defender_side.force_id.is_empty()
+	)
+
+
+static func _battleforcecommand_no_queue_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null:
+		return false
+	if not BattleForceCommandService.register_force(battle_state, "fc_queue", "attacker").success:
+		return false
+	var force: BattleTacticalForce = battle_state.get_tactical_force("fc_queue")
+	var result: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		"fc_queue",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	if force == null or result == null:
+		return false
+	return (
+		force.get("queue") == null
+		and force.get("command_queue") == null
+		and force.get("duration") == null
+		and force.get("cooldown") == null
+		and force.get("cost") == null
+		and force.get("history") == null
+		and force.get("action_points") == null
+		and result.get("queue") == null
+		and result.get("history") == null
+		and battle_state.get("command_queue") == null
+		and battle_state.get("command_history") == null
+	)
+
+
+static func _battleforcecommand_absent_systems_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	var behavior: BattleCombatBehaviorService = BattleCombatBehaviorService.new()
+	var command_svc: BattleForceCommandService = BattleForceCommandService.new()
+	var runtime: BattleRuntimeService = BattleRuntimeService.new()
+	var participant: BattleParticipant = BattleParticipant.new("fc_abs_p", "", "a", "attacker", "pistol")
+	if battle_state == null:
+		return false
+	return (
+		not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("withdraw")
+		and not BattleForceCommandService.is_valid_command("retreat")
+		and not behavior.has_method("apply_push")
+		and not behavior.has_method("apply_hold")
+		and not behavior.has_method("apply_focus_left")
+		and not behavior.has_method("apply_focus_right")
+		and not behavior.has_method("apply_fall_back")
+		and not behavior.has_method("issue_force_command")
+		and not behavior.has_method("select_ai_command")
+		and not command_svc.has_method("select_ai_command")
+		and not command_svc.has_method("choose_command")
+		and not command_svc.has_method("apply_morale")
+		and not command_svc.has_method("require_captain")
+		and not command_svc.has_method("command_radius")
+		and not command_svc.has_method("issue_flee")
+		and not command_svc.has_method("withdraw")
+		and not command_svc.has_method("end_battle")
+		and not command_svc.has_method("queue_command")
+		and not runtime.has_method("request_command_hotkey")
+		and participant.get("command_id") == null
+		and participant.get("action_points") == null
+		and battle_state.get("winner_side_id") == null
+		and battle_state.get("current_actor_id") == null
+		and battle_state.get("formation_anchor") == null
+		and battle_state.get("lane_geometry") == null
+		and not battle_state.has_method("resolve_victory")
 		and not GameState.new().has_method("apply_tactical_casualty")
 	)

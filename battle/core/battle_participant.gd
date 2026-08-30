@@ -11,6 +11,7 @@ var participant_id: String = ""
 var campaign_soldier_id: String = ""
 var faction_id: String = ""
 var side_id: String = ""
+var tactical_force_id: String = ""
 var weapon_type: String = ""
 var weapon_state: BattleWeaponState = null
 var is_alive: bool = true
@@ -48,7 +49,8 @@ func _init(
 	p_weapon_type: String = "",
 	p_is_alive: bool = true,
 	p_is_wounded: bool = false,
-	p_deployment_slot_id: String = ""
+	p_deployment_slot_id: String = "",
+	p_tactical_force_id: String = ""
 ) -> void:
 	participant_id = p_participant_id
 	campaign_soldier_id = p_campaign_soldier_id
@@ -59,6 +61,7 @@ func _init(
 	is_alive = p_is_alive
 	is_wounded = p_is_wounded
 	deployment_slot_id = p_deployment_slot_id
+	tactical_force_id = p_tactical_force_id
 
 
 func set_movement_intent(direction: Vector2) -> bool:

@@ -7,6 +7,8 @@ const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
+const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
+const BattleForceCommandResult := preload("res://battle/core/battle_force_command_result.gd")
 const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
 
 const SIDE_ATTACKER := "attacker"
@@ -180,6 +182,51 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			battle_id
 		)
 
+	var attacker_tactical_force_id: String = force.id
+	var defender_tactical_force_id: String = BattleForceCommandService.garrison_tactical_force_id(hq.id)
+	if defender_tactical_force_id.is_empty() or defender_tactical_force_id == attacker_tactical_force_id:
+		push_error(
+			"BattleSetupService.create_neighborhood_hq_battle: invalid defender garrison tactical force id."
+		)
+		return BattleSetupResult.failed(
+			"battle_insert_failed",
+			"Battle setup failed: could not derive defender garrison tactical force id.",
+			mission.id,
+			battle_id
+		)
+	var attacker_force_result: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		attacker_tactical_force_id,
+		SIDE_ATTACKER
+	)
+	if not attacker_force_result.success:
+		push_error(
+			"BattleSetupService.create_neighborhood_hq_battle: failed to register tactical force '%s'."
+			% attacker_tactical_force_id
+		)
+		return BattleSetupResult.failed(
+			"battle_insert_failed",
+			"Battle setup failed: could not register tactical force '%s'." % attacker_tactical_force_id,
+			mission.id,
+			battle_id
+		)
+	var defender_force_result: BattleForceCommandResult = BattleForceCommandService.register_force(
+		battle_state,
+		defender_tactical_force_id,
+		SIDE_DEFENDER
+	)
+	if not defender_force_result.success:
+		push_error(
+			"BattleSetupService.create_neighborhood_hq_battle: failed to register tactical force '%s'."
+			% defender_tactical_force_id
+		)
+		return BattleSetupResult.failed(
+			"battle_insert_failed",
+			"Battle setup failed: could not register tactical force '%s'." % defender_tactical_force_id,
+			mission.id,
+			battle_id
+		)
+
 	for soldier_id: String in attacker_soldier_ids:
 		var soldier: Soldier = game_state.get_soldier(soldier_id)
 		var participant: BattleParticipant = BattleParticipant.new(
@@ -190,7 +237,8 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			soldier.weapon_type_id,
 			true,
 			false,
-			""
+			"",
+			attacker_tactical_force_id
 		)
 		if not battle_state.add_participant(participant) or not attacker_side.add_participant_id(participant.participant_id):
 			push_error(
