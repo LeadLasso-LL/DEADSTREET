@@ -15,12 +15,15 @@ const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
+const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
 
 const TACTICAL_PIXELS_PER_UNIT := 8.0
 const CAMERA_PADDING := 96.0
 const PARTICIPANT_RADIUS := 7.0
 const VEHICLE_SIZE := Vector2(16.0, 10.0)
 const COVER_SLOT_RADIUS := 3.5
+const ROSTER_ROW_HEIGHT := 16.0
+const ROSTER_ROW_WIDTH := 520.0
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
 const PROVISIONAL_BACKGROUND := Color(0.10, 0.10, 0.11, 1.0)
@@ -43,11 +46,16 @@ const PROVISIONAL_COVER := Color(0.72, 0.86, 0.58, 1.0)
 const PROVISIONAL_LABEL := Color(0.92, 0.92, 0.90, 1.0)
 const PROVISIONAL_LABEL_SHADOW := Color(0.05, 0.05, 0.06, 1.0)
 const PROVISIONAL_OVERLAY := Color(0.88, 0.88, 0.86, 1.0)
+const PROVISIONAL_SELECTED := Color(0.95, 0.86, 0.38, 0.38)
+const PROVISIONAL_SELECTABLE := Color(0.72, 0.88, 1.0, 1.0)
+const PROVISIONAL_STATUS := Color(0.95, 0.78, 0.42, 1.0)
 
 # Reference only. This view never stores an independent BattleState.
 var session: CampaignBattleSession = null
+var deployment_controller: TacticalDeploymentController = null
 
 var _camera: Camera2D = null
+var _roster_hits: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -61,6 +69,51 @@ func bind_session(p_session: CampaignBattleSession) -> void:
 	_ensure_camera()
 	_frame_camera()
 	queue_redraw()
+
+
+func bind_deployment_controller(p_controller: TacticalDeploymentController) -> void:
+	deployment_controller = p_controller
+	queue_redraw()
+
+
+func screen_to_tactical_position(viewport_position: Vector2) -> Vector2:
+	return viewport_to_local_position(viewport_position) / TACTICAL_PIXELS_PER_UNIT
+
+
+func viewport_to_local_position(viewport_position: Vector2) -> Vector2:
+	var viewport: Viewport = get_viewport()
+	if viewport == null:
+		return Vector2.ZERO
+	var canvas_pos: Vector2 = viewport.get_canvas_transform().affine_inverse() * viewport_position
+	return to_local(canvas_pos)
+
+
+func hit_test_roster(local_position: Vector2) -> Dictionary:
+	_rebuild_roster_hits()
+	var hit: Dictionary = {}
+	for row: Dictionary in _roster_hits:
+		var rect: Rect2 = row.get("rect", Rect2())
+		if rect.has_point(local_position):
+			hit["kind"] = str(row.get("kind", ""))
+			hit["id"] = str(row.get("id", ""))
+			return hit
+	return hit
+
+
+func _rebuild_roster_hits() -> void:
+	_roster_hits.clear()
+	var cursor: Vector2 = _overlay_origin()
+	for row: Dictionary in _overlay_rows():
+		var kind: String = str(row.get("kind", ""))
+		var row_id: String = str(row.get("id", ""))
+		var row_rect: Rect2 = Rect2(cursor, Vector2(ROSTER_ROW_WIDTH, ROSTER_ROW_HEIGHT))
+		if kind == "participant" or kind == "vehicle":
+			_roster_hits.append({
+				"kind": kind,
+				"id": row_id,
+				"rect": row_rect,
+			})
+		cursor.y += ROSTER_ROW_HEIGHT
 
 
 func set_presentation_camera_enabled(enabled: bool) -> void:
@@ -240,6 +293,8 @@ func _draw_participants(battle_state: BattleState) -> void:
 		else:
 			draw_circle(view_pos, PARTICIPANT_RADIUS, fill, true)
 			draw_circle(view_pos, PARTICIPANT_RADIUS, Color(0.08, 0.08, 0.09, 1.0), false, 1.5, true)
+		if _selected_participant_id() == participant.participant_id:
+			draw_circle(view_pos, PARTICIPANT_RADIUS + 4.0, PROVISIONAL_SELECTABLE, false, 2.0, true)
 		var weapon_abbrev: String = _weapon_abbrev(participant.weapon_type)
 		_draw_label(view_pos + Vector2(0.0, -PARTICIPANT_RADIUS - 12.0), participant.participant_id, 11)
 		if not weapon_abbrev.is_empty():
@@ -260,20 +315,46 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 
 
 func _draw_overlay() -> void:
+	_roster_hits.clear()
 	var origin: Vector2 = _overlay_origin()
-	var lines: Array[String] = _overlay_lines()
+	var rows: Array[Dictionary] = _overlay_rows()
 	var cursor: Vector2 = origin
-	for line: String in lines:
-		_draw_label_left(cursor, line, 13, PROVISIONAL_OVERLAY)
-		cursor.y += 16.0
+	var selected_id: String = _selected_participant_id()
+	for row: Dictionary in rows:
+		var text: String = str(row.get("text", ""))
+		var kind: String = str(row.get("kind", ""))
+		var row_id: String = str(row.get("id", ""))
+		var row_rect: Rect2 = Rect2(cursor, Vector2(ROSTER_ROW_WIDTH, ROSTER_ROW_HEIGHT))
+		if kind == "participant" or kind == "vehicle":
+			_roster_hits.append({
+				"kind": kind,
+				"id": row_id,
+				"rect": row_rect,
+			})
+		if kind == "participant" and row_id == selected_id and not selected_id.is_empty():
+			draw_rect(row_rect, PROVISIONAL_SELECTED, true)
+		var color: Color = PROVISIONAL_OVERLAY
+		if kind == "status":
+			color = PROVISIONAL_STATUS
+		elif kind == "participant" and bool(row.get("selectable", false)):
+			color = PROVISIONAL_SELECTABLE
+		_draw_label_left(cursor, text, 13, color)
+		cursor.y += ROSTER_ROW_HEIGHT
 
 
 func _overlay_lines() -> Array[String]:
 	var lines: Array[String] = []
+	for row: Dictionary in _overlay_rows():
+		lines.append(str(row.get("text", "")))
+	return lines
+
+
+func _overlay_rows() -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
 	var battle_state: BattleState = _battle_state()
 	if session == null or battle_state == null:
-		lines.append("tactical view: no session")
-		return lines
+		rows.append(_overlay_row("tactical view: no session"))
+		return rows
 	var deployed_participants: int = 0
 	var undeployed_participants: int = 0
 	var deployed_vehicles: int = 0
@@ -288,46 +369,108 @@ func _overlay_lines() -> Array[String]:
 			deployed_vehicles += 1
 		else:
 			undeployed_vehicles += 1
-	lines.append("type=%s  mission=%s" % [battle_state.battle_type_id, battle_state.mission_id])
-	lines.append("phase=%s  session=%s" % [battle_state.battle_phase, session.session_state])
-	lines.append(
-		"attacker_side=%s  defender_side=%s"
-		% [battle_state.attacker_side_id, battle_state.defender_side_id]
+	rows.append(_overlay_row("type=%s  mission=%s" % [battle_state.battle_type_id, battle_state.mission_id]))
+	rows.append(_overlay_row("phase=%s  session=%s" % [battle_state.battle_phase, session.session_state]))
+	rows.append(
+		_overlay_row(
+			"attacker_side=%s  defender_side=%s"
+			% [battle_state.attacker_side_id, battle_state.defender_side_id]
+		)
 	)
-	lines.append(
-		"participants deployed=%s undeployed=%s  vehicles deployed=%s undeployed=%s"
-		% [deployed_participants, undeployed_participants, deployed_vehicles, undeployed_vehicles]
+	rows.append(
+		_overlay_row(
+			"participants deployed=%s undeployed=%s  vehicles deployed=%s undeployed=%s"
+			% [deployed_participants, undeployed_participants, deployed_vehicles, undeployed_vehicles]
+		)
 	)
-	lines.append("ROSTER")
+	rows.append(_overlay_row("ROSTER"))
 	for participant_id: String in _sorted_keys(battle_state.participants):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
 		if participant == null:
 			continue
-		lines.append(
-			"  P %s  %s  %s  %s"
-			% [
-				participant.participant_id,
-				_side_label(battle_state, participant.side_id),
-				participant.weapon_type,
-				_deployed_label(battle_state.is_participant_deployed(participant_id)),
-			]
+		var selectable: bool = _is_roster_selectable(battle_state, participant)
+		var prefix: String = "  P"
+		if selectable:
+			prefix = "> P"
+		rows.append(
+			{
+				"text": "%s %s  %s  %s  %s" % [
+					prefix,
+					participant.participant_id,
+					_side_label(battle_state, participant.side_id),
+					participant.weapon_type,
+					_deployed_label(battle_state.is_participant_deployed(participant_id)),
+				],
+				"kind": "participant",
+				"id": participant.participant_id,
+				"selectable": selectable,
+			}
 		)
 	for vehicle_id: String in _sorted_keys(battle_state.vehicles):
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if vehicle == null:
 			continue
-		lines.append(
-			"  V %s  %s  %s  %s"
-			% [
-				vehicle.battle_vehicle_id,
-				_side_label(battle_state, vehicle.side_id),
-				vehicle.vehicle_type_id,
-				_deployed_label(battle_state.is_vehicle_deployed(vehicle_id)),
-			]
+		rows.append(
+			{
+				"text": "  V %s  %s  %s  %s  (placement unavailable)" % [
+					vehicle.battle_vehicle_id,
+					_side_label(battle_state, vehicle.side_id),
+					vehicle.vehicle_type_id,
+					_deployed_label(battle_state.is_vehicle_deployed(vehicle_id)),
+				],
+				"kind": "vehicle",
+				"id": vehicle.battle_vehicle_id,
+				"selectable": false,
+			}
 		)
 	if battle_state.participants.is_empty() and battle_state.vehicles.is_empty():
-		lines.append("  (none)")
-	return lines
+		rows.append(_overlay_row("  (none)"))
+	var status: String = _status_text()
+	if not status.is_empty():
+		rows.append(
+			{
+				"text": status,
+				"kind": "status",
+				"id": "",
+				"selectable": false,
+			}
+		)
+	return rows
+
+
+func _overlay_row(text: String) -> Dictionary:
+	return {
+		"text": text,
+		"kind": "",
+		"id": "",
+		"selectable": false,
+	}
+
+
+func _selected_participant_id() -> String:
+	if deployment_controller == null:
+		return ""
+	return deployment_controller.selected_participant_id
+
+
+func _status_text() -> String:
+	if deployment_controller == null:
+		return ""
+	return deployment_controller.status_text
+
+
+func _is_roster_selectable(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if battle_state == null or participant == null:
+		return false
+	if participant.side_id != battle_state.attacker_side_id:
+		return false
+	if not participant.is_alive:
+		return false
+	if battle_state.is_participant_deployed(participant.participant_id):
+		return false
+	if participant.has_battle_position:
+		return false
+	return true
 
 
 func _authoritative_bounds(battle_state: BattleState) -> Rect2:

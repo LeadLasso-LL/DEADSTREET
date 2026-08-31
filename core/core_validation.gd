@@ -118,6 +118,9 @@ const GameplayRuntime := preload("res://gameplay/gameplay_runtime.gd")
 const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
 const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
+const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
+const BattleDeploymentPlacementService := preload("res://battle/core/battle_deployment_placement_service.gd")
+const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
 
 
 static func run() -> Dictionary:
@@ -15949,6 +15952,35 @@ static func run() -> Dictionary:
 	var tacticalview_debug_input_ok: bool = _tacticalview_debug_input_ok()
 	var tacticalview_no_interact_ok: bool = _tacticalview_no_interact_ok()
 	var tacticalview_no_art_ok: bool = _tacticalview_no_art_ok()
+	var interactive_deploy_place_ok: bool = _interactive_deploy_place_ok()
+	var interactive_deploy_atomic_ok: bool = _interactive_deploy_atomic_ok()
+	var interactive_deploy_finite_ok: bool = _interactive_deploy_finite_ok()
+	var interactive_deploy_bounds_ok: bool = _interactive_deploy_bounds_ok()
+	var interactive_deploy_zone_ok: bool = _interactive_deploy_zone_ok()
+	var interactive_deploy_obstacle_ok: bool = _interactive_deploy_obstacle_ok()
+	var interactive_deploy_spacing_ok: bool = _interactive_deploy_spacing_ok()
+	var interactive_deploy_eligibility_ok: bool = _interactive_deploy_eligibility_ok()
+	var interactive_deploy_side_identity_ok: bool = _interactive_deploy_side_identity_ok()
+	var interactive_deploy_vehicle_ok: bool = _interactive_deploy_vehicle_ok()
+	var interactive_deploy_selection_ok: bool = _interactive_deploy_selection_ok()
+	var interactive_deploy_invalid_keep_ok: bool = _interactive_deploy_invalid_keep_ok()
+	var interactive_deploy_success_clear_ok: bool = _interactive_deploy_success_clear_ok()
+	var interactive_deploy_redeploy_ok: bool = _interactive_deploy_redeploy_ok()
+	var interactive_deploy_deselect_ok: bool = _interactive_deploy_deselect_ok()
+	var interactive_deploy_empty_click_ok: bool = _interactive_deploy_empty_click_ok()
+	var interactive_deploy_roster_hit_ok: bool = _interactive_deploy_roster_hit_ok()
+	var interactive_deploy_screen_convert_ok: bool = _interactive_deploy_screen_convert_ok()
+	var interactive_deploy_continuous_ok: bool = _interactive_deploy_continuous_ok()
+	var interactive_deploy_view_readback_ok: bool = _interactive_deploy_view_readback_ok()
+	var interactive_deploy_input_gating_ok: bool = _interactive_deploy_input_gating_ok()
+	var interactive_deploy_htb_mouse_ok: bool = _interactive_deploy_htb_mouse_ok()
+	var interactive_deploy_phase_ok: bool = _interactive_deploy_phase_ok()
+	var interactive_deploy_rng_ok: bool = _interactive_deploy_rng_ok()
+	var interactive_deploy_campaign_ok: bool = _interactive_deploy_campaign_ok()
+	var interactive_deploy_membership_ok: bool = _interactive_deploy_membership_ok()
+	var interactive_deploy_commit_future_ok: bool = _interactive_deploy_commit_future_ok()
+	var interactive_deploy_geo_safety_ok: bool = _interactive_deploy_geo_safety_ok()
+	var interactive_deploy_absent_ok: bool = _interactive_deploy_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17731,6 +17763,35 @@ static func run() -> Dictionary:
 		"tacticalview_debug_input_ok": tacticalview_debug_input_ok,
 		"tacticalview_no_interact_ok": tacticalview_no_interact_ok,
 		"tacticalview_no_art_ok": tacticalview_no_art_ok,
+		"interactive_deploy_place_ok": interactive_deploy_place_ok,
+		"interactive_deploy_atomic_ok": interactive_deploy_atomic_ok,
+		"interactive_deploy_finite_ok": interactive_deploy_finite_ok,
+		"interactive_deploy_bounds_ok": interactive_deploy_bounds_ok,
+		"interactive_deploy_zone_ok": interactive_deploy_zone_ok,
+		"interactive_deploy_obstacle_ok": interactive_deploy_obstacle_ok,
+		"interactive_deploy_spacing_ok": interactive_deploy_spacing_ok,
+		"interactive_deploy_eligibility_ok": interactive_deploy_eligibility_ok,
+		"interactive_deploy_side_identity_ok": interactive_deploy_side_identity_ok,
+		"interactive_deploy_vehicle_ok": interactive_deploy_vehicle_ok,
+		"interactive_deploy_selection_ok": interactive_deploy_selection_ok,
+		"interactive_deploy_invalid_keep_ok": interactive_deploy_invalid_keep_ok,
+		"interactive_deploy_success_clear_ok": interactive_deploy_success_clear_ok,
+		"interactive_deploy_redeploy_ok": interactive_deploy_redeploy_ok,
+		"interactive_deploy_deselect_ok": interactive_deploy_deselect_ok,
+		"interactive_deploy_empty_click_ok": interactive_deploy_empty_click_ok,
+		"interactive_deploy_roster_hit_ok": interactive_deploy_roster_hit_ok,
+		"interactive_deploy_screen_convert_ok": interactive_deploy_screen_convert_ok,
+		"interactive_deploy_continuous_ok": interactive_deploy_continuous_ok,
+		"interactive_deploy_view_readback_ok": interactive_deploy_view_readback_ok,
+		"interactive_deploy_input_gating_ok": interactive_deploy_input_gating_ok,
+		"interactive_deploy_htb_mouse_ok": interactive_deploy_htb_mouse_ok,
+		"interactive_deploy_phase_ok": interactive_deploy_phase_ok,
+		"interactive_deploy_rng_ok": interactive_deploy_rng_ok,
+		"interactive_deploy_campaign_ok": interactive_deploy_campaign_ok,
+		"interactive_deploy_membership_ok": interactive_deploy_membership_ok,
+		"interactive_deploy_commit_future_ok": interactive_deploy_commit_future_ok,
+		"interactive_deploy_geo_safety_ok": interactive_deploy_geo_safety_ok,
+		"interactive_deploy_absent_ok": interactive_deploy_absent_ok,
 	}
 
 	var passed := true
@@ -50658,6 +50719,1546 @@ static func _tacticalview_no_art_ok() -> bool:
 		and not source.contains("blood")
 		and not source.contains("bullet")
 		and not source.contains("CanvasLayer")
+	)
+
+
+static func _interactive_deploy_boot_tree() -> GameplayRuntime:
+	var packed: PackedScene = load("res://gameplay/gameplay_runtime.tscn") as PackedScene
+	if packed == null:
+		return null
+	var node: Node = packed.instantiate()
+	if node == null or not (node is GameplayRuntime):
+		if node != null:
+			node.free()
+		return null
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null or tree.root == null:
+		node.free()
+		return null
+	var host: Node = tree.current_scene
+	if host == null:
+		host = tree.root
+	host.add_child(node)
+	var runtime: GameplayRuntime = node as GameplayRuntime
+	if runtime.game_state == null or runtime.game_flow_controller == null:
+		runtime._ready()
+	if runtime.game_state == null or runtime.game_flow_controller == null or not runtime.is_inside_tree():
+		runtime.free()
+		return null
+	return runtime
+
+
+static func _interactive_deploy_controller(runtime: GameplayRuntime) -> TacticalDeploymentController:
+	if runtime == null:
+		return null
+	return runtime.tactical_deployment_controller
+
+
+static func _interactive_deploy_zone(battle_state: BattleState, participant_id: String) -> DeploymentZone:
+	if battle_state == null or not battle_state.has_participant(participant_id):
+		return null
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	if participant == null or not battle_state.has_side(participant.side_id):
+		return null
+	var side: BattleSide = battle_state.get_side(participant.side_id)
+	if side == null or side.deployment_zone_id.is_empty():
+		return null
+	return battle_state.get_deployment_zone(side.deployment_zone_id)
+
+
+static func _interactive_deploy_zone_ids(zone: DeploymentZone) -> Array[String]:
+	var ids: Array[String] = []
+	if zone == null:
+		return ids
+	for participant_id: String in zone.deployed_participant_ids:
+		ids.append(participant_id)
+	return ids
+
+
+static func _interactive_deploy_ids_match(left: Array[String], right: Array[String]) -> bool:
+	if left.size() != right.size():
+		return false
+	for index: int in range(left.size()):
+		if left[index] != right[index]:
+			return false
+	return true
+
+
+static func _interactive_deploy_place_snap(participant: BattleParticipant, zone: DeploymentZone) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["slot"] = ""
+	snap["has"] = false
+	snap["pos"] = Vector2.ZERO
+	snap["ids"] = []
+	if participant != null:
+		snap["slot"] = participant.deployment_slot_id
+		snap["has"] = participant.has_battle_position
+		snap["pos"] = participant.battle_position
+	snap["ids"] = _interactive_deploy_zone_ids(zone)
+	return snap
+
+
+static func _interactive_deploy_place_unchanged(
+	participant: BattleParticipant,
+	zone: DeploymentZone,
+	snap: Dictionary
+) -> bool:
+	if participant == null:
+		return false
+	var ids: Array[String] = []
+	var id_data: Variant = snap.get("ids", [])
+	if id_data is Array:
+		for participant_id: Variant in id_data:
+			ids.append(str(participant_id))
+	var pos: Vector2 = snap.get("pos", Vector2.INF)
+	return (
+		participant.deployment_slot_id == str(snap.get("slot", "missing"))
+		and participant.has_battle_position == bool(snap.get("has", true))
+		and participant.battle_position.is_equal_approx(pos)
+		and _interactive_deploy_ids_match(_interactive_deploy_zone_ids(zone), ids)
+	)
+
+
+static func _interactive_deploy_continuous_point(geometry: BattlefieldGeometry) -> Vector2:
+	var requested: Vector2 = Vector2(7.25, 31.5)
+	if geometry != null and geometry.contains_point(requested) and geometry.attacker_deployment_contains(requested):
+		return requested
+	if geometry == null:
+		return requested
+	return (
+		geometry.attacker_deployment_rect.position
+		+ Vector2(
+			geometry.attacker_deployment_rect.size.x * 0.37,
+			geometry.attacker_deployment_rect.size.y * 0.52
+		)
+	)
+
+
+static func _interactive_deploy_center_point(geometry: BattlefieldGeometry) -> Vector2:
+	if geometry == null:
+		return Vector2(50.0, 30.0)
+	return Vector2(geometry.width * 0.5, geometry.height * 0.5)
+
+
+static func _interactive_deploy_defender_point(geometry: BattlefieldGeometry) -> Vector2:
+	if geometry == null:
+		return Vector2(90.0, 30.0)
+	var rect: Rect2 = geometry.defender_deployment_rect
+	return rect.position + rect.size * 0.5
+
+
+static func _interactive_deploy_id_count(ids: Array[String], participant_id: String) -> int:
+	var count: int = 0
+	for found_id: String in ids:
+		if found_id == participant_id:
+			count += 1
+	return count
+
+
+static func _interactive_deploy_campaign_snap(game_state: GameState) -> Dictionary:
+	var force: TravelingForce = null
+	if game_state != null:
+		force = game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, StarterWorldService.DEBUG_MISSION_ID)
+	snap["turn"] = 0
+	snap["month"] = 0
+	snap["year"] = 0
+	snap["player_money"] = -1.0
+	snap["player_ammo"] = -1.0
+	snap["rival_money"] = -1.0
+	if game_state != null:
+		snap["turn"] = game_state.current_turn
+		snap["month"] = game_state.current_month
+		snap["year"] = game_state.current_year
+		if game_state.has_faction(StarterWorldService.PLAYER_FACTION_ID):
+			var player: Faction = game_state.get_faction(StarterWorldService.PLAYER_FACTION_ID)
+			if player is MajorGang:
+				var player_gang: MajorGang = player as MajorGang
+				snap["player_money"] = player_gang.money
+				snap["player_ammo"] = player_gang.resources.get_amount("Ammo")
+		if game_state.has_faction(StarterWorldService.RIVAL_FACTION_ID):
+			var rival: Faction = game_state.get_faction(StarterWorldService.RIVAL_FACTION_ID)
+			if rival is MajorGang:
+				snap["rival_money"] = (rival as MajorGang).money
+	return snap
+
+
+static func _interactive_deploy_campaign_unchanged(game_state: GameState, snap: Dictionary) -> bool:
+	if game_state == null:
+		return false
+	var force: TravelingForce = game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	if not _battle_campaign_unchanged(game_state, snap, force, StarterWorldService.DEBUG_MISSION_ID):
+		return false
+	if game_state.current_turn != int(snap.get("turn", -1)):
+		return false
+	if game_state.current_month != int(snap.get("month", -1)):
+		return false
+	if game_state.current_year != int(snap.get("year", -1)):
+		return false
+	if game_state.has_faction(StarterWorldService.PLAYER_FACTION_ID):
+		var player: Faction = game_state.get_faction(StarterWorldService.PLAYER_FACTION_ID)
+		if player is MajorGang:
+			var player_gang: MajorGang = player as MajorGang
+			if not is_equal_approx(player_gang.money, float(snap.get("player_money", -2.0))):
+				return false
+			if not is_equal_approx(player_gang.resources.get_amount("Ammo"), float(snap.get("player_ammo", -2.0))):
+				return false
+	if game_state.has_faction(StarterWorldService.RIVAL_FACTION_ID):
+		var rival: Faction = game_state.get_faction(StarterWorldService.RIVAL_FACTION_ID)
+		if rival is MajorGang:
+			if not is_equal_approx((rival as MajorGang).money, float(snap.get("rival_money", -2.0))):
+				return false
+	return true
+
+
+static func _interactive_deploy_click(
+	runtime: GameplayRuntime,
+	viewport_pos: Vector2,
+	button: MouseButton = MOUSE_BUTTON_LEFT
+) -> void:
+	if runtime == null:
+		return
+	var event: InputEventMouseButton = InputEventMouseButton.new()
+	event.button_index = button
+	event.pressed = true
+	event.position = viewport_pos
+	runtime._unhandled_input(event)
+
+
+static func _interactive_deploy_local_to_viewport(view: TacticalBattleView, local_pos: Vector2) -> Vector2:
+	if view == null or view.get_viewport() == null:
+		return Vector2.ZERO
+	return view.get_viewport().get_canvas_transform() * view.to_global(local_pos)
+
+
+static func _interactive_deploy_tactical_to_viewport(view: TacticalBattleView, tactical: Vector2) -> Vector2:
+	if view == null:
+		return Vector2.ZERO
+	var local: Vector2 = view.call("_to_view", tactical)
+	return _interactive_deploy_local_to_viewport(view, local)
+
+
+static func _interactive_deploy_roster_rect(view: TacticalBattleView, kind: String, row_id: String) -> Rect2:
+	if view == null:
+		return Rect2()
+	view.call("_rebuild_roster_hits")
+	var hits: Variant = view.get("_roster_hits")
+	if not (hits is Array):
+		return Rect2()
+	for row: Variant in hits:
+		if not (row is Dictionary):
+			continue
+		var data: Dictionary = row as Dictionary
+		if str(data.get("kind", "")) == kind and str(data.get("id", "")) == row_id:
+			return data.get("rect", Rect2())
+	return Rect2()
+
+
+static func _interactive_deploy_place_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var side: BattleSide = battle_state.get_side(participant.side_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or side == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var point: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		point
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and result.error_code.is_empty()
+		and battle_state.is_participant_deployed(participant_id)
+		and participant.deployment_slot_id == side.deployment_zone_id
+		and zone.has_deployed_participant(participant_id)
+		and _interactive_deploy_id_count(_interactive_deploy_zone_ids(zone), participant_id) == 1
+		and participant.has_battle_position
+		and participant.battle_position.is_equal_approx(point)
+		and battle_state.battle_phase == "deployment"
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+	)
+
+
+static func _interactive_deploy_atomic_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var legal: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var original_side: String = participant.side_id
+	var side: BattleSide = battle_state.get_side(original_side)
+	var original_zone_id: String = ""
+	if side != null:
+		original_zone_id = side.deployment_zone_id
+	var rejects_ok: bool = true
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	battle_state.battle_phase = "active"
+	var phase_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		legal
+	)
+	rejects_ok = rejects_ok and phase_result != null and not phase_result.success
+	rejects_ok = rejects_ok and phase_result.error_code == "battle_not_in_deployment"
+	rejects_ok = rejects_ok and _interactive_deploy_place_unchanged(participant, zone, snap)
+	battle_state.battle_phase = "deployment"
+	participant.is_alive = false
+	snap = _interactive_deploy_place_snap(participant, zone)
+	var dead_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		legal
+	)
+	rejects_ok = rejects_ok and dead_result != null and not dead_result.success
+	rejects_ok = rejects_ok and dead_result.error_code == "participant_dead"
+	rejects_ok = rejects_ok and _interactive_deploy_place_unchanged(participant, zone, snap)
+	participant.is_alive = true
+	snap = _interactive_deploy_place_snap(participant, zone)
+	var missing_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"missing_zeta_participant",
+		legal
+	)
+	rejects_ok = rejects_ok and missing_result != null and not missing_result.success
+	rejects_ok = rejects_ok and missing_result.error_code == "unknown_participant"
+	rejects_ok = rejects_ok and _interactive_deploy_place_unchanged(participant, zone, snap)
+	participant.side_id = "ghost_zeta_side"
+	snap = _interactive_deploy_place_snap(participant, zone)
+	var side_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		legal
+	)
+	rejects_ok = rejects_ok and side_result != null and not side_result.success
+	rejects_ok = rejects_ok and side_result.error_code == "missing_side"
+	rejects_ok = rejects_ok and _interactive_deploy_place_unchanged(participant, zone, snap)
+	participant.side_id = original_side
+	if side != null:
+		side.deployment_zone_id = ""
+	snap = _interactive_deploy_place_snap(participant, zone)
+	var zone_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		legal
+	)
+	rejects_ok = rejects_ok and zone_result != null and not zone_result.success
+	rejects_ok = rejects_ok and zone_result.error_code == "missing_deployment_zone"
+	rejects_ok = rejects_ok and _interactive_deploy_place_unchanged(participant, zone, snap)
+	if side != null:
+		side.deployment_zone_id = original_zone_id
+	if not battle_state.deploy_participant(participant_id, original_zone_id):
+		return _gameplayruntime_finish(runtime, false)
+	snap = _interactive_deploy_place_snap(participant, zone)
+	var already_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		legal
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		rejects_ok
+		and already_result != null
+		and not already_result.success
+		and already_result.error_code == "already_deployed"
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and not participant.has_battle_position
+		and battle_state.is_participant_deployed(participant_id)
+		and _interactive_deploy_id_count(_interactive_deploy_zone_ids(zone), participant_id) == 1
+	)
+
+
+static func _interactive_deploy_finite_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	if participant == null or zone == null:
+		return _gameplayruntime_finish(runtime, false)
+	var bad_points: Array[Vector2] = [
+		Vector2(NAN, 10.0),
+		Vector2(10.0, NAN),
+		Vector2(NAN, NAN),
+		Vector2(INF, 10.0),
+		Vector2(10.0, INF),
+		Vector2(-INF, 10.0),
+		Vector2(10.0, -INF),
+	]
+	var ok: bool = true
+	for point: Vector2 in bad_points:
+		var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+		var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+			battle_state,
+			participant_id,
+			point
+		)
+		ok = (
+			ok
+			and result != null
+			and not result.success
+			and result.error_code == "invalid_position"
+			and _interactive_deploy_place_unchanged(participant, zone, snap)
+		)
+	return _gameplayruntime_finish(runtime, ok)
+
+
+static func _interactive_deploy_bounds_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	geometry.width = 40.0
+	geometry.height = 40.0
+	geometry.attacker_deployment_rect = Rect2(0.0, 0.0, 12.0, 40.0)
+	geometry.defender_deployment_rect = Rect2(28.0, 0.0, 12.0, 40.0)
+	if not geometry.is_valid():
+		return _gameplayruntime_finish(runtime, false)
+	var legal: Vector2 = Vector2(8.25, 18.5)
+	var outside: Vector2 = Vector2(50.0, 20.0)
+	var tall_outside: Vector2 = Vector2(10.0, 50.0)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var outside_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		outside
+	)
+	var tall_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		tall_outside
+	)
+	var rejects_ok: bool = (
+		outside_result != null
+		and not outside_result.success
+		and outside_result.error_code == "outside_battlefield"
+		and tall_result != null
+		and not tall_result.success
+		and tall_result.error_code == "outside_battlefield"
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and not geometry.contains_point(outside)
+		and not geometry.contains_point(tall_outside)
+	)
+	var inside_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		legal
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		rejects_ok
+		and inside_result != null
+		and inside_result.success
+		and participant.battle_position.is_equal_approx(legal)
+		and geometry.contains_point(legal)
+		and geometry.attacker_deployment_contains(legal)
+	)
+
+
+static func _interactive_deploy_zone_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var old_legal: Vector2 = Vector2(10.0, 30.0)
+	var noman: Vector2 = Vector2(50.0, 40.0)
+	var defender_point: Vector2 = _interactive_deploy_defender_point(geometry)
+	geometry.attacker_deployment_rect = Rect2(40.0, 10.0, 16.0, 20.0)
+	if not geometry.is_valid():
+		return _gameplayruntime_finish(runtime, false)
+	var new_legal: Vector2 = Vector2(47.25, 18.5)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var old_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		old_legal
+	)
+	var noman_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		noman
+	)
+	var def_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		defender_point
+	)
+	var rejects_ok: bool = (
+		old_result != null
+		and not old_result.success
+		and old_result.error_code == "outside_deployment_zone"
+		and noman_result != null
+		and not noman_result.success
+		and noman_result.error_code == "outside_deployment_zone"
+		and def_result != null
+		and not def_result.success
+		and def_result.error_code == "outside_deployment_zone"
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and geometry.attacker_deployment_contains(new_legal)
+		and not geometry.attacker_deployment_contains(old_legal)
+		and not geometry.attacker_deployment_contains(noman)
+		and geometry.contains_point(noman)
+		and not geometry.defender_deployment_contains(noman)
+	)
+	var place_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		new_legal
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		rejects_ok
+		and place_result != null
+		and place_result.success
+		and participant.battle_position.is_equal_approx(new_legal)
+	)
+
+
+static func _interactive_deploy_obstacle_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var move_wall: BattleObstacle = BattleObstacle.new(
+		"id_move_wall",
+		Rect2(8.0, 28.0, 4.0, 4.0),
+		true,
+		false
+	)
+	var los_wall: BattleObstacle = BattleObstacle.new(
+		"id_los_wall",
+		Rect2(4.0, 8.0, 3.0, 3.0),
+		false,
+		true
+	)
+	if not geometry.add_obstacle(move_wall) or not geometry.add_obstacle(los_wall):
+		return _gameplayruntime_finish(runtime, false)
+	var blocked: Vector2 = Vector2(10.0, 30.0)
+	var los_point: Vector2 = Vector2(5.5, 9.5)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var blocked_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		blocked
+	)
+	var blocked_ok: bool = (
+		blocked_result != null
+		and not blocked_result.success
+		and blocked_result.error_code == "inside_blocking_obstacle"
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and move_wall.blocks_movement
+		and not move_wall.blocks_line_of_sight
+		and los_wall.blocks_line_of_sight
+		and not los_wall.blocks_movement
+	)
+	var los_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		los_point
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		blocked_ok
+		and los_result != null
+		and los_result.success
+		and participant.battle_position.is_equal_approx(los_point)
+	)
+
+
+static func _interactive_deploy_spacing_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var first_id: String = StarterWorldService.SOLDIER_ID
+	var second_id: String = "interactive_second_atk"
+	if not _tacticalview_add_participant(battle_state, second_id, battle_state.attacker_side_id, "pistol"):
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var first: BattleParticipant = battle_state.get_participant(first_id)
+	var second: BattleParticipant = battle_state.get_participant(second_id)
+	if geometry == null or first == null or second == null:
+		return _gameplayruntime_finish(runtime, false)
+	var shared: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var first_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		first_id,
+		shared
+	)
+	var second_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		second_id,
+		shared
+	)
+	var service_src: String = FileAccess.get_file_as_string(
+		"res://battle/core/battle_deployment_placement_service.gd"
+	)
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		first_result != null
+		and first_result.success
+		and second_result != null
+		and second_result.success
+		and first.battle_position.is_equal_approx(shared)
+		and second.battle_position.is_equal_approx(shared)
+		and not service_src.contains("unit radius")
+		and not service_src.contains("minimum spacing")
+		and not service_src.contains("formation")
+		and not controller_src.contains("unit radius")
+		and not controller_src.contains("minimum spacing")
+	)
+
+
+static func _interactive_deploy_eligibility_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var attacker_id: String = StarterWorldService.SOLDIER_ID
+	var defender_id: String = "zeta_hold_rifle"
+	if controller == null or not _tacticalview_add_participant(
+		battle_state,
+		defender_id,
+		battle_state.defender_side_id,
+		"pistol"
+	):
+		return _gameplayruntime_finish(runtime, false)
+	var attacker: BattleParticipant = battle_state.get_participant(attacker_id)
+	var valid: bool = controller.select_participant(attacker_id)
+	var selected_after_valid: String = controller.selected_participant_id
+	controller.clear_selection()
+	var defender_select: bool = controller.select_participant(defender_id)
+	var defender_status: String = controller.status_text
+	attacker.is_alive = false
+	var dead_select: bool = controller.select_participant(attacker_id)
+	attacker.is_alive = true
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var point: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var placed: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		attacker_id,
+		point
+	)
+	controller.clear_selection()
+	var deployed_select: bool = controller.select_participant(attacker_id)
+	return _gameplayruntime_finish(
+		runtime,
+		valid
+		and selected_after_valid == attacker_id
+		and not defender_select
+		and defender_status == "defender deployment not available"
+		and not dead_select
+		and placed != null
+		and placed.success
+		and not deployed_select
+		and controller.selected_participant_id.is_empty()
+	)
+
+
+static func _interactive_deploy_side_identity_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var player_id: String = StarterWorldService.SOLDIER_ID
+	var zeta_id: String = "zeta_hold_rifle"
+	var alpha_id: String = "aaa_first_lookalike"
+	if controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not _tacticalview_add_participant(battle_state, zeta_id, battle_state.defender_side_id, "pistol"):
+		return _gameplayruntime_finish(runtime, false)
+	if not _tacticalview_add_participant(battle_state, alpha_id, battle_state.attacker_side_id, "pistol"):
+		return _gameplayruntime_finish(runtime, false)
+	var old_attacker: String = battle_state.attacker_side_id
+	var old_defender: String = battle_state.defender_side_id
+	var attacker_side: BattleSide = battle_state.get_side(old_attacker)
+	var defender_side: BattleSide = battle_state.get_side(old_defender)
+	if attacker_side == null or defender_side == null:
+		return _gameplayruntime_finish(runtime, false)
+	battle_state.attacker_side_id = old_defender
+	battle_state.defender_side_id = old_attacker
+	attacker_side.is_attacker = false
+	defender_side.is_attacker = true
+	var player_participant: BattleParticipant = battle_state.get_participant(player_id)
+	var zeta_participant: BattleParticipant = battle_state.get_participant(zeta_id)
+	var player_select: bool = controller.select_participant(player_id)
+	var alpha_select: bool = controller.select_participant(alpha_id)
+	var zeta_select: bool = controller.select_participant(zeta_id)
+	return _gameplayruntime_finish(
+		runtime,
+		player_participant != null
+		and player_participant.faction_id == StarterWorldService.PLAYER_FACTION_ID
+		and zeta_participant != null
+		and zeta_participant.side_id == battle_state.attacker_side_id
+		and player_participant.side_id == battle_state.defender_side_id
+		and not player_select
+		and not alpha_select
+		and zeta_select
+		and controller.selected_participant_id == zeta_id
+		and battle_state.attacker_side_id == "defender"
+		and battle_state.defender_side_id == "attacker"
+		and not FileAccess.get_file_as_string("res://gameplay/tactical_deployment_controller.gd").contains(
+			StarterWorldService.PLAYER_FACTION_ID
+		)
+	)
+
+
+static func _interactive_deploy_vehicle_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if view == null or controller == null or vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var blob: String = _tacticalview_overlay_blob(view)
+	var hit: Dictionary = view.hit_test_roster(
+		_interactive_deploy_roster_rect(view, "vehicle", StarterWorldService.VEHICLE_ID).get_center()
+	)
+	var snap_slot: String = vehicle.deployment_slot_id
+	var snap_has: bool = vehicle.has_battle_position
+	var snap_pos: Vector2 = vehicle.battle_position
+	controller.notify_vehicle_not_available(StarterWorldService.VEHICLE_ID)
+	var vehicle_status_ok: bool = controller.status_text == "vehicle deployment not available"
+	var vehicle_select_ok: bool = not controller.select_participant(StarterWorldService.VEHICLE_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		blob.contains(StarterWorldService.VEHICLE_ID)
+		and blob.contains("placement unavailable")
+		and str(hit.get("kind", "")) == "vehicle"
+		and str(hit.get("id", "")) == StarterWorldService.VEHICLE_ID
+		and vehicle_status_ok
+		and vehicle_select_ok
+		and controller.selected_participant_id.is_empty()
+		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and vehicle.deployment_slot_id == snap_slot
+		and vehicle.has_battle_position == snap_has
+		and vehicle.battle_position.is_equal_approx(snap_pos)
+		and not controller.has_method("place_vehicle")
+		and not controller.has_method("deploy_vehicle")
+	)
+
+
+static func _interactive_deploy_selection_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, StarterWorldService.SOLDIER_ID)
+	if view == null or controller == null or participant == null or zone == null:
+		return _gameplayruntime_finish(runtime, false)
+	var initial_empty: bool = controller.selected_participant_id.is_empty()
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var selected: bool = controller.select_participant(StarterWorldService.SOLDIER_ID)
+	view.queue_redraw()
+	return _gameplayruntime_finish(
+		runtime,
+		initial_empty
+		and selected
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+		and view.call("_selected_participant_id") == StarterWorldService.SOLDIER_ID
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and controller.get("battle_position") == null
+		and controller.get("participants") == null
+		and controller.get("deployment_rect") == null
+		and view.deployment_controller == controller
+	)
+
+
+static func _interactive_deploy_invalid_keep_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if controller == null or participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var wall: BattleObstacle = BattleObstacle.new("id_keep_wall", Rect2(8.0, 28.0, 4.0, 4.0), true, true)
+	if not geometry.add_obstacle(wall):
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(participant_id):
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var center_result: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_center_point(geometry)
+	)
+	var def_result: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_defender_point(geometry)
+	)
+	var block_result: BattleDeploymentPlacementResult = controller.try_place_selected(Vector2(10.0, 30.0))
+	return _gameplayruntime_finish(
+		runtime,
+		center_result != null
+		and not center_result.success
+		and def_result != null
+		and not def_result.success
+		and block_result != null
+		and not block_result.success
+		and block_result.error_code == "inside_blocking_obstacle"
+		and controller.selected_participant_id == participant_id
+		and controller.status_text == "INVALID DEPLOYMENT"
+		and not battle_state.is_participant_deployed(participant_id)
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+	)
+
+
+static func _interactive_deploy_success_clear_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if view == null or controller == null or participant == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(participant_id):
+		return _gameplayruntime_finish(runtime, false)
+	var point: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var result: BattleDeploymentPlacementResult = controller.try_place_selected(point)
+	var blob: String = _tacticalview_overlay_blob(view)
+	var rows_value: Variant = view.call("_overlay_rows")
+	var selectable: bool = false
+	if rows_value is Array:
+		for row: Variant in rows_value:
+			if row is Dictionary and str((row as Dictionary).get("id", "")) == participant_id:
+				selectable = bool((row as Dictionary).get("selectable", false))
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and controller.selected_participant_id.is_empty()
+		and battle_state.is_participant_deployed(participant_id)
+		and participant.has_battle_position
+		and blob.contains("deployed")
+		and not selectable
+		and not controller.select_participant(participant_id)
+	)
+
+
+static func _interactive_deploy_redeploy_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if controller == null or participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var first: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var second: Vector2 = Vector2(11.5, 22.25)
+	if not geometry.attacker_deployment_contains(second):
+		second = geometry.attacker_deployment_rect.position + Vector2(3.5, 8.25)
+	if not controller.select_participant(participant_id):
+		return _gameplayruntime_finish(runtime, false)
+	var placed: BattleDeploymentPlacementResult = controller.try_place_selected(first)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var reselect: bool = controller.select_participant(participant_id)
+	controller.selected_participant_id = participant_id
+	var replace_result: BattleDeploymentPlacementResult = controller.try_place_selected(second)
+	return _gameplayruntime_finish(
+		runtime,
+		placed != null
+		and placed.success
+		and not reselect
+		and replace_result != null
+		and not replace_result.success
+		and participant.battle_position.is_equal_approx(first)
+		and not participant.battle_position.is_equal_approx(second)
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and _interactive_deploy_id_count(_interactive_deploy_zone_ids(zone), participant_id) == 1
+	)
+
+
+static func _interactive_deploy_deselect_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, StarterWorldService.SOLDIER_ID)
+	if controller == null or participant == null or zone == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	_tacticalview_press(runtime, KEY_ESCAPE)
+	var escape_cleared: bool = controller.selected_participant_id.is_empty()
+	var escape_unchanged: bool = _interactive_deploy_place_unchanged(participant, zone, snap)
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	snap = _interactive_deploy_place_snap(participant, zone)
+	_interactive_deploy_click(runtime, Vector2(4.0, 4.0), MOUSE_BUTTON_RIGHT)
+	return _gameplayruntime_finish(
+		runtime,
+		escape_cleared
+		and escape_unchanged
+		and controller.selected_participant_id.is_empty()
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+	)
+
+
+static func _interactive_deploy_empty_click_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, StarterWorldService.SOLDIER_ID)
+	if controller == null or participant == null or zone == null:
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var result: BattleDeploymentPlacementResult = controller.try_place_selected(Vector2(10.0, 30.0))
+	_interactive_deploy_click(runtime, Vector2(80.0, 80.0), MOUSE_BUTTON_LEFT)
+	return _gameplayruntime_finish(
+		runtime,
+		controller.selected_participant_id.is_empty()
+		and result != null
+		and not result.success
+		and result.error_code == "no_selection"
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and not participant.has_battle_position
+	)
+
+
+static func _interactive_deploy_roster_hit_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var defender_id: String = "zeta_hold_rifle"
+	if view == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not _tacticalview_add_participant(battle_state, defender_id, battle_state.defender_side_id, "pistol"):
+		return _gameplayruntime_finish(runtime, false)
+	var soldier_rect: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	var defender_rect: Rect2 = _interactive_deploy_roster_rect(view, "participant", defender_id)
+	var vehicle_rect: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"vehicle",
+		StarterWorldService.VEHICLE_ID
+	)
+	var soldier_hit: Dictionary = view.hit_test_roster(soldier_rect.get_center())
+	var defender_hit: Dictionary = view.hit_test_roster(defender_rect.get_center())
+	var vehicle_hit: Dictionary = view.hit_test_roster(vehicle_rect.get_center())
+	var miss_hit: Dictionary = view.hit_test_roster(Vector2(-4000.0, -4000.0))
+	var soldier_ok: bool = controller.select_participant(str(soldier_hit.get("id", "")))
+	controller.clear_selection()
+	var defender_ok: bool = not controller.select_participant(str(defender_hit.get("id", "")))
+	controller.notify_vehicle_not_available(str(vehicle_hit.get("id", "")))
+	return _gameplayruntime_finish(
+		runtime,
+		soldier_rect.size.x > 0.0
+		and defender_rect.size.x > 0.0
+		and vehicle_rect.size.x > 0.0
+		and str(soldier_hit.get("kind", "")) == "participant"
+		and str(soldier_hit.get("id", "")) == StarterWorldService.SOLDIER_ID
+		and str(defender_hit.get("kind", "")) == "participant"
+		and str(defender_hit.get("id", "")) == defender_id
+		and str(vehicle_hit.get("kind", "")) == "vehicle"
+		and str(vehicle_hit.get("id", "")) == StarterWorldService.VEHICLE_ID
+		and miss_hit.is_empty()
+		and soldier_ok
+		and defender_ok
+		and controller.status_text == "vehicle deployment not available"
+		and controller.selected_participant_id.is_empty()
+	)
+
+
+static func _interactive_deploy_screen_convert_ok() -> bool:
+	var runtime: GameplayRuntime = _interactive_deploy_boot_tree()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var source: String = _tacticalview_source()
+	if view == null or view.get_viewport() == null:
+		return _gameplayruntime_finish(runtime, false)
+	var camera: Camera2D = view.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return _gameplayruntime_finish(runtime, false)
+	camera.make_current()
+	var tactical: Vector2 = Vector2(7.25, 31.5)
+	var viewport_pos: Vector2 = _interactive_deploy_tactical_to_viewport(view, tactical)
+	var converted: Vector2 = view.screen_to_tactical_position(viewport_pos)
+	var naive: Vector2 = viewport_pos / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
+	var default_ok: bool = converted.distance_to(tactical) < 0.05
+	camera.offset = Vector2(72.0, -36.0)
+	var shifted_view: Vector2 = _interactive_deploy_tactical_to_viewport(view, tactical)
+	var shifted: Vector2 = view.screen_to_tactical_position(shifted_view)
+	var shifted_naive: Vector2 = shifted_view / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
+	return _gameplayruntime_finish(
+		runtime,
+		default_ok
+		and shifted.distance_to(tactical) < 0.05
+		and shifted.distance_to(shifted_naive) > 1.0
+		and naive.distance_to(converted) > 1.0
+		and source.contains("get_canvas_transform()")
+		and source.contains("affine_inverse()")
+		and source.contains("func screen_to_tactical_position")
+	)
+
+
+static func _interactive_deploy_continuous_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var point: Vector2 = Vector2(7.25, 31.5)
+	if not geometry.attacker_deployment_contains(point):
+		return _gameplayruntime_finish(runtime, false)
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		StarterWorldService.SOLDIER_ID,
+		point
+	)
+	var service_src: String = FileAccess.get_file_as_string(
+		"res://battle/core/battle_deployment_placement_service.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and participant.battle_position.is_equal_approx(point)
+		and not is_equal_approx(participant.battle_position.x, roundf(participant.battle_position.x))
+		and not service_src.contains("snapp")
+		and not service_src.contains("grid")
+		and not service_src.contains("quantize")
+	)
+
+
+static func _interactive_deploy_view_readback_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if view == null or controller == null or participant == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var point: Vector2 = _interactive_deploy_continuous_point(geometry)
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var result: BattleDeploymentPlacementResult = controller.try_place_selected(point)
+	controller.clear_selection()
+	view.bind_deployment_controller(null)
+	view._process(0.1)
+	view.call("_draw")
+	var derived: Vector2 = view.call("_to_view", participant.battle_position)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and participant.has_battle_position
+		and participant.battle_position.is_equal_approx(point)
+		and derived.is_equal_approx(point * TacticalBattleView.TACTICAL_PIXELS_PER_UNIT)
+		and view.deployment_controller == null
+		and view.get("battle_position") == null
+		and view.get("last_click") == null
+		and view.get("placed_position") == null
+	)
+
+
+static func _interactive_deploy_input_gating_ok() -> bool:
+	var campaign_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if campaign_runtime == null:
+		return false
+	var campaign_click_ok: bool = campaign_runtime.get_current_mode() == "campaign"
+	_interactive_deploy_click(campaign_runtime, Vector2(40.0, 40.0), MOUSE_BUTTON_LEFT)
+	campaign_click_ok = (
+		campaign_click_ok
+		and campaign_runtime.get_current_session() == null
+		and _interactive_deploy_controller(campaign_runtime) == null
+	)
+	if not _gameplayruntime_finish(campaign_runtime, campaign_click_ok):
+		return false
+	var deploy_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if deploy_runtime == null:
+		return false
+	if not _tacticalview_enter(deploy_runtime):
+		return _gameplayruntime_finish(deploy_runtime, false)
+	var deploy_state: BattleState = deploy_runtime.get_current_session().battle_state
+	var deploy_participant: BattleParticipant = deploy_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var deploy_zone: DeploymentZone = _interactive_deploy_zone(deploy_state, StarterWorldService.SOLDIER_ID)
+	var deploy_snap: Dictionary = _interactive_deploy_place_snap(deploy_participant, deploy_zone)
+	_interactive_deploy_click(deploy_runtime, Vector2(40.0, 40.0), MOUSE_BUTTON_LEFT)
+	var empty_ok: bool = _interactive_deploy_place_unchanged(deploy_participant, deploy_zone, deploy_snap)
+	if not _gameplayruntime_finish(deploy_runtime, empty_ok):
+		return false
+	var active_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if active_runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(active_runtime, true):
+		return _gameplayruntime_finish(active_runtime, false)
+	var active_state: BattleState = active_runtime.get_current_session().battle_state
+	var active_participant: BattleParticipant = active_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var active_before: Vector2 = active_participant.battle_position
+	var active_has: bool = active_participant.has_battle_position
+	_interactive_deploy_click(active_runtime, Vector2(40.0, 40.0), MOUSE_BUTTON_LEFT)
+	var active_ok: bool = (
+		active_runtime.get_current_mode() == "tactical_active"
+		and active_participant.has_battle_position == active_has
+		and active_participant.battle_position.is_equal_approx(active_before)
+	)
+	if not _gameplayruntime_finish(active_runtime, active_ok):
+		return false
+	var handoff_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if handoff_runtime == null:
+		return false
+	if not _gameplayruntime_force_pending_handoff(handoff_runtime):
+		return _gameplayruntime_finish(handoff_runtime, false)
+	var handoff_state: BattleState = handoff_runtime.get_current_session().battle_state
+	var handoff_participant: BattleParticipant = handoff_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var handoff_before: Vector2 = handoff_participant.battle_position
+	_interactive_deploy_click(handoff_runtime, Vector2(40.0, 40.0), MOUSE_BUTTON_LEFT)
+	return _gameplayruntime_finish(
+		handoff_runtime,
+		handoff_runtime.get_current_mode() == "tactical_pending_handoff"
+		and handoff_participant.battle_position.is_equal_approx(handoff_before)
+	)
+
+
+static func _interactive_deploy_htb_mouse_ok() -> bool:
+	var runtime: GameplayRuntime = _interactive_deploy_boot_tree()
+	if runtime == null:
+		return false
+	_tacticalview_press(runtime, KEY_H)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_B)
+	if runtime.get_current_mode() != "tactical_deployment":
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if view == null or controller == null or geometry == null or participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	var soldier_rect: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	var vehicle_rect: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"vehicle",
+		StarterWorldService.VEHICLE_ID
+	)
+	_interactive_deploy_click(runtime, _interactive_deploy_local_to_viewport(view, soldier_rect.get_center()))
+	var selected_ok: bool = controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+	_interactive_deploy_click(
+		runtime,
+		_interactive_deploy_tactical_to_viewport(view, _interactive_deploy_center_point(geometry))
+	)
+	var center_ok: bool = (
+		not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+		and controller.status_text == "INVALID DEPLOYMENT"
+	)
+	_interactive_deploy_click(
+		runtime,
+		_interactive_deploy_tactical_to_viewport(view, _interactive_deploy_defender_point(geometry))
+	)
+	var defender_ok: bool = (
+		not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+	)
+	_interactive_deploy_click(runtime, _interactive_deploy_local_to_viewport(view, vehicle_rect.get_center()))
+	var vehicle_ok: bool = (
+		controller.status_text == "vehicle deployment not available"
+		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+	)
+	if controller.selected_participant_id != StarterWorldService.SOLDIER_ID:
+		controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var legal: Vector2 = _interactive_deploy_continuous_point(geometry)
+	_interactive_deploy_click(runtime, _interactive_deploy_tactical_to_viewport(view, legal))
+	return _gameplayruntime_finish(
+		runtime,
+		selected_ok
+		and center_ok
+		and defender_ok
+		and vehicle_ok
+		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and participant.has_battle_position
+		and participant.battle_position.distance_to(legal) < 0.05
+		and controller.selected_participant_id.is_empty()
+		and battle_state.battle_phase == "deployment"
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and runtime.get_current_mode() == "tactical_deployment"
+		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+	)
+
+
+static func _interactive_deploy_phase_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		StarterWorldService.SOLDIER_ID,
+		_interactive_deploy_continuous_point(geometry)
+	)
+	runtime._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and battle_state.battle_phase == "deployment"
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and not runtime.has_method("commit_attacker_deployment")
+	)
+
+
+static func _interactive_deploy_rng_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if controller == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var rng_before: int = _battlesession_rng(battle_state)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var rng_selected: int = _battlesession_rng(battle_state)
+	controller.try_place_selected(_interactive_deploy_center_point(geometry))
+	var rng_invalid: int = _battlesession_rng(battle_state)
+	controller.try_place_selected(_interactive_deploy_continuous_point(geometry))
+	var rng_placed: int = _battlesession_rng(battle_state)
+	controller.clear_selection()
+	_tacticalview_press(runtime, KEY_ESCAPE)
+	var rng_after: int = _battlesession_rng(battle_state)
+	return _gameplayruntime_finish(
+		runtime,
+		rng_before == rng_selected
+		and rng_selected == rng_invalid
+		and rng_invalid == rng_placed
+		and rng_placed == rng_after
+	)
+
+
+static func _interactive_deploy_campaign_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_campaign_snap(runtime.game_state)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		StarterWorldService.SOLDIER_ID,
+		_interactive_deploy_continuous_point(geometry)
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and _interactive_deploy_campaign_unchanged(runtime.game_state, snap)
+	)
+
+
+static func _interactive_deploy_membership_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var side: BattleSide = battle_state.get_side(participant.side_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or side == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		_interactive_deploy_continuous_point(geometry)
+	)
+	var service_src: String = FileAccess.get_file_as_string(
+		"res://battle/core/battle_deployment_placement_service.gd"
+	)
+	var view_src: String = _tacticalview_source()
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and participant.deployment_slot_id == side.deployment_zone_id
+		and zone.has_deployed_participant(participant_id)
+		and _interactive_deploy_id_count(_interactive_deploy_zone_ids(zone), participant_id) == 1
+		and service_src.contains("battle_state.deploy_participant(")
+		and service_src.contains("side.deployment_zone_id")
+		and not view_src.contains("deploy_participant(")
+		and not controller_src.contains("deployment_slot_id =")
+		and not controller_src.contains("deployed_participant_ids")
+	)
+
+
+static func _interactive_deploy_commit_future_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if controller == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		StarterWorldService.SOLDIER_ID,
+		_interactive_deploy_continuous_point(geometry)
+	)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		controller.subrole == TacticalDeploymentController.SUBROLE_ATTACKER_PLACEMENT
+		and controller.subrole == "attacker_placement"
+		and result != null
+		and result.success
+		and participant.has_battle_position
+		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and battle_state.battle_phase == "deployment"
+		and not controller.has_method("commit_attacker_deployment")
+		and not controller.has_method("commit_defender_deployment")
+		and not controller.has_method("place_defender")
+		and not controller.has_method("begin_battle")
+		and not controller_src.contains("commit_attacker_deployment")
+		and not controller_src.contains("defender_placement")
+		and not runtime_src.contains("commit_attacker_deployment")
+	)
+
+
+static func _interactive_deploy_geo_safety_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant_id: String = StarterWorldService.SOLDIER_ID
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	var zone: DeploymentZone = _interactive_deploy_zone(battle_state, participant_id)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or zone == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	geometry.width = 80.0
+	geometry.height = 50.0
+	geometry.attacker_deployment_rect = Rect2(60.0, 5.0, 15.0, 40.0)
+	geometry.defender_deployment_rect = Rect2(0.0, 5.0, 15.0, 40.0)
+	if not geometry.is_valid():
+		return _gameplayruntime_finish(runtime, false)
+	var old_left: Vector2 = Vector2(10.0, 20.0)
+	var new_right: Vector2 = Vector2(68.25, 22.5)
+	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
+	var left_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		old_left
+	)
+	var left_ok: bool = (
+		left_result != null
+		and not left_result.success
+		and left_result.error_code == "outside_deployment_zone"
+		and _interactive_deploy_place_unchanged(participant, zone, snap)
+		and geometry.contains_point(old_left)
+		and not geometry.attacker_deployment_contains(old_left)
+		and geometry.attacker_deployment_contains(new_right)
+	)
+	var right_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		participant_id,
+		new_right
+	)
+	var service_src: String = FileAccess.get_file_as_string(
+		"res://battle/core/battle_deployment_placement_service.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		left_ok
+		and right_result != null
+		and right_result.success
+		and participant.battle_position.is_equal_approx(new_right)
+		and service_src.contains("geometry.contains_point")
+		and service_src.contains("attacker_deployment_contains")
+		and service_src.contains("defender_deployment_contains")
+		and service_src.contains("blocks_movement")
+		and not service_src.contains("100.0")
+		and not service_src.contains("PROVISIONAL_WIDTH")
+		and not service_src.contains("left 20")
+	)
+
+
+static func _interactive_deploy_absent_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var view_src: String = _tacticalview_source()
+	var service_src: String = FileAccess.get_file_as_string(
+		"res://battle/core/battle_deployment_placement_service.gd"
+	)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		view != null
+		and not view.has_method("commit_attacker_deployment")
+		and not view.has_method("commit_defender_deployment")
+		and not view.has_method("auto_deploy")
+		and not view.has_method("start_battle")
+		and not view.has_method("place_vehicle")
+		and not runtime.has_method("commit_attacker_deployment")
+		and not runtime.has_method("auto_deploy")
+		and not controller_src.contains("commit_attacker_deployment")
+		and not controller_src.contains("auto_deploy")
+		and not controller_src.contains("auto-select")
+		and not controller_src.contains("begin_current_battle")
+		and not runtime_src.contains("auto_deploy")
+		and not runtime_src.contains("commit_attacker_deployment")
+		and not view_src.contains("deployment grid")
+		and not service_src.contains("snap")
+		and not service_src.contains("formation")
+		and not service_src.contains("unit radius")
+		and TacticalDeploymentController.new() is TacticalDeploymentController
+		and BattleDeploymentPlacementService.new() is BattleDeploymentPlacementService
+		and BattleDeploymentPlacementResult.new() is BattleDeploymentPlacementResult
 	)
 
 

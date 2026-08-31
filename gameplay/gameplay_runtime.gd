@@ -11,10 +11,12 @@ const DeploymentRequest := preload("res://campaign/actions/deployment_request.gd
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
+const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 
 var game_state: GameState = null
 var game_flow_controller: GameFlowController = null
+var tactical_deployment_controller: TacticalDeploymentController = null
 
 var _last_logged_mode: String = ""
 
@@ -50,17 +52,23 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not (event is InputEventKey):
-		return
-	var key_event: InputEventKey = event as InputEventKey
-	if not key_event.pressed or key_event.echo:
-		return
-	if key_event.keycode == KEY_T:
-		advance_campaign_turn()
-	elif key_event.keycode == KEY_H:
-		debug_launch_test_hq_assault()
-	elif key_event.keycode == KEY_B:
-		_debug_enter_pending_battle()
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if not key_event.pressed or key_event.echo:
+			return
+		if key_event.keycode == KEY_T:
+			advance_campaign_turn()
+			return
+		if key_event.keycode == KEY_H:
+			debug_launch_test_hq_assault()
+			return
+		if key_event.keycode == KEY_B:
+			_debug_enter_pending_battle()
+			return
+		if key_event.keycode == KEY_ESCAPE:
+			_route_tactical_deployment_escape()
+			return
+	_route_tactical_deployment_input(event)
 
 
 func _bind_campaign_map_view() -> void:
@@ -89,6 +97,64 @@ func _sync_presentation_views() -> void:
 		else:
 			tactical_view.bind_session(null)
 		tactical_view.set_presentation_camera_enabled(show_tactical)
+	_sync_tactical_deployment_controller(mode, tactical_view)
+
+
+func _sync_tactical_deployment_controller(mode: String, tactical_view: TacticalBattleView) -> void:
+	var in_deployment: bool = mode == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+	if in_deployment:
+		if tactical_deployment_controller == null:
+			tactical_deployment_controller = TacticalDeploymentController.new()
+		if tactical_deployment_controller.session != get_current_session():
+			tactical_deployment_controller.bind_session(get_current_session())
+		if tactical_view != null:
+			tactical_view.bind_deployment_controller(tactical_deployment_controller)
+		return
+	if tactical_deployment_controller != null:
+		tactical_deployment_controller.clear_selection()
+		tactical_deployment_controller.bind_session(null)
+	if tactical_view != null:
+		tactical_view.bind_deployment_controller(null)
+
+
+func _route_tactical_deployment_escape() -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		return
+	if tactical_deployment_controller == null:
+		return
+	tactical_deployment_controller.clear_selection()
+
+
+func _route_tactical_deployment_input(event: InputEvent) -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		return
+	if tactical_deployment_controller == null:
+		return
+	if not (event is InputEventMouseButton):
+		return
+	var mouse: InputEventMouseButton = event as InputEventMouseButton
+	if not mouse.pressed:
+		return
+	if mouse.button_index == MOUSE_BUTTON_RIGHT:
+		tactical_deployment_controller.clear_selection()
+		return
+	if mouse.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
+	if tactical_view == null:
+		return
+	var local_pos: Vector2 = tactical_view.viewport_to_local_position(mouse.position)
+	var hit: Dictionary = tactical_view.hit_test_roster(local_pos)
+	var kind: String = str(hit.get("kind", ""))
+	var hit_id: String = str(hit.get("id", ""))
+	if kind == "participant":
+		tactical_deployment_controller.select_participant(hit_id)
+		return
+	if kind == "vehicle":
+		tactical_deployment_controller.notify_vehicle_not_available(hit_id)
+		return
+	var tactical_pos: Vector2 = tactical_view.screen_to_tactical_position(mouse.position)
+	tactical_deployment_controller.try_place_selected(tactical_pos)
 
 
 func _debug_enter_pending_battle() -> void:
