@@ -10,6 +10,8 @@ const MissionRequest := preload("res://campaign/missions/mission_request.gd")
 const DeploymentRequest := preload("res://campaign/actions/deployment_request.gd")
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
+const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
+const BattleState := preload("res://battle/core/battle_state.gd")
 
 var game_state: GameState = null
 var game_flow_controller: GameFlowController = null
@@ -33,6 +35,7 @@ func _ready() -> void:
 		return
 	game_flow_controller = create_result.controller
 	_bind_campaign_map_view()
+	_sync_presentation_views()
 	_log_boot()
 	_log_mode_if_changed()
 
@@ -56,6 +59,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		advance_campaign_turn()
 	elif key_event.keycode == KEY_H:
 		debug_launch_test_hq_assault()
+	elif key_event.keycode == KEY_B:
+		_debug_enter_pending_battle()
 
 
 func _bind_campaign_map_view() -> void:
@@ -63,6 +68,84 @@ func _bind_campaign_map_view() -> void:
 	if map_view == null:
 		return
 	map_view.bind_campaign(game_state, game_flow_controller)
+
+
+func _sync_presentation_views() -> void:
+	var mode: String = get_current_mode()
+	var show_tactical: bool = (
+		mode == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		or mode == GameFlowController.MODE_TACTICAL_ACTIVE
+		or mode == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+	)
+	var map_view: CampaignMapView = get_node_or_null("CampaignMapView") as CampaignMapView
+	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
+	if map_view != null:
+		map_view.visible = not show_tactical
+		map_view.set_presentation_camera_enabled(not show_tactical)
+	if tactical_view != null:
+		tactical_view.visible = show_tactical
+		if show_tactical:
+			tactical_view.bind_session(get_current_session())
+		else:
+			tactical_view.bind_session(null)
+		tactical_view.set_presentation_camera_enabled(show_tactical)
+
+
+func _debug_enter_pending_battle() -> void:
+	var result: GameFlowResult = enter_battle()
+	if result != null and result.success:
+		print(
+			"GameplayRuntime: enter_battle success mission=%s mode=%s"
+			% [result.entered_mission_id, get_current_mode()]
+		)
+		_log_tactical_snapshot()
+	elif result != null:
+		print("GameplayRuntime: enter_battle failed code=%s" % result.error_code)
+	else:
+		print("GameplayRuntime: enter_battle failed")
+
+
+func _log_tactical_snapshot() -> void:
+	var session: CampaignBattleSession = get_current_session()
+	if session == null or session.battle_state == null:
+		print("GameplayRuntime: tactical snapshot session=absent")
+		return
+	var battle_state: BattleState = session.battle_state
+	var deployed_participants: int = 0
+	var undeployed_participants: int = 0
+	for participant_id: String in battle_state.participants:
+		if battle_state.is_participant_deployed(participant_id):
+			deployed_participants += 1
+		else:
+			undeployed_participants += 1
+	var deployed_vehicles: int = 0
+	var undeployed_vehicles: int = 0
+	for vehicle_id: String in battle_state.vehicles:
+		if battle_state.is_vehicle_deployed(vehicle_id):
+			deployed_vehicles += 1
+		else:
+			undeployed_vehicles += 1
+	var geo_w: float = 0.0
+	var geo_h: float = 0.0
+	if battle_state.battlefield_geometry != null:
+		geo_w = battle_state.battlefield_geometry.width
+		geo_h = battle_state.battlefield_geometry.height
+	print(
+		"GameplayRuntime: tactical snapshot type=%s mission=%s phase=%s session=%s elapsed=%s geo=%sx%s participants deployed=%s undeployed=%s vehicles deployed=%s undeployed=%s"
+		% [
+			battle_state.battle_type_id,
+			battle_state.mission_id,
+			battle_state.battle_phase,
+			session.session_state,
+			battle_state.elapsed_time_seconds,
+			geo_w,
+			geo_h,
+			deployed_participants,
+			undeployed_participants,
+			deployed_vehicles,
+			undeployed_vehicles,
+		]
+	)
 
 
 func get_current_mode() -> String:
@@ -204,5 +287,6 @@ func _log_mode_if_changed() -> void:
 	if mode == _last_logged_mode:
 		return
 	_last_logged_mode = mode
+	_sync_presentation_views()
 	var pending: PackedStringArray = PackedStringArray(list_pending_battles())
 	print("GameplayRuntime: mode=%s pending=%s" % [mode, ",".join(pending)])

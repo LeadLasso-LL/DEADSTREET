@@ -32,7 +32,7 @@ var _last_force_log: Dictionary = {}
 
 
 func _ready() -> void:
-	_camera = get_node_or_null("Camera2D") as Camera2D
+	_ensure_camera()
 	if _camera != null:
 		_camera.enabled = true
 		_camera.make_current()
@@ -41,12 +41,23 @@ func _ready() -> void:
 func bind_campaign(p_game_state: GameState, p_controller: GameFlowController) -> void:
 	game_state = p_game_state
 	game_flow_controller = p_controller
+	_ensure_camera()
 	_frame_camera()
 	queue_redraw()
 
 
+func set_presentation_camera_enabled(enabled: bool) -> void:
+	_ensure_camera()
+	if _camera == null:
+		return
+	_camera.enabled = enabled
+	if enabled:
+		_frame_camera()
+		_camera.make_current()
+
+
 func _process(_delta: float) -> void:
-	if game_state == null:
+	if not visible or game_state == null:
 		return
 	_log_force_positions_if_changed()
 	queue_redraw()
@@ -99,7 +110,14 @@ func _to_view(campaign_pos: Vector2) -> Vector2:
 	return campaign_pos * PIXELS_PER_UNIT
 
 
+func _ensure_camera() -> void:
+	if _camera != null:
+		return
+	_camera = get_node_or_null("Camera2D") as Camera2D
+
+
 func _frame_camera() -> void:
+	_ensure_camera()
 	if _camera == null or game_state == null or game_state.road_graph == null:
 		return
 	var graph: RoadGraph = game_state.road_graph

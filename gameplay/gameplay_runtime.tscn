@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://gameplay/gameplay_runtime.gd" id="1_runtime"]
 [ext_resource type="Script" path="res://gameplay/campaign_map_view.gd" id="2_map"]
+[ext_resource type="Script" path="res://gameplay/tactical_battle_view.gd" id="3_tactical"]
 
 [node name="GameplayRuntime" type="Node"]
 script = ExtResource("1_runtime")
@@ -11,3 +12,10 @@ script = ExtResource("2_map")
 
 [node name="Camera2D" type="Camera2D" parent="CampaignMapView"]
 enabled = true
+
+[node name="TacticalBattleView" type="Node2D" parent="."]
+visible = false
+script = ExtResource("3_tactical")
+
+[node name="Camera2D" type="Camera2D" parent="TacticalBattleView"]
+enabled = false

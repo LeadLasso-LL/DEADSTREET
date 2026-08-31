@@ -117,6 +117,7 @@ const GameFlowResult := preload("res://core/game_flow_result.gd")
 const GameplayRuntime := preload("res://gameplay/gameplay_runtime.gd")
 const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
 const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
+const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
 
 
 static func run() -> Dictionary:
@@ -15921,6 +15922,33 @@ static func run() -> Dictionary:
 	var campaignmap_no_interact_ok: bool = _campaignmap_no_interact_ok()
 	var campaignmap_no_art_ok: bool = _campaignmap_no_art_ok()
 	var campaignmap_tiny_world_ok: bool = _campaignmap_tiny_world_ok()
+	var tacticalview_exists_ok: bool = _tacticalview_exists_ok()
+	var tacticalview_ownership_ok: bool = _tacticalview_ownership_ok()
+	var tacticalview_visibility_ok: bool = _tacticalview_visibility_ok()
+	var tacticalview_b_flow_ok: bool = _tacticalview_b_flow_ok()
+	var tacticalview_no_auto_enter_ok: bool = _tacticalview_no_auto_enter_ok()
+	var tacticalview_bounds_ok: bool = _tacticalview_bounds_ok()
+	var tacticalview_zones_ok: bool = _tacticalview_zones_ok()
+	var tacticalview_world_to_screen_ok: bool = _tacticalview_world_to_screen_ok()
+	var tacticalview_roster_ok: bool = _tacticalview_roster_ok()
+	var tacticalview_no_auto_deploy_ok: bool = _tacticalview_no_auto_deploy_ok()
+	var tacticalview_participant_pos_ok: bool = _tacticalview_participant_pos_ok()
+	var tacticalview_vehicle_pos_ok: bool = _tacticalview_vehicle_pos_ok()
+	var tacticalview_participant_state_ok: bool = _tacticalview_participant_state_ok()
+	var tacticalview_obstacle_ok: bool = _tacticalview_obstacle_ok()
+	var tacticalview_cover_ok: bool = _tacticalview_cover_ok()
+	var tacticalview_overlay_ok: bool = _tacticalview_overlay_ok()
+	var tacticalview_order_ok: bool = _tacticalview_order_ok()
+	var tacticalview_no_sim_ok: bool = _tacticalview_no_sim_ok()
+	var tacticalview_begin_ok: bool = _tacticalview_begin_ok()
+	var tacticalview_active_ok: bool = _tacticalview_active_ok()
+	var tacticalview_handoff_ok: bool = _tacticalview_handoff_ok()
+	var tacticalview_return_ok: bool = _tacticalview_return_ok()
+	var tacticalview_geo_safety_ok: bool = _tacticalview_geo_safety_ok()
+	var tacticalview_side_safety_ok: bool = _tacticalview_side_safety_ok()
+	var tacticalview_debug_input_ok: bool = _tacticalview_debug_input_ok()
+	var tacticalview_no_interact_ok: bool = _tacticalview_no_interact_ok()
+	var tacticalview_no_art_ok: bool = _tacticalview_no_art_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17676,6 +17704,33 @@ static func run() -> Dictionary:
 		"campaignmap_no_interact_ok": campaignmap_no_interact_ok,
 		"campaignmap_no_art_ok": campaignmap_no_art_ok,
 		"campaignmap_tiny_world_ok": campaignmap_tiny_world_ok,
+		"tacticalview_exists_ok": tacticalview_exists_ok,
+		"tacticalview_ownership_ok": tacticalview_ownership_ok,
+		"tacticalview_visibility_ok": tacticalview_visibility_ok,
+		"tacticalview_b_flow_ok": tacticalview_b_flow_ok,
+		"tacticalview_no_auto_enter_ok": tacticalview_no_auto_enter_ok,
+		"tacticalview_bounds_ok": tacticalview_bounds_ok,
+		"tacticalview_zones_ok": tacticalview_zones_ok,
+		"tacticalview_world_to_screen_ok": tacticalview_world_to_screen_ok,
+		"tacticalview_roster_ok": tacticalview_roster_ok,
+		"tacticalview_no_auto_deploy_ok": tacticalview_no_auto_deploy_ok,
+		"tacticalview_participant_pos_ok": tacticalview_participant_pos_ok,
+		"tacticalview_vehicle_pos_ok": tacticalview_vehicle_pos_ok,
+		"tacticalview_participant_state_ok": tacticalview_participant_state_ok,
+		"tacticalview_obstacle_ok": tacticalview_obstacle_ok,
+		"tacticalview_cover_ok": tacticalview_cover_ok,
+		"tacticalview_overlay_ok": tacticalview_overlay_ok,
+		"tacticalview_order_ok": tacticalview_order_ok,
+		"tacticalview_no_sim_ok": tacticalview_no_sim_ok,
+		"tacticalview_begin_ok": tacticalview_begin_ok,
+		"tacticalview_active_ok": tacticalview_active_ok,
+		"tacticalview_handoff_ok": tacticalview_handoff_ok,
+		"tacticalview_return_ok": tacticalview_return_ok,
+		"tacticalview_geo_safety_ok": tacticalview_geo_safety_ok,
+		"tacticalview_side_safety_ok": tacticalview_side_safety_ok,
+		"tacticalview_debug_input_ok": tacticalview_debug_input_ok,
+		"tacticalview_no_interact_ok": tacticalview_no_interact_ok,
+		"tacticalview_no_art_ok": tacticalview_no_art_ok,
 	}
 
 	var passed := true
@@ -48822,11 +48877,18 @@ static func _gameplayruntime_debug_input_ok() -> bool:
 		and handler.contains("advance_campaign_turn()")
 		and handler.contains("KEY_H")
 		and handler.contains("debug_launch_test_hq_assault()")
+		and handler.contains("KEY_B")
+		and handler.contains("_debug_enter_pending_battle()")
 		and not handler.contains("TurnManager")
 		and not handler.contains("MissionService")
 		and not handler.contains("EconomyService")
 		and not handler.contains("ForceMovementService")
 		and not handler.contains("NeighborhoodHQAttackService")
+		and not handler.contains("auto_deploy")
+		and not handler.contains("begin_current_battle")
+		and not handler.contains("commit_attacker_deployment")
+		and not handler.contains("KEY_K")
+		and not handler.contains("forced_victory")
 	)
 
 
@@ -48879,9 +48941,13 @@ static func _gameplayruntime_absent_ok() -> bool:
 		return false
 	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
 	var map_view: CampaignMapView = _campaignmap_view(runtime)
-	var camera: Camera2D = null
+	var tactical_view: TacticalBattleView = _tacticalview_view(runtime)
+	var map_camera: Camera2D = null
 	if map_view != null:
-		camera = map_view.get_node_or_null("Camera2D") as Camera2D
+		map_camera = map_view.get_node_or_null("Camera2D") as Camera2D
+	var tactical_camera: Camera2D = null
+	if tactical_view != null:
+		tactical_camera = tactical_view.get_node_or_null("Camera2D") as Camera2D
 	var camera2d_count: int = tscn.count("type=\"Camera2D\"")
 	return _gameplayruntime_finish(
 		runtime,
@@ -48901,14 +48967,25 @@ static func _gameplayruntime_absent_ok() -> bool:
 		and tscn.contains("type=\"Node\"")
 		and not tscn.contains("CanvasLayer")
 		and not tscn.contains("Button")
-		and camera2d_count == 1
-		and camera != null
+		and camera2d_count == 2
+		and map_camera != null
 		and map_view != null
+		and map_camera.get_parent() == map_view
+		and _tacticalview_child_camera_count(map_view) == 1
+		and tactical_view != null
+		and tactical_camera != null
+		and tactical_camera.get_parent() == tactical_view
+		and _tacticalview_child_camera_count(tactical_view) == 1
 		and not map_view.has_method("edge_scroll")
 		and not map_view.has_method("drag_pan")
 		and not map_view.has_method("start_cinematic")
 		and not map_view.has_method("strategic_zoom")
 		and not map_view.has_method("tactical_camera")
+		and not tactical_view.has_method("edge_scroll")
+		and not tactical_view.has_method("drag_pan")
+		and not tactical_view.has_method("start_cinematic")
+		and not tactical_view.has_method("camera_follow")
+		and not tactical_view.has_method("strategic_zoom")
 	)
 
 
@@ -48977,14 +49054,24 @@ static func _campaignmap_camera_ok() -> bool:
 	if map_view == null:
 		return _gameplayruntime_finish(runtime, false)
 	var camera: Camera2D = map_view.get_node_or_null("Camera2D") as Camera2D
+	var tactical_view: TacticalBattleView = _tacticalview_view(runtime)
+	var tactical_camera: Camera2D = null
+	if tactical_view != null:
+		tactical_camera = tactical_view.get_node_or_null("Camera2D") as Camera2D
 	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
 	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
 	return _gameplayruntime_finish(
 		runtime,
 		camera != null
 		and camera.get_parent() == map_view
-		and tscn.count("type=\"Camera2D\"") == 1
+		and _tacticalview_child_camera_count(map_view) == 1
+		and tactical_view != null
+		and tactical_camera != null
+		and tactical_camera.get_parent() == tactical_view
+		and _tacticalview_child_camera_count(tactical_view) == 1
+		and tscn.count("type=\"Camera2D\"") == 2
 		and tscn.contains("parent=\"CampaignMapView\"")
+		and tscn.contains("parent=\"TacticalBattleView\"")
 		and not source.contains("edge_scroll")
 		and not source.contains("drag_pan")
 		and not source.contains("strategic_zoom")
@@ -48993,6 +49080,9 @@ static func _campaignmap_camera_ok() -> bool:
 		and not map_view.has_method("drag_pan")
 		and not map_view.has_method("start_cinematic")
 		and not map_view.has_method("overview_mode")
+		and not tactical_view.has_method("edge_scroll")
+		and not tactical_view.has_method("camera_follow")
+		and not tactical_view.has_method("start_cinematic")
 	)
 
 
@@ -49604,4 +49694,970 @@ static func _campaignmap_tiny_world_ok() -> bool:
 		and business_count == 0
 		and is_equal_approx(game_state.road_graph.get_segment(StarterWorldService.SEGMENT_ID).distance, 12.0)
 	)
+
+
+static func _tacticalview_view(runtime: GameplayRuntime) -> TacticalBattleView:
+	if runtime == null:
+		return null
+	return runtime.get_node_or_null("TacticalBattleView") as TacticalBattleView
+
+
+static func _tacticalview_child_camera_count(node: Node) -> int:
+	if node == null:
+		return 0
+	var count: int = 0
+	for child: Node in node.get_children():
+		if child is Camera2D:
+			count += 1
+	return count
+
+
+static func _tacticalview_source() -> String:
+	return FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
+
+
+static func _tacticalview_press(runtime: GameplayRuntime, keycode: Key) -> void:
+	if runtime == null:
+		return
+	var event: InputEventKey = InputEventKey.new()
+	event.keycode = keycode
+	event.pressed = true
+	event.echo = false
+	runtime._unhandled_input(event)
+
+
+static func _tacticalview_enter(runtime: GameplayRuntime) -> bool:
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return false
+	var result: GameFlowResult = runtime.enter_battle()
+	return result != null and result.success and runtime.get_current_mode() == "tactical_deployment"
+
+
+static func _tacticalview_mode_views_ok(runtime: GameplayRuntime, expect_tactical: bool) -> bool:
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	var tactical_view: TacticalBattleView = _tacticalview_view(runtime)
+	if map_view == null or tactical_view == null:
+		return false
+	var map_camera: Camera2D = map_view.get_node_or_null("Camera2D") as Camera2D
+	var tactical_camera: Camera2D = tactical_view.get_node_or_null("Camera2D") as Camera2D
+	if map_camera == null or tactical_camera == null:
+		return false
+	if expect_tactical:
+		return (
+			not map_view.visible
+			and tactical_view.visible
+			and not map_camera.enabled
+			and tactical_camera.enabled
+		)
+	return (
+		map_view.visible
+		and not tactical_view.visible
+		and map_camera.enabled
+		and not tactical_camera.enabled
+	)
+
+
+static func _tacticalview_overlay_blob(view: TacticalBattleView) -> String:
+	if view == null:
+		return ""
+	var lines: Variant = view.call("_overlay_lines")
+	if not (lines is Array):
+		return ""
+	var blob: String = ""
+	for line: Variant in lines:
+		blob += str(line) + "\n"
+	return blob
+
+
+static func _tacticalview_rect_ok(got: Rect2, expected: Rect2) -> bool:
+	return got.position.is_equal_approx(expected.position) and got.size.is_equal_approx(expected.size)
+
+
+static func _tacticalview_add_participant(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	weapon_type: String
+) -> bool:
+	if battle_state == null or participant_id.is_empty() or not battle_state.has_side(side_id):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"",
+		side.faction_id,
+		side_id,
+		weapon_type,
+		true,
+		false,
+		"",
+		side.force_id
+	)
+	if not battle_state.add_participant(participant):
+		return false
+	if not side.add_participant_id(participant_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(side.deployment_zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	return true
+
+
+static func _tacticalview_exists_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var camera: Camera2D = null
+	if view != null:
+		camera = view.get_node_or_null("Camera2D") as Camera2D
+	return _gameplayruntime_finish(
+		runtime,
+		view != null
+		and view is Node2D
+		and view is TacticalBattleView
+		and runtime.get_current_mode() == "campaign"
+		and not view.visible
+		and camera != null
+		and camera.get_parent() == view
+		and _tacticalview_child_camera_count(view) == 1
+		and view.get("battle_state") == null
+		and view.session == null
+		and not view.has_method("create")
+	)
+
+
+static func _tacticalview_ownership_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var derived: Variant = view.call("_battle_state")
+	return _gameplayruntime_finish(
+		runtime,
+		session != null
+		and session.battle_state != null
+		and view.session == session
+		and view.session == runtime.game_flow_controller.current_session
+		and derived == session.battle_state
+		and runtime.game_flow_controller.get_battle_state() == session.battle_state
+		and view.get("battle_state") == null
+		and runtime.get("battle_state") == null
+	)
+
+
+static func _tacticalview_visibility_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var campaign_ok: bool = (
+		runtime.get_current_mode() == "campaign"
+		and _tacticalview_mode_views_ok(runtime, false)
+	)
+	if not campaign_ok or not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var deploy_ok: bool = (
+		runtime.get_current_mode() == "tactical_deployment"
+		and _tacticalview_mode_views_ok(runtime, true)
+	)
+	if not deploy_ok:
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var active_ok: bool = (
+		runtime.get_current_mode() == "tactical_active"
+		and _tacticalview_mode_views_ok(runtime, true)
+	)
+	if not active_ok:
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.1)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and _tacticalview_mode_views_ok(runtime, true)
+	)
+
+
+static func _tacticalview_b_flow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var handler_start: int = source.find("func _unhandled_input")
+	var debug_start: int = source.find("func _debug_enter_pending_battle")
+	if handler_start < 0 or debug_start < 0:
+		return _gameplayruntime_finish(runtime, false)
+	var handler_rest: String = source.substr(handler_start)
+	var handler_next: int = handler_rest.find("\nfunc ", 1)
+	var handler: String = handler_rest
+	if handler_next >= 0:
+		handler = handler_rest.substr(0, handler_next)
+	var debug_rest: String = source.substr(debug_start)
+	var debug_next: int = debug_rest.find("\nfunc ", 1)
+	var debug_fn: String = debug_rest
+	if debug_next >= 0:
+		debug_fn = debug_rest.substr(0, debug_next)
+	_tacticalview_press(runtime, KEY_H)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_B)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		handler.contains("KEY_B")
+		and handler.contains("_debug_enter_pending_battle()")
+		and debug_fn.contains("enter_battle()")
+		and not debug_fn.contains("BattleState.new")
+		and not debug_fn.contains("CampaignBattleSession.new")
+		and not debug_fn.contains("get_mission(")
+		and runtime.get_current_mode() == "tactical_deployment"
+		and session != null
+		and session == runtime.game_flow_controller.current_session
+		and session.battle_state != null
+		and session.battle_state.battle_phase == "deployment"
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and view != null
+		and view.visible
+		and view.session == session
+	)
+
+
+static func _tacticalview_no_auto_enter_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID)
+		and runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == null
+		and view != null
+		and not view.visible
+		and view.session == null
+	)
+
+
+static func _tacticalview_bounds_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var derived: Rect2 = view.call("_authoritative_bounds", battle_state)
+	var initial_ok: bool = (
+		_tacticalview_rect_ok(derived, geometry.bounds())
+		and is_equal_approx(derived.size.x, geometry.width)
+		and is_equal_approx(derived.size.y, geometry.height)
+	)
+	geometry.width = 80.0
+	geometry.height = 44.0
+	var changed: Rect2 = view.call("_authoritative_bounds", battle_state)
+	return _gameplayruntime_finish(
+		runtime,
+		initial_ok
+		and _tacticalview_rect_ok(changed, geometry.bounds())
+		and is_equal_approx(changed.size.x, 80.0)
+		and is_equal_approx(changed.size.y, 44.0)
+		and not is_equal_approx(changed.size.x, 100.0)
+	)
+
+
+static func _tacticalview_zones_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var attacker: Rect2 = view.call("_attacker_deployment_rect", battle_state)
+	var defender: Rect2 = view.call("_defender_deployment_rect", battle_state)
+	var initial_ok: bool = (
+		_tacticalview_rect_ok(attacker, geometry.attacker_deployment_rect)
+		and _tacticalview_rect_ok(defender, geometry.defender_deployment_rect)
+	)
+	var new_attacker: Rect2 = Rect2(1.0, 2.0, 12.0, 18.0)
+	var new_defender: Rect2 = Rect2(60.0, 3.0, 14.0, 22.0)
+	geometry.attacker_deployment_rect = new_attacker
+	geometry.defender_deployment_rect = new_defender
+	var attacker2: Rect2 = view.call("_attacker_deployment_rect", battle_state)
+	var defender2: Rect2 = view.call("_defender_deployment_rect", battle_state)
+	return _gameplayruntime_finish(
+		runtime,
+		initial_ok
+		and _tacticalview_rect_ok(attacker2, new_attacker)
+		and _tacticalview_rect_ok(defender2, new_defender)
+	)
+
+
+static func _tacticalview_world_to_screen_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if participant == null or vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var scale: float = TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
+	var converted: Vector2 = view.call("_to_view", Vector2(12.5, 7.0))
+	var pos_before: Vector2 = participant.battle_position
+	var has_before: bool = participant.has_battle_position
+	var veh_before: Vector2 = vehicle.battle_position
+	var veh_has_before: bool = vehicle.has_battle_position
+	view._process(0.25)
+	view.call("_draw")
+	return _gameplayruntime_finish(
+		runtime,
+		converted.is_equal_approx(Vector2(12.5, 7.0) * scale)
+		and participant.battle_position.is_equal_approx(pos_before)
+		and participant.has_battle_position == has_before
+		and vehicle.battle_position.is_equal_approx(veh_before)
+		and vehicle.has_battle_position == veh_has_before
+		and view.get("battle_position") == null
+	)
+
+
+static func _tacticalview_roster_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var blob: String = _tacticalview_overlay_blob(view)
+	return _gameplayruntime_finish(
+		runtime,
+		participant != null
+		and vehicle != null
+		and participant.side_id == battle_state.attacker_side_id
+		and vehicle.side_id == battle_state.attacker_side_id
+		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and not participant.has_battle_position
+		and not vehicle.has_battle_position
+		and blob.contains(StarterWorldService.SOLDIER_ID)
+		and blob.contains(StarterWorldService.VEHICLE_ID)
+		and blob.contains("ATT")
+		and blob.contains(participant.weapon_type)
+		and blob.contains(vehicle.vehicle_type_id)
+		and blob.contains("undeployed")
+		and view.call("_side_label", battle_state, participant.side_id) == "ATT"
+		and view.call("_deployed_label", false) == "undeployed"
+	)
+
+
+static func _tacticalview_no_auto_deploy_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	view._process(0.25)
+	view._process(0.25)
+	view.call("_draw")
+	runtime._process(0.25)
+	runtime._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_deployment"
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and battle_state.battle_phase == "deployment"
+		and _gameplayruntime_undeployed(battle_state)
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and not view.has_method("deploy_participant")
+		and not view.has_method("deploy_vehicle")
+		and not view.has_method("auto_deploy")
+		and not view.has_method("begin_battle")
+	)
+
+
+static func _tacticalview_participant_pos_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if view == null or participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	var side: BattleSide = battle_state.get_side(participant.side_id)
+	if side == null or not battle_state.deploy_participant(participant.participant_id, side.deployment_zone_id):
+		return _gameplayruntime_finish(runtime, false)
+	var first: Vector2 = Vector2(8.0, 25.0)
+	participant.battle_position = first
+	participant.has_battle_position = true
+	var scale: float = TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
+	var derived_first: Vector2 = view.call("_to_view", participant.battle_position)
+	view._process(0.1)
+	view.call("_draw")
+	var second: Vector2 = Vector2(11.0, 33.0)
+	participant.battle_position = second
+	var derived_second: Vector2 = view.call("_to_view", participant.battle_position)
+	view._process(0.1)
+	return _gameplayruntime_finish(
+		runtime,
+		derived_first.is_equal_approx(first * scale)
+		and derived_second.is_equal_approx(second * scale)
+		and participant.battle_position.is_equal_approx(second)
+		and view.get("battle_position") == null
+	)
+
+
+static func _tacticalview_vehicle_pos_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if view == null or vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var undeployed_blob: String = _tacticalview_overlay_blob(view)
+	var side: BattleSide = battle_state.get_side(vehicle.side_id)
+	if side == null or not battle_state.deploy_vehicle(vehicle.battle_vehicle_id, side.deployment_zone_id):
+		return _gameplayruntime_finish(runtime, false)
+	var first: Vector2 = Vector2(4.0, 22.0)
+	vehicle.battle_position = first
+	vehicle.has_battle_position = true
+	var scale: float = TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
+	var derived_first: Vector2 = view.call("_to_view", vehicle.battle_position)
+	var second: Vector2 = Vector2(5.0, 28.0)
+	vehicle.battle_position = second
+	var derived_second: Vector2 = view.call("_to_view", vehicle.battle_position)
+	view._process(0.1)
+	return _gameplayruntime_finish(
+		runtime,
+		undeployed_blob.contains(StarterWorldService.VEHICLE_ID)
+		and undeployed_blob.contains("undeployed")
+		and derived_first.is_equal_approx(first * scale)
+		and derived_second.is_equal_approx(second * scale)
+		and vehicle.battle_position.is_equal_approx(second)
+		and view.get("battle_position") == null
+	)
+
+
+static func _tacticalview_participant_state_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var source: String = _tacticalview_source()
+	if view == null or participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	var alive_before: bool = participant.is_alive
+	var wounded_before: bool = participant.is_wounded
+	participant.is_wounded = true
+	view._process(0.1)
+	view.call("_draw")
+	var wounded_held: bool = participant.is_wounded and participant.is_alive
+	participant.is_alive = false
+	view._process(0.1)
+	view.call("_draw")
+	var dead_held: bool = not participant.is_alive
+	return _gameplayruntime_finish(
+		runtime,
+		alive_before
+		and not wounded_before
+		and wounded_held
+		and dead_held
+		and source.contains("participant.is_alive")
+		and source.contains("participant.is_wounded")
+		and not source.contains("participant.is_alive =")
+		and not source.contains("participant.is_wounded =")
+	)
+
+
+static func _tacticalview_obstacle_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var source: String = _tacticalview_source()
+	var empty_ok: bool = (
+		geometry.obstacles.is_empty()
+		and view.get("obstacles") == null
+		and source.contains("geometry.get_sorted_obstacle_ids()")
+		and source.contains("obstacle.bounds")
+		and source.contains("blocks_movement")
+		and source.contains("blocks_line_of_sight")
+	)
+	var wall_z: BattleObstacle = BattleObstacle.new("tv_z_wall", Rect2(40.0, 20.0, 6.0, 8.0), true, false)
+	var wall_a: BattleObstacle = BattleObstacle.new("tv_a_wall", Rect2(48.0, 24.0, 5.0, 5.0), false, true)
+	if not geometry.add_obstacle(wall_z) or not geometry.add_obstacle(wall_a):
+		return _gameplayruntime_finish(runtime, false)
+	view._process(0.1)
+	view.call("_draw")
+	var ids: Array[String] = geometry.get_sorted_obstacle_ids()
+	return _gameplayruntime_finish(
+		runtime,
+		empty_ok
+		and ids.size() == 2
+		and ids[0] == "tv_a_wall"
+		and ids[1] == "tv_z_wall"
+		and geometry.get_obstacle("tv_z_wall").bounds.is_equal_approx(Rect2(40.0, 20.0, 6.0, 8.0))
+		and geometry.get_obstacle("tv_z_wall").blocks_movement
+		and not geometry.get_obstacle("tv_z_wall").blocks_line_of_sight
+		and geometry.get_obstacle("tv_a_wall").blocks_line_of_sight
+		and not geometry.get_obstacle("tv_a_wall").blocks_movement
+		and view.get("obstacles") == null
+	)
+
+
+static func _tacticalview_cover_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var source: String = _tacticalview_source()
+	var empty_ok: bool = (
+		geometry.cover_objects.is_empty()
+		and geometry.cover_slots.is_empty()
+		and view.get("cover_slots") == null
+		and source.contains("get_sorted_cover_slot_ids()")
+		and source.contains("slot.position")
+	)
+	var cover_object: BattleCoverObject = BattleCoverObject.new("tv_cover")
+	if not geometry.add_cover_object(cover_object):
+		return _gameplayruntime_finish(runtime, false)
+	var slot: BattleCoverSlot = BattleCoverSlot.new(
+		"tv_slot",
+		"tv_cover",
+		Vector2(50.0, 30.0),
+		Vector2.RIGHT
+	)
+	if not geometry.add_cover_slot(slot):
+		return _gameplayruntime_finish(runtime, false)
+	view._process(0.1)
+	var centroid: Vector2 = view.call("_cover_object_centroid", geometry, cover_object)
+	return _gameplayruntime_finish(
+		runtime,
+		empty_ok
+		and geometry.get_cover_slot("tv_slot").position.is_equal_approx(Vector2(50.0, 30.0))
+		and centroid.is_equal_approx(Vector2(50.0, 30.0))
+		and view.get("cover_slots") == null
+	)
+
+
+static func _tacticalview_overlay_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var blob: String = _tacticalview_overlay_blob(view)
+	return _gameplayruntime_finish(
+		runtime,
+		blob.contains(battle_state.battle_type_id)
+		and blob.contains(battle_state.mission_id)
+		and blob.contains(battle_state.battle_phase)
+		and blob.contains(session.session_state)
+		and blob.contains(battle_state.attacker_side_id)
+		and blob.contains(battle_state.defender_side_id)
+		and blob.contains("deployed")
+		and blob.contains("undeployed")
+		and view.get("battle_phase") == null
+		and view.get("session_state") == null
+		and view.get("mission_id") == null
+	)
+
+
+static func _tacticalview_order_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var keys: Dictionary = {}
+	keys["z_id"] = 1
+	keys["a_id"] = 1
+	keys["m_id"] = 1
+	var sorted: Variant = view.call("_sorted_keys", keys)
+	if not (sorted is Array) or sorted.size() != 3:
+		return _gameplayruntime_finish(runtime, false)
+	if not _tacticalview_add_participant(battle_state, "tv_z", battle_state.attacker_side_id, "rifle"):
+		return _gameplayruntime_finish(runtime, false)
+	if not _tacticalview_add_participant(battle_state, "tv_a", battle_state.attacker_side_id, "smg"):
+		return _gameplayruntime_finish(runtime, false)
+	var blob: String = _tacticalview_overlay_blob(view)
+	var source: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		str(sorted[0]) == "a_id"
+		and str(sorted[1]) == "m_id"
+		and str(sorted[2]) == "z_id"
+		and blob.find("tv_a") >= 0
+		and blob.find("tv_z") >= 0
+		and blob.find("tv_a") < blob.find("tv_z")
+		and source.contains("ids.sort()")
+		and not source.contains("rand")
+		and not source.contains("RandomNumberGenerator")
+	)
+
+
+static func _tacticalview_no_sim_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var source: String = _tacticalview_source()
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	view._process(0.5)
+	view._process(0.5)
+	view.call("_draw")
+	return _gameplayruntime_finish(
+		runtime,
+		_battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and _gameplayruntime_undeployed(battle_state)
+		and not source.contains("BattleRuntimeService")
+		and not source.contains("BattleCombatBehaviorService")
+		and not source.contains("BattleVictoryService")
+		and not source.contains("deploy_participant")
+		and not source.contains("deploy_vehicle")
+		and not source.contains("begin_battle")
+		and not source.contains("advance_tactical")
+	)
+
+
+static func _tacticalview_begin_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	view._process(0.25)
+	view.call("_draw")
+	var still_deploy: bool = (
+		runtime.get_current_mode() == "tactical_deployment"
+		and battle_state.battle_phase == "deployment"
+		and not view.has_method("begin_battle")
+		and not view.has_method("begin_current_battle")
+	)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	return _gameplayruntime_finish(
+		runtime,
+		still_deploy
+		and begin_result != null
+		and begin_result.success
+		and runtime.get_current_mode() == "tactical_active"
+		and runtime.get_current_session().session_state == CampaignBattleSession.SESSION_ACTIVE
+	)
+
+
+static func _tacticalview_active_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	view._process(0.5)
+	var view_did_not_advance: bool = is_equal_approx(battle_state.elapsed_time_seconds, elapsed_before)
+	runtime._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_active"
+		and _tacticalview_mode_views_ok(runtime, true)
+		and view_did_not_advance
+		and battle_state.elapsed_time_seconds > elapsed_before
+		and view.session == runtime.get_current_session()
+	)
+
+
+static func _tacticalview_handoff_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_force_pending_handoff(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	if view == null or session == null or session.battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = session.battle_state
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	runtime._process(0.5)
+	view._process(0.5)
+	var blob: String = _tacticalview_overlay_blob(view)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and _tacticalview_mode_views_ok(runtime, true)
+		and view.session == session
+		and view.call("_battle_state") == battle_state
+		and blob.contains(session.session_state)
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+	)
+
+
+static func _tacticalview_return_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var ticks: int = 0
+	while ticks < 12 and runtime.get_current_mode() == "tactical_active":
+		runtime._process(0.1)
+		ticks += 1
+	runtime._process(0.0)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == null
+		and runtime.game_flow_controller.current_session == null
+		and view != null
+		and map_view != null
+		and _tacticalview_mode_views_ok(runtime, false)
+		and view.session == null
+	)
+
+
+static func _tacticalview_geo_safety_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var source: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		view != null
+		and view.get("width") == null
+		and view.get("height") == null
+		and view.get("battlefield_geometry") == null
+		and view.get("attacker_deployment_rect") == null
+		and view.get("defender_deployment_rect") == null
+		and view.get("obstacles") == null
+		and view.get("cover_slots") == null
+		and view.get("battle_position") == null
+		and source.contains("geometry.bounds()")
+		and source.contains("attacker_deployment_rect")
+		and source.contains("defender_deployment_rect")
+		and source.contains("TACTICAL_PIXELS_PER_UNIT")
+		and source.contains("tactical_pos * TACTICAL_PIXELS_PER_UNIT")
+		and not source.contains("PROVISIONAL_WIDTH")
+		and not source.contains("PROVISIONAL_HEIGHT")
+		and not source.contains("battlefield_width")
+	)
+
+
+static func _tacticalview_side_safety_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var source: String = _tacticalview_source()
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var attacker_id: String = battle_state.attacker_side_id
+	var defender_id: String = battle_state.defender_side_id
+	var before_att: String = str(view.call("_side_label", battle_state, attacker_id))
+	var before_def: String = str(view.call("_side_label", battle_state, defender_id))
+	battle_state.attacker_side_id = defender_id
+	battle_state.defender_side_id = attacker_id
+	var after_old_attacker: String = str(view.call("_side_label", battle_state, attacker_id))
+	var after_old_defender: String = str(view.call("_side_label", battle_state, defender_id))
+	return _gameplayruntime_finish(
+		runtime,
+		before_att == "ATT"
+		and before_def == "DEF"
+		and after_old_attacker == "DEF"
+		and after_old_defender == "ATT"
+		and source.contains("battle_state.attacker_side_id")
+		and source.contains("battle_state.defender_side_id")
+		and not source.contains("player_gang")
+		and not source.contains("player_faction")
+		and not view.has_method("plan_ai_turn")
+		and not view.has_method("simulate_ai_tactical")
+	)
+
+
+static func _tacticalview_debug_input_ok() -> bool:
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var view_source: String = _tacticalview_source()
+	var start: int = source.find("func _unhandled_input")
+	if start < 0:
+		return false
+	var rest: String = source.substr(start)
+	var next_func: int = rest.find("\nfunc ", 1)
+	var handler: String = rest
+	if next_func >= 0:
+		handler = rest.substr(0, next_func)
+	return (
+		handler.contains("KEY_T")
+		and handler.contains("KEY_H")
+		and handler.contains("KEY_B")
+		and handler.contains("advance_campaign_turn()")
+		and handler.contains("debug_launch_test_hq_assault()")
+		and handler.contains("_debug_enter_pending_battle()")
+		and not handler.contains("auto_deploy")
+		and not handler.contains("begin_current_battle")
+		and not handler.contains("commit_attacker_deployment")
+		and not handler.contains("KEY_K")
+		and not handler.contains("forced_victory")
+		and not handler.contains("kill")
+		and not view_source.contains("func _unhandled_input")
+		and not view_source.contains("func _gui_input")
+	)
+
+
+static func _tacticalview_no_interact_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var source: String = _tacticalview_source()
+	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
+	return _gameplayruntime_finish(
+		runtime,
+		view != null
+		and not view.has_method("click_to_place")
+		and not view.has_method("place_unit")
+		and not view.has_method("commit_attacker_deployment")
+		and not view.has_method("commit_defender_deployment")
+		and not view.has_method("start_battle")
+		and not view.has_method("select_participant")
+		and not source.contains("func _gui_input")
+		and not source.contains("func _unhandled_input")
+		and not source.contains("InputEventMouse")
+		and not source.contains("deployment grid")
+		and not tscn.contains("Button")
+	)
+
+
+static func _tacticalview_no_art_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var source: String = _tacticalview_source()
+	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
+	return _gameplayruntime_finish(
+		runtime,
+		not tscn.contains("Sprite")
+		and not tscn.contains("Texture")
+		and not tscn.contains(".png")
+		and source.contains("draw_rect")
+		and source.contains("draw_circle")
+		and source.contains("Provisional visualization tints")
+		and not source.contains("Sprite2D")
+		and not source.contains("AnimatedSprite")
+		and not source.contains("Texture2D")
+		and not source.contains("AudioStream")
+		and not source.contains("muzzle")
+		and not source.contains("blood")
+		and not source.contains("bullet")
+		and not source.contains("CanvasLayer")
+	)
+
 
