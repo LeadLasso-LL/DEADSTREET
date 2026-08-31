@@ -24,6 +24,7 @@ const VEHICLE_SIZE := Vector2(16.0, 10.0)
 const COVER_SLOT_RADIUS := 3.5
 const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
+const ROSTER_FONT_SIZE := 13
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
 const PROVISIONAL_BACKGROUND := Color(0.10, 0.10, 0.11, 1.0)
@@ -100,20 +101,40 @@ func hit_test_roster(local_position: Vector2) -> Dictionary:
 	return hit
 
 
+func _overlay_row_rect(origin: Vector2, row_index: int) -> Rect2:
+	var size: Vector2 = _roster_row_size()
+	return Rect2(Vector2(origin.x, origin.y + float(row_index) * size.y), size)
+
+
+func _roster_row_size() -> Vector2:
+	var font: Font = ThemeDB.fallback_font
+	var text_height: float = font.get_ascent(ROSTER_FONT_SIZE) + font.get_descent(ROSTER_FONT_SIZE)
+	return Vector2(ROSTER_ROW_WIDTH, maxf(ROSTER_ROW_HEIGHT, text_height))
+
+
+func _overlay_layout() -> Array[Dictionary]:
+	var origin: Vector2 = _overlay_origin()
+	var laid_out: Array[Dictionary] = []
+	var row_index: int = 0
+	for row: Dictionary in _overlay_rows():
+		var laid: Dictionary = row.duplicate()
+		laid["rect"] = _overlay_row_rect(origin, row_index)
+		laid_out.append(laid)
+		row_index += 1
+	return laid_out
+
+
 func _rebuild_roster_hits() -> void:
 	_roster_hits.clear()
-	var cursor: Vector2 = _overlay_origin()
-	for row: Dictionary in _overlay_rows():
+	for row: Dictionary in _overlay_layout():
 		var kind: String = str(row.get("kind", ""))
-		var row_id: String = str(row.get("id", ""))
-		var row_rect: Rect2 = Rect2(cursor, Vector2(ROSTER_ROW_WIDTH, ROSTER_ROW_HEIGHT))
-		if kind == "participant" or kind == "vehicle":
-			_roster_hits.append({
-				"kind": kind,
-				"id": row_id,
-				"rect": row_rect,
-			})
-		cursor.y += ROSTER_ROW_HEIGHT
+		if kind != "participant" and kind != "vehicle":
+			continue
+		_roster_hits.append({
+			"kind": kind,
+			"id": str(row.get("id", "")),
+			"rect": row.get("rect", Rect2()),
+		})
 
 
 func set_presentation_camera_enabled(enabled: bool) -> void:
@@ -316,15 +337,12 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 
 func _draw_overlay() -> void:
 	_roster_hits.clear()
-	var origin: Vector2 = _overlay_origin()
-	var rows: Array[Dictionary] = _overlay_rows()
-	var cursor: Vector2 = origin
 	var selected_id: String = _selected_participant_id()
-	for row: Dictionary in rows:
+	for row: Dictionary in _overlay_layout():
 		var text: String = str(row.get("text", ""))
 		var kind: String = str(row.get("kind", ""))
 		var row_id: String = str(row.get("id", ""))
-		var row_rect: Rect2 = Rect2(cursor, Vector2(ROSTER_ROW_WIDTH, ROSTER_ROW_HEIGHT))
+		var row_rect: Rect2 = row.get("rect", Rect2())
 		if kind == "participant" or kind == "vehicle":
 			_roster_hits.append({
 				"kind": kind,
@@ -338,8 +356,7 @@ func _draw_overlay() -> void:
 			color = PROVISIONAL_STATUS
 		elif kind == "participant" and bool(row.get("selectable", false)):
 			color = PROVISIONAL_SELECTABLE
-		_draw_label_left(cursor, text, 13, color)
-		cursor.y += ROSTER_ROW_HEIGHT
+		_draw_overlay_row_label(row_rect, text, ROSTER_FONT_SIZE, color)
 
 
 func _overlay_lines() -> Array[String]:
@@ -576,6 +593,17 @@ func _draw_label(center: Vector2, text: String, font_size: int = 14) -> void:
 
 func _draw_label_left(pos: Vector2, text: String, font_size: int, color: Color) -> void:
 	var font: Font = ThemeDB.fallback_font
+	draw_string(font, pos + Vector2(1.0, 1.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, PROVISIONAL_LABEL_SHADOW)
+	draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+
+
+func _draw_overlay_row_label(row_rect: Rect2, text: String, font_size: int, color: Color) -> void:
+	# draw_string origin is the text baseline, not the row-rect top-left.
+	var font: Font = ThemeDB.fallback_font
+	var ascent: float = font.get_ascent(font_size)
+	var descent: float = font.get_descent(font_size)
+	var baseline_y: float = row_rect.position.y + (row_rect.size.y - ascent - descent) * 0.5 + ascent
+	var pos: Vector2 = Vector2(row_rect.position.x, baseline_y)
 	draw_string(font, pos + Vector2(1.0, 1.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, PROVISIONAL_LABEL_SHADOW)
 	draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 

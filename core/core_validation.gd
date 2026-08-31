@@ -15969,6 +15969,9 @@ static func run() -> Dictionary:
 	var interactive_deploy_deselect_ok: bool = _interactive_deploy_deselect_ok()
 	var interactive_deploy_empty_click_ok: bool = _interactive_deploy_empty_click_ok()
 	var interactive_deploy_roster_hit_ok: bool = _interactive_deploy_roster_hit_ok()
+	var interactive_deploy_roster_layout_shared_ok: bool = _interactive_deploy_roster_layout_shared_ok()
+	var interactive_deploy_roster_visual_hit_ok: bool = _interactive_deploy_roster_visual_hit_ok()
+	var interactive_deploy_roster_boundaries_ok: bool = _interactive_deploy_roster_boundaries_ok()
 	var interactive_deploy_screen_convert_ok: bool = _interactive_deploy_screen_convert_ok()
 	var interactive_deploy_continuous_ok: bool = _interactive_deploy_continuous_ok()
 	var interactive_deploy_view_readback_ok: bool = _interactive_deploy_view_readback_ok()
@@ -17780,6 +17783,9 @@ static func run() -> Dictionary:
 		"interactive_deploy_deselect_ok": interactive_deploy_deselect_ok,
 		"interactive_deploy_empty_click_ok": interactive_deploy_empty_click_ok,
 		"interactive_deploy_roster_hit_ok": interactive_deploy_roster_hit_ok,
+		"interactive_deploy_roster_layout_shared_ok": interactive_deploy_roster_layout_shared_ok,
+		"interactive_deploy_roster_visual_hit_ok": interactive_deploy_roster_visual_hit_ok,
+		"interactive_deploy_roster_boundaries_ok": interactive_deploy_roster_boundaries_ok,
 		"interactive_deploy_screen_convert_ok": interactive_deploy_screen_convert_ok,
 		"interactive_deploy_continuous_ok": interactive_deploy_continuous_ok,
 		"interactive_deploy_view_readback_ok": interactive_deploy_view_readback_ok,
@@ -50954,6 +50960,64 @@ static func _interactive_deploy_roster_rect(view: TacticalBattleView, kind: Stri
 	return Rect2()
 
 
+static func _interactive_deploy_view_func(func_name: String) -> String:
+	var source: String = _tacticalview_source()
+	var start: int = source.find("func " + func_name)
+	if start < 0:
+		return ""
+	var rest: String = source.substr(start)
+	var next_func: int = rest.find("\nfunc ", 1)
+	if next_func >= 0:
+		return rest.substr(0, next_func)
+	return rest
+
+
+static func _interactive_deploy_layout_row(view: TacticalBattleView, kind: String, row_id: String) -> Dictionary:
+	if view == null:
+		return {}
+	var layout: Variant = view.call("_overlay_layout")
+	if not (layout is Array):
+		return {}
+	for row: Variant in layout:
+		if not (row is Dictionary):
+			continue
+		var data: Dictionary = row as Dictionary
+		if str(data.get("kind", "")) == kind and str(data.get("id", "")) == row_id:
+			return data
+	return {}
+
+
+static func _interactive_deploy_header_row(view: TacticalBattleView) -> Dictionary:
+	if view == null:
+		return {}
+	var layout: Variant = view.call("_overlay_layout")
+	if not (layout is Array):
+		return {}
+	for row: Variant in layout:
+		if not (row is Dictionary):
+			continue
+		var data: Dictionary = row as Dictionary
+		if str(data.get("text", "")).strip_edges() == "ROSTER":
+			return data
+	return {}
+
+
+static func _interactive_deploy_glyph_inside_row(row_rect: Rect2) -> bool:
+	if row_rect.size.x <= 0.0 or row_rect.size.y <= 0.0:
+		return false
+	var font: Font = ThemeDB.fallback_font
+	var font_size: int = TacticalBattleView.ROSTER_FONT_SIZE
+	var ascent: float = font.get_ascent(font_size)
+	var descent: float = font.get_descent(font_size)
+	var baseline_y: float = row_rect.position.y + (row_rect.size.y - ascent - descent) * 0.5 + ascent
+	var glyph_top: float = baseline_y - ascent
+	var glyph_bottom: float = baseline_y + descent
+	return (
+		glyph_top >= row_rect.position.y - 0.01
+		and glyph_bottom <= row_rect.position.y + row_rect.size.y + 0.01
+	)
+
+
 static func _interactive_deploy_place_ok() -> bool:
 	var runtime: GameplayRuntime = _gameplayruntime_boot()
 	if runtime == null:
@@ -52259,6 +52323,176 @@ static func _interactive_deploy_absent_ok() -> bool:
 		and TacticalDeploymentController.new() is TacticalDeploymentController
 		and BattleDeploymentPlacementService.new() is BattleDeploymentPlacementService
 		and BattleDeploymentPlacementResult.new() is BattleDeploymentPlacementResult
+	)
+
+
+static func _interactive_deploy_roster_layout_shared_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var draw_fn: String = _interactive_deploy_view_func("_draw_overlay")
+	var hit_fn: String = _interactive_deploy_view_func("_rebuild_roster_hits")
+	var label_fn: String = _interactive_deploy_view_func("_draw_overlay_row_label")
+	var soldier_layout: Dictionary = _interactive_deploy_layout_row(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	var vehicle_layout: Dictionary = _interactive_deploy_layout_row(
+		view,
+		"vehicle",
+		StarterWorldService.VEHICLE_ID
+	)
+	var soldier_layout_rect: Rect2 = soldier_layout.get("rect", Rect2())
+	var vehicle_layout_rect: Rect2 = vehicle_layout.get("rect", Rect2())
+	var soldier_hit_rect: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	var vehicle_hit_rect: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"vehicle",
+		StarterWorldService.VEHICLE_ID
+	)
+	var row_size: Vector2 = view.call("_roster_row_size")
+	return _gameplayruntime_finish(
+		runtime,
+		view.has_method("_overlay_layout")
+		and view.has_method("_overlay_row_rect")
+		and view.has_method("_roster_row_size")
+		and draw_fn.contains("_overlay_layout()")
+		and draw_fn.contains("_draw_overlay_row_label")
+		and not draw_fn.contains("cursor.y")
+		and hit_fn.contains("_overlay_layout()")
+		and not hit_fn.contains("cursor.y")
+		and label_fn.contains("get_ascent")
+		and label_fn.contains("row_rect.position.y")
+		and soldier_layout_rect.size.x > 0.0
+		and vehicle_layout_rect.size.x > 0.0
+		and soldier_layout_rect.position.is_equal_approx(soldier_hit_rect.position)
+		and soldier_layout_rect.size.is_equal_approx(soldier_hit_rect.size)
+		and vehicle_layout_rect.position.is_equal_approx(vehicle_hit_rect.position)
+		and vehicle_layout_rect.size.is_equal_approx(vehicle_hit_rect.size)
+		and soldier_layout_rect.size.is_equal_approx(row_size)
+		and vehicle_layout_rect.size.is_equal_approx(row_size)
+	)
+
+
+static func _interactive_deploy_roster_visual_hit_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if view == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	var soldier_row: Dictionary = _interactive_deploy_layout_row(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	var vehicle_row: Dictionary = _interactive_deploy_layout_row(
+		view,
+		"vehicle",
+		StarterWorldService.VEHICLE_ID
+	)
+	var soldier_rect: Rect2 = soldier_row.get("rect", Rect2())
+	var vehicle_rect: Rect2 = vehicle_row.get("rect", Rect2())
+	if soldier_rect.size.x <= 0.0 or vehicle_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	controller.clear_selection()
+	var soldier_hit: Dictionary = view.hit_test_roster(soldier_rect.get_center())
+	var soldier_select: bool = controller.select_participant(str(soldier_hit.get("id", "")))
+	var soldier_ok: bool = (
+		str(soldier_hit.get("kind", "")) == "participant"
+		and str(soldier_hit.get("id", "")) == StarterWorldService.SOLDIER_ID
+		and soldier_select
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+	)
+	controller.clear_selection()
+	var vehicle_hit: Dictionary = view.hit_test_roster(vehicle_rect.get_center())
+	if str(vehicle_hit.get("kind", "")) == "vehicle":
+		controller.notify_vehicle_not_available(str(vehicle_hit.get("id", "")))
+	elif str(vehicle_hit.get("kind", "")) == "participant":
+		controller.select_participant(str(vehicle_hit.get("id", "")))
+	var vehicle_ok: bool = (
+		str(vehicle_hit.get("kind", "")) == "vehicle"
+		and str(vehicle_hit.get("id", "")) == StarterWorldService.VEHICLE_ID
+		and str(vehicle_hit.get("id", "")) != StarterWorldService.SOLDIER_ID
+		and controller.selected_participant_id != StarterWorldService.SOLDIER_ID
+		and controller.selected_participant_id.is_empty()
+		and controller.status_text == "vehicle deployment not available"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		soldier_ok
+		and vehicle_ok
+		and _interactive_deploy_glyph_inside_row(soldier_rect)
+		and _interactive_deploy_glyph_inside_row(vehicle_rect)
+	)
+
+
+static func _interactive_deploy_roster_boundaries_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if view == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	var soldier_row: Dictionary = _interactive_deploy_layout_row(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	var vehicle_row: Dictionary = _interactive_deploy_layout_row(
+		view,
+		"vehicle",
+		StarterWorldService.VEHICLE_ID
+	)
+	var header_row: Dictionary = _interactive_deploy_header_row(view)
+	var soldier_rect: Rect2 = soldier_row.get("rect", Rect2())
+	var vehicle_rect: Rect2 = vehicle_row.get("rect", Rect2())
+	var header_rect: Rect2 = header_row.get("rect", Rect2())
+	if soldier_rect.size.x <= 0.0 or vehicle_rect.size.x <= 0.0 or header_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	var soldier_center: Dictionary = view.hit_test_roster(soldier_rect.get_center())
+	var vehicle_center: Dictionary = view.hit_test_roster(vehicle_rect.get_center())
+	var above_soldier: Dictionary = view.hit_test_roster(
+		Vector2(soldier_rect.get_center().x, soldier_rect.position.y - 1.0)
+	)
+	var below_last: Dictionary = view.hit_test_roster(
+		Vector2(vehicle_rect.get_center().x, vehicle_rect.position.y + vehicle_rect.size.y + 1.0)
+	)
+	var header_hit: Dictionary = view.hit_test_roster(header_rect.get_center())
+	controller.clear_selection()
+	if str(header_hit.get("kind", "")) == "participant":
+		controller.select_participant(str(header_hit.get("id", "")))
+	var header_ok: bool = (
+		str(header_hit.get("id", "")) != StarterWorldService.SOLDIER_ID
+		and controller.selected_participant_id != StarterWorldService.SOLDIER_ID
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		str(soldier_center.get("id", "")) == StarterWorldService.SOLDIER_ID
+		and str(vehicle_center.get("id", "")) == StarterWorldService.VEHICLE_ID
+		and str(soldier_center.get("id", "")) != StarterWorldService.VEHICLE_ID
+		and str(vehicle_center.get("id", "")) != StarterWorldService.SOLDIER_ID
+		and str(above_soldier.get("id", "")) != StarterWorldService.SOLDIER_ID
+		and below_last.is_empty()
+		and header_ok
+		and header_rect.position.y < soldier_rect.position.y
+		and soldier_rect.position.y < vehicle_rect.position.y
 	)
 
 
