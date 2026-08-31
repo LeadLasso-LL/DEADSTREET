@@ -114,6 +114,8 @@ const CampaignBattleSessionResult := preload("res://battle/session/campaign_batt
 const CampaignBattleSessionService := preload("res://battle/session/campaign_battle_session_service.gd")
 const GameFlowController := preload("res://core/game_flow_controller.gd")
 const GameFlowResult := preload("res://core/game_flow_result.gd")
+const GameplayRuntime := preload("res://gameplay/gameplay_runtime.gd")
+const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
 
 
 static func run() -> Dictionary:
@@ -15868,6 +15870,31 @@ static func run() -> Dictionary:
 	var gameflow_rng_ok: bool = _gameflow_rng_ok()
 	var gameflow_clock_ok: bool = _gameflow_clock_ok()
 	var gameflow_absent_ok: bool = _gameflow_absent_ok()
+	var gameplayruntime_boot_ok: bool = _gameplayruntime_boot_ok()
+	var gameplayruntime_starter_world_ok: bool = _gameplayruntime_starter_world_ok()
+	var gameplayruntime_boot_no_campaign_tick_ok: bool = _gameplayruntime_boot_no_campaign_tick_ok()
+	var gameplayruntime_ownership_ok: bool = _gameplayruntime_ownership_ok()
+	var gameplayruntime_player_bind_ok: bool = _gameplayruntime_player_bind_ok()
+	var gameplayruntime_turn_wrapper_ok: bool = _gameplayruntime_turn_wrapper_ok()
+	var gameplayruntime_debug_hq_launch_ok: bool = _gameplayruntime_debug_hq_launch_ok()
+	var gameplayruntime_debug_hq_auth_ok: bool = _gameplayruntime_debug_hq_auth_ok()
+	var gameplayruntime_travel_pending_ok: bool = _gameplayruntime_travel_pending_ok()
+	var gameplayruntime_enter_ok: bool = _gameplayruntime_enter_ok()
+	var gameplayruntime_no_auto_deploy_ok: bool = _gameplayruntime_no_auto_deploy_ok()
+	var gameplayruntime_begin_ok: bool = _gameplayruntime_begin_ok()
+	var gameplayruntime_tactical_process_ok: bool = _gameplayruntime_tactical_process_ok()
+	var gameplayruntime_process_gating_ok: bool = _gameplayruntime_process_gating_ok()
+	var gameplayruntime_attacker_flow_ok: bool = _gameplayruntime_attacker_flow_ok()
+	var gameplayruntime_defender_flow_ok: bool = _gameplayruntime_defender_flow_ok()
+	var gameplayruntime_pending_handoff_ok: bool = _gameplayruntime_pending_handoff_ok()
+	var gameplayruntime_turn_block_ok: bool = _gameplayruntime_turn_block_ok()
+	var gameplayruntime_observability_ok: bool = _gameplayruntime_observability_ok()
+	var gameplayruntime_main_scene_ok: bool = _gameplayruntime_main_scene_ok()
+	var gameplayruntime_tiny_world_ok: bool = _gameplayruntime_tiny_world_ok()
+	var gameplayruntime_ai_ok: bool = _gameplayruntime_ai_ok()
+	var gameplayruntime_debug_input_ok: bool = _gameplayruntime_debug_input_ok()
+	var gameplayruntime_rng_ok: bool = _gameplayruntime_rng_ok()
+	var gameplayruntime_absent_ok: bool = _gameplayruntime_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17573,6 +17600,31 @@ static func run() -> Dictionary:
 		"gameflow_rng_ok": gameflow_rng_ok,
 		"gameflow_clock_ok": gameflow_clock_ok,
 		"gameflow_absent_ok": gameflow_absent_ok,
+		"gameplayruntime_boot_ok": gameplayruntime_boot_ok,
+		"gameplayruntime_starter_world_ok": gameplayruntime_starter_world_ok,
+		"gameplayruntime_boot_no_campaign_tick_ok": gameplayruntime_boot_no_campaign_tick_ok,
+		"gameplayruntime_ownership_ok": gameplayruntime_ownership_ok,
+		"gameplayruntime_player_bind_ok": gameplayruntime_player_bind_ok,
+		"gameplayruntime_turn_wrapper_ok": gameplayruntime_turn_wrapper_ok,
+		"gameplayruntime_debug_hq_launch_ok": gameplayruntime_debug_hq_launch_ok,
+		"gameplayruntime_debug_hq_auth_ok": gameplayruntime_debug_hq_auth_ok,
+		"gameplayruntime_travel_pending_ok": gameplayruntime_travel_pending_ok,
+		"gameplayruntime_enter_ok": gameplayruntime_enter_ok,
+		"gameplayruntime_no_auto_deploy_ok": gameplayruntime_no_auto_deploy_ok,
+		"gameplayruntime_begin_ok": gameplayruntime_begin_ok,
+		"gameplayruntime_tactical_process_ok": gameplayruntime_tactical_process_ok,
+		"gameplayruntime_process_gating_ok": gameplayruntime_process_gating_ok,
+		"gameplayruntime_attacker_flow_ok": gameplayruntime_attacker_flow_ok,
+		"gameplayruntime_defender_flow_ok": gameplayruntime_defender_flow_ok,
+		"gameplayruntime_pending_handoff_ok": gameplayruntime_pending_handoff_ok,
+		"gameplayruntime_turn_block_ok": gameplayruntime_turn_block_ok,
+		"gameplayruntime_observability_ok": gameplayruntime_observability_ok,
+		"gameplayruntime_main_scene_ok": gameplayruntime_main_scene_ok,
+		"gameplayruntime_tiny_world_ok": gameplayruntime_tiny_world_ok,
+		"gameplayruntime_ai_ok": gameplayruntime_ai_ok,
+		"gameplayruntime_debug_input_ok": gameplayruntime_debug_input_ok,
+		"gameplayruntime_rng_ok": gameplayruntime_rng_ok,
+		"gameplayruntime_absent_ok": gameplayruntime_absent_ok,
 	}
 
 	var passed := true
@@ -47873,12 +47925,922 @@ static func _gameflow_absent_ok() -> bool:
 	)
 
 
+static func _gameplayruntime_boot() -> GameplayRuntime:
+	var packed: PackedScene = load("res://gameplay/gameplay_runtime.tscn") as PackedScene
+	if packed == null:
+		return null
+	var node: Node = packed.instantiate()
+	if node == null or not (node is GameplayRuntime):
+		if node != null:
+			node.free()
+		return null
+	var runtime: GameplayRuntime = node as GameplayRuntime
+	runtime._ready()
+	if runtime.game_state == null or runtime.game_flow_controller == null:
+		runtime.free()
+		return null
+	return runtime
 
 
+static func _gameplayruntime_free(runtime: GameplayRuntime) -> void:
+	if runtime != null and is_instance_valid(runtime):
+		runtime.free()
 
 
+static func _gameplayruntime_finish(runtime: GameplayRuntime, ok: bool) -> bool:
+	_gameplayruntime_free(runtime)
+	return ok
 
 
+static func _gameplayruntime_player_money(game_state: GameState) -> float:
+	if game_state == null:
+		return -1.0
+	var faction: Faction = game_state.get_faction(StarterWorldService.PLAYER_FACTION_ID)
+	if faction == null or not (faction is MajorGang):
+		return -1.0
+	return (faction as MajorGang).money
 
 
+static func _gameplayruntime_add_defender(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var defender_side: BattleSide = battle_state.get_side(battle_state.defender_side_id)
+	if defender_side == null:
+		return false
+	var participant_id: String = "gameplayruntime_defender"
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"",
+		defender_side.faction_id,
+		battle_state.defender_side_id,
+		"pistol",
+		true,
+		false,
+		"",
+		defender_side.force_id
+	)
+	if not battle_state.add_participant(participant):
+		return false
+	if not defender_side.add_participant_id(participant_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(defender_side.deployment_zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	return true
 
+
+static func _gameplayruntime_undeployed(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	for participant_id: String in battle_state.participants:
+		if battle_state.is_participant_deployed(participant_id):
+			return false
+	for vehicle_id: String in battle_state.vehicles:
+		if battle_state.is_vehicle_deployed(vehicle_id):
+			return false
+	return battle_state.battle_phase == "deployment"
+
+
+static func _gameplayruntime_ensure_pending(runtime: GameplayRuntime, max_turns: int = 8) -> bool:
+	if runtime == null or runtime.game_state == null:
+		return false
+	if runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID):
+		return true
+	if not runtime.game_state.has_mission(StarterWorldService.DEBUG_MISSION_ID):
+		var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+		if launch == null or not launch.success:
+			return false
+		if runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID):
+			return true
+	var turns: int = 0
+	while turns < max_turns:
+		if runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID):
+			return true
+		var turn_result: GameFlowResult = runtime.advance_campaign_turn()
+		if turn_result == null or not turn_result.success:
+			return false
+		turns += 1
+	return runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID)
+
+
+static func _gameplayruntime_enter_deployed_active(runtime: GameplayRuntime, with_defender: bool) -> bool:
+	if not _gameplayruntime_ensure_pending(runtime):
+		return false
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return false
+	var session: CampaignBattleSession = runtime.get_current_session()
+	if session == null or session.battle_state == null:
+		return false
+	if with_defender and not _gameplayruntime_add_defender(session.battle_state):
+		return false
+	if not _battlesession_ready_for_begin(session.battle_state):
+		return false
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	return begin_result != null and begin_result.success and runtime.get_current_mode() == "tactical_active"
+
+
+static func _gameplayruntime_force_pending_handoff(runtime: GameplayRuntime) -> bool:
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return false
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null:
+		return false
+	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
+		return false
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return false
+	runtime._process(0.1)
+	return runtime.get_current_mode() == "tactical_pending_handoff"
+
+
+static func _gameplayruntime_boot_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var controller: GameFlowController = runtime.game_flow_controller
+	return _gameplayruntime_finish(
+		runtime,
+		game_state != null
+		and controller != null
+		and runtime.get_current_mode() == "campaign"
+		and game_state.current_turn == 1
+		and runtime.get_current_session() == null
+		and controller.current_session == null
+		and runtime.list_pending_battles().is_empty()
+	)
+
+
+static func _gameplayruntime_starter_world_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var player: MajorGang = game_state.get_faction("player_gang") as MajorGang
+	var rival: MajorGang = game_state.get_faction("rival_gang") as MajorGang
+	var hood: Neighborhood = game_state.get_neighborhood("starter_hood")
+	var keep: Stronghold = game_state.get_map_location("player_keep") as Stronghold
+	var hq: NeighborhoodHQ = game_state.get_map_location("rival_hq") as NeighborhoodHQ
+	var soldier: Soldier = game_state.get_soldier("player_soldier")
+	var vehicle: Vehicle = game_state.get_vehicle("player_vehicle")
+	var graph: RoadGraph = game_state.road_graph
+	return _gameplayruntime_finish(
+		runtime,
+		player != null
+		and player.controller_type == "player"
+		and rival != null
+		and rival.controller_type == "ai"
+		and game_state.has_stronghold_region("starter_region")
+		and game_state.has_police_region("starter_district")
+		and hood != null
+		and hood.owner_faction_id == "rival_gang"
+		and keep != null
+		and keep.owner_faction_id == "player_gang"
+		and keep.road_node_id == "node_keep"
+		and hq != null
+		and hq.owner_faction_id == "rival_gang"
+		and hq.road_node_id == "node_hq"
+		and graph != null
+		and graph.has_node("node_keep")
+		and graph.has_node("node_hq")
+		and graph.has_segment("seg_keep_hq")
+		and graph.get_open_segment_between("node_keep", "node_hq") != null
+		and soldier != null
+		and soldier.home_stronghold_id == "player_keep"
+		and vehicle != null
+		and vehicle.home_stronghold_id == "player_keep"
+		and DiplomacyService.are_at_war(game_state, "player_gang", "rival_gang")
+	)
+
+
+static func _gameplayruntime_boot_no_campaign_tick_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var turn_before: int = game_state.current_turn
+	var month_before: int = game_state.current_month
+	var money_before: float = _gameplayruntime_player_money(game_state)
+	var force_count: int = game_state.traveling_forces.size()
+	runtime._process(0.16)
+	runtime._process(0.5)
+	runtime._process(1.0)
+	return _gameplayruntime_finish(
+		runtime,
+		game_state.current_turn == turn_before
+		and game_state.current_month == month_before
+		and is_equal_approx(_gameplayruntime_player_money(game_state), money_before)
+		and game_state.traveling_forces.size() == force_count
+		and runtime.get_current_mode() == "campaign"
+	)
+
+
+static func _gameplayruntime_ownership_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var boot_ok: bool = (
+		runtime.game_flow_controller.game_state == runtime.game_state
+		and runtime.get("battle_state") == null
+		and runtime.game_state.get("active_battle") == null
+		and runtime.game_state.get("battle_state") == null
+	)
+	if not boot_ok:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	return _gameplayruntime_finish(
+		runtime,
+		session != null
+		and session.battle_state != null
+		and runtime.game_flow_controller.current_session == session
+		and runtime.game_flow_controller.get_battle_state() == session.battle_state
+		and runtime.get("battle_state") == null
+		and runtime.game_state.get("active_battle") == null
+	)
+
+
+static func _gameplayruntime_player_bind_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var controller: GameFlowController = runtime.game_flow_controller
+	var rival: MajorGang = runtime.game_state.get_faction("rival_gang") as MajorGang
+	return _gameplayruntime_finish(
+		runtime,
+		controller.player_faction_id == "player_gang"
+		and rival != null
+		and rival.controller_type == "ai"
+		and controller.player_faction_id != "rival_gang"
+	)
+
+
+static func _gameplayruntime_turn_wrapper_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var turn_before: int = game_state.current_turn
+	var money_before: float = _gameplayruntime_player_money(game_state)
+	var result: GameFlowResult = runtime.advance_campaign_turn()
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and game_state.current_turn == turn_before + 1
+		and is_equal_approx(_gameplayruntime_player_money(game_state), money_before)
+		and not runtime.has_method("process_turn_start")
+		and not runtime.has_method("sync_all_arrivals")
+		and not runtime.has_method("_process_force_movement")
+		and not runtime.has_method("advance_to_next_turn")
+		and source.contains("game_flow_controller.advance_campaign_turn()")
+		and not source.contains("TurnManager.advance_to_next_turn")
+	)
+
+
+static func _gameplayruntime_debug_hq_launch_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var missions_before: int = game_state.missions.size()
+	var result: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	var force: TravelingForce = game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and result.mission_id == StarterWorldService.DEBUG_MISSION_ID
+		and result.force_id == StarterWorldService.DEBUG_FORCE_ID
+		and game_state.missions.size() == missions_before + 1
+		and mission != null
+		and mission.mission_type_id == "capture_neighborhood_hq"
+		and mission.faction_id == "player_gang"
+		and force != null
+		and force.faction_id == "player_gang"
+		and source.contains("NeighborhoodHQAttackService.launch_from_stronghold")
+		and not source.contains("game_state.add_mission")
+	)
+
+
+static func _gameplayruntime_debug_hq_auth_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	game_state.remove_relationship_between("player_gang", "rival_gang")
+	var result: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and not result.success
+		and result.error_code == "formal_war_required"
+		and not game_state.has_mission(StarterWorldService.DEBUG_MISSION_ID)
+		and not game_state.has_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+		and runtime.get_current_mode() == "campaign"
+	)
+
+
+static func _gameplayruntime_travel_pending_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	if launch == null or not launch.success:
+		return _gameplayruntime_finish(runtime, false)
+	var force: TravelingForce = runtime.game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	if force == null:
+		return _gameplayruntime_finish(runtime, false)
+	var moved: bool = (
+		force.travel_state == "at_destination"
+		or force.travel_state == "traveling_outbound"
+		or launch.reached_destination
+	)
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var mission: CampaignMission = runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		moved
+		and mission != null
+		and mission.mission_state == "awaiting_resolution"
+		and runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID)
+		and runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == null
+	)
+
+
+static func _gameplayruntime_enter_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	var session: CampaignBattleSession = runtime.get_current_session()
+	return _gameplayruntime_finish(
+		runtime,
+		enter_result != null
+		and enter_result.success
+		and runtime.get_current_mode() == "tactical_deployment"
+		and session != null
+		and runtime.game_flow_controller.current_session == session
+		and session.battle_state != null
+		and runtime.get("battle_state") == null
+	)
+
+
+static func _gameplayruntime_no_auto_deploy_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	runtime._process(0.25)
+	runtime._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_deployment"
+		and session.session_state == "deployment"
+		and _gameplayruntime_undeployed(battle_state)
+		and is_equal_approx(battle_state.elapsed_time_seconds, elapsed_before)
+		and not runtime.has_method("deploy_participant")
+		and not runtime.has_method("auto_deploy")
+		and not runtime.has_method("commit_attacker_deployment")
+	)
+
+
+static func _gameplayruntime_begin_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var early: GameFlowResult = runtime.begin_current_battle()
+	var still_deploy: bool = (
+		early != null
+		and not early.success
+		and early.error_code == "deployment_incomplete"
+		and runtime.get_current_mode() == "tactical_deployment"
+	)
+	if not _battlesession_ready_for_begin(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var after: GameFlowResult = runtime.begin_current_battle()
+	return _gameplayruntime_finish(
+		runtime,
+		still_deploy
+		and after != null
+		and after.success
+		and runtime.get_current_mode() == "tactical_active"
+		and runtime.get_current_session().session_state == "active"
+		and not runtime.has_method("is_battle_ready")
+		and not runtime.has_method("is_spatially_ready")
+	)
+
+
+static func _gameplayruntime_tactical_process_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	var turn_before: int = runtime.game_state.current_turn
+	runtime._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_active"
+		and battle_state.elapsed_time_seconds > elapsed_before
+		and runtime.game_state.current_turn == turn_before
+		and not runtime.has_method("resolve_attacks")
+		and not runtime.has_method("apply_combat")
+	)
+
+
+static func _gameplayruntime_process_gating_ok() -> bool:
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var process_start: int = source.find("func _process(")
+	var process_body: String = ""
+	if process_start >= 0:
+		var process_rest: String = source.substr(process_start)
+		var next_func: int = process_rest.find("\nfunc ", 1)
+		if next_func >= 0:
+			process_body = process_rest.substr(0, next_func)
+		else:
+			process_body = process_rest
+	var source_ok: bool = (
+		process_body.contains("MODE_TACTICAL_ACTIVE")
+		and process_body.contains("advance_tactical(delta)")
+		and not process_body.contains("advance_campaign_turn")
+	)
+	if not source_ok:
+		return false
+
+	var campaign_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if campaign_runtime == null:
+		return false
+	var campaign_turn: int = campaign_runtime.game_state.current_turn
+	campaign_runtime._process(0.4)
+	var campaign_ok: bool = (
+		campaign_runtime.get_current_mode() == "campaign"
+		and campaign_runtime.game_state.current_turn == campaign_turn
+		and campaign_runtime.get_current_session() == null
+	)
+	_gameplayruntime_free(campaign_runtime)
+	if not campaign_ok:
+		return false
+
+	var deploy_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if deploy_runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(deploy_runtime):
+		return _gameplayruntime_finish(deploy_runtime, false)
+	var enter_result: GameFlowResult = deploy_runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(deploy_runtime, false)
+	var deploy_state: BattleState = deploy_runtime.get_current_session().battle_state
+	var deploy_elapsed: float = deploy_state.elapsed_time_seconds
+	var deploy_rng: int = _battlesession_rng(deploy_state)
+	var deploy_turn: int = deploy_runtime.game_state.current_turn
+	deploy_runtime._process(0.4)
+	var deploy_ok: bool = (
+		deploy_runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(deploy_state.elapsed_time_seconds, deploy_elapsed)
+		and _battlesession_rng(deploy_state) == deploy_rng
+		and deploy_runtime.game_state.current_turn == deploy_turn
+	)
+	_gameplayruntime_free(deploy_runtime)
+	if not deploy_ok:
+		return false
+
+	var handoff_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if handoff_runtime == null:
+		return false
+	if not _gameplayruntime_force_pending_handoff(handoff_runtime):
+		return _gameplayruntime_finish(handoff_runtime, false)
+	var handoff_session: CampaignBattleSession = handoff_runtime.get_current_session()
+	var handoff_state: BattleState = handoff_session.battle_state
+	var handoff_elapsed: float = handoff_state.elapsed_time_seconds
+	var handoff_rng: int = _battlesession_rng(handoff_state)
+	var handoff_weapons: Dictionary = _battlesession_weapon_snap(handoff_state)
+	var handoff_positions: Dictionary = _battlesession_position_snap(handoff_state)
+	var handoff_turn: int = handoff_runtime.game_state.current_turn
+	handoff_runtime._process(0.4)
+	handoff_runtime._process(0.4)
+	var handoff_ok: bool = (
+		handoff_runtime.get_current_mode() == "tactical_pending_handoff"
+		and handoff_runtime.get_current_session() == handoff_session
+		and handoff_runtime.game_state.current_turn == handoff_turn
+		and _battlesession_tactical_unchanged(
+			handoff_state,
+			handoff_elapsed,
+			handoff_rng,
+			handoff_weapons,
+			handoff_positions
+		)
+	)
+	_gameplayruntime_free(handoff_runtime)
+	if not handoff_ok:
+		return false
+
+	var active_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if active_runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(active_runtime, true):
+		return _gameplayruntime_finish(active_runtime, false)
+	var active_state: BattleState = active_runtime.get_current_session().battle_state
+	var active_elapsed: float = active_state.elapsed_time_seconds
+	active_runtime._process(0.25)
+	return _gameplayruntime_finish(
+		active_runtime,
+		active_runtime.get_current_mode() == "tactical_active"
+		and active_state.elapsed_time_seconds > active_elapsed
+	)
+
+
+static func _gameplayruntime_attacker_flow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var ticks: int = 0
+	while ticks < 12 and runtime.get_current_mode() == "tactical_active":
+		runtime._process(0.1)
+		ticks += 1
+	var game_state: GameState = runtime.game_state
+	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	var hood: Neighborhood = game_state.get_neighborhood(StarterWorldService.HOOD_ID)
+	var hq: NeighborhoodHQ = game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == null
+		and runtime.game_flow_controller.current_session == null
+		and mission != null
+		and mission.mission_state == "resolved_success"
+		and mission.outcome_code == "neighborhood_hq_captured"
+		and hood != null
+		and hood.owner_faction_id == StarterWorldService.PLAYER_FACTION_ID
+		and hq != null
+		and hq.owner_faction_id == StarterWorldService.PLAYER_FACTION_ID
+		and runtime.get("battle_state") == null
+	)
+
+
+static func _gameplayruntime_defender_flow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	var ticks: int = 0
+	while ticks < 12 and runtime.get_current_mode() == "tactical_active":
+		runtime._process(0.1)
+		ticks += 1
+	var game_state: GameState = runtime.game_state
+	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	var hood: Neighborhood = game_state.get_neighborhood(StarterWorldService.HOOD_ID)
+	var hq: NeighborhoodHQ = game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == null
+		and runtime.game_flow_controller.current_session == null
+		and mission != null
+		and mission.mission_state == "resolved_failure"
+		and mission.outcome_code == "neighborhood_hq_assault_failed"
+		and hood != null
+		and hood.owner_faction_id == StarterWorldService.RIVAL_FACTION_ID
+		and hq != null
+		and hq.owner_faction_id == StarterWorldService.RIVAL_FACTION_ID
+	)
+
+
+static func _gameplayruntime_pending_handoff_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_force_pending_handoff(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var turn_before: int = runtime.game_state.current_turn
+	runtime._process(0.5)
+	runtime._process(0.5)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and runtime.get_current_session() == session
+		and session.session_state == CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF
+		and runtime.game_state.current_turn == turn_before
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+	)
+
+
+static func _gameplayruntime_turn_block_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var turn_before: int = runtime.game_state.current_turn
+	var blocked_deploy: GameFlowResult = runtime.advance_campaign_turn()
+	var deploy_ok: bool = (
+		runtime.get_current_mode() == "tactical_deployment"
+		and blocked_deploy != null
+		and not blocked_deploy.success
+		and blocked_deploy.error_code == "tactical_session_active"
+		and runtime.game_state.current_turn == turn_before
+	)
+	if not deploy_ok:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_add_defender(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var blocked_active: GameFlowResult = runtime.advance_campaign_turn()
+	var active_ok: bool = (
+		runtime.get_current_mode() == "tactical_active"
+		and blocked_active != null
+		and not blocked_active.success
+		and blocked_active.error_code == "tactical_session_active"
+		and runtime.game_state.current_turn == turn_before
+	)
+	if not active_ok:
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.1)
+	var blocked_handoff: GameFlowResult = runtime.advance_campaign_turn()
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and runtime.get_current_session() != null
+		and blocked_handoff != null
+		and not blocked_handoff.success
+		and blocked_handoff.error_code == "tactical_session_active"
+		and runtime.game_state.current_turn == turn_before
+		and not runtime.has_method("advance_to_next_turn")
+	)
+
+
+static func _gameplayruntime_observability_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var boot_ok: bool = (
+		runtime.get_current_mode() == runtime.game_flow_controller.get_current_mode()
+		and runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == runtime.game_flow_controller.current_session
+		and runtime.get_current_session() == null
+		and runtime.list_pending_battles() == runtime.game_flow_controller.list_pending_battle_ids()
+		and runtime.list_pending_battles().is_empty()
+		and source.contains("func _log_mode_if_changed")
+		and source.contains("if mode == _last_logged_mode")
+	)
+	if not boot_ok:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var pending_ok: bool = (
+		runtime.get_current_mode() == "campaign"
+		and runtime.list_pending_battles() == runtime.game_flow_controller.list_pending_battle_ids()
+		and runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID)
+		and runtime.get_current_session() == null
+	)
+	if not pending_ok:
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_deployment"
+		and runtime.get_current_mode() == runtime.game_flow_controller.get_current_mode()
+		and runtime.get_current_session() != null
+		and runtime.get_current_session() == runtime.game_flow_controller.current_session
+	)
+
+
+static func _gameplayruntime_main_scene_ok() -> bool:
+	var project_text: String = FileAccess.get_file_as_string("res://project.godot")
+	return (
+		project_text.contains("run/main_scene=\"res://gameplay/gameplay_runtime.tscn\"")
+		and not project_text.contains("run/main_scene=\"res://validation/core_validation_runner.tscn\"")
+		and FileAccess.file_exists("res://validation/core_validation_runner.tscn")
+		and FileAccess.file_exists("res://validation/core_validation_runner.gd")
+		and FileAccess.file_exists("res://gameplay/gameplay_runtime.tscn")
+	)
+
+
+static func _gameplayruntime_tiny_world_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var business_count: int = 0
+	for location_id: String in game_state.map_locations:
+		if game_state.get_map_location(location_id) is Business:
+			business_count += 1
+	var world_source: String = FileAccess.get_file_as_string("res://gameplay/starter_world_service.gd").to_lower()
+	return _gameplayruntime_finish(
+		runtime,
+		game_state.factions.size() == 2
+		and game_state.has_faction("player_gang")
+		and game_state.has_faction("rival_gang")
+		and game_state.neighborhoods.size() == 1
+		and game_state.map_locations.size() == 2
+		and game_state.soldiers.size() == 1
+		and game_state.vehicles.size() == 1
+		and game_state.missions.is_empty()
+		and business_count == 0
+		and not world_source.contains("briarport")
+		and not world_source.contains("election")
+		and not world_source.contains("weather")
+		and not world_source.contains("trc")
+	)
+
+
+static func _gameplayruntime_ai_ok() -> bool:
+	var independent: GameState = StarterWorldService.create()
+	if independent == null:
+		return false
+	var rival: MajorGang = independent.get_faction(StarterWorldService.RIVAL_FACTION_ID) as MajorGang
+	var turn_result: TurnResult = TurnManager.advance_to_next_turn(independent)
+	var soldier_ids: Array[String] = []
+	soldier_ids.append(StarterWorldService.SOLDIER_ID)
+	var vehicle_ids: Array[String] = []
+	vehicle_ids.append(StarterWorldService.VEHICLE_ID)
+	var attack_state: GameState = StarterWorldService.create()
+	var deployment: DeploymentRequest = DeploymentRequest.new(
+		StarterWorldService.DEBUG_FORCE_ID,
+		StarterWorldService.PLAYER_FACTION_ID,
+		StarterWorldService.KEEP_ID,
+		StarterWorldService.HQ_ID,
+		soldier_ids,
+		vehicle_ids,
+		10.0
+	)
+	var request: MissionRequest = MissionRequest.new(
+		StarterWorldService.DEBUG_MISSION_ID,
+		"capture_neighborhood_hq",
+		deployment
+	)
+	var hq_result: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		attack_state,
+		request
+	)
+	var sync_result: MissionResult = MissionService.sync_arrival(
+		attack_state,
+		StarterWorldService.DEBUG_MISSION_ID
+	)
+	var runtime_source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	return (
+		rival != null
+		and rival.controller_type == "ai"
+		and turn_result != null
+		and turn_result.success
+		and independent.current_turn == 2
+		and hq_result != null
+		and hq_result.success
+		and sync_result != null
+		and sync_result.success
+		and not runtime_source.contains("plan_ai_turn")
+		and not runtime_source.contains("simulate_ai_tactical")
+	)
+
+
+static func _gameplayruntime_debug_input_ok() -> bool:
+	var source: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var start: int = source.find("func _unhandled_input")
+	if start < 0:
+		return false
+	var rest: String = source.substr(start)
+	var next_func: int = rest.find("\nfunc ", 1)
+	var handler: String = rest
+	if next_func >= 0:
+		handler = rest.substr(0, next_func)
+	return (
+		handler.contains("KEY_T")
+		and handler.contains("advance_campaign_turn()")
+		and handler.contains("KEY_H")
+		and handler.contains("debug_launch_test_hq_assault()")
+		and not handler.contains("TurnManager")
+		and not handler.contains("MissionService")
+		and not handler.contains("EconomyService")
+		and not handler.contains("ForceMovementService")
+		and not handler.contains("NeighborhoodHQAttackService")
+	)
+
+
+static func _gameplayruntime_rng_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	runtime._process(0.25)
+	var boot_ok: bool = (
+		runtime.get_current_session() == null
+		and runtime.game_state.get("combat_random") == null
+	)
+	if not boot_ok:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var deploy_rng: int = _battlesession_rng(battle_state)
+	var deploy_elapsed: float = battle_state.elapsed_time_seconds
+	runtime._process(0.25)
+	var deploy_ok: bool = (
+		runtime.get_current_mode() == "tactical_deployment"
+		and _battlesession_rng(battle_state) == deploy_rng
+		and is_equal_approx(battle_state.elapsed_time_seconds, deploy_elapsed)
+	)
+	if not deploy_ok:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_add_defender(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var active_elapsed: float = battle_state.elapsed_time_seconds
+	runtime._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_active"
+		and battle_state.elapsed_time_seconds > active_elapsed
+	)
+
+
+static func _gameplayruntime_absent_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
+	return _gameplayruntime_finish(
+		runtime,
+		runtime is Node
+		and not runtime.has_method("show_hud")
+		and not runtime.has_method("show_victory_screen")
+		and not runtime.has_method("move_camera")
+		and not runtime.has_method("render_map")
+		and not runtime.has_method("end_turn_button")
+		and not runtime.has_method("select_units")
+		and not runtime.has_method("click_hq")
+		and not runtime.has_method("commit_attacker_deployment")
+		and not ClassDB.class_exists("GameManager")
+		and tscn.contains("type=\"Node\"")
+		and not tscn.contains("CanvasLayer")
+		and not tscn.contains("Camera")
+		and not tscn.contains("Button")
+	)
