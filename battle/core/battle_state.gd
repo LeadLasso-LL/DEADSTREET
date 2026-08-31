@@ -11,6 +11,7 @@ const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry
 const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
 const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat_pressure_snapshot.gd")
 const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
+const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -18,6 +19,7 @@ var mission_id: String = ""
 var location_id: String = ""
 var attacker_side_id: String = ""
 var defender_side_id: String = ""
+var campaign_source: BattleCampaignSource = null
 var sides: Dictionary[String, BattleSide] = {}
 var participants: Dictionary[String, BattleParticipant] = {}
 var vehicles: Dictionary[String, BattleVehicle] = {}

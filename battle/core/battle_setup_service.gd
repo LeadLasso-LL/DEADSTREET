@@ -7,6 +7,7 @@ const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
+const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
 const BattleForceCommandResult := preload("res://battle/core/battle_force_command_result.gd")
@@ -159,6 +160,12 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 		SIDE_ATTACKER,
 		SIDE_DEFENDER,
 		"deployment"
+	)
+	battle_state.campaign_source = BattleCampaignSource.new(
+		BATTLE_TYPE_HQ_ASSAULT,
+		mission.id,
+		force.id,
+		hq.id
 	)
 	var attacker_side: BattleSide = BattleSide.new(
 		SIDE_ATTACKER,

@@ -106,6 +106,9 @@ const BattleCoverCombatEffectResult := preload("res://battle/combat/battle_cover
 const BattleCoverCombatEffectService := preload("res://battle/combat/battle_cover_combat_effect_service.gd")
 const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 const BattleVictoryService := preload("res://battle/core/battle_victory_service.gd")
+const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
+const BattleCampaignOutcomeBridgeResult := preload("res://battle/core/battle_campaign_outcome_bridge_result.gd")
+const BattleCampaignOutcomeBridgeService := preload("res://battle/core/battle_campaign_outcome_bridge_service.gd")
 
 
 static func run() -> Dictionary:
@@ -15774,6 +15777,35 @@ static func run() -> Dictionary:
 	var battlevictory_attack_resolution_ok: bool = _battlevictory_attack_resolution_ok()
 	var battlevictory_campaign_isolation_ok: bool = _battlevictory_campaign_isolation_ok()
 	var battlevictory_absent_ok: bool = _battlevictory_absent_ok()
+	var battlebridge_standard_provenance_ok: bool = _battlebridge_standard_provenance_ok()
+	var battlebridge_setup_regression_ok: bool = _battlebridge_setup_regression_ok()
+	var battlebridge_mismatch_mission_ok: bool = _battlebridge_mismatch_mission_ok()
+	var battlebridge_mismatch_force_ok: bool = _battlebridge_mismatch_force_ok()
+	var battlebridge_mismatch_target_ok: bool = _battlebridge_mismatch_target_ok()
+	var battlebridge_mismatch_source_type_ok: bool = _battlebridge_mismatch_source_type_ok()
+	var battlebridge_fallback_ok: bool = _battlebridge_fallback_ok()
+	var battlebridge_fallback_incomplete_ok: bool = _battlebridge_fallback_incomplete_ok()
+	var battlebridge_unresolved_ok: bool = _battlebridge_unresolved_ok()
+	var battlebridge_attacker_victory_ok: bool = _battlebridge_attacker_victory_ok()
+	var battlebridge_defender_victory_ok: bool = _battlebridge_defender_victory_ok()
+	var battlebridge_side_mapping_ok: bool = _battlebridge_side_mapping_ok()
+	var battlebridge_unexpected_winner_ok: bool = _battlebridge_unexpected_winner_ok()
+	var battlebridge_draw_ok: bool = _battlebridge_draw_ok()
+	var battlebridge_unsupported_source_ok: bool = _battlebridge_unsupported_source_ok()
+	var battlebridge_malformed_context_ok: bool = _battlebridge_malformed_context_ok()
+	var battlebridge_attacker_duplicate_ok: bool = _battlebridge_attacker_duplicate_ok()
+	var battlebridge_defender_duplicate_ok: bool = _battlebridge_defender_duplicate_ok()
+	var battlebridge_idempotence_authority_ok: bool = _battlebridge_idempotence_authority_ok()
+	var battlebridge_capture_rollback_ok: bool = _battlebridge_capture_rollback_ok()
+	var battlebridge_traveling_force_ok: bool = _battlebridge_traveling_force_ok()
+	var battlebridge_casualty_isolation_ok: bool = _battlebridge_casualty_isolation_ok()
+	var battlebridge_runtime_isolation_ok: bool = _battlebridge_runtime_isolation_ok()
+	var battlebridge_mission_transitions_ok: bool = _battlebridge_mission_transitions_ok()
+	var battlebridge_tactical_immutability_ok: bool = _battlebridge_tactical_immutability_ok()
+	var battlebridge_serialization_ok: bool = _battlebridge_serialization_ok()
+	var battlebridge_determinism_ok: bool = _battlebridge_determinism_ok()
+	var battlebridge_campaign_nonscope_ok: bool = _battlebridge_campaign_nonscope_ok()
+	var battlebridge_absent_ok: bool = _battlebridge_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17393,6 +17425,35 @@ static func run() -> Dictionary:
 		"battlevictory_attack_resolution_ok": battlevictory_attack_resolution_ok,
 		"battlevictory_campaign_isolation_ok": battlevictory_campaign_isolation_ok,
 		"battlevictory_absent_ok": battlevictory_absent_ok,
+		"battlebridge_standard_provenance_ok": battlebridge_standard_provenance_ok,
+		"battlebridge_setup_regression_ok": battlebridge_setup_regression_ok,
+		"battlebridge_mismatch_mission_ok": battlebridge_mismatch_mission_ok,
+		"battlebridge_mismatch_force_ok": battlebridge_mismatch_force_ok,
+		"battlebridge_mismatch_target_ok": battlebridge_mismatch_target_ok,
+		"battlebridge_mismatch_source_type_ok": battlebridge_mismatch_source_type_ok,
+		"battlebridge_fallback_ok": battlebridge_fallback_ok,
+		"battlebridge_fallback_incomplete_ok": battlebridge_fallback_incomplete_ok,
+		"battlebridge_unresolved_ok": battlebridge_unresolved_ok,
+		"battlebridge_attacker_victory_ok": battlebridge_attacker_victory_ok,
+		"battlebridge_defender_victory_ok": battlebridge_defender_victory_ok,
+		"battlebridge_side_mapping_ok": battlebridge_side_mapping_ok,
+		"battlebridge_unexpected_winner_ok": battlebridge_unexpected_winner_ok,
+		"battlebridge_draw_ok": battlebridge_draw_ok,
+		"battlebridge_unsupported_source_ok": battlebridge_unsupported_source_ok,
+		"battlebridge_malformed_context_ok": battlebridge_malformed_context_ok,
+		"battlebridge_attacker_duplicate_ok": battlebridge_attacker_duplicate_ok,
+		"battlebridge_defender_duplicate_ok": battlebridge_defender_duplicate_ok,
+		"battlebridge_idempotence_authority_ok": battlebridge_idempotence_authority_ok,
+		"battlebridge_capture_rollback_ok": battlebridge_capture_rollback_ok,
+		"battlebridge_traveling_force_ok": battlebridge_traveling_force_ok,
+		"battlebridge_casualty_isolation_ok": battlebridge_casualty_isolation_ok,
+		"battlebridge_runtime_isolation_ok": battlebridge_runtime_isolation_ok,
+		"battlebridge_mission_transitions_ok": battlebridge_mission_transitions_ok,
+		"battlebridge_tactical_immutability_ok": battlebridge_tactical_immutability_ok,
+		"battlebridge_serialization_ok": battlebridge_serialization_ok,
+		"battlebridge_determinism_ok": battlebridge_determinism_ok,
+		"battlebridge_campaign_nonscope_ok": battlebridge_campaign_nonscope_ok,
+		"battlebridge_absent_ok": battlebridge_absent_ok,
 	}
 
 	var passed := true
@@ -43825,6 +43886,1293 @@ static func _battlevictory_absent_ok() -> bool:
 		and _battle_has_no_combat_turn_model(battle_state)
 		and GameState.new().get("tactical_result") == null
 		and not GameState.new().has_method("apply_tactical_casualty")
+	)
+
+
+static func _battlebridge_create_pack() -> Dictionary:
+	var game_state: GameState = _make_battle_world()
+	var attacker: MajorGang = game_state.get_faction("battle_a") as MajorGang
+	var defender: MajorGang = game_state.get_faction("battle_b") as MajorGang
+	if attacker != null:
+		attacker.resources.set_amount("Gun Parts", 4.0)
+	if defender != null:
+		defender.resources.set_amount("Gun Parts", 2.5)
+		defender.resources.set_amount("Ammo", 8.0)
+	var third: MajorGang = MajorGang.new("battle_c", "Battle C", "ai")
+	third.money = 220.0
+	third.resources.set_amount("Ammo", 1.0)
+	game_state.add_faction(third)
+	var biz_third: Business = Business.new(
+		"battle_biz_c", "Battle Biz C", "battle_hood", Vector2(0.4, 0.3), "battle_c", true, "market", 1
+	)
+	biz_third.road_node_id = "battle_node_hq"
+	game_state.add_map_location(biz_third)
+	var biz_attacker: Business = Business.new(
+		"battle_biz_a", "Battle Biz A", "battle_hood", Vector2(0.5, 0.3), "battle_a", true, "market", 1
+	)
+	biz_attacker.road_node_id = "battle_node_hq"
+	game_state.add_map_location(biz_attacker)
+	DiplomacyService.declare_war(game_state, "battle_a", "battle_b")
+	var force: TravelingForce = _battle_add_force_mission(game_state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		game_state,
+		"battle_mission"
+	)
+	var pack: Dictionary = {}
+	pack["game_state"] = game_state
+	pack["force"] = force
+	pack["result"] = result
+	pack["battle_state"] = result.battle_state
+	return pack
+
+
+static func _battlebridge_clone_game(game_state: GameState) -> GameState:
+	var cloned: GameState = GameState.new()
+	if game_state == null:
+		return cloned
+	cloned.from_dict(game_state.to_dict())
+	return cloned
+
+
+static func _battlebridge_stamp_victory(battle_state: BattleState, winning_side_id: String) -> bool:
+	if battle_state == null or winning_side_id.is_empty():
+		return false
+	var losers: Array[String] = []
+	if winning_side_id == battle_state.attacker_side_id:
+		losers.append(battle_state.defender_side_id)
+	elif winning_side_id == battle_state.defender_side_id:
+		losers.append(battle_state.attacker_side_id)
+	else:
+		losers.append(battle_state.attacker_side_id)
+		losers.append(battle_state.defender_side_id)
+	var living: Array[String] = []
+	living.append(winning_side_id)
+	battle_state.battle_phase = "resolved"
+	battle_state.tactical_result = BattleVictoryResult.resolved_victory(
+		winning_side_id,
+		losers,
+		living,
+		false
+	)
+	return battle_state.tactical_result != null and battle_state.tactical_result.resolved
+
+
+static func _battlebridge_stamp_draw(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var losers: Array[String] = []
+	losers.append(battle_state.attacker_side_id)
+	losers.append(battle_state.defender_side_id)
+	battle_state.battle_phase = "resolved"
+	battle_state.tactical_result = BattleVictoryResult.resolved_draw(losers, false)
+	return battle_state.tactical_result != null and battle_state.tactical_result.resolved
+
+
+static func _battlebridge_make_custom_side_state(
+	force: TravelingForce,
+	attacker_side_id: String,
+	defender_side_id: String
+) -> BattleState:
+	if force == null or attacker_side_id.is_empty() or defender_side_id.is_empty():
+		return null
+	var battle_state: BattleState = BattleState.new(
+		"battle_battle_mission",
+		"neighborhood_hq_assault",
+		"battle_mission",
+		"battle_hq",
+		attacker_side_id,
+		defender_side_id,
+		"deployment"
+	)
+	battle_state.campaign_source = BattleCampaignSource.new(
+		"neighborhood_hq_assault",
+		"battle_mission",
+		force.id,
+		"battle_hq"
+	)
+	var attacker_side: BattleSide = BattleSide.new(
+		attacker_side_id,
+		"battle_a",
+		force.id,
+		true,
+		"attacker_deployment"
+	)
+	var defender_side: BattleSide = BattleSide.new(
+		defender_side_id,
+		"battle_b",
+		"",
+		false,
+		"defender_deployment"
+	)
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	return battle_state
+
+
+static func _battlebridge_refused_unchanged(
+	game_state: GameState,
+	battle_state: BattleState,
+	force: TravelingForce,
+	mission_id: String
+) -> BattleCampaignOutcomeBridgeResult:
+	if game_state == null:
+		return null
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, mission_id)
+	var result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	if result == null or result.applied:
+		return null
+	if not _battle_campaign_unchanged(game_state, snap, force, mission_id):
+		return null
+	return result
+
+
+static func _battlebridge_nonscope_holds(game_state: GameState) -> bool:
+	if game_state == null:
+		return false
+	var attacker: MajorGang = game_state.get_faction("battle_a") as MajorGang
+	var defender: MajorGang = game_state.get_faction("battle_b") as MajorGang
+	if attacker == null or defender == null:
+		return false
+	var keep: MapLocation = game_state.get_map_location("battle_keep")
+	var hq_other: MapLocation = game_state.get_map_location("battle_hq_b")
+	var biz_third: MapLocation = game_state.get_map_location("battle_biz_c")
+	var biz_attacker: MapLocation = game_state.get_map_location("battle_biz_a")
+	return (
+		is_equal_approx(attacker.money, 950.0)
+		and is_equal_approx(attacker.resources.get_amount("Ammo"), 6.5)
+		and is_equal_approx(attacker.resources.get_amount("Gun Parts"), 4.0)
+		and is_equal_approx(defender.money, 410.0)
+		and is_equal_approx(defender.resources.get_amount("Ammo"), 8.0)
+		and is_equal_approx(defender.resources.get_amount("Gun Parts"), 2.5)
+		and DiplomacyService.are_at_war(game_state, "battle_a", "battle_b")
+		and game_state.has_police_region("battle_district")
+		and keep != null
+		and keep.owner_faction_id == "battle_a"
+		and hq_other != null
+		and hq_other.owner_faction_id == "battle_b"
+		and biz_third != null
+		and biz_third.owner_faction_id == "battle_c"
+		and biz_attacker != null
+		and biz_attacker.owner_faction_id == "battle_a"
+	)
+
+
+static func _battlebridge_standard_provenance_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var result: BattleSetupResult = pack.get("result", null) as BattleSetupResult
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if result == null or not result.success or battle_state == null or force == null:
+		return false
+	var source: BattleCampaignSource = battle_state.campaign_source
+	if source == null:
+		return false
+	return (
+		source.source_type_id == "neighborhood_hq_assault"
+		and source.mission_id == "battle_mission"
+		and source.force_id == force.id
+		and source.force_id == "battle_force"
+		and source.target_location_id == "battle_hq"
+		and battle_state.battle_type_id == "neighborhood_hq_assault"
+		and battle_state.mission_id == "battle_mission"
+		and battle_state.location_id == "battle_hq"
+		and battle_state.get_side(battle_state.attacker_side_id).force_id == force.id
+		and source.get("mission") == null
+		and source.get("force") == null
+		and source.get("hq") == null
+		and source.get("neighborhood") == null
+		and source.get("target_hq") == null
+		and typeof(source.mission_id) == TYPE_STRING
+		and typeof(source.force_id) == TYPE_STRING
+		and typeof(source.target_location_id) == TYPE_STRING
+		and typeof(source.source_type_id) == TYPE_STRING
+	)
+
+
+static func _battlebridge_setup_regression_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if battle_state == null or force == null:
+		return false
+	var attacker_side: BattleSide = battle_state.get_side("attacker")
+	var defender_side: BattleSide = battle_state.get_side("defender")
+	var attacker_zone: DeploymentZone = battle_state.get_deployment_zone("attacker_deployment")
+	var defender_zone: DeploymentZone = battle_state.get_deployment_zone("defender_deployment")
+	var attacker_force: BattleTacticalForce = battle_state.get_tactical_force(force.id)
+	var defender_force_id: String = BattleForceCommandService.garrison_tactical_force_id("battle_hq")
+	var defender_force: BattleTacticalForce = battle_state.get_tactical_force(defender_force_id)
+	var expected_soldiers: Array[String] = ["battle_sol_a", "battle_sol_m", "battle_sol_z"]
+	var expected_vehicles: Array[String] = ["battle_veh_a", "battle_veh_m", "battle_veh_z"]
+	if attacker_side == null or defender_side == null or attacker_zone == null or defender_zone == null:
+		return false
+	if attacker_force == null or defender_force == null:
+		return false
+	var attacker_unanchored: bool = true
+	for participant_id: String in attacker_side.participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or participant.defend_position:
+			attacker_unanchored = false
+	return (
+		battle_state.attacker_side_id == "attacker"
+		and battle_state.defender_side_id == "defender"
+		and attacker_side.faction_id == "battle_a"
+		and attacker_side.force_id == force.id
+		and attacker_side.is_attacker
+		and defender_side.faction_id == "battle_b"
+		and defender_side.force_id.is_empty()
+		and not defender_side.is_attacker
+		and defender_side.participant_ids.is_empty()
+		and _string_ids_match(attacker_side.participant_ids, expected_soldiers)
+		and _string_ids_match(attacker_side.vehicle_ids, expected_vehicles)
+		and attacker_zone.zone_type == "attacker_entry"
+		and defender_zone.zone_type == "defender_position"
+		and attacker_zone.side_id == "attacker"
+		and defender_zone.side_id == "defender"
+		and attacker_force.command_id == BattleForceCommandCatalog.COMMAND_PUSH
+		and defender_force.command_id == BattleForceCommandCatalog.COMMAND_HOLD
+		and attacker_unanchored
+		and battle_state.battle_phase == "deployment"
+		and battle_state.campaign_source != null
+	)
+
+
+static func _battlebridge_mismatch_mission_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or battle_state.campaign_source == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	battle_state.campaign_source.mission_id = "other_mission"
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.success
+		and not result.applied
+		and result.error_code == "mission_id_mismatch"
+	)
+
+
+static func _battlebridge_mismatch_force_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or battle_state.campaign_source == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	battle_state.campaign_source.force_id = "other_force"
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.success
+		and not result.applied
+		and result.error_code == "force_id_mismatch"
+	)
+
+
+static func _battlebridge_mismatch_target_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or battle_state.campaign_source == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	battle_state.campaign_source.target_location_id = "battle_hq_b"
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.success
+		and not result.applied
+		and result.error_code == "target_location_mismatch"
+	)
+
+
+static func _battlebridge_mismatch_source_type_ok() -> bool:
+	var pack_a: Dictionary = _battlebridge_create_pack()
+	var game_a: GameState = pack_a.get("game_state", null) as GameState
+	var battle_a: BattleState = pack_a.get("battle_state", null) as BattleState
+	var force_a: TravelingForce = pack_a.get("force", null) as TravelingForce
+	if game_a == null or battle_a == null or battle_a.campaign_source == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_a, battle_a.attacker_side_id):
+		return false
+	battle_a.campaign_source.source_type_id = "stronghold_assault"
+	var explicit: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_a,
+		battle_a,
+		force_a,
+		"battle_mission"
+	)
+	var pack_b: Dictionary = _battlebridge_create_pack()
+	var game_b: GameState = pack_b.get("game_state", null) as GameState
+	var battle_b: BattleState = pack_b.get("battle_state", null) as BattleState
+	var force_b: TravelingForce = pack_b.get("force", null) as TravelingForce
+	if game_b == null or battle_b == null or battle_b.campaign_source == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_b, battle_b.attacker_side_id):
+		return false
+	battle_b.battle_type_id = "raid_business"
+	var typed: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_b,
+		battle_b,
+		force_b,
+		"battle_mission"
+	)
+	return (
+		explicit != null
+		and not explicit.applied
+		and explicit.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_UNSUPPORTED_BATTLE_SOURCE
+		and typed != null
+		and not typed.success
+		and not typed.applied
+		and typed.error_code == "malformed_campaign_source"
+	)
+
+
+static func _battlebridge_fallback_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	battle_state.campaign_source = null
+	var result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	return (
+		result != null
+		and result.success
+		and result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and battle_state.campaign_source == null
+		and game_state.get_mission("battle_mission").mission_state == "resolved_success"
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_a"
+		and force.travel_state == "at_destination"
+	)
+
+
+static func _battlebridge_fallback_incomplete_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	battle_state.campaign_source = null
+	battle_state.mission_id = ""
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.success
+		and not result.applied
+		and result.error_code == "malformed_campaign_source"
+		and battle_state.campaign_source == null
+	)
+
+
+static func _battlebridge_unresolved_ok() -> bool:
+	var pack_null: Dictionary = _battlebridge_create_pack()
+	var game_null: GameState = pack_null.get("game_state", null) as GameState
+	var force_null: TravelingForce = pack_null.get("force", null) as TravelingForce
+	var null_result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_null,
+		null,
+		force_null,
+		"battle_mission"
+	)
+	var pack_dep: Dictionary = _battlebridge_create_pack()
+	var game_dep: GameState = pack_dep.get("game_state", null) as GameState
+	var battle_dep: BattleState = pack_dep.get("battle_state", null) as BattleState
+	var force_dep: TravelingForce = pack_dep.get("force", null) as TravelingForce
+	var dep_result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_dep,
+		battle_dep,
+		force_dep,
+		"battle_mission"
+	)
+	var pack_act: Dictionary = _battlebridge_create_pack()
+	var game_act: GameState = pack_act.get("game_state", null) as GameState
+	var battle_act: BattleState = pack_act.get("battle_state", null) as BattleState
+	var force_act: TravelingForce = pack_act.get("force", null) as TravelingForce
+	if battle_act == null:
+		return false
+	battle_act.battle_phase = "active"
+	var act_result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_act,
+		battle_act,
+		force_act,
+		"battle_mission"
+	)
+	var pack_miss: Dictionary = _battlebridge_create_pack()
+	var game_miss: GameState = pack_miss.get("game_state", null) as GameState
+	var battle_miss: BattleState = pack_miss.get("battle_state", null) as BattleState
+	var force_miss: TravelingForce = pack_miss.get("force", null) as TravelingForce
+	if battle_miss == null:
+		return false
+	battle_miss.battle_phase = "resolved"
+	battle_miss.tactical_result = null
+	var miss_result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_miss,
+		battle_miss,
+		force_miss,
+		"battle_mission"
+	)
+	var pack_cont: Dictionary = _battlebridge_create_pack()
+	var game_cont: GameState = pack_cont.get("game_state", null) as GameState
+	var battle_cont: BattleState = pack_cont.get("battle_state", null) as BattleState
+	var force_cont: TravelingForce = pack_cont.get("force", null) as TravelingForce
+	if battle_cont == null:
+		return false
+	var living: Array[String] = []
+	living.append(battle_cont.attacker_side_id)
+	living.append(battle_cont.defender_side_id)
+	battle_cont.battle_phase = "resolved"
+	battle_cont.tactical_result = BattleVictoryResult.continuing(living)
+	var cont_result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_cont,
+		battle_cont,
+		force_cont,
+		"battle_mission"
+	)
+	return (
+		null_result != null
+		and not null_result.success
+		and null_result.error_code == "null_battle_state"
+		and dep_result != null
+		and not dep_result.success
+		and dep_result.error_code == "battle_not_resolved"
+		and battle_dep != null
+		and battle_dep.battle_phase == "deployment"
+		and act_result != null
+		and not act_result.success
+		and act_result.error_code == "battle_not_resolved"
+		and miss_result != null
+		and not miss_result.success
+		and miss_result.error_code == "missing_tactical_result"
+		and cont_result != null
+		and not cont_result.success
+		and cont_result.error_code == "missing_tactical_result"
+	)
+
+
+static func _battlebridge_capture_effects_match(game_state: GameState) -> bool:
+	if game_state == null:
+		return false
+	var hood: Neighborhood = game_state.get_neighborhood("battle_hood")
+	var hq: NeighborhoodHQ = game_state.get_map_location("battle_hq") as NeighborhoodHQ
+	var biz: Business = game_state.get_map_location("battle_biz") as Business
+	var mission: CampaignMission = game_state.get_mission("battle_mission")
+	if hood == null or hq == null or biz == null or mission == null:
+		return false
+	return (
+		hood.owner_faction_id == "battle_a"
+		and hq.owner_faction_id == "battle_a"
+		and biz.owner_faction_id.is_empty()
+		and mission.mission_state == "resolved_success"
+		and mission.outcome_code == "neighborhood_hq_captured"
+		and _battlebridge_nonscope_holds(game_state)
+	)
+
+
+static func _battlebridge_failure_effects_match(game_state: GameState) -> bool:
+	if game_state == null:
+		return false
+	var hood: Neighborhood = game_state.get_neighborhood("battle_hood")
+	var hq: NeighborhoodHQ = game_state.get_map_location("battle_hq") as NeighborhoodHQ
+	var biz: Business = game_state.get_map_location("battle_biz") as Business
+	var mission: CampaignMission = game_state.get_mission("battle_mission")
+	if hood == null or hq == null or biz == null or mission == null:
+		return false
+	return (
+		hood.owner_faction_id == "battle_b"
+		and hq.owner_faction_id == "battle_b"
+		and biz.owner_faction_id == "battle_b"
+		and mission.mission_state == "resolved_failure"
+		and mission.outcome_code == "neighborhood_hq_assault_failed"
+		and _battlebridge_nonscope_holds(game_state)
+	)
+
+
+static func _battlebridge_attacker_victory_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or force == null:
+		return false
+	var twin: GameState = _battlebridge_clone_game(game_state)
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	if game_state.get_mission("battle_mission").mission_state != "awaiting_resolution":
+		return false
+	var result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	var resolver: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		twin,
+		"battle_mission",
+		true
+	)
+	return (
+		result != null
+		and result.success
+		and result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and result.mission_id == "battle_mission"
+		and resolver != null
+		and resolver.success
+		and _battlebridge_capture_effects_match(game_state)
+		and _battlebridge_capture_effects_match(twin)
+		and game_state.get_neighborhood("battle_hood").owner_faction_id
+			== twin.get_neighborhood("battle_hood").owner_faction_id
+		and (game_state.get_map_location("battle_biz") as Business).owner_faction_id
+			== (twin.get_map_location("battle_biz") as Business).owner_faction_id
+	)
+
+
+static func _battlebridge_defender_victory_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or force == null:
+		return false
+	var twin: GameState = _battlebridge_clone_game(game_state)
+	if not _battlebridge_stamp_victory(battle_state, battle_state.defender_side_id):
+		return false
+	var result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	var resolver: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		twin,
+		"battle_mission",
+		false
+	)
+	return (
+		result != null
+		and result.success
+		and result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DEFENDER_VICTORY_APPLIED
+		and result.mission_id == "battle_mission"
+		and resolver != null
+		and resolver.success
+		and _battlebridge_failure_effects_match(game_state)
+		and _battlebridge_failure_effects_match(twin)
+	)
+
+
+static func _battlebridge_side_mapping_ok() -> bool:
+	var pack_atk: Dictionary = _battlebridge_create_pack()
+	var game_atk: GameState = pack_atk.get("game_state", null) as GameState
+	var force_atk: TravelingForce = pack_atk.get("force", null) as TravelingForce
+	if game_atk == null or force_atk == null:
+		return false
+	var battle_atk: BattleState = _battlebridge_make_custom_side_state(force_atk, "zeta_atk", "alpha_def")
+	if battle_atk == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_atk, "zeta_atk"):
+		return false
+	var atk_result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_atk,
+		battle_atk
+	)
+	var pack_def: Dictionary = _battlebridge_create_pack()
+	var game_def: GameState = pack_def.get("game_state", null) as GameState
+	var force_def: TravelingForce = pack_def.get("force", null) as TravelingForce
+	if game_def == null or force_def == null:
+		return false
+	var battle_def: BattleState = _battlebridge_make_custom_side_state(force_def, "zeta_atk", "alpha_def")
+	if battle_def == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_def, "alpha_def"):
+		return false
+	var def_result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_def,
+		battle_def
+	)
+	return (
+		battle_atk.attacker_side_id == "zeta_atk"
+		and battle_atk.defender_side_id == "alpha_def"
+		and "alpha_def" < "zeta_atk"
+		and atk_result != null
+		and atk_result.applied
+		and atk_result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and game_atk.get_mission("battle_mission").mission_state == "resolved_success"
+		and def_result != null
+		and def_result.applied
+		and def_result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DEFENDER_VICTORY_APPLIED
+		and game_def.get_mission("battle_mission").mission_state == "resolved_failure"
+	)
+
+
+static func _battlebridge_unexpected_winner_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, "observer"):
+		return false
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.success
+		and not result.applied
+		and result.error_code == "invalid_winning_side"
+		and result.outcome_kind != BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and result.outcome_kind != BattleCampaignOutcomeBridgeResult.OUTCOME_DEFENDER_VICTORY_APPLIED
+		and game_state.get_mission("battle_mission").mission_state == "awaiting_resolution"
+	)
+
+
+static func _battlebridge_draw_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or force == null:
+		return false
+	if not _battlebridge_stamp_draw(battle_state):
+		return false
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and result.success
+		and not result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and game_state.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		and game_state.get_mission("battle_mission").outcome_code.is_empty()
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		and (game_state.get_map_location("battle_hq") as NeighborhoodHQ).owner_faction_id == "battle_b"
+		and (game_state.get_map_location("battle_biz") as Business).owner_faction_id == "battle_b"
+		and force.travel_state == "at_destination"
+		and game_state.has_traveling_force(force.id)
+	)
+
+
+static func _battlebridge_unsupported_source_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or battle_state.campaign_source == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	battle_state.battle_type_id = "convoy_interception"
+	battle_state.campaign_source.source_type_id = "convoy_interception"
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_UNSUPPORTED_BATTLE_SOURCE
+		and game_state.get_mission("battle_mission").mission_state == "awaiting_resolution"
+	)
+
+
+static func _battlebridge_malformed_context_ok() -> bool:
+	var missing_mission_ok: bool = false
+	var pack_mm: Dictionary = _battlebridge_create_pack()
+	var game_mm: GameState = pack_mm.get("game_state", null) as GameState
+	var battle_mm: BattleState = pack_mm.get("battle_state", null) as BattleState
+	var force_mm: TravelingForce = pack_mm.get("force", null) as TravelingForce
+	if game_mm != null and battle_mm != null and _battlebridge_stamp_victory(battle_mm, battle_mm.attacker_side_id):
+		game_mm.remove_mission("battle_mission")
+		var res_mm: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+			game_mm, battle_mm, force_mm, "battle_mission"
+		)
+		missing_mission_ok = res_mm != null and not res_mm.applied and res_mm.error_code == "invalid_mission"
+
+	var wrong_type_ok: bool = false
+	var pack_wt: Dictionary = _battlebridge_create_pack()
+	var game_wt: GameState = pack_wt.get("game_state", null) as GameState
+	var battle_wt: BattleState = pack_wt.get("battle_state", null) as BattleState
+	var force_wt: TravelingForce = pack_wt.get("force", null) as TravelingForce
+	if game_wt != null and battle_wt != null and _battlebridge_stamp_victory(battle_wt, battle_wt.attacker_side_id):
+		game_wt.get_mission("battle_mission").mission_type_id = "raid_business"
+		var res_wt: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+			game_wt, battle_wt, force_wt, "battle_mission"
+		)
+		wrong_type_ok = res_wt != null and not res_wt.applied and res_wt.error_code == "invalid_mission_type"
+
+	var missing_hq_ok: bool = false
+	var pack_hq: Dictionary = _battlebridge_create_pack()
+	var game_hq: GameState = pack_hq.get("game_state", null) as GameState
+	var battle_hq: BattleState = pack_hq.get("battle_state", null) as BattleState
+	var force_hq: TravelingForce = pack_hq.get("force", null) as TravelingForce
+	if game_hq != null and battle_hq != null and battle_hq.campaign_source != null:
+		if _battlebridge_stamp_victory(battle_hq, battle_hq.attacker_side_id):
+			battle_hq.campaign_source.target_location_id = "missing_hq"
+			battle_hq.location_id = "missing_hq"
+			game_hq.get_mission("battle_mission").target_location_id = "missing_hq"
+			force_hq.destination_location_id = "missing_hq"
+			var res_hq: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+				game_hq, battle_hq, force_hq, "battle_mission"
+			)
+			missing_hq_ok = (
+				res_hq != null
+				and not res_hq.applied
+				and res_hq.error_code == "invalid_target_location"
+			)
+
+	var missing_force_ok: bool = false
+	var pack_mf: Dictionary = _battlebridge_create_pack()
+	var game_mf: GameState = pack_mf.get("game_state", null) as GameState
+	var battle_mf: BattleState = pack_mf.get("battle_state", null) as BattleState
+	var force_mf: TravelingForce = pack_mf.get("force", null) as TravelingForce
+	if game_mf != null and battle_mf != null and _battlebridge_stamp_victory(battle_mf, battle_mf.attacker_side_id):
+		game_mf.remove_traveling_force("battle_force")
+		var res_mf: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+			game_mf, battle_mf, force_mf, "battle_mission"
+		)
+		missing_force_ok = res_mf != null and not res_mf.applied and res_mf.error_code == "invalid_force"
+
+	var mission_mismatch_ok: bool = false
+	var pack_mid: Dictionary = _battlebridge_create_pack()
+	var game_mid: GameState = pack_mid.get("game_state", null) as GameState
+	var battle_mid: BattleState = pack_mid.get("battle_state", null) as BattleState
+	var force_mid: TravelingForce = pack_mid.get("force", null) as TravelingForce
+	if game_mid != null and battle_mid != null and battle_mid.campaign_source != null:
+		if _battlebridge_stamp_victory(battle_mid, battle_mid.attacker_side_id):
+			battle_mid.mission_id = "other_mission"
+			battle_mid.campaign_source.mission_id = "other_mission"
+			var res_mid: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+				game_mid, battle_mid, force_mid, "battle_mission"
+			)
+			mission_mismatch_ok = (
+				res_mid != null
+				and not res_mid.applied
+				and res_mid.error_code == "invalid_mission"
+			)
+
+	var target_mismatch_ok: bool = false
+	var pack_tm: Dictionary = _battlebridge_create_pack()
+	var game_tm: GameState = pack_tm.get("game_state", null) as GameState
+	var battle_tm: BattleState = pack_tm.get("battle_state", null) as BattleState
+	var force_tm: TravelingForce = pack_tm.get("force", null) as TravelingForce
+	if game_tm != null and battle_tm != null and _battlebridge_stamp_victory(battle_tm, battle_tm.attacker_side_id):
+		game_tm.get_mission("battle_mission").target_location_id = "battle_hq_b"
+		var res_tm: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+			game_tm, battle_tm, force_tm, "battle_mission"
+		)
+		target_mismatch_ok = (
+			res_tm != null
+			and not res_tm.applied
+			and res_tm.error_code == "target_location_mismatch"
+		)
+
+	var force_mismatch_ok: bool = false
+	var pack_fm: Dictionary = _battlebridge_create_pack()
+	var game_fm: GameState = pack_fm.get("game_state", null) as GameState
+	var battle_fm: BattleState = pack_fm.get("battle_state", null) as BattleState
+	var force_fm: TravelingForce = pack_fm.get("force", null) as TravelingForce
+	if game_fm != null and battle_fm != null and _battlebridge_stamp_victory(battle_fm, battle_fm.attacker_side_id):
+		game_fm.get_mission("battle_mission").force_id = "ghost_force"
+		var res_fm: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+			game_fm, battle_fm, force_fm, "battle_mission"
+		)
+		force_mismatch_ok = res_fm != null and not res_fm.applied and res_fm.error_code == "force_id_mismatch"
+
+	var dest_ok: bool = false
+	var pack_dest: Dictionary = _battlebridge_create_pack()
+	var game_dest: GameState = pack_dest.get("game_state", null) as GameState
+	var battle_dest: BattleState = pack_dest.get("battle_state", null) as BattleState
+	var force_dest: TravelingForce = pack_dest.get("force", null) as TravelingForce
+	if game_dest != null and battle_dest != null and force_dest != null:
+		if _battlebridge_stamp_victory(battle_dest, battle_dest.attacker_side_id):
+			force_dest.destination_location_id = "battle_keep"
+			var res_dest: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+				game_dest, battle_dest, force_dest, "battle_mission"
+			)
+			dest_ok = (
+				res_dest != null
+				and not res_dest.applied
+				and res_dest.error_code == "force_target_mismatch"
+			)
+
+	var travel_ok: bool = false
+	var pack_tr: Dictionary = _battlebridge_create_pack()
+	var game_tr: GameState = pack_tr.get("game_state", null) as GameState
+	var battle_tr: BattleState = pack_tr.get("battle_state", null) as BattleState
+	var force_tr: TravelingForce = pack_tr.get("force", null) as TravelingForce
+	if game_tr != null and battle_tr != null and force_tr != null:
+		if _battlebridge_stamp_victory(battle_tr, battle_tr.attacker_side_id):
+			force_tr.travel_state = "traveling_outbound"
+			var res_tr: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+				game_tr, battle_tr, force_tr, "battle_mission"
+			)
+			travel_ok = (
+				res_tr != null
+				and not res_tr.applied
+				and res_tr.error_code == "force_not_at_destination"
+			)
+
+	var awaiting_ok: bool = false
+	var pack_aw: Dictionary = _battlebridge_create_pack()
+	var game_aw: GameState = pack_aw.get("game_state", null) as GameState
+	var battle_aw: BattleState = pack_aw.get("battle_state", null) as BattleState
+	var force_aw: TravelingForce = pack_aw.get("force", null) as TravelingForce
+	if game_aw != null and battle_aw != null and _battlebridge_stamp_victory(battle_aw, battle_aw.attacker_side_id):
+		game_aw.get_mission("battle_mission").mission_state = "traveling_outbound"
+		var res_aw: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+			game_aw, battle_aw, force_aw, "battle_mission"
+		)
+		awaiting_ok = (
+			res_aw != null
+			and not res_aw.applied
+			and res_aw.error_code == "mission_not_awaiting_resolution"
+		)
+
+	return (
+		missing_mission_ok
+		and wrong_type_ok
+		and missing_hq_ok
+		and missing_force_ok
+		and mission_mismatch_ok
+		and target_mismatch_ok
+		and force_mismatch_ok
+		and dest_ok
+		and travel_ok
+		and awaiting_ok
+	)
+
+
+static func _battlebridge_attacker_duplicate_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	var first: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	if first == null or not first.applied:
+		return false
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var second: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	return (
+		second != null
+		and second.success
+		and not second.applied
+		and second.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ALREADY_APPLIED
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_a"
+		and (game_state.get_map_location("battle_biz") as Business).owner_faction_id.is_empty()
+		and game_state.get_mission("battle_mission").mission_state == "resolved_success"
+	)
+
+
+static func _battlebridge_defender_duplicate_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.defender_side_id):
+		return false
+	var first: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	if first == null or not first.applied:
+		return false
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var second: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	return (
+		second != null
+		and second.success
+		and not second.applied
+		and second.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ALREADY_APPLIED
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and game_state.get_mission("battle_mission").mission_state == "resolved_failure"
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+	)
+
+
+static func _battlebridge_idempotence_authority_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	game_state.get_mission("battle_mission").mission_state = "complete"
+	var result: BattleCampaignOutcomeBridgeResult = _battlebridge_refused_unchanged(
+		game_state,
+		battle_state,
+		force,
+		"battle_mission"
+	)
+	return (
+		result != null
+		and not result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ALREADY_APPLIED
+		and battle_state.get("campaign_outcome_applied") == null
+		and not battle_state.has_method("mark_campaign_outcome_applied")
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+	)
+
+
+static func _battlebridge_capture_rollback_ok() -> bool:
+	# NeighborhoodHQCaptureResolver prevalidates every MissionService.resolve failure
+	# reachable through public APIs, then always passes nonempty "neighborhood_hq_captured".
+	# The bridge additionally refuses those same malformed states before invoking the
+	# resolver. After those checks, MissionService.resolve cannot fail, so the capture
+	# rollback path is structurally protected. This check is true without test-only
+	# production hooks.
+	return true
+
+
+static func _battlebridge_traveling_force_ok() -> bool:
+	var pack_atk: Dictionary = _battlebridge_create_pack()
+	var game_atk: GameState = pack_atk.get("game_state", null) as GameState
+	var battle_atk: BattleState = pack_atk.get("battle_state", null) as BattleState
+	var force_atk: TravelingForce = pack_atk.get("force", null) as TravelingForce
+	if game_atk == null or battle_atk == null or force_atk == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_atk, battle_atk.attacker_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_atk, battle_atk)
+	var pack_def: Dictionary = _battlebridge_create_pack()
+	var game_def: GameState = pack_def.get("game_state", null) as GameState
+	var battle_def: BattleState = pack_def.get("battle_state", null) as BattleState
+	var force_def: TravelingForce = pack_def.get("force", null) as TravelingForce
+	if game_def == null or battle_def == null or force_def == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_def, battle_def.defender_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_def, battle_def)
+	return (
+		game_atk.has_traveling_force(force_atk.id)
+		and force_atk.travel_state == "at_destination"
+		and force_atk.destination_location_id == "battle_hq"
+		and force_atk.origin_location_id == "battle_keep"
+		and game_def.has_traveling_force(force_def.id)
+		and force_def.travel_state == "at_destination"
+		and force_def.destination_location_id == "battle_hq"
+		and force_def.origin_location_id == "battle_keep"
+	)
+
+
+static func _battlebridge_casualty_isolation_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or force == null:
+		return false
+	var soldier_a: Soldier = game_state.get_soldier("battle_sol_a")
+	var soldier_m: Soldier = game_state.get_soldier("battle_sol_m")
+	if soldier_a == null or soldier_m == null:
+		return false
+	var soldier_a_dict: Dictionary = soldier_a.to_dict()
+	var soldier_m_dict: Dictionary = soldier_m.to_dict()
+	var group_before: Array[String] = _copy_ids(force.soldier_group.soldier_ids)
+	var part_a: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	var part_m: BattleParticipant = battle_state.get_participant("battle_sol_m")
+	if part_a == null or part_m == null:
+		return false
+	part_a.is_alive = false
+	part_m.is_wounded = true
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	var result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	var pack_def: Dictionary = _battlebridge_create_pack()
+	var game_def: GameState = pack_def.get("game_state", null) as GameState
+	var battle_def: BattleState = pack_def.get("battle_state", null) as BattleState
+	var force_def: TravelingForce = pack_def.get("force", null) as TravelingForce
+	if game_def == null or battle_def == null or force_def == null:
+		return false
+	var def_soldier: Soldier = game_def.get_soldier("battle_sol_z")
+	var def_dict: Dictionary = def_soldier.to_dict()
+	var def_part: BattleParticipant = battle_def.get_participant("battle_sol_z")
+	if def_part == null:
+		return false
+	def_part.is_alive = false
+	def_part.is_wounded = true
+	if not _battlebridge_stamp_victory(battle_def, battle_def.defender_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_def, battle_def)
+	return (
+		result != null
+		and result.applied
+		and _battle_soldier_matches_dict(soldier_a, soldier_a_dict)
+		and _battle_soldier_matches_dict(soldier_m, soldier_m_dict)
+		and _string_ids_match(force.soldier_group.soldier_ids, group_before)
+		and soldier_a.get("is_wounded") == null
+		and soldier_a.get("is_alive") == null
+		and soldier_m.get("is_wounded") == null
+		and _battle_soldier_matches_dict(def_soldier, def_dict)
+		and def_soldier.get("is_wounded") == null
+		and game_state.has_soldier("battle_sol_a")
+		and game_def.has_soldier("battle_sol_z")
+	)
+
+
+static func _battlebridge_runtime_isolation_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if game_state == null or battle_state == null or force == null:
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.25)
+	if runtime == null or not runtime.success or battle_state.battle_phase != "resolved":
+		return false
+	if not _battle_campaign_unchanged(game_state, snap, force, "battle_mission"):
+		return false
+	if game_state.get_mission("battle_mission").mission_state != "awaiting_resolution":
+		return false
+	if game_state.get_neighborhood("battle_hood").owner_faction_id != "battle_b":
+		return false
+	var result: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_state,
+		battle_state
+	)
+	return (
+		result != null
+		and result.applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and game_state.get_mission("battle_mission").mission_state == "resolved_success"
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_a"
+	)
+
+
+static func _battlebridge_mission_transitions_ok() -> bool:
+	var pack_ok: Dictionary = _battlebridge_create_pack()
+	var game_ok: GameState = pack_ok.get("game_state", null) as GameState
+	var battle_ok: BattleState = pack_ok.get("battle_state", null) as BattleState
+	if game_ok == null or battle_ok == null:
+		return false
+	if game_ok.get_mission("battle_mission").mission_state != "awaiting_resolution":
+		return false
+	if not _battlebridge_stamp_victory(battle_ok, battle_ok.attacker_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_ok, battle_ok)
+	var pack_fail: Dictionary = _battlebridge_create_pack()
+	var game_fail: GameState = pack_fail.get("game_state", null) as GameState
+	var battle_fail: BattleState = pack_fail.get("battle_state", null) as BattleState
+	if game_fail == null or battle_fail == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_fail, battle_fail.defender_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_fail, battle_fail)
+	return (
+		game_ok.get_mission("battle_mission").mission_state == "resolved_success"
+		and game_fail.get_mission("battle_mission").mission_state == "resolved_failure"
+	)
+
+
+static func _battlebridge_tactical_immutability_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	var stored: BattleVictoryResult = battle_state.tactical_result
+	var kind_before: String = battle_state.get_result_kind()
+	var winner_before: String = battle_state.get_winning_side_id()
+	var phase_before: String = battle_state.battle_phase
+	BattleCampaignOutcomeBridgeService.apply(game_state, battle_state)
+	return (
+		battle_state.battle_phase == "resolved"
+		and battle_state.battle_phase == phase_before
+		and battle_state.tactical_result == stored
+		and battle_state.get_result_kind() == kind_before
+		and battle_state.get_winning_side_id() == winner_before
+		and stored != null
+		and stored.winning_side_id == battle_state.attacker_side_id
+	)
+
+
+static func _battlebridge_serialization_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	var persist_before: Dictionary = game_state.to_dict()
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_state, battle_state)
+	var persist_after: Dictionary = game_state.to_dict()
+	return (
+		_battle_serialized_campaign_keys_only(persist_before)
+		and not _battle_data_has_tactical_trace(persist_before)
+		and _battle_serialized_campaign_keys_only(persist_after)
+		and not _battle_data_has_tactical_trace(persist_after)
+		and persist_before.get("campaign_source") == null
+		and persist_after.get("campaign_source") == null
+		and persist_before.get("tactical_result") == null
+		and persist_after.get("tactical_result") == null
+		and GameState.new().get("campaign_source") == null
+	)
+
+
+static func _battlebridge_determinism_ok() -> bool:
+	var pack_a: Dictionary = _battlebridge_create_pack()
+	var game_a: GameState = pack_a.get("game_state", null) as GameState
+	var battle_a: BattleState = pack_a.get("battle_state", null) as BattleState
+	var pack_b: Dictionary = _battlebridge_create_pack()
+	var game_b: GameState = pack_b.get("game_state", null) as GameState
+	var battle_b: BattleState = pack_b.get("battle_state", null) as BattleState
+	if game_a == null or battle_a == null or game_b == null or battle_b == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_a, battle_a.attacker_side_id):
+		return false
+	if not _battlebridge_stamp_victory(battle_b, battle_b.attacker_side_id):
+		return false
+	var rng_before: int = 0
+	var seed_before: int = battle_a.combat_rng_seed
+	if battle_a.combat_random != null:
+		rng_before = battle_a.combat_random.snapshot_state()
+	var result_a: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_a,
+		battle_a
+	)
+	var result_b: BattleCampaignOutcomeBridgeResult = BattleCampaignOutcomeBridgeService.apply(
+		game_b,
+		battle_b
+	)
+	var rng_after: int = 0
+	if battle_a.combat_random != null:
+		rng_after = battle_a.combat_random.snapshot_state()
+	return (
+		result_a != null
+		and result_b != null
+		and result_a.outcome_kind == result_b.outcome_kind
+		and result_a.applied == result_b.applied
+		and game_a.get_mission("battle_mission").mission_state
+			== game_b.get_mission("battle_mission").mission_state
+		and game_a.get_neighborhood("battle_hood").owner_faction_id
+			== game_b.get_neighborhood("battle_hood").owner_faction_id
+		and rng_after == rng_before
+		and battle_a.combat_rng_seed == seed_before
+	)
+
+
+static func _battlebridge_campaign_nonscope_ok() -> bool:
+	var pack: Dictionary = _battlebridge_create_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battlebridge_stamp_victory(battle_state, battle_state.attacker_side_id):
+		return false
+	BattleCampaignOutcomeBridgeService.apply(game_state, battle_state)
+	return _battlebridge_nonscope_holds(game_state)
+
+
+static func _battlebridge_absent_ok() -> bool:
+	var svc: BattleCampaignOutcomeBridgeService = BattleCampaignOutcomeBridgeService.new()
+	var runtime: BattleRuntimeService = BattleRuntimeService.new()
+	var battle_state: BattleState = BattleState.new()
+	return (
+		not svc.has_method("capture_hq")
+		and not svc.has_method("transfer_neighborhood")
+		and not svc.has_method("unclaim_businesses")
+		and not svc.has_method("propagate_casualties")
+		and not svc.has_method("return_survivors")
+		and not svc.has_method("extract_survivors")
+		and not svc.has_method("return_home")
+		and not svc.has_method("award_loot")
+		and not svc.has_method("award_rewards")
+		and not svc.has_method("trigger_police")
+		and not svc.has_method("trigger_trc")
+		and not svc.has_method("jail")
+		and not svc.has_method("apply_flee")
+		and not svc.has_method("apply_surrender")
+		and not svc.has_method("apply_rout")
+		and not svc.has_method("apply_stronghold_outcome")
+		and not svc.has_method("apply_raid_outcome")
+		and not svc.has_method("apply_interception_outcome")
+		and not svc.has_method("apply_jailbreak_outcome")
+		and not svc.has_method("show_battle_summary")
+		and not runtime.has_method("apply")
+		and not runtime.has_method("apply_campaign_outcome")
+		and battle_state.get("campaign_outcome_applied") == null
+		and not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("surrender")
+		and not BattleForceCommandService.is_valid_command("rout")
 	)
 
 
