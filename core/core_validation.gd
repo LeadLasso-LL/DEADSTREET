@@ -116,6 +116,7 @@ const GameFlowController := preload("res://core/game_flow_controller.gd")
 const GameFlowResult := preload("res://core/game_flow_result.gd")
 const GameplayRuntime := preload("res://gameplay/gameplay_runtime.gd")
 const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
+const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 
 
 static func run() -> Dictionary:
@@ -15895,6 +15896,31 @@ static func run() -> Dictionary:
 	var gameplayruntime_debug_input_ok: bool = _gameplayruntime_debug_input_ok()
 	var gameplayruntime_rng_ok: bool = _gameplayruntime_rng_ok()
 	var gameplayruntime_absent_ok: bool = _gameplayruntime_absent_ok()
+	var campaignmap_view_exists_ok: bool = _campaignmap_view_exists_ok()
+	var campaignmap_camera_ok: bool = _campaignmap_camera_ok()
+	var campaignmap_coordinates_ok: bool = _campaignmap_coordinates_ok()
+	var campaignmap_tuning_ok: bool = _campaignmap_tuning_ok()
+	var campaignmap_road_truth_ok: bool = _campaignmap_road_truth_ok()
+	var campaignmap_location_truth_ok: bool = _campaignmap_location_truth_ok()
+	var campaignmap_ownership_ok: bool = _campaignmap_ownership_ok()
+	var campaignmap_launch_pos_ok: bool = _campaignmap_launch_pos_ok()
+	var campaignmap_turn1_pos_ok: bool = _campaignmap_turn1_pos_ok()
+	var campaignmap_turn2_arrival_ok: bool = _campaignmap_turn2_arrival_ok()
+	var campaignmap_between_node_ok: bool = _campaignmap_between_node_ok()
+	var campaignmap_destination_ok: bool = _campaignmap_destination_ok()
+	var campaignmap_ai_forces_ok: bool = _campaignmap_ai_forces_ok()
+	var campaignmap_order_ok: bool = _campaignmap_order_ok()
+	var campaignmap_refresh_ok: bool = _campaignmap_refresh_ok()
+	var campaignmap_no_sim_ok: bool = _campaignmap_no_sim_ok()
+	var campaignmap_ht_flow_ok: bool = _campaignmap_ht_flow_ok()
+	var campaignmap_pending_ok: bool = _campaignmap_pending_ok()
+	var campaignmap_overlay_ok: bool = _campaignmap_overlay_ok()
+	var campaignmap_tactical_deploy_ok: bool = _campaignmap_tactical_deploy_ok()
+	var campaignmap_tactical_active_ok: bool = _campaignmap_tactical_active_ok()
+	var campaignmap_geo_safety_ok: bool = _campaignmap_geo_safety_ok()
+	var campaignmap_no_interact_ok: bool = _campaignmap_no_interact_ok()
+	var campaignmap_no_art_ok: bool = _campaignmap_no_art_ok()
+	var campaignmap_tiny_world_ok: bool = _campaignmap_tiny_world_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17625,6 +17651,31 @@ static func run() -> Dictionary:
 		"gameplayruntime_debug_input_ok": gameplayruntime_debug_input_ok,
 		"gameplayruntime_rng_ok": gameplayruntime_rng_ok,
 		"gameplayruntime_absent_ok": gameplayruntime_absent_ok,
+		"campaignmap_view_exists_ok": campaignmap_view_exists_ok,
+		"campaignmap_camera_ok": campaignmap_camera_ok,
+		"campaignmap_coordinates_ok": campaignmap_coordinates_ok,
+		"campaignmap_tuning_ok": campaignmap_tuning_ok,
+		"campaignmap_road_truth_ok": campaignmap_road_truth_ok,
+		"campaignmap_location_truth_ok": campaignmap_location_truth_ok,
+		"campaignmap_ownership_ok": campaignmap_ownership_ok,
+		"campaignmap_launch_pos_ok": campaignmap_launch_pos_ok,
+		"campaignmap_turn1_pos_ok": campaignmap_turn1_pos_ok,
+		"campaignmap_turn2_arrival_ok": campaignmap_turn2_arrival_ok,
+		"campaignmap_between_node_ok": campaignmap_between_node_ok,
+		"campaignmap_destination_ok": campaignmap_destination_ok,
+		"campaignmap_ai_forces_ok": campaignmap_ai_forces_ok,
+		"campaignmap_order_ok": campaignmap_order_ok,
+		"campaignmap_refresh_ok": campaignmap_refresh_ok,
+		"campaignmap_no_sim_ok": campaignmap_no_sim_ok,
+		"campaignmap_ht_flow_ok": campaignmap_ht_flow_ok,
+		"campaignmap_pending_ok": campaignmap_pending_ok,
+		"campaignmap_overlay_ok": campaignmap_overlay_ok,
+		"campaignmap_tactical_deploy_ok": campaignmap_tactical_deploy_ok,
+		"campaignmap_tactical_active_ok": campaignmap_tactical_active_ok,
+		"campaignmap_geo_safety_ok": campaignmap_geo_safety_ok,
+		"campaignmap_no_interact_ok": campaignmap_no_interact_ok,
+		"campaignmap_no_art_ok": campaignmap_no_art_ok,
+		"campaignmap_tiny_world_ok": campaignmap_tiny_world_ok,
 	}
 
 	var passed := true
@@ -48827,6 +48878,11 @@ static func _gameplayruntime_absent_ok() -> bool:
 	if runtime == null:
 		return false
 	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	var camera: Camera2D = null
+	if map_view != null:
+		camera = map_view.get_node_or_null("Camera2D") as Camera2D
+	var camera2d_count: int = tscn.count("type=\"Camera2D\"")
 	return _gameplayruntime_finish(
 		runtime,
 		runtime is Node
@@ -48838,9 +48894,714 @@ static func _gameplayruntime_absent_ok() -> bool:
 		and not runtime.has_method("select_units")
 		and not runtime.has_method("click_hq")
 		and not runtime.has_method("commit_attacker_deployment")
+		and not runtime.has_method("edge_scroll")
+		and not runtime.has_method("drag_pan")
+		and not runtime.has_method("start_cinematic")
 		and not ClassDB.class_exists("GameManager")
 		and tscn.contains("type=\"Node\"")
 		and not tscn.contains("CanvasLayer")
-		and not tscn.contains("Camera")
 		and not tscn.contains("Button")
+		and camera2d_count == 1
+		and camera != null
+		and map_view != null
+		and not map_view.has_method("edge_scroll")
+		and not map_view.has_method("drag_pan")
+		and not map_view.has_method("start_cinematic")
+		and not map_view.has_method("strategic_zoom")
+		and not map_view.has_method("tactical_camera")
 	)
+
+
+static func _campaignmap_view(runtime: GameplayRuntime) -> CampaignMapView:
+	if runtime == null:
+		return null
+	return runtime.get_node_or_null("CampaignMapView") as CampaignMapView
+
+
+static func _campaignmap_vec_ok(got: Vector2, expected: Vector2) -> bool:
+	return is_equal_approx(got.x, expected.x) and is_equal_approx(got.y, expected.y)
+
+
+static func _campaignmap_force_pos(runtime: GameplayRuntime, force_id: String) -> Vector2:
+	if runtime == null or runtime.game_state == null:
+		return Vector2.INF
+	var force: TravelingForce = runtime.game_state.get_traveling_force(force_id)
+	return CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+
+
+static func _campaignmap_make_route_force(
+	force_id: String,
+	faction_id: String,
+	distance_into_segment: float,
+	travel_state: String
+) -> TravelingForce:
+	var route: Array[String] = []
+	route.append(StarterWorldService.NODE_KEEP_ID)
+	route.append(StarterWorldService.NODE_HQ_ID)
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		faction_id,
+		StarterWorldService.KEEP_ID,
+		StarterWorldService.HQ_ID,
+		route,
+		5.0,
+		travel_state
+	)
+	force.route_segment_index = 0
+	force.distance_into_segment = distance_into_segment
+	return force
+
+
+static func _campaignmap_view_exists_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		map_view != null
+		and map_view is Node2D
+		and map_view.game_state == runtime.game_state
+		and map_view.game_state != null
+		and map_view.game_flow_controller == runtime.game_flow_controller
+		and not map_view.has_method("create")
+		and map_view.get("owned_game_state") == null
+	)
+
+
+static func _campaignmap_camera_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var camera: Camera2D = map_view.get_node_or_null("Camera2D") as Camera2D
+	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		camera != null
+		and camera.get_parent() == map_view
+		and tscn.count("type=\"Camera2D\"") == 1
+		and tscn.contains("parent=\"CampaignMapView\"")
+		and not source.contains("edge_scroll")
+		and not source.contains("drag_pan")
+		and not source.contains("strategic_zoom")
+		and not source.contains("cinematic")
+		and not map_view.has_method("edge_scroll")
+		and not map_view.has_method("drag_pan")
+		and not map_view.has_method("start_cinematic")
+		and not map_view.has_method("overview_mode")
+	)
+
+
+static func _campaignmap_coordinates_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var graph: RoadGraph = runtime.game_state.road_graph
+	var keep_node: RoadNode = graph.get_node(StarterWorldService.NODE_KEEP_ID)
+	var hq_node: RoadNode = graph.get_node(StarterWorldService.NODE_HQ_ID)
+	var keep: Stronghold = runtime.game_state.get_map_location(StarterWorldService.KEEP_ID) as Stronghold
+	var hq: NeighborhoodHQ = runtime.game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	var keep_resolved: Vector2 = Vector2.INF
+	var hq_resolved: Vector2 = Vector2.INF
+	if map_view != null:
+		keep_resolved = map_view.call("_location_campaign_position", keep)
+		hq_resolved = map_view.call("_location_campaign_position", hq)
+	return _gameplayruntime_finish(
+		runtime,
+		keep_node != null
+		and hq_node != null
+		and _campaignmap_vec_ok(keep_node.map_position, Vector2(0.0, 0.0))
+		and _campaignmap_vec_ok(hq_node.map_position, Vector2(12.0, 0.0))
+		and keep != null
+		and hq != null
+		and _campaignmap_vec_ok(keep.map_position, keep_node.map_position)
+		and _campaignmap_vec_ok(hq.map_position, hq_node.map_position)
+		and _campaignmap_vec_ok(keep_resolved, Vector2(0.0, 0.0))
+		and _campaignmap_vec_ok(hq_resolved, Vector2(12.0, 0.0))
+		and is_equal_approx(CampaignMapView.PIXELS_PER_UNIT, 64.0)
+		and runtime.game_state.get("pixels_per_unit") == null
+	)
+
+
+static func _campaignmap_tuning_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var graph: RoadGraph = runtime.game_state.road_graph
+	var segment: RoadSegment = graph.get_segment(StarterWorldService.SEGMENT_ID)
+	var vehicle: Vehicle = runtime.game_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var independent: Vehicle = Vehicle.new("campaignmap_probe_car", "player_gang", "car", "", 2, 4.0, 0.0)
+	return _gameplayruntime_finish(
+		runtime,
+		segment != null
+		and is_equal_approx(segment.distance, 12.0)
+		and vehicle != null
+		and is_equal_approx(vehicle.movement_per_turn, 5.0)
+		and is_equal_approx(independent.movement_per_turn, 4.0)
+		and is_equal_approx(StarterWorldService.SEGMENT_DISTANCE, 12.0)
+		and is_equal_approx(StarterWorldService.VEHICLE_MOVEMENT_PER_TURN, 5.0)
+	)
+
+
+static func _campaignmap_road_truth_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var graph: RoadGraph = runtime.game_state.road_graph
+	var hq_node: RoadNode = graph.get_node(StarterWorldService.NODE_HQ_ID)
+	var force: TravelingForce = _campaignmap_make_route_force(
+		"campaignmap_road_probe",
+		StarterWorldService.PLAYER_FACTION_ID,
+		6.0,
+		"traveling_outbound"
+	)
+	var before: Vector2 = CampaignMapView.campaign_position_of_force(force, graph)
+	hq_node.map_position = Vector2(0.0, 12.0)
+	var after: Vector2 = CampaignMapView.campaign_position_of_force(force, graph)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	var draw_roads_start: int = source.find("func _draw_roads")
+	var draw_roads: String = ""
+	if draw_roads_start >= 0:
+		var rest: String = source.substr(draw_roads_start)
+		var next_func: int = rest.find("\nfunc ", 1)
+		if next_func >= 0:
+			draw_roads = rest.substr(0, next_func)
+		else:
+			draw_roads = rest
+	return _gameplayruntime_finish(
+		runtime,
+		_campaignmap_vec_ok(before, Vector2(6.0, 0.0))
+		and _campaignmap_vec_ok(after, Vector2(0.0, 6.0))
+		and draw_roads.contains("graph.get_segment")
+		and draw_roads.contains("a.map_position")
+		and draw_roads.contains("b.map_position")
+		and not draw_roads.contains("Vector2(0.0, 0.0)")
+		and not draw_roads.contains("Vector2(12.0, 0.0)")
+	)
+
+
+static func _campaignmap_location_truth_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var keep: Stronghold = runtime.game_state.get_map_location(StarterWorldService.KEEP_ID) as Stronghold
+	var hq: NeighborhoodHQ = runtime.game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	var keep_node: RoadNode = runtime.game_state.road_graph.get_node(StarterWorldService.NODE_KEEP_ID)
+	keep_node.map_position = Vector2(2.0, 3.0)
+	var from_node: Vector2 = map_view.call("_location_campaign_position", keep)
+	var saved_road: String = keep.road_node_id
+	keep.road_node_id = ""
+	keep.map_position = Vector2(8.0, 9.0)
+	var fallback: Vector2 = map_view.call("_location_campaign_position", keep)
+	keep.road_node_id = saved_road
+	var hq_from_node: Vector2 = map_view.call("_location_campaign_position", hq)
+	return _gameplayruntime_finish(
+		runtime,
+		_campaignmap_vec_ok(from_node, Vector2(2.0, 3.0))
+		and _campaignmap_vec_ok(fallback, Vector2(8.0, 9.0))
+		and _campaignmap_vec_ok(hq_from_node, Vector2(12.0, 0.0))
+		and not _campaignmap_vec_ok(from_node, keep.map_position)
+	)
+
+
+static func _campaignmap_ownership_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	if launch == null or not launch.success:
+		return _gameplayruntime_finish(runtime, false)
+	var turn1: GameFlowResult = runtime.advance_campaign_turn()
+	var turn2: GameFlowResult = runtime.advance_campaign_turn()
+	if turn1 == null or not turn1.success or turn2 == null or not turn2.success:
+		return _gameplayruntime_finish(runtime, false)
+	var hq: NeighborhoodHQ = runtime.game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	var owner_before: String = hq.owner_faction_id
+	var tint_before: Color = map_view.call("_faction_tint", owner_before)
+	var capture: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		runtime.game_state,
+		StarterWorldService.DEBUG_MISSION_ID
+	)
+	if capture == null or not capture.success:
+		return _gameplayruntime_finish(runtime, false)
+	map_view.queue_redraw()
+	var owner_after: String = hq.owner_faction_id
+	var tint_after: Color = map_view.call("_faction_tint", owner_after)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		owner_before == StarterWorldService.RIVAL_FACTION_ID
+		and owner_after == StarterWorldService.PLAYER_FACTION_ID
+		and tint_before != tint_after
+		and map_view.get("displayed_owner") == null
+		and map_view.get("visual_owner") == null
+		and source.contains("owner_faction_id")
+		and not source.contains("visual_owner")
+	)
+
+
+static func _campaignmap_launch_pos_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	var force: TravelingForce = runtime.game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var pos: Vector2 = CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+	return _gameplayruntime_finish(
+		runtime,
+		launch != null
+		and launch.success
+		and force != null
+		and force.travel_state == "traveling_outbound"
+		and is_equal_approx(force.distance_into_segment, 5.0)
+		and _campaignmap_vec_ok(pos, Vector2(5.0, 0.0))
+	)
+
+
+static func _campaignmap_turn1_pos_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	if launch == null or not launch.success:
+		return _gameplayruntime_finish(runtime, false)
+	var turn_result: GameFlowResult = runtime.advance_campaign_turn()
+	var force: TravelingForce = runtime.game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var pos: Vector2 = CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+	return _gameplayruntime_finish(
+		runtime,
+		turn_result != null
+		and turn_result.success
+		and force != null
+		and force.travel_state == "traveling_outbound"
+		and is_equal_approx(force.distance_into_segment, 10.0)
+		and _campaignmap_vec_ok(pos, Vector2(10.0, 0.0))
+	)
+
+
+static func _campaignmap_turn2_arrival_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if runtime.debug_launch_test_hq_assault() == null:
+		return _gameplayruntime_finish(runtime, false)
+	if runtime.advance_campaign_turn() == null or runtime.advance_campaign_turn() == null:
+		return _gameplayruntime_finish(runtime, false)
+	var force: TravelingForce = runtime.game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var pos: Vector2 = CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+	return _gameplayruntime_finish(
+		runtime,
+		force != null
+		and force.travel_state == "at_destination"
+		and _campaignmap_vec_ok(pos, Vector2(12.0, 0.0))
+		and runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID)
+	)
+
+
+static func _campaignmap_between_node_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var graph: RoadGraph = runtime.game_state.road_graph
+	var force: TravelingForce = _campaignmap_make_route_force(
+		"campaignmap_mid_force",
+		StarterWorldService.PLAYER_FACTION_ID,
+		6.0,
+		"traveling_outbound"
+	)
+	var pos: Vector2 = CampaignMapView.campaign_position_of_force(force, graph)
+	var from_pos: Vector2 = graph.get_node(StarterWorldService.NODE_KEEP_ID).map_position
+	var to_pos: Vector2 = graph.get_node(StarterWorldService.NODE_HQ_ID).map_position
+	var segment: RoadSegment = graph.get_open_segment_between(
+		StarterWorldService.NODE_KEEP_ID,
+		StarterWorldService.NODE_HQ_ID
+	)
+	var expected: Vector2 = from_pos.lerp(to_pos, force.distance_into_segment / segment.distance)
+	return _gameplayruntime_finish(
+		runtime,
+		force.get("visual_position") == null
+		and not force.has_method("set_visual_position")
+		and is_equal_approx(force.distance_into_segment, 6.0)
+		and force.route_segment_index == 0
+		and _campaignmap_vec_ok(pos, expected)
+		and _campaignmap_vec_ok(pos, Vector2(6.0, 0.0))
+	)
+
+
+static func _campaignmap_destination_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var graph: RoadGraph = runtime.game_state.road_graph
+	var force: TravelingForce = _campaignmap_make_route_force(
+		"campaignmap_dest_force",
+		StarterWorldService.PLAYER_FACTION_ID,
+		99.0,
+		"at_destination"
+	)
+	var pos: Vector2 = CampaignMapView.campaign_position_of_force(force, graph)
+	var last: Vector2 = graph.get_node(StarterWorldService.NODE_HQ_ID).map_position
+	return _gameplayruntime_finish(
+		runtime,
+		_campaignmap_vec_ok(pos, last)
+		and _campaignmap_vec_ok(pos, Vector2(12.0, 0.0))
+		and not (pos.x > last.x + 0.0001)
+	)
+
+
+static func _campaignmap_ai_forces_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var zz_ai: TravelingForce = _campaignmap_make_route_force(
+		"zz_ai_force",
+		StarterWorldService.RIVAL_FACTION_ID,
+		3.0,
+		"traveling_outbound"
+	)
+	var aa_player: TravelingForce = _campaignmap_make_route_force(
+		"aa_other_force",
+		StarterWorldService.PLAYER_FACTION_ID,
+		9.0,
+		"traveling_outbound"
+	)
+	runtime.game_state.add_traveling_force(zz_ai)
+	runtime.game_state.add_traveling_force(aa_player)
+	var ordered: Array = map_view.call("_sorted_keys", runtime.game_state.traveling_forces)
+	var ai_pos: Vector2 = CampaignMapView.campaign_position_of_force(zz_ai, runtime.game_state.road_graph)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	var draw_forces_start: int = source.find("func _draw_forces")
+	var draw_forces: String = source.substr(draw_forces_start)
+	var next_func: int = draw_forces.find("\nfunc ", 1)
+	if next_func >= 0:
+		draw_forces = draw_forces.substr(0, next_func)
+	return _gameplayruntime_finish(
+		runtime,
+		ordered.size() == 2
+		and str(ordered[0]) == "aa_other_force"
+		and str(ordered[1]) == "zz_ai_force"
+		and _campaignmap_vec_ok(ai_pos, Vector2(3.0, 0.0))
+		and draw_forces.contains("_sorted_keys(game_state.traveling_forces)")
+		and not draw_forces.contains("PLAYER_FACTION_ID")
+		and not draw_forces.contains("player_gang")
+	)
+
+
+static func _campaignmap_order_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var inserted: Dictionary = {}
+	inserted["seg_z"] = 1
+	inserted["seg_a"] = 1
+	inserted["seg_m"] = 1
+	var ordered: Array = map_view.call("_sorted_keys", inserted)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		ordered.size() == 3
+		and str(ordered[0]) == "seg_a"
+		and str(ordered[1]) == "seg_m"
+		and str(ordered[2]) == "seg_z"
+		and source.contains("ids.sort()")
+		and source.contains("_sorted_keys(graph.segments)")
+		and source.contains("_sorted_keys(game_state.map_locations)")
+		and source.contains("_sorted_keys(game_state.traveling_forces)")
+	)
+
+
+static func _campaignmap_refresh_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	if runtime.debug_launch_test_hq_assault() == null:
+		return _gameplayruntime_finish(runtime, false)
+	var pos_launch: Vector2 = _campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID)
+	map_view._process(0.16)
+	var pos_after_draw: Vector2 = _campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID)
+	if runtime.advance_campaign_turn() == null:
+		return _gameplayruntime_finish(runtime, false)
+	map_view._process(0.16)
+	var pos_after_turn: Vector2 = _campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		_campaignmap_vec_ok(pos_launch, Vector2(5.0, 0.0))
+		and _campaignmap_vec_ok(pos_after_draw, Vector2(5.0, 0.0))
+		and _campaignmap_vec_ok(pos_after_turn, Vector2(10.0, 0.0))
+	)
+
+
+static func _campaignmap_no_sim_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	if launch == null or not launch.success:
+		return _gameplayruntime_finish(runtime, false)
+	var turn_before: int = runtime.game_state.current_turn
+	var money_before: float = _gameplayruntime_player_money(runtime.game_state)
+	var force: TravelingForce = runtime.game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var into_before: float = force.distance_into_segment
+	var hood_before: String = runtime.game_state.get_neighborhood(StarterWorldService.HOOD_ID).owner_faction_id
+	var missions_before: int = runtime.game_state.missions.size()
+	map_view._process(0.5)
+	map_view._process(0.5)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.game_state.current_turn == turn_before
+		and is_equal_approx(force.distance_into_segment, into_before)
+		and is_equal_approx(_gameplayruntime_player_money(runtime.game_state), money_before)
+		and runtime.game_state.get_neighborhood(StarterWorldService.HOOD_ID).owner_faction_id == hood_before
+		and runtime.game_state.missions.size() == missions_before
+		and not source.contains("TurnManager")
+		and not source.contains("NeighborhoodHQAttackService")
+		and not source.contains("MissionService")
+		and not source.contains("BattleRuntimeService")
+		and not source.contains("advance_campaign_turn")
+	)
+
+
+static func _campaignmap_ht_flow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var launch: NeighborhoodHQAttackResult = runtime.debug_launch_test_hq_assault()
+	if launch == null or not launch.success:
+		return _gameplayruntime_finish(runtime, false)
+	var mission: CampaignMission = runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	var force: TravelingForce = runtime.game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	var pos0: Vector2 = CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+	var turn1: GameFlowResult = runtime.advance_campaign_turn()
+	var pos1: Vector2 = CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+	var turn2: GameFlowResult = runtime.advance_campaign_turn()
+	var pos2: Vector2 = CampaignMapView.campaign_position_of_force(force, runtime.game_state.road_graph)
+	return _gameplayruntime_finish(
+		runtime,
+		mission != null
+		and mission.mission_type_id == "capture_neighborhood_hq"
+		and force != null
+		and turn1 != null
+		and turn1.success
+		and turn2 != null
+		and turn2.success
+		and _campaignmap_vec_ok(pos0, Vector2(5.0, 0.0))
+		and _campaignmap_vec_ok(pos1, Vector2(10.0, 0.0))
+		and _campaignmap_vec_ok(pos2, Vector2(12.0, 0.0))
+		and force.travel_state == "at_destination"
+		and runtime.list_pending_battles().has(StarterWorldService.DEBUG_MISSION_ID)
+		and not runtime.has_method("visual_move_force")
+		and not _campaignmap_view(runtime).has_method("animate_force")
+	)
+
+
+static func _campaignmap_pending_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var empty_before: Array[String] = runtime.list_pending_battles()
+	var controller_before: Array[String] = runtime.game_flow_controller.list_pending_battle_ids()
+	if runtime.debug_launch_test_hq_assault() == null:
+		return _gameplayruntime_finish(runtime, false)
+	var pending_launch: Array[String] = runtime.game_flow_controller.list_pending_battle_ids()
+	runtime.advance_campaign_turn()
+	runtime.advance_campaign_turn()
+	var pending_arrive: Array[String] = runtime.game_flow_controller.list_pending_battle_ids()
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		empty_before.is_empty()
+		and controller_before.is_empty()
+		and pending_launch.is_empty()
+		and pending_arrive.has(StarterWorldService.DEBUG_MISSION_ID)
+		and map_view.get("pending_ids") == null
+		and source.contains("list_pending_battle_ids()")
+	)
+
+
+static func _campaignmap_overlay_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		map_view.game_flow_controller == runtime.game_flow_controller
+		and map_view.game_state == runtime.game_state
+		and map_view.get("current_mode") == null
+		and map_view.get("current_turn") == null
+		and map_view.get("pending_battle_ids") == null
+		and source.contains("game_flow_controller.get_current_mode()")
+		and source.contains("game_state.current_turn")
+		and source.contains("list_pending_battle_ids()")
+		and runtime.get_current_mode() == "campaign"
+		and runtime.game_state.current_turn == 1
+	)
+
+
+static func _campaignmap_tactical_deploy_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var turn_before: int = runtime.game_state.current_turn
+	var pos_before: Vector2 = _campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID)
+	map_view._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_deployment"
+		and map_view != null
+		and runtime.game_state.current_turn == turn_before
+		and _campaignmap_vec_ok(
+			_campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID),
+			pos_before
+		)
+	)
+
+
+static func _campaignmap_tactical_active_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if map_view == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var turn_before: int = runtime.game_state.current_turn
+	var pos_before: Vector2 = _campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID)
+	map_view._process(0.25)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_active"
+		and runtime.game_state.current_turn == turn_before
+		and _campaignmap_vec_ok(
+			_campaignmap_force_pos(runtime, StarterWorldService.DEBUG_FORCE_ID),
+			pos_before
+		)
+	)
+
+
+static func _campaignmap_geo_safety_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	var force: TravelingForce = TravelingForce.new()
+	var keep: Stronghold = runtime.game_state.get_map_location(StarterWorldService.KEEP_ID) as Stronghold
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		force.get("visual_position") == null
+		and keep.get("visual_owner") == null
+		and map_view.get("road_endpoints") == null
+		and not source.contains("visual_position")
+		and source.contains("PIXELS_PER_UNIT")
+		and source.contains("campaign_pos * PIXELS_PER_UNIT")
+	)
+
+
+static func _campaignmap_no_interact_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		map_view != null
+		and not map_view.has_method("select_force")
+		and not map_view.has_method("click_hq")
+		and not map_view.has_method("click_stronghold")
+		and not map_view.has_method("place_route")
+		and not map_view.has_method("issue_attack")
+		and not source.contains("func _gui_input")
+		and not source.contains("func _unhandled_input")
+		and not source.contains("InputEventMouse")
+		and not source.contains("popup")
+	)
+
+
+static func _campaignmap_no_art_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var tscn: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.tscn")
+	var source: String = FileAccess.get_file_as_string("res://gameplay/campaign_map_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		not tscn.contains("Sprite")
+		and not tscn.contains("Texture")
+		and not tscn.contains(".png")
+		and source.contains("draw_line")
+		and source.contains("draw_circle")
+		and source.contains("draw_rect")
+		and not source.contains("Texture2D")
+		and not source.contains("Sprite2D")
+		and not source.contains("fog")
+		and not source.contains("territory")
+		and source.contains("Provisional visualization tints")
+	)
+
+
+static func _campaignmap_tiny_world_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	var game_state: GameState = runtime.game_state
+	var business_count: int = 0
+	for location_id: String in game_state.map_locations:
+		if game_state.get_map_location(location_id) is Business:
+			business_count += 1
+	return _gameplayruntime_finish(
+		runtime,
+		game_state.factions.size() == 2
+		and game_state.map_locations.size() == 2
+		and game_state.soldiers.size() == 1
+		and game_state.vehicles.size() == 1
+		and game_state.neighborhoods.size() == 1
+		and game_state.road_graph.nodes.size() == 2
+		and game_state.road_graph.segments.size() == 1
+		and business_count == 0
+		and is_equal_approx(game_state.road_graph.get_segment(StarterWorldService.SEGMENT_ID).distance, 12.0)
+	)
+

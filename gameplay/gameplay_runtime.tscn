@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://gameplay/gameplay_runtime.gd" id="1_runtime"]
+[ext_resource type="Script" path="res://gameplay/campaign_map_view.gd" id="2_map"]
 
 [node name="GameplayRuntime" type="Node"]
 script = ExtResource("1_runtime")
+
+[node name="CampaignMapView" type="Node2D" parent="."]
+script = ExtResource("2_map")
+
+[node name="Camera2D" type="Camera2D" parent="CampaignMapView"]
+enabled = true

@@ -17,6 +17,13 @@ const SOLDIER_ID := "player_soldier"
 const VEHICLE_ID := "player_vehicle"
 const DEBUG_MISSION_ID := "debug_hq_assault"
 const DEBUG_FORCE_ID := "debug_hq_force"
+# Provisional starter travel tuning so the debug HQ assault takes multiple campaign turns.
+# Launch budget is min(debug request 10.0, vehicle movement 5.0) = 5.0.
+# Distance 12.0 => launch 5.0, turn 1 => 10.0, turn 2 arrives. Vehicle movement unchanged.
+const KEEP_MAP_POSITION := Vector2(0.0, 0.0)
+const HQ_MAP_POSITION := Vector2(12.0, 0.0)
+const SEGMENT_DISTANCE := 12.0
+const VEHICLE_MOVEMENT_PER_TURN := 5.0
 
 
 static func create() -> GameState:
@@ -43,7 +50,7 @@ static func create() -> GameState:
 		KEEP_ID,
 		"Player Keep",
 		HOOD_ID,
-		Vector2(0.0, 0.0),
+		KEEP_MAP_POSITION,
 		PLAYER_FACTION_ID,
 		true,
 		1,
@@ -56,7 +63,7 @@ static func create() -> GameState:
 		HQ_ID,
 		"Rival HQ",
 		HOOD_ID,
-		Vector2(4.0, 0.0),
+		HQ_MAP_POSITION,
 		RIVAL_FACTION_ID,
 		true
 	)
@@ -64,12 +71,20 @@ static func create() -> GameState:
 	state.add_map_location(hq)
 
 	var graph: RoadGraph = state.road_graph
-	graph.add_node(RoadNode.new(NODE_KEEP_ID, Vector2(0.0, 0.0)))
-	graph.add_node(RoadNode.new(NODE_HQ_ID, Vector2(4.0, 0.0)))
-	graph.add_segment(RoadSegment.new(SEGMENT_ID, NODE_KEEP_ID, NODE_HQ_ID, 4.0))
+	graph.add_node(RoadNode.new(NODE_KEEP_ID, KEEP_MAP_POSITION))
+	graph.add_node(RoadNode.new(NODE_HQ_ID, HQ_MAP_POSITION))
+	graph.add_segment(RoadSegment.new(SEGMENT_ID, NODE_KEEP_ID, NODE_HQ_ID, SEGMENT_DISTANCE))
 
 	var soldier: Soldier = Soldier.new(SOLDIER_ID, PLAYER_FACTION_ID, "", "pistol", 1.0, 0.0)
-	var vehicle: Vehicle = Vehicle.new(VEHICLE_ID, PLAYER_FACTION_ID, "car", "", 2, 5.0, 0.0)
+	var vehicle: Vehicle = Vehicle.new(
+		VEHICLE_ID,
+		PLAYER_FACTION_ID,
+		"car",
+		"",
+		2,
+		VEHICLE_MOVEMENT_PER_TURN,
+		0.0
+	)
 	state.add_soldier(soldier)
 	state.add_vehicle(vehicle)
 	state.assign_soldier_to_stronghold(SOLDIER_ID, KEEP_ID)

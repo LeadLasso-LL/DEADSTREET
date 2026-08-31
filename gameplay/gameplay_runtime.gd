@@ -9,6 +9,7 @@ const NeighborhoodHQAttackResult := preload("res://campaign/missions/neighborhoo
 const MissionRequest := preload("res://campaign/missions/mission_request.gd")
 const DeploymentRequest := preload("res://campaign/actions/deployment_request.gd")
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
+const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 
 var game_state: GameState = null
 var game_flow_controller: GameFlowController = null
@@ -31,6 +32,7 @@ func _ready() -> void:
 		game_flow_controller = null
 		return
 	game_flow_controller = create_result.controller
+	_bind_campaign_map_view()
 	_log_boot()
 	_log_mode_if_changed()
 
@@ -54,6 +56,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		advance_campaign_turn()
 	elif key_event.keycode == KEY_H:
 		debug_launch_test_hq_assault()
+
+
+func _bind_campaign_map_view() -> void:
+	var map_view: CampaignMapView = get_node_or_null("CampaignMapView") as CampaignMapView
+	if map_view == null:
+		return
+	map_view.bind_campaign(game_state, game_flow_controller)
 
 
 func get_current_mode() -> String:
@@ -83,6 +92,7 @@ func advance_campaign_turn() -> GameFlowResult:
 		)
 	var result: GameFlowResult = game_flow_controller.advance_campaign_turn()
 	_log_mode_if_changed()
+	_log_debug_force_campaign_position("after_turn")
 	return result
 
 
@@ -148,7 +158,31 @@ func debug_launch_test_hq_assault() -> NeighborhoodHQAttackResult:
 			"GameplayRuntime: debug HQ assault failed code=%s"
 			% result.error_code
 		)
+	_log_debug_force_campaign_position("after_launch")
 	return result
+
+
+func _log_debug_force_campaign_position(reason: String) -> void:
+	if game_state == null:
+		return
+	var force: TravelingForce = game_state.get_traveling_force(StarterWorldService.DEBUG_FORCE_ID)
+	if force == null:
+		print("GameplayRuntime: %s force=absent pending=%s" % [reason, ",".join(PackedStringArray(list_pending_battles()))])
+		return
+	var pos: Vector2 = CampaignMapView.campaign_position_of_force(force, game_state.road_graph)
+	print(
+		"GameplayRuntime: %s force=%s state=%s campaign_pos=(%s, %s) segment=%s into=%s pending=%s"
+		% [
+			reason,
+			force.id,
+			force.travel_state,
+			pos.x,
+			pos.y,
+			force.route_segment_index,
+			force.distance_into_segment,
+			",".join(PackedStringArray(list_pending_battles())),
+		]
+	)
 
 
 func _log_boot() -> void:
