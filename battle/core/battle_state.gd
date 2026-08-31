@@ -10,6 +10,7 @@ const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
 const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat_pressure_snapshot.gd")
+const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -28,6 +29,7 @@ var battlefield_geometry: BattlefieldGeometry = null
 var combat_rng_seed: int = 1
 var combat_random: BattleCombatRandom = null
 var combat_pressure_snapshots: Dictionary[String, BattleCombatPressureSnapshot] = {}
+var tactical_result: BattleVictoryResult = null
 
 
 func _init(
@@ -167,6 +169,38 @@ func get_tactical_force(tactical_force_id: String) -> BattleTacticalForce:
 
 func has_tactical_force(tactical_force_id: String) -> bool:
 	return tactical_forces.has(tactical_force_id)
+
+
+func is_resolved() -> bool:
+	if battle_phase == "resolved":
+		return true
+	if tactical_result != null and tactical_result.resolved:
+		return true
+	return false
+
+
+func get_tactical_result() -> BattleVictoryResult:
+	return tactical_result
+
+
+func get_winning_side_id() -> String:
+	if tactical_result == null or not tactical_result.resolved:
+		return ""
+	return tactical_result.winning_side_id
+
+
+func get_result_kind() -> String:
+	if tactical_result == null or not tactical_result.resolved:
+		return ""
+	return tactical_result.result_kind
+
+
+func get_sorted_side_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for side_id: String in sides:
+		ids.append(side_id)
+	ids.sort()
+	return ids
 
 
 func get_sorted_tactical_force_ids() -> Array[String]:

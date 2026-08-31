@@ -104,6 +104,8 @@ const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover
 const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
 const BattleCoverCombatEffectResult := preload("res://battle/combat/battle_cover_combat_effect_result.gd")
 const BattleCoverCombatEffectService := preload("res://battle/combat/battle_cover_combat_effect_service.gd")
+const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
+const BattleVictoryService := preload("res://battle/core/battle_victory_service.gd")
 
 
 static func run() -> Dictionary:
@@ -6848,11 +6850,18 @@ static func run() -> Dictionary:
 		)
 		var battlert_begun: bool = _battlegeo_init(battlert_begin_bs) and battlert_begin_bs.begin_battle()
 		var battlert_begin_after_res: BattleRuntimeResult = BattleRuntimeService.advance(battlert_begin_bs, 0.25)
-		battlert_begin_assign["phase"] = "active"
+		battlert_begin_assign["phase"] = "resolved"
 		battlert_begin_active_ok = (
 			battlert_begin_blocked
 			and battlert_begun
-			and battlert_begin_bs.battle_phase == "active"
+			and battlert_begin_bs.battle_phase == "resolved"
+			and battlert_begin_bs.is_resolved()
+			and battlert_begin_bs.get_result_kind() == BattleVictoryResult.RESULT_VICTORY
+			and battlert_begin_bs.get_winning_side_id() == battlert_begin_bs.attacker_side_id
+			and battlert_begin_after_res != null
+			and battlert_begin_after_res.success
+			and battlert_begin_after_res.battle_resolved_this_pass
+			and battlert_begin_after_res.winning_side_id == battlert_begin_bs.attacker_side_id
 			and _battlert_clock_ok(battlert_begin_after_res, 0.25, 0.0, 0.25)
 			and is_equal_approx(battlert_begin_bs.elapsed_time_seconds, 0.25)
 			and _battle_deploy_assignment_unchanged(battlert_begin_bs, battlert_begin_assign)
@@ -6936,9 +6945,12 @@ static func run() -> Dictionary:
 			battlert_imm_deployed
 			and battlert_imm_begun
 			and _battlert_clock_ok(battlert_imm_res1, 0.10, 0.0, 0.10)
-			and _battlert_clock_ok(battlert_imm_res2, 0.20, 0.10, 0.30)
-			and _battlert_clock_ok(battlert_imm_res3, 0.30, 0.30, 0.60)
-			and is_equal_approx(battlert_imm_bs.elapsed_time_seconds, 0.60)
+			and battlert_imm_res1.battle_resolved_this_pass
+			and battlert_imm_bs.battle_phase == "resolved"
+			and battlert_imm_bs.get_winning_side_id() == battlert_imm_bs.attacker_side_id
+			and _battlert_fail_ok(battlert_imm_res2, "battle_not_active", 0.10)
+			and _battlert_fail_ok(battlert_imm_res3, "battle_not_active", 0.10)
+			and is_equal_approx(battlert_imm_bs.elapsed_time_seconds, 0.10)
 			and _battle_campaign_unchanged(
 				battlert_imm_game,
 				battlert_imm_campaign,
@@ -7604,8 +7616,10 @@ static func run() -> Dictionary:
 			and battlemove_imm_begun
 			and battlemove_imm_ready
 			and _battlert_clock_ok(battlemove_imm_res, 0.5, 0.0, 0.5)
+			and battlemove_imm_res.battle_resolved_this_pass
+			and battlemove_imm_bs.battle_phase == "resolved"
 			and battlemove_imm_part != null
-			and battlemove_imm_part.battle_position.is_equal_approx(Vector2(1.0, 0.0))
+			and battlemove_imm_part.battle_position.is_equal_approx(Vector2(0.0, 0.0))
 			and _battle_campaign_unchanged(
 				battlemove_imm_game,
 				battlemove_imm_campaign,
@@ -8063,9 +8077,11 @@ static func run() -> Dictionary:
 			and battlegeo_move_begun
 			and _battlert_clock_ok(battlegeo_move_res, 0.5, 0.0, 0.5)
 			and is_equal_approx(battlegeo_move_bs.elapsed_time_seconds, 0.5)
+			and battlegeo_move_res.battle_resolved_this_pass
+			and battlegeo_move_bs.battle_phase == "resolved"
+			and battlegeo_move_bs.get_winning_side_id() == battlegeo_move_bs.attacker_side_id
 			and battlegeo_move_part != null
-			and battlegeo_move_part.battle_position.is_equal_approx(battlegeo_move_start + Vector2(1.0, 0.0))
-			and not battlegeo_move_part.battle_position.is_equal_approx(Vector2.ZERO)
+			and battlegeo_move_part.battle_position.is_equal_approx(battlegeo_move_start)
 		)
 
 	var battlegeo_locality_ok: bool = false
@@ -15728,6 +15744,36 @@ static func run() -> Dictionary:
 	var battleforcecommand_no_fake_garrison_ok: bool = _battleforcecommand_no_fake_garrison_ok()
 	var battleforcecommand_no_queue_ok: bool = _battleforcecommand_no_queue_ok()
 	var battleforcecommand_absent_systems_ok: bool = _battleforcecommand_absent_systems_ok()
+	var battlevictory_unresolved_result_ok: bool = _battlevictory_unresolved_result_ok()
+	var battlevictory_victory_result_ok: bool = _battlevictory_victory_result_ok()
+	var battlevictory_draw_result_ok: bool = _battlevictory_draw_result_ok()
+	var battlevictory_continue_ok: bool = _battlevictory_continue_ok()
+	var battlevictory_one_living_side_ok: bool = _battlevictory_one_living_side_ok()
+	var battlevictory_zero_living_sides_ok: bool = _battlevictory_zero_living_sides_ok()
+	var battlevictory_empty_side_ok: bool = _battlevictory_empty_side_ok()
+	var battlevictory_wounded_survivor_ok: bool = _battlevictory_wounded_survivor_ok()
+	var battlevictory_dead_registered_ok: bool = _battlevictory_dead_registered_ok()
+	var battlevictory_multi_force_ok: bool = _battlevictory_multi_force_ok()
+	var battlevictory_multi_side_ok: bool = _battlevictory_multi_side_ok()
+	var battlevictory_can_evaluate_guards_ok: bool = _battlevictory_can_evaluate_guards_ok()
+	var battlevictory_shared_authority_ok: bool = _battlevictory_shared_authority_ok()
+	var battlevictory_same_pass_final_kill_ok: bool = _battlevictory_same_pass_final_kill_ok()
+	var battlevictory_later_actor_halt_ok: bool = _battlevictory_later_actor_halt_ok()
+	var battlevictory_rng_ammo_halt_ok: bool = _battlevictory_rng_ammo_halt_ok()
+	var battlevictory_early_derived_ok: bool = _battlevictory_early_derived_ok()
+	var battlevictory_zero_delta_ok: bool = _battlevictory_zero_delta_ok()
+	var battlevictory_post_resolution_ok: bool = _battlevictory_post_resolution_ok()
+	var battlevictory_elapsed_ok: bool = _battlevictory_elapsed_ok()
+	var battlevictory_idempotence_ok: bool = _battlevictory_idempotence_ok()
+	var battlevictory_sorting_ok: bool = _battlevictory_sorting_ok()
+	var battlevictory_query_api_ok: bool = _battlevictory_query_api_ok()
+	var battlevictory_telemetry_ok: bool = _battlevictory_telemetry_ok()
+	var battlevictory_pressure_ok: bool = _battlevictory_pressure_ok()
+	var battlevictory_command_ok: bool = _battlevictory_command_ok()
+	var battlevictory_wounded_regression_ok: bool = _battlevictory_wounded_regression_ok()
+	var battlevictory_attack_resolution_ok: bool = _battlevictory_attack_resolution_ok()
+	var battlevictory_campaign_isolation_ok: bool = _battlevictory_campaign_isolation_ok()
+	var battlevictory_absent_ok: bool = _battlevictory_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17317,6 +17363,36 @@ static func run() -> Dictionary:
 		"battleforcecommand_no_fake_garrison_ok": battleforcecommand_no_fake_garrison_ok,
 		"battleforcecommand_no_queue_ok": battleforcecommand_no_queue_ok,
 		"battleforcecommand_absent_systems_ok": battleforcecommand_absent_systems_ok,
+		"battlevictory_unresolved_result_ok": battlevictory_unresolved_result_ok,
+		"battlevictory_victory_result_ok": battlevictory_victory_result_ok,
+		"battlevictory_draw_result_ok": battlevictory_draw_result_ok,
+		"battlevictory_continue_ok": battlevictory_continue_ok,
+		"battlevictory_one_living_side_ok": battlevictory_one_living_side_ok,
+		"battlevictory_zero_living_sides_ok": battlevictory_zero_living_sides_ok,
+		"battlevictory_empty_side_ok": battlevictory_empty_side_ok,
+		"battlevictory_wounded_survivor_ok": battlevictory_wounded_survivor_ok,
+		"battlevictory_dead_registered_ok": battlevictory_dead_registered_ok,
+		"battlevictory_multi_force_ok": battlevictory_multi_force_ok,
+		"battlevictory_multi_side_ok": battlevictory_multi_side_ok,
+		"battlevictory_can_evaluate_guards_ok": battlevictory_can_evaluate_guards_ok,
+		"battlevictory_shared_authority_ok": battlevictory_shared_authority_ok,
+		"battlevictory_same_pass_final_kill_ok": battlevictory_same_pass_final_kill_ok,
+		"battlevictory_later_actor_halt_ok": battlevictory_later_actor_halt_ok,
+		"battlevictory_rng_ammo_halt_ok": battlevictory_rng_ammo_halt_ok,
+		"battlevictory_early_derived_ok": battlevictory_early_derived_ok,
+		"battlevictory_zero_delta_ok": battlevictory_zero_delta_ok,
+		"battlevictory_post_resolution_ok": battlevictory_post_resolution_ok,
+		"battlevictory_elapsed_ok": battlevictory_elapsed_ok,
+		"battlevictory_idempotence_ok": battlevictory_idempotence_ok,
+		"battlevictory_sorting_ok": battlevictory_sorting_ok,
+		"battlevictory_query_api_ok": battlevictory_query_api_ok,
+		"battlevictory_telemetry_ok": battlevictory_telemetry_ok,
+		"battlevictory_pressure_ok": battlevictory_pressure_ok,
+		"battlevictory_command_ok": battlevictory_command_ok,
+		"battlevictory_wounded_regression_ok": battlevictory_wounded_regression_ok,
+		"battlevictory_attack_resolution_ok": battlevictory_attack_resolution_ok,
+		"battlevictory_campaign_isolation_ok": battlevictory_campaign_isolation_ok,
+		"battlevictory_absent_ok": battlevictory_absent_ok,
 	}
 
 	var passed := true
@@ -42643,6 +42719,1114 @@ static func _battlepressurebehavior_absent_ok() -> bool:
 		and battle_state.get("crisis_state") == null
 		and is_equal_approx(BattleCombatPressureCatalog.HIGH_PRESSURE_AGGRESSION_THRESHOLD, 0.70)
 	)
+
+
+static func _battlevictory_ready_state(
+	attacker_ids: Array[String],
+	defender_ids: Array[String]
+) -> BattleState:
+	if attacker_ids.is_empty() or defender_ids.is_empty():
+		return null
+	var battle_state: BattleState = BattleState.new(
+		"victory_battle",
+		"victory_type",
+		"victory_mission",
+		"victory_location",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	var attacker_side: BattleSide = BattleSide.new("attacker", "victory_a", "", true, "attacker_deployment")
+	var defender_side: BattleSide = BattleSide.new("defender", "victory_b", "", false, "defender_deployment")
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	var attacker_zone: DeploymentZone = DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry")
+	var defender_zone: DeploymentZone = DeploymentZone.new("defender_deployment", "defender", "defender_position")
+	if not battle_state.add_deployment_zone(attacker_zone) or not battle_state.add_deployment_zone(defender_zone):
+		return null
+	if not _battlespatial_attach_open_geometry(battle_state):
+		return null
+	attacker_zone.deployment_rect = battle_state.battlefield_geometry.attacker_deployment_rect
+	defender_zone.deployment_rect = battle_state.battlefield_geometry.defender_deployment_rect
+	var attacker_index: int = 0
+	for attacker_id: String in attacker_ids:
+		var attacker: BattleParticipant = BattleParticipant.new(
+			attacker_id,
+			attacker_id,
+			"victory_a",
+			"attacker",
+			"pistol",
+			true,
+			false,
+			""
+		)
+		if not battle_state.add_participant(attacker) or not attacker_side.add_participant_id(attacker_id):
+			return null
+		if not attacker_zone.allowed_participant_ids.has(attacker_id):
+			attacker_zone.allowed_participant_ids.append(attacker_id)
+		if not battle_state.deploy_participant(attacker_id, "attacker_deployment"):
+			return null
+		_battletarget_place(attacker, Vector2(10.0, 12.0 + float(attacker_index) * 8.0))
+		attacker_index += 1
+	var defender_index: int = 0
+	for defender_id: String in defender_ids:
+		var defender: BattleParticipant = BattleParticipant.new(
+			defender_id,
+			defender_id,
+			"victory_b",
+			"defender",
+			"pistol",
+			true,
+			false,
+			""
+		)
+		if not battle_state.add_participant(defender) or not defender_side.add_participant_id(defender_id):
+			return null
+		if not defender_zone.allowed_participant_ids.has(defender_id):
+			defender_zone.allowed_participant_ids.append(defender_id)
+		if not battle_state.deploy_participant(defender_id, "defender_deployment"):
+			return null
+		_battletarget_place(defender, Vector2(90.0, 12.0 + float(defender_index) * 8.0))
+		defender_index += 1
+	if not battle_state.begin_battle():
+		return null
+	return battle_state
+
+
+static func _battlevictory_close_pair(
+	battle_state: BattleState,
+	attacker_id: String,
+	defender_id: String
+) -> bool:
+	if battle_state == null:
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant(attacker_id)
+	var defender: BattleParticipant = battle_state.get_participant(defender_id)
+	if attacker == null or defender == null:
+		return false
+	_battletarget_place(attacker, Vector2(10.0, 30.0))
+	_battletarget_place(defender, Vector2(18.0, 30.0))
+	attacker.set_target_participant(defender_id)
+	return true
+
+
+static func _battlevictory_ineligible_after(
+	battle_state: BattleState,
+	expected_phase: String
+) -> bool:
+	if battle_state == null:
+		return false
+	if BattleVictoryService.can_evaluate(battle_state):
+		return false
+	if BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	if BattleVictoryService.should_halt_autonomous_combat(battle_state):
+		return false
+	var before_kind: String = battle_state.get_result_kind()
+	var resolve_result: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		resolve_result != null
+		and not resolve_result.resolved
+		and battle_state.tactical_result == null
+		and battle_state.battle_phase == expected_phase
+		and not battle_state.is_resolved()
+		and battle_state.get_result_kind() == before_kind
+		and battle_state.get_winning_side_id() == ""
+	)
+
+
+static func _battlevictory_unresolved_query(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	return (
+		battle_state.battle_phase == "active"
+		and battle_state.tactical_result == null
+		and not battle_state.is_resolved()
+		and battle_state.get_tactical_result() == null
+		and battle_state.get_result_kind() == ""
+		and battle_state.get_winning_side_id() == ""
+		and BattleVictoryService.can_evaluate(battle_state)
+		and not BattleVictoryService.is_terminal_state(battle_state)
+		and not BattleVictoryService.is_resolved(battle_state)
+		and BattleVictoryService.get_result_kind(battle_state) == BattleVictoryResult.RESULT_NONE
+		and BattleVictoryService.get_winning_side_id(battle_state) == ""
+	)
+
+
+static func _battlevictory_unresolved_result_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	return _battlevictory_unresolved_query(battle_state)
+
+
+static func _battlevictory_victory_result_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if defender == null:
+		return false
+	defender.is_alive = false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	var expected_losers: Array[String] = ["defender"]
+	var expected_living: Array[String] = ["attacker"]
+	return (
+		stored != null
+		and stored.success
+		and stored.resolved
+		and stored.resolved_this_call
+		and stored.result_kind == BattleVictoryResult.RESULT_VICTORY
+		and stored.winning_side_id == "attacker"
+		and _string_ids_match(stored.losing_side_ids, expected_losers)
+		and _string_ids_match(stored.living_side_ids, expected_living)
+		and battle_state.battle_phase == "resolved"
+		and battle_state.tactical_result == stored
+		and battle_state.get_result_kind() == "victory"
+		and battle_state.get_winning_side_id() == "attacker"
+	)
+
+
+static func _battlevictory_draw_result_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("a_vsrc")
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if attacker == null or defender == null:
+		return false
+	attacker.is_alive = false
+	defender.is_alive = false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	var expected_losers: Array[String] = ["attacker", "defender"]
+	return (
+		stored != null
+		and stored.success
+		and stored.resolved
+		and stored.resolved_this_call
+		and stored.result_kind == BattleVictoryResult.RESULT_DRAW
+		and stored.winning_side_id == ""
+		and stored.living_side_ids.is_empty()
+		and _string_ids_match(stored.losing_side_ids, expected_losers)
+		and battle_state.get_winning_side_id() == ""
+		and battle_state.get_result_kind() == "draw"
+		and stored.winning_side_id != "attacker"
+		and stored.winning_side_id != "defender"
+	)
+
+
+static func _battlevictory_continue_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if not _battlevictory_unresolved_query(battle_state):
+		return false
+	var living: Array[String] = BattleVictoryService.collect_living_side_ids(battle_state)
+	var expected_living: Array[String] = ["attacker", "defender"]
+	var evaluated: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		_string_ids_match(living, expected_living)
+		and living.size() > 1
+		and evaluated != null
+		and evaluated.success
+		and not evaluated.resolved
+		and battle_state.battle_phase == "active"
+		and battle_state.tactical_result == null
+		and not BattleVictoryService.is_terminal_state(battle_state)
+	)
+
+
+static func _battlevictory_one_living_side_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if defender == null:
+		return false
+	defender.is_alive = false
+	if not BattleVictoryService.can_evaluate(battle_state):
+		return false
+	if not BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		stored != null
+		and stored.result_kind == BattleVictoryResult.RESULT_VICTORY
+		and stored.winning_side_id == "attacker"
+		and stored.losing_side_ids.has("defender")
+		and battle_state.battle_phase == "resolved"
+	)
+
+
+static func _battlevictory_zero_living_sides_ok() -> bool:
+	return _battlevictory_draw_result_ok()
+
+
+static func _battlevictory_empty_side_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	var defender_side: BattleSide = battle_state.get_side("defender")
+	if defender_side == null or not defender_side.participant_ids.is_empty():
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	if not BattleVictoryService.can_evaluate(battle_state):
+		return false
+	if not BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.25)
+	return (
+		runtime != null
+		and runtime.success
+		and runtime.battle_resolved_this_pass
+		and runtime.winning_side_id == battle_state.attacker_side_id
+		and battle_state.battle_phase == "resolved"
+		and battle_state.get_result_kind() == "victory"
+		and battle_state.get_winning_side_id() == battle_state.attacker_side_id
+		and defender_side.participant_ids.is_empty()
+	)
+
+
+static func _battlevictory_wounded_survivor_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("a_vsrc")
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if attacker == null or defender == null:
+		return false
+	attacker.is_wounded = true
+	if not BattleVictoryService.is_living_combat_participant(battle_state, attacker):
+		return false
+	if BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	var continue_result: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	if continue_result == null or continue_result.resolved or battle_state.battle_phase != "active":
+		return false
+	defender.is_alive = false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		attacker.is_alive
+		and attacker.is_wounded
+		and stored != null
+		and stored.result_kind == BattleVictoryResult.RESULT_VICTORY
+		and stored.winning_side_id == "attacker"
+		and battle_state.battle_phase == "resolved"
+	)
+
+
+static func _battlevictory_dead_registered_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if defender == null:
+		return false
+	defender.is_alive = false
+	BattleVictoryService.resolve_if_terminal(battle_state)
+	var living: Array[String] = BattleVictoryService.collect_living_side_ids(battle_state)
+	var expected_living: Array[String] = ["attacker"]
+	return (
+		battle_state.has_participant("d_vtgt")
+		and battle_state.participants.has("d_vtgt")
+		and not defender.is_alive
+		and not BattleVictoryService.is_living_combat_participant(battle_state, defender)
+		and _string_ids_match(living, expected_living)
+	)
+
+
+static func _battlevictory_multi_force_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_force_dead", "a_force_live"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var force_a: BattleTacticalForce = BattleTacticalForce.new("tf_dead", "attacker", BattleForceCommandCatalog.COMMAND_HOLD)
+	var force_b: BattleTacticalForce = BattleTacticalForce.new("tf_live", "attacker", BattleForceCommandCatalog.COMMAND_PUSH)
+	if not battle_state.add_tactical_force(force_a) or not battle_state.add_tactical_force(force_b):
+		return false
+	var dead_force: BattleParticipant = battle_state.get_participant("a_force_dead")
+	var live_force: BattleParticipant = battle_state.get_participant("a_force_live")
+	if dead_force == null or live_force == null:
+		return false
+	dead_force.tactical_force_id = "tf_dead"
+	live_force.tactical_force_id = "tf_live"
+	dead_force.is_alive = false
+	var living: Array[String] = BattleVictoryService.collect_living_side_ids(battle_state)
+	var expected_living: Array[String] = ["attacker", "defender"]
+	var evaluated: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		_string_ids_match(living, expected_living)
+		and evaluated != null
+		and not evaluated.resolved
+		and battle_state.battle_phase == "active"
+		and live_force.is_alive
+		and not BattleVictoryService.is_terminal_state(battle_state)
+	)
+
+
+static func _battlevictory_multi_side_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var third_side: BattleSide = BattleSide.new("charlie", "victory_c", "", false, "")
+	if not battle_state.add_side(third_side):
+		return false
+	var third: BattleParticipant = BattleParticipant.new(
+		"c_third",
+		"c_third",
+		"victory_c",
+		"charlie",
+		"pistol",
+		true,
+		false,
+		""
+	)
+	if not battle_state.add_participant(third) or not third_side.add_participant_id("c_third"):
+		return false
+	if not BattleVictoryService.can_evaluate(battle_state):
+		return false
+	var three: Array[String] = BattleVictoryService.collect_living_side_ids(battle_state)
+	var expected_three: Array[String] = ["attacker", "charlie", "defender"]
+	if not _string_ids_match(three, expected_three) or BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	third.is_alive = false
+	var two: Array[String] = BattleVictoryService.collect_living_side_ids(battle_state)
+	var expected_two: Array[String] = ["attacker", "defender"]
+	if not _string_ids_match(two, expected_two) or BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if defender == null:
+		return false
+	defender.is_alive = false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	var expected_losers: Array[String] = ["charlie", "defender"]
+	return (
+		stored != null
+		and stored.result_kind == BattleVictoryResult.RESULT_VICTORY
+		and stored.winning_side_id == "attacker"
+		and _string_ids_match(stored.losing_side_ids, expected_losers)
+		and not stored.losing_side_ids.has("attacker")
+	)
+
+
+static func _battlevictory_can_evaluate_guards_ok() -> bool:
+	var missing_attacker: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if missing_attacker == null:
+		return false
+	missing_attacker.get_participant("d_vtgt").is_alive = false
+	missing_attacker.attacker_side_id = ""
+	if not _battlevictory_ineligible_after(missing_attacker, "active"):
+		return false
+	var missing_defender: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if missing_defender == null:
+		return false
+	missing_defender.get_participant("d_vtgt").is_alive = false
+	missing_defender.defender_side_id = ""
+	if not _battlevictory_ineligible_after(missing_defender, "active"):
+		return false
+	var attacker_unregistered: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if attacker_unregistered == null:
+		return false
+	attacker_unregistered.get_participant("d_vtgt").is_alive = false
+	attacker_unregistered.sides.erase("attacker")
+	if not _battlevictory_ineligible_after(attacker_unregistered, "active"):
+		return false
+	var defender_unregistered: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if defender_unregistered == null:
+		return false
+	defender_unregistered.get_participant("d_vtgt").is_alive = false
+	defender_unregistered.sides.erase("defender")
+	if not _battlevictory_ineligible_after(defender_unregistered, "active"):
+		return false
+	var empty_participants: BattleState = _battlemove_make_state("active")
+	if empty_participants == null or not empty_participants.participants.is_empty():
+		return false
+	if not _battlevictory_ineligible_after(empty_participants, "active"):
+		return false
+	var not_ready: BattleState = _battlemove_make_state("active")
+	if not_ready == null:
+		return false
+	if _battlefire_add(not_ready, "nr_only", "attacker", "pistol") == null:
+		return false
+	if not_ready.is_battle_ready():
+		return false
+	var living: Array[String] = BattleVictoryService.collect_living_side_ids(not_ready)
+	return living.size() <= 1 and _battlevictory_ineligible_after(not_ready, "active")
+
+
+static func _battlevictory_shared_authority_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var seeker: BattleParticipant = _battlefire_add(battle_state, "z_auth_seek", "attacker", "pistol")
+	var corpse: BattleParticipant = _battlefire_add(battle_state, "a_auth_dead", "defender", "pistol")
+	if seeker == null or corpse == null:
+		return false
+	corpse.is_alive = false
+	seeker.is_wounded = true
+	_battletarget_place(seeker, Vector2(10.0, 10.0))
+	_battletarget_place(corpse, Vector2(40.0, 10.0))
+	if _battlewounded_slot(battle_state.battlefield_geometry, "auth_obj", "auth_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	if BattleVictoryService.can_evaluate(battle_state):
+		return false
+	if BattleVictoryService.collect_living_side_ids(battle_state).size() != 1:
+		return false
+	if BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	if BattleVictoryService.should_halt_autonomous_combat(battle_state):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.wounded_seeking_cover == 1
+		and battle_state.battle_phase == "active"
+		and battle_state.tactical_result == null
+		and seeker.has_reserved_cover_slot()
+	)
+
+
+static func _battlevictory_final_kill_runtime() -> Dictionary:
+	var pack: Dictionary = {}
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vkill", "z_vlater"], ["m_vhost"])
+	if battle_state == null:
+		return pack
+	var killer: BattleParticipant = battle_state.get_participant("a_vkill")
+	var later: BattleParticipant = battle_state.get_participant("z_vlater")
+	var host: BattleParticipant = battle_state.get_participant("m_vhost")
+	if killer == null or later == null or host == null:
+		return pack
+	_battletarget_place(killer, Vector2(10.0, 30.0))
+	_battletarget_place(later, Vector2(10.0, 32.0))
+	_battletarget_place(host, Vector2(18.0, 30.0))
+	killer.set_target_participant("m_vhost")
+	later.set_target_participant("m_vhost")
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.95, 1.0):
+		return pack
+	pack["battle_state"] = battle_state
+	pack["killer"] = killer
+	pack["later"] = later
+	pack["host"] = host
+	pack["later_snap"] = _battlebehavior_part_combat_snap(later)
+	pack["later_ammo"] = later.weapon_state.ammo_in_magazine
+	pack["killer_ammo"] = killer.weapon_state.ammo_in_magazine
+	pack["rng_before"] = battle_state.combat_random.snapshot_state()
+	return pack
+
+
+static func _battlevictory_expected_rng_after_one_roll(battle_state: BattleState, rng_before: int) -> int:
+	if battle_state == null or battle_state.combat_random == null:
+		return -1
+	var probe: BattleCombatRandom = BattleCombatRandom.new(battle_state.combat_rng_seed)
+	probe.restore_state(rng_before)
+	probe.next_normalized()
+	return probe.snapshot_state()
+
+
+static func _battlevictory_same_pass_final_kill_ok() -> bool:
+	var pack: Dictionary = _battlevictory_final_kill_runtime()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var killer: BattleParticipant = pack.get("killer", null) as BattleParticipant
+	var host: BattleParticipant = pack.get("host", null) as BattleParticipant
+	if battle_state == null or killer == null or host == null:
+		return false
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.2)
+	return (
+		runtime != null
+		and runtime.success
+		and runtime.battle_resolved_this_pass
+		and runtime.winning_side_id == "attacker"
+		and battle_state.battle_phase == "resolved"
+		and battle_state.tactical_result != null
+		and battle_state.get_result_kind() == "victory"
+		and battle_state.get_winning_side_id() == "attacker"
+		and not host.is_alive
+		and killer.is_alive
+		and killer.weapon_state != null
+		and killer.weapon_state.ammo_in_magazine == int(pack.get("killer_ammo", -2)) - 1
+	)
+
+
+static func _battlevictory_later_actor_halt_ok() -> bool:
+	var pack: Dictionary = _battlevictory_final_kill_runtime()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var later: BattleParticipant = pack.get("later", null) as BattleParticipant
+	var later_snap: Dictionary = pack.get("later_snap", {}) as Dictionary
+	if battle_state == null or later == null or later_snap.is_empty():
+		return false
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.2)
+	return (
+		runtime != null
+		and runtime.success
+		and battle_state.battle_phase == "resolved"
+		and later.weapon_state != null
+		and later.weapon_state.ammo_in_magazine == int(pack.get("later_ammo", -2))
+		and is_equal_approx(later.weapon_state.cooldown_remaining_seconds, 0.0)
+		and _battlebehavior_part_combat_unchanged(later, later_snap)
+		and later.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	)
+
+
+static func _battlevictory_rng_ammo_halt_ok() -> bool:
+	var pack: Dictionary = _battlevictory_final_kill_runtime()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var later: BattleParticipant = pack.get("later", null) as BattleParticipant
+	var killer: BattleParticipant = pack.get("killer", null) as BattleParticipant
+	if battle_state == null or later == null or killer == null or battle_state.combat_random == null:
+		return false
+	var rng_before: int = int(pack.get("rng_before", -1))
+	var later_ammo: int = int(pack.get("later_ammo", -2))
+	var killer_ammo: int = int(pack.get("killer_ammo", -2))
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.2)
+	var expected_rng: int = _battlevictory_expected_rng_after_one_roll(battle_state, rng_before)
+	return (
+		runtime != null
+		and runtime.success
+		and battle_state.battle_phase == "resolved"
+		and later.weapon_state.ammo_in_magazine == later_ammo
+		and killer.weapon_state.ammo_in_magazine == killer_ammo - 1
+		and battle_state.combat_random.snapshot_state() == expected_rng
+	)
+
+
+static func _battlevictory_early_derived_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var participant: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	if participant == null or participant.weapon_state == null or battle_state.combat_random == null:
+		return false
+	participant.weapon_state.cooldown_remaining_seconds = 0.4
+	participant.weapon_state.reload_remaining_seconds = 1.5
+	participant.weapon_state.is_reloading = true
+	var ammo_before: int = participant.weapon_state.ammo_in_magazine
+	var pos_before: Vector2 = participant.battle_position
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	if not _battlepressurebehavior_plant(battle_state, "battle_sol_a", 0.99):
+		return false
+	if not BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.25)
+	var pressure: BattleCombatPressureSnapshot = null
+	if battle_state.combat_pressure_snapshots.has("battle_sol_a"):
+		pressure = battle_state.combat_pressure_snapshots["battle_sol_a"]
+	return (
+		runtime != null
+		and runtime.success
+		and runtime.battle_resolved_this_pass
+		and battle_state.battle_phase == "resolved"
+		and is_equal_approx(participant.weapon_state.cooldown_remaining_seconds, 0.4)
+		and is_equal_approx(participant.weapon_state.reload_remaining_seconds, 1.5)
+		and participant.weapon_state.is_reloading
+		and participant.weapon_state.ammo_in_magazine == ammo_before
+		and participant.battle_position.is_equal_approx(pos_before)
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and pressure != null
+		and is_equal_approx(pressure.total_pressure, 0.99)
+	)
+
+
+static func _battlevictory_zero_delta_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var participant: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	if participant == null or battle_state.combat_random == null:
+		return false
+	var pos_before: Vector2 = participant.battle_position
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var ammo_before: int = 0
+	if participant.weapon_state != null:
+		ammo_before = participant.weapon_state.ammo_in_magazine
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.0)
+	return (
+		runtime != null
+		and runtime.success
+		and runtime.battle_resolved_this_pass
+		and is_equal_approx(runtime.elapsed_time_before, 0.0)
+		and is_equal_approx(runtime.elapsed_time_after, 0.0)
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and participant.battle_position.is_equal_approx(pos_before)
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and (participant.weapon_state == null or participant.weapon_state.ammo_in_magazine == ammo_before)
+		and battle_state.battle_phase == "resolved"
+	)
+
+
+static func _battlevictory_post_resolution_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var first: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.25)
+	var participant: BattleParticipant = battle_state.get_participant("battle_sol_a")
+	if first == null or not first.success or participant == null or battle_state.combat_random == null:
+		return false
+	var pos_before: Vector2 = participant.battle_position
+	var rng_before: int = battle_state.combat_random.snapshot_state()
+	var ammo_before: int = 0
+	var cooldown_before: float = 0.0
+	if participant.weapon_state != null:
+		ammo_before = participant.weapon_state.ammo_in_magazine
+		cooldown_before = participant.weapon_state.cooldown_remaining_seconds
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	var later: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.40)
+	return (
+		_battlert_fail_ok(later, "battle_not_active", elapsed_before)
+		and battle_state.battle_phase == "resolved"
+		and is_equal_approx(battle_state.elapsed_time_seconds, elapsed_before)
+		and participant.battle_position.is_equal_approx(pos_before)
+		and battle_state.combat_random.snapshot_state() == rng_before
+		and (participant.weapon_state == null or participant.weapon_state.ammo_in_magazine == ammo_before)
+		and (
+			participant.weapon_state == null
+			or is_equal_approx(participant.weapon_state.cooldown_remaining_seconds, cooldown_before)
+		)
+		and not later.battle_resolved_this_pass
+		and later.winning_side_id == ""
+	)
+
+
+static func _battlevictory_elapsed_ok() -> bool:
+	var plus_delta: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if plus_delta == null:
+		return false
+	plus_delta.get_participant("d_vtgt").is_alive = false
+	var plus_res: BattleRuntimeResult = BattleRuntimeService.advance(plus_delta, 0.25)
+	var zero_pack: Dictionary = _battle_create_ready_pack()
+	var zero_state: BattleState = zero_pack.get("battle_state", null) as BattleState
+	if zero_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(zero_state):
+		return false
+	if not _battlegeo_init(zero_state):
+		return false
+	if not zero_state.begin_battle():
+		return false
+	var zero_res: BattleRuntimeResult = BattleRuntimeService.advance(zero_state, 0.0)
+	var later: BattleRuntimeResult = BattleRuntimeService.advance(zero_state, 1.0)
+	return (
+		plus_res != null
+		and plus_res.success
+		and plus_res.battle_resolved_this_pass
+		and is_equal_approx(plus_delta.elapsed_time_seconds, 0.25)
+		and zero_res != null
+		and zero_res.success
+		and is_equal_approx(zero_state.elapsed_time_seconds, 0.0)
+		and later != null
+		and not later.success
+		and is_equal_approx(zero_state.elapsed_time_seconds, 0.0)
+	)
+
+
+static func _battlevictory_idempotence_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	battle_state.get_participant("d_vtgt").is_alive = false
+	var first: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	if first == null or not first.resolved:
+		return false
+	var winner: String = first.winning_side_id
+	var kind: String = first.result_kind
+	var losers: Array[String] = []
+	for side_id: String in first.losing_side_ids:
+		losers.append(side_id)
+	var second: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	battle_state.get_participant("a_vsrc").is_alive = false
+	var third: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		second != null
+		and third != null
+		and not second.resolved_this_call
+		and not third.resolved_this_call
+		and second.winning_side_id == winner
+		and third.winning_side_id == winner
+		and second.result_kind == kind
+		and third.result_kind == kind
+		and _string_ids_match(second.losing_side_ids, losers)
+		and _string_ids_match(third.losing_side_ids, losers)
+		and battle_state.battle_phase == "resolved"
+		and battle_state.get_winning_side_id() == "attacker"
+	)
+
+
+static func _battlevictory_sorting_ok() -> bool:
+	var first: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	var second: BattleState = BattleState.new(
+		"victory_sort_b",
+		"victory_type",
+		"victory_mission",
+		"victory_location",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	if first == null or second == null:
+		return false
+	var defender_side: BattleSide = BattleSide.new("defender", "victory_b", "", false, "defender_deployment")
+	var attacker_side: BattleSide = BattleSide.new("attacker", "victory_a", "", true, "attacker_deployment")
+	if not second.add_side(defender_side) or not second.add_side(attacker_side):
+		return false
+	var defender_zone: DeploymentZone = DeploymentZone.new("defender_deployment", "defender", "defender_position")
+	var attacker_zone: DeploymentZone = DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry")
+	if not second.add_deployment_zone(defender_zone) or not second.add_deployment_zone(attacker_zone):
+		return false
+	if not _battlespatial_attach_open_geometry(second):
+		return false
+	attacker_zone.deployment_rect = second.battlefield_geometry.attacker_deployment_rect
+	defender_zone.deployment_rect = second.battlefield_geometry.defender_deployment_rect
+	var defender: BattleParticipant = BattleParticipant.new("d_sort", "d_sort", "victory_b", "defender", "pistol", true, false, "")
+	var attacker: BattleParticipant = BattleParticipant.new("a_sort", "a_sort", "victory_a", "attacker", "pistol", true, false, "")
+	if not second.add_participant(defender) or not second.add_participant(attacker):
+		return false
+	if not defender_side.add_participant_id("d_sort") or not attacker_side.add_participant_id("a_sort"):
+		return false
+	defender_zone.allowed_participant_ids.append("d_sort")
+	attacker_zone.allowed_participant_ids.append("a_sort")
+	if not second.deploy_participant("d_sort", "defender_deployment"):
+		return false
+	if not second.deploy_participant("a_sort", "attacker_deployment"):
+		return false
+	_battletarget_place(defender, Vector2(90.0, 30.0))
+	_battletarget_place(attacker, Vector2(10.0, 30.0))
+	if not second.begin_battle():
+		return false
+	var living_a: Array[String] = BattleVictoryService.collect_living_side_ids(first)
+	var living_b: Array[String] = BattleVictoryService.collect_living_side_ids(second)
+	first.get_participant("d_vtgt").is_alive = false
+	second.get_participant("d_sort").is_alive = false
+	var win_a: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(first)
+	var win_b: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(second)
+	var all_dead: BattleState = _battlevictory_ready_state(["z_src"], ["a_tgt"])
+	if all_dead == null:
+		return false
+	all_dead.get_participant("z_src").is_alive = false
+	all_dead.get_participant("a_tgt").is_alive = false
+	var draw: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(all_dead)
+	var expected_living: Array[String] = ["attacker", "defender"]
+	var expected_losers: Array[String] = ["defender"]
+	var expected_draw_losers: Array[String] = ["attacker", "defender"]
+	return (
+		_string_ids_match(living_a, expected_living)
+		and _string_ids_match(living_b, expected_living)
+		and win_a != null
+		and win_b != null
+		and win_a.winning_side_id == "attacker"
+		and win_b.winning_side_id == "attacker"
+		and _string_ids_match(win_a.losing_side_ids, expected_losers)
+		and _string_ids_match(win_b.losing_side_ids, expected_losers)
+		and draw != null
+		and draw.result_kind == BattleVictoryResult.RESULT_DRAW
+		and draw.winning_side_id == ""
+		and _string_ids_match(draw.losing_side_ids, expected_draw_losers)
+	)
+
+
+static func _battlevictory_query_api_ok() -> bool:
+	var active: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if not _battlevictory_unresolved_query(active):
+		return false
+	var kind_before: String = active.get_result_kind()
+	var winner_before: String = active.get_winning_side_id()
+	var resolved_before: bool = active.is_resolved()
+	var looked: BattleVictoryResult = active.get_tactical_result()
+	if looked != null or kind_before != "" or winner_before != "" or resolved_before:
+		return false
+	if active.battle_phase != "active" or active.tactical_result != null:
+		return false
+	active.get_participant("d_vtgt").is_alive = false
+	BattleVictoryService.resolve_if_terminal(active)
+	var victory_result: BattleVictoryResult = active.get_tactical_result()
+	var draw_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if draw_state == null:
+		return false
+	draw_state.get_participant("a_vsrc").is_alive = false
+	draw_state.get_participant("d_vtgt").is_alive = false
+	BattleVictoryService.resolve_if_terminal(draw_state)
+	return (
+		active.is_resolved()
+		and victory_result != null
+		and victory_result.result_kind == "victory"
+		and active.get_winning_side_id() == "attacker"
+		and active.get_result_kind() == "victory"
+		and draw_state.is_resolved()
+		and draw_state.get_winning_side_id() == ""
+		and draw_state.get_result_kind() == "draw"
+		and draw_state.get_tactical_result() != null
+	)
+
+
+static func _battlevictory_telemetry_ok() -> bool:
+	var continuing: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if continuing == null:
+		return false
+	var continue_res: BattleRuntimeResult = BattleRuntimeService.advance(continuing, 0.1)
+	var victory_pack: Dictionary = _battle_create_ready_pack()
+	var victory_state: BattleState = victory_pack.get("battle_state", null) as BattleState
+	if victory_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(victory_state):
+		return false
+	if not _battlegeo_init(victory_state):
+		return false
+	if not victory_state.begin_battle():
+		return false
+	var victory_res: BattleRuntimeResult = BattleRuntimeService.advance(victory_state, 0.1)
+	var draw_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if draw_state == null:
+		return false
+	draw_state.get_participant("a_vsrc").is_alive = false
+	draw_state.get_participant("d_vtgt").is_alive = false
+	var draw_res: BattleRuntimeResult = BattleRuntimeService.advance(draw_state, 0.1)
+	var later: BattleRuntimeResult = BattleRuntimeService.advance(victory_state, 0.1)
+	return (
+		continue_res != null
+		and continue_res.success
+		and not continue_res.battle_resolved_this_pass
+		and continue_res.winning_side_id == ""
+		and continuing.tactical_result == null
+		and victory_res != null
+		and victory_res.success
+		and victory_res.battle_resolved_this_pass
+		and victory_res.winning_side_id == victory_state.attacker_side_id
+		and victory_state.get_winning_side_id() == victory_state.attacker_side_id
+		and draw_res != null
+		and draw_res.success
+		and draw_res.battle_resolved_this_pass
+		and draw_res.winning_side_id == ""
+		and draw_state.get_result_kind() == "draw"
+		and later != null
+		and not later.success
+		and not later.battle_resolved_this_pass
+		and later.winning_side_id == ""
+	)
+
+
+static func _battlevictory_pressure_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("a_vsrc")
+	if attacker == null:
+		return false
+	if not _battlepressurebehavior_plant(battle_state, "a_vsrc", 0.99):
+		return false
+	if not BattleVictoryService.is_living_combat_participant(battle_state, attacker):
+		return false
+	if BattleVictoryService.is_terminal_state(battle_state):
+		return false
+	battle_state.get_participant("d_vtgt").is_alive = false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		is_equal_approx(BattleCombatPressureCatalog.HIGH_PRESSURE_AGGRESSION_THRESHOLD, 0.70)
+		and stored != null
+		and stored.winning_side_id == "attacker"
+		and attacker.is_alive
+	)
+
+
+static func _battlevictory_command_ok() -> bool:
+	var commands: Array[String] = BattleForceCommandCatalog.command_ids()
+	if commands.size() != 5:
+		return false
+	if (
+		not commands.has(BattleForceCommandCatalog.COMMAND_PUSH)
+		or not commands.has(BattleForceCommandCatalog.COMMAND_HOLD)
+		or not commands.has(BattleForceCommandCatalog.COMMAND_FOCUS_LEFT)
+		or not commands.has(BattleForceCommandCatalog.COMMAND_FOCUS_RIGHT)
+		or not commands.has(BattleForceCommandCatalog.COMMAND_FALL_BACK)
+	):
+		return false
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null:
+		return false
+	var force: BattleTacticalForce = BattleTacticalForce.new(
+		"tf_cmd",
+		"attacker",
+		BattleForceCommandCatalog.COMMAND_HOLD
+	)
+	if not battle_state.add_tactical_force(force):
+		return false
+	battle_state.get_participant("a_vsrc").tactical_force_id = "tf_cmd"
+	for command_id: String in commands:
+		var set_res: BattleForceCommandResult = BattleForceCommandService.set_command(
+			battle_state,
+			"tf_cmd",
+			command_id
+		)
+		if set_res == null or not set_res.success:
+			return false
+		if BattleVictoryService.is_terminal_state(battle_state):
+			return false
+		if battle_state.tactical_result != null:
+			return false
+	if BattleForceCommandService.set_command(
+		battle_state,
+		"tf_cmd",
+		BattleForceCommandCatalog.COMMAND_PUSH
+	) == null:
+		return false
+	battle_state.get_participant("d_vtgt").is_alive = false
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		stored != null
+		and stored.winning_side_id == "attacker"
+		and force.command_id == BattleForceCommandCatalog.COMMAND_PUSH
+	)
+
+
+static func _battlevictory_wounded_regression_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("a_vsrc")
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if attacker == null or defender == null:
+		return false
+	attacker.is_wounded = true
+	_battletarget_place(attacker, Vector2(10.0, 10.0))
+	_battletarget_place(defender, Vector2(80.0, 10.0))
+	_battlebehavior_hold_hostile(defender)
+	if _battlewounded_slot(battle_state.battlefield_geometry, "vic_wd_obj", "vic_wd_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.wounded_seeking_cover == 1
+		and battle_state.battle_phase == "active"
+		and battle_state.tactical_result == null
+		and attacker.is_alive
+		and attacker.is_wounded
+		and defender.is_alive
+	)
+
+
+static func _battlevictory_attack_resolution_ok() -> bool:
+	var battle_state: BattleState = _battlevictory_ready_state(["a_vsrc"], ["d_vtgt"])
+	if not _battlevictory_close_pair(battle_state, "a_vsrc", "d_vtgt"):
+		return false
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"a_vsrc",
+		"d_vtgt",
+		0.95
+	)
+	var defender: BattleParticipant = battle_state.get_participant("d_vtgt")
+	if attack == null or defender == null:
+		return false
+	var after_attack_phase: String = battle_state.battle_phase
+	var stored: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	return (
+		attack.success
+		and attack.shot_executed
+		and not defender.is_alive
+		and after_attack_phase == "active"
+		and battle_state.has_participant("d_vtgt")
+		and not battle_state.has_method("resolve_victory")
+		and not battle_state.has_method("end_battle")
+		and battle_state.get("winner_side_id") == null
+		and stored != null
+		and stored.resolved
+		and stored.winning_side_id == "attacker"
+		and battle_state.battle_phase == "resolved"
+	)
+
+
+static func _battlevictory_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or battle_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	if not battle_state.begin_battle():
+		return false
+	var soldier: Soldier = game_state.get_soldier("battle_sol_a")
+	if soldier == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var snap: Dictionary = _battle_campaign_snapshot(game_state, force, "battle_mission")
+	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.25)
+	var persist: Dictionary = game_state.to_dict()
+	var hq: MapLocation = game_state.get_map_location("battle_hq")
+	return (
+		runtime != null
+		and runtime.success
+		and battle_state.battle_phase == "resolved"
+		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and game_state.get_mission("battle_mission").mission_state == "awaiting_resolution"
+		and game_state.get_neighborhood("battle_hood").owner_faction_id == "battle_b"
+		and game_state.has_traveling_force(force.id)
+		and hq != null
+		and hq.owner_faction_id == "battle_b"
+		and _battle_serialized_campaign_keys_only(persist)
+		and not _battle_data_has_tactical_trace(persist)
+	)
+
+
+static func _battlevictory_absent_ok() -> bool:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	var svc: BattleVictoryService = BattleVictoryService.new()
+	var runtime: BattleRuntimeService = BattleRuntimeService.new()
+	if battle_state == null:
+		return false
+	return (
+		not svc.has_method("apply_flee")
+		and not svc.has_method("apply_surrender")
+		and not svc.has_method("apply_rout")
+		and not svc.has_method("apply_morale")
+		and not svc.has_method("capture_hq")
+		and not svc.has_method("transfer_neighborhood")
+		and not svc.has_method("return_survivors")
+		and not svc.has_method("propagate_casualties")
+		and not svc.has_method("award_loot")
+		and not svc.has_method("trigger_police")
+		and not svc.has_method("trigger_trc")
+		and not svc.has_method("jail")
+		and not svc.has_method("resolve_mission")
+		and not svc.has_method("show_victory_screen")
+		and not runtime.has_method("show_victory_screen")
+		and not runtime.has_method("show_battle_summary")
+		and not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("surrender")
+		and not BattleForceCommandService.is_valid_command("rout")
+		and battle_state.get("winner_side_id") == null
+		and not battle_state.has_method("resolve_victory")
+		and not battle_state.has_method("end_battle")
+		and _battle_has_no_combat_turn_model(battle_state)
+		and GameState.new().get("tactical_result") == null
+		and not GameState.new().has_method("apply_tactical_casualty")
+	)
+
 
 
 

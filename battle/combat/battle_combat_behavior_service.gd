@@ -30,6 +30,7 @@ const BattleCombatPressureBehaviorPolicyResult := preload(
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
+const BattleVictoryService := preload("res://battle/core/battle_victory_service.gd")
 
 const MOVE_HOLD := "hold"
 const MOVE_APPROACH := "approach"
@@ -109,6 +110,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var pressure_aggression_suppressed: int = 0
 	var attack_events: Array[BattleAttackEvent] = []
 	for participant_id: String in _sorted_participant_ids(battle_state):
+		if BattleVictoryService.is_terminal_state(battle_state):
+			break
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
 		if participant == null:
 			continue

@@ -15,6 +15,8 @@ const BattlePathFollowService := preload("res://battle/navigation/battle_path_fo
 const BattlePathFollowResult := preload("res://battle/navigation/battle_path_follow_result.gd")
 const BattleMovementService := preload("res://battle/runtime/battle_movement_service.gd")
 const BattleMovementResult := preload("res://battle/runtime/battle_movement_result.gd")
+const BattleVictoryService := preload("res://battle/core/battle_victory_service.gd")
+const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRuntimeResult:
@@ -47,6 +49,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 			delta_seconds,
 			elapsed_before
 		)
+	var early_victory: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	if early_victory != null and early_victory.success and early_victory.resolved_this_call:
+		return _finish_runtime(battle_state, delta_seconds, elapsed_before, early_victory, true)
 	var weapon_result: BattleFireControlResult = BattleFireControlService.advance_weapon_state(
 		battle_state,
 		delta_seconds
@@ -113,6 +118,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 			delta_seconds,
 			elapsed_before
 		)
+	var victory_result: BattleVictoryResult = BattleVictoryService.resolve_if_terminal(battle_state)
+	if battle_state.battle_phase != "active":
+		return _finish_runtime(battle_state, delta_seconds, elapsed_before, victory_result, true)
 	var path_follow_result: BattlePathFollowResult = BattlePathFollowService.advance(battle_state)
 	if path_follow_result == null or not path_follow_result.success:
 		var follow_error_code: String = "invalid_delta"
@@ -143,11 +151,34 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 			delta_seconds,
 			elapsed_before
 		)
+	return _finish_runtime(battle_state, delta_seconds, elapsed_before, null, false)
+
+
+static func _finish_runtime(
+	battle_state: BattleState,
+	delta_seconds: float,
+	elapsed_before: float,
+	victory_result: BattleVictoryResult,
+	resolved_this_pass: bool
+) -> BattleRuntimeResult:
+	var winning_side_id: String = ""
+	if victory_result != null and victory_result.success and victory_result.resolved:
+		winning_side_id = victory_result.winning_side_id
+		if victory_result.resolved_this_call:
+			resolved_this_pass = true
 	if delta_seconds == 0.0:
-		return BattleRuntimeResult.succeeded(delta_seconds, elapsed_before, elapsed_before)
+		return BattleRuntimeResult.succeeded(
+			delta_seconds,
+			elapsed_before,
+			elapsed_before,
+			resolved_this_pass,
+			winning_side_id
+		)
 	battle_state.elapsed_time_seconds = elapsed_before + delta_seconds
 	return BattleRuntimeResult.succeeded(
 		delta_seconds,
 		elapsed_before,
-		battle_state.elapsed_time_seconds
+		battle_state.elapsed_time_seconds,
+		resolved_this_pass,
+		winning_side_id
 	)

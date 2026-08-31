@@ -5,6 +5,8 @@ var success: bool = false
 var delta_seconds: float = 0.0
 var elapsed_time_before: float = 0.0
 var elapsed_time_after: float = 0.0
+var battle_resolved_this_pass: bool = false
+var winning_side_id: String = ""
 var error_code: String = ""
 var error_message: String = ""
 
@@ -12,13 +14,17 @@ var error_message: String = ""
 static func succeeded(
 	p_delta_seconds: float,
 	p_elapsed_time_before: float,
-	p_elapsed_time_after: float
+	p_elapsed_time_after: float,
+	p_battle_resolved_this_pass: bool = false,
+	p_winning_side_id: String = ""
 ) -> BattleRuntimeResult:
 	var result: BattleRuntimeResult = BattleRuntimeResult.new()
 	result.success = true
 	result.delta_seconds = p_delta_seconds
 	result.elapsed_time_before = p_elapsed_time_before
 	result.elapsed_time_after = p_elapsed_time_after
+	result.battle_resolved_this_pass = p_battle_resolved_this_pass
+	result.winning_side_id = p_winning_side_id
 	result.error_code = ""
 	result.error_message = ""
 	return result
@@ -35,6 +41,8 @@ static func failed(
 	result.delta_seconds = p_delta_seconds
 	result.elapsed_time_before = p_elapsed_time_before
 	result.elapsed_time_after = p_elapsed_time_before
+	result.battle_resolved_this_pass = false
+	result.winning_side_id = ""
 	result.error_code = p_error_code
 	result.error_message = p_error_message
 	return result
