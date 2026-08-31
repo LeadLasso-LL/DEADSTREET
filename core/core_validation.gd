@@ -109,6 +109,9 @@ const BattleVictoryService := preload("res://battle/core/battle_victory_service.
 const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
 const BattleCampaignOutcomeBridgeResult := preload("res://battle/core/battle_campaign_outcome_bridge_result.gd")
 const BattleCampaignOutcomeBridgeService := preload("res://battle/core/battle_campaign_outcome_bridge_service.gd")
+const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
+const CampaignBattleSessionResult := preload("res://battle/session/campaign_battle_session_result.gd")
+const CampaignBattleSessionService := preload("res://battle/session/campaign_battle_session_service.gd")
 
 
 static func run() -> Dictionary:
@@ -15806,6 +15809,36 @@ static func run() -> Dictionary:
 	var battlebridge_determinism_ok: bool = _battlebridge_determinism_ok()
 	var battlebridge_campaign_nonscope_ok: bool = _battlebridge_campaign_nonscope_ok()
 	var battlebridge_absent_ok: bool = _battlebridge_absent_ok()
+	var battlesession_create_real_hq_ok: bool = _battlesession_create_real_hq_ok()
+	var battlesession_create_rejects_ok: bool = _battlesession_create_rejects_ok()
+	var battlesession_geometry_ok: bool = _battlesession_geometry_ok()
+	var battlesession_no_auto_deploy_ok: bool = _battlesession_no_auto_deploy_ok()
+	var battlesession_deployment_authority_ok: bool = _battlesession_deployment_authority_ok()
+	var battlesession_begin_before_ready_ok: bool = _battlesession_begin_before_ready_ok()
+	var battlesession_begin_ready_ok: bool = _battlesession_begin_ready_ok()
+	var battlesession_begin_again_ok: bool = _battlesession_begin_again_ok()
+	var battlesession_advance_before_active_ok: bool = _battlesession_advance_before_active_ok()
+	var battlesession_active_advance_ok: bool = _battlesession_active_advance_ok()
+	var battlesession_campaign_isolation_ok: bool = _battlesession_campaign_isolation_ok()
+	var battlesession_attacker_victory_ok: bool = _battlesession_attacker_victory_ok()
+	var battlesession_defender_victory_ok: bool = _battlesession_defender_victory_ok()
+	var battlesession_same_call_handoff_ok: bool = _battlesession_same_call_handoff_ok()
+	var battlesession_telemetry_ok: bool = _battlesession_telemetry_ok()
+	var battlesession_complete_noop_ok: bool = _battlesession_complete_noop_ok()
+	var battlesession_handoff_idempotence_ok: bool = _battlesession_handoff_idempotence_ok()
+	var battlesession_pending_handoff_ok: bool = _battlesession_pending_handoff_ok()
+	var battlesession_pending_retry_ok: bool = _battlesession_pending_retry_ok()
+	var battlesession_draw_ok: bool = _battlesession_draw_ok()
+	var battlesession_draw_repeat_ok: bool = _battlesession_draw_repeat_ok()
+	var battlesession_history_retention_ok: bool = _battlesession_history_retention_ok()
+	var battlesession_mission_history_ok: bool = _battlesession_mission_history_ok()
+	var battlesession_force_after_ok: bool = _battlesession_force_after_ok()
+	var battlesession_not_on_gamestate_ok: bool = _battlesession_not_on_gamestate_ok()
+	var battlesession_independent_ok: bool = _battlesession_independent_ok()
+	var battlesession_rng_ok: bool = _battlesession_rng_ok()
+	var battlesession_casualty_isolation_ok: bool = _battlesession_casualty_isolation_ok()
+	var battlesession_turn_isolation_ok: bool = _battlesession_turn_isolation_ok()
+	var battlesession_absent_ok: bool = _battlesession_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17454,6 +17487,36 @@ static func run() -> Dictionary:
 		"battlebridge_determinism_ok": battlebridge_determinism_ok,
 		"battlebridge_campaign_nonscope_ok": battlebridge_campaign_nonscope_ok,
 		"battlebridge_absent_ok": battlebridge_absent_ok,
+		"battlesession_create_real_hq_ok": battlesession_create_real_hq_ok,
+		"battlesession_create_rejects_ok": battlesession_create_rejects_ok,
+		"battlesession_geometry_ok": battlesession_geometry_ok,
+		"battlesession_no_auto_deploy_ok": battlesession_no_auto_deploy_ok,
+		"battlesession_deployment_authority_ok": battlesession_deployment_authority_ok,
+		"battlesession_begin_before_ready_ok": battlesession_begin_before_ready_ok,
+		"battlesession_begin_ready_ok": battlesession_begin_ready_ok,
+		"battlesession_begin_again_ok": battlesession_begin_again_ok,
+		"battlesession_advance_before_active_ok": battlesession_advance_before_active_ok,
+		"battlesession_active_advance_ok": battlesession_active_advance_ok,
+		"battlesession_campaign_isolation_ok": battlesession_campaign_isolation_ok,
+		"battlesession_attacker_victory_ok": battlesession_attacker_victory_ok,
+		"battlesession_defender_victory_ok": battlesession_defender_victory_ok,
+		"battlesession_same_call_handoff_ok": battlesession_same_call_handoff_ok,
+		"battlesession_telemetry_ok": battlesession_telemetry_ok,
+		"battlesession_complete_noop_ok": battlesession_complete_noop_ok,
+		"battlesession_handoff_idempotence_ok": battlesession_handoff_idempotence_ok,
+		"battlesession_pending_handoff_ok": battlesession_pending_handoff_ok,
+		"battlesession_pending_retry_ok": battlesession_pending_retry_ok,
+		"battlesession_draw_ok": battlesession_draw_ok,
+		"battlesession_draw_repeat_ok": battlesession_draw_repeat_ok,
+		"battlesession_history_retention_ok": battlesession_history_retention_ok,
+		"battlesession_mission_history_ok": battlesession_mission_history_ok,
+		"battlesession_force_after_ok": battlesession_force_after_ok,
+		"battlesession_not_on_gamestate_ok": battlesession_not_on_gamestate_ok,
+		"battlesession_independent_ok": battlesession_independent_ok,
+		"battlesession_rng_ok": battlesession_rng_ok,
+		"battlesession_casualty_isolation_ok": battlesession_casualty_isolation_ok,
+		"battlesession_turn_isolation_ok": battlesession_turn_isolation_ok,
+		"battlesession_absent_ok": battlesession_absent_ok,
 	}
 
 	var passed := true
@@ -19170,6 +19233,11 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "nearby_wounded_allies"
 		or text == "nearby_living_allies"
 		or text == "nearby_hostiles"
+		or text == "active_battle"
+		or text == "campaign_battle_session"
+		or text == "session_state"
+		or text == "campaign_handoff_applied"
+		or text == "campaign_handoff_blocked_as_draw"
 	)
 
 
@@ -45174,6 +45242,1297 @@ static func _battlebridge_absent_ok() -> bool:
 		and not BattleForceCommandService.is_valid_command("surrender")
 		and not BattleForceCommandService.is_valid_command("rout")
 	)
+
+
+static func _battlesession_make_launched(
+	p_destination_id: String,
+	p_movement_budget: float,
+	p_mission_id: String = "battlesession_mission",
+	p_force_id: String = "battlesession_force"
+) -> Dictionary:
+	var pack: Dictionary = {}
+	var game_state: GameState = _make_hqattack_world()
+	DiplomacyService.declare_war(game_state, "hqattack_a", "hqattack_b")
+	var request: MissionRequest = _hqattack_stronghold_request(
+		p_mission_id,
+		p_force_id,
+		p_destination_id,
+		"hqattack_keep",
+		"hqattack_a",
+		"capture_neighborhood_hq",
+		p_movement_budget
+	)
+	var launch: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_stronghold(
+		game_state,
+		request
+	)
+	pack["game_state"] = game_state
+	pack["launch"] = launch
+	pack["mission_id"] = p_mission_id
+	pack["force_id"] = p_force_id
+	if launch != null and launch.success:
+		pack["force"] = game_state.get_traveling_force(launch.force_id)
+	else:
+		pack["force"] = null
+	return pack
+
+
+static func _battlesession_advance_until_awaiting(
+	game_state: GameState,
+	mission_id: String,
+	max_turns: int = 8
+) -> bool:
+	if game_state == null or mission_id.is_empty() or not game_state.has_mission(mission_id):
+		return false
+	var turns: int = 0
+	while turns < max_turns:
+		var mission: CampaignMission = game_state.get_mission(mission_id)
+		if mission != null and mission.mission_state == "awaiting_resolution":
+			return true
+		var turn_result: TurnResult = TurnManager.advance_to_next_turn(game_state)
+		if turn_result == null or not turn_result.success:
+			return false
+		turns += 1
+	var final_mission: CampaignMission = game_state.get_mission(mission_id)
+	return final_mission != null and final_mission.mission_state == "awaiting_resolution"
+
+
+static func _battlesession_open_pack() -> Dictionary:
+	var launched: Dictionary = _battlesession_make_launched("hqattack_hq", 10.0)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	var launch: NeighborhoodHQAttackResult = launched.get("launch", null) as NeighborhoodHQAttackResult
+	var pack: Dictionary = {}
+	pack["game_state"] = game_state
+	pack["force"] = launched.get("force", null)
+	pack["mission_id"] = "battlesession_mission"
+	pack["launch"] = launch
+	if game_state == null or launch == null or not launch.success:
+		pack["result"] = null
+		pack["session"] = null
+		pack["battle_state"] = null
+		return pack
+	if not _battlesession_advance_until_awaiting(game_state, "battlesession_mission"):
+		pack["result"] = null
+		pack["session"] = null
+		pack["battle_state"] = null
+		return pack
+	var result: CampaignBattleSessionResult = CampaignBattleSessionService.create_for_mission(
+		game_state,
+		"battlesession_mission"
+	)
+	pack["result"] = result
+	if result != null and result.success and result.session != null:
+		pack["session"] = result.session
+		pack["battle_state"] = result.session.battle_state
+	else:
+		pack["session"] = null
+		pack["battle_state"] = null
+	return pack
+
+
+static func _battlesession_deploy_all(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			return false
+		if battle_state.is_participant_deployed(participant_id):
+			continue
+		var side: BattleSide = battle_state.get_side(participant.side_id)
+		if side == null or side.deployment_zone_id.is_empty():
+			return false
+		if not battle_state.deploy_participant(participant_id, side.deployment_zone_id):
+			return false
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null:
+			return false
+		if battle_state.is_vehicle_deployed(vehicle_id):
+			continue
+		var side: BattleSide = battle_state.get_side(vehicle.side_id)
+		if side == null or side.deployment_zone_id.is_empty():
+			return false
+		if not battle_state.deploy_vehicle(vehicle_id, side.deployment_zone_id):
+			return false
+	return true
+
+
+static func _battlesession_ready_for_begin(battle_state: BattleState) -> bool:
+	if not _battlesession_deploy_all(battle_state):
+		return false
+	var geometry_result: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+		battle_state
+	)
+	if geometry_result == null or not geometry_result.success:
+		return false
+	return battle_state.is_battle_ready() and battle_state.is_spatially_ready()
+
+
+static func _battlesession_add_defender(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var defender_side: BattleSide = battle_state.get_side(battle_state.defender_side_id)
+	if defender_side == null:
+		return false
+	var participant_id: String = "battlesession_defender"
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"",
+		"hqattack_b",
+		battle_state.defender_side_id,
+		"pistol",
+		true,
+		false,
+		"",
+		defender_side.force_id
+	)
+	if not battle_state.add_participant(participant):
+		return false
+	if not defender_side.add_participant_id(participant_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(defender_side.deployment_zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	return true
+
+
+static func _battlesession_kill_side(battle_state: BattleState, side_id: String) -> bool:
+	if battle_state == null or side_id.is_empty() or not battle_state.has_side(side_id):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	for participant_id: String in side.participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			return false
+		participant.is_alive = false
+	return true
+
+
+static func _battlesession_rng(battle_state: BattleState) -> int:
+	if battle_state == null or battle_state.combat_random == null:
+		return 0
+	return battle_state.combat_random.snapshot_state()
+
+
+static func _battlesession_weapon_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or participant.weapon_state == null:
+			snap[participant_id] = 0.0
+		else:
+			snap[participant_id] = participant.weapon_state.cooldown_remaining_seconds
+	return snap
+
+
+static func _battlesession_position_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		var row: Dictionary = {}
+		row["has"] = participant.has_battle_position
+		row["pos"] = participant.battle_position
+		row["alive"] = participant.is_alive
+		row["wounded"] = participant.is_wounded
+		snap[participant_id] = row
+	return snap
+
+
+static func _battlesession_tactical_unchanged(
+	battle_state: BattleState,
+	elapsed: float,
+	rng: int,
+	weapons: Dictionary,
+	positions: Dictionary
+) -> bool:
+	if battle_state == null:
+		return false
+	if not is_equal_approx(battle_state.elapsed_time_seconds, elapsed):
+		return false
+	if _battlesession_rng(battle_state) != rng:
+		return false
+	var now_weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	if now_weapons.size() != weapons.size():
+		return false
+	for participant_id: Variant in weapons:
+		if not now_weapons.has(str(participant_id)):
+			return false
+		if not is_equal_approx(float(now_weapons[str(participant_id)]), float(weapons[participant_id])):
+			return false
+	var now_positions: Dictionary = _battlesession_position_snap(battle_state)
+	if now_positions.size() != positions.size():
+		return false
+	for participant_id: Variant in positions:
+		var before: Variant = positions[participant_id]
+		var after: Variant = now_positions.get(str(participant_id), null)
+		if not (before is Dictionary) or not (after is Dictionary):
+			return false
+		var before_row: Dictionary = before as Dictionary
+		var after_row: Dictionary = after as Dictionary
+		if bool(before_row.get("has", false)) != bool(after_row.get("has", true)):
+			return false
+		var before_pos: Vector2 = before_row.get("pos", Vector2.INF)
+		var after_pos: Vector2 = after_row.get("pos", Vector2.INF)
+		if not before_pos.is_equal_approx(after_pos):
+			return false
+		if bool(before_row.get("alive", false)) != bool(after_row.get("alive", true)):
+			return false
+		if bool(before_row.get("wounded", false)) != bool(after_row.get("wounded", true)):
+			return false
+	return true
+
+
+static func _battlesession_create_rejected(
+	game_state: GameState,
+	mission_id: String,
+	expected_code: String,
+	force: TravelingForce = null
+) -> bool:
+	if expected_code.is_empty():
+		return false
+	var snap: Dictionary = {}
+	if game_state != null:
+		snap = _hqattack_snapshot(game_state, force)
+	var result: CampaignBattleSessionResult = CampaignBattleSessionService.create_for_mission(
+		game_state,
+		mission_id
+	)
+	if result == null or result.success or result.session != null:
+		return false
+	if result.error_code != expected_code:
+		return false
+	if game_state != null and not _hqattack_unchanged(game_state, snap, force):
+		return false
+	return true
+
+
+static func _battlesession_begin_active_continuing() -> Dictionary:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return pack
+	if not _battlesession_add_defender(battle_state):
+		pack["session"] = null
+		return pack
+	if not _battlesession_ready_for_begin(battle_state):
+		pack["session"] = null
+		return pack
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	pack["begin_result"] = begin_result
+	if begin_result == null or not begin_result.success or session.session_state != "active":
+		pack["session"] = null
+	return pack
+
+
+static func _battlesession_resolve_via_session(
+	session: CampaignBattleSession,
+	kill_attacker: bool,
+	kill_defender: bool
+) -> CampaignBattleSessionResult:
+	if session == null or session.battle_state == null:
+		return null
+	if kill_attacker and not _battlesession_kill_side(session.battle_state, session.battle_state.attacker_side_id):
+		return null
+	if kill_defender and not _battlesession_kill_side(session.battle_state, session.battle_state.defender_side_id):
+		return null
+	return session.advance_tactical(0.1)
+
+
+static func _battlesession_create_real_hq_ok() -> bool:
+	var launched: Dictionary = _battlesession_make_launched("hqattack_hq_b", 1.0)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	var launch: NeighborhoodHQAttackResult = launched.get("launch", null) as NeighborhoodHQAttackResult
+	var force: TravelingForce = launched.get("force", null) as TravelingForce
+	if game_state == null or launch == null or not launch.success or force == null:
+		return false
+	var mission_after_launch: CampaignMission = game_state.get_mission("battlesession_mission")
+	if mission_after_launch == null or mission_after_launch.mission_state != "traveling_outbound":
+		return false
+	if not _battlesession_advance_until_awaiting(game_state, "battlesession_mission"):
+		return false
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if mission == null or mission.mission_state != "awaiting_resolution":
+		return false
+	if force.travel_state != "at_destination":
+		return false
+	var persist_before: Dictionary = game_state.to_dict()
+	var result: CampaignBattleSessionResult = CampaignBattleSessionService.create_for_mission(
+		game_state,
+		"battlesession_mission"
+	)
+	if result == null or not result.success or result.session == null:
+		return false
+	var session: CampaignBattleSession = result.session
+	var battle_state: BattleState = session.battle_state
+	if battle_state == null:
+		return false
+	var source: BattleCampaignSource = battle_state.campaign_source
+	return (
+		session.mission_id == "battlesession_mission"
+		and session.session_state == "deployment"
+		and battle_state.battle_phase == "deployment"
+		and result.session_state == "deployment"
+		and result.battle_phase == "deployment"
+		and result.error_code.is_empty()
+		and not result.battle_resolved_this_call
+		and not result.campaign_outcome_applied
+		and source != null
+		and source.source_type_id == "neighborhood_hq_assault"
+		and source.mission_id == "battlesession_mission"
+		and source.force_id == force.id
+		and source.target_location_id == "hqattack_hq_b"
+		and battle_state.battle_type_id == "neighborhood_hq_assault"
+		and game_state.get("active_battle") == null
+		and game_state.get("battle_state") == null
+		and _battle_serialized_campaign_keys_only(persist_before)
+		and _battle_serialized_campaign_keys_only(game_state.to_dict())
+		and not _battle_data_has_tactical_trace(game_state.to_dict())
+		and game_state.has_mission("battlesession_mission")
+		and game_state.get_mission("battlesession_mission").mission_state == "awaiting_resolution"
+	)
+
+
+static func _battlesession_create_rejects_ok() -> bool:
+	var null_ok: bool = _battlesession_create_rejected(null, "battlesession_mission", "null_game_state")
+	var launched: Dictionary = _battlesession_make_launched("hqattack_hq", 10.0)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	var force: TravelingForce = launched.get("force", null) as TravelingForce
+	if game_state == null or force == null:
+		return false
+	var empty_ok: bool = _battlesession_create_rejected(game_state, "", "empty_mission_id", force)
+	var missing_ok: bool = _battlesession_create_rejected(game_state, "no_such_mission", "invalid_mission", force)
+	var raid: CampaignMission = CampaignMission.new(
+		"battlesession_raid",
+		"raid_business",
+		"hqattack_a",
+		force.id,
+		"hqattack_keep",
+		"hqattack_biz",
+		"awaiting_resolution",
+		""
+	)
+	game_state.add_mission(raid)
+	var wrong_type_ok: bool = _battlesession_create_rejected(
+		game_state,
+		"battlesession_raid",
+		"invalid_mission_type",
+		force
+	)
+	var traveling_pack: Dictionary = _battlesession_make_launched("hqattack_hq_b", 1.0)
+	var traveling_state: GameState = traveling_pack.get("game_state", null) as GameState
+	var traveling_force: TravelingForce = traveling_pack.get("force", null) as TravelingForce
+	var traveling_launch: NeighborhoodHQAttackResult = traveling_pack.get("launch", null) as NeighborhoodHQAttackResult
+	if (
+		traveling_state == null
+		or traveling_force == null
+		or traveling_launch == null
+		or not traveling_launch.success
+	):
+		return false
+	var traveling_mission: CampaignMission = traveling_state.get_mission("battlesession_mission")
+	if traveling_mission == null or traveling_mission.mission_state != "traveling_outbound":
+		return false
+	var traveling_ok: bool = _battlesession_create_rejected(
+		traveling_state,
+		"battlesession_mission",
+		"mission_not_awaiting_resolution",
+		traveling_force
+	)
+	var success_pack: Dictionary = _battlesession_make_launched("hqattack_hq", 10.0)
+	var success_state: GameState = success_pack.get("game_state", null) as GameState
+	var success_force: TravelingForce = success_pack.get("force", null) as TravelingForce
+	if success_state == null or success_force == null:
+		return false
+	if not _battlesession_advance_until_awaiting(success_state, "battlesession_mission"):
+		return false
+	var success_resolve: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		success_state,
+		"battlesession_mission",
+		true
+	)
+	if success_resolve == null or not success_resolve.success:
+		return false
+	var resolved_success_ok: bool = _battlesession_create_rejected(
+		success_state,
+		"battlesession_mission",
+		"mission_not_awaiting_resolution",
+		success_force
+	)
+	var fail_pack: Dictionary = _battlesession_make_launched("hqattack_hq", 10.0)
+	var fail_state: GameState = fail_pack.get("game_state", null) as GameState
+	var fail_force: TravelingForce = fail_pack.get("force", null) as TravelingForce
+	if fail_state == null or fail_force == null:
+		return false
+	if not _battlesession_advance_until_awaiting(fail_state, "battlesession_mission"):
+		return false
+	var fail_resolve: NeighborhoodHQBattleResult = NeighborhoodHQBattleResolver.resolve(
+		fail_state,
+		"battlesession_mission",
+		false
+	)
+	if fail_resolve == null or not fail_resolve.success:
+		return false
+	var resolved_failure_ok: bool = _battlesession_create_rejected(
+		fail_state,
+		"battlesession_mission",
+		"mission_not_awaiting_resolution",
+		fail_force
+	)
+	return (
+		null_ok
+		and empty_ok
+		and missing_ok
+		and wrong_type_ok
+		and traveling_ok
+		and resolved_success_ok
+		and resolved_failure_ok
+		and traveling_mission.mission_state == "traveling_outbound"
+		and success_state.get_mission("battlesession_mission").mission_state == "resolved_success"
+		and fail_state.get_mission("battlesession_mission").mission_state == "resolved_failure"
+	)
+
+
+static func _battlesession_geometry_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry == null or not geometry.is_valid():
+		return false
+	var attacker_zone: DeploymentZone = battle_state.get_deployment_zone("attacker_deployment")
+	var defender_zone: DeploymentZone = battle_state.get_deployment_zone("defender_deployment")
+	if attacker_zone == null or defender_zone == null:
+		return false
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or participant.has_battle_position:
+			return false
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null:
+			return false
+		if vehicle.get("has_battle_position") == true:
+			return false
+	return (
+		battle_state.is_spatially_ready()
+		and not attacker_zone.deployment_rect.size.is_zero_approx()
+		and not defender_zone.deployment_rect.size.is_zero_approx()
+		and geometry.attacker_deployment_rect.is_equal_approx(attacker_zone.deployment_rect)
+		and geometry.defender_deployment_rect.is_equal_approx(defender_zone.deployment_rect)
+	)
+
+
+static func _battlesession_no_auto_deploy_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if battle_state.participants.is_empty():
+		return false
+	for participant_id: String in battle_state.participants:
+		if battle_state.is_participant_deployed(participant_id):
+			return false
+	for vehicle_id: String in battle_state.vehicles:
+		if battle_state.is_vehicle_deployed(vehicle_id):
+			return false
+	return (
+		not battle_state.is_battle_ready()
+		and battle_state.battle_phase == "deployment"
+		and session.session_state == "deployment"
+	)
+
+
+static func _battlesession_deployment_authority_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	var before_ready: bool = battle_state.is_battle_ready()
+	if before_ready:
+		return false
+	if not _battlesession_deploy_all(battle_state):
+		return false
+	return (
+		battle_state.is_battle_ready()
+		and session.session_state == "deployment"
+		and battle_state.battle_phase == "deployment"
+	)
+
+
+static func _battlesession_begin_before_ready_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null:
+		return false
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var assign_snap: Dictionary = _battle_deploy_assignment_snapshot(battle_state)
+	var result: CampaignBattleSessionResult = session.begin_battle()
+	return (
+		result != null
+		and not result.success
+		and result.error_code == "deployment_incomplete"
+		and session.session_state == "deployment"
+		and battle_state.battle_phase == "deployment"
+		and _battle_deploy_assignment_unchanged(battle_state, assign_snap)
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _battlesession_begin_ready_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	if not battle_state.is_battle_ready() or not battle_state.is_spatially_ready():
+		return false
+	var result: CampaignBattleSessionResult = session.begin_battle()
+	return (
+		result != null
+		and result.success
+		and result.error_code.is_empty()
+		and session.session_state == "active"
+		and battle_state.battle_phase == "active"
+		and result.session_state == "active"
+		and result.battle_phase == "active"
+	)
+
+
+static func _battlesession_begin_again_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null:
+		return false
+	var first_advance: CampaignBattleSessionResult = session.advance_tactical(0.25)
+	if first_advance == null or not first_advance.success or battle_state.battle_phase != "active":
+		return false
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var seed_before: int = battle_state.combat_rng_seed
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var again: CampaignBattleSessionResult = session.begin_battle()
+	return (
+		again != null
+		and not again.success
+		and again.error_code == "battle_not_in_deployment"
+		and session.session_state == "active"
+		and battle_state.battle_phase == "active"
+		and is_equal_approx(battle_state.elapsed_time_seconds, elapsed)
+		and _battlesession_rng(battle_state) == rng
+		and battle_state.combat_rng_seed == seed_before
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _battlesession_advance_before_active_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null:
+		return false
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var result: CampaignBattleSessionResult = session.advance_tactical(0.25)
+	return (
+		result != null
+		and not result.success
+		and result.error_code == "battle_not_active"
+		and session.session_state == "deployment"
+		and battle_state.battle_phase == "deployment"
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _battlesession_active_advance_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	var result: CampaignBattleSessionResult = session.advance_tactical(0.25)
+	return (
+		result != null
+		and result.success
+		and result.error_code.is_empty()
+		and session.session_state == "active"
+		and battle_state.battle_phase == "active"
+		and not result.battle_resolved_this_call
+		and not result.campaign_outcome_applied
+		and battle_state.elapsed_time_seconds > elapsed_before
+		and is_equal_approx(battle_state.elapsed_time_seconds, elapsed_before + 0.25)
+	)
+
+
+static func _battlesession_campaign_isolation_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or game_state == null:
+		return false
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var mission_before: String = game_state.get_mission("battlesession_mission").mission_state
+	var result: CampaignBattleSessionResult = session.advance_tactical(0.25)
+	return (
+		result != null
+		and result.success
+		and session.battle_state.battle_phase == "active"
+		and mission_before == "awaiting_resolution"
+		and game_state.get_mission("battlesession_mission").mission_state == "awaiting_resolution"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_hq") as NeighborhoodHQ).owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == "hqattack_b"
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _battlesession_attacker_victory_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null or force == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var result: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if result == null or mission == null:
+		return false
+	return (
+		result.success
+		and result.battle_resolved_this_call
+		and result.campaign_outcome_applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and battle_state.battle_phase == "resolved"
+		and battle_state.get_result_kind() == BattleVictoryResult.RESULT_VICTORY
+		and battle_state.get_winning_side_id() == battle_state.attacker_side_id
+		and session.session_state == "complete"
+		and session.battle_state == battle_state
+		and mission.mission_state == "resolved_success"
+		and mission.outcome_code == "neighborhood_hq_captured"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_a"
+		and (game_state.get_map_location("hqattack_hq") as NeighborhoodHQ).owner_faction_id == "hqattack_a"
+		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == ""
+		and force.travel_state == "at_destination"
+		and force.destination_location_id == "hqattack_hq"
+		and game_state.has_traveling_force(force.id)
+	)
+
+
+static func _battlesession_defender_victory_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null or force == null:
+		return false
+	var result: CampaignBattleSessionResult = _battlesession_resolve_via_session(session, true, false)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if result == null or mission == null:
+		return false
+	return (
+		result.success
+		and result.battle_resolved_this_call
+		and result.campaign_outcome_applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DEFENDER_VICTORY_APPLIED
+		and battle_state.battle_phase == "resolved"
+		and battle_state.get_result_kind() == BattleVictoryResult.RESULT_VICTORY
+		and battle_state.get_winning_side_id() == battle_state.defender_side_id
+		and session.session_state == "complete"
+		and session.battle_state == battle_state
+		and mission.mission_state == "resolved_failure"
+		and mission.outcome_code == "neighborhood_hq_assault_failed"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_hq") as NeighborhoodHQ).owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == "hqattack_b"
+		and force.travel_state == "at_destination"
+		and force.destination_location_id == "hqattack_hq"
+		and game_state.has_traveling_force(force.id)
+	)
+
+
+static func _battlesession_same_call_handoff_ok() -> bool:
+	return _battlesession_attacker_victory_ok() and _battlesession_defender_victory_ok()
+
+
+static func _battlesession_telemetry_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var create_result: CampaignBattleSessionResult = pack.get("result", null) as CampaignBattleSessionResult
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	if create_result == null or session == null:
+		return false
+	var create_ok: bool = (
+		create_result.success
+		and create_result.session_state == session.session_state
+		and create_result.battle_phase == session.battle_state.battle_phase
+		and not create_result.battle_resolved_this_call
+		and not create_result.campaign_outcome_applied
+		and create_result.outcome_kind.is_empty()
+		and create_result.error_code.is_empty()
+		and create_result.mission_id == "battlesession_mission"
+	)
+	if not _battlesession_ready_for_begin(session.battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	var begin_ok: bool = (
+		begin_result != null
+		and begin_result.success
+		and begin_result.session_state == "active"
+		and begin_result.battle_phase == "active"
+		and not begin_result.battle_resolved_this_call
+		and not begin_result.campaign_outcome_applied
+		and begin_result.error_code.is_empty()
+	)
+	var continue_pack: Dictionary = _battlesession_begin_active_continuing()
+	var continue_session: CampaignBattleSession = continue_pack.get("session", null) as CampaignBattleSession
+	if continue_session == null:
+		return false
+	var continue_result: CampaignBattleSessionResult = continue_session.advance_tactical(0.2)
+	var continue_ok: bool = (
+		continue_result != null
+		and continue_result.success
+		and continue_result.session_state == "active"
+		and continue_result.battle_phase == "active"
+		and not continue_result.battle_resolved_this_call
+		and not continue_result.campaign_outcome_applied
+		and continue_result.error_code.is_empty()
+	)
+	var atk_ok: bool = _battlesession_attacker_victory_ok()
+	var def_ok: bool = _battlesession_defender_victory_ok()
+	return create_ok and begin_ok and continue_ok and atk_ok and def_ok
+
+
+static func _battlesession_complete_noop_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var win: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	if win == null or not win.success or session.session_state != "complete":
+		return false
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var mission_state: String = game_state.get_mission("battlesession_mission").mission_state
+	var hood_owner: String = game_state.get_neighborhood("hqattack_hood").owner_faction_id
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var again: CampaignBattleSessionResult = session.advance_tactical(0.5)
+	return (
+		again != null
+		and not again.success
+		and again.error_code == "session_complete"
+		and session.session_state == "complete"
+		and battle_state.battle_phase == "resolved"
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and game_state.get_mission("battlesession_mission").mission_state == mission_state
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == hood_owner
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _battlesession_handoff_idempotence_ok() -> bool:
+	var first_ok: bool = _battlesession_complete_noop_ok()
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or battle_state == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	session.advance_tactical(0.1)
+	if session.session_state != "complete":
+		return false
+	if battle_state.get("campaign_outcome_applied") != null:
+		return false
+	var outcome: String = game_state.get_mission("battlesession_mission").outcome_code
+	session.advance_tactical(0.1)
+	session.advance_tactical(1.0)
+	return (
+		first_ok
+		and game_state.get_mission("battlesession_mission").outcome_code == outcome
+		and game_state.get_mission("battlesession_mission").mission_state == "resolved_success"
+		and session.campaign_handoff_applied
+		and battle_state.get("campaign_outcome_applied") == null
+	)
+
+
+static func _battlesession_pending_handoff_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or battle_state == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	mission.mission_state = "traveling_outbound"
+	var result: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	return (
+		result != null
+		and not result.success
+		and result.error_code == "mission_not_awaiting_resolution"
+		and not result.campaign_outcome_applied
+		and battle_state.battle_phase == "resolved"
+		and session.session_state == "resolved_pending_handoff"
+		and battle_state.tactical_result != null
+		and battle_state.tactical_result.resolved
+		and game_state.get_mission("battlesession_mission").mission_state == "traveling_outbound"
+		and game_state.get_mission("battlesession_mission").outcome_code.is_empty()
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+	)
+
+
+static func _battlesession_pending_retry_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or battle_state == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	game_state.get_mission("battlesession_mission").mission_state = "traveling_outbound"
+	var first: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	if (
+		first == null
+		or first.success
+		or session.session_state != "resolved_pending_handoff"
+		or battle_state.battle_phase != "resolved"
+	):
+		return false
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var tactical_result: BattleVictoryResult = battle_state.tactical_result
+	game_state.get_mission("battlesession_mission").mission_state = "awaiting_resolution"
+	var retry: CampaignBattleSessionResult = session.advance_tactical(0.4)
+	return (
+		retry != null
+		and retry.success
+		and retry.campaign_outcome_applied
+		and not retry.battle_resolved_this_call
+		and retry.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and session.session_state == "complete"
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and battle_state.tactical_result == tactical_result
+		and game_state.get_mission("battlesession_mission").mission_state == "resolved_success"
+		and game_state.get_mission("battlesession_mission").outcome_code == "neighborhood_hq_captured"
+	)
+
+
+static func _battlesession_draw_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null:
+		return false
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var result: CampaignBattleSessionResult = _battlesession_resolve_via_session(session, true, true)
+	if result == null:
+		return false
+	return (
+		result.success
+		and result.battle_resolved_this_call
+		and not result.campaign_outcome_applied
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and battle_state.battle_phase == "resolved"
+		and battle_state.get_result_kind() == BattleVictoryResult.RESULT_DRAW
+		and session.session_state == "resolved_pending_handoff"
+		and session.battle_state == battle_state
+		and game_state.get_mission("battlesession_mission").mission_state == "awaiting_resolution"
+		and game_state.get_mission("battlesession_mission").outcome_code.is_empty()
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_hq") as NeighborhoodHQ).owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == "hqattack_b"
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _battlesession_draw_repeat_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or battle_state == null or game_state == null:
+		return false
+	var first: CampaignBattleSessionResult = _battlesession_resolve_via_session(session, true, true)
+	if first == null or session.session_state != "resolved_pending_handoff":
+		return false
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var tactical_result: BattleVictoryResult = battle_state.tactical_result
+	var again: CampaignBattleSessionResult = session.advance_tactical(0.5)
+	return (
+		again != null
+		and not again.success
+		and again.error_code == "draw_unsupported"
+		and again.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and session.session_state == "resolved_pending_handoff"
+		and battle_state.battle_phase == "resolved"
+		and battle_state.tactical_result == tactical_result
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and game_state.get_mission("battlesession_mission").mission_state == "awaiting_resolution"
+	)
+
+
+static func _battlesession_history_retention_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var win: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	if win == null or session.session_state != "complete":
+		return false
+	var tactical_result: BattleVictoryResult = battle_state.tactical_result
+	return (
+		session.battle_state == battle_state
+		and battle_state.battle_phase == "resolved"
+		and battle_state.tactical_result == tactical_result
+		and tactical_result != null
+		and tactical_result.result_kind == BattleVictoryResult.RESULT_VICTORY
+		and tactical_result.winning_side_id == battle_state.attacker_side_id
+	)
+
+
+static func _battlesession_mission_history_ok() -> bool:
+	var atk_pack: Dictionary = _battlesession_open_pack()
+	var atk_session: CampaignBattleSession = atk_pack.get("session", null) as CampaignBattleSession
+	var atk_game: GameState = atk_pack.get("game_state", null) as GameState
+	if atk_session == null or atk_game == null:
+		return false
+	if not _battlesession_ready_for_begin(atk_session.battle_state):
+		return false
+	var atk_begin: CampaignBattleSessionResult = atk_session.begin_battle()
+	if atk_begin == null or not atk_begin.success:
+		return false
+	atk_session.advance_tactical(0.1)
+	var atk_mission: CampaignMission = atk_game.get_mission("battlesession_mission")
+	var def_pack: Dictionary = _battlesession_begin_active_continuing()
+	var def_session: CampaignBattleSession = def_pack.get("session", null) as CampaignBattleSession
+	var def_game: GameState = def_pack.get("game_state", null) as GameState
+	if def_session == null or def_game == null:
+		return false
+	_battlesession_resolve_via_session(def_session, true, false)
+	var def_mission: CampaignMission = def_game.get_mission("battlesession_mission")
+	return (
+		atk_mission != null
+		and atk_mission.mission_state == "resolved_success"
+		and atk_game.has_mission("battlesession_mission")
+		and atk_game.missions.size() == 1
+		and def_mission != null
+		and def_mission.mission_state == "resolved_failure"
+		and def_game.has_mission("battlesession_mission")
+		and def_game.missions.size() == 1
+	)
+
+
+static func _battlesession_force_after_ok() -> bool:
+	var atk_pack: Dictionary = _battlesession_open_pack()
+	var atk_session: CampaignBattleSession = atk_pack.get("session", null) as CampaignBattleSession
+	var atk_game: GameState = atk_pack.get("game_state", null) as GameState
+	var atk_force: TravelingForce = atk_pack.get("force", null) as TravelingForce
+	if atk_session == null or atk_game == null or atk_force == null:
+		return false
+	if not _battlesession_ready_for_begin(atk_session.battle_state):
+		return false
+	var atk_begin: CampaignBattleSessionResult = atk_session.begin_battle()
+	if atk_begin == null or not atk_begin.success:
+		return false
+	atk_session.advance_tactical(0.1)
+	var atk_force_ready: bool = (
+		atk_game.has_traveling_force(atk_force.id)
+		and atk_force.travel_state == "at_destination"
+		and atk_force.destination_location_id == "hqattack_hq"
+		and atk_game.get_mission("battlesession_mission").mission_state == "resolved_success"
+	)
+	var continue_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"battlesession_continue",
+		"capture_neighborhood_hq",
+		atk_force.id,
+		"hqattack_hq_b"
+	)
+	var continue_result: ExistingForceMissionResult = MissionService.launch_from_existing_force(
+		atk_game,
+		continue_req
+	)
+	var def_pack: Dictionary = _battlesession_begin_active_continuing()
+	var def_session: CampaignBattleSession = def_pack.get("session", null) as CampaignBattleSession
+	var def_game: GameState = def_pack.get("game_state", null) as GameState
+	var def_force: TravelingForce = def_pack.get("force", null) as TravelingForce
+	if def_session == null or def_game == null or def_force == null:
+		return false
+	_battlesession_resolve_via_session(def_session, true, false)
+	var def_force_ready: bool = (
+		def_game.has_traveling_force(def_force.id)
+		and def_force.travel_state == "at_destination"
+		and def_force.destination_location_id == "hqattack_hq"
+		and def_game.get_mission("battlesession_mission").mission_state == "resolved_failure"
+	)
+	var retry_req: ExistingForceMissionRequest = ExistingForceMissionRequest.new(
+		"battlesession_retry",
+		"capture_neighborhood_hq",
+		def_force.id,
+		"hqattack_hq"
+	)
+	var retry_attack: NeighborhoodHQAttackResult = NeighborhoodHQAttackService.launch_from_existing_force(
+		def_game,
+		retry_req
+	)
+	return (
+		atk_force_ready
+		and continue_result != null
+		and continue_result.success
+		and atk_game.has_mission("battlesession_mission")
+		and atk_game.has_mission("battlesession_continue")
+		and def_force_ready
+		and retry_attack != null
+		and retry_attack.success
+	)
+
+
+static func _battlesession_not_on_gamestate_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(session.battle_state):
+		return false
+	session.begin_battle()
+	session.advance_tactical(0.1)
+	var persisted: Dictionary = game_state.to_dict()
+	return (
+		game_state.get("active_battle") == null
+		and game_state.get("battle_state") == null
+		and game_state.get("session") == null
+		and game_state.get("campaign_battle_session") == null
+		and _battle_serialized_campaign_keys_only(persisted)
+		and not _battle_data_has_tactical_trace(persisted)
+		and persisted.get("active_battle") == null
+		and persisted.get("tactical_result") == null
+	)
+
+
+static func _battlesession_independent_ok() -> bool:
+	var pack_a: Dictionary = _battlesession_begin_active_continuing()
+	var pack_b: Dictionary = _battlesession_begin_active_continuing()
+	var session_a: CampaignBattleSession = pack_a.get("session", null) as CampaignBattleSession
+	var session_b: CampaignBattleSession = pack_b.get("session", null) as CampaignBattleSession
+	if session_a == null or session_b == null:
+		return false
+	if session_a.battle_state == session_b.battle_state:
+		return false
+	var elapsed_b: float = session_b.battle_state.elapsed_time_seconds
+	var rng_b: int = _battlesession_rng(session_b.battle_state)
+	session_a.advance_tactical(0.3)
+	return (
+		session_a.game_state != session_b.game_state
+		and is_equal_approx(session_b.battle_state.elapsed_time_seconds, elapsed_b)
+		and _battlesession_rng(session_b.battle_state) == rng_b
+		and session_b.battle_state.battle_phase == "active"
+		and session_a.battle_state.elapsed_time_seconds > elapsed_b
+	)
+
+
+static func _battlesession_rng_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	var rng_create: int = _battlesession_rng(battle_state)
+	var seed_create: int = battle_state.combat_rng_seed
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var rng_begin: int = _battlesession_rng(battle_state)
+	var retry_pack: Dictionary = _battlesession_open_pack()
+	var retry_session: CampaignBattleSession = retry_pack.get("session", null) as CampaignBattleSession
+	var retry_battle: BattleState = retry_pack.get("battle_state", null) as BattleState
+	var retry_game: GameState = retry_pack.get("game_state", null) as GameState
+	if retry_session == null or retry_battle == null or retry_game == null:
+		return false
+	if not _battlesession_ready_for_begin(retry_battle):
+		return false
+	var retry_begin: CampaignBattleSessionResult = retry_session.begin_battle()
+	if retry_begin == null or not retry_begin.success:
+		return false
+	retry_game.get_mission("battlesession_mission").mission_state = "traveling_outbound"
+	var first: CampaignBattleSessionResult = retry_session.advance_tactical(0.1)
+	if first == null or retry_session.session_state != "resolved_pending_handoff":
+		return false
+	var rng_before_retry: int = _battlesession_rng(retry_battle)
+	retry_game.get_mission("battlesession_mission").mission_state = "awaiting_resolution"
+	var retry: CampaignBattleSessionResult = retry_session.advance_tactical(0.1)
+	return (
+		rng_create == seed_create
+		and rng_begin == rng_create
+		and battle_state.combat_rng_seed == seed_create
+		and retry != null
+		and retry.success
+		and retry.campaign_outcome_applied
+		and _battlesession_rng(retry_battle) == rng_before_retry
+	)
+
+
+static func _battlesession_casualty_isolation_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null or force == null:
+		return false
+	var soldier: Soldier = game_state.get_soldier("hqattack_soldier")
+	if soldier == null:
+		return false
+	var soldier_dict: Dictionary = soldier.to_dict()
+	var group_before: Array[String] = _copy_ids(force.soldier_group.soldier_ids)
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var participant: BattleParticipant = battle_state.get_participant("hqattack_soldier")
+	if participant == null:
+		return false
+	participant.is_wounded = true
+	session.advance_tactical(0.1)
+	return (
+		session.session_state == "complete"
+		and participant.is_wounded
+		and _battle_soldier_matches_dict(soldier, soldier_dict)
+		and _string_ids_match(force.soldier_group.soldier_ids, group_before)
+		and soldier.get("is_wounded") == null
+		and soldier.get("is_alive") == null
+		and game_state.has_soldier("hqattack_soldier")
+	)
+
+
+static func _battlesession_turn_isolation_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or game_state == null:
+		return false
+	var turn_before: int = game_state.current_turn
+	var month_before: int = game_state.current_month
+	if not _battlesession_ready_for_begin(session.battle_state):
+		return false
+	session.begin_battle()
+	session.advance_tactical(0.2)
+	var service_probe: CampaignBattleSessionService = CampaignBattleSessionService.new()
+	return (
+		game_state.current_turn == turn_before
+		and game_state.current_month == month_before
+		and not session.has_method("advance_to_next_turn")
+		and not service_probe.has_method("advance_to_next_turn")
+	)
+
+
+static func _battlesession_absent_ok() -> bool:
+	var session: CampaignBattleSession = CampaignBattleSession.new()
+	var service: CampaignBattleSessionService = CampaignBattleSessionService.new()
+	var runtime: BattleRuntimeService = BattleRuntimeService.new()
+	var game_state: GameState = GameState.new()
+	return (
+		not session.has_method("_process")
+		and not session.has_method("_physics_process")
+		and not session.has_method("show_hud")
+		and not session.has_method("show_victory_screen")
+		and not session.has_method("move_camera")
+		and not session.has_method("open_deployment_ui")
+		and not session.has_method("commit_attacker_deployment")
+		and not session.has_method("commit_defender_deployment")
+		and not session.has_method("select_player_command")
+		and not session.has_method("select_ai_command")
+		and not session.has_method("advance_to_next_turn")
+		and not session.has_method("propagate_casualties")
+		and not session.has_method("extract_survivors")
+		and not session.has_method("apply_flee")
+		and not session.has_method("create_stronghold_battle")
+		and not session.has_method("create_raid_battle")
+		and not session.has_method("to_dict")
+		and not service.has_method("_process")
+		and not service.has_method("create_for_stronghold")
+		and not runtime.has_method("apply")
+		and not session.is_class("Node")
+		and game_state.get("active_battle") == null
+		and not ClassDB.class_exists("GameManager")
+		and not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("surrender")
+		and not BattleForceCommandService.is_valid_command("rout")
+	)
+
 
 
 
