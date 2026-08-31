@@ -112,6 +112,8 @@ const BattleCampaignOutcomeBridgeService := preload("res://battle/core/battle_ca
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const CampaignBattleSessionResult := preload("res://battle/session/campaign_battle_session_result.gd")
 const CampaignBattleSessionService := preload("res://battle/session/campaign_battle_session_service.gd")
+const GameFlowController := preload("res://core/game_flow_controller.gd")
+const GameFlowResult := preload("res://core/game_flow_result.gd")
 
 
 static func run() -> Dictionary:
@@ -15839,6 +15841,33 @@ static func run() -> Dictionary:
 	var battlesession_casualty_isolation_ok: bool = _battlesession_casualty_isolation_ok()
 	var battlesession_turn_isolation_ok: bool = _battlesession_turn_isolation_ok()
 	var battlesession_absent_ok: bool = _battlesession_absent_ok()
+	var gameflow_initial_campaign_ok: bool = _gameflow_initial_campaign_ok()
+	var gameflow_one_player_bind_ok: bool = _gameflow_one_player_bind_ok()
+	var gameflow_zero_player_ok: bool = _gameflow_zero_player_ok()
+	var gameflow_multi_player_ok: bool = _gameflow_multi_player_ok()
+	var gameflow_pending_filter_ok: bool = _gameflow_pending_filter_ok()
+	var gameflow_pending_sort_ok: bool = _gameflow_pending_sort_ok()
+	var gameflow_turn_delegate_ok: bool = _gameflow_turn_delegate_ok()
+	var gameflow_no_auto_enter_ok: bool = _gameflow_no_auto_enter_ok()
+	var gameflow_enter_single_ok: bool = _gameflow_enter_single_ok()
+	var gameflow_enter_multiple_ok: bool = _gameflow_enter_multiple_ok()
+	var gameflow_enter_rejects_ok: bool = _gameflow_enter_rejects_ok()
+	var gameflow_second_session_ok: bool = _gameflow_second_session_ok()
+	var gameflow_deployment_exposure_ok: bool = _gameflow_deployment_exposure_ok()
+	var gameflow_begin_ok: bool = _gameflow_begin_ok()
+	var gameflow_advance_delegate_ok: bool = _gameflow_advance_delegate_ok()
+	var gameflow_turn_block_ok: bool = _gameflow_turn_block_ok()
+	var gameflow_attacker_flow_ok: bool = _gameflow_attacker_flow_ok()
+	var gameflow_defender_flow_ok: bool = _gameflow_defender_flow_ok()
+	var gameflow_result_retention_ok: bool = _gameflow_result_retention_ok()
+	var gameflow_draw_ok: bool = _gameflow_draw_ok()
+	var gameflow_handoff_retry_ok: bool = _gameflow_handoff_retry_ok()
+	var gameflow_mode_derivation_ok: bool = _gameflow_mode_derivation_ok()
+	var gameflow_ownership_ok: bool = _gameflow_ownership_ok()
+	var gameflow_player_ai_ok: bool = _gameflow_player_ai_ok()
+	var gameflow_rng_ok: bool = _gameflow_rng_ok()
+	var gameflow_clock_ok: bool = _gameflow_clock_ok()
+	var gameflow_absent_ok: bool = _gameflow_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17517,6 +17546,33 @@ static func run() -> Dictionary:
 		"battlesession_casualty_isolation_ok": battlesession_casualty_isolation_ok,
 		"battlesession_turn_isolation_ok": battlesession_turn_isolation_ok,
 		"battlesession_absent_ok": battlesession_absent_ok,
+		"gameflow_initial_campaign_ok": gameflow_initial_campaign_ok,
+		"gameflow_one_player_bind_ok": gameflow_one_player_bind_ok,
+		"gameflow_zero_player_ok": gameflow_zero_player_ok,
+		"gameflow_multi_player_ok": gameflow_multi_player_ok,
+		"gameflow_pending_filter_ok": gameflow_pending_filter_ok,
+		"gameflow_pending_sort_ok": gameflow_pending_sort_ok,
+		"gameflow_turn_delegate_ok": gameflow_turn_delegate_ok,
+		"gameflow_no_auto_enter_ok": gameflow_no_auto_enter_ok,
+		"gameflow_enter_single_ok": gameflow_enter_single_ok,
+		"gameflow_enter_multiple_ok": gameflow_enter_multiple_ok,
+		"gameflow_enter_rejects_ok": gameflow_enter_rejects_ok,
+		"gameflow_second_session_ok": gameflow_second_session_ok,
+		"gameflow_deployment_exposure_ok": gameflow_deployment_exposure_ok,
+		"gameflow_begin_ok": gameflow_begin_ok,
+		"gameflow_advance_delegate_ok": gameflow_advance_delegate_ok,
+		"gameflow_turn_block_ok": gameflow_turn_block_ok,
+		"gameflow_attacker_flow_ok": gameflow_attacker_flow_ok,
+		"gameflow_defender_flow_ok": gameflow_defender_flow_ok,
+		"gameflow_result_retention_ok": gameflow_result_retention_ok,
+		"gameflow_draw_ok": gameflow_draw_ok,
+		"gameflow_handoff_retry_ok": gameflow_handoff_retry_ok,
+		"gameflow_mode_derivation_ok": gameflow_mode_derivation_ok,
+		"gameflow_ownership_ok": gameflow_ownership_ok,
+		"gameflow_player_ai_ok": gameflow_player_ai_ok,
+		"gameflow_rng_ok": gameflow_rng_ok,
+		"gameflow_clock_ok": gameflow_clock_ok,
+		"gameflow_absent_ok": gameflow_absent_ok,
 	}
 
 	var passed := true
@@ -19238,6 +19294,13 @@ static func _battle_is_tactical_token(text: String) -> bool:
 		or text == "session_state"
 		or text == "campaign_handoff_applied"
 		or text == "campaign_handoff_blocked_as_draw"
+		or text == "current_session"
+		or text == "current_mode"
+		or text == "tactical_deployment"
+		or text == "tactical_active"
+		or text == "tactical_pending_handoff"
+		or text == "game_flow_controller"
+		or text == "GameFlowController"
 	)
 
 
@@ -46532,6 +46595,1283 @@ static func _battlesession_absent_ok() -> bool:
 		and not BattleForceCommandService.is_valid_command("surrender")
 		and not BattleForceCommandService.is_valid_command("rout")
 	)
+
+
+static func _gameflow_ids_eq(actual: Array[String], expected: Array[String]) -> bool:
+	if actual.size() != expected.size():
+		return false
+	for index: int in range(actual.size()):
+		if actual[index] != expected[index]:
+			return false
+	return true
+
+
+static func _gameflow_is_sorted(ids: Array[String]) -> bool:
+	var copy: Array[String] = []
+	for mission_id: String in ids:
+		copy.append(mission_id)
+	copy.sort()
+	return _gameflow_ids_eq(ids, copy)
+
+
+static func _gameflow_add_mission(
+	game_state: GameState,
+	mission_id: String,
+	mission_type_id: String,
+	faction_id: String,
+	mission_state: String,
+	force_id: String = "",
+	target_location_id: String = "hqattack_hq",
+	outcome_code: String = ""
+) -> CampaignMission:
+	var mission: CampaignMission = CampaignMission.new(
+		mission_id,
+		mission_type_id,
+		faction_id,
+		force_id,
+		"hqattack_keep",
+		target_location_id,
+		mission_state,
+		outcome_code
+	)
+	game_state.add_mission(mission)
+	return mission
+
+
+static func _gameflow_create(
+	game_state: GameState,
+	player_faction_id: String = ""
+) -> GameFlowController:
+	var result: GameFlowResult = GameFlowController.create(game_state, player_faction_id)
+	if result == null or not result.success or result.controller == null:
+		return null
+	return result.controller
+
+
+static func _gameflow_awaiting_world(
+	p_destination_id: String = "hqattack_hq",
+	p_movement_budget: float = 10.0
+) -> Dictionary:
+	var launched: Dictionary = _battlesession_make_launched(p_destination_id, p_movement_budget)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	var pack: Dictionary = {}
+	pack["game_state"] = game_state
+	pack["force"] = launched.get("force", null)
+	pack["mission_id"] = str(launched.get("mission_id", "battlesession_mission"))
+	pack["launch"] = launched.get("launch", null)
+	if game_state == null:
+		return pack
+	if not _battlesession_advance_until_awaiting(game_state, pack["mission_id"]):
+		pack["game_state"] = null
+	return pack
+
+
+static func _gameflow_controller_until_pending(
+	controller: GameFlowController,
+	mission_id: String,
+	max_turns: int = 8
+) -> GameFlowResult:
+	if controller == null or controller.game_state == null or mission_id.is_empty():
+		return null
+	var last: GameFlowResult = null
+	var turns: int = 0
+	while turns < max_turns:
+		var mission: CampaignMission = controller.game_state.get_mission(mission_id)
+		if mission != null and mission.mission_state == "awaiting_resolution":
+			return last
+		last = controller.advance_campaign_turn()
+		if last == null or not last.success:
+			return last
+		turns += 1
+	return last
+
+
+static func _gameflow_mode_matches(controller: GameFlowController) -> bool:
+	if controller == null:
+		return false
+	if controller.current_session == null:
+		return controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+	match controller.current_session.session_state:
+		CampaignBattleSession.SESSION_DEPLOYMENT:
+			return controller.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		CampaignBattleSession.SESSION_ACTIVE:
+			return controller.get_current_mode() == GameFlowController.MODE_TACTICAL_ACTIVE
+		CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF:
+			return controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		CampaignBattleSession.SESSION_COMPLETE:
+			return controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		_:
+			return false
+
+
+static func _gameflow_campaign_snap(game_state: GameState, force: TravelingForce = null) -> Dictionary:
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	snap["turn"] = game_state.current_turn
+	snap["month"] = game_state.current_month
+	var gang: Faction = game_state.get_faction("hqattack_a")
+	if gang != null and gang is MajorGang:
+		var major: MajorGang = gang as MajorGang
+		snap["money"] = major.money
+		snap["ammo"] = major.resources.get_amount("Ammo")
+	else:
+		snap["money"] = -1.0
+		snap["ammo"] = -1.0
+	return snap
+
+
+static func _gameflow_campaign_clock_unchanged(
+	game_state: GameState,
+	snap: Dictionary,
+	force: TravelingForce = null
+) -> bool:
+	if game_state.current_turn != int(snap.get("turn", -1)):
+		return false
+	if game_state.current_month != int(snap.get("month", -1)):
+		return false
+	var gang: Faction = game_state.get_faction("hqattack_a")
+	if gang != null and gang is MajorGang:
+		var major: MajorGang = gang as MajorGang
+		if not is_equal_approx(major.money, float(snap.get("money", -1.0))):
+			return false
+		if not is_equal_approx(major.resources.get_amount("Ammo"), float(snap.get("ammo", -1.0))):
+			return false
+	return _hqattack_unchanged(game_state, snap, force)
+
+
+static func _gameflow_no_session(controller: GameFlowController) -> bool:
+	if controller == null:
+		return false
+	return (
+		controller.current_session == null
+		and controller.get_battle_state() == null
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		and controller.is_campaign_mode()
+		and not controller.has_active_session()
+	)
+
+
+static func _gameflow_undeployed(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	for participant_id: String in battle_state.participants:
+		if battle_state.is_participant_deployed(participant_id):
+			return false
+	for vehicle_id: String in battle_state.vehicles:
+		if battle_state.is_vehicle_deployed(vehicle_id):
+			return false
+	return battle_state.battle_phase == "deployment"
+
+
+static func _gameflow_add_unrelated_force(game_state: GameState) -> TravelingForce:
+	var route: Array[String] = []
+	route.append("hqattack_node_hq")
+	route.append("hqattack_node_b")
+	var force: TravelingForce = TravelingForce.new(
+		"gameflow_unrelated_force",
+		"hqattack_a",
+		"hqattack_keep",
+		"hqattack_hq_b",
+		route,
+		5.0,
+		"traveling_outbound"
+	)
+	force.route_segment_index = 0
+	force.distance_into_segment = 0.5
+	force.movement_remaining = 3.0
+	game_state.add_traveling_force(force)
+	return force
+
+
+static func _gameflow_enter_ready_pack() -> Dictionary:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var pack: Dictionary = {}
+	var game_state: GameState = world.get("game_state", null) as GameState
+	pack["game_state"] = game_state
+	pack["force"] = world.get("force", null)
+	pack["mission_id"] = str(world.get("mission_id", "battlesession_mission"))
+	if game_state == null:
+		pack["controller"] = null
+		return pack
+	var controller: GameFlowController = _gameflow_create(game_state)
+	pack["controller"] = controller
+	if controller == null:
+		return pack
+	var enter_result: GameFlowResult = controller.enter_pending_battle()
+	pack["enter_result"] = enter_result
+	if enter_result == null or not enter_result.success or controller.current_session == null:
+		pack["controller"] = null
+	return pack
+
+
+static func _gameflow_active_continuing_pack() -> Dictionary:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	if controller == null or controller.current_session == null:
+		pack["controller"] = null
+		return pack
+	var battle_state: BattleState = controller.get_battle_state()
+	if battle_state == null:
+		pack["controller"] = null
+		return pack
+	if not _battlesession_add_defender(battle_state):
+		pack["controller"] = null
+		return pack
+	if not _battlesession_ready_for_begin(battle_state):
+		pack["controller"] = null
+		return pack
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	pack["begin_result"] = begin_result
+	if (
+		begin_result == null
+		or not begin_result.success
+		or controller.get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE
+	):
+		pack["controller"] = null
+	return pack
+
+
+static func _gameflow_initial_campaign_ok() -> bool:
+	var null_result: GameFlowResult = GameFlowController.create(null)
+	var game_state: GameState = _make_hqattack_world()
+	var result: GameFlowResult = GameFlowController.create(game_state)
+	if result == null or result.controller == null:
+		return false
+	var controller: GameFlowController = result.controller
+	return (
+		null_result != null
+		and not null_result.success
+		and null_result.controller == null
+		and null_result.error_code == "null_game_state"
+		and result.success
+		and result.current_mode == GameFlowController.MODE_CAMPAIGN
+		and result.session == null
+		and result.pending_battle_ids.is_empty()
+		and controller.game_state == game_state
+		and _gameflow_no_session(controller)
+		and controller.get("battle_state") == null
+		and game_state.get("active_battle") == null
+		and game_state.get("current_session") == null
+		and game_state.get("current_mode") == null
+	)
+
+
+static func _gameflow_one_player_bind_ok() -> bool:
+	var game_state: GameState = _make_hqattack_world()
+	_gameflow_add_mission(
+		game_state,
+		"player_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"ai_pending",
+		"capture_neighborhood_hq",
+		"hqattack_b",
+		"awaiting_resolution"
+	)
+	var auto_result: GameFlowResult = GameFlowController.create(game_state)
+	var explicit_result: GameFlowResult = GameFlowController.create(game_state, "hqattack_a")
+	if auto_result == null or explicit_result == null:
+		return false
+	var auto_controller: GameFlowController = auto_result.controller
+	var explicit_controller: GameFlowController = explicit_result.controller
+	if auto_controller == null or explicit_controller == null:
+		return false
+	var expected: Array[String] = []
+	expected.append("player_pending")
+	return (
+		auto_controller.player_faction_id == "hqattack_a"
+		and explicit_controller.player_faction_id == "hqattack_a"
+		and _gameflow_ids_eq(auto_controller.list_pending_battle_ids(), expected)
+		and _gameflow_ids_eq(explicit_controller.list_pending_battle_ids(), expected)
+	)
+
+
+static func _gameflow_zero_player_ok() -> bool:
+	var game_state: GameState = _make_hqattack_world()
+	var attacker: MajorGang = game_state.get_faction("hqattack_a") as MajorGang
+	attacker.controller_type = "ai"
+	_gameflow_add_mission(
+		game_state,
+		"ai_only_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	var auto_result: GameFlowResult = GameFlowController.create(game_state)
+	var missing_result: GameFlowResult = GameFlowController.create(game_state, "missing_faction")
+	var explicit_result: GameFlowResult = GameFlowController.create(game_state, "hqattack_a")
+	if auto_result == null or auto_result.controller == null:
+		return false
+	var auto_controller: GameFlowController = auto_result.controller
+	var explicit_controller: GameFlowController = explicit_result.controller
+	if explicit_controller == null:
+		return false
+	var expected_explicit: Array[String] = []
+	expected_explicit.append("ai_only_pending")
+	var enter_auto: GameFlowResult = auto_controller.enter_pending_battle("ai_only_pending")
+	return (
+		auto_controller.player_faction_id.is_empty()
+		and auto_controller.list_pending_battle_ids().is_empty()
+		and missing_result != null
+		and not missing_result.success
+		and missing_result.controller == null
+		and missing_result.error_code == "invalid_player_faction"
+		and explicit_controller.player_faction_id == "hqattack_a"
+		and _gameflow_ids_eq(explicit_controller.list_pending_battle_ids(), expected_explicit)
+		and enter_auto != null
+		and not enter_auto.success
+		and enter_auto.error_code == "not_player_mission"
+		and auto_controller.current_session == null
+	)
+
+
+static func _gameflow_multi_player_ok() -> bool:
+	var first_state: GameState = GameState.new()
+	first_state.add_faction(MajorGang.new("zzz_player", "Z Player", "player"))
+	first_state.add_faction(MajorGang.new("aaa_player", "A Player", "player"))
+	first_state.add_faction(MajorGang.new("mid_ai", "Mid AI", "ai"))
+	_gameflow_add_mission(
+		first_state,
+		"zzz_mission",
+		"capture_neighborhood_hq",
+		"zzz_player",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		first_state,
+		"aaa_mission",
+		"capture_neighborhood_hq",
+		"aaa_player",
+		"awaiting_resolution"
+	)
+	var second_state: GameState = GameState.new()
+	second_state.add_faction(MajorGang.new("aaa_player", "A Player", "player"))
+	second_state.add_faction(MajorGang.new("zzz_player", "Z Player", "player"))
+	second_state.add_faction(MajorGang.new("mid_ai", "Mid AI", "ai"))
+	_gameflow_add_mission(
+		second_state,
+		"zzz_mission",
+		"capture_neighborhood_hq",
+		"zzz_player",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		second_state,
+		"aaa_mission",
+		"capture_neighborhood_hq",
+		"aaa_player",
+		"awaiting_resolution"
+	)
+	var first_auto: GameFlowController = _gameflow_create(first_state)
+	var second_auto: GameFlowController = _gameflow_create(second_state)
+	var first_explicit: GameFlowController = _gameflow_create(first_state, "aaa_player")
+	if first_auto == null or second_auto == null or first_explicit == null:
+		return false
+	var both: Array[String] = []
+	both.append("aaa_mission")
+	both.append("zzz_mission")
+	var only_aaa: Array[String] = []
+	only_aaa.append("aaa_mission")
+	var first_keys: Array[String] = []
+	for faction_id: String in first_state.factions:
+		first_keys.append(faction_id)
+	return (
+		first_auto.player_faction_id.is_empty()
+		and second_auto.player_faction_id.is_empty()
+		and first_keys.size() > 0
+		and first_auto.player_faction_id != first_keys[0]
+		and _gameflow_ids_eq(first_auto.list_pending_battle_ids(), both)
+		and _gameflow_ids_eq(second_auto.list_pending_battle_ids(), both)
+		and first_explicit.player_faction_id == "aaa_player"
+		and _gameflow_ids_eq(first_explicit.list_pending_battle_ids(), only_aaa)
+	)
+
+
+static func _gameflow_pending_filter_ok() -> bool:
+	var game_state: GameState = _make_hqattack_world()
+	_gameflow_add_mission(
+		game_state,
+		"player_hq_wait",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"ai_hq_wait",
+		"capture_neighborhood_hq",
+		"hqattack_b",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_hq_travel",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"traveling_outbound"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_hq_done",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"resolved_success",
+		"",
+		"hqattack_hq",
+		"neighborhood_hq_captured"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_raid_wait",
+		"raid_business",
+		"hqattack_a",
+		"awaiting_resolution",
+		"",
+		"hqattack_biz"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_stronghold_wait",
+		"capture_stronghold",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	var expected: Array[String] = []
+	expected.append("player_hq_wait")
+	return _gameflow_ids_eq(controller.list_pending_battle_ids(), expected)
+
+
+static func _gameflow_pending_sort_ok() -> bool:
+	var game_state: GameState = _make_hqattack_world()
+	_gameflow_add_mission(
+		game_state,
+		"z_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"m_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"a_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	var reverse_state: GameState = _make_hqattack_world()
+	_gameflow_add_mission(
+		reverse_state,
+		"a_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		reverse_state,
+		"m_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		reverse_state,
+		"z_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	var controller: GameFlowController = _gameflow_create(game_state)
+	var reverse_controller: GameFlowController = _gameflow_create(reverse_state)
+	if controller == null or reverse_controller == null:
+		return false
+	var expected: Array[String] = []
+	expected.append("a_pending")
+	expected.append("m_pending")
+	expected.append("z_pending")
+	var actual: Array[String] = controller.list_pending_battle_ids()
+	var reverse_actual: Array[String] = reverse_controller.list_pending_battle_ids()
+	return (
+		_gameflow_is_sorted(actual)
+		and _gameflow_ids_eq(actual, expected)
+		and _gameflow_ids_eq(reverse_actual, expected)
+	)
+
+
+static func _gameflow_turn_delegate_ok() -> bool:
+	var launched: Dictionary = _battlesession_make_launched("hqattack_hq_b", 1.0)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	var force: TravelingForce = launched.get("force", null) as TravelingForce
+	var launch: NeighborhoodHQAttackResult = launched.get("launch", null) as NeighborhoodHQAttackResult
+	if game_state == null or force == null or launch == null or not launch.success:
+		return false
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	var turn_before: int = game_state.current_turn
+	var travel_before: String = force.travel_state
+	var distance_before: float = force.distance_into_segment
+	var first: GameFlowResult = controller.advance_campaign_turn()
+	if first == null or not first.success:
+		return false
+	var moved: bool = (
+		force.travel_state != travel_before
+		or not is_equal_approx(force.distance_into_segment, distance_before)
+		or force.travel_state == "at_destination"
+	)
+	var pending_result: GameFlowResult = _gameflow_controller_until_pending(
+		controller,
+		"battlesession_mission"
+	)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if mission == null or mission.mission_state != "awaiting_resolution":
+		return false
+	var pending: Array[String] = controller.list_pending_battle_ids()
+	var expected: Array[String] = []
+	expected.append("battlesession_mission")
+	return (
+		not controller.has_method("process_turn_start")
+		and not controller.has_method("sync_all_arrivals")
+		and not controller.has_method("_process_force_movement")
+		and not controller.has_method("advance_to_next_turn")
+		and game_state.current_turn > turn_before
+		and moved
+		and force.travel_state == "at_destination"
+		and first.current_mode == GameFlowController.MODE_CAMPAIGN
+		and (pending_result == null or pending_result.success)
+		and _gameflow_ids_eq(pending, expected)
+		and _gameflow_no_session(controller)
+	)
+
+
+static func _gameflow_no_auto_enter_ok() -> bool:
+	var launched: Dictionary = _battlesession_make_launched("hqattack_hq_b", 1.0)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	if game_state == null:
+		return false
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	var pending_result: GameFlowResult = _gameflow_controller_until_pending(
+		controller,
+		"battlesession_mission"
+	)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if mission == null or mission.mission_state != "awaiting_resolution":
+		return false
+	return (
+		(pending_result == null or pending_result.success)
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		and controller.current_session == null
+		and controller.get_battle_state() == null
+		and controller.list_pending_battle_ids().has("battlesession_mission")
+		and game_state.get("active_battle") == null
+	)
+
+
+static func _gameflow_enter_single_ok() -> bool:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var game_state: GameState = world.get("game_state", null) as GameState
+	if game_state == null:
+		return false
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	if controller.list_pending_battle_ids().size() != 1:
+		return false
+	var result: GameFlowResult = controller.enter_pending_battle()
+	if result == null or controller.current_session == null:
+		return false
+	var session: CampaignBattleSession = controller.current_session
+	return (
+		result.success
+		and result.entered_mission_id == "battlesession_mission"
+		and result.current_mode == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		and session.mission_id == "battlesession_mission"
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and session.battle_state != null
+		and controller.get_battle_state() == session.battle_state
+		and controller.get("battle_state") == null
+		and _gameflow_mode_matches(controller)
+	)
+
+
+static func _gameflow_enter_multiple_ok() -> bool:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var game_state: GameState = world.get("game_state", null) as GameState
+	if game_state == null:
+		return false
+	_gameflow_add_mission(
+		game_state,
+		"zzz_extra_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"aaa_extra_pending",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"awaiting_resolution"
+	)
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	var expected: Array[String] = []
+	expected.append("aaa_extra_pending")
+	expected.append("battlesession_mission")
+	expected.append("zzz_extra_pending")
+	var empty_enter: GameFlowResult = controller.enter_pending_battle("")
+	if empty_enter == null:
+		return false
+	var after_fail_pending: Array[String] = controller.list_pending_battle_ids()
+	var empty_ok: bool = (
+		not empty_enter.success
+		and empty_enter.error_code == "multiple_pending_battles"
+		and _gameflow_ids_eq(empty_enter.pending_battle_ids, expected)
+		and _gameflow_ids_eq(after_fail_pending, expected)
+		and controller.current_session == null
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+	)
+	if not empty_ok:
+		return false
+	var explicit: GameFlowResult = controller.enter_pending_battle("battlesession_mission")
+	return (
+		explicit != null
+		and explicit.success
+		and explicit.entered_mission_id == "battlesession_mission"
+		and controller.current_session != null
+		and controller.current_session.mission_id == "battlesession_mission"
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+	)
+
+
+static func _gameflow_enter_rejects_ok() -> bool:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var game_state: GameState = world.get("game_state", null) as GameState
+	var force: TravelingForce = world.get("force", null) as TravelingForce
+	if game_state == null:
+		return false
+	_gameflow_add_mission(
+		game_state,
+		"ai_hq_wait",
+		"capture_neighborhood_hq",
+		"hqattack_b",
+		"awaiting_resolution"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_raid_wait",
+		"raid_business",
+		"hqattack_a",
+		"awaiting_resolution",
+		"",
+		"hqattack_biz"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_hq_travel",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"traveling_outbound"
+	)
+	_gameflow_add_mission(
+		game_state,
+		"player_hq_done",
+		"capture_neighborhood_hq",
+		"hqattack_a",
+		"resolved_success",
+		"",
+		"hqattack_hq",
+		"neighborhood_hq_captured"
+	)
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var unknown: GameFlowResult = controller.enter_pending_battle("missing_mission")
+	var ai_owned: GameFlowResult = controller.enter_pending_battle("ai_hq_wait")
+	var wrong_type: GameFlowResult = controller.enter_pending_battle("player_raid_wait")
+	var traveling: GameFlowResult = controller.enter_pending_battle("player_hq_travel")
+	var resolved: GameFlowResult = controller.enter_pending_battle("player_hq_done")
+	return (
+		unknown != null
+		and not unknown.success
+		and unknown.error_code == "invalid_mission"
+		and ai_owned != null
+		and not ai_owned.success
+		and ai_owned.error_code == "not_player_mission"
+		and wrong_type != null
+		and not wrong_type.success
+		and wrong_type.error_code == "invalid_mission_type"
+		and traveling != null
+		and not traveling.success
+		and traveling.error_code == "mission_not_awaiting_resolution"
+		and resolved != null
+		and not resolved.success
+		and resolved.error_code == "mission_not_awaiting_resolution"
+		and controller.current_session == null
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _gameflow_second_session_ok() -> bool:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	if controller == null or controller.current_session == null:
+		return false
+	var existing: CampaignBattleSession = controller.current_session
+	var battle_state: BattleState = existing.battle_state
+	var again: GameFlowResult = controller.enter_pending_battle("battlesession_mission")
+	var empty_again: GameFlowResult = controller.enter_pending_battle()
+	return (
+		again != null
+		and not again.success
+		and again.error_code == "session_already_active"
+		and empty_again != null
+		and not empty_again.success
+		and empty_again.error_code == "session_already_active"
+		and controller.current_session == existing
+		and existing.battle_state == battle_state
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+	)
+
+
+static func _gameflow_deployment_exposure_ok() -> bool:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	if controller == null or controller.current_session == null:
+		return false
+	var session: CampaignBattleSession = controller.current_session
+	var battle_state: BattleState = controller.get_battle_state()
+	if battle_state == null:
+		return false
+	return (
+		controller.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and battle_state == session.battle_state
+		and _gameflow_undeployed(battle_state)
+		and battle_state.battle_phase == "deployment"
+		and not controller.has_method("commit_attacker_deployment")
+		and not controller.has_method("commit_defender_deployment")
+		and not controller.has_method("deploy_participant")
+		and not controller.has_method("auto_deploy")
+	)
+
+
+static func _gameflow_begin_ok() -> bool:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	if controller == null or controller.current_session == null:
+		return false
+	var before: GameFlowResult = controller.begin_current_battle()
+	if before == null or before.success:
+		return false
+	var still_deploy: bool = (
+		controller.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		and controller.current_session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
+		and before.error_code == "deployment_incomplete"
+	)
+	if not _battlesession_ready_for_begin(controller.get_battle_state()):
+		return false
+	var after: GameFlowResult = controller.begin_current_battle()
+	return (
+		still_deploy
+		and after != null
+		and after.success
+		and after.current_mode == GameFlowController.MODE_TACTICAL_ACTIVE
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_ACTIVE
+		and controller.current_session.session_state == CampaignBattleSession.SESSION_ACTIVE
+		and controller.current_session.battle_state.battle_phase == "active"
+		and not controller.has_method("is_battle_ready")
+		and not controller.has_method("is_spatially_ready")
+	)
+
+
+static func _gameflow_advance_delegate_ok() -> bool:
+	var pack: Dictionary = _gameflow_active_continuing_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	if controller == null or controller.current_session == null:
+		return false
+	var battle_state: BattleState = controller.get_battle_state()
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	var result: GameFlowResult = controller.advance_tactical(0.25)
+	return (
+		result != null
+		and result.success
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_ACTIVE
+		and battle_state.battle_phase == "active"
+		and battle_state.elapsed_time_seconds > elapsed_before
+		and not controller.has_method("resolve_attacks")
+		and not controller.has_method("apply_combat")
+		and not controller.has_method("select_targets")
+	)
+
+
+static func _gameflow_turn_blocked(
+	controller: GameFlowController,
+	game_state: GameState,
+	force: TravelingForce,
+	unrelated: TravelingForce,
+	expected_mode: String
+) -> bool:
+	var snap: Dictionary = _gameflow_campaign_snap(game_state, force)
+	var unrelated_before: Dictionary = _force_travel_snapshot(unrelated)
+	var result: GameFlowResult = controller.advance_campaign_turn()
+	return (
+		result != null
+		and not result.success
+		and result.error_code == "tactical_session_active"
+		and controller.get_current_mode() == expected_mode
+		and controller.current_session != null
+		and _gameflow_campaign_clock_unchanged(game_state, snap, force)
+		and _force_travel_unchanged(unrelated, unrelated_before)
+	)
+
+
+static func _gameflow_turn_block_ok() -> bool:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if controller == null or game_state == null:
+		return false
+	var unrelated: TravelingForce = _gameflow_add_unrelated_force(game_state)
+	var deploy_ok: bool = _gameflow_turn_blocked(
+		controller,
+		game_state,
+		force,
+		unrelated,
+		GameFlowController.MODE_TACTICAL_DEPLOYMENT
+	)
+	if not _battlesession_add_defender(controller.get_battle_state()):
+		return false
+	if not _battlesession_ready_for_begin(controller.get_battle_state()):
+		return false
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var active_ok: bool = _gameflow_turn_blocked(
+		controller,
+		game_state,
+		force,
+		unrelated,
+		GameFlowController.MODE_TACTICAL_ACTIVE
+	)
+	var pending_battle: BattleState = controller.get_battle_state()
+	if not _battlesession_kill_side(pending_battle, pending_battle.attacker_side_id):
+		return false
+	if not _battlesession_kill_side(pending_battle, pending_battle.defender_side_id):
+		return false
+	var draw_result: GameFlowResult = controller.advance_tactical(0.1)
+	if (
+		draw_result == null
+		or controller.current_session == null
+		or controller.current_session.session_state != CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF
+	):
+		return false
+	var pending_ok: bool = _gameflow_turn_blocked(
+		controller,
+		game_state,
+		force,
+		unrelated,
+		GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+	)
+	return deploy_ok and active_ok and pending_ok and _gameflow_mode_matches(controller)
+
+
+static func _gameflow_attacker_flow_ok() -> bool:
+	var launched: Dictionary = _battlesession_make_launched("hqattack_hq_b", 1.0)
+	var game_state: GameState = launched.get("game_state", null) as GameState
+	var force: TravelingForce = launched.get("force", null) as TravelingForce
+	if game_state == null or force == null:
+		return false
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	_gameflow_controller_until_pending(controller, "battlesession_mission")
+	if controller.current_session != null:
+		return false
+	var enter_result: GameFlowResult = controller.enter_pending_battle()
+	if enter_result == null or not enter_result.success:
+		return false
+	if not _battlesession_ready_for_begin(controller.get_battle_state()):
+		return false
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var result: GameFlowResult = controller.advance_tactical(0.1)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if result == null or mission == null:
+		return false
+	return (
+		result.success
+		and result.battle_completed_this_call
+		and result.current_mode == GameFlowController.MODE_CAMPAIGN
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and controller.current_session == null
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		and mission.mission_state == "resolved_success"
+		and mission.outcome_code == "neighborhood_hq_captured"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_a"
+		and (game_state.get_map_location("hqattack_hq_b") as NeighborhoodHQ).owner_faction_id == "hqattack_a"
+		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == ""
+		and force.travel_state == "at_destination"
+	)
+
+
+static func _gameflow_defender_flow_ok() -> bool:
+	var pack: Dictionary = _gameflow_active_continuing_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if controller == null or game_state == null or force == null:
+		return false
+	var battle_state: BattleState = controller.get_battle_state()
+	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
+		return false
+	var result: GameFlowResult = controller.advance_tactical(0.1)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if result == null or mission == null:
+		return false
+	return (
+		result.success
+		and result.battle_completed_this_call
+		and result.current_mode == GameFlowController.MODE_CAMPAIGN
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DEFENDER_VICTORY_APPLIED
+		and controller.current_session == null
+		and controller.get_battle_state() == null
+		and mission.mission_state == "resolved_failure"
+		and mission.outcome_code == "neighborhood_hq_assault_failed"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_hq") as NeighborhoodHQ).owner_faction_id == "hqattack_b"
+		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == "hqattack_b"
+		and force.travel_state == "at_destination"
+	)
+
+
+static func _gameflow_result_retention_ok() -> bool:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	if controller == null:
+		return false
+	if not _battlesession_ready_for_begin(controller.get_battle_state()):
+		return false
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var result: GameFlowResult = controller.advance_tactical(0.1)
+	if result == null or not result.success:
+		return false
+	return (
+		controller.current_session == null
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		and result.battle_completed_this_call
+		and result.session != null
+		and result.session.session_state == CampaignBattleSession.SESSION_COMPLETE
+		and result.session.battle_state != null
+		and result.session.battle_state.battle_phase == "resolved"
+		and result.session_state == CampaignBattleSession.SESSION_COMPLETE
+		and result.mission_id == "battlesession_mission"
+		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+	)
+
+
+static func _gameflow_draw_ok() -> bool:
+	var pack: Dictionary = _gameflow_active_continuing_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if controller == null or game_state == null:
+		return false
+	var battle_state: BattleState = controller.get_battle_state()
+	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
+		return false
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return false
+	var first: GameFlowResult = controller.advance_tactical(0.1)
+	if first == null or controller.current_session == null:
+		return false
+	var session: CampaignBattleSession = controller.current_session
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var again: GameFlowResult = controller.advance_tactical(0.5)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	return (
+		first.success
+		and not first.battle_completed_this_call
+		and first.current_mode == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and first.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and controller.current_session == session
+		and session.session_state == CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF
+		and mission.mission_state == "awaiting_resolution"
+		and mission.outcome_code.is_empty()
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+		and again != null
+		and not again.success
+		and again.error_code == "draw_unsupported"
+		and not again.battle_completed_this_call
+		and controller.current_session == session
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+	)
+
+
+static func _gameflow_handoff_retry_ok() -> bool:
+	var pack: Dictionary = _gameflow_enter_ready_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if controller == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(controller.get_battle_state()):
+		return false
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	game_state.get_mission("battlesession_mission").mission_state = "traveling_outbound"
+	var first: GameFlowResult = controller.advance_tactical(0.1)
+	if (
+		first == null
+		or first.success
+		or controller.get_current_mode() != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		or controller.current_session == null
+	):
+		return false
+	var battle_state: BattleState = controller.get_battle_state()
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	game_state.get_mission("battlesession_mission").mission_state = "awaiting_resolution"
+	var retry: GameFlowResult = controller.advance_tactical(0.4)
+	return (
+		first.error_code == "mission_not_awaiting_resolution"
+		and retry != null
+		and retry.success
+		and retry.battle_completed_this_call
+		and retry.current_mode == GameFlowController.MODE_CAMPAIGN
+		and retry.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
+		and controller.current_session == null
+		and controller.get_current_mode() == GameFlowController.MODE_CAMPAIGN
+		and _battlesession_tactical_unchanged(retry.session.battle_state, elapsed, rng, weapons, positions)
+		and game_state.get_mission("battlesession_mission").mission_state == "resolved_success"
+	)
+
+
+static func _gameflow_mode_derivation_ok() -> bool:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var game_state: GameState = world.get("game_state", null) as GameState
+	if game_state == null:
+		return false
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null or not _gameflow_mode_matches(controller):
+		return false
+	var enter_result: GameFlowResult = controller.enter_pending_battle()
+	if enter_result == null or not enter_result.success or not _gameflow_mode_matches(controller):
+		return false
+	if not _battlesession_add_defender(controller.get_battle_state()):
+		return false
+	if not _battlesession_ready_for_begin(controller.get_battle_state()):
+		return false
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	if begin_result == null or not begin_result.success or not _gameflow_mode_matches(controller):
+		return false
+	_battlesession_kill_side(
+		controller.get_battle_state(),
+		controller.get_battle_state().attacker_side_id
+	)
+	_battlesession_kill_side(
+		controller.get_battle_state(),
+		controller.get_battle_state().defender_side_id
+	)
+	var draw_result: GameFlowResult = controller.advance_tactical(0.1)
+	return (
+		draw_result != null
+		and controller.current_session != null
+		and controller.current_session.session_state == CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF
+		and _gameflow_mode_matches(controller)
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+	)
+
+
+static func _gameflow_ownership_ok() -> bool:
+	var pack_a: Dictionary = _gameflow_enter_ready_pack()
+	var pack_b: Dictionary = _gameflow_enter_ready_pack()
+	var controller_a: GameFlowController = pack_a.get("controller", null) as GameFlowController
+	var controller_b: GameFlowController = pack_b.get("controller", null) as GameFlowController
+	var game_a: GameState = pack_a.get("game_state", null) as GameState
+	if controller_a == null or controller_b == null or game_a == null:
+		return false
+	var session_a: CampaignBattleSession = controller_a.current_session
+	var session_b: CampaignBattleSession = controller_b.current_session
+	if session_a == null or session_b == null:
+		return false
+	var persisted: Dictionary = game_a.to_dict()
+	return (
+		session_a != session_b
+		and session_a.battle_state != session_b.battle_state
+		and controller_a.get_battle_state() == session_a.battle_state
+		and controller_b.get_battle_state() == session_b.battle_state
+		and controller_a.game_state != controller_b.game_state
+		and controller_a.get("battle_state") == null
+		and game_a.get("active_battle") == null
+		and game_a.get("battle_state") == null
+		and game_a.get("current_session") == null
+		and _battle_serialized_campaign_keys_only(persisted)
+		and not _battle_data_has_tactical_trace(persisted)
+	)
+
+
+static func _gameflow_player_ai_ok() -> bool:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var game_state: GameState = world.get("game_state", null) as GameState
+	if game_state == null:
+		return false
+	_gameflow_add_mission(
+		game_state,
+		"ai_hq_wait",
+		"capture_neighborhood_hq",
+		"hqattack_b",
+		"awaiting_resolution"
+	)
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	var pending: Array[String] = controller.list_pending_battle_ids()
+	var enter_ai: GameFlowResult = controller.enter_pending_battle("ai_hq_wait")
+	var ai_mission: CampaignMission = game_state.get_mission("ai_hq_wait")
+	return (
+		not pending.has("ai_hq_wait")
+		and pending.has("battlesession_mission")
+		and enter_ai != null
+		and not enter_ai.success
+		and enter_ai.error_code == "not_player_mission"
+		and controller.current_session == null
+		and ai_mission != null
+		and ai_mission.mission_state == "awaiting_resolution"
+		and not controller.has_method("plan_ai_turn")
+		and not controller.has_method("resolve_ai_battle")
+		and not controller.has_method("simulate_ai_tactical")
+	)
+
+
+static func _gameflow_rng_ok() -> bool:
+	var world: Dictionary = _gameflow_awaiting_world()
+	var game_state: GameState = world.get("game_state", null) as GameState
+	if game_state == null:
+		return false
+	var controller: GameFlowController = _gameflow_create(game_state)
+	if controller == null:
+		return false
+	controller.list_pending_battle_ids()
+	var turn_result: GameFlowResult = controller.advance_campaign_turn()
+	if turn_result == null or not turn_result.success:
+		return false
+	var enter_result: GameFlowResult = controller.enter_pending_battle()
+	if enter_result == null or not enter_result.success:
+		return false
+	var battle_state: BattleState = controller.get_battle_state()
+	if battle_state == null or battle_state.combat_random == null:
+		return false
+	var rng_enter: int = _battlesession_rng(battle_state)
+	controller.list_pending_battle_ids()
+	var blocked_turn: GameFlowResult = controller.advance_campaign_turn()
+	var early_begin: GameFlowResult = controller.begin_current_battle()
+	if _battlesession_rng(battle_state) != rng_enter:
+		return false
+	if blocked_turn == null or blocked_turn.success or early_begin == null or early_begin.success:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: GameFlowResult = controller.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	if _battlesession_rng(battle_state) != rng_enter:
+		return false
+	var continue_pack: Dictionary = _gameflow_active_continuing_pack()
+	var continue_controller: GameFlowController = continue_pack.get("controller", null) as GameFlowController
+	if continue_controller == null:
+		return false
+	var continue_battle: BattleState = continue_controller.get_battle_state()
+	var elapsed_before: float = continue_battle.elapsed_time_seconds
+	var tick: GameFlowResult = continue_controller.advance_tactical(0.25)
+	return (
+		tick != null
+		and tick.success
+		and continue_battle.elapsed_time_seconds > elapsed_before
+	)
+
+
+static func _gameflow_clock_ok() -> bool:
+	var pack: Dictionary = _gameflow_active_continuing_pack()
+	var controller: GameFlowController = pack.get("controller", null) as GameFlowController
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if controller == null or game_state == null:
+		return false
+	var turn_before: int = game_state.current_turn
+	var elapsed_before: float = controller.get_battle_state().elapsed_time_seconds
+	var tactical: GameFlowResult = controller.advance_tactical(0.2)
+	var turn_blocked: GameFlowResult = controller.advance_campaign_turn()
+	return (
+		tactical != null
+		and tactical.success
+		and game_state.current_turn == turn_before
+		and controller.get_battle_state().elapsed_time_seconds > elapsed_before
+		and turn_blocked != null
+		and not turn_blocked.success
+		and turn_blocked.error_code == "tactical_session_active"
+		and not controller.has_method("_process")
+		and not controller.has_method("_physics_process")
+	)
+
+
+static func _gameflow_absent_ok() -> bool:
+	var controller: GameFlowController = GameFlowController.new()
+	var result: GameFlowResult = GameFlowResult.new()
+	var game_state: GameState = GameState.new()
+	return (
+		not controller.has_method("_process")
+		and not controller.has_method("_physics_process")
+		and not controller.has_method("show_hud")
+		and not controller.has_method("show_victory_screen")
+		and not controller.has_method("move_camera")
+		and not controller.has_method("render_map")
+		and not controller.has_method("end_turn_button")
+		and not controller.has_method("select_units")
+		and not controller.has_method("click_hq")
+		and not controller.has_method("commit_attacker_deployment")
+		and not controller.has_method("commit_defender_deployment")
+		and not controller.has_method("plan_ai_turn")
+		and not controller.has_method("simulate_ai_tactical")
+		and not controller.has_method("propagate_casualties")
+		and not controller.has_method("apply_flee")
+		and not controller.has_method("to_dict")
+		and not result.has_method("to_dict")
+		and not controller.is_class("Node")
+		and not result.is_class("Node")
+		and game_state.get("active_battle") == null
+		and not ClassDB.class_exists("GameManager")
+		and not BattleForceCommandService.is_valid_command("flee")
+		and not BattleForceCommandService.is_valid_command("surrender")
+		and not BattleForceCommandService.is_valid_command("rout")
+	)
+
 
 
 
