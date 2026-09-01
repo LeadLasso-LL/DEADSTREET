@@ -401,14 +401,48 @@ func _overlay_rows() -> Array[Dictionary]:
 		)
 	)
 	var attacker_committed: bool = battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+	var defender_committed: bool = battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 	var deploy_subrole: String = ""
+	var defender_posture: String = ""
 	if deployment_controller != null:
 		deploy_subrole = deployment_controller.subrole
-	rows.append(_overlay_row("deploy_subrole=%s  attacker_committed=%s" % [deploy_subrole, attacker_committed]))
-	if attacker_committed:
-		rows.append(_overlay_row("attacker committed; defender placement not implemented"))
-	else:
+		defender_posture = deployment_controller.last_defender_ai_posture
+	rows.append(
+		_overlay_row(
+			"deploy_subrole=%s  attacker_committed=%s  defender_committed=%s"
+			% [deploy_subrole, attacker_committed, defender_committed]
+		)
+	)
+	if not attacker_committed:
 		rows.append(_overlay_row("attacker placement active; C commits when all living attackers are placed"))
+	elif not defender_committed:
+		var fail_code: String = ""
+		if deployment_controller != null:
+			fail_code = deployment_controller.last_defender_ai_error
+		if fail_code.is_empty():
+			rows.append(_overlay_row("attacker committed; defender AI pending"))
+		else:
+			rows.append(_overlay_row("attacker committed; defender AI failed (%s)" % fail_code))
+	else:
+		rows.append(
+			_overlay_row(
+				"attacker committed; defender AI deployed; defender committed; deployment complete / battle waiting to start"
+			)
+		)
+		if not defender_posture.is_empty():
+			rows.append(_overlay_row("defender posture=%s" % defender_posture))
+		for participant_id: String in _sorted_keys(battle_state.participants):
+			var placed: BattleParticipant = battle_state.get_participant(participant_id)
+			if placed == null or placed.side_id != battle_state.defender_side_id:
+				continue
+			if not placed.is_alive or not placed.has_battle_position:
+				continue
+			rows.append(
+				_overlay_row(
+					"defender AI pos %s=(%.2f, %.2f)"
+					% [placed.participant_id, placed.battle_position.x, placed.battle_position.y]
+				)
+			)
 	rows.append(_overlay_row("ROSTER"))
 	for participant_id: String in _sorted_keys(battle_state.participants):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)

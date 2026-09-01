@@ -1,8 +1,9 @@
 class_name TacticalDeploymentController
 extends RefCounted
 
-# Interaction owner for v1 attacker soldier placement and attacker-side commit.
-# Holds selection only. Does not own positions, geometry, legality, or commitment truth.
+# Interaction owner for v1 attacker soldier placement, attacker-side commit,
+# and standard-assault defender AI invocation. Holds selection only.
+# Does not own positions, geometry, legality, commitment truth, or AI scoring.
 
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
@@ -11,20 +12,28 @@ const BattleDeploymentPlacementService := preload("res://battle/core/battle_depl
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
 const BattleDeploymentCommitService := preload("res://battle/core/battle_deployment_commit_service.gd")
 const BattleDeploymentCommitResult := preload("res://battle/core/battle_deployment_commit_result.gd")
+const BattleDeploymentAiService := preload("res://battle/ai/battle_deployment_ai_service.gd")
+const BattleDeploymentAiResult := preload("res://battle/ai/battle_deployment_ai_result.gd")
+const BattleDeploymentPlanner := preload("res://battle/ai/battle_deployment_planner.gd")
 
 const SUBROLE_ATTACKER_PLACEMENT := "attacker_placement"
 const SUBROLE_DEFENDER_PLACEMENT := "defender" + "_placement"
+const SUBROLE_DEPLOYMENT_COMPLETE := "deployment_complete"
 
 var session: CampaignBattleSession = null
 var selected_participant_id: String = ""
 var status_text: String = ""
 var subrole: String = SUBROLE_ATTACKER_PLACEMENT
+var last_defender_ai_posture: String = ""
+var last_defender_ai_error: String = ""
 
 
 func bind_session(p_session: CampaignBattleSession) -> void:
 	session = p_session
 	selected_participant_id = ""
 	status_text = ""
+	last_defender_ai_posture = ""
+	last_defender_ai_error = ""
 	_sync_subrole_from_authority()
 
 
@@ -138,8 +147,9 @@ func try_commit_attacker() -> BattleDeploymentCommitResult:
 	if result != null and result.success:
 		selected_participant_id = ""
 		_sync_subrole_from_authority()
-		status_text = "attacker committed; defender placement not implemented"
 		print("TacticalDeploymentController: attacker side %s committed" % attacker_side_id)
+		_invoke_standard_assault_defender_ai()
+		_sync_subrole_from_authority()
 		return result
 	var error_code: String = "commit_failed"
 	if result != null and not result.error_code.is_empty():
@@ -165,11 +175,62 @@ func _sync_subrole_from_authority() -> void:
 	var battle_state: BattleState = _battle_state()
 	if battle_state == null:
 		subrole = SUBROLE_ATTACKER_PLACEMENT
+		last_defender_ai_posture = ""
 		return
-	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+	var attacker_committed: bool = battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+	var defender_committed: bool = battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+	if attacker_committed and defender_committed:
+		subrole = SUBROLE_DEPLOYMENT_COMPLETE
+		if last_defender_ai_posture.is_empty():
+			last_defender_ai_posture = BattleDeploymentPlanner.relative_posture(
+				battle_state,
+				battle_state.defender_side_id,
+				battle_state.attacker_side_id
+			)
+		return
+	if attacker_committed:
 		subrole = SUBROLE_DEFENDER_PLACEMENT
 		return
 	subrole = SUBROLE_ATTACKER_PLACEMENT
+
+
+func _invoke_standard_assault_defender_ai() -> void:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return
+	if not battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+		return
+	if battle_state.is_side_deployment_committed(battle_state.defender_side_id):
+		return
+	var ai_result: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	if ai_result != null and ai_result.success:
+		last_defender_ai_error = ""
+		if ai_result.plan != null and not ai_result.plan.posture.is_empty():
+			last_defender_ai_posture = ai_result.plan.posture
+		else:
+			last_defender_ai_posture = BattleDeploymentPlanner.relative_posture(
+				battle_state,
+				battle_state.defender_side_id,
+				battle_state.attacker_side_id
+			)
+		status_text = "attacker committed; defender AI deployed; defender committed; deployment complete"
+		print(
+			"TacticalDeploymentController: defender AI deployed and committed side %s posture=%s"
+			% [battle_state.defender_side_id, last_defender_ai_posture]
+		)
+		return
+	var error_code: String = "plan_failed"
+	if ai_result != null and not ai_result.error_code.is_empty():
+		error_code = ai_result.error_code
+	last_defender_ai_error = error_code
+	if ai_result != null and ai_result.plan != null and not ai_result.plan.posture.is_empty():
+		last_defender_ai_posture = ai_result.plan.posture
+	status_text = "attacker committed; defender AI failed (%s)" % error_code
+	print("TacticalDeploymentController: defender AI failed code=%s" % error_code)
 
 
 func _is_defender_participant(battle_state: BattleState, participant_id: String) -> bool:

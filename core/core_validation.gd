@@ -123,6 +123,11 @@ const BattleDeploymentPlacementService := preload("res://battle/core/battle_depl
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
 const BattleDeploymentCommitService := preload("res://battle/core/battle_deployment_commit_service.gd")
 const BattleDeploymentCommitResult := preload("res://battle/core/battle_deployment_commit_result.gd")
+const BattleDeploymentPlanner := preload("res://battle/ai/battle_deployment_planner.gd")
+const BattleDeploymentPlan := preload("res://battle/ai/battle_deployment_plan.gd")
+const BattleDeploymentPlanAssignment := preload("res://battle/ai/battle_deployment_plan_assignment.gd")
+const BattleDeploymentAiService := preload("res://battle/ai/battle_deployment_ai_service.gd")
+const BattleDeploymentAiResult := preload("res://battle/ai/battle_deployment_ai_result.gd")
 
 
 static func run() -> Dictionary:
@@ -16053,6 +16058,34 @@ static func run() -> Dictionary:
 	var defender_composition_visiting_ok: bool = _defender_composition_visiting_ok()
 	var defender_composition_no_vehicles_ok: bool = _defender_composition_no_vehicles_ok()
 	var defender_composition_absent_ok: bool = _defender_composition_absent_ok()
+	var defender_ai_planner_query_only_ok: bool = _defender_ai_planner_query_only_ok()
+	var defender_ai_side_generic_ok: bool = _defender_ai_side_generic_ok()
+	var defender_ai_eligibility_ok: bool = _defender_ai_eligibility_ok()
+	var defender_ai_plan_uniqueness_ok: bool = _defender_ai_plan_uniqueness_ok()
+	var defender_ai_shared_legality_ok: bool = _defender_ai_shared_legality_ok()
+	var defender_ai_geography_ok: bool = _defender_ai_geography_ok()
+	var defender_ai_attacker_position_ok: bool = _defender_ai_attacker_position_ok()
+	var defender_ai_defender_weapon_ok: bool = _defender_ai_defender_weapon_ok()
+	var defender_ai_opponent_weapon_ok: bool = _defender_ai_opponent_weapon_ok()
+	var defender_ai_relative_strength_ok: bool = _defender_ai_relative_strength_ok()
+	var defender_ai_weapon_authority_ok: bool = _defender_ai_weapon_authority_ok()
+	var defender_ai_cover_ok: bool = _defender_ai_cover_ok()
+	var defender_ai_los_ok: bool = _defender_ai_los_ok()
+	var defender_ai_obstacle_ok: bool = _defender_ai_obstacle_ok()
+	var defender_ai_multi_defender_ok: bool = _defender_ai_multi_defender_ok()
+	var defender_ai_plan_before_mutation_ok: bool = _defender_ai_plan_before_mutation_ok()
+	var defender_ai_authoritative_apply_ok: bool = _defender_ai_authoritative_apply_ok()
+	var defender_ai_commit_ok: bool = _defender_ai_commit_ok()
+	var defender_ai_controller_flow_ok: bool = _defender_ai_controller_flow_ok()
+	var defender_ai_controller_resync_ok: bool = _defender_ai_controller_resync_ok()
+	var defender_ai_failure_ok: bool = _defender_ai_failure_ok()
+	var defender_ai_empty_ok: bool = _defender_ai_empty_ok()
+	var defender_ai_determinism_ok: bool = _defender_ai_determinism_ok()
+	var defender_ai_campaign_isolation_ok: bool = _defender_ai_campaign_isolation_ok()
+	var defender_ai_httb_ok: bool = _defender_ai_httb_ok()
+	var defender_ai_no_start_ok: bool = _defender_ai_no_start_ok()
+	var defender_ai_overlay_ok: bool = _defender_ai_overlay_ok()
+	var defender_ai_absent_ok: bool = _defender_ai_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17934,6 +17967,34 @@ static func run() -> Dictionary:
 		"defender_composition_visiting_ok": defender_composition_visiting_ok,
 		"defender_composition_no_vehicles_ok": defender_composition_no_vehicles_ok,
 		"defender_composition_absent_ok": defender_composition_absent_ok,
+		"defender_ai_planner_query_only_ok": defender_ai_planner_query_only_ok,
+		"defender_ai_side_generic_ok": defender_ai_side_generic_ok,
+		"defender_ai_eligibility_ok": defender_ai_eligibility_ok,
+		"defender_ai_plan_uniqueness_ok": defender_ai_plan_uniqueness_ok,
+		"defender_ai_shared_legality_ok": defender_ai_shared_legality_ok,
+		"defender_ai_geography_ok": defender_ai_geography_ok,
+		"defender_ai_attacker_position_ok": defender_ai_attacker_position_ok,
+		"defender_ai_defender_weapon_ok": defender_ai_defender_weapon_ok,
+		"defender_ai_opponent_weapon_ok": defender_ai_opponent_weapon_ok,
+		"defender_ai_relative_strength_ok": defender_ai_relative_strength_ok,
+		"defender_ai_weapon_authority_ok": defender_ai_weapon_authority_ok,
+		"defender_ai_cover_ok": defender_ai_cover_ok,
+		"defender_ai_los_ok": defender_ai_los_ok,
+		"defender_ai_obstacle_ok": defender_ai_obstacle_ok,
+		"defender_ai_multi_defender_ok": defender_ai_multi_defender_ok,
+		"defender_ai_plan_before_mutation_ok": defender_ai_plan_before_mutation_ok,
+		"defender_ai_authoritative_apply_ok": defender_ai_authoritative_apply_ok,
+		"defender_ai_commit_ok": defender_ai_commit_ok,
+		"defender_ai_controller_flow_ok": defender_ai_controller_flow_ok,
+		"defender_ai_controller_resync_ok": defender_ai_controller_resync_ok,
+		"defender_ai_failure_ok": defender_ai_failure_ok,
+		"defender_ai_empty_ok": defender_ai_empty_ok,
+		"defender_ai_determinism_ok": defender_ai_determinism_ok,
+		"defender_ai_campaign_isolation_ok": defender_ai_campaign_isolation_ok,
+		"defender_ai_httb_ok": defender_ai_httb_ok,
+		"defender_ai_no_start_ok": defender_ai_no_start_ok,
+		"defender_ai_overlay_ok": defender_ai_overlay_ok,
+		"defender_ai_absent_ok": defender_ai_absent_ok,
 	}
 
 	var passed := true
@@ -52862,9 +52923,9 @@ static func _attacker_commit_side_ownership_ok() -> bool:
 		and committed != null
 		and committed.success
 		and attacker_side.deployment_committed
-		and not defender_side.deployment_committed
+		and defender_side.deployment_committed
 		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 	)
 	var rebuilt: TacticalDeploymentController = TacticalDeploymentController.new()
 	rebuilt.bind_session(session)
@@ -52872,8 +52933,8 @@ static func _attacker_commit_side_ownership_ok() -> bool:
 		runtime,
 		before_ok
 		and after_ok
-		and rebuilt.subrole == "defender_placement"
-		and rebuilt.subrole == TacticalDeploymentController.SUBROLE_DEFENDER_PLACEMENT
+		and rebuilt.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+		and rebuilt.subrole == "deployment_complete"
 	)
 
 
@@ -53356,9 +53417,9 @@ static func _attacker_commit_controller_order_ok() -> bool:
 		and committed != null
 		and committed.success
 		and controller.selected_participant_id.is_empty()
-		and controller.subrole == "defender_placement"
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 	)
 
 
@@ -53379,7 +53440,8 @@ static func _attacker_commit_controller_resync_ok() -> bool:
 	return _gameplayruntime_finish(
 		runtime,
 		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
-		and fresh.subrole == "defender_placement"
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and fresh.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and fresh.session == session
 	)
 
@@ -53439,6 +53501,7 @@ static func _attacker_commit_vehicle_provisional_ok() -> bool:
 	var pos: Vector2 = participant.battle_position
 	var commit: BattleDeploymentCommitResult = controller.try_commit_attacker()
 	var vehicle_before: bool = battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+	var ready_before_vehicle: bool = battle_state.is_battle_ready()
 	var attacker_side: BattleSide = battle_state.get_side(battle_state.attacker_side_id)
 	var vehicle_ok: bool = battle_state.deploy_vehicle(
 		StarterWorldService.VEHICLE_ID,
@@ -53449,11 +53512,16 @@ static func _attacker_commit_vehicle_provisional_ok() -> bool:
 		commit != null
 		and commit.success
 		and not vehicle_before
+		and not ready_before_vehicle
 		and vehicle_ok
 		and battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
 		and participant.battle_position.is_equal_approx(pos)
 		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
-		and not battle_state.is_battle_ready()
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.is_battle_ready()
+		and battle_state.battle_phase == "deployment"
+		and runtime.get_current_session().session_state == "deployment"
+		and runtime.get_current_mode() == "tactical_deployment"
 	)
 
 
@@ -53502,15 +53570,22 @@ static func _attacker_commit_repeat_c_ok() -> bool:
 	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
 	var pos: Vector2 = participant.battle_position
 	controller.try_commit_attacker()
+	var defender_pos: Vector2 = Vector2.ZERO
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	if defender != null:
+		defender_pos = defender.battle_position
 	_tacticalview_press(runtime, KEY_C)
 	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	return _gameplayruntime_finish(
 		runtime,
 		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
-		and controller.subrole == "defender_placement"
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and battle_state.battle_phase == "deployment"
 		and participant.battle_position.is_equal_approx(pos)
+		and defender != null
+		and defender.has_battle_position
+		and defender.battle_position.is_equal_approx(defender_pos)
 		and begin_result != null
 		and not begin_result.success
 	)
@@ -53527,9 +53602,7 @@ static func _attacker_commit_defender_boundary_ok() -> bool:
 	controller.select_participant(StarterWorldService.SOLDIER_ID)
 	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
 	controller.try_commit_attacker()
-	if not _gameplayruntime_add_defender(battle_state):
-		return _gameplayruntime_finish(runtime, false)
-	var selected_def: bool = controller.select_participant("gameplayruntime_defender")
+	var selected_def: bool = controller.select_participant(StarterWorldService.RIVAL_SOLDIER_ID)
 	var placed_def: BattleDeploymentPlacementResult = controller.try_place_selected(
 		_interactive_deploy_defender_point(battle_state.battlefield_geometry)
 	)
@@ -53541,8 +53614,8 @@ static func _attacker_commit_defender_boundary_ok() -> bool:
 		and not controller.has_method("commit_defender_deployment")
 		and not controller.has_method("place_defender")
 		and not runtime.has_method("commit_defender_deployment")
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
-		and controller.subrole == "defender_placement"
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 	)
 
 
@@ -53605,7 +53678,7 @@ static func _attacker_commit_no_start_ok() -> bool:
 		and runtime.get_current_session().session_state == "deployment"
 		and runtime.get_current_mode() == "tactical_deployment"
 		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and not battle_state.is_battle_ready()
 		and begin_result != null
 		and not begin_result.success
@@ -53686,9 +53759,12 @@ static func _attacker_commit_overlay_ok() -> bool:
 		runtime,
 		before_ok
 		and after.contains("attacker_committed=true")
-		and after.contains("defender_placement")
-		and after.contains("defender placement not implemented")
+		and after.contains("defender_committed=true")
+		and after.contains("deployment_complete")
+		and after.contains("defender AI deployed")
+		and after.contains("battle waiting to start")
 		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 	)
 
 
@@ -53715,8 +53791,8 @@ static func _attacker_commit_httb_flow_ok() -> bool:
 	_tacticalview_press(runtime, KEY_C)
 	var commit_ok: bool = (
 		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
-		and controller.subrole == "defender_placement"
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
 		and battle_state.battle_phase == "deployment"
 		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
@@ -53729,8 +53805,8 @@ static func _attacker_commit_httb_flow_ok() -> bool:
 		protocol_ok
 		and reject_ok
 		and commit_ok
-		and controller.subrole == "defender_placement"
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and battle_state.battle_phase == "deployment"
 	)
 
@@ -55088,11 +55164,11 @@ static func _defender_composition_attacker_commit_ok() -> bool:
 		and attacker.has_battle_position
 		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
 		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
-		and controller.subrole == "defender_placement"
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and defender.is_alive
-		and not battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
-		and not defender.has_battle_position
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
+		and defender.has_battle_position
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and not battle_state.is_battle_ready()
 		and battle_state.battle_phase == "deployment"
 		and begin_result != null
@@ -55145,14 +55221,14 @@ static func _defender_composition_no_interact_ok() -> bool:
 	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
 	return _gameplayruntime_finish(
 		runtime,
-		controller.subrole == "defender_placement"
+		controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and not selected_def
 		and controller.selected_participant_id != StarterWorldService.RIVAL_SOLDIER_ID
 		and placed_def != null
 		and not placed_def.success
 		and defender != null
-		and not defender.has_battle_position
-		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and defender.has_battle_position
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and not controller.has_method("commit_defender_deployment")
 		and not controller.has_method("place_defender")
 		and not controller.has_method("select_defender")
@@ -55289,6 +55365,1242 @@ static func _defender_composition_absent_ok() -> bool:
 		and not runtime_src.contains("auto_commit")
 		and not capture_src.contains("garrison_soldier_ids")
 		and not capture_src.contains("garrison_hq_id")
+	)
+
+
+static func _defender_ai_make_bare(
+	p_att_side: String,
+	p_def_side: String,
+	p_att_fac: String,
+	p_def_fac: String
+) -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"dai_battle",
+		"neighborhood_hq_assault",
+		"dai_mission",
+		"dai_hq",
+		p_att_side,
+		p_def_side,
+		"deployment"
+	)
+	battle_state.requires_deployment_commitments = true
+	var att_zone_id: String = p_att_side + "_zone"
+	var def_zone_id: String = p_def_side + "_zone"
+	var attacker_side: BattleSide = BattleSide.new(p_att_side, p_att_fac, "", true, att_zone_id)
+	var defender_side: BattleSide = BattleSide.new(p_def_side, p_def_fac, "", false, def_zone_id)
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	var attacker_zone: DeploymentZone = DeploymentZone.new(att_zone_id, p_att_side, "attacker_entry")
+	var defender_zone: DeploymentZone = DeploymentZone.new(def_zone_id, p_def_side, "defender_position")
+	if not battle_state.add_deployment_zone(attacker_zone) or not battle_state.add_deployment_zone(defender_zone):
+		return null
+	return battle_state
+
+
+static func _defender_ai_add_soldier(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	weapon_type: String,
+	alive: bool = true
+) -> bool:
+	if battle_state == null:
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"",
+		side.faction_id,
+		side_id,
+		weapon_type,
+		alive,
+		false,
+		"",
+		""
+	)
+	if not alive:
+		participant.is_alive = false
+	if not battle_state.add_participant(participant):
+		return false
+	if not side.add_participant_id(participant_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(side.deployment_zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	return true
+
+
+static func _defender_ai_add_vehicle(battle_state: BattleState, vehicle_id: String, side_id: String) -> bool:
+	if battle_state == null:
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	var vehicle: BattleVehicle = BattleVehicle.new(vehicle_id, "", side.faction_id, side_id, "debug_car", "")
+	if not battle_state.add_vehicle(vehicle):
+		return false
+	if not side.add_vehicle_id(vehicle_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(side.deployment_zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_vehicle_ids.has(vehicle_id):
+		zone.allowed_vehicle_ids.append(vehicle_id)
+	return true
+
+
+static func _defender_ai_add_weapons(battle_state: BattleState, side_id: String, prefix: String, weapons: Array) -> bool:
+	var index: int = 0
+	for weapon_variant: Variant in weapons:
+		if not _defender_ai_add_soldier(battle_state, "%s%s" % [prefix, index], side_id, str(weapon_variant), true):
+			return false
+		index += 1
+	return true
+
+
+static func _defender_ai_bind_geometry(battle_state: BattleState, geometry: BattlefieldGeometry) -> bool:
+	if battle_state == null or geometry == null or not geometry.is_valid():
+		return false
+	battle_state.battlefield_geometry = geometry
+	var attacker_zone: DeploymentZone = battle_state.get_deployment_zone(
+		battle_state.get_side(battle_state.attacker_side_id).deployment_zone_id
+	)
+	var defender_zone: DeploymentZone = battle_state.get_deployment_zone(
+		battle_state.get_side(battle_state.defender_side_id).deployment_zone_id
+	)
+	if attacker_zone == null or defender_zone == null:
+		return false
+	attacker_zone.deployment_rect = geometry.attacker_deployment_rect
+	defender_zone.deployment_rect = geometry.defender_deployment_rect
+	return true
+
+
+static func _defender_ai_place_commit(battle_state: BattleState, side_id: String, prefix: String, positions: Array) -> bool:
+	var index: int = 0
+	for position_variant: Variant in positions:
+		var placed: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+			battle_state,
+			"%s%s" % [prefix, index],
+			position_variant
+		)
+		if placed == null or not placed.success:
+			return false
+		index += 1
+	var committed: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		side_id
+	)
+	return committed != null and committed.success
+
+
+static func _defender_ai_controlled(
+	attacker_weapons: Array,
+	defender_weapons: Array,
+	attacker_positions: Array,
+	geometry: BattlefieldGeometry = null
+) -> BattleState:
+	var battle_state: BattleState = _defender_ai_make_bare("attacker", "defender", "fac_a", "fac_b")
+	if battle_state == null:
+		return null
+	if not _defender_ai_add_weapons(battle_state, "attacker", "att_", attacker_weapons):
+		return null
+	if not _defender_ai_add_weapons(battle_state, "defender", "def_", defender_weapons):
+		return null
+	if geometry == null:
+		var geo: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(battle_state)
+		if geo == null or not geo.success:
+			return null
+	elif not _defender_ai_bind_geometry(battle_state, geometry):
+		return null
+	if not attacker_positions.is_empty():
+		if not _defender_ai_place_commit(battle_state, battle_state.attacker_side_id, "att_", attacker_positions):
+			return null
+	return battle_state
+
+
+static func _defender_ai_top_geometry() -> BattlefieldGeometry:
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = 80.0
+	geometry.height = 100.0
+	geometry.attacker_deployment_rect = Rect2(10.0, 82.0, 60.0, 18.0)
+	geometry.defender_deployment_rect = Rect2(10.0, 0.0, 60.0, 18.0)
+	if not geometry.is_valid():
+		return null
+	return geometry
+
+
+static func _defender_ai_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	snap["phase"] = battle_state.battle_phase
+	snap["elapsed"] = battle_state.elapsed_time_seconds
+	snap["rng"] = _battlesession_rng(battle_state)
+	var participants: Dictionary = {}
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		participants[participant_id] = {
+			"slot": participant.deployment_slot_id,
+			"has_pos": participant.has_battle_position,
+			"pos": participant.battle_position,
+			"reserved": participant.reserved_cover_slot_id,
+			"occupied": participant.occupied_cover_slot_id,
+			"deployed": battle_state.is_participant_deployed(participant_id),
+		}
+	snap["participants"] = participants
+	var sides: Dictionary = {}
+	for side_id: String in battle_state.sides:
+		sides[side_id] = battle_state.is_side_deployment_committed(side_id)
+	snap["committed"] = sides
+	var zones: Dictionary = {}
+	for zone_id: String in battle_state.deployment_zones:
+		var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+		if zone == null:
+			continue
+		zones[zone_id] = _copy_ids(zone.deployed_participant_ids)
+	snap["zones"] = zones
+	var covers: Dictionary = {}
+	if battle_state.battlefield_geometry != null:
+		for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+			var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+			if slot == null:
+				continue
+			covers[slot_id] = {
+				"occ": slot.occupied_by_participant_id,
+				"res": slot.reserved_by_participant_id,
+			}
+	snap["covers"] = covers
+	return snap
+
+
+static func _defender_ai_unchanged(battle_state: BattleState, snap: Dictionary) -> bool:
+	var now: Dictionary = _defender_ai_snap(battle_state)
+	return (
+		str(now.get("phase", "")) == str(snap.get("phase", "x"))
+		and is_equal_approx(float(now.get("elapsed", -1.0)), float(snap.get("elapsed", -2.0)))
+		and int(now.get("rng", -1)) == int(snap.get("rng", -2))
+		and str(now.get("participants", {})) == str(snap.get("participants", {}))
+		and str(now.get("committed", {})) == str(snap.get("committed", {}))
+		and str(now.get("zones", {})) == str(snap.get("zones", {}))
+		and str(now.get("covers", {})) == str(snap.get("covers", {}))
+	)
+
+
+static func _defender_ai_forwardness(battle_state: BattleState, plan: BattleDeploymentPlan) -> float:
+	if battle_state == null or plan == null or plan.assignments.is_empty():
+		return -1.0
+	var own_rect: Rect2 = BattleDeploymentPlanner.side_deployment_rect(battle_state, plan.side_id)
+	var opposing: Array[Vector2] = BattleDeploymentPlanner.collect_opposing_positions(
+		battle_state,
+		plan.opposing_side_id
+	)
+	if opposing.is_empty() or not BattlefieldGeometry.rect_is_usable(own_rect):
+		return -1.0
+	var centroid: Vector2 = Vector2.ZERO
+	for position: Vector2 in opposing:
+		centroid += position
+	centroid /= float(opposing.size())
+	var toward: Vector2 = centroid - own_rect.get_center()
+	if toward.length_squared() < 0.0001:
+		return 0.5
+	toward = toward.normalized()
+	var min_proj: float = INF
+	var max_proj: float = -INF
+	var corners: Array[Vector2] = [
+		own_rect.position,
+		own_rect.position + Vector2(own_rect.size.x, 0.0),
+		own_rect.position + Vector2(0.0, own_rect.size.y),
+		own_rect.position + own_rect.size,
+	]
+	for corner: Vector2 in corners:
+		var proj: float = corner.dot(toward)
+		min_proj = minf(min_proj, proj)
+		max_proj = maxf(max_proj, proj)
+	var span: float = max_proj - min_proj
+	if span <= 0.0001:
+		return 0.5
+	var sum: float = 0.0
+	for assignment: BattleDeploymentPlanAssignment in plan.assignments:
+		if assignment == null:
+			continue
+		sum += clampf((assignment.position.dot(toward) - min_proj) / span, 0.0, 1.0)
+	return sum / float(plan.assignments.size())
+
+
+static func _defender_ai_plan_legal(battle_state: BattleState, plan: BattleDeploymentPlan) -> bool:
+	if plan == null or not plan.success:
+		return false
+	for assignment: BattleDeploymentPlanAssignment in plan.assignments:
+		if assignment == null or assignment.participant_id.is_empty():
+			return false
+		if not BattlefieldGeometry.is_finite_point(assignment.position):
+			return false
+		if not battle_state.get_deployment_position_error(plan.side_id, assignment.position).is_empty():
+			return false
+	return true
+
+
+static func _defender_ai_planner_query_only_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var snap: Dictionary = _defender_ai_snap(battle_state)
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	return (
+		plan != null
+		and plan.success
+		and plan.assignments.size() == 1
+		and _defender_ai_unchanged(battle_state, snap)
+		and not battle_state.is_participant_deployed("def_0")
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+	)
+
+
+static func _defender_ai_side_generic_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_make_bare("red_force", "blue_force", "fac_x", "fac_y")
+	if battle_state == null:
+		return false
+	if not _defender_ai_add_soldier(battle_state, "red_0", "red_force", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	if not _defender_ai_add_soldier(battle_state, "blue_0", "blue_force", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	var geo: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(battle_state)
+	if geo == null or not geo.success:
+		return false
+	if not _defender_ai_place_commit(battle_state, "red_force", "red_", [Vector2(7.25, 31.5)]):
+		return false
+	var blue_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state,
+		"blue_force",
+		"red_force"
+	)
+	if blue_plan == null or not blue_plan.success or blue_plan.assignments.is_empty():
+		return false
+	var blue_point: Vector2 = blue_plan.assignments[0].position
+	var inverse: BattleState = _defender_ai_make_bare("red_force", "blue_force", "fac_x", "fac_y")
+	if inverse == null:
+		return false
+	if not _defender_ai_add_soldier(inverse, "red_0", "red_force", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	if not _defender_ai_add_soldier(inverse, "blue_0", "blue_force", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	var geo2: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(inverse)
+	if geo2 == null or not geo2.success:
+		return false
+	if not _defender_ai_place_commit(inverse, "blue_force", "blue_", [Vector2(90.0, 30.0)]):
+		return false
+	var red_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		inverse,
+		"red_force",
+		"blue_force"
+	)
+	if red_plan == null or not red_plan.success or red_plan.assignments.is_empty():
+		return false
+	var red_point: Vector2 = red_plan.assignments[0].position
+	return (
+		blue_plan.side_id == "blue_force"
+		and blue_plan.opposing_side_id == "red_force"
+		and red_plan.side_id == "red_force"
+		and red_plan.opposing_side_id == "blue_force"
+		and battle_state.get_deployment_position_error("blue_force", blue_point).is_empty()
+		and inverse.get_deployment_position_error("red_force", red_point).is_empty()
+		and not battle_state.get_deployment_position_error("red_force", blue_point).is_empty()
+		and not inverse.get_deployment_position_error("blue_force", red_point).is_empty()
+		and not blue_plan.side_id.contains("player")
+		and not red_plan.side_id.contains("player")
+	)
+
+
+static func _defender_ai_eligibility_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_make_bare("attacker", "defender", "fac_a", "fac_b")
+	if battle_state == null:
+		return false
+	if not _defender_ai_add_soldier(battle_state, "att_0", "attacker", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	if not _defender_ai_add_soldier(battle_state, "def_alive_b", "defender", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	if not _defender_ai_add_soldier(battle_state, "def_alive_a", "defender", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	if not _defender_ai_add_soldier(battle_state, "def_dead", "defender", BattleWeaponCatalog.WEAPON_PISTOL, false):
+		return false
+	if not _defender_ai_add_soldier(battle_state, "def_placed", "defender", BattleWeaponCatalog.WEAPON_PISTOL):
+		return false
+	if not _defender_ai_add_vehicle(battle_state, "def_veh", "defender"):
+		return false
+	var geo: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(battle_state)
+	if geo == null or not geo.success:
+		return false
+	if not _defender_ai_place_commit(battle_state, "attacker", "att_", [Vector2(7.25, 31.5)]):
+		return false
+	var placed: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"def_placed",
+		_attacker_commit_legal_point(battle_state.battlefield_geometry, false)
+	)
+	if placed == null or not placed.success:
+		return false
+	var eligible: Array[String] = BattleDeploymentPlanner.collect_eligible_participant_ids(
+		battle_state,
+		battle_state.defender_side_id
+	)
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	return (
+		eligible.size() == 2
+		and eligible[0] == "def_alive_a"
+		and eligible[1] == "def_alive_b"
+		and not eligible.has("def_dead")
+		and not eligible.has("def_placed")
+		and not eligible.has("att_0")
+		and not eligible.has("def_veh")
+		and plan != null
+		and plan.success
+		and plan.assignments.size() == 2
+		and plan.assignments[0].participant_id == "def_alive_a"
+		and plan.assignments[1].participant_id == "def_alive_b"
+	)
+
+
+static func _defender_ai_plan_uniqueness_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_RIFLE],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	if plan == null or not plan.success or plan.assignments.size() != 2:
+		return false
+	var seen: Dictionary = {}
+	for assignment: BattleDeploymentPlanAssignment in plan.assignments:
+		if assignment == null or seen.has(assignment.participant_id):
+			return false
+		if assignment.participant_id.begins_with("att_"):
+			return false
+		if not BattlefieldGeometry.is_finite_point(assignment.position):
+			return false
+		seen[assignment.participant_id] = true
+	return (
+		seen.has("def_0")
+		and seen.has("def_1")
+		and plan.assignments[0].participant_id == "def_0"
+		and plan.assignments[1].participant_id == "def_1"
+	)
+
+
+static func _defender_ai_shared_legality_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	return _defender_ai_plan_legal(battle_state, plan)
+
+
+static func _defender_ai_geography_ok() -> bool:
+	var geometry: BattlefieldGeometry = _defender_ai_top_geometry()
+	if geometry == null:
+		return false
+	var left: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(18.0, 90.0)],
+		geometry
+	)
+	var right_geo: BattlefieldGeometry = _defender_ai_top_geometry()
+	var right: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(62.0, 90.0)],
+		right_geo
+	)
+	if left == null or right == null:
+		return false
+	var left_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		left, left.defender_side_id, left.attacker_side_id
+	)
+	var right_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		right, right.defender_side_id, right.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(left, left_plan) or not _defender_ai_plan_legal(right, right_plan):
+		return false
+	var left_pos: Vector2 = left_plan.assignments[0].position
+	var right_pos: Vector2 = right_plan.assignments[0].position
+	return (
+		geometry.defender_deployment_contains(left_pos)
+		and right_geo.defender_deployment_contains(right_pos)
+		and left_pos.y < 20.0
+		and right_pos.y < 20.0
+		and left_pos.x < right_pos.x
+		and not is_equal_approx(geometry.width, 100.0)
+		and not is_equal_approx(geometry.height, 60.0)
+	)
+
+
+static func _defender_ai_attacker_position_ok() -> bool:
+	var high: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 8.0)]
+	)
+	var low: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 52.0)]
+	)
+	if high == null or low == null:
+		return false
+	var high_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		high, high.defender_side_id, high.attacker_side_id
+	)
+	var low_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		low, low.defender_side_id, low.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(high, high_plan) or not _defender_ai_plan_legal(low, low_plan):
+		return false
+	return high_plan.assignments[0].position.y < low_plan.assignments[0].position.y
+
+
+static func _defender_ai_defender_weapon_ok() -> bool:
+	var shotgun: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_SHOTGUN],
+		[Vector2(7.25, 31.5)]
+	)
+	var sniper: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_SNIPER],
+		[Vector2(7.25, 31.5)]
+	)
+	if shotgun == null or sniper == null:
+		return false
+	var shotgun_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		shotgun, shotgun.defender_side_id, shotgun.attacker_side_id
+	)
+	var sniper_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		sniper, sniper.defender_side_id, sniper.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(shotgun, shotgun_plan) or not _defender_ai_plan_legal(sniper, sniper_plan):
+		return false
+	return _defender_ai_forwardness(shotgun, shotgun_plan) > _defender_ai_forwardness(sniper, sniper_plan)
+
+
+static func _defender_ai_opponent_weapon_ok() -> bool:
+	var vs_short: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_SHOTGUN],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	var vs_long: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_SNIPER],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if vs_short == null or vs_long == null:
+		return false
+	var short_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		vs_short, vs_short.defender_side_id, vs_short.attacker_side_id
+	)
+	var long_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		vs_long, vs_long.defender_side_id, vs_long.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(vs_short, short_plan) or not _defender_ai_plan_legal(vs_long, long_plan):
+		return false
+	return not short_plan.assignments[0].position.is_equal_approx(long_plan.assignments[0].position)
+
+
+static func _defender_ai_relative_strength_ok() -> bool:
+	var even_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	var weaker: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_RIFLE],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(6.5, 18.0), Vector2(8.0, 31.5), Vector2(6.5, 45.0)]
+	)
+	var stronger: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_RIFLE],
+		[Vector2(7.25, 31.5)]
+	)
+	var wounded: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if even_state == null or weaker == null or stronger == null or wounded == null:
+		return false
+	var wounded_def: BattleParticipant = wounded.get_participant("def_0")
+	if wounded_def == null:
+		return false
+	var healthy_strength: float = BattleDeploymentPlanner.estimate_side_strength(
+		even_state,
+		even_state.defender_side_id
+	)
+	wounded_def.is_wounded = true
+	var wounded_strength: float = BattleDeploymentPlanner.estimate_side_strength(
+		wounded,
+		wounded.defender_side_id
+	)
+	var even_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		even_state, even_state.defender_side_id, even_state.attacker_side_id
+	)
+	var weak_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		weaker, weaker.defender_side_id, weaker.attacker_side_id
+	)
+	var strong_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		stronger, stronger.defender_side_id, stronger.attacker_side_id
+	)
+	if even_plan == null or weak_plan == null or strong_plan == null:
+		return false
+	return (
+		even_plan.posture == BattleDeploymentPlan.POSTURE_EVEN
+		and weak_plan.posture == BattleDeploymentPlan.POSTURE_WEAKER
+		and strong_plan.posture == BattleDeploymentPlan.POSTURE_STRONGER
+		and wounded_strength < healthy_strength
+		and is_equal_approx(wounded_strength, healthy_strength * BattleDeploymentPlanner.WOUNDED_STRENGTH_MULTIPLIER)
+		and BattleDeploymentPlanner.relative_posture(
+			wounded, wounded.defender_side_id, wounded.attacker_side_id
+		) == BattleDeploymentPlan.POSTURE_WEAKER
+		and _defender_ai_forwardness(stronger, strong_plan) > _defender_ai_forwardness(weaker, weak_plan)
+		and even_state.get_side(even_state.defender_side_id).deployment_committed == false
+	)
+
+
+static func _defender_ai_weapon_authority_ok() -> bool:
+	var planner_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_planner.gd")
+	var shotgun: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(
+		BattleWeaponCatalog.WEAPON_SHOTGUN
+	)
+	var sniper: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(
+		BattleWeaponCatalog.WEAPON_SNIPER
+	)
+	return (
+		planner_src.contains("BattleCombatBehaviorCatalog")
+		and planner_src.contains("BattleWeaponCatalog")
+		and planner_src.contains("preferred_band_error")
+		and not planner_src.contains("SHOTGUN_PREFERRED_MIN")
+		and not planner_src.contains("SNIPER_PREFERRED_MIN")
+		and shotgun != null
+		and sniper != null
+		and shotgun.preferred_max_distance < sniper.preferred_min_distance
+		and _defender_ai_defender_weapon_ok()
+	)
+
+
+static func _defender_ai_cover_ok() -> bool:
+	var with_cover: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_SNIPER],
+		[Vector2(7.25, 31.5)]
+	)
+	var open_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_SNIPER],
+		[Vector2(7.25, 31.5)]
+	)
+	if with_cover == null or open_state == null:
+		return false
+	if not with_cover.battlefield_geometry.add_cover_object(BattleCoverObject.new("dai_cover")):
+		return false
+	var slot: BattleCoverSlot = BattleCoverSlot.new(
+		"dai_cover_slot",
+		"dai_cover",
+		Vector2(97.0, 30.0),
+		Vector2(-1.0, 0.0)
+	)
+	if not with_cover.battlefield_geometry.add_cover_slot(slot):
+		return false
+	var cover_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		with_cover, with_cover.defender_side_id, with_cover.attacker_side_id
+	)
+	var open_plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		open_state, open_state.defender_side_id, open_state.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(with_cover, cover_plan) or not _defender_ai_plan_legal(open_state, open_plan):
+		return false
+	var applied: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		with_cover,
+		with_cover.defender_side_id,
+		with_cover.attacker_side_id
+	)
+	var defender: BattleParticipant = with_cover.get_participant("def_0")
+	var live_slot: BattleCoverSlot = with_cover.battlefield_geometry.get_cover_slot("dai_cover_slot")
+	return (
+		applied != null
+		and applied.success
+		and cover_plan.assignments[0].reason.contains("cover")
+		and not cover_plan.assignments[0].position.is_equal_approx(open_plan.assignments[0].position)
+		and defender != null
+		and defender.occupied_cover_slot_id.is_empty()
+		and defender.reserved_cover_slot_id.is_empty()
+		and live_slot != null
+		and live_slot.is_available()
+	)
+
+
+static func _defender_ai_los_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_RIFLE],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("dai_los", Rect2(45.0, 0.0, 6.0, 60.0), false, true)
+	if not battle_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var deep: Vector2 = Vector2(97.0, 30.0)
+	var legality: String = battle_state.get_deployment_position_error(battle_state.defender_side_id, deep)
+	var los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		battle_state,
+		deep,
+		Vector2(7.25, 31.5)
+	)
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	return (
+		legality.is_empty()
+		and los != null
+		and los.success
+		and not los.has_line_of_sight
+		and _defender_ai_plan_legal(battle_state, plan)
+	)
+
+
+static func _defender_ai_obstacle_ok() -> bool:
+	var blocked: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if blocked == null:
+		return false
+	var obstacle: BattleObstacle = BattleObstacle.new(
+		"dai_move",
+		Rect2(80.0, 16.0, 20.0, 44.0),
+		true,
+		false
+	)
+	if not blocked.battlefield_geometry.add_obstacle(obstacle):
+		return false
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		blocked, blocked.defender_side_id, blocked.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(blocked, plan):
+		return false
+	var point: Vector2 = plan.assignments[0].position
+	return not obstacle.contains_point(point) and point.y < 16.0
+
+
+static func _defender_ai_multi_defender_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state, battle_state.defender_side_id, battle_state.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(battle_state, plan) or plan.assignments.size() != 2:
+		return false
+	var state_src: String = FileAccess.get_file_as_string("res://battle/core/battle_state.gd")
+	return (
+		not plan.assignments[0].position.is_equal_approx(plan.assignments[1].position)
+		and not state_src.contains("min_spacing")
+		and not state_src.contains("unit spacing")
+		and battle_state.get_deployment_position_error(
+			battle_state.defender_side_id,
+			plan.assignments[0].position
+		).is_empty()
+		and battle_state.get_deployment_position_error(
+			battle_state.defender_side_id,
+			plan.assignments[1].position
+		).is_empty()
+	)
+
+
+static func _defender_ai_plan_before_mutation_ok() -> bool:
+	var service_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_ai_service.gd")
+	var apply_fn: String = _attacker_commit_extract_func(service_src, "apply_and_commit_side")
+	var plan_at: int = apply_fn.find("plan_side_deployment")
+	var place_at: int = apply_fn.find("place_participant")
+	var commit_at: int = apply_fn.find("commit_side_deployment")
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var failed: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	return (
+		plan_at >= 0
+		and place_at > plan_at
+		and commit_at > place_at
+		and apply_fn.contains("_prevalidate_plan")
+		and service_src.contains("no spacing rule")
+		and not apply_fn.contains("begin_battle")
+		and failed != null
+		and not failed.success
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.battle_phase == "deployment"
+	)
+
+
+static func _defender_ai_authoritative_apply_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var plan: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		battle_state, battle_state.defender_side_id, battle_state.attacker_side_id
+	)
+	if not _defender_ai_plan_legal(battle_state, plan):
+		return false
+	var planned: Vector2 = plan.assignments[0].position
+	var applied: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	var defender: BattleParticipant = battle_state.get_participant("def_0")
+	var zone: DeploymentZone = battle_state.get_deployment_zone(
+		battle_state.get_side(battle_state.defender_side_id).deployment_zone_id
+	)
+	var service_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_ai_service.gd")
+	return (
+		applied != null
+		and applied.success
+		and defender != null
+		and defender.has_battle_position
+		and defender.battle_position.is_equal_approx(planned)
+		and battle_state.is_participant_deployed("def_0")
+		and zone != null
+		and zone.has_deployed_participant("def_0")
+		and not defender.deployment_slot_id.is_empty()
+		and service_src.contains("BattleDeploymentPlacementService")
+		and not service_src.contains("has_battle_position = true")
+	)
+
+
+static func _defender_ai_commit_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var attacker: BattleParticipant = battle_state.get_participant("att_0")
+	var attacker_pos: Vector2 = attacker.battle_position
+	var applied: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	var defender: BattleParticipant = battle_state.get_participant("def_0")
+	var service_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_ai_service.gd")
+	return (
+		applied != null
+		and applied.success
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and attacker.battle_position.is_equal_approx(attacker_pos)
+		and defender != null
+		and defender.has_battle_position
+		and service_src.contains("BattleDeploymentCommitService")
+		and not service_src.contains("deployment_committed = true")
+	)
+
+
+static func _defender_ai_controller_flow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var attacker: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	var attacker_pos: Vector2 = attacker.battle_position
+	var committed: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		committed != null
+		and committed.success
+		and attacker.battle_position.is_equal_approx(attacker_pos)
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and defender != null
+		and defender.has_battle_position
+		and battle_state.is_legal_deployment_position(battle_state.defender_side_id, defender.battle_position)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+	)
+
+
+static func _defender_ai_controller_resync_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(session.battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	var fresh: TacticalDeploymentController = TacticalDeploymentController.new()
+	fresh.bind_session(session)
+	return _gameplayruntime_finish(
+		runtime,
+		session.battle_state.is_side_deployment_committed(session.battle_state.attacker_side_id)
+		and session.battle_state.is_side_deployment_committed(session.battle_state.defender_side_id)
+		and fresh.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+		and fresh.last_defender_ai_posture == BattleDeploymentPlan.POSTURE_EVEN
+	)
+
+
+static func _defender_ai_failure_ok() -> bool:
+	var empty_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[],
+		[Vector2(7.25, 31.5)]
+	)
+	var blocked: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if empty_state == null or blocked == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("dai_all", Rect2(80.0, 0.0, 20.0, 60.0), true, false)
+	if not blocked.battlefield_geometry.add_obstacle(wall):
+		return false
+	var empty_result: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		empty_state,
+		empty_state.defender_side_id,
+		empty_state.attacker_side_id
+	)
+	var blocked_result: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		blocked,
+		blocked.defender_side_id,
+		blocked.attacker_side_id
+	)
+	var session: CampaignBattleSession = CampaignBattleSession.new()
+	session.configure(null, "dai_fail", empty_state)
+	var controller: TacticalDeploymentController = TacticalDeploymentController.new()
+	controller.bind_session(session)
+	return (
+		empty_result != null
+		and not empty_result.success
+		and empty_result.error_code == "no_living_participants"
+		and empty_state.is_side_deployment_committed(empty_state.attacker_side_id)
+		and not empty_state.is_side_deployment_committed(empty_state.defender_side_id)
+		and empty_state.battle_phase == "deployment"
+		and blocked_result != null
+		and not blocked_result.success
+		and not blocked.is_side_deployment_committed(blocked.defender_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEFENDER_PLACEMENT
+		and not empty_state.begin_battle()
+	)
+
+
+static func _defender_ai_empty_ok() -> bool:
+	var battle_state: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[],
+		[Vector2(7.25, 31.5)]
+	)
+	if battle_state == null:
+		return false
+	var result: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	var commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		battle_state.defender_side_id
+	)
+	return (
+		result != null
+		and not result.success
+		and result.error_code == "no_living_participants"
+		and commit != null
+		and not commit.success
+		and commit.error_code == "no_living_participants"
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.battle_phase == "deployment"
+		and not battle_state.is_resolved()
+	)
+
+
+static func _defender_ai_determinism_ok() -> bool:
+	var a: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	var b: BattleState = _defender_ai_controlled(
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[BattleWeaponCatalog.WEAPON_PISTOL],
+		[Vector2(7.25, 31.5)]
+	)
+	if a == null or b == null:
+		return false
+	var rng_before: int = _battlesession_rng(a)
+	var plan_a: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		a, a.defender_side_id, a.attacker_side_id
+	)
+	var plan_b: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		a, a.defender_side_id, a.attacker_side_id
+	)
+	var plan_c: BattleDeploymentPlan = BattleDeploymentPlanner.plan_side_deployment(
+		b, b.defender_side_id, b.attacker_side_id
+	)
+	var rng_after_plan: int = _battlesession_rng(a)
+	var apply_rng_before: int = _battlesession_rng(b)
+	var applied: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
+		b, b.defender_side_id, b.attacker_side_id
+	)
+	var apply_rng_after: int = _battlesession_rng(b)
+	var planner_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_planner.gd")
+	return (
+		plan_a != null
+		and plan_a.success
+		and plan_b != null
+		and plan_b.success
+		and plan_c != null
+		and plan_c.success
+		and applied != null
+		and applied.success
+		and rng_before == rng_after_plan
+		and apply_rng_before == apply_rng_after
+		and plan_a.assignments[0].participant_id == plan_b.assignments[0].participant_id
+		and plan_a.assignments[0].position.is_equal_approx(plan_b.assignments[0].position)
+		and plan_a.posture == plan_b.posture
+		and plan_a.assignments[0].position.is_equal_approx(plan_c.assignments[0].position)
+		and not planner_src.contains("RandomNumberGenerator")
+		and not planner_src.contains("randf")
+		and not planner_src.contains("randi")
+	)
+
+
+static func _defender_ai_campaign_isolation_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_campaign_snap(runtime.game_state)
+	var soldier: Soldier = runtime.game_state.get_soldier(StarterWorldService.RIVAL_SOLDIER_ID)
+	var hq: NeighborhoodHQ = runtime.game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	var garrison_hq: String = ""
+	var garrison_ids: Array[String] = []
+	if soldier != null:
+		garrison_hq = soldier.garrison_hq_id
+	if hq != null:
+		garrison_ids = _copy_ids(hq.garrison_soldier_ids)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		_interactive_deploy_campaign_unchanged(runtime.game_state, snap)
+		and soldier != null
+		and soldier.garrison_hq_id == garrison_hq
+		and hq != null
+		and _string_ids_match(hq.garrison_soldier_ids, garrison_ids)
+		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
+			== "awaiting_resolution"
+	)
+
+
+static func _defender_ai_httb_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	_tacticalview_press(runtime, KEY_H)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_B)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if battle_state == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	var attacker: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	var attacker_pos: Vector2 = attacker.battle_position
+	_tacticalview_press(runtime, KEY_C)
+	var posture: String = BattleDeploymentPlanner.relative_posture(
+		battle_state,
+		battle_state.defender_side_id,
+		battle_state.attacker_side_id
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		attacker.battle_position.is_equal_approx(attacker_pos)
+		and not is_equal_approx(attacker_pos.x, roundf(attacker_pos.x))
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and defender != null
+		and defender.has_battle_position
+		and battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
+		and battle_state.is_legal_deployment_position(battle_state.defender_side_id, defender.battle_position)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+		and posture == BattleDeploymentPlan.POSTURE_EVEN
+		and runtime.game_state.get_soldier(StarterWorldService.RIVAL_SOLDIER_ID).garrison_hq_id
+			== StarterWorldService.HQ_ID
+		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
+			== "awaiting_resolution"
+		and battle_state.battle_phase == "deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+	)
+
+
+static func _defender_ai_no_start_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	var service_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_ai_service.gd")
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.battle_phase == "deployment"
+		and runtime.get_current_session().session_state == "deployment"
+		and runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and defender != null
+		and defender.target_participant_id.is_empty()
+		and not defender.has_target_participant
+		and begin_result != null
+		and not begin_result.success
+		and not service_src.contains("begin_battle")
+		and not controller_src.contains("begin_battle")
+	)
+
+
+static func _defender_ai_overlay_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if view == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_draw")
+	var before: String = _tacticalview_overlay_blob(view)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	view.call("_draw")
+	var after: String = _tacticalview_overlay_blob(view)
+	return _gameplayruntime_finish(
+		runtime,
+		before.contains("attacker placement active")
+		and before.contains("attacker_committed=false")
+		and after.contains("attacker_committed=true")
+		and after.contains("defender_committed=true")
+		and after.contains("defender AI deployed")
+		and after.contains("deployment complete")
+		and after.contains("battle waiting to start")
+		and after.contains("defender posture=even")
+		and after.contains("defender AI pos")
+	)
+
+
+static func _defender_ai_absent_ok() -> bool:
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var planner_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_planner.gd")
+	var service_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_ai_service.gd")
+	var state_src: String = FileAccess.get_file_as_string("res://battle/core/battle_state.gd")
+	var view_src: String = _tacticalview_source()
+	var capture_src: String = FileAccess.get_file_as_string(
+		"res://campaign/missions/resolvers/neighborhood_hq_capture_resolver.gd"
+	)
+	return (
+		not controller_src.contains("func place_defender")
+		and not controller_src.contains("func commit_defender")
+		and not controller_src.contains("func select_defender")
+		and not controller_src.contains("KEY_D")
+		and not runtime_src.contains("auto_deploy")
+		and not runtime_src.contains("start_battle")
+		and not planner_src.contains("RandomNumberGenerator")
+		and not service_src.contains("begin_battle")
+		and not state_src.contains("min_spacing")
+		and not view_src.contains("Start Battle")
+		and not capture_src.contains("garrison_soldier_ids")
+		and not planner_src.contains("visiting")
+		and not planner_src.contains("allied")
 	)
 
 
