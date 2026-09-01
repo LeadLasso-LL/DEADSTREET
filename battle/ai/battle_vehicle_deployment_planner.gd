@@ -3,8 +3,9 @@ extends RefCounted
 
 # Query-only side-generic vehicle parking planner.
 # Proposes vehicle ID, position, and facing. Does not mutate BattleState.
-# Current fallback parks toward the arrival/rear of the owning deployment
-# region using opposing geometry as context. Not a permanent curb/road rule.
+# Fallback only: parks on the owning region's rear/arrival frontage, inset
+# from edges and centered along that frontage. Not a permanent curb/road rule.
+# Authored arrival_heading / anchor_position override when supplied.
 # No RNG.
 
 const BattleState := preload("res://battle/core/battle_state.gd")
@@ -22,6 +23,9 @@ const BattleVehicleDeploymentPlanAssignment := preload(
 
 const SAMPLE_STEP := 0.75
 const TOWARD_EPSILON_SQ := 0.0001
+const LEGAL_INSET_PAD := 0.15
+const FALLBACK_MIN_EDGE_CLEARANCE := 2.0
+const FALLBACK_EDGE_FRACTION := 0.05
 
 
 static func plan_side_vehicles(
@@ -236,19 +240,15 @@ static func _generate_candidates(
 	context: BattleVehiclePlacementContext
 ) -> Array[Dictionary]:
 	var candidates: Array[Dictionary] = []
-	var inset: float = maxf(profile.half_length(), profile.half_width())
-	inset += BattleVehicleCoverService.COVER_STANDOFF + 0.15
-	var usable: Rect2 = Rect2(
-		own_rect.position.x + inset,
-		own_rect.position.y + inset,
-		own_rect.size.x - 2.0 * inset,
-		own_rect.size.y - 2.0 * inset
-	)
-	if not BattlefieldGeometry.rect_is_usable(usable):
-		usable = own_rect
+	var usable: Rect2 = _fallback_usable_rect(own_rect, profile)
+	var rearward: Vector2 = -facing
+	var lateral: Vector2 = Vector2(-facing.y, facing.x)
+	var rear_center: Vector2 = _rect_rear_center(usable, rearward)
 	if context != null and context.has_anchor and BattlefieldGeometry.rect_contains_point(usable, context.anchor_position):
-		candidates.append({"position": context.anchor_position, "facing": facing, "rear": -INF})
-	var rear: Vector2 = -facing
+		candidates.append(
+			_scored_candidate(context.anchor_position, facing, rearward, lateral, rear_center, 1)
+		)
+	candidates.append(_scored_candidate(rear_center, facing, rearward, lateral, rear_center, 0))
 	var origin: Vector2 = usable.position
 	var cols: int = maxi(1, int(floor(usable.size.x / SAMPLE_STEP)))
 	var rows: int = maxi(1, int(floor(usable.size.y / SAMPLE_STEP)))
@@ -266,22 +266,91 @@ static func _generate_candidates(
 				origin.x + u * usable.size.x,
 				origin.y + v * usable.size.y
 			)
-			var rear_score: float = point.dot(rear)
-			candidates.append({"position": point, "facing": facing, "rear": rear_score})
+			candidates.append(_scored_candidate(point, facing, rearward, lateral, rear_center, 0))
 			row += 1
 		col += 1
-	candidates.sort_custom(func(a, b):
-		var rear_a: float = float(a.get("rear", 0.0))
-		var rear_b: float = float(b.get("rear", 0.0))
-		if not is_equal_approx(rear_a, rear_b):
-			return rear_a > rear_b
-		var pos_a: Vector2 = a.get("position", Vector2.ZERO)
-		var pos_b: Vector2 = b.get("position", Vector2.ZERO)
-		if not is_equal_approx(pos_a.y, pos_b.y):
-			return pos_a.y < pos_b.y
-		return pos_a.x < pos_b.x
-	)
+	candidates.sort_custom(Callable(BattleVehicleDeploymentPlanner, "_candidate_sort"))
 	return candidates
+
+
+static func _scored_candidate(
+	position: Vector2,
+	facing: Vector2,
+	rearward: Vector2,
+	lateral: Vector2,
+	rear_center: Vector2,
+	preferred: int
+) -> Dictionary:
+	var lateral_offset: float = (position - rear_center).dot(lateral)
+	return {
+		"position": position,
+		"facing": facing,
+		"preferred": preferred,
+		"rear": position.dot(rearward),
+		"lateral_abs": absf(lateral_offset),
+		"lateral": lateral_offset,
+	}
+
+
+static func _candidate_sort(a: Dictionary, b: Dictionary) -> bool:
+	var preferred_a: int = int(a.get("preferred", 0))
+	var preferred_b: int = int(b.get("preferred", 0))
+	if preferred_a != preferred_b:
+		return preferred_a > preferred_b
+	var rear_a: float = float(a.get("rear", 0.0))
+	var rear_b: float = float(b.get("rear", 0.0))
+	if not is_equal_approx(rear_a, rear_b):
+		return rear_a > rear_b
+	var lateral_abs_a: float = float(a.get("lateral_abs", 0.0))
+	var lateral_abs_b: float = float(b.get("lateral_abs", 0.0))
+	if not is_equal_approx(lateral_abs_a, lateral_abs_b):
+		return lateral_abs_a < lateral_abs_b
+	var lateral_a: float = float(a.get("lateral", 0.0))
+	var lateral_b: float = float(b.get("lateral", 0.0))
+	if not is_equal_approx(lateral_a, lateral_b):
+		return lateral_a < lateral_b
+	var pos_a: Vector2 = a.get("position", Vector2.ZERO)
+	var pos_b: Vector2 = b.get("position", Vector2.ZERO)
+	if not is_equal_approx(pos_a.y, pos_b.y):
+		return pos_a.y < pos_b.y
+	return pos_a.x < pos_b.x
+
+
+static func _fallback_usable_rect(own_rect: Rect2, profile: BattleVehiclePhysicalProfile) -> Rect2:
+	var legal_inset: float = maxf(profile.half_length(), profile.half_width())
+	legal_inset += BattleVehicleCoverService.COVER_STANDOFF + LEGAL_INSET_PAD
+	var clearance: float = FALLBACK_MIN_EDGE_CLEARANCE
+	var region_span: float = minf(own_rect.size.x, own_rect.size.y)
+	clearance = maxf(clearance, region_span * FALLBACK_EDGE_FRACTION)
+	var inset: float = legal_inset + clearance
+	var usable: Rect2 = _inset_rect(own_rect, inset)
+	if BattlefieldGeometry.rect_is_usable(usable):
+		return usable
+	usable = _inset_rect(own_rect, legal_inset)
+	if BattlefieldGeometry.rect_is_usable(usable):
+		return usable
+	return own_rect
+
+
+static func _inset_rect(rect: Rect2, inset: float) -> Rect2:
+	return Rect2(
+		rect.position.x + inset,
+		rect.position.y + inset,
+		rect.size.x - 2.0 * inset,
+		rect.size.y - 2.0 * inset
+	)
+
+
+static func _rect_rear_center(rect: Rect2, rearward: Vector2) -> Vector2:
+	if rearward.is_equal_approx(Vector2.ZERO):
+		return rect.get_center()
+	var axis: Vector2 = rearward.normalized()
+	var center: Vector2 = rect.get_center()
+	# Axis-aligned region: the rear frontage is the edge whose outward
+	# normal best matches rearward. Use that edge's midpoint.
+	if absf(axis.x) >= absf(axis.y):
+		return Vector2(center.x + signf(axis.x) * rect.size.x * 0.5, center.y)
+	return Vector2(center.x, center.y + signf(axis.y) * rect.size.y * 0.5)
 
 
 static func _side_rect(battle_state: BattleState, side_id: String) -> Rect2:

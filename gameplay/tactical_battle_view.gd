@@ -26,9 +26,8 @@ const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
 const ROSTER_FONT_SIZE := 13
 const ROSTER_CAMERA_GUTTER_PAD := 24.0
-const VEHICLE_OUTLINE_WIDTH := 3.0
-const VEHICLE_HALO_RADIUS := 28.0
-const VEHICLE_FACING_MARK := 34.0
+const VEHICLE_OUTLINE_WIDTH := 3.5
+const VEHICLE_FRONT_MARK := 6.0
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
 const PROVISIONAL_BACKGROUND := Color(0.10, 0.10, 0.11, 1.0)
@@ -55,9 +54,10 @@ const PROVISIONAL_SELECTED := Color(0.95, 0.86, 0.38, 0.38)
 const PROVISIONAL_SELECTABLE := Color(0.72, 0.88, 1.0, 1.0)
 const PROVISIONAL_STATUS := Color(0.95, 0.78, 0.42, 1.0)
 # Vehicle chrome is presentation only. Physical length/width stay on the catalog.
-const PROVISIONAL_VEHICLE_FILL := Color(0.11, 0.09, 0.07, 1.0)
-const PROVISIONAL_VEHICLE_OUTLINE := Color(0.98, 0.84, 0.28, 1.0)
-const PROVISIONAL_VEHICLE_FACING := Color(1.0, 0.93, 0.48, 1.0)
+# Fill/outline follow the authoritative body; they must not read as a larger collider.
+const PROVISIONAL_VEHICLE_FILL := Color(0.94, 0.78, 0.18, 1.0)
+const PROVISIONAL_VEHICLE_OUTLINE := Color(0.08, 0.07, 0.05, 1.0)
+const PROVISIONAL_VEHICLE_FACING := Color(0.08, 0.07, 0.05, 1.0)
 
 # Reference only. This view never stores an independent BattleState.
 var session: CampaignBattleSession = null
@@ -338,34 +338,37 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if vehicle == null or not vehicle.has_battle_position:
 			continue
-		var view_pos: Vector2 = _to_view(vehicle.battle_position)
-		draw_circle(view_pos, VEHICLE_HALO_RADIUS, Color(0.07, 0.06, 0.04, 0.94), true)
-		draw_circle(view_pos, VEHICLE_HALO_RADIUS, PROVISIONAL_VEHICLE_OUTLINE, false, 4.0, true)
 		var corners: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
-		var min_y: float = view_pos.y - VEHICLE_HALO_RADIUS
-		if corners.size() == 4:
-			var view_corners: PackedVector2Array = PackedVector2Array()
-			for corner: Vector2 in corners:
-				var view_corner: Vector2 = _to_view(corner)
-				view_corners.append(view_corner)
-				if view_corner.y < min_y:
-					min_y = view_corner.y
-			draw_colored_polygon(view_corners, PROVISIONAL_VEHICLE_FILL)
-			var outline: PackedVector2Array = view_corners.duplicate()
-			outline.append(view_corners[0])
-			draw_polyline(outline, PROVISIONAL_VEHICLE_OUTLINE, VEHICLE_OUTLINE_WIDTH, true)
-			draw_line(view_corners[0], view_corners[1], _side_fill(battle_state, vehicle.side_id), 3.5, true)
+		if corners.size() != 4:
+			continue
+		var view_corners: PackedVector2Array = PackedVector2Array()
+		var min_y: float = INF
+		var max_y: float = -INF
+		for corner: Vector2 in corners:
+			var view_corner: Vector2 = _to_view(corner)
+			view_corners.append(view_corner)
+			if view_corner.y < min_y:
+				min_y = view_corner.y
+			if view_corner.y > max_y:
+				max_y = view_corner.y
+		var view_pos: Vector2 = _to_view(vehicle.battle_position)
+		draw_colored_polygon(view_corners, PROVISIONAL_VEHICLE_FILL)
+		var outline: PackedVector2Array = view_corners.duplicate()
+		outline.append(view_corners[0])
+		draw_polyline(outline, PROVISIONAL_VEHICLE_OUTLINE, VEHICLE_OUTLINE_WIDTH, true)
+		draw_line(view_corners[0], view_corners[1], PROVISIONAL_VEHICLE_OUTLINE, VEHICLE_OUTLINE_WIDTH + 1.5, true)
 		if vehicle.has_valid_orientation():
 			var facing: Vector2 = vehicle.facing_direction
-			var nose: Vector2 = view_pos + facing * VEHICLE_FACING_MARK
-			draw_line(view_pos, nose, PROVISIONAL_VEHICLE_FACING, 4.0, true)
-			var side: Vector2 = Vector2(-facing.y, facing.x) * 10.0
+			var front_mid: Vector2 = (view_corners[0] + view_corners[1]) * 0.5
+			var nose: Vector2 = front_mid + facing * VEHICLE_FRONT_MARK
+			draw_line(front_mid, nose, PROVISIONAL_VEHICLE_FACING, 2.5, true)
+			var side: Vector2 = Vector2(-facing.y, facing.x) * 4.0
 			var chevron: PackedVector2Array = PackedVector2Array(
-				[nose, nose - facing * 14.0 + side, nose - facing * 14.0 - side]
+				[nose, nose - facing * 5.0 + side, nose - facing * 5.0 - side]
 			)
 			draw_colored_polygon(chevron, PROVISIONAL_VEHICLE_FACING)
-		_draw_label(Vector2(view_pos.x, min_y - 16.0), "CAR", 18)
-		_draw_label(Vector2(view_pos.x, view_pos.y + VEHICLE_HALO_RADIUS + 16.0), vehicle.battle_vehicle_id, 11)
+		_draw_label(Vector2(view_pos.x, min_y - 14.0), "CAR", 14)
+		_draw_label(Vector2(view_pos.x, max_y + 14.0), vehicle.battle_vehicle_id, 11)
 
 
 func _draw_overlay() -> void:
