@@ -49,6 +49,7 @@ func _process(delta: float) -> void:
 	if game_flow_controller.get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
 		return
 	game_flow_controller.advance_tactical(delta)
+	_log_mode_if_changed()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -67,6 +68,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if key_event.keycode == KEY_C:
 			_route_tactical_deployment_commit()
+			return
+		if key_event.keycode == KEY_SPACE:
+			_debug_request_tactical_active()
 			return
 		if key_event.keycode == KEY_ESCAPE:
 			_route_tactical_deployment_escape()
@@ -168,6 +172,21 @@ func _route_tactical_deployment_input(event: InputEvent) -> void:
 		return
 	var tactical_pos: Vector2 = tactical_view.screen_to_tactical_position(mouse.position)
 	tactical_deployment_controller.try_place_selected(tactical_pos)
+
+
+func _debug_request_tactical_active() -> void:
+	var result: GameFlowResult = begin_current_battle()
+	if result != null and result.success:
+		print(
+			"GameplayRuntime: begin_current_battle success mode=%s"
+			% get_current_mode()
+		)
+		_log_tactical_snapshot()
+		return
+	if result != null:
+		print("GameplayRuntime: begin_current_battle failed code=%s" % result.error_code)
+		return
+	print("GameplayRuntime: begin_current_battle failed")
 
 
 func _debug_enter_pending_battle() -> void:

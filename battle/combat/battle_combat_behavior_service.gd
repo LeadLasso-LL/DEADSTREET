@@ -28,6 +28,7 @@ const BattleCombatPressureBehaviorPolicyResult := preload(
 	"res://battle/combat/battle_combat_pressure_behavior_policy_result.gd"
 )
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
+const BattleWeaponDefinition := preload("res://battle/combat/battle_weapon_definition.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
 const BattleVictoryService := preload("res://battle/core/battle_victory_service.gd")
@@ -324,8 +325,9 @@ static func _update_healthy_role_cover_behavior(
 		if _healthy_occupied_cover_is_suitable(battle_state, participant, target, weapon_type_id):
 			_clear_owned_combat_navigation(participant)
 			return HEALTHY_HOLD_COVER
-		BattleCoverService.vacate_slot(battle_state, participant.participant_id)
+		BattleCoverService.release_all_for_participant(battle_state, participant.participant_id)
 		_reconcile_cover_state(battle_state, participant)
+		_clear_owned_combat_navigation(participant)
 	if target == null:
 		if participant.combat_move_mode == MOVE_SEEK_ROLE_COVER:
 			_release_owned_reservation(battle_state, participant)
@@ -417,13 +419,14 @@ static func _healthy_occupied_cover_is_suitable(
 		return false
 	if target == null:
 		return true
+	var occupied_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		participant.occupied_cover_slot_id
+	)
+	if _push_applies(battle_state, participant):
+		return _healthy_slot_is_within_weapon_max_range(occupied_slot, target, weapon_type_id)
 	if weapon_type_id == BattleWeaponCatalog.WEAPON_PISTOL:
 		return true
-	return _healthy_slot_is_role_suitable(
-		battle_state.battlefield_geometry.get_cover_slot(participant.occupied_cover_slot_id),
-		target,
-		weapon_type_id
-	)
+	return _healthy_slot_is_role_suitable(occupied_slot, target, weapon_type_id)
 
 
 static func _healthy_reserved_cover_is_suitable(
@@ -439,6 +442,8 @@ static func _healthy_reserved_cover_is_suitable(
 		return false
 	if slot.cover_slot_id != participant.reserved_cover_slot_id:
 		return false
+	if _push_applies(battle_state, participant):
+		return _healthy_slot_is_within_weapon_max_range(slot, target, weapon_type_id)
 	if weapon_type_id == BattleWeaponCatalog.WEAPON_PISTOL:
 		return true
 	return _healthy_slot_is_role_suitable(slot, target, weapon_type_id)
@@ -459,6 +464,24 @@ static func _healthy_slot_is_role_suitable(
 	if not is_finite(band_error):
 		return false
 	return band_error <= replan_distance
+
+
+static func _healthy_slot_is_within_weapon_max_range(
+	slot: BattleCoverSlot,
+	target: BattleParticipant,
+	weapon_type_id: String
+) -> bool:
+	if slot == null or not slot.is_valid() or target == null:
+		return false
+	if not _is_positioned(target):
+		return false
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(weapon_type_id)
+	if definition == null or not definition.is_valid():
+		return false
+	var slot_range: float = slot.position.distance_to(target.battle_position)
+	if not is_finite(slot_range):
+		return false
+	return slot_range <= definition.max_range or is_equal_approx(slot_range, definition.max_range)
 
 
 static func _reserve_healthy_role_cover_slot(
@@ -510,6 +533,11 @@ static func _ranked_healthy_cover_candidates(
 		if not is_finite(move_distance) or move_distance > seek_radius:
 			continue
 		if not _healthy_slot_is_reachable(battle_state, participant, slot):
+			continue
+		if (
+			_push_applies(battle_state, participant)
+			and not _healthy_slot_is_within_weapon_max_range(slot, target, weapon_type_id)
+		):
 			continue
 		var slot_range: float = slot.position.distance_to(target.battle_position)
 		var band_error: float = 0.0

@@ -423,7 +423,12 @@ func _overlay_rows() -> Array[Dictionary]:
 		else:
 			undeployed_vehicles += 1
 	rows.append(_overlay_row("type=%s  mission=%s" % [battle_state.battle_type_id, battle_state.mission_id]))
-	rows.append(_overlay_row("phase=%s  session=%s" % [battle_state.battle_phase, session.session_state]))
+	rows.append(
+		_overlay_row(
+			"phase=%s  session=%s  elapsed=%.2f"
+			% [battle_state.battle_phase, session.session_state, battle_state.elapsed_time_seconds]
+		)
+	)
 	rows.append(
 		_overlay_row(
 			"attacker_side=%s  defender_side=%s"
@@ -449,7 +454,9 @@ func _overlay_rows() -> Array[Dictionary]:
 			% [deploy_subrole, attacker_committed, defender_committed]
 		)
 	)
-	if not attacker_committed:
+	if battle_state.battle_phase == "active":
+		rows.append(_overlay_status_row("BATTLE ACTIVE"))
+	elif not attacker_committed:
 		rows.append(_overlay_row("attacker placement active; C commits when all living attackers are placed"))
 	elif not defender_committed:
 		var fail_code: String = ""
@@ -465,6 +472,7 @@ func _overlay_rows() -> Array[Dictionary]:
 				"attacker committed; defender AI deployed; defender committed; deployment complete / battle waiting to start"
 			)
 		)
+		rows.append(_overlay_status_row("SPACE: START BATTLE"))
 		if not defender_posture.is_empty():
 			rows.append(_overlay_row("defender posture=%s" % defender_posture))
 		for participant_id: String in _sorted_keys(battle_state.participants):
@@ -542,6 +550,15 @@ func _overlay_row(text: String) -> Dictionary:
 	return {
 		"text": text,
 		"kind": "",
+		"id": "",
+		"selectable": false,
+	}
+
+
+func _overlay_status_row(text: String) -> Dictionary:
+	return {
+		"text": text,
+		"kind": "status",
 		"id": "",
 		"selectable": false,
 	}
