@@ -128,6 +128,20 @@ const BattleDeploymentPlan := preload("res://battle/ai/battle_deployment_plan.gd
 const BattleDeploymentPlanAssignment := preload("res://battle/ai/battle_deployment_plan_assignment.gd")
 const BattleDeploymentAiService := preload("res://battle/ai/battle_deployment_ai_service.gd")
 const BattleDeploymentAiResult := preload("res://battle/ai/battle_deployment_ai_result.gd")
+const BattleVehiclePhysicalCatalog := preload("res://battle/vehicles/battle_vehicle_physical_catalog.gd")
+const BattleVehiclePhysicalProfile := preload("res://battle/vehicles/battle_vehicle_physical_profile.gd")
+const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const BattleVehiclePlacementService := preload("res://battle/vehicles/battle_vehicle_placement_service.gd")
+const BattleVehiclePlacementResult := preload("res://battle/vehicles/battle_vehicle_placement_result.gd")
+const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
+const BattleVehicleDeploymentService := preload("res://battle/vehicles/battle_vehicle_deployment_service.gd")
+const BattleVehicleDeploymentResult := preload("res://battle/vehicles/battle_vehicle_deployment_result.gd")
+const BattleVehicleCoverService := preload("res://battle/vehicles/battle_vehicle_cover_service.gd")
+const BattleVehicleDeploymentPlanner := preload("res://battle/ai/battle_vehicle_deployment_planner.gd")
+const BattleVehicleDeploymentPlan := preload("res://battle/ai/battle_vehicle_deployment_plan.gd")
+const BattleVehicleDeploymentPlanAssignment := preload(
+	"res://battle/ai/battle_vehicle_deployment_plan_assignment.gd"
+)
 
 
 static func run() -> Dictionary:
@@ -16086,6 +16100,46 @@ static func run() -> Dictionary:
 	var defender_ai_no_start_ok: bool = _defender_ai_no_start_ok()
 	var defender_ai_overlay_ok: bool = _defender_ai_overlay_ok()
 	var defender_ai_absent_ok: bool = _defender_ai_absent_ok()
+	var vehicle_physical_identity_ok: bool = _vehicle_physical_identity_ok()
+	var vehicle_physical_profile_ok: bool = _vehicle_physical_profile_ok()
+	var vehicle_physical_pose_ok: bool = _vehicle_physical_pose_ok()
+	var vehicle_physical_body_queries_ok: bool = _vehicle_physical_body_queries_ok()
+	var vehicle_physical_render_ok: bool = _vehicle_physical_render_ok()
+	var vehicle_physical_placement_ok: bool = _vehicle_physical_placement_ok()
+	var vehicle_physical_atomicity_ok: bool = _vehicle_physical_atomicity_ok()
+	var vehicle_physical_footprint_bounds_ok: bool = _vehicle_physical_footprint_bounds_ok()
+	var vehicle_physical_obstacle_ok: bool = _vehicle_physical_obstacle_ok()
+	var vehicle_physical_vehicle_overlap_ok: bool = _vehicle_physical_vehicle_overlap_ok()
+	var vehicle_physical_participant_overlap_ok: bool = _vehicle_physical_participant_overlap_ok()
+	var vehicle_physical_cover_ok: bool = _vehicle_physical_cover_ok()
+	var vehicle_physical_cover_direction_ok: bool = _vehicle_physical_cover_direction_ok()
+	var vehicle_physical_no_occupancy_ok: bool = _vehicle_physical_no_occupancy_ok()
+	var vehicle_physical_move_axis_ok: bool = _vehicle_physical_move_axis_ok()
+	var vehicle_physical_move_rotated_ok: bool = _vehicle_physical_move_rotated_ok()
+	var vehicle_physical_nav_axis_ok: bool = _vehicle_physical_nav_axis_ok()
+	var vehicle_physical_nav_rotated_ok: bool = _vehicle_physical_nav_rotated_ok()
+	var vehicle_physical_cover_reach_ok: bool = _vehicle_physical_cover_reach_ok()
+	var vehicle_physical_nav_sealed_ok: bool = _vehicle_physical_nav_sealed_ok()
+	var vehicle_physical_nav_multi_ok: bool = _vehicle_physical_nav_multi_ok()
+	var vehicle_physical_nav_geometry_ok: bool = _vehicle_physical_nav_geometry_ok()
+	var vehicle_physical_nav_inside_ok: bool = _vehicle_physical_nav_inside_ok()
+	var vehicle_physical_los_ok: bool = _vehicle_physical_los_ok()
+	var vehicle_physical_autoplace_ok: bool = _vehicle_physical_autoplace_ok()
+	var vehicle_physical_geography_ok: bool = _vehicle_physical_geography_ok()
+	var vehicle_physical_anchor_ok: bool = _vehicle_physical_anchor_ok()
+	var vehicle_physical_multi_autoplace_ok: bool = _vehicle_physical_multi_autoplace_ok()
+	var vehicle_physical_player_park_ok: bool = _vehicle_physical_player_park_ok()
+	var vehicle_physical_park_idempotent_ok: bool = _vehicle_physical_park_idempotent_ok()
+	var vehicle_physical_commit_ok: bool = _vehicle_physical_commit_ok()
+	var vehicle_physical_freeze_ok: bool = _vehicle_physical_freeze_ok()
+	var vehicle_physical_readiness_ok: bool = _vehicle_physical_readiness_ok()
+	var vehicle_physical_ready_paused_ok: bool = _vehicle_physical_ready_paused_ok()
+	var vehicle_physical_repeat_c_ok: bool = _vehicle_physical_repeat_c_ok()
+	var vehicle_physical_httb_ok: bool = _vehicle_physical_httb_ok()
+	var vehicle_physical_campaign_ok: bool = _vehicle_physical_campaign_ok()
+	var vehicle_physical_noncombat_ok: bool = _vehicle_physical_noncombat_ok()
+	var vehicle_physical_doors_ok: bool = _vehicle_physical_doors_ok()
+	var vehicle_physical_self_check_absent_ok: bool = _vehicle_physical_self_check_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17995,6 +18049,46 @@ static func run() -> Dictionary:
 		"defender_ai_no_start_ok": defender_ai_no_start_ok,
 		"defender_ai_overlay_ok": defender_ai_overlay_ok,
 		"defender_ai_absent_ok": defender_ai_absent_ok,
+		"vehicle_physical_identity_ok": vehicle_physical_identity_ok,
+		"vehicle_physical_profile_ok": vehicle_physical_profile_ok,
+		"vehicle_physical_pose_ok": vehicle_physical_pose_ok,
+		"vehicle_physical_body_queries_ok": vehicle_physical_body_queries_ok,
+		"vehicle_physical_render_ok": vehicle_physical_render_ok,
+		"vehicle_physical_placement_ok": vehicle_physical_placement_ok,
+		"vehicle_physical_atomicity_ok": vehicle_physical_atomicity_ok,
+		"vehicle_physical_footprint_bounds_ok": vehicle_physical_footprint_bounds_ok,
+		"vehicle_physical_obstacle_ok": vehicle_physical_obstacle_ok,
+		"vehicle_physical_vehicle_overlap_ok": vehicle_physical_vehicle_overlap_ok,
+		"vehicle_physical_participant_overlap_ok": vehicle_physical_participant_overlap_ok,
+		"vehicle_physical_cover_ok": vehicle_physical_cover_ok,
+		"vehicle_physical_cover_direction_ok": vehicle_physical_cover_direction_ok,
+		"vehicle_physical_no_occupancy_ok": vehicle_physical_no_occupancy_ok,
+		"vehicle_physical_move_axis_ok": vehicle_physical_move_axis_ok,
+		"vehicle_physical_move_rotated_ok": vehicle_physical_move_rotated_ok,
+		"vehicle_physical_nav_axis_ok": vehicle_physical_nav_axis_ok,
+		"vehicle_physical_nav_rotated_ok": vehicle_physical_nav_rotated_ok,
+		"vehicle_physical_cover_reach_ok": vehicle_physical_cover_reach_ok,
+		"vehicle_physical_nav_sealed_ok": vehicle_physical_nav_sealed_ok,
+		"vehicle_physical_nav_multi_ok": vehicle_physical_nav_multi_ok,
+		"vehicle_physical_nav_geometry_ok": vehicle_physical_nav_geometry_ok,
+		"vehicle_physical_nav_inside_ok": vehicle_physical_nav_inside_ok,
+		"vehicle_physical_los_ok": vehicle_physical_los_ok,
+		"vehicle_physical_autoplace_ok": vehicle_physical_autoplace_ok,
+		"vehicle_physical_geography_ok": vehicle_physical_geography_ok,
+		"vehicle_physical_anchor_ok": vehicle_physical_anchor_ok,
+		"vehicle_physical_multi_autoplace_ok": vehicle_physical_multi_autoplace_ok,
+		"vehicle_physical_player_park_ok": vehicle_physical_player_park_ok,
+		"vehicle_physical_park_idempotent_ok": vehicle_physical_park_idempotent_ok,
+		"vehicle_physical_commit_ok": vehicle_physical_commit_ok,
+		"vehicle_physical_freeze_ok": vehicle_physical_freeze_ok,
+		"vehicle_physical_readiness_ok": vehicle_physical_readiness_ok,
+		"vehicle_physical_ready_paused_ok": vehicle_physical_ready_paused_ok,
+		"vehicle_physical_repeat_c_ok": vehicle_physical_repeat_c_ok,
+		"vehicle_physical_httb_ok": vehicle_physical_httb_ok,
+		"vehicle_physical_campaign_ok": vehicle_physical_campaign_ok,
+		"vehicle_physical_noncombat_ok": vehicle_physical_noncombat_ok,
+		"vehicle_physical_doors_ok": vehicle_physical_doors_ok,
+		"vehicle_physical_self_check_absent_ok": vehicle_physical_self_check_absent_ok,
 	}
 
 	var passed := true
@@ -28505,22 +28599,32 @@ static func _battlewounded_campaign_isolation_ok() -> bool:
 		return false
 	if _battlewounded_slot(battle_state.battlefield_geometry, "wd_camp_obj", "wd_camp_slot", Vector2(16.0, 10.0)) == null:
 		return false
-	_battletarget_place(participant, Vector2(10.0, 10.0))
+	# Outside vehicle bodies (parked in the x~4 strip) and farther than
+	# occupancy epsilon from the authored slot so wounded logic reserves,
+	# then seeks, battle-local cover. Vehicle-derived cover may also be used.
+	_battletarget_place(participant, Vector2(12.0, 10.0))
 	_battletarget_place(defender, Vector2(80.0, 10.0))
 	_battlebehavior_hold_hostile(defender)
 	participant.is_wounded = true
 	participant.set_target_participant("battle_def_sol")
 	var seek_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
-	if seek_res == null or not seek_res.success or participant.reserved_cover_slot_id != "wd_camp_slot":
+	if seek_res == null or not seek_res.success:
 		return false
-	var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.5)
-	if runtime == null or not runtime.success:
+	var used_slot_id: String = participant.occupied_cover_slot_id
+	if used_slot_id.is_empty():
+		used_slot_id = participant.reserved_cover_slot_id
+	var used_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(used_slot_id)
+	if used_slot_id.is_empty() or used_slot == null:
 		return false
-	_battletarget_place(participant, Vector2(16.0, 10.0))
-	var occupy_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
-	if occupy_res == null or not occupy_res.success or participant.occupied_cover_slot_id != "wd_camp_slot":
-		return false
-	_battletarget_place(defender, Vector2(28.0, 10.0))
+	if participant.occupied_cover_slot_id.is_empty():
+		var runtime: BattleRuntimeResult = BattleRuntimeService.advance(battle_state, 0.5)
+		if runtime == null or not runtime.success:
+			return false
+		_battletarget_place(participant, used_slot.position)
+		var occupy_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+		if occupy_res == null or not occupy_res.success or participant.occupied_cover_slot_id != used_slot_id:
+			return false
+	_battletarget_place(defender, used_slot.position + Vector2(12.0, 0.0))
 	var fire: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
 		battle_state,
 		"battle_sol_a",
@@ -28532,7 +28636,7 @@ static func _battlewounded_campaign_isolation_ok() -> bool:
 	var other: BattleParticipant = _battlefire_add(battle_state, "wd_camp_killer", "defender", "pistol")
 	if other == null:
 		return false
-	_battletarget_place(other, Vector2(16.0, 12.0))
+	_battletarget_place(other, used_slot.position + Vector2(0.0, 2.0))
 	var kill: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
 		battle_state,
 		"wd_camp_killer",
@@ -48452,9 +48556,6 @@ static func _gameplayruntime_undeployed(battle_state: BattleState) -> bool:
 	for participant_id: String in battle_state.participants:
 		if battle_state.is_participant_deployed(participant_id):
 			return false
-	for vehicle_id: String in battle_state.vehicles:
-		if battle_state.is_vehicle_deployed(vehicle_id):
-			return false
 	return battle_state.battle_phase == "deployment"
 
 
@@ -48774,6 +48875,7 @@ static func _gameplayruntime_no_auto_deploy_ok() -> bool:
 		runtime.get_current_mode() == "tactical_deployment"
 		and session.session_state == "deployment"
 		and _gameplayruntime_undeployed(battle_state)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 		and is_equal_approx(battle_state.elapsed_time_seconds, elapsed_before)
 		and not runtime.has_method("deploy_participant")
 		and not runtime.has_method("auto_deploy")
@@ -50430,15 +50532,17 @@ static func _tacticalview_roster_ok() -> bool:
 		and participant.side_id == battle_state.attacker_side_id
 		and vehicle.side_id == battle_state.attacker_side_id
 		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
-		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 		and not participant.has_battle_position
-		and not vehicle.has_battle_position
+		and vehicle.has_battle_position
+		and vehicle.has_valid_orientation()
 		and blob.contains(StarterWorldService.SOLDIER_ID)
 		and blob.contains(StarterWorldService.VEHICLE_ID)
 		and blob.contains("ATT")
 		and blob.contains(participant.weapon_type)
 		and blob.contains(vehicle.vehicle_type_id)
 		and blob.contains("undeployed")
+		and blob.contains("parked")
 		and view.call("_side_label", battle_state, participant.side_id) == "ATT"
 		and view.call("_deployed_label", false) == "undeployed"
 	)
@@ -50470,6 +50574,7 @@ static func _tacticalview_no_auto_deploy_ok() -> bool:
 		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
 		and battle_state.battle_phase == "deployment"
 		and _gameplayruntime_undeployed(battle_state)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
 		and not view.has_method("deploy_participant")
 		and not view.has_method("deploy_vehicle")
@@ -50521,29 +50626,29 @@ static func _tacticalview_vehicle_pos_ok() -> bool:
 	var view: TacticalBattleView = _tacticalview_view(runtime)
 	var battle_state: BattleState = runtime.get_current_session().battle_state
 	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var source: String = _tacticalview_source()
 	if view == null or vehicle == null:
 		return _gameplayruntime_finish(runtime, false)
-	var undeployed_blob: String = _tacticalview_overlay_blob(view)
-	var side: BattleSide = battle_state.get_side(vehicle.side_id)
-	if side == null or not battle_state.deploy_vehicle(vehicle.battle_vehicle_id, side.deployment_zone_id):
-		return _gameplayruntime_finish(runtime, false)
-	var first: Vector2 = Vector2(4.0, 22.0)
-	vehicle.battle_position = first
-	vehicle.has_battle_position = true
+	var blob: String = _tacticalview_overlay_blob(view)
 	var scale: float = TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
-	var derived_first: Vector2 = view.call("_to_view", vehicle.battle_position)
-	var second: Vector2 = Vector2(5.0, 28.0)
-	vehicle.battle_position = second
-	var derived_second: Vector2 = view.call("_to_view", vehicle.battle_position)
+	var derived: Vector2 = view.call("_to_view", vehicle.battle_position)
+	var body: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
 	view._process(0.1)
+	view.call("_draw")
 	return _gameplayruntime_finish(
 		runtime,
-		undeployed_blob.contains(StarterWorldService.VEHICLE_ID)
-		and undeployed_blob.contains("undeployed")
-		and derived_first.is_equal_approx(first * scale)
-		and derived_second.is_equal_approx(second * scale)
-		and vehicle.battle_position.is_equal_approx(second)
+		blob.contains(StarterWorldService.VEHICLE_ID)
+		and blob.contains("parked")
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
+		and vehicle.has_battle_position
+		and vehicle.has_valid_orientation()
+		and derived.is_equal_approx(vehicle.battle_position * scale)
+		and body.size() == 4
+		and source.contains("BattleVehicleBodyService.world_corners")
+		and not source.contains("VEHICLE_SIZE")
 		and view.get("battle_position") == null
+		and not view.has_method("place_vehicle")
+		and not view.has_method("deploy_vehicle")
 	)
 
 
@@ -50636,9 +50741,16 @@ static func _tacticalview_cover_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	var source: String = _tacticalview_source()
-	var empty_ok: bool = (
-		geometry.cover_objects.is_empty()
-		and geometry.cover_slots.is_empty()
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var cover_object_id: String = ""
+	if vehicle != null:
+		cover_object_id = BattleVehicleCoverService.body_cover_object_id(vehicle.battle_vehicle_id)
+	var vehicle_cover_ok: bool = (
+		vehicle != null
+		and battle_state.is_vehicle_fully_deployed(vehicle.battle_vehicle_id)
+		and not cover_object_id.is_empty()
+		and geometry.has_cover_object(cover_object_id)
+		and geometry.get_cover_object(cover_object_id).slot_ids.size() > 0
 		and view.get("cover_slots") == null
 		and source.contains("get_sorted_cover_slot_ids()")
 		and source.contains("slot.position")
@@ -50658,7 +50770,7 @@ static func _tacticalview_cover_ok() -> bool:
 	var centroid: Vector2 = view.call("_cover_object_centroid", geometry, cover_object)
 	return _gameplayruntime_finish(
 		runtime,
-		empty_ok
+		vehicle_cover_ok
 		and geometry.get_cover_slot("tv_slot").position.is_equal_approx(Vector2(50.0, 30.0))
 		and centroid.is_equal_approx(Vector2(50.0, 30.0))
 		and view.get("cover_slots") == null
@@ -50752,6 +50864,7 @@ static func _tacticalview_no_sim_ok() -> bool:
 		runtime,
 		_battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
 		and _gameplayruntime_undeployed(battle_state)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 		and not source.contains("BattleRuntimeService")
 		and not source.contains("BattleCombatBehaviorService")
 		and not source.contains("BattleVictoryService")
@@ -51348,7 +51461,7 @@ static func _interactive_deploy_place_ok() -> bool:
 		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
 		and runtime.get_current_mode() == "tactical_deployment"
 		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
-		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 	)
 
 
@@ -51847,13 +51960,13 @@ static func _interactive_deploy_vehicle_ok() -> bool:
 	return _gameplayruntime_finish(
 		runtime,
 		blob.contains(StarterWorldService.VEHICLE_ID)
-		and blob.contains("placement unavailable")
+		and blob.contains("parked")
 		and str(hit.get("kind", "")) == "vehicle"
 		and str(hit.get("id", "")) == StarterWorldService.VEHICLE_ID
 		and vehicle_status_ok
 		and vehicle_select_ok
 		and controller.selected_participant_id.is_empty()
-		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 		and vehicle.deployment_slot_id == snap_slot
 		and vehicle.has_battle_position == snap_has
 		and vehicle.battle_position.is_equal_approx(snap_pos)
@@ -52338,7 +52451,7 @@ static func _interactive_deploy_htb_mouse_ok() -> bool:
 	_interactive_deploy_click(runtime, _interactive_deploy_local_to_viewport(view, vehicle_rect.get_center()))
 	var vehicle_ok: bool = (
 		controller.status_text == "vehicle deployment not available"
-		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 	)
 	if controller.selected_participant_id != StarterWorldService.SOLDIER_ID:
 		controller.select_participant(StarterWorldService.SOLDIER_ID)
@@ -52357,7 +52470,7 @@ static func _interactive_deploy_htb_mouse_ok() -> bool:
 		and battle_state.battle_phase == "deployment"
 		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
 		and runtime.get_current_mode() == "tactical_deployment"
-		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
 	)
 
 
@@ -53496,29 +53609,42 @@ static func _attacker_commit_vehicle_provisional_ok() -> bool:
 	var battle_state: BattleState = runtime.get_current_session().battle_state
 	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
 	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if participant == null or vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var parked_before_soldier: bool = battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
+	var vehicle_pos: Vector2 = vehicle.battle_position
+	var vehicle_facing: Vector2 = vehicle.facing_direction
 	controller.select_participant(StarterWorldService.SOLDIER_ID)
 	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
 	var pos: Vector2 = participant.battle_position
 	var commit: BattleDeploymentCommitResult = controller.try_commit_attacker()
-	var vehicle_before: bool = battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
-	var ready_before_vehicle: bool = battle_state.is_battle_ready()
-	var attacker_side: BattleSide = battle_state.get_side(battle_state.attacker_side_id)
-	var vehicle_ok: bool = battle_state.deploy_vehicle(
+	var after_commit_deploy: bool = battle_state.deploy_vehicle(
 		StarterWorldService.VEHICLE_ID,
-		attacker_side.deployment_zone_id
+		battle_state.get_side(battle_state.attacker_side_id).deployment_zone_id
+	)
+	var after_commit_place: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		StarterWorldService.VEHICLE_ID,
+		vehicle_pos + Vector2(1.0, 0.0),
+		vehicle_facing
 	)
 	return _gameplayruntime_finish(
 		runtime,
-		commit != null
+		parked_before_soldier
+		and commit != null
 		and commit.success
-		and not vehicle_before
-		and not ready_before_vehicle
-		and vehicle_ok
-		and battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and not after_commit_deploy
+		and after_commit_place != null
+		and not after_commit_place.success
+		and vehicle.battle_position.is_equal_approx(vehicle_pos)
+		and vehicle.facing_direction.is_equal_approx(vehicle_facing)
 		and participant.battle_position.is_equal_approx(pos)
 		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
 		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
 		and battle_state.battle_phase == "deployment"
 		and runtime.get_current_session().session_state == "deployment"
 		and runtime.get_current_mode() == "tactical_deployment"
@@ -53574,20 +53700,30 @@ static func _attacker_commit_repeat_c_ok() -> bool:
 	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
 	if defender != null:
 		defender_pos = defender.battle_position
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var vehicle_pos: Vector2 = Vector2.ZERO
+	var vehicle_facing: Vector2 = Vector2.ZERO
+	if vehicle != null:
+		vehicle_pos = vehicle.battle_position
+		vehicle_facing = vehicle.facing_direction
 	_tacticalview_press(runtime, KEY_C)
-	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	return _gameplayruntime_finish(
 		runtime,
 		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
 		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
 		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and battle_state.battle_phase == "deployment"
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
 		and participant.battle_position.is_equal_approx(pos)
 		and defender != null
 		and defender.has_battle_position
 		and defender.battle_position.is_equal_approx(defender_pos)
-		and begin_result != null
-		and not begin_result.success
+		and vehicle != null
+		and vehicle.battle_position.is_equal_approx(vehicle_pos)
+		and vehicle.facing_direction.is_equal_approx(vehicle_facing)
+		and runtime.get_current_mode() == "tactical_deployment"
 	)
 
 
@@ -53670,7 +53806,6 @@ static func _attacker_commit_no_start_ok() -> bool:
 	controller.select_participant(StarterWorldService.SOLDIER_ID)
 	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
 	controller.try_commit_attacker()
-	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	return _gameplayruntime_finish(
 		runtime,
 		controlled_ok
@@ -53679,9 +53814,8 @@ static func _attacker_commit_no_start_ok() -> bool:
 		and runtime.get_current_mode() == "tactical_deployment"
 		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
 		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
-		and not battle_state.is_battle_ready()
-		and begin_result != null
-		and not begin_result.success
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
 	)
 
 
@@ -53793,7 +53927,9 @@ static func _attacker_commit_httb_flow_ok() -> bool:
 		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
 		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
 		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
-		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
 		and battle_state.battle_phase == "deployment"
 		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
 		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
@@ -55154,7 +55290,6 @@ static func _defender_composition_attacker_commit_ok() -> bool:
 		_interactive_deploy_continuous_point(battle_state.battlefield_geometry)
 	)
 	var committed: BattleDeploymentCommitResult = controller.try_commit_attacker()
-	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	return _gameplayruntime_finish(
 		runtime,
 		placed != null
@@ -55169,10 +55304,12 @@ static func _defender_composition_attacker_commit_ok() -> bool:
 		and battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
 		and defender.has_battle_position
 		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
-		and not battle_state.is_battle_ready()
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
 		and battle_state.battle_phase == "deployment"
-		and begin_result != null
-		and not begin_result.success
+		and runtime.get_current_session().session_state == "deployment"
+		and runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
 	)
 
 
@@ -56522,7 +56659,6 @@ static func _defender_ai_no_start_ok() -> bool:
 	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
 	controller.try_commit_attacker()
 	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
-	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	var service_src: String = FileAccess.get_file_as_string("res://battle/ai/battle_deployment_ai_service.gd")
 	var controller_src: String = FileAccess.get_file_as_string(
 		"res://gameplay/tactical_deployment_controller.gd"
@@ -56536,8 +56672,8 @@ static func _defender_ai_no_start_ok() -> bool:
 		and defender != null
 		and defender.target_participant_id.is_empty()
 		and not defender.has_target_participant
-		and begin_result != null
-		and not begin_result.success
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
 		and not service_src.contains("begin_battle")
 		and not controller_src.contains("begin_battle")
 	)
@@ -56604,4 +56740,1850 @@ static func _defender_ai_absent_ok() -> bool:
 	)
 
 
+static func _vehicle_physical_make_state() -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"vp_battle",
+		"neighborhood_hq_assault",
+		"vp_mission",
+		"vp_hq",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	var attacker_side: BattleSide = BattleSide.new("attacker", "battle_a", "", true, "attacker_deployment")
+	var defender_side: BattleSide = BattleSide.new("defender", "battle_b", "", false, "defender_deployment")
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	var attacker_zone: DeploymentZone = DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry")
+	var defender_zone: DeploymentZone = DeploymentZone.new("defender_deployment", "defender", "defender_position")
+	if not battle_state.add_deployment_zone(attacker_zone) or not battle_state.add_deployment_zone(defender_zone):
+		return null
+	if not _battlespatial_attach_open_geometry(battle_state):
+		return null
+	attacker_zone.deployment_rect = battle_state.battlefield_geometry.attacker_deployment_rect
+	defender_zone.deployment_rect = battle_state.battlefield_geometry.defender_deployment_rect
+	return battle_state
 
+
+static func _vehicle_physical_bind_zone_rects(battle_state: BattleState) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var attacker_zone: DeploymentZone = battle_state.get_deployment_zone("attacker_deployment")
+	var defender_zone: DeploymentZone = battle_state.get_deployment_zone("defender_deployment")
+	if attacker_zone == null or defender_zone == null:
+		return false
+	attacker_zone.deployment_rect = battle_state.battlefield_geometry.attacker_deployment_rect
+	defender_zone.deployment_rect = battle_state.battlefield_geometry.defender_deployment_rect
+	return true
+
+
+static func _vehicle_physical_add_car(
+	battle_state: BattleState,
+	vehicle_id: String,
+	side_id: String
+) -> BattleVehicle:
+	var zone_id: String = "attacker_deployment"
+	if side_id == "defender":
+		zone_id = "defender_deployment"
+	if not _battle_register_vehicle(battle_state, vehicle_id, side_id, zone_id):
+		return null
+	return battle_state.get_vehicle(vehicle_id)
+
+
+static func _vehicle_physical_add_soldier(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String
+) -> BattleParticipant:
+	var zone_id: String = "attacker_deployment"
+	if side_id == "defender":
+		zone_id = "defender_deployment"
+	if not _battle_register_participant(battle_state, participant_id, side_id, zone_id):
+		return null
+	return battle_state.get_participant(participant_id)
+
+
+static func _vehicle_physical_pose_snap(battle_state: BattleState, vehicle_id: String) -> Dictionary:
+	var snap: Dictionary = {}
+	snap["deployed"] = false
+	snap["slot"] = ""
+	snap["has_pos"] = false
+	snap["pos"] = Vector2.INF
+	snap["has_facing"] = false
+	snap["facing"] = Vector2.INF
+	snap["zone_ids"] = []
+	snap["cover_object"] = false
+	snap["cover_slots"] = 0
+	if battle_state == null or vehicle_id.is_empty():
+		return snap
+	var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+	if vehicle == null:
+		return snap
+	snap["deployed"] = battle_state.is_vehicle_deployed(vehicle_id)
+	snap["slot"] = vehicle.deployment_slot_id
+	snap["has_pos"] = vehicle.has_battle_position
+	snap["pos"] = vehicle.battle_position
+	snap["has_facing"] = vehicle.has_facing
+	snap["facing"] = vehicle.facing_direction
+	var zone: DeploymentZone = battle_state.get_deployment_zone("attacker_deployment")
+	if zone != null:
+		snap["zone_ids"] = _copy_ids(zone.deployed_vehicle_ids)
+	if battle_state.battlefield_geometry != null:
+		var object_id: String = BattleVehicleCoverService.body_cover_object_id(vehicle_id)
+		snap["cover_object"] = battle_state.battlefield_geometry.has_cover_object(object_id)
+		var cover_object: BattleCoverObject = battle_state.battlefield_geometry.get_cover_object(object_id)
+		if cover_object != null:
+			snap["cover_slots"] = cover_object.slot_ids.size()
+	return snap
+
+
+static func _vehicle_physical_pose_unchanged(
+	battle_state: BattleState,
+	vehicle_id: String,
+	snap: Dictionary
+) -> bool:
+	var now: Dictionary = _vehicle_physical_pose_snap(battle_state, vehicle_id)
+	if bool(now.get("deployed", true)) != bool(snap.get("deployed", false)):
+		return false
+	if str(now.get("slot", "x")) != str(snap.get("slot", "")):
+		return false
+	if bool(now.get("has_pos", true)) != bool(snap.get("has_pos", false)):
+		return false
+	if bool(now.get("has_facing", true)) != bool(snap.get("has_facing", false)):
+		return false
+	if not (now.get("pos", Vector2.ZERO) as Vector2).is_equal_approx(snap.get("pos", Vector2.INF) as Vector2):
+		return false
+	if not (now.get("facing", Vector2.ZERO) as Vector2).is_equal_approx(snap.get("facing", Vector2.INF) as Vector2):
+		return false
+	var now_ids: Array[String] = []
+	var snap_ids: Array[String] = []
+	var now_raw: Variant = now.get("zone_ids", [])
+	var snap_raw: Variant = snap.get("zone_ids", [])
+	if now_raw is Array:
+		for found_id in now_raw:
+			now_ids.append(str(found_id))
+	if snap_raw is Array:
+		for found_id in snap_raw:
+			snap_ids.append(str(found_id))
+	if not _string_ids_match(now_ids, snap_ids):
+		return false
+	if bool(now.get("cover_object", true)) != bool(snap.get("cover_object", false)):
+		return false
+	if int(now.get("cover_slots", -1)) != int(snap.get("cover_slots", 0)):
+		return false
+	return true
+
+
+static func _vehicle_physical_route_avoids_vehicles(
+	battle_state: BattleState,
+	start_position: Vector2,
+	waypoints: Array[Vector2]
+) -> bool:
+	if not _battlenav_segments_clear(battle_state, start_position, waypoints):
+		return false
+	var current: Vector2 = start_position
+	for waypoint: Vector2 in waypoints:
+		for vehicle_id: String in battle_state.vehicles:
+			var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+			if vehicle == null or not BattleVehicleBodyService.has_usable_pose(vehicle):
+				continue
+			var hit_t: float = BattleVehicleBodyService.segment_entry_t(
+				vehicle,
+				current,
+				waypoint - current
+			)
+			if is_finite(hit_t) and hit_t >= 0.0 and hit_t <= 1.0:
+				return false
+		current = waypoint
+	return true
+
+
+static func _vehicle_physical_follow_route(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	destination: Vector2,
+	waypoints: Array[Vector2]
+) -> bool:
+	if battle_state == null or participant == null:
+		return false
+	if not participant.set_navigation_path(destination, waypoints):
+		return false
+	if not participant.set_movement_speed(40.0):
+		return false
+	battle_state.battle_phase = "active"
+	var steps: int = 0
+	while steps < 100:
+		var follow: BattlePathFollowResult = BattlePathFollowService.advance(battle_state)
+		if follow == null or not follow.success:
+			return false
+		var moved: BattleMovementResult = BattleMovementService.advance(battle_state, 0.05)
+		if moved == null or not moved.success:
+			return false
+		if participant.battle_position.distance_to(destination) <= 1.5:
+			return true
+		steps += 1
+	return participant.battle_position.distance_to(destination) <= 2.0
+
+
+static func _vehicle_physical_attacker_soldier_point(battle_state: BattleState) -> Vector2:
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var requested: Vector2 = _interactive_deploy_continuous_point(geometry)
+	if battle_state.get_deployment_position_error(battle_state.attacker_side_id, requested).is_empty():
+		return requested
+	var fallbacks: Array[Vector2] = [
+		Vector2(14.0, 31.5),
+		Vector2(12.5, 45.0),
+		Vector2(16.0, 20.0),
+		Vector2(15.0, 50.0),
+	]
+	if geometry != null:
+		fallbacks.append(geometry.attacker_deployment_rect.get_center())
+	for point: Vector2 in fallbacks:
+		if battle_state.get_deployment_position_error(battle_state.attacker_side_id, point).is_empty():
+			return point
+	return requested
+
+
+static func _vehicle_physical_identity_ok() -> bool:
+	var pack: Dictionary = _battle_create_ready_pack()
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if game_state == null or force == null or battle_state == null:
+		return false
+	if not _battle_deploy_standard_attacker(battle_state):
+		return false
+	if not _battlegeo_init(battle_state):
+		return false
+	var campaign_vehicle: Vehicle = game_state.get_vehicle("battle_veh_a")
+	var battle_vehicle: BattleVehicle = battle_state.get_vehicle("battle_veh_a")
+	if campaign_vehicle == null or battle_vehicle == null:
+		return false
+	var campaign_dict: Dictionary = campaign_vehicle.to_dict()
+	var before_pos: Vector2 = battle_vehicle.battle_position
+	battle_vehicle.battle_position = before_pos + Vector2(0.25, -0.15)
+	var after_dict: Dictionary = game_state.get_vehicle("battle_veh_a").to_dict()
+	return (
+		battle_vehicle.battle_vehicle_id == "battle_veh_a"
+		and battle_vehicle.campaign_vehicle_id == "battle_veh_a"
+		and battle_vehicle.campaign_vehicle_id == campaign_vehicle.id
+		and battle_vehicle.faction_id == campaign_vehicle.faction_id
+		and battle_vehicle.side_id == battle_state.attacker_side_id
+		and battle_vehicle.vehicle_type_id == campaign_vehicle.vehicle_type_id
+		and battle_state.is_vehicle_fully_deployed("battle_veh_a")
+		and campaign_dict == after_dict
+		and not campaign_dict.has("battle_position")
+		and not campaign_dict.has("facing_direction")
+	)
+
+
+static func _vehicle_physical_profile_ok() -> bool:
+	var car: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("car")
+	var unknown: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("truck")
+	var empty: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("")
+	if car == null or not car.is_valid() or unknown == null or not unknown.is_valid():
+		return false
+	var vehicle: BattleVehicle = BattleVehicle.new("vp_car", "vp_car", "battle_a", "attacker", "car", "")
+	var via_body: BattleVehiclePhysicalProfile = BattleVehicleBodyService.profile_for_vehicle(vehicle)
+	var view_src: String = _tacticalview_source()
+	return (
+		car.vehicle_type_id == BattleVehiclePhysicalCatalog.TYPE_CAR
+		and car.length > 0.0
+		and car.width > 0.0
+		and is_finite(car.length)
+		and is_finite(car.width)
+		and via_body != null
+		and is_equal_approx(via_body.length, car.length)
+		and is_equal_approx(via_body.width, car.width)
+		and unknown.vehicle_type_id == "truck"
+		and is_equal_approx(unknown.length, car.length)
+		and is_equal_approx(unknown.width, car.width)
+		and empty == null
+		and not view_src.contains("VEHICLE_SIZE")
+		and view_src.contains("BattleVehicleBodyService")
+	)
+
+
+static func _vehicle_physical_pose_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_pose", "attacker") == null:
+		return false
+	var horizontal: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_pose",
+		Vector2(10.0, 20.0),
+		Vector2.RIGHT
+	)
+	var first: BattleVehicle = battle_state.get_vehicle("vp_pose")
+	var horizontal_ok: bool = (
+		horizontal != null
+		and horizontal.success
+		and first != null
+		and first.has_battle_position
+		and BattlefieldGeometry.is_finite_point(first.battle_position)
+		and first.has_facing
+		and first.has_valid_orientation()
+		and first.facing_direction.is_equal_approx(Vector2.RIGHT)
+	)
+	var vertical_state: BattleState = _vehicle_physical_make_state()
+	if vertical_state == null or _vehicle_physical_add_car(vertical_state, "vp_pose_v", "attacker") == null:
+		return false
+	var vertical: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		vertical_state,
+		"vp_pose_v",
+		Vector2(10.0, 20.0),
+		Vector2.DOWN
+	)
+	var vertical_vehicle: BattleVehicle = vertical_state.get_vehicle("vp_pose_v")
+	var vertical_ok: bool = (
+		vertical != null
+		and vertical.success
+		and vertical_vehicle != null
+		and vertical_vehicle.has_valid_orientation()
+		and vertical_vehicle.facing_direction.is_equal_approx(Vector2.DOWN)
+	)
+	var rotated_state: BattleState = _vehicle_physical_make_state()
+	if rotated_state == null or _vehicle_physical_add_car(rotated_state, "vp_pose_r", "attacker") == null:
+		return false
+	var diagonal: Vector2 = Vector2(1.0, 1.0).normalized()
+	var rotated: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		rotated_state,
+		"vp_pose_r",
+		Vector2(10.0, 30.0),
+		diagonal
+	)
+	var rotated_vehicle: BattleVehicle = rotated_state.get_vehicle("vp_pose_r")
+	var rotated_ok: bool = (
+		rotated != null
+		and rotated.success
+		and rotated_vehicle != null
+		and rotated_vehicle.has_valid_orientation()
+		and rotated_vehicle.facing_direction.is_equal_approx(diagonal)
+	)
+	var invalid_state: BattleState = _vehicle_physical_make_state()
+	if invalid_state == null or _vehicle_physical_add_car(invalid_state, "vp_pose_bad", "attacker") == null:
+		return false
+	var zero_facing: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		invalid_state,
+		"vp_pose_bad",
+		Vector2(10.0, 30.0),
+		Vector2.ZERO
+	)
+	var nan_facing: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		invalid_state,
+		"vp_pose_bad",
+		Vector2(10.0, 30.0),
+		Vector2(NAN, 0.0)
+	)
+	var bad_vehicle: BattleVehicle = invalid_state.get_vehicle("vp_pose_bad")
+	return (
+		horizontal_ok
+		and vertical_ok
+		and rotated_ok
+		and zero_facing != null
+		and not zero_facing.success
+		and zero_facing.error_code == "invalid_orientation"
+		and nan_facing != null
+		and not nan_facing.success
+		and bad_vehicle != null
+		and not BattleVehicleBodyService.has_usable_pose(bad_vehicle)
+		and not invalid_state.is_vehicle_fully_deployed("vp_pose_bad")
+	)
+
+
+static func _vehicle_physical_body_queries_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	var vehicle: BattleVehicle = _vehicle_physical_add_car(battle_state, "vp_body", "attacker")
+	if vehicle == null:
+		return false
+	var facing: Vector2 = Vector2(1.0, 1.0).normalized()
+	var placed: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_body",
+		Vector2(12.0, 30.0),
+		facing
+	)
+	if placed == null or not placed.success:
+		return false
+	var profile: BattleVehiclePhysicalProfile = BattleVehicleBodyService.profile_for_vehicle(vehicle)
+	var corners: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
+	var pose_corners: PackedVector2Array = BattleVehicleBodyService.corners_for_pose(
+		vehicle.battle_position,
+		vehicle.facing_direction,
+		profile
+	)
+	if corners.size() != 4 or pose_corners.size() != 4 or profile == null:
+		return false
+	var corners_match: bool = true
+	for i in corners.size():
+		if not corners[i].is_equal_approx(pose_corners[i]):
+			corners_match = false
+	var inside: bool = BattleVehicleBodyService.contains_point(vehicle, vehicle.battle_position)
+	var outside: bool = not BattleVehicleBodyService.contains_point(vehicle, Vector2(40.0, 10.0))
+	var other: BattleVehicle = BattleVehicle.new("vp_body_b", "vp_body_b", "battle_a", "attacker", "car", "")
+	other.has_battle_position = true
+	other.battle_position = vehicle.battle_position
+	other.set_facing_direction(vehicle.facing_direction)
+	var overlap: bool = BattleVehicleBodyService.bodies_intersect(vehicle, other)
+	other.battle_position = Vector2(18.0, 30.0)
+	var separate: bool = not BattleVehicleBodyService.bodies_intersect(vehicle, other)
+	var through: Vector2 = Vector2(12.0, 22.0)
+	var disp: Vector2 = Vector2(0.0, 16.0)
+	var hit_t: float = BattleVehicleBodyService.segment_entry_t(vehicle, through, disp)
+	var miss_t: float = BattleVehicleBodyService.segment_entry_t(vehicle, Vector2(40.0, 10.0), Vector2(1.0, 0.0))
+	return (
+		corners_match
+		and inside
+		and outside
+		and overlap
+		and separate
+		and is_finite(hit_t)
+		and hit_t > 0.0
+		and hit_t < 1.0
+		and not is_finite(miss_t)
+	)
+
+
+static func _vehicle_physical_render_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var source: String = _tacticalview_source()
+	if view == null or vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var body: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
+	view.call("_draw")
+	return _gameplayruntime_finish(
+		runtime,
+		body.size() == 4
+		and source.contains("BattleVehicleBodyService.world_corners")
+		and source.contains("vehicle.facing_direction")
+		and not source.contains("VEHICLE_SIZE")
+		and not source.contains("Rect2(-VEHICLE")
+		and view.get("vehicle_size") == null
+		and not view.has_method("place_vehicle")
+	)
+
+
+static func _vehicle_physical_placement_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	var vehicle: BattleVehicle = _vehicle_physical_add_car(battle_state, "vp_place", "attacker")
+	if vehicle == null:
+		return false
+	var soldier: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_place_sol", "attacker")
+	if soldier == null:
+		return false
+	var requested: Vector2 = Vector2(10.0, 28.0)
+	var facing: Vector2 = Vector2.RIGHT
+	var result: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_place",
+		requested,
+		facing
+	)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var object_id: String = BattleVehicleCoverService.body_cover_object_id("vp_place")
+	return (
+		result != null
+		and result.success
+		and battle_state.is_vehicle_deployed("vp_place")
+		and vehicle.has_battle_position
+		and vehicle.battle_position.is_equal_approx(requested)
+		and vehicle.has_valid_orientation()
+		and vehicle.facing_direction.is_equal_approx(facing)
+		and geometry.has_cover_object(object_id)
+		and geometry.get_cover_object(object_id).slot_ids.size() > 0
+		and soldier.deployment_slot_id.is_empty()
+		and not soldier.has_battle_position
+	)
+
+
+static func _vehicle_physical_atomicity_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	var vehicle: BattleVehicle = _vehicle_physical_add_car(battle_state, "vp_atom", "attacker")
+	if vehicle == null:
+		return false
+	var empty: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_atom")
+	battle_state.battle_phase = "active"
+	var phase_res: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_atom",
+		Vector2(10.0, 28.0),
+		Vector2.RIGHT
+	)
+	var phase_ok: bool = (
+		phase_res != null
+		and not phase_res.success
+		and phase_res.error_code == "battle_not_in_deployment"
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_atom", empty)
+	)
+	battle_state.battle_phase = "deployment"
+	var missing: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_missing",
+		Vector2(10.0, 28.0),
+		Vector2.RIGHT
+	)
+	var missing_ok: bool = (
+		missing != null
+		and not missing.success
+		and missing.error_code == "unknown_vehicle"
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_atom", empty)
+	)
+	var wrong_zone: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_atom",
+		Vector2(90.0, 30.0),
+		Vector2.RIGHT
+	)
+	var wrong_zone_ok: bool = (
+		wrong_zone != null
+		and not wrong_zone.success
+		and wrong_zone.error_code == "outside_deployment_zone"
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_atom", empty)
+	)
+	if _vehicle_physical_add_soldier(battle_state, "vp_atom_sol", "attacker") == null:
+		return false
+	var soldier_place: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_atom_sol",
+		Vector2(16.0, 40.0)
+	)
+	if soldier_place == null or not soldier_place.success:
+		return false
+	var parked: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_atom",
+		Vector2(8.0, 20.0),
+		Vector2.RIGHT
+	)
+	if parked == null or not parked.success:
+		return false
+	var committed_snap: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_atom")
+	var commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		"attacker"
+	)
+	var extra: BattleVehicle = _vehicle_physical_add_car(battle_state, "vp_atom2", "attacker")
+	var extra_snap: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_atom2")
+	var after_commit: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_atom2",
+		Vector2(8.0, 40.0),
+		Vector2.RIGHT
+	)
+	var invalid_pos: BattleState = _vehicle_physical_make_state()
+	if invalid_pos == null or _vehicle_physical_add_car(invalid_pos, "vp_badpos", "attacker") == null:
+		return false
+	var bad_pos_snap: Dictionary = _vehicle_physical_pose_snap(invalid_pos, "vp_badpos")
+	var nan_pos: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		invalid_pos,
+		"vp_badpos",
+		Vector2(NAN, 10.0),
+		Vector2.RIGHT
+	)
+	var illegal: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		invalid_pos,
+		"vp_badpos",
+		Vector2(0.4, 30.0),
+		Vector2.RIGHT
+	)
+	return (
+		phase_ok
+		and missing_ok
+		and wrong_zone_ok
+		and commit != null
+		and commit.success
+		and extra != null
+		and after_commit != null
+		and not after_commit.success
+		and after_commit.error_code == "side_deployment_committed"
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_atom", committed_snap)
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_atom2", extra_snap)
+		and nan_pos != null
+		and not nan_pos.success
+		and nan_pos.error_code == "invalid_position"
+		and illegal != null
+		and not illegal.success
+		and illegal.error_code == "outside_battlefield"
+		and _vehicle_physical_pose_unchanged(invalid_pos, "vp_badpos", bad_pos_snap)
+	)
+
+
+static func _vehicle_physical_footprint_bounds_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_foot", "attacker") == null:
+		return false
+	var center_in: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_foot",
+		Vector2(0.4, 30.0),
+		Vector2.RIGHT
+	)
+	var empty: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_foot")
+	var center_ok: bool = (
+		center_in != null
+		and not center_in.success
+		and center_in.error_code == "outside_battlefield"
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_foot", empty)
+	)
+	var legal: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_foot",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	)
+	var zone_state: BattleState = _vehicle_physical_make_state()
+	if zone_state == null or _vehicle_physical_add_car(zone_state, "vp_zone", "attacker") == null:
+		return false
+	var zone_center_in: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		zone_state,
+		"vp_zone",
+		Vector2(19.6, 30.0),
+		Vector2.RIGHT
+	)
+	return (
+		center_ok
+		and legal != null
+		and legal.success
+		and BattleVehicleBodyService.pose_contained_in_rect(
+			Vector2(10.0, 30.0),
+			Vector2.RIGHT,
+			BattleVehicleBodyService.profile_for_vehicle(battle_state.get_vehicle("vp_foot")),
+			battle_state.battlefield_geometry.bounds()
+		)
+		and zone_center_in != null
+		and not zone_center_in.success
+		and zone_center_in.error_code == "outside_deployment_zone"
+	)
+
+
+static func _vehicle_physical_obstacle_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_obs", "attacker") == null:
+		return false
+	var move_wall: BattleObstacle = BattleObstacle.new("vp_move", Rect2(9.0, 29.0, 2.0, 2.0), true, false)
+	var los_wall: BattleObstacle = BattleObstacle.new("vp_los", Rect2(9.0, 40.0, 2.0, 2.0), false, true)
+	if not battle_state.battlefield_geometry.add_obstacle(move_wall):
+		return false
+	if not battle_state.battlefield_geometry.add_obstacle(los_wall):
+		return false
+	var blocked: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_obs",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	)
+	var nearby: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_obs",
+		Vector2(10.0, 18.0),
+		Vector2.RIGHT
+	)
+	return (
+		blocked != null
+		and not blocked.success
+		and blocked.error_code == "inside_blocking_obstacle"
+		and nearby != null
+		and nearby.success
+	)
+
+
+static func _vehicle_physical_vehicle_overlap_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_v1", "attacker") == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_v2", "attacker") == null:
+		return false
+	var first: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_v1",
+		Vector2(10.0, 30.0),
+		Vector2(1.0, 1.0).normalized()
+	)
+	var first_snap: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_v1")
+	var second_empty: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_v2")
+	var overlap: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_v2",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	)
+	var overlap_ok: bool = (
+		first != null
+		and first.success
+		and overlap != null
+		and not overlap.success
+		and overlap.error_code == "overlaps_vehicle"
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_v1", first_snap)
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_v2", second_empty)
+	)
+	var nearby: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_v2",
+		Vector2(10.0, 46.0),
+		Vector2.RIGHT
+	)
+	return (
+		overlap_ok
+		and nearby != null
+		and nearby.success
+		and battle_state.is_vehicle_fully_deployed("vp_v1")
+		and battle_state.is_vehicle_fully_deployed("vp_v2")
+	)
+
+
+static func _vehicle_physical_participant_overlap_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_po", "attacker") == null:
+		return false
+	var soldier: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_po_sol", "attacker")
+	if soldier == null:
+		return false
+	var placed_sol: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_po_sol",
+		Vector2(10.0, 30.0)
+	)
+	if placed_sol == null or not placed_sol.success:
+		return false
+	var sol_pos: Vector2 = soldier.battle_position
+	var blocked: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_po",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	)
+	var parked: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_po",
+		Vector2(8.0, 18.0),
+		Vector2.RIGHT
+	)
+	if parked == null or not parked.success:
+		return false
+	var other: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_po_sol2", "attacker")
+	if other == null:
+		return false
+	var inside: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_po_sol2",
+		battle_state.get_vehicle("vp_po").battle_position
+	)
+	var beside: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_po_sol2",
+		Vector2(16.0, 18.0)
+	)
+	return (
+		blocked != null
+		and not blocked.success
+		and blocked.error_code == "overlaps_participant"
+		and soldier.battle_position.is_equal_approx(sol_pos)
+		and inside != null
+		and not inside.success
+		and inside.error_code == "inside_vehicle_body"
+		and beside != null
+		and beside.success
+	)
+
+
+static func _vehicle_physical_cover_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_cov", "attacker") == null:
+		return false
+	var first_pos: Vector2 = Vector2(10.0, 28.0)
+	var first: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_cov",
+		first_pos,
+		Vector2.RIGHT
+	)
+	if first == null or not first.success:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var object_id: String = BattleVehicleCoverService.body_cover_object_id("vp_cov")
+	var cover_object: BattleCoverObject = geometry.get_cover_object(object_id)
+	if cover_object == null or cover_object.slot_ids.size() < 2:
+		return false
+	var slot_ids: Array[String] = _copy_ids(cover_object.slot_ids)
+	var first_slots: Dictionary = {}
+	var outside_ok: bool = true
+	var idle_ok: bool = true
+	for slot_id: String in slot_ids:
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null:
+			return false
+		first_slots[slot_id] = {"pos": slot.position, "facing": slot.facing_direction}
+		if BattleVehicleBodyService.contains_point(battle_state.get_vehicle("vp_cov"), slot.position):
+			outside_ok = false
+		if slot.is_reserved() or slot.is_occupied():
+			idle_ok = false
+	var rotate_state: BattleState = _vehicle_physical_make_state()
+	if rotate_state == null or _vehicle_physical_add_car(rotate_state, "vp_cov", "attacker") == null:
+		return false
+	var rotated: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		rotate_state,
+		"vp_cov",
+		first_pos,
+		Vector2.DOWN
+	)
+	if rotated == null or not rotated.success:
+		return false
+	var rotated_geo: BattlefieldGeometry = rotate_state.battlefield_geometry
+	var rotated_object: BattleCoverObject = rotated_geo.get_cover_object(object_id)
+	if rotated_object == null:
+		return false
+	var rotated_ok: bool = false
+	for slot_id: String in rotated_object.slot_ids:
+		var slot: BattleCoverSlot = rotated_geo.get_cover_slot(slot_id)
+		var prior: Variant = first_slots.get(slot_id, null)
+		if slot == null or not (prior is Dictionary):
+			continue
+		var prior_row: Dictionary = prior as Dictionary
+		if not slot.position.is_equal_approx(prior_row.get("pos", Vector2.ZERO)):
+			rotated_ok = true
+		if not slot.facing_direction.is_equal_approx(prior_row.get("facing", Vector2.ZERO)):
+			rotated_ok = true
+	var shift_state: BattleState = _vehicle_physical_make_state()
+	if shift_state == null or _vehicle_physical_add_car(shift_state, "vp_cov", "attacker") == null:
+		return false
+	var shifted: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		shift_state,
+		"vp_cov",
+		first_pos + Vector2(0.0, 6.0),
+		Vector2.RIGHT
+	)
+	if shifted == null or not shifted.success:
+		return false
+	var shift_geo: BattlefieldGeometry = shift_state.battlefield_geometry
+	var shift_object: BattleCoverObject = shift_geo.get_cover_object(object_id)
+	var translated_ok: bool = false
+	if shift_object != null:
+		for slot_id: String in shift_object.slot_ids:
+			var slot: BattleCoverSlot = shift_geo.get_cover_slot(slot_id)
+			var prior: Variant = first_slots.get(slot_id, null)
+			if slot == null or not (prior is Dictionary):
+				continue
+			var prior_row: Dictionary = prior as Dictionary
+			var expected: Vector2 = (prior_row.get("pos", Vector2.ZERO) as Vector2) + Vector2(0.0, 6.0)
+			if slot.position.is_equal_approx(expected):
+				translated_ok = true
+	return (
+		geometry.has_cover_object(object_id)
+		and slot_ids.has(BattleVehicleCoverService.body_cover_slot_id("vp_cov", "front"))
+		and slot_ids.has(BattleVehicleCoverService.body_cover_slot_id("vp_cov", "rear"))
+		and outside_ok
+		and idle_ok
+		and rotated_ok
+		and translated_ok
+	)
+
+
+static func _vehicle_physical_cover_direction_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_dir", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_dir",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null or not battle_state.is_vehicle_fully_deployed("vp_dir"):
+		return false
+	var soldier: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_dir_sol", "attacker")
+	if soldier == null:
+		return false
+	var slot_id: String = BattleVehicleCoverService.body_cover_slot_id("vp_dir", "front")
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+	if slot == null:
+		return false
+	_battletarget_place(soldier, slot.position)
+	if not _battlecover_cmd_ok(
+		BattleCoverService.occupy_slot(battle_state, "vp_dir_sol", slot_id),
+		slot_id,
+		"vp_dir_sol"
+	):
+		return false
+	var protected_from: Vector2 = slot.position + slot.facing_direction * 4.0
+	var reverse_from: Vector2 = slot.position - slot.facing_direction * 4.0
+	var protected_res: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		soldier,
+		protected_from
+	)
+	var reverse_res: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		soldier,
+		reverse_from
+	)
+	return (
+		protected_res != null
+		and protected_res.protection_factor > 0.5
+		and reverse_res != null
+		and reverse_res.protection_factor < protected_res.protection_factor
+	)
+
+
+static func _vehicle_physical_no_occupancy_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_idle", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_idle",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null or not battle_state.is_vehicle_fully_deployed("vp_idle"):
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var object_id: String = BattleVehicleCoverService.body_cover_object_id("vp_idle")
+	var cover_object: BattleCoverObject = geometry.get_cover_object(object_id)
+	if cover_object == null:
+		return false
+	for slot_id: String in cover_object.slot_ids:
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null or slot.is_reserved() or slot.is_occupied():
+			return false
+		if not slot.reserved_by_participant_id.is_empty() or not slot.occupied_by_participant_id.is_empty():
+			return false
+	return true
+
+
+static func _vehicle_physical_move_against(
+	position: Vector2,
+	facing: Vector2,
+	start: Vector2,
+	displacement: Vector2
+) -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_move", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(battle_state, "vp_move", position, facing) == null:
+		return false
+	if not battle_state.is_vehicle_fully_deployed("vp_move"):
+		return false
+	var soldier: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_move_sol", "attacker")
+	if soldier == null:
+		return false
+	_battletarget_place(soldier, start)
+	soldier.set_movement_speed(20.0)
+	soldier.set_movement_intent(displacement.normalized())
+	battle_state.battle_phase = "active"
+	var spatial: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battle_state,
+		start,
+		displacement
+	)
+	var moved: BattleMovementResult = BattleMovementService.advance(battle_state, 0.5)
+	if spatial == null or not spatial.success or moved == null or not moved.success:
+		return false
+	var opposite: Vector2 = start + displacement
+	return (
+		spatial.was_blocked
+		and not spatial.final_position.is_equal_approx(opposite)
+		and not BattleVehicleBodyService.contains_point(battle_state.get_vehicle("vp_move"), spatial.final_position)
+		and soldier.battle_position.distance_to(opposite) > 1.0
+		and not BattleVehicleBodyService.contains_point(battle_state.get_vehicle("vp_move"), soldier.battle_position)
+	)
+
+
+static func _vehicle_physical_move_axis_ok() -> bool:
+	return _vehicle_physical_move_against(
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT,
+		Vector2(10.0, 22.0),
+		Vector2(0.0, 16.0)
+	)
+
+
+static func _vehicle_physical_move_rotated_ok() -> bool:
+	return _vehicle_physical_move_against(
+		Vector2(12.0, 30.0),
+		Vector2(1.0, 1.0).normalized(),
+		Vector2(12.0, 22.0),
+		Vector2(0.0, 16.0)
+	)
+
+
+static func _vehicle_physical_nav_detour(
+	position: Vector2,
+	facing: Vector2,
+	start_position: Vector2,
+	destination: Vector2
+) -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_nav", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(battle_state, "vp_nav", position, facing) == null:
+		return false
+	if not battle_state.is_vehicle_fully_deployed("vp_nav"):
+		return false
+	var direct: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battle_state,
+		start_position,
+		destination - start_position
+	)
+	if direct == null or not direct.success or not direct.was_blocked:
+		return false
+	var path: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		start_position,
+		destination
+	)
+	if not _battlenav_success_ok(path, start_position, destination, true):
+		return false
+	if not _vehicle_physical_route_avoids_vehicles(battle_state, start_position, path.waypoints):
+		return false
+	if path.waypoints.size() == 1 and path.waypoints[0].is_equal_approx(destination):
+		return false
+	var soldier: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_nav_sol", "attacker")
+	if soldier == null:
+		return false
+	_battletarget_place(soldier, start_position)
+	return _vehicle_physical_follow_route(battle_state, soldier, destination, path.waypoints)
+
+
+static func _vehicle_physical_nav_axis_ok() -> bool:
+	return _vehicle_physical_nav_detour(
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT,
+		Vector2(10.0, 22.0),
+		Vector2(10.0, 38.0)
+	)
+
+
+static func _vehicle_physical_nav_rotated_ok() -> bool:
+	return _vehicle_physical_nav_detour(
+		Vector2(12.0, 30.0),
+		Vector2(1.0, 1.0).normalized(),
+		Vector2(12.0, 22.0),
+		Vector2(12.0, 38.0)
+	)
+
+
+static func _vehicle_physical_cover_reach_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_reach", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_reach",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null or not battle_state.is_vehicle_fully_deployed("vp_reach"):
+		return false
+	var far_id: String = BattleVehicleCoverService.body_cover_slot_id("vp_reach", "front")
+	var far_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(far_id)
+	if far_slot == null:
+		return false
+	var start_position: Vector2 = Vector2(8.0, 30.0)
+	if BattleVehicleBodyService.contains_point(battle_state.get_vehicle("vp_reach"), start_position):
+		start_position = Vector2(7.0, 30.0)
+	var soldier: BattleParticipant = _vehicle_physical_add_soldier(battle_state, "vp_reach_sol", "attacker")
+	if soldier == null:
+		return false
+	_battletarget_place(soldier, start_position)
+	var direct: bool = BattleSpatialService.is_translation_clear(
+		battle_state,
+		start_position,
+		far_slot.position
+	)
+	var query: BattleCoverQueryResult = BattleCoverService.find_nearest_available_slot(
+		battle_state,
+		"vp_reach_sol",
+		true
+	)
+	var path: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		start_position,
+		far_slot.position
+	)
+	return (
+		not direct
+		and query != null
+		and query.success
+		and not query.cover_slot_id.is_empty()
+		and _battlenav_success_ok(path, start_position, far_slot.position, true)
+		and _vehicle_physical_route_avoids_vehicles(battle_state, start_position, path.waypoints)
+	)
+
+
+static func _vehicle_physical_nav_sealed_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_seal", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_seal",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null or not battle_state.is_vehicle_fully_deployed("vp_seal"):
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	# Body-adjacent cover slots sit in the sealing walls. Remove only those
+	# slots so authored blockers can close the corridor without invalidating
+	# geometry or inserting the vehicle into BattlefieldGeometry.obstacles.
+	var left_slot_id: String = BattleVehicleCoverService.body_cover_slot_id("vp_seal", "left")
+	var right_slot_id: String = BattleVehicleCoverService.body_cover_slot_id("vp_seal", "right")
+	if geometry.has_cover_slot(left_slot_id) and not geometry.remove_cover_slot(left_slot_id):
+		return false
+	if geometry.has_cover_slot(right_slot_id) and not geometry.remove_cover_slot(right_slot_id):
+		return false
+	if not geometry.add_obstacle(BattleObstacle.new("vp_seal_n", Rect2(0.0, 0.0, 100.0, 29.375), true, false)):
+		return false
+	if not geometry.add_obstacle(BattleObstacle.new("vp_seal_s", Rect2(0.0, 30.625, 100.0, 29.375), true, false)):
+		return false
+	if not geometry.is_valid():
+		return false
+	if geometry.has_obstacle("vp_seal") or geometry.has_obstacle("vp_seal__body_cover"):
+		return false
+	var start_position: Vector2 = Vector2(4.0, 30.0)
+	var destination: Vector2 = Vector2(40.0, 30.0)
+	if not geometry.get_movement_blocking_obstacle_id_at(start_position).is_empty():
+		return false
+	if not geometry.get_movement_blocking_obstacle_id_at(destination).is_empty():
+		return false
+	if not BattleVehicleBodyService.blocking_vehicle_id_at(battle_state, start_position).is_empty():
+		return false
+	if not BattleVehicleBodyService.blocking_vehicle_id_at(battle_state, destination).is_empty():
+		return false
+	var path: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		start_position,
+		destination
+	)
+	if path == null or path.success:
+		return false
+	if path.error_code != "no_path":
+		return false
+	if not path.waypoints.is_empty():
+		return false
+	return not _vehicle_physical_route_avoids_vehicles(battle_state, start_position, [destination])
+
+
+static func _vehicle_physical_nav_multi_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_m1", "attacker") == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_m2", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_m1",
+		Vector2(10.0, 24.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_m2",
+		Vector2(10.0, 36.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var start_position: Vector2 = Vector2(10.0, 18.0)
+	var destination: Vector2 = Vector2(10.0, 42.0)
+	var path: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		start_position,
+		destination
+	)
+	return (
+		_battlenav_success_ok(path, start_position, destination, true)
+		and _vehicle_physical_route_avoids_vehicles(battle_state, start_position, path.waypoints)
+	)
+
+
+static func _vehicle_physical_nav_geometry_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_geo", "attacker") == null:
+		return false
+	var wall: BattleObstacle = BattleObstacle.new("vp_geo_wall", Rect2(40.0, 20.0, 4.0, 4.0), true, false)
+	if not battle_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var before_ids: Array[String] = battle_state.battlefield_geometry.get_sorted_obstacle_ids()
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_geo",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var after_ids: Array[String] = battle_state.battlefield_geometry.get_sorted_obstacle_ids()
+	var nav_src: String = FileAccess.get_file_as_string("res://battle/navigation/battle_navigation_service.gd")
+	return (
+		_string_ids_match(before_ids, after_ids)
+		and after_ids.has("vp_geo_wall")
+		and not after_ids.has("vp_geo")
+		and nav_src.contains("BattleVehicleBodyService.cleared_corners")
+		and nav_src.contains("is_translation_clear")
+	)
+
+
+static func _vehicle_physical_nav_inside_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_in", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_in",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var inside: Vector2 = Vector2(10.0, 30.0)
+	var outside: Vector2 = Vector2(40.0, 30.0)
+	var start_inside: BattleNavigationResult = BattleNavigationService.find_path(battle_state, inside, outside)
+	var dest_inside: BattleNavigationResult = BattleNavigationService.find_path(battle_state, outside, inside)
+	return (
+		_battlenav_fail_ok(start_inside, "start_inside_vehicle", inside, outside)
+		and _battlenav_fail_ok(dest_inside, "destination_inside_vehicle", outside, inside)
+	)
+
+
+static func _vehicle_physical_los_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_los", "attacker") == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_los",
+		Vector2(10.0, 30.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var start_position: Vector2 = Vector2(10.0, 22.0)
+	var end_position: Vector2 = Vector2(10.0, 38.0)
+	var move: BattleSpatialResult = BattleSpatialService.resolve_translation(
+		battle_state,
+		start_position,
+		end_position - start_position
+	)
+	var los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		battle_state,
+		start_position,
+		end_position
+	)
+	var obstacle_ids: Array[String] = battle_state.battlefield_geometry.get_sorted_obstacle_ids()
+	return (
+		move != null
+		and move.success
+		and move.was_blocked
+		and los != null
+		and los.success
+		and los.has_line_of_sight
+		and not obstacle_ids.has("vp_los")
+	)
+
+
+static func _vehicle_physical_autoplace_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_auto", "attacker") == null:
+		return false
+	var planner_src: String = FileAccess.get_file_as_string(
+		"res://battle/ai/battle_vehicle_deployment_planner.gd"
+	)
+	var first: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	var second: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	if first == null or not first.success or second == null or not second.success:
+		return false
+	if first.assignments.size() != 1 or second.assignments.size() != 1:
+		return false
+	var assignment: BattleVehicleDeploymentPlanAssignment = first.assignments[0]
+	var repeat: BattleVehicleDeploymentPlanAssignment = second.assignments[0]
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("car")
+	return (
+		assignment.vehicle_id == "vp_auto"
+		and assignment.position.is_equal_approx(repeat.position)
+		and assignment.facing_direction.is_equal_approx(repeat.facing_direction)
+		and BattleVehicleBodyService.pose_contained_in_rect(
+			assignment.position,
+			assignment.facing_direction,
+			profile,
+			geometry.attacker_deployment_rect
+		)
+		and BattleVehicleBodyService.get_placement_error(
+			battle_state,
+			"vp_auto",
+			assignment.position,
+			assignment.facing_direction
+		).is_empty()
+		and not planner_src.contains("RandomNumberGenerator")
+		and not planner_src.contains("randf")
+		and not planner_src.contains("randi")
+	)
+
+
+static func _vehicle_physical_geography_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_geo_side", "attacker") == null:
+		return false
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = 80.0
+	geometry.height = 50.0
+	geometry.attacker_deployment_rect = Rect2(50.0, 5.0, 22.0, 40.0)
+	geometry.defender_deployment_rect = Rect2(4.0, 5.0, 22.0, 40.0)
+	if not geometry.is_valid():
+		return false
+	battle_state.battlefield_geometry = geometry
+	if not _vehicle_physical_bind_zone_rects(battle_state):
+		return false
+	var plan: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	if plan == null or not plan.success or plan.assignments.size() != 1:
+		return false
+	var assignment: BattleVehicleDeploymentPlanAssignment = plan.assignments[0]
+	var toward_defender: float = assignment.facing_direction.dot(Vector2.LEFT)
+	return (
+		assignment.vehicle_id == "vp_geo_side"
+		and geometry.attacker_deployment_rect.has_point(assignment.position)
+		and BattleVehicleBodyService.pose_contained_in_rect(
+			assignment.position,
+			assignment.facing_direction,
+			BattleVehiclePhysicalCatalog.get_profile("car"),
+			geometry.attacker_deployment_rect
+		)
+		and toward_defender > 0.5
+		and not assignment.facing_direction.is_equal_approx(Vector2.RIGHT)
+	)
+
+
+static func _vehicle_physical_anchor_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null or _vehicle_physical_add_car(battle_state, "vp_anchor", "attacker") == null:
+		return false
+	var default_plan: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	var context: BattleVehiclePlacementContext = BattleVehiclePlacementContext.new(
+		true,
+		Vector2(8.0, 32.0),
+		true,
+		Vector2.DOWN
+	)
+	var plan: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender",
+		context
+	)
+	if default_plan == null or not default_plan.success or default_plan.assignments.size() != 1:
+		return false
+	if plan == null or not plan.success or plan.assignments.size() != 1:
+		return false
+	var assignment: BattleVehicleDeploymentPlanAssignment = plan.assignments[0]
+	var default_assignment: BattleVehicleDeploymentPlanAssignment = default_plan.assignments[0]
+	var applied: BattleVehicleDeploymentResult = BattleVehicleDeploymentService.apply_side(
+		battle_state,
+		"attacker",
+		"defender",
+		context
+	)
+	var vehicle: BattleVehicle = battle_state.get_vehicle("vp_anchor")
+	var heading_changed: bool = (
+		assignment.facing_direction.is_equal_approx(Vector2.DOWN)
+		and not default_assignment.facing_direction.is_equal_approx(Vector2.DOWN)
+	)
+	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("car")
+	return (
+		heading_changed
+		and BattleVehicleBodyService.pose_contained_in_rect(
+			assignment.position,
+			assignment.facing_direction,
+			profile,
+			battle_state.battlefield_geometry.attacker_deployment_rect
+		)
+		and applied != null
+		and applied.success
+		and vehicle != null
+		and vehicle.battle_position.is_equal_approx(assignment.position)
+		and vehicle.facing_direction.is_equal_approx(Vector2.DOWN)
+		and battle_state.is_vehicle_fully_deployed("vp_anchor")
+	)
+
+
+static func _vehicle_physical_multi_autoplace_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_ma", "attacker") == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_mb", "attacker") == null:
+		return false
+	var first: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	var second: BattleVehicleDeploymentPlan = BattleVehicleDeploymentPlanner.plan_side_vehicles(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	if first == null or not first.success or second == null or not second.success:
+		return false
+	if first.assignments.size() != 2 or second.assignments.size() != 2:
+		return false
+	if first.assignments[0].vehicle_id != second.assignments[0].vehicle_id:
+		return false
+	if first.assignments[1].vehicle_id != second.assignments[1].vehicle_id:
+		return false
+	if first.assignments[0].vehicle_id == first.assignments[1].vehicle_id:
+		return false
+	var applied: BattleVehicleDeploymentResult = BattleVehicleDeploymentService.apply_side(
+		battle_state,
+		"attacker",
+		"defender"
+	)
+	if applied == null or not applied.success or applied.placed_count != 2:
+		return false
+	var a: BattleVehicle = battle_state.get_vehicle("vp_ma")
+	var b: BattleVehicle = battle_state.get_vehicle("vp_mb")
+	return (
+		first.assignments[0].position.is_equal_approx(second.assignments[0].position)
+		and first.assignments[1].position.is_equal_approx(second.assignments[1].position)
+		and a != null
+		and b != null
+		and battle_state.is_vehicle_fully_deployed("vp_ma")
+		and battle_state.is_vehicle_fully_deployed("vp_mb")
+		and not BattleVehicleBodyService.bodies_intersect(a, b)
+	)
+
+
+static func _vehicle_physical_player_park_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	if vehicle == null or controller == null or view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var object_id: String = BattleVehicleCoverService.body_cover_object_id(vehicle.battle_vehicle_id)
+	var body: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
+		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and vehicle.has_valid_orientation()
+		and battle_state.battlefield_geometry.has_cover_object(object_id)
+		and body.size() == 4
+		and controller_src.contains("BattleVehicleDeploymentService.apply_side")
+		and controller_src.contains("_ensure_attacker_vehicles")
+		and not controller_src.contains("vehicle.battle_position =")
+		and not controller.has_method("place_vehicle")
+	)
+
+
+static func _vehicle_physical_park_idempotent_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var pos: Vector2 = vehicle.battle_position
+	var facing: Vector2 = vehicle.facing_direction
+	var object_id: String = BattleVehicleCoverService.body_cover_object_id(vehicle.battle_vehicle_id)
+	var slot_count: int = 0
+	var cover_object: BattleCoverObject = battle_state.battlefield_geometry.get_cover_object(object_id)
+	if cover_object != null:
+		slot_count = cover_object.slot_ids.size()
+	var zone: DeploymentZone = battle_state.get_deployment_zone(
+		battle_state.get_side(battle_state.attacker_side_id).deployment_zone_id
+	)
+	var zone_count: int = 0
+	if zone != null:
+		zone_count = zone.deployed_vehicle_ids.size()
+	var rebound: TacticalDeploymentController = TacticalDeploymentController.new()
+	rebound.bind_session(runtime.get_current_session())
+	runtime.tactical_deployment_controller.sync_from_authority()
+	var after_cover: BattleCoverObject = battle_state.battlefield_geometry.get_cover_object(object_id)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
+		and vehicle.battle_position.is_equal_approx(pos)
+		and vehicle.facing_direction.is_equal_approx(facing)
+		and zone != null
+		and zone.deployed_vehicle_ids.size() == zone_count
+		and _vehicle_physical_id_count(zone.deployed_vehicle_ids, StarterWorldService.VEHICLE_ID) == 1
+		and after_cover != null
+		and after_cover.slot_ids.size() == slot_count
+	)
+
+
+static func _vehicle_physical_id_count(ids: Array[String], vehicle_id: String) -> int:
+	var count: int = 0
+	for found_id: String in ids:
+		if found_id == vehicle_id:
+			count += 1
+	return count
+
+
+static func _vehicle_physical_commit_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_cm", "attacker") == null:
+		return false
+	if _vehicle_physical_add_soldier(battle_state, "vp_cm_sol", "attacker") == null:
+		return false
+	if _vehicle_physical_add_soldier(battle_state, "vp_cm_def", "defender") == null:
+		return false
+	var att_place: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_cm_sol",
+		Vector2(16.0, 40.0)
+	)
+	var def_place: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_cm_def",
+		Vector2(90.0, 30.0)
+	)
+	if att_place == null or not att_place.success or def_place == null or not def_place.success:
+		return false
+	var undeployed: String = battle_state.get_side_deployment_commit_error("attacker")
+	if not battle_state.deploy_vehicle("vp_cm", "attacker_deployment"):
+		return false
+	var membership_only: String = battle_state.get_side_deployment_commit_error("attacker")
+	var parked: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_cm",
+		Vector2(8.0, 20.0),
+		Vector2.RIGHT
+	)
+	if parked == null or not parked.success:
+		return false
+	var ready_error: String = battle_state.get_side_deployment_commit_error("attacker")
+	var commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		"attacker"
+	)
+	return (
+		undeployed == "undeployed_vehicle"
+		and membership_only == "missing_vehicle_position"
+		and ready_error.is_empty()
+		and commit != null
+		and commit.success
+		and battle_state.is_side_deployment_committed("attacker")
+	)
+
+
+static func _vehicle_physical_freeze_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_fr", "attacker") == null:
+		return false
+	if _vehicle_physical_add_soldier(battle_state, "vp_fr_sol", "attacker") == null:
+		return false
+	if BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_fr_sol",
+		Vector2(16.0, 40.0)
+	) == null:
+		return false
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_fr",
+		Vector2(8.0, 20.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if not BattleDeploymentCommitService.commit_side_deployment(battle_state, "attacker").success:
+		return false
+	var snap: Dictionary = _vehicle_physical_pose_snap(battle_state, "vp_fr")
+	var redeploy: bool = battle_state.deploy_vehicle("vp_fr", "attacker_deployment")
+	var replace: BattleVehiclePlacementResult = BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_fr",
+		Vector2(8.0, 40.0),
+		Vector2.DOWN
+	)
+	return (
+		not redeploy
+		and replace != null
+		and not replace.success
+		and (
+			replace.error_code == "already_deployed"
+			or replace.error_code == "side_deployment_committed"
+		)
+		and _vehicle_physical_pose_unchanged(battle_state, "vp_fr", snap)
+	)
+
+
+static func _vehicle_physical_readiness_ok() -> bool:
+	var battle_state: BattleState = _vehicle_physical_make_state()
+	if battle_state == null:
+		return false
+	if _vehicle_physical_add_car(battle_state, "vp_rd", "attacker") == null:
+		return false
+	if _vehicle_physical_add_soldier(battle_state, "vp_rd_sol", "attacker") == null:
+		return false
+	if _vehicle_physical_add_soldier(battle_state, "vp_rd_def", "defender") == null:
+		return false
+	if BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_rd_sol",
+		Vector2(16.0, 40.0)
+	) == null:
+		return false
+	if BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"vp_rd_def",
+		Vector2(90.0, 30.0)
+	) == null:
+		return false
+	if not battle_state.deploy_vehicle("vp_rd", "attacker_deployment"):
+		return false
+	var membership_ready: bool = battle_state.is_side_ready("attacker")
+	var membership_spatial: bool = battle_state.is_spatially_ready()
+	var membership_begin: bool = battle_state.begin_battle()
+	if BattleVehiclePlacementService.place_vehicle(
+		battle_state,
+		"vp_rd",
+		Vector2(8.0, 20.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var posed_spatial: bool = battle_state.is_spatially_ready()
+	if not BattleDeploymentCommitService.commit_side_deployment(battle_state, "attacker").success:
+		return false
+	if not BattleDeploymentCommitService.commit_side_deployment(battle_state, "defender").success:
+		return false
+	return (
+		membership_ready
+		and not membership_spatial
+		and not membership_begin
+		and battle_state.battle_phase == "deployment"
+		and posed_spatial
+		and battle_state.is_side_ready("attacker")
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
+	)
+
+
+static func _vehicle_physical_ready_paused_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_vehicle_physical_attacker_soldier_point(battle_state))
+	controller.try_commit_attacker()
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
+		and battle_state.battle_phase == "deployment"
+		and runtime.get_current_session().session_state == "deployment"
+		and runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and not runtime_src.contains("begin_battle()")
+		and not controller_src.contains("begin_battle")
+	)
+
+
+static func _vehicle_physical_repeat_c_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_vehicle_physical_attacker_soldier_point(battle_state))
+	controller.try_commit_attacker()
+	var soldier_pos: Vector2 = participant.battle_position
+	var vehicle_pos: Vector2 = vehicle.battle_position
+	var vehicle_facing: Vector2 = vehicle.facing_direction
+	_tacticalview_press(runtime, KEY_C)
+	_tacticalview_press(runtime, KEY_C)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_battle_ready()
+		and battle_state.battle_phase == "deployment"
+		and participant.battle_position.is_equal_approx(soldier_pos)
+		and vehicle.battle_position.is_equal_approx(vehicle_pos)
+		and vehicle.facing_direction.is_equal_approx(vehicle_facing)
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+	)
+
+
+static func _vehicle_physical_httb_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	_tacticalview_press(runtime, KEY_H)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_B)
+	if runtime.get_current_mode() != "tactical_deployment":
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if battle_state == null or controller == null or vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var parked_before: bool = battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var through: BattleDeploymentPlacementResult = controller.try_place_selected(vehicle.battle_position)
+	var legal: Vector2 = _vehicle_physical_attacker_soldier_point(battle_state)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(legal)
+	controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		parked_before
+		and through != null
+		and not through.success
+		and through.error_code == "inside_vehicle_body"
+		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
+		and battle_state.is_battle_ready()
+		and battle_state.is_spatially_ready()
+		and battle_state.battle_phase == "deployment"
+		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
+			== "awaiting_resolution"
+	)
+
+
+static func _vehicle_physical_campaign_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_campaign_snap(runtime.game_state)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_vehicle_physical_attacker_soldier_point(battle_state))
+	controller.try_commit_attacker()
+	var campaign_vehicle: Vehicle = runtime.game_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		_interactive_deploy_campaign_unchanged(runtime.game_state, snap)
+		and campaign_vehicle != null
+		and not campaign_vehicle.to_dict().has("battle_position")
+		and not campaign_vehicle.to_dict().has("facing_direction")
+	)
+
+
+static func _vehicle_physical_noncombat_ok() -> bool:
+	var vehicle_src: String = FileAccess.get_file_as_string("res://battle/core/battle_vehicle.gd")
+	var cover_src: String = FileAccess.get_file_as_string(
+		"res://battle/vehicles/battle_vehicle_cover_service.gd"
+	)
+	var place_src: String = FileAccess.get_file_as_string(
+		"res://battle/vehicles/battle_vehicle_placement_service.gd"
+	)
+	var victory_src: String = FileAccess.get_file_as_string("res://battle/core/battle_victory_service.gd")
+	var pressure_src: String = FileAccess.get_file_as_string(
+		"res://battle/combat/battle_combat_pressure_service.gd"
+	)
+	var command_src: String = FileAccess.get_file_as_string("res://battle/core/battle_force_command_service.gd")
+	var fire_src: String = FileAccess.get_file_as_string("res://battle/combat/battle_fire_control_service.gd")
+	var target_src: String = FileAccess.get_file_as_string(
+		"res://battle/combat/battle_target_selection_service.gd"
+	)
+	var vehicle: BattleVehicle = BattleVehicle.new("vp_nc", "vp_nc", "battle_a", "attacker", "car", "")
+	return (
+		vehicle.get("hit_points") == null
+		and vehicle.get("hp") == null
+		and vehicle.get("is_alive") == null
+		and vehicle.get("is_destroyed") == null
+		and vehicle.get("weapon_type") == null
+		and vehicle.get("movement_intent") == null
+		and vehicle.get("movement_speed") == null
+		and vehicle.get("passenger_ids") == null
+		and vehicle.get("is_entered") == null
+		and not vehicle_src.contains("hit_points")
+		and not vehicle_src.contains("damage")
+		and not vehicle_src.contains("targetable")
+		and not cover_src.contains("reserve_slot")
+		and not cover_src.contains("occupy_slot")
+		and not place_src.contains("begin_battle")
+		and not victory_src.contains("BattleVehicle")
+		and not pressure_src.contains("BattleVehicle")
+		and not command_src.contains("BattleVehicle")
+		and not fire_src.contains("BattleVehicle")
+		and not target_src.contains("BattleVehicle")
+	)
+
+
+static func _vehicle_physical_doors_ok() -> bool:
+	var vehicle_src: String = FileAccess.get_file_as_string("res://battle/core/battle_vehicle.gd")
+	var body_src: String = FileAccess.get_file_as_string("res://battle/vehicles/battle_vehicle_body_service.gd")
+	var cover_src: String = FileAccess.get_file_as_string(
+		"res://battle/vehicles/battle_vehicle_cover_service.gd"
+	)
+	return (
+		not vehicle_src.to_lower().contains("door")
+		and not body_src.to_lower().contains("door")
+		and not cover_src.to_lower().contains("open-door")
+		and not cover_src.contains("enter")
+		and not cover_src.contains("exit")
+		and cover_src.contains("Door/open-state cover is not implemented")
+	)
+
+
+static func _vehicle_physical_self_check_absent_ok() -> bool:
+	return not FileAccess.file_exists("res://battle/vehicles/battle_vehicle_physicality_self_check.gd")

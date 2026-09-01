@@ -4,6 +4,8 @@ extends RefCounted
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
+const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
 
 # Participants are treated as points at battle_position. A later body radius can
@@ -69,6 +71,18 @@ static func resolve_translation(
 			requested_displacement,
 			inside_obstacle_id
 		)
+	var inside_vehicle_id: String = BattleVehicleBodyService.blocking_vehicle_id_at(
+		battle_state,
+		start_position
+	)
+	if not inside_vehicle_id.is_empty():
+		return BattleSpatialResult.failed(
+			"start_inside_vehicle",
+			"Battle spatial resolution failed: start position is inside vehicle '%s'." % inside_vehicle_id,
+			start_position,
+			requested_displacement,
+			inside_vehicle_id
+		)
 	if requested_displacement.is_equal_approx(Vector2.ZERO):
 		return BattleSpatialResult.succeeded(
 			start_position,
@@ -78,7 +92,7 @@ static func resolve_translation(
 			false,
 			""
 		)
-	return _resolve_legal_translation(geometry, start_position, requested_displacement)
+	return _resolve_legal_translation(battle_state, geometry, start_position, requested_displacement)
 
 
 # Raw AABB slab overlap for start + t * displacement.
@@ -151,6 +165,7 @@ static func is_translation_clear(
 
 
 static func _resolve_legal_translation(
+	battle_state: BattleState,
 	geometry: BattlefieldGeometry,
 	start_position: Vector2,
 	requested_displacement: Vector2
@@ -179,10 +194,30 @@ static func _resolve_legal_translation(
 			best_t = hit_t
 			best_obstacle_id = obstacle_id
 			blocked_by_boundary = false
+	var vehicle_ids: Array[String] = []
+	for vehicle_id: String in battle_state.vehicles:
+		vehicle_ids.append(vehicle_id)
+	vehicle_ids.sort()
+	for vehicle_id: String in vehicle_ids:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		var hit_t: float = BattleVehicleBodyService.segment_entry_t(
+			vehicle,
+			start_position,
+			requested_displacement
+		)
+		if is_inf(hit_t):
+			continue
+		if hit_t < 0.0 or hit_t > 1.0:
+			continue
+		if _is_earlier_hit(hit_t, vehicle_id, best_t, best_obstacle_id, blocked_by_boundary):
+			best_t = hit_t
+			best_obstacle_id = vehicle_id
+			blocked_by_boundary = false
 	var was_blocked: bool = blocked_by_boundary or not best_obstacle_id.is_empty()
 	var final_position: Vector2 = requested_end
 	if was_blocked:
 		final_position = _position_at_hit(
+			battle_state,
 			geometry,
 			start_position,
 			requested_displacement,
@@ -193,6 +228,8 @@ static func _resolve_legal_translation(
 	if not geometry.contains_point(final_position):
 		final_position = start_position
 	if not _blocking_obstacle_at(geometry, final_position).is_empty():
+		final_position = start_position
+	if not BattleVehicleBodyService.blocking_vehicle_id_at(battle_state, final_position).is_empty():
 		final_position = start_position
 	var resolved_displacement: Vector2 = final_position - start_position
 	if not BattlefieldGeometry.is_finite_point(resolved_displacement) or not BattlefieldGeometry.is_finite_point(final_position):
@@ -231,6 +268,7 @@ static func _is_earlier_hit(
 
 
 static func _position_at_hit(
+	battle_state: BattleState,
 	geometry: BattlefieldGeometry,
 	start_position: Vector2,
 	requested_displacement: Vector2,
@@ -255,6 +293,10 @@ static func _position_at_hit(
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
 		if obstacle != null and obstacle.contains_point(point):
 			return start_position
+		if battle_state != null and battle_state.has_vehicle(obstacle_id):
+			var vehicle: BattleVehicle = battle_state.get_vehicle(obstacle_id)
+			if BattleVehicleBodyService.contains_point(vehicle, point):
+				return start_position
 	return point
 
 

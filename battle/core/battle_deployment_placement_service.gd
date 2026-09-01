@@ -149,5 +149,7 @@ static func _position_error_message(
 			if blocking_id.is_empty():
 				return "Deployment placement failed: position is inside a movement-blocking obstacle."
 			return "Deployment placement failed: position is inside movement-blocking obstacle '%s'." % blocking_id
+		"inside_vehicle_body":
+			return "Deployment placement failed: position is inside a positioned vehicle body."
 		_:
 			return "Deployment placement failed: position is not legal (%s)." % error_code

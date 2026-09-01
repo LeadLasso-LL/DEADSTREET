@@ -3,8 +3,8 @@ extends RefCounted
 
 # Authoritative side-local deployment commitment during battle_phase "deployment".
 # Answers whether one side may commit its own deployment. Does not own assault order.
-# Does not begin battle. Vehicles do not block commitment in v1; that exclusion is provisional.
 # Commit eligibility is BattleState-owned; this service reports result objects.
+# Vehicles on a side must be fully deployed (membership + legal pose) before commit.
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleDeploymentCommitResult := preload("res://battle/core/battle_deployment_commit_result.gd")
@@ -66,5 +66,13 @@ static func _error_message(error_code: String, side_id: String, battle_state: Ba
 			return "Deployment commit failed: a living participant on side '%s' is not fully deployed." % side_id
 		"no_living_participants":
 			return "Deployment commit failed: side '%s' has no living participants." % side_id
+		"unknown_vehicle":
+			return "Deployment commit failed: a vehicle registered on side '%s' is missing." % side_id
+		"undeployed_vehicle":
+			return "Deployment commit failed: a vehicle on side '%s' is not deployed." % side_id
+		"missing_vehicle_position":
+			return "Deployment commit failed: a vehicle on side '%s' has no battle position." % side_id
+		"invalid_vehicle_pose":
+			return "Deployment commit failed: a vehicle on side '%s' is not fully deployed." % side_id
 		_:
 			return "Deployment commit failed: side '%s' cannot commit (%s)." % [side_id, error_code]

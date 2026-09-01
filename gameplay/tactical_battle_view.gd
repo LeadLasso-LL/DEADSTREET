@@ -16,11 +16,11 @@ const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
+const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 
 const TACTICAL_PIXELS_PER_UNIT := 8.0
 const CAMERA_PADDING := 96.0
 const PARTICIPANT_RADIUS := 7.0
-const VEHICLE_SIZE := Vector2(16.0, 10.0)
 const COVER_SLOT_RADIUS := 3.5
 const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
@@ -327,12 +327,27 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if vehicle == null or not vehicle.has_battle_position:
 			continue
-		var view_pos: Vector2 = _to_view(vehicle.battle_position)
+		var corners: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
 		var fill: Color = _side_fill(battle_state, vehicle.side_id)
-		var rect: Rect2 = Rect2(view_pos - VEHICLE_SIZE * 0.5, VEHICLE_SIZE)
-		draw_rect(rect, fill, true)
-		draw_rect(rect, Color(0.08, 0.08, 0.09, 1.0), false, 1.5)
-		_draw_label(view_pos + Vector2(0.0, -VEHICLE_SIZE.y * 0.5 - 12.0), vehicle.battle_vehicle_id, 11)
+		if corners.size() == 4:
+			var view_corners: PackedVector2Array = PackedVector2Array()
+			var min_y: float = INF
+			for corner: Vector2 in corners:
+				var view_corner: Vector2 = _to_view(corner)
+				view_corners.append(view_corner)
+				if view_corner.y < min_y:
+					min_y = view_corner.y
+			draw_colored_polygon(view_corners, fill)
+			var outline: PackedVector2Array = view_corners.duplicate()
+			outline.append(view_corners[0])
+			draw_polyline(outline, Color(0.08, 0.08, 0.09, 1.0), 1.5, true)
+			var view_pos: Vector2 = _to_view(vehicle.battle_position)
+			if vehicle.has_valid_orientation():
+				var nose: Vector2 = _to_view(
+					vehicle.battle_position + vehicle.facing_direction * 0.9
+				)
+				draw_line(view_pos, nose, Color(0.08, 0.08, 0.09, 1.0), 2.0, true)
+			_draw_label(Vector2(view_pos.x, min_y - 12.0), vehicle.battle_vehicle_id, 11)
 
 
 func _draw_overlay() -> void:
@@ -470,13 +485,17 @@ func _overlay_rows() -> Array[Dictionary]:
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if vehicle == null:
 			continue
+		var parked: String = "placement unavailable"
+		if battle_state.is_vehicle_fully_deployed(vehicle.battle_vehicle_id):
+			parked = "parked"
 		rows.append(
 			{
-				"text": "  V %s  %s  %s  %s  (placement unavailable)" % [
+				"text": "  V %s  %s  %s  %s  (%s)" % [
 					vehicle.battle_vehicle_id,
 					_side_label(battle_state, vehicle.side_id),
 					vehicle.vehicle_type_id,
 					_deployed_label(battle_state.is_vehicle_deployed(vehicle_id)),
+					parked,
 				],
 				"kind": "vehicle",
 				"id": vehicle.battle_vehicle_id,

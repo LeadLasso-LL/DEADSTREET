@@ -2,8 +2,9 @@ class_name TacticalDeploymentController
 extends RefCounted
 
 # Interaction owner for v1 attacker soldier placement, attacker-side commit,
-# and standard-assault defender AI invocation. Holds selection only.
-# Does not own positions, geometry, legality, commitment truth, or AI scoring.
+# standard-assault attacker vehicle auto-parking, and defender AI invocation.
+# Holds selection only. Does not own positions, geometry, legality, commitment
+# truth, vehicle pose, or AI scoring.
 
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
@@ -15,6 +16,8 @@ const BattleDeploymentCommitResult := preload("res://battle/core/battle_deployme
 const BattleDeploymentAiService := preload("res://battle/ai/battle_deployment_ai_service.gd")
 const BattleDeploymentAiResult := preload("res://battle/ai/battle_deployment_ai_result.gd")
 const BattleDeploymentPlanner := preload("res://battle/ai/battle_deployment_planner.gd")
+const BattleVehicleDeploymentService := preload("res://battle/vehicles/battle_vehicle_deployment_service.gd")
+const BattleVehicleDeploymentResult := preload("res://battle/vehicles/battle_vehicle_deployment_result.gd")
 
 const SUBROLE_ATTACKER_PLACEMENT := "attacker_placement"
 const SUBROLE_DEFENDER_PLACEMENT := "defender" + "_placement"
@@ -34,10 +37,12 @@ func bind_session(p_session: CampaignBattleSession) -> void:
 	status_text = ""
 	last_defender_ai_posture = ""
 	last_defender_ai_error = ""
+	_ensure_attacker_vehicles()
 	_sync_subrole_from_authority()
 
 
 func sync_from_authority() -> void:
+	_ensure_attacker_vehicles()
 	_sync_subrole_from_authority()
 
 
@@ -159,6 +164,9 @@ func try_commit_attacker() -> BattleDeploymentCommitResult:
 		or error_code == "missing_battle_position"
 		or error_code == "invalid_position"
 		or error_code == "no_living_participants"
+		or error_code == "undeployed_vehicle"
+		or error_code == "missing_vehicle_position"
+		or error_code == "invalid_vehicle_pose"
 	):
 		status_text = "attacker deployment incomplete"
 	print("TacticalDeploymentController: attacker commit failed code=%s" % error_code)
@@ -169,6 +177,33 @@ func _battle_state() -> BattleState:
 	if session == null:
 		return null
 	return session.battle_state
+
+
+func _ensure_attacker_vehicles() -> void:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return
+	if battle_state.battle_phase != "deployment":
+		return
+	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+		return
+	var result: BattleVehicleDeploymentResult = BattleVehicleDeploymentService.apply_side(
+		battle_state,
+		battle_state.attacker_side_id,
+		battle_state.defender_side_id
+	)
+	if result != null and result.success:
+		if result.placed_count > 0:
+			print(
+				"TacticalDeploymentController: auto-placed %s attacker vehicle(s)"
+				% result.placed_count
+			)
+		return
+	var error_code: String = "vehicle_place_failed"
+	if result != null and not result.error_code.is_empty():
+		error_code = result.error_code
+	status_text = "attacker vehicle placement failed (%s)" % error_code
+	print("TacticalDeploymentController: attacker vehicle auto-placement failed code=%s" % error_code)
 
 
 func _sync_subrole_from_authority() -> void:

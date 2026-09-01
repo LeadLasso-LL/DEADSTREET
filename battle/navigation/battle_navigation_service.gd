@@ -4,11 +4,15 @@ extends RefCounted
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
+const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
+const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 const BattleSpatialService := preload("res://battle/geometry/battle_spatial_service.gd")
 const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
 
 # Geometric clearance only. Matches spatial collision epsilon so planned
-# segments sit outside blocking rectangles without inventing a body radius.
+# segments sit outside authored blockers and positioned vehicle bodies.
+# Vehicle corners are queried live from BattleState; they are not written
+# into BattlefieldGeometry obstacles.
 const NAVIGATION_CLEARANCE_EPSILON := 0.0001
 
 
@@ -75,11 +79,33 @@ static func find_path(
 			start_position,
 			destination
 		)
+	var start_vehicle_id: String = BattleVehicleBodyService.blocking_vehicle_id_at(
+		battle_state,
+		start_position
+	)
+	if not start_vehicle_id.is_empty():
+		return BattleNavigationResult.failed(
+			"start_inside_vehicle",
+			"Battle navigation failed: start position is inside vehicle '%s'." % start_vehicle_id,
+			start_position,
+			destination
+		)
 	var destination_obstacle_id: String = _blocking_obstacle_id(geometry, destination)
 	if not destination_obstacle_id.is_empty():
 		return BattleNavigationResult.failed(
 			"destination_inside_blocking_obstacle",
 			"Battle navigation failed: destination is inside blocking obstacle '%s'." % destination_obstacle_id,
+			start_position,
+			destination
+		)
+	var destination_vehicle_id: String = BattleVehicleBodyService.blocking_vehicle_id_at(
+		battle_state,
+		destination
+	)
+	if not destination_vehicle_id.is_empty():
+		return BattleNavigationResult.failed(
+			"destination_inside_vehicle",
+			"Battle navigation failed: destination is inside vehicle '%s'." % destination_vehicle_id,
 			start_position,
 			destination
 		)
@@ -91,7 +117,7 @@ static func find_path(
 			direct_waypoints,
 			false
 		)
-	var nodes: Array[Vector2] = _collect_nodes(geometry, start_position, destination)
+	var nodes: Array[Vector2] = _collect_nodes(battle_state, start_position, destination)
 	var route: Array[Vector2] = _shortest_route(battle_state, nodes)
 	if route.is_empty():
 		return BattleNavigationResult.failed(
@@ -111,13 +137,14 @@ static func find_path(
 
 
 static func _collect_nodes(
-	geometry: BattlefieldGeometry,
+	battle_state: BattleState,
 	start_position: Vector2,
 	destination: Vector2
 ) -> Array[Vector2]:
 	var nodes: Array[Vector2] = []
 	nodes.append(start_position)
 	nodes.append(destination)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
 	for obstacle_id: String in obstacle_ids:
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
@@ -127,7 +154,25 @@ static func _collect_nodes(
 			continue
 		var corners: Array[Vector2] = _corner_offsets(obstacle.bounds)
 		for corner: Vector2 in corners:
-			if not _is_legal_candidate(geometry, corner):
+			if not _is_legal_candidate(battle_state, corner):
+				continue
+			if _has_equivalent_point(nodes, corner):
+				continue
+			nodes.append(corner)
+	var vehicle_ids: Array[String] = []
+	for vehicle_id: String in battle_state.vehicles:
+		vehicle_ids.append(vehicle_id)
+	vehicle_ids.sort()
+	for vehicle_id: String in vehicle_ids:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null:
+			continue
+		var vehicle_corners: PackedVector2Array = BattleVehicleBodyService.cleared_corners(
+			vehicle,
+			NAVIGATION_CLEARANCE_EPSILON
+		)
+		for corner: Vector2 in vehicle_corners:
+			if not _is_legal_candidate(battle_state, corner):
 				continue
 			if _has_equivalent_point(nodes, corner):
 				continue
@@ -150,12 +195,17 @@ static func _corner_offsets(bounds: Rect2) -> Array[Vector2]:
 	return corners
 
 
-static func _is_legal_candidate(geometry: BattlefieldGeometry, point: Vector2) -> bool:
+static func _is_legal_candidate(battle_state: BattleState, point: Vector2) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
 	if not BattlefieldGeometry.is_finite_point(point):
 		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if not geometry.contains_point(point):
 		return false
-	return _blocking_obstacle_id(geometry, point).is_empty()
+	if not _blocking_obstacle_id(geometry, point).is_empty():
+		return false
+	return BattleVehicleBodyService.blocking_vehicle_id_at(battle_state, point).is_empty()
 
 
 static func _has_equivalent_point(points: Array[Vector2], candidate: Vector2) -> bool:

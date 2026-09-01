@@ -9,6 +9,7 @@ const DeploymentZone := preload("res://battle/core/deployment_zone.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattlefieldGeometryResult := preload("res://battle/geometry/battlefield_geometry_result.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
+const BattleVehiclePlacementService := preload("res://battle/vehicles/battle_vehicle_placement_service.gd")
 
 const PROVISIONAL_WIDTH := 100.0
 const PROVISIONAL_HEIGHT := 60.0
@@ -382,10 +383,33 @@ static func _apply_vehicle_positions(
 	vehicle_ids: Array[String],
 	points: Array[Vector2]
 ) -> void:
+	# Fixture path only: vehicles already in zone membership when geometry is
+	# created get an authoritative pose. Player HQ flow has empty membership
+	# here; TacticalDeploymentController parks those through the planner.
 	var index: int = 0
 	while index < vehicle_ids.size() and index < points.size():
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_ids[index])
-		if vehicle != null:
-			vehicle.has_battle_position = true
-			vehicle.battle_position = points[index]
+		if vehicle != null and not vehicle.has_battle_position:
+			var facing: Vector2 = _vehicle_facing_from_geometry(battle_state, vehicle.side_id)
+			BattleVehiclePlacementService.place_vehicle(
+				battle_state,
+				vehicle.battle_vehicle_id,
+				points[index],
+				facing
+			)
 		index += 1
+
+
+static func _vehicle_facing_from_geometry(battle_state: BattleState, side_id: String) -> Vector2:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return Vector2.RIGHT
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var own_rect: Rect2 = geometry.attacker_deployment_rect
+	var opposing_rect: Rect2 = geometry.defender_deployment_rect
+	if side_id == battle_state.defender_side_id:
+		own_rect = geometry.defender_deployment_rect
+		opposing_rect = geometry.attacker_deployment_rect
+	var toward: Vector2 = opposing_rect.get_center() - own_rect.get_center()
+	if toward.is_equal_approx(Vector2.ZERO):
+		return Vector2.RIGHT
+	return toward.normalized()

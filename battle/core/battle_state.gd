@@ -12,6 +12,7 @@ const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd
 const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat_pressure_snapshot.gd")
 const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
+const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -301,8 +302,7 @@ func deploy_vehicle(vehicle_id: String, zone_id: String) -> bool:
 	if not has_side(vehicle.side_id):
 		push_error("BattleState.deploy_vehicle: vehicle '%s' side '%s' does not exist." % [vehicle_id, vehicle.side_id])
 		return false
-	# v1: vehicles are outside side-commit eligibility, so commitment does not freeze undeployed vehicles.
-	# When vehicle deployment joins side commit eligibility, freeze deploy_vehicle on that same boundary.
+	# Vehicle deployment is part of side-commit eligibility. Commitment freezes undeployed vehicles.
 	var side: BattleSide = get_side(vehicle.side_id)
 	if not side.has_vehicle_id(vehicle_id):
 		push_error("BattleState.deploy_vehicle: vehicle '%s' is not registered on side '%s'." % [vehicle_id, side.side_id])
@@ -315,6 +315,9 @@ func deploy_vehicle(vehicle_id: String, zone_id: String) -> bool:
 		return false
 	if not vehicle.deployment_slot_id.is_empty() or zone.has_deployed_vehicle(vehicle_id):
 		push_error("BattleState.deploy_vehicle: vehicle '%s' is already deployed." % vehicle_id)
+		return false
+	if is_side_deployment_committed(vehicle.side_id):
+		push_error("BattleState.deploy_vehicle: side '%s' deployment is already committed." % vehicle.side_id)
 		return false
 	vehicle.deployment_slot_id = zone.zone_id
 	zone.deployed_vehicle_ids.append(vehicle.battle_vehicle_id)
@@ -372,6 +375,16 @@ func get_side_deployment_commit_error(side_id: String) -> String:
 			return "invalid_position"
 	if living_count <= 0:
 		return "no_living_participants"
+	for vehicle_id: String in side.vehicle_ids:
+		var vehicle: BattleVehicle = get_vehicle(vehicle_id)
+		if vehicle == null:
+			return "unknown_vehicle"
+		if not is_vehicle_fully_deployed(vehicle_id):
+			if not is_vehicle_deployed(vehicle_id):
+				return "undeployed_vehicle"
+			if not vehicle.has_battle_position:
+				return "missing_vehicle_position"
+			return "invalid_vehicle_pose"
 	return ""
 
 
@@ -403,11 +416,34 @@ func get_deployment_position_error(side_id: String, position: Vector2) -> String
 	var blocking_id: String = battlefield_geometry.get_movement_blocking_obstacle_id_at(position)
 	if not blocking_id.is_empty():
 		return "inside_blocking_obstacle"
+	var blocking_vehicle_id: String = BattleVehicleBodyService.blocking_vehicle_id_at(self, position)
+	if not blocking_vehicle_id.is_empty():
+		return "inside_vehicle_body"
 	return ""
 
 
 func is_legal_deployment_position(side_id: String, position: Vector2) -> bool:
 	return get_deployment_position_error(side_id, position).is_empty()
+
+
+func is_vehicle_fully_deployed(vehicle_id: String) -> bool:
+	if not has_vehicle(vehicle_id):
+		return false
+	var vehicle: BattleVehicle = get_vehicle(vehicle_id)
+	if vehicle == null:
+		return false
+	if not _vehicle_assignment_is_valid(vehicle_id, vehicle.side_id):
+		return false
+	if not vehicle.has_battle_position:
+		return false
+	if not vehicle.has_valid_orientation():
+		return false
+	return BattleVehicleBodyService.get_placement_error(
+		self,
+		vehicle_id,
+		vehicle.battle_position,
+		vehicle.facing_direction
+	).is_empty()
 
 
 func is_participant_fully_deployed(participant_id: String) -> bool:
@@ -625,9 +661,18 @@ func _zone_is_spatially_ready(
 		var vehicle: BattleVehicle = get_vehicle(vehicle_id)
 		if vehicle == null or not vehicle.has_battle_position:
 			return false
+		if not vehicle.has_valid_orientation():
+			return false
 		if not is_finite(vehicle.battle_position.x) or not is_finite(vehicle.battle_position.y):
 			return false
 		if vehicle.deployment_slot_id != zone.zone_id:
+			return false
+		if BattleVehicleBodyService.get_placement_error(
+			self,
+			vehicle_id,
+			vehicle.battle_position,
+			vehicle.facing_direction
+		) != "":
 			return false
 		if not BattlefieldGeometry.rect_contains_point(zone.deployment_rect, vehicle.battle_position):
 			return false
