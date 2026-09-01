@@ -14,6 +14,7 @@ const NODE_KEEP_ID := "node_keep"
 const NODE_HQ_ID := "node_hq"
 const SEGMENT_ID := "seg_keep_hq"
 const SOLDIER_ID := "player_soldier"
+const RIVAL_SOLDIER_ID := "rival_soldier"
 const VEHICLE_ID := "player_vehicle"
 const DEBUG_MISSION_ID := "debug_hq_assault"
 const DEBUG_FORCE_ID := "debug_hq_force"
@@ -89,6 +90,12 @@ static func create() -> GameState:
 	state.add_vehicle(vehicle)
 	state.assign_soldier_to_stronghold(SOLDIER_ID, KEEP_ID)
 	state.assign_vehicle_to_stronghold(VEHICLE_ID, KEEP_ID)
+
+	# Provisional one-soldier rival HQ garrison so starter HQ assaults have a real defender.
+	var rival_soldier: Soldier = Soldier.new(RIVAL_SOLDIER_ID, RIVAL_FACTION_ID, "", "pistol", 1.0, 0.0)
+	state.add_soldier(rival_soldier)
+	if not state.assign_soldier_to_neighborhood_hq(RIVAL_SOLDIER_ID, HQ_ID):
+		push_error("StarterWorldService.create: failed to assign rival soldier '%s' to NeighborhoodHQ '%s'." % [RIVAL_SOLDIER_ID, HQ_ID])
 
 	DiplomacyService.declare_war(state, PLAYER_FACTION_ID, RIVAL_FACTION_ID)
 	return state

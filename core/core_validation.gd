@@ -16028,11 +16028,31 @@ static func run() -> Dictionary:
 	var hq_garrison_force_query_ok: bool = _hq_garrison_force_query_ok()
 	var hq_garrison_serialize_ok: bool = _hq_garrison_serialize_ok()
 	var hq_garrison_deserialize_safety_ok: bool = _hq_garrison_deserialize_safety_ok()
-	var hq_garrison_no_composition_ok: bool = _hq_garrison_no_composition_ok()
 	var hq_garrison_starter_ok: bool = _hq_garrison_starter_ok()
 	var hq_garrison_side_effects_ok: bool = _hq_garrison_side_effects_ok()
 	var hq_garrison_capture_boundary_ok: bool = _hq_garrison_capture_boundary_ok()
 	var hq_garrison_no_vehicles_ok: bool = _hq_garrison_no_vehicles_ok()
+	var defender_composition_one_ok: bool = _defender_composition_one_ok()
+	var defender_composition_snapshot_ok: bool = _defender_composition_snapshot_ok()
+	var defender_composition_registry_ok: bool = _defender_composition_registry_ok()
+	var defender_composition_side_force_id_ok: bool = _defender_composition_side_force_id_ok()
+	var defender_composition_multi_ok: bool = _defender_composition_multi_ok()
+	var defender_composition_empty_ok: bool = _defender_composition_empty_ok()
+	var defender_composition_missing_ok: bool = _defender_composition_missing_ok()
+	var defender_composition_faction_ok: bool = _defender_composition_faction_ok()
+	var defender_composition_duplicate_ok: bool = _defender_composition_duplicate_ok()
+	var defender_composition_source_ok: bool = _defender_composition_source_ok()
+	var defender_composition_target_hq_ok: bool = _defender_composition_target_hq_ok()
+	var defender_composition_starter_assign_ok: bool = _defender_composition_starter_assign_ok()
+	var defender_composition_httb_ok: bool = _defender_composition_httb_ok()
+	var defender_composition_attacker_commit_ok: bool = _defender_composition_attacker_commit_ok()
+	var defender_composition_roster_ok: bool = _defender_composition_roster_ok()
+	var defender_composition_no_interact_ok: bool = _defender_composition_no_interact_ok()
+	var defender_composition_setup_isolation_ok: bool = _defender_composition_setup_isolation_ok()
+	var defender_composition_casualty_ok: bool = _defender_composition_casualty_ok()
+	var defender_composition_visiting_ok: bool = _defender_composition_visiting_ok()
+	var defender_composition_no_vehicles_ok: bool = _defender_composition_no_vehicles_ok()
+	var defender_composition_absent_ok: bool = _defender_composition_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17889,11 +17909,31 @@ static func run() -> Dictionary:
 		"hq_garrison_force_query_ok": hq_garrison_force_query_ok,
 		"hq_garrison_serialize_ok": hq_garrison_serialize_ok,
 		"hq_garrison_deserialize_safety_ok": hq_garrison_deserialize_safety_ok,
-		"hq_garrison_no_composition_ok": hq_garrison_no_composition_ok,
 		"hq_garrison_starter_ok": hq_garrison_starter_ok,
 		"hq_garrison_side_effects_ok": hq_garrison_side_effects_ok,
 		"hq_garrison_capture_boundary_ok": hq_garrison_capture_boundary_ok,
 		"hq_garrison_no_vehicles_ok": hq_garrison_no_vehicles_ok,
+		"defender_composition_one_ok": defender_composition_one_ok,
+		"defender_composition_snapshot_ok": defender_composition_snapshot_ok,
+		"defender_composition_registry_ok": defender_composition_registry_ok,
+		"defender_composition_side_force_id_ok": defender_composition_side_force_id_ok,
+		"defender_composition_multi_ok": defender_composition_multi_ok,
+		"defender_composition_empty_ok": defender_composition_empty_ok,
+		"defender_composition_missing_ok": defender_composition_missing_ok,
+		"defender_composition_faction_ok": defender_composition_faction_ok,
+		"defender_composition_duplicate_ok": defender_composition_duplicate_ok,
+		"defender_composition_source_ok": defender_composition_source_ok,
+		"defender_composition_target_hq_ok": defender_composition_target_hq_ok,
+		"defender_composition_starter_assign_ok": defender_composition_starter_assign_ok,
+		"defender_composition_httb_ok": defender_composition_httb_ok,
+		"defender_composition_attacker_commit_ok": defender_composition_attacker_commit_ok,
+		"defender_composition_roster_ok": defender_composition_roster_ok,
+		"defender_composition_no_interact_ok": defender_composition_no_interact_ok,
+		"defender_composition_setup_isolation_ok": defender_composition_setup_isolation_ok,
+		"defender_composition_casualty_ok": defender_composition_casualty_ok,
+		"defender_composition_visiting_ok": defender_composition_visiting_ok,
+		"defender_composition_no_vehicles_ok": defender_composition_no_vehicles_ok,
+		"defender_composition_absent_ok": defender_composition_absent_ok,
 	}
 
 	var passed := true
@@ -48846,6 +48886,9 @@ static func _gameplayruntime_attacker_flow_ok() -> bool:
 	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	if begin_result == null or not begin_result.success:
 		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null or not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
 	var ticks: int = 0
 	while ticks < 12 and runtime.get_current_mode() == "tactical_active":
 		runtime._process(0.1)
@@ -49050,7 +49093,11 @@ static func _gameplayruntime_tiny_world_ok() -> bool:
 		and game_state.has_faction("rival_gang")
 		and game_state.neighborhoods.size() == 1
 		and game_state.map_locations.size() == 2
-		and game_state.soldiers.size() == 1
+		and game_state.soldiers.size() == 2
+		and game_state.has_soldier("player_soldier")
+		and game_state.has_soldier("rival_soldier")
+		and game_state.get_soldier("player_soldier").home_stronghold_id == "player_keep"
+		and game_state.get_soldier("rival_soldier").faction_id == "rival_gang"
 		and game_state.vehicles.size() == 1
 		and game_state.missions.is_empty()
 		and business_count == 0
@@ -49934,7 +49981,9 @@ static func _campaignmap_tiny_world_ok() -> bool:
 		runtime,
 		game_state.factions.size() == 2
 		and game_state.map_locations.size() == 2
-		and game_state.soldiers.size() == 1
+		and game_state.soldiers.size() == 2
+		and game_state.has_soldier(StarterWorldService.SOLDIER_ID)
+		and game_state.has_soldier(StarterWorldService.RIVAL_SOLDIER_ID)
 		and game_state.vehicles.size() == 1
 		and game_state.neighborhoods.size() == 1
 		and game_state.road_graph.nodes.size() == 2
@@ -50749,6 +50798,9 @@ static func _tacticalview_return_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	var begin_result: GameFlowResult = runtime.begin_current_battle()
 	if begin_result == null or not begin_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null or not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
 		return _gameplayruntime_finish(runtime, false)
 	var ticks: int = 0
 	while ticks < 12 and runtime.get_current_mode() == "tactical_active":
@@ -54483,48 +54535,33 @@ static func _hq_garrison_deserialize_safety_ok() -> bool:
 	return negative.garrison_capacity >= 0 and negative.garrison_capacity == 0
 
 
-static func _hq_garrison_no_composition_ok() -> bool:
-	var state: GameState = _make_battle_world()
-	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
-		return false
-	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
-	var enemy: Soldier = state.get_soldier("battle_sol_enemy")
-	if hq == null or enemy == null or not _hq_garrison_assigned(hq, enemy):
-		return false
-	_battle_add_force_mission(state)
-	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
-		state, "battle_mission"
-	)
-	if not result.success or result.battle_state == null:
-		return false
-	var defender: BattleSide = result.battle_state.get_side("defender")
-	if defender == null:
-		return false
-	return (
-		defender.participant_ids.is_empty()
-		and defender.vehicle_ids.is_empty()
-		and not result.battle_state.has_participant("battle_sol_enemy")
-		and result.battle_state.participants.size() == 3
-		and _hq_garrison_assigned(hq, enemy)
-	)
-
-
 static func _hq_garrison_starter_ok() -> bool:
 	var starter: GameState = StarterWorldService.create()
 	var hq: NeighborhoodHQ = starter.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
-	if hq == null:
+	var keep: Stronghold = starter.get_map_location(StarterWorldService.KEEP_ID) as Stronghold
+	var rival: Soldier = starter.get_soldier(StarterWorldService.RIVAL_SOLDIER_ID)
+	var player: Soldier = starter.get_soldier(StarterWorldService.SOLDIER_ID)
+	if hq == null or keep == null or rival == null or player == null:
 		return false
-	var rival_soldiers := 0
-	for soldier_id: String in starter.soldiers:
-		var soldier: Soldier = starter.get_soldier(soldier_id)
-		if soldier != null and soldier.faction_id == StarterWorldService.RIVAL_FACTION_ID:
-			rival_soldiers += 1
+	var rival_strongholds := 0
+	for location_id: String in starter.map_locations:
+		var location: MapLocation = starter.get_map_location(location_id)
+		if location is Stronghold and location.owner_faction_id == StarterWorldService.RIVAL_FACTION_ID:
+			rival_strongholds += 1
 	return (
-		rival_soldiers == 0
-		and hq.get_garrison_count() == 0
-		and hq.garrison_soldier_ids.is_empty()
-		and starter.has_soldier(StarterWorldService.SOLDIER_ID)
-		and starter.get_soldier(StarterWorldService.SOLDIER_ID).garrison_hq_id.is_empty()
+		starter.soldiers.size() == 2
+		and rival.faction_id == StarterWorldService.RIVAL_FACTION_ID
+		and rival.weapon_type_id == "pistol"
+		and rival.garrison_hq_id == StarterWorldService.HQ_ID
+		and hq.has_garrison_soldier_id(StarterWorldService.RIVAL_SOLDIER_ID)
+		and _count_id(hq.garrison_soldier_ids, StarterWorldService.RIVAL_SOLDIER_ID) == 1
+		and hq.get_garrison_count() == 1
+		and not keep.has_soldier_id(StarterWorldService.RIVAL_SOLDIER_ID)
+		and not starter.is_soldier_in_active_traveling_force(StarterWorldService.RIVAL_SOLDIER_ID)
+		and rival.home_stronghold_id.is_empty()
+		and player.home_stronghold_id == StarterWorldService.KEEP_ID
+		and player.garrison_hq_id.is_empty()
+		and rival_strongholds == 0
 	)
 
 
@@ -54591,5 +54628,668 @@ static func _hq_garrison_no_vehicles_ok() -> bool:
 		and not state_src.contains("assign_vehicle_to_neighborhood_hq")
 		and not state_src.contains("unassign_vehicle_from_neighborhood_hq")
 	)
+
+
+static func _defender_composition_garrison_force_id(hq_id: String) -> String:
+	return BattleForceCommandService.garrison_tactical_force_id(hq_id)
+
+
+static func _defender_composition_participant_matches(
+	battle_state: BattleState,
+	soldier: Soldier,
+	hq_id: String
+) -> bool:
+	if battle_state == null or soldier == null:
+		return false
+	if not battle_state.has_participant(soldier.id):
+		return false
+	var participant: BattleParticipant = battle_state.get_participant(soldier.id)
+	if participant == null:
+		return false
+	var garrison_id: String = _defender_composition_garrison_force_id(hq_id)
+	return (
+		participant.participant_id == soldier.id
+		and participant.campaign_soldier_id == soldier.id
+		and participant.faction_id == soldier.faction_id
+		and participant.side_id == battle_state.defender_side_id
+		and participant.weapon_type == soldier.weapon_type_id
+		and participant.is_alive
+		and not participant.is_wounded
+		and participant.deployment_slot_id.is_empty()
+		and not participant.has_battle_position
+		and not battle_state.is_participant_deployed(soldier.id)
+		and participant.tactical_force_id == garrison_id
+	)
+
+
+static func _defender_composition_registries_agree(
+	battle_state: BattleState,
+	soldier_id: String,
+	hq_id: String
+) -> bool:
+	if battle_state == null:
+		return false
+	var defender: BattleSide = battle_state.get_side(battle_state.defender_side_id)
+	var zone: DeploymentZone = null
+	if defender != null:
+		zone = battle_state.get_deployment_zone(defender.deployment_zone_id)
+	var participant: BattleParticipant = battle_state.get_participant(soldier_id)
+	var garrison_id: String = _defender_composition_garrison_force_id(hq_id)
+	var force: BattleTacticalForce = battle_state.get_tactical_force(garrison_id)
+	return (
+		battle_state.has_participant(soldier_id)
+		and defender != null
+		and defender.has_participant_id(soldier_id)
+		and _count_id(defender.participant_ids, soldier_id) == 1
+		and zone != null
+		and zone.allowed_participant_ids.has(soldier_id)
+		and _count_id(zone.allowed_participant_ids, soldier_id) == 1
+		and participant != null
+		and participant.tactical_force_id == garrison_id
+		and force != null
+		and force.side_id == battle_state.defender_side_id
+		and not force.has_method("add_participant_id")
+	)
+
+
+static func _defender_composition_one_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var soldier: Soldier = state.get_soldier("battle_sol_enemy")
+	if soldier == null:
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	return (
+		defender != null
+		and defender.participant_ids.size() == 1
+		and _defender_composition_participant_matches(result.battle_state, soldier, "battle_hq")
+		and _defender_composition_registries_agree(result.battle_state, "battle_sol_enemy", "battle_hq")
+	)
+
+
+static func _defender_composition_snapshot_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var soldier: Soldier = state.get_soldier("battle_sol_enemy")
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null or soldier == null:
+		return false
+	var participant: BattleParticipant = result.battle_state.get_participant("battle_sol_enemy")
+	if participant == null:
+		return false
+	var faction_before: String = soldier.faction_id
+	var weapon_before: String = soldier.weapon_type_id
+	var garrison_before: String = soldier.garrison_hq_id
+	var home_before: String = soldier.home_stronghold_id
+	participant.is_alive = false
+	participant.is_wounded = true
+	participant.has_battle_position = true
+	participant.battle_position = Vector2(9.0, 4.0)
+	participant.deployment_slot_id = "mutated_slot"
+	return (
+		soldier.faction_id == faction_before
+		and soldier.weapon_type_id == weapon_before
+		and soldier.garrison_hq_id == garrison_before
+		and soldier.home_stronghold_id == home_before
+		and state.has_soldier("battle_sol_enemy")
+		and soldier != participant
+	)
+
+
+static func _defender_composition_registry_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	var zone: DeploymentZone = result.battle_state.get_deployment_zone("defender_deployment")
+	var garrison_id: String = _defender_composition_garrison_force_id("battle_hq")
+	var force: BattleTacticalForce = result.battle_state.get_tactical_force(garrison_id)
+	return (
+		_defender_composition_registries_agree(result.battle_state, "battle_sol_enemy", "battle_hq")
+		and defender != null
+		and zone != null
+		and _string_ids_match(defender.participant_ids, zone.allowed_participant_ids)
+		and force != null
+		and force.tactical_force_id == garrison_id
+		and force.side_id == "defender"
+		and not force.has_method("add_participant_id")
+		and not result.battle_state.has_method("defender_roster")
+	)
+
+
+static func _defender_composition_side_force_id_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var force: TravelingForce = _battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null or force == null:
+		return false
+	var attacker: BattleSide = result.battle_state.get_side("attacker")
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	var participant: BattleParticipant = result.battle_state.get_participant("battle_sol_enemy")
+	return (
+		attacker != null
+		and defender != null
+		and participant != null
+		and attacker.force_id == force.id
+		and defender.force_id.is_empty()
+		and participant.tactical_force_id == "garrison:battle_hq"
+		and not state.has_traveling_force("garrison:battle_hq")
+		and force.id != participant.tactical_force_id
+	)
+
+
+static func _defender_composition_multi_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	state.add_soldier(Soldier.new("battle_sol_enemy_c", "battle_b", "", "rifle", 1.0, 0.0))
+	state.add_soldier(Soldier.new("battle_sol_enemy_b", "battle_b", "", "pistol", 1.0, 0.0))
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy_c", "battle_hq"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy_b", "battle_hq"):
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var expected: Array[String] = ["battle_sol_enemy", "battle_sol_enemy_b", "battle_sol_enemy_c"]
+	expected.sort()
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	var zone: DeploymentZone = result.battle_state.get_deployment_zone("defender_deployment")
+	if defender == null or zone == null:
+		return false
+	if not _string_ids_match(defender.participant_ids, expected):
+		return false
+	if not _string_ids_match(zone.allowed_participant_ids, expected):
+		return false
+	for soldier_id: String in expected:
+		var soldier: Soldier = state.get_soldier(soldier_id)
+		if not _defender_composition_participant_matches(result.battle_state, soldier, "battle_hq"):
+			return false
+		if not _defender_composition_registries_agree(result.battle_state, soldier_id, "battle_hq"):
+			return false
+	return (
+		not result.battle_state.has_participant("battle_sol_a")
+		or result.battle_state.get_participant("battle_sol_a").side_id != "defender"
+	) and result.battle_state.participants.size() == 6
+
+
+static func _defender_composition_empty_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
+	var force: TravelingForce = _battle_add_force_mission(state)
+	var snap: Dictionary = _battle_campaign_snapshot(state, force, "battle_mission")
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null or hq == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	var garrison_id: String = _defender_composition_garrison_force_id("battle_hq")
+	return (
+		defender != null
+		and defender.participant_ids.is_empty()
+		and result.battle_state.participants.size() == 3
+		and not result.battle_state.has_participant("placeholder")
+		and result.battle_state.has_tactical_force(garrison_id)
+		and hq.get_garrison_count() == 0
+		and _battle_campaign_unchanged(state, snap, force, "battle_mission")
+	)
+
+
+static func _defender_composition_missing_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
+	if hq == null or not hq.add_garrison_soldier_id("missing_defender"):
+		return false
+	var garrison_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	var soldier_count: int = state.soldiers.size()
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	return (
+		not result.success
+		and result.battle_state == null
+		and result.error_code == "invalid_defender_soldier"
+		and _string_ids_match(hq.garrison_soldier_ids, garrison_before)
+		and state.soldiers.size() == soldier_count
+		and not state.has_soldier("missing_defender")
+	)
+
+
+static func _defender_composition_faction_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
+	var soldier: Soldier = state.get_soldier("battle_sol_enemy")
+	if hq == null or soldier == null:
+		return false
+	hq.add_garrison_soldier_id("battle_sol_enemy")
+	soldier.garrison_hq_id = "battle_hq"
+	soldier.faction_id = "battle_a"
+	var owner_before: String = hq.owner_faction_id
+	var garrison_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	return (
+		not result.success
+		and result.battle_state == null
+		and result.error_code == "defender_soldier_faction_mismatch"
+		and soldier.faction_id == "battle_a"
+		and soldier.garrison_hq_id == "battle_hq"
+		and hq.owner_faction_id == owner_before
+		and _string_ids_match(hq.garrison_soldier_ids, garrison_before)
+	)
+
+
+static func _defender_composition_duplicate_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	_battle_add_force_mission(state)
+	var unique_result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not unique_result.success or unique_result.battle_state == null:
+		return false
+	var unique_defender: BattleSide = unique_result.battle_state.get_side("defender")
+	if unique_defender == null or unique_defender.participant_ids.size() != 1:
+		return false
+	var duplicate: BattleParticipant = BattleParticipant.new(
+		"battle_sol_enemy",
+		"battle_sol_enemy",
+		"battle_b",
+		"defender",
+		"shotgun",
+		true,
+		false,
+		"",
+		"garrison:battle_hq"
+	)
+	var unique_ok: bool = (
+		not unique_result.battle_state.add_participant(duplicate)
+		and unique_result.battle_state.participants.size() == 4
+		and _count_id(unique_defender.participant_ids, "battle_sol_enemy") == 1
+	)
+	var corrupt: GameState = _make_battle_world()
+	if not corrupt.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var hq: NeighborhoodHQ = corrupt.get_map_location("battle_hq") as NeighborhoodHQ
+	hq.garrison_soldier_ids.append("battle_sol_enemy")
+	_battle_add_force_mission(corrupt)
+	var corrupt_result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		corrupt, "battle_mission"
+	)
+	return (
+		unique_ok
+		and not corrupt_result.success
+		and corrupt_result.battle_state == null
+		and corrupt_result.error_code == "battle_insert_failed"
+		and _count_id(hq.garrison_soldier_ids, "battle_sol_enemy") == 2
+	)
+
+
+static func _defender_composition_source_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	state.add_soldier(Soldier.new("battle_unassigned", "battle_b", "", "pistol", 1.0, 0.0))
+	state.add_soldier(Soldier.new("battle_keep_b", "battle_a", "", "pistol", 1.0, 0.0))
+	state.assign_soldier_to_stronghold("battle_keep_b", "battle_keep")
+	state.add_soldier(Soldier.new("battle_visitor", "battle_b", "", "smg", 1.0, 0.0))
+	var route: Array[String] = []
+	route.append("battle_node_hq")
+	var visitor_force: TravelingForce = TravelingForce.new(
+		"battle_visitor_force",
+		"battle_b",
+		"battle_hq",
+		"battle_hq",
+		route,
+		5.0,
+		"at_destination"
+	)
+	visitor_force.soldier_group.add_soldier_id("battle_visitor")
+	state.add_traveling_force(visitor_force)
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	return (
+		defender != null
+		and defender.participant_ids.size() == 1
+		and defender.has_participant_id("battle_sol_enemy")
+		and not defender.has_participant_id("battle_unassigned")
+		and not defender.has_participant_id("battle_keep_b")
+		and not defender.has_participant_id("battle_visitor")
+		and not defender.has_participant_id("battle_sol_a")
+	)
+
+
+static func _defender_composition_target_hq_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	state.add_soldier(Soldier.new("battle_hq_def", "battle_b", "", "pistol", 1.0, 0.0))
+	if not state.assign_soldier_to_neighborhood_hq("battle_hq_def", "battle_hq"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq_b"):
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	return (
+		defender != null
+		and defender.participant_ids.size() == 1
+		and defender.has_participant_id("battle_hq_def")
+		and not defender.has_participant_id("battle_sol_enemy")
+		and _defender_composition_registries_agree(result.battle_state, "battle_hq_def", "battle_hq")
+	)
+
+
+static func _defender_composition_starter_assign_ok() -> bool:
+	var starter_src: String = FileAccess.get_file_as_string("res://gameplay/starter_world_service.gd")
+	var starter: GameState = StarterWorldService.create()
+	var hq: NeighborhoodHQ = starter.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	var rival: Soldier = starter.get_soldier(StarterWorldService.RIVAL_SOLDIER_ID)
+	return (
+		starter_src.contains("assign_soldier_to_neighborhood_hq")
+		and not starter_src.contains("garrison_soldier_ids.append")
+		and not starter_src.contains("add_garrison_soldier_id")
+		and hq != null
+		and rival != null
+		and _hq_garrison_assigned(hq, rival)
+	)
+
+
+static func _defender_composition_httb_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var attacker: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	var blob: String = _tacticalview_overlay_blob(view)
+	var garrison_id: String = _defender_composition_garrison_force_id(StarterWorldService.HQ_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		attacker != null
+		and attacker.side_id == battle_state.attacker_side_id
+		and defender != null
+		and defender.campaign_soldier_id == StarterWorldService.RIVAL_SOLDIER_ID
+		and defender.faction_id == StarterWorldService.RIVAL_FACTION_ID
+		and defender.side_id == battle_state.defender_side_id
+		and defender.weapon_type == "pistol"
+		and defender.tactical_force_id == garrison_id
+		and defender.deployment_slot_id.is_empty()
+		and not defender.has_battle_position
+		and not battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
+		and blob.contains(StarterWorldService.RIVAL_SOLDIER_ID)
+		and blob.contains(StarterWorldService.SOLDIER_ID)
+	)
+
+
+static func _defender_composition_attacker_commit_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var attacker: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	if attacker == null or defender == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var placed: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_continuous_point(battle_state.battlefield_geometry)
+	)
+	var committed: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	return _gameplayruntime_finish(
+		runtime,
+		placed != null
+		and placed.success
+		and committed != null
+		and committed.success
+		and attacker.has_battle_position
+		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and controller.subrole == "defender_placement"
+		and defender.is_alive
+		and not battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
+		and not defender.has_battle_position
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and not battle_state.is_battle_ready()
+		and battle_state.battle_phase == "deployment"
+		and begin_result != null
+		and not begin_result.success
+	)
+
+
+static func _defender_composition_roster_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var view_src: String = _tacticalview_source()
+	var row: Dictionary = _interactive_deploy_layout_row(
+		view, "participant", StarterWorldService.RIVAL_SOLDIER_ID
+	)
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	var selectable: bool = view.call("_is_roster_selectable", battle_state, defender)
+	return _gameplayruntime_finish(
+		runtime,
+		defender != null
+		and not row.is_empty()
+		and str(row.get("id", "")) == StarterWorldService.RIVAL_SOLDIER_ID
+		and str(row.get("kind", "")) == "participant"
+		and selectable == false
+		and view_src.contains("battle_state.participants")
+		and not view_src.contains("rival_soldier")
+		and not view_src.contains("RIVAL_SOLDIER")
+	)
+
+
+static func _defender_composition_no_interact_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	var selected_def: bool = controller.select_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	var placed_def: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_defender_point(battle_state.battlefield_geometry)
+	)
+	var defender: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	return _gameplayruntime_finish(
+		runtime,
+		controller.subrole == "defender_placement"
+		and not selected_def
+		and controller.selected_participant_id != StarterWorldService.RIVAL_SOLDIER_ID
+		and placed_def != null
+		and not placed_def.success
+		and defender != null
+		and not defender.has_battle_position
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and not controller.has_method("commit_defender_deployment")
+		and not controller.has_method("place_defender")
+		and not controller.has_method("select_defender")
+	)
+
+
+static func _defender_composition_setup_isolation_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var soldier: Soldier = state.get_soldier("battle_sol_enemy")
+	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
+	var force: TravelingForce = _battle_add_force_mission(state)
+	var turn_before: int = state.current_turn
+	var month_before: int = state.current_month
+	var year_before: int = state.current_year
+	var snap: Dictionary = _battle_campaign_snapshot(state, force, "battle_mission")
+	var garrison_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	var garrison_hq_before: String = soldier.garrison_hq_id
+	var home_before: String = soldier.home_stronghold_id
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	return (
+		result.success
+		and result.battle_state != null
+		and _battle_campaign_unchanged(state, snap, force, "battle_mission")
+		and state.current_turn == turn_before
+		and state.current_month == month_before
+		and state.current_year == year_before
+		and _string_ids_match(hq.garrison_soldier_ids, garrison_before)
+		and soldier.garrison_hq_id == garrison_hq_before
+		and soldier.home_stronghold_id == home_before
+	)
+
+
+static func _defender_composition_casualty_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var soldier: Soldier = state.get_soldier("battle_sol_enemy")
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null or soldier == null:
+		return false
+	if not _battlesession_kill_side(result.battle_state, result.battle_state.defender_side_id):
+		return false
+	var participant: BattleParticipant = result.battle_state.get_participant("battle_sol_enemy")
+	return (
+		participant != null
+		and not participant.is_alive
+		and soldier.garrison_hq_id == "battle_hq"
+		and state.has_soldier("battle_sol_enemy")
+		and soldier.faction_id == "battle_b"
+		and soldier.weapon_type_id == "shotgun"
+	)
+
+
+static func _defender_composition_visiting_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	state.add_soldier(Soldier.new("battle_visitor", "battle_b", "", "smg", 1.0, 0.0))
+	var route: Array[String] = []
+	route.append("battle_node_hq")
+	var visitor_force: TravelingForce = TravelingForce.new(
+		"battle_visitor_force",
+		"battle_b",
+		"battle_hq",
+		"battle_hq",
+		route,
+		5.0,
+		"at_destination"
+	)
+	visitor_force.soldier_group.add_soldier_id("battle_visitor")
+	state.add_traveling_force(visitor_force)
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	return (
+		defender != null
+		and defender.has_participant_id("battle_sol_enemy")
+		and not defender.has_participant_id("battle_visitor")
+		and state.has_traveling_force("battle_visitor_force")
+	)
+
+
+static func _defender_composition_no_vehicles_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	var zone: DeploymentZone = result.battle_state.get_deployment_zone("defender_deployment")
+	var attacker: BattleSide = result.battle_state.get_side("attacker")
+	return (
+		defender != null
+		and zone != null
+		and attacker != null
+		and defender.vehicle_ids.is_empty()
+		and zone.allowed_vehicle_ids.is_empty()
+		and not result.battle_state.has_vehicle("battle_veh_enemy")
+		and attacker.vehicle_ids.size() == 3
+	)
+
+
+static func _defender_composition_absent_ok() -> bool:
+	var setup_src: String = FileAccess.get_file_as_string("res://battle/core/battle_setup_service.gd")
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	var capture_src: String = FileAccess.get_file_as_string(
+		"res://campaign/missions/resolvers/neighborhood_hq_capture_resolver.gd"
+	)
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	return (
+		setup_src.contains("_soldier_ids_from_hq_garrison")
+		and not controller_src.contains("func commit_defender")
+		and not controller_src.contains("func place_defender")
+		and not controller_src.contains("func select_defender")
+		and not controller_src.contains("auto_deploy")
+		and not runtime_src.contains("auto_deploy")
+		and not runtime_src.contains("auto_commit")
+		and not capture_src.contains("garrison_soldier_ids")
+		and not capture_src.contains("garrison_hq_id")
+	)
+
 
 

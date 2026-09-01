@@ -151,6 +151,25 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 				mission.id
 			)
 
+	# v1 defender roster is the attacked HQ campaign garrison only.
+	# Empty garrison remains representable; visiting forces are not composed.
+	var defender_soldier_ids: Array[String] = _sorted_copy(_soldier_ids_from_hq_garrison(hq))
+	for soldier_id: String in defender_soldier_ids:
+		if soldier_id.is_empty() or not game_state.has_soldier(soldier_id):
+			return BattleSetupResult.failed(
+				"invalid_defender_soldier",
+				"Battle setup failed: defender soldier '%s' does not exist." % soldier_id,
+				mission.id
+			)
+		var defender_soldier: Soldier = game_state.get_soldier(soldier_id)
+		if defender_soldier.faction_id != defender_faction_id:
+			return BattleSetupResult.failed(
+				"defender_soldier_faction_mismatch",
+				"Battle setup failed: soldier '%s' faction '%s' does not match defender '%s'."
+				% [defender_soldier.id, defender_soldier.faction_id, defender_faction_id],
+				mission.id
+			)
+
 	var battle_id: String = "battle_%s" % mission.id
 	var battle_state: BattleState = BattleState.new(
 		battle_id,
@@ -277,6 +296,31 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 				battle_id
 			)
 
+	for soldier_id: String in defender_soldier_ids:
+		var soldier: Soldier = game_state.get_soldier(soldier_id)
+		var participant: BattleParticipant = BattleParticipant.new(
+			soldier.id,
+			soldier.id,
+			soldier.faction_id,
+			SIDE_DEFENDER,
+			soldier.weapon_type_id,
+			true,
+			false,
+			"",
+			defender_tactical_force_id
+		)
+		if not battle_state.add_participant(participant) or not defender_side.add_participant_id(participant.participant_id):
+			push_error(
+				"BattleSetupService.create_neighborhood_hq_battle: failed to add participant '%s'."
+				% soldier.id
+			)
+			return BattleSetupResult.failed(
+				"battle_insert_failed",
+				"Battle setup failed: could not add participant '%s'." % soldier.id,
+				mission.id,
+				battle_id
+			)
+
 	for vehicle_id: String in attacker_vehicle_ids:
 		var vehicle: Vehicle = game_state.get_vehicle(vehicle_id)
 		var battle_vehicle: BattleVehicle = BattleVehicle.new(
@@ -322,6 +366,15 @@ static func _soldier_ids_from_force(force: TravelingForce) -> Array[String]:
 	if force == null or force.soldier_group == null:
 		return ids
 	for soldier_id: String in force.soldier_group.soldier_ids:
+		ids.append(soldier_id)
+	return ids
+
+
+static func _soldier_ids_from_hq_garrison(hq: NeighborhoodHQ) -> Array[String]:
+	var ids: Array[String] = []
+	if hq == null:
+		return ids
+	for soldier_id: String in hq.garrison_soldier_ids:
 		ids.append(soldier_id)
 	return ids
 
