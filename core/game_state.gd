@@ -333,6 +333,124 @@ func unassign_soldier_from_stronghold(soldier_id: String) -> bool:
 	return removed_cleanly
 
 
+func is_traveling_force_active(force: TravelingForce) -> bool:
+	if force == null:
+		return false
+	return force.travel_state != "complete"
+
+
+func is_soldier_in_active_traveling_force(soldier_id: String) -> bool:
+	if soldier_id.is_empty():
+		return false
+	for force_id: String in traveling_forces:
+		var force: TravelingForce = get_traveling_force(force_id)
+		if not is_traveling_force_active(force):
+			continue
+		if force.soldier_group != null and force.soldier_group.has_soldier_id(soldier_id):
+			return true
+	return false
+
+
+func assign_soldier_to_neighborhood_hq(soldier_id: String, hq_id: String) -> bool:
+	if not has_soldier(soldier_id):
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: soldier '%s' does not exist." % soldier_id
+		)
+		return false
+	var soldier: Soldier = get_soldier(soldier_id)
+	var location: MapLocation = get_map_location(hq_id)
+	if location == null:
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: location '%s' does not exist." % hq_id
+		)
+		return false
+	if not (location is NeighborhoodHQ):
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: location '%s' is not a NeighborhoodHQ."
+			% hq_id
+		)
+		return false
+	var hq: NeighborhoodHQ = location as NeighborhoodHQ
+	if hq.owner_faction_id.is_empty():
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: NeighborhoodHQ '%s' is unowned." % hq_id
+		)
+		return false
+	if soldier.faction_id != hq.owner_faction_id:
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: soldier '%s' faction does not match NeighborhoodHQ '%s' owner."
+			% [soldier_id, hq_id]
+		)
+		return false
+	if is_soldier_in_active_traveling_force(soldier_id):
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: soldier '%s' is deployed in an active traveling force."
+			% soldier_id
+		)
+		return false
+	if not soldier.garrison_hq_id.is_empty() and soldier.garrison_hq_id != hq_id:
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: soldier '%s' is already garrisoned at NeighborhoodHQ '%s'."
+			% [soldier_id, soldier.garrison_hq_id]
+		)
+		return false
+	if soldier.garrison_hq_id == hq_id:
+		if hq.has_garrison_soldier_id(soldier_id):
+			return true
+		if not hq.has_garrison_capacity():
+			push_error(
+				"GameState.assign_soldier_to_neighborhood_hq: garrison is full (%s/%s) (hq='%s')."
+				% [hq.get_garrison_count(), hq.garrison_capacity, hq_id]
+			)
+			return false
+		return hq.add_garrison_soldier_id(soldier_id)
+	if not hq.has_garrison_capacity():
+		push_error(
+			"GameState.assign_soldier_to_neighborhood_hq: garrison is full (%s/%s) (hq='%s')."
+			% [hq.get_garrison_count(), hq.garrison_capacity, hq_id]
+		)
+		return false
+	if not hq.add_garrison_soldier_id(soldier_id):
+		return false
+	soldier.garrison_hq_id = hq_id
+	return true
+
+
+func unassign_soldier_from_neighborhood_hq(soldier_id: String) -> bool:
+	if not has_soldier(soldier_id):
+		push_error(
+			"GameState.unassign_soldier_from_neighborhood_hq: soldier '%s' does not exist."
+			% soldier_id
+		)
+		return false
+	var soldier: Soldier = get_soldier(soldier_id)
+	if soldier.garrison_hq_id.is_empty():
+		push_error(
+			"GameState.unassign_soldier_from_neighborhood_hq: soldier '%s' is not garrisoned at a NeighborhoodHQ."
+			% soldier_id
+		)
+		return false
+	var old_id: String = soldier.garrison_hq_id
+	var location: MapLocation = get_map_location(old_id)
+	var removed_cleanly := true
+	if location != null and location is NeighborhoodHQ:
+		var hq: NeighborhoodHQ = location as NeighborhoodHQ
+		if not hq.remove_garrison_soldier_id(soldier_id):
+			push_error(
+				"GameState.unassign_soldier_from_neighborhood_hq: soldier '%s' was not on NeighborhoodHQ '%s' garrison list."
+				% [soldier_id, old_id]
+			)
+			removed_cleanly = false
+	else:
+		push_error(
+			"GameState.unassign_soldier_from_neighborhood_hq: soldier '%s' referenced missing or invalid NeighborhoodHQ '%s'."
+			% [soldier_id, old_id]
+		)
+		removed_cleanly = false
+	soldier.garrison_hq_id = ""
+	return removed_cleanly
+
+
 func add_traveling_force(force: TravelingForce) -> void:
 	if force == null:
 		push_error("GameState.add_traveling_force: force is null.")

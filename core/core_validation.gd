@@ -16010,6 +16010,29 @@ static func run() -> Dictionary:
 	var attacker_commit_overlay_ok: bool = _attacker_commit_overlay_ok()
 	var attacker_commit_httb_flow_ok: bool = _attacker_commit_httb_flow_ok()
 	var attacker_commit_absent_ok: bool = _attacker_commit_absent_ok()
+	var hq_garrison_capacity_ok: bool = _hq_garrison_capacity_ok()
+	var hq_garrison_nonnegative_ok: bool = _hq_garrison_nonnegative_ok()
+	var hq_garrison_assign_ok: bool = _hq_garrison_assign_ok()
+	var hq_garrison_idempotent_ok: bool = _hq_garrison_idempotent_ok()
+	var hq_garrison_multi_hq_ok: bool = _hq_garrison_multi_hq_ok()
+	var hq_garrison_capacity_full_ok: bool = _hq_garrison_capacity_full_ok()
+	var hq_garrison_zero_capacity_ok: bool = _hq_garrison_zero_capacity_ok()
+	var hq_garrison_faction_ok: bool = _hq_garrison_faction_ok()
+	var hq_garrison_missing_ok: bool = _hq_garrison_missing_ok()
+	var hq_garrison_unassign_ok: bool = _hq_garrison_unassign_ok()
+	var hq_garrison_home_affiliation_ok: bool = _hq_garrison_home_affiliation_ok()
+	var hq_garrison_force_exclusivity_ok: bool = _hq_garrison_force_exclusivity_ok()
+	var hq_garrison_deploy_reject_ok: bool = _hq_garrison_deploy_reject_ok()
+	var hq_garrison_mixed_deploy_ok: bool = _hq_garrison_mixed_deploy_ok()
+	var hq_garrison_deploy_after_unassign_ok: bool = _hq_garrison_deploy_after_unassign_ok()
+	var hq_garrison_force_query_ok: bool = _hq_garrison_force_query_ok()
+	var hq_garrison_serialize_ok: bool = _hq_garrison_serialize_ok()
+	var hq_garrison_deserialize_safety_ok: bool = _hq_garrison_deserialize_safety_ok()
+	var hq_garrison_no_composition_ok: bool = _hq_garrison_no_composition_ok()
+	var hq_garrison_starter_ok: bool = _hq_garrison_starter_ok()
+	var hq_garrison_side_effects_ok: bool = _hq_garrison_side_effects_ok()
+	var hq_garrison_capture_boundary_ok: bool = _hq_garrison_capture_boundary_ok()
+	var hq_garrison_no_vehicles_ok: bool = _hq_garrison_no_vehicles_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17848,6 +17871,29 @@ static func run() -> Dictionary:
 		"attacker_commit_overlay_ok": attacker_commit_overlay_ok,
 		"attacker_commit_httb_flow_ok": attacker_commit_httb_flow_ok,
 		"attacker_commit_absent_ok": attacker_commit_absent_ok,
+		"hq_garrison_capacity_ok": hq_garrison_capacity_ok,
+		"hq_garrison_nonnegative_ok": hq_garrison_nonnegative_ok,
+		"hq_garrison_assign_ok": hq_garrison_assign_ok,
+		"hq_garrison_idempotent_ok": hq_garrison_idempotent_ok,
+		"hq_garrison_multi_hq_ok": hq_garrison_multi_hq_ok,
+		"hq_garrison_capacity_full_ok": hq_garrison_capacity_full_ok,
+		"hq_garrison_zero_capacity_ok": hq_garrison_zero_capacity_ok,
+		"hq_garrison_faction_ok": hq_garrison_faction_ok,
+		"hq_garrison_missing_ok": hq_garrison_missing_ok,
+		"hq_garrison_unassign_ok": hq_garrison_unassign_ok,
+		"hq_garrison_home_affiliation_ok": hq_garrison_home_affiliation_ok,
+		"hq_garrison_force_exclusivity_ok": hq_garrison_force_exclusivity_ok,
+		"hq_garrison_deploy_reject_ok": hq_garrison_deploy_reject_ok,
+		"hq_garrison_mixed_deploy_ok": hq_garrison_mixed_deploy_ok,
+		"hq_garrison_deploy_after_unassign_ok": hq_garrison_deploy_after_unassign_ok,
+		"hq_garrison_force_query_ok": hq_garrison_force_query_ok,
+		"hq_garrison_serialize_ok": hq_garrison_serialize_ok,
+		"hq_garrison_deserialize_safety_ok": hq_garrison_deserialize_safety_ok,
+		"hq_garrison_no_composition_ok": hq_garrison_no_composition_ok,
+		"hq_garrison_starter_ok": hq_garrison_starter_ok,
+		"hq_garrison_side_effects_ok": hq_garrison_side_effects_ok,
+		"hq_garrison_capture_boundary_ok": hq_garrison_capture_boundary_ok,
+		"hq_garrison_no_vehicles_ok": hq_garrison_no_vehicles_ok,
 	}
 
 	var passed := true
@@ -53668,6 +53714,882 @@ static func _attacker_commit_absent_ok() -> bool:
 		and not controller_src.contains("formation")
 		and not controller_src.contains("unit spacing")
 		and not controller_src.contains("deployment timer")
+	)
+
+
+static func _hq_garrison_make_world() -> GameState:
+	var state: GameState = GameState.new()
+	state.current_turn = 4
+	state.current_month = 8
+	state.current_year = 2034
+	var gang_a: MajorGang = MajorGang.new("hg_a", "HG A", "player")
+	gang_a.money = 400.0
+	gang_a.resources.set_amount("Ammo", 3.0)
+	var gang_b: MajorGang = MajorGang.new("hg_b", "HG B", "ai")
+	gang_b.money = 200.0
+	state.add_faction(gang_a)
+	state.add_faction(gang_b)
+	state.add_stronghold_region(StrongholdRegion.new("hg_region", "HG Region"))
+	state.add_police_region(PoliceRegion.new("hg_district", "HG District"))
+	state.add_neighborhood(Neighborhood.new("hg_hood", "HG Hood", "hg_region", "hg_district", "hg_a"))
+	var keep: Stronghold = Stronghold.new(
+		"hg_keep", "HG Keep", "hg_hood", Vector2(0.0, 0.0), "hg_a", true, 1, 0.0
+	)
+	keep.road_node_id = "hg_node_keep"
+	state.add_map_location(keep)
+	var hq_a: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_hq_a", "HG HQ A", "hg_hood", Vector2(2.0, 0.0), "hg_a", true
+	)
+	hq_a.road_node_id = "hg_node_hq"
+	state.add_map_location(hq_a)
+	var hq_b: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_hq_b", "HG HQ B", "hg_hood", Vector2(4.0, 0.0), "hg_a", true
+	)
+	hq_b.road_node_id = "hg_node_hq_b"
+	state.add_map_location(hq_b)
+	var hq_two: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_hq_two", "HG HQ Two", "hg_hood", Vector2(5.0, 0.0), "hg_a", true, 2
+	)
+	hq_two.road_node_id = "hg_node_two"
+	state.add_map_location(hq_two)
+	var hq_one: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_hq_one", "HG HQ One", "hg_hood", Vector2(6.0, 0.0), "hg_a", true, 1
+	)
+	hq_one.road_node_id = "hg_node_one"
+	state.add_map_location(hq_one)
+	var hq_zero: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_hq_zero", "HG HQ Zero", "hg_hood", Vector2(8.0, 0.0), "hg_a", true, 0
+	)
+	hq_zero.road_node_id = "hg_node_zero"
+	state.add_map_location(hq_zero)
+	var hq_free: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_hq_free", "HG HQ Free", "hg_hood", Vector2(10.0, 0.0), "", true
+	)
+	hq_free.road_node_id = "hg_node_free"
+	state.add_map_location(hq_free)
+	var graph: RoadGraph = state.road_graph
+	graph.add_node(RoadNode.new("hg_node_keep", Vector2(0.0, 0.0)))
+	graph.add_node(RoadNode.new("hg_node_hq", Vector2(2.0, 0.0)))
+	graph.add_node(RoadNode.new("hg_node_hq_b", Vector2(4.0, 0.0)))
+	graph.add_node(RoadNode.new("hg_node_two", Vector2(5.0, 0.0)))
+	graph.add_node(RoadNode.new("hg_node_one", Vector2(6.0, 0.0)))
+	graph.add_node(RoadNode.new("hg_node_zero", Vector2(8.0, 0.0)))
+	graph.add_node(RoadNode.new("hg_node_free", Vector2(10.0, 0.0)))
+	graph.add_segment(RoadSegment.new("hg_seg_keep_hq", "hg_node_keep", "hg_node_hq", 2.0))
+	var soldier_ids: Array[String] = ["hg_s1", "hg_s2", "hg_s3", "hg_s4", "hg_s5", "hg_da", "hg_db", "hg_force"]
+	for soldier_id: String in soldier_ids:
+		state.add_soldier(Soldier.new(soldier_id, "hg_a", "", "pistol", 1.0, 0.0))
+		state.assign_soldier_to_stronghold(soldier_id, "hg_keep")
+	state.add_soldier(Soldier.new("hg_enemy", "hg_b", "", "pistol", 1.0, 0.0))
+	state.add_vehicle(Vehicle.new("hg_v1", "hg_a", "truck", "", 6, 8.0, 0.0))
+	state.assign_vehicle_to_stronghold("hg_v1", "hg_keep")
+	return state
+
+
+static func _hq_garrison_hq(game_state: GameState, hq_id: String) -> NeighborhoodHQ:
+	if game_state == null:
+		return null
+	var location: MapLocation = game_state.get_map_location(hq_id)
+	if location == null or not (location is NeighborhoodHQ):
+		return null
+	return location as NeighborhoodHQ
+
+
+static func _hq_garrison_assigned(hq: NeighborhoodHQ, soldier: Soldier) -> bool:
+	if hq == null or soldier == null:
+		return false
+	return (
+		hq.has_garrison_soldier_id(soldier.id)
+		and _count_id(hq.garrison_soldier_ids, soldier.id) == 1
+		and soldier.garrison_hq_id == hq.id
+	)
+
+
+static func _hq_garrison_campaign_snap(game_state: GameState) -> Dictionary:
+	var gang_a: MajorGang = game_state.get_faction("hg_a") as MajorGang
+	var hood: Neighborhood = game_state.get_neighborhood("hg_hood")
+	var hq: NeighborhoodHQ = _hq_garrison_hq(game_state, "hg_hq_a")
+	return {
+		"turn": game_state.current_turn,
+		"month": game_state.current_month,
+		"year": game_state.current_year,
+		"money": gang_a.money if gang_a != null else -1.0,
+		"ammo": gang_a.resources.get_amount("Ammo") if gang_a != null else -1.0,
+		"missions": game_state.missions.size(),
+		"forces": game_state.traveling_forces.size(),
+		"rels": game_state.relationships.size(),
+		"soldiers": game_state.soldiers.size(),
+		"hood_owner": hood.owner_faction_id if hood != null else "",
+		"hq_owner": hq.owner_faction_id if hq != null else "",
+	}
+
+
+static func _hq_garrison_campaign_unchanged(game_state: GameState, snap: Dictionary) -> bool:
+	var now: Dictionary = _hq_garrison_campaign_snap(game_state)
+	return (
+		int(now.get("turn", -1)) == int(snap.get("turn", -2))
+		and int(now.get("month", -1)) == int(snap.get("month", -2))
+		and int(now.get("year", -1)) == int(snap.get("year", -2))
+		and is_equal_approx(float(now.get("money", -1.0)), float(snap.get("money", -2.0)))
+		and is_equal_approx(float(now.get("ammo", -1.0)), float(snap.get("ammo", -2.0)))
+		and int(now.get("missions", -1)) == int(snap.get("missions", -2))
+		and int(now.get("forces", -1)) == int(snap.get("forces", -2))
+		and int(now.get("rels", -1)) == int(snap.get("rels", -2))
+		and int(now.get("soldiers", -1)) == int(snap.get("soldiers", -2))
+		and str(now.get("hood_owner", "")) == str(snap.get("hood_owner", "x"))
+		and str(now.get("hq_owner", "")) == str(snap.get("hq_owner", "x"))
+	)
+
+
+static func _hq_garrison_capacity_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq_default: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var hq_two: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_two")
+	var hq_one: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_one")
+	if hq_default == null or hq_two == null or hq_one == null:
+		return false
+	if hq_default.garrison_capacity != 4:
+		return false
+	if hq_default.garrison_capacity != NeighborhoodHQ.DEFAULT_GARRISON_CAPACITY:
+		return false
+	if hq_two.garrison_capacity != 2:
+		return false
+	if hq_one.garrison_capacity != 1:
+		return false
+	var constructed_two: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_constructed_two", "Constructed Two", "hg_hood", Vector2.ZERO, "hg_a", true, 2
+	)
+	if constructed_two.garrison_capacity != 2:
+		return false
+	var restored_two: NeighborhoodHQ = NeighborhoodHQ.new()
+	restored_two.from_dict(constructed_two.to_dict())
+	if restored_two.garrison_capacity != 2:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_two"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s2", "hg_hq_two"):
+		return false
+	if hq_two.get_garrison_count() != 2:
+		return false
+	if state.assign_soldier_to_neighborhood_hq("hg_s3", "hg_hq_two"):
+		return false
+	var soldier_three: Soldier = state.get_soldier("hg_s3")
+	return (
+		hq_two.get_garrison_count() == 2
+		and hq_two.has_garrison_soldier_id("hg_s1")
+		and hq_two.has_garrison_soldier_id("hg_s2")
+		and not hq_two.has_garrison_soldier_id("hg_s3")
+		and soldier_three != null
+		and soldier_three.garrison_hq_id.is_empty()
+		and _hq_garrison_assigned(hq_two, state.get_soldier("hg_s1"))
+		and _hq_garrison_assigned(hq_two, state.get_soldier("hg_s2"))
+	)
+
+
+static func _hq_garrison_nonnegative_ok() -> bool:
+	var constructed_default: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_nn_default", "NN Default", "hg_hood", Vector2.ZERO, "hg_a", true
+	)
+	if constructed_default.garrison_capacity != 4:
+		return false
+	var constructed_negative: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_nn_neg", "NN Neg", "hg_hood", Vector2.ZERO, "hg_a", true, -4
+	)
+	if constructed_negative.garrison_capacity != 0:
+		return false
+	constructed_default.garrison_capacity = -3
+	if constructed_default.garrison_capacity != 0:
+		return false
+	constructed_default.garrison_capacity = 5
+	if constructed_default.garrison_capacity != 5:
+		return false
+	var loaded: NeighborhoodHQ = NeighborhoodHQ.new(
+		"hg_nn_load", "NN Load", "hg_hood", Vector2.ZERO, "hg_a", true, 4
+	)
+	var data: Dictionary = loaded.to_dict()
+	data["garrison_capacity"] = -8
+	data["garrison_soldier_ids"] = []
+	loaded.from_dict(data)
+	return loaded.garrison_capacity == 0
+
+
+static func _hq_garrison_assign_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	var keep: Stronghold = state.get_map_location("hg_keep") as Stronghold
+	if hq == null or soldier == null or keep == null:
+		return false
+	var home_before: String = soldier.home_stronghold_id
+	var roster_before: Array[String] = _copy_ids(keep.soldier_ids)
+	if hq.has_garrison_soldier_id("hg_s1") or not soldier.garrison_hq_id.is_empty():
+		return false
+	if hq.get_garrison_count() != 0:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	return (
+		_hq_garrison_assigned(hq, soldier)
+		and hq.get_garrison_count() == 1
+		and soldier.home_stronghold_id == home_before
+		and soldier.home_stronghold_id == "hg_keep"
+		and _string_ids_match(keep.soldier_ids, roster_before)
+		and state.has_soldier("hg_s1")
+		and keep.has_soldier_id("hg_s1")
+	)
+
+
+static func _hq_garrison_idempotent_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	if hq == null:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	if not _hq_garrison_assigned(hq, soldier) or hq.get_garrison_count() != 1:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	if not _hq_garrison_assigned(hq, soldier) or hq.get_garrison_count() != 1:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s2", "hg_hq_a"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s3", "hg_hq_a"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s4", "hg_hq_a"):
+		return false
+	if hq.get_garrison_count() != 4:
+		return false
+	var roster_full: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	return (
+		_hq_garrison_assigned(hq, soldier)
+		and hq.get_garrison_count() == 4
+		and _count_id(hq.garrison_soldier_ids, "hg_s1") == 1
+		and _string_ids_match(hq.garrison_soldier_ids, roster_full)
+		and soldier.garrison_hq_id == "hg_hq_a"
+	)
+
+
+static func _hq_garrison_multi_hq_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq_a: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var hq_b: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_b")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	if hq_a == null or hq_b == null or soldier == null:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	var roster_a: Array[String] = _copy_ids(hq_a.garrison_soldier_ids)
+	var roster_b: Array[String] = _copy_ids(hq_b.garrison_soldier_ids)
+	if state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_b"):
+		return false
+	if (
+		not _string_ids_match(hq_a.garrison_soldier_ids, roster_a)
+		or not _string_ids_match(hq_b.garrison_soldier_ids, roster_b)
+		or soldier.garrison_hq_id != "hg_hq_a"
+		or hq_b.has_garrison_soldier_id("hg_s1")
+	):
+		return false
+	if not state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	if hq_a.has_garrison_soldier_id("hg_s1") or not soldier.garrison_hq_id.is_empty():
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_b"):
+		return false
+	return (
+		_hq_garrison_assigned(hq_b, soldier)
+		and not hq_a.has_garrison_soldier_id("hg_s1")
+		and hq_a.get_garrison_count() == 0
+		and hq_b.get_garrison_count() == 1
+	)
+
+
+static func _hq_garrison_capacity_full_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var hq_one: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_one")
+	if hq == null or hq_one == null:
+		return false
+	for soldier_id: String in ["hg_s1", "hg_s2", "hg_s3", "hg_s4"]:
+		if not state.assign_soldier_to_neighborhood_hq(soldier_id, "hg_hq_a"):
+			return false
+	if hq.get_garrison_count() != 4:
+		return false
+	var roster_full: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	var fifth: Soldier = state.get_soldier("hg_s5")
+	if fifth == null or state.assign_soldier_to_neighborhood_hq("hg_s5", "hg_hq_a"):
+		return false
+	if (
+		not _string_ids_match(hq.garrison_soldier_ids, roster_full)
+		or hq.get_garrison_count() != 4
+		or not fifth.garrison_hq_id.is_empty()
+		or hq.has_garrison_soldier_id("hg_s5")
+	):
+		return false
+	if not state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	var freed: Soldier = state.get_soldier("hg_s1")
+	if hq.get_garrison_count() != 3 or freed == null or not freed.garrison_hq_id.is_empty():
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s5", "hg_hq_a"):
+		return false
+	if hq.get_garrison_count() != 4 or not _hq_garrison_assigned(hq, fifth):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_da", "hg_hq_one"):
+		return false
+	if hq_one.get_garrison_count() != 1:
+		return false
+	var extra: Soldier = state.get_soldier("hg_db")
+	if extra == null or state.assign_soldier_to_neighborhood_hq("hg_db", "hg_hq_one"):
+		return false
+	return (
+		hq_one.get_garrison_count() == 1
+		and _hq_garrison_assigned(hq_one, state.get_soldier("hg_da"))
+		and extra.garrison_hq_id.is_empty()
+		and not hq_one.has_garrison_soldier_id("hg_db")
+	)
+
+
+static func _hq_garrison_zero_capacity_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_zero")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	if hq == null or soldier == null or hq.garrison_capacity != 0:
+		return false
+	var roster_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	if state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_zero"):
+		return false
+	return (
+		hq.garrison_capacity == 0
+		and hq.get_garrison_count() == 0
+		and _string_ids_match(hq.garrison_soldier_ids, roster_before)
+		and soldier.garrison_hq_id.is_empty()
+		and not hq.has_garrison_soldier_id("hg_s1")
+	)
+
+
+static func _hq_garrison_faction_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var free_hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_free")
+	var owned: Soldier = state.get_soldier("hg_s1")
+	var enemy: Soldier = state.get_soldier("hg_enemy")
+	var keep: Stronghold = state.get_map_location("hg_keep") as Stronghold
+	if hq == null or free_hq == null or owned == null or enemy == null or keep == null:
+		return false
+	var hq_roster: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	var free_roster: Array[String] = _copy_ids(free_hq.garrison_soldier_ids)
+	var owned_home: String = owned.home_stronghold_id
+	var enemy_home: String = enemy.home_stronghold_id
+	var keep_roster: Array[String] = _copy_ids(keep.soldier_ids)
+	if state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_free"):
+		return false
+	if (
+		not _string_ids_match(free_hq.garrison_soldier_ids, free_roster)
+		or not owned.garrison_hq_id.is_empty()
+		or owned.home_stronghold_id != owned_home
+		or not _string_ids_match(keep.soldier_ids, keep_roster)
+	):
+		return false
+	if state.assign_soldier_to_neighborhood_hq("hg_enemy", "hg_hq_a"):
+		return false
+	return (
+		not _string_ids_match(hq.garrison_soldier_ids, []) or hq.get_garrison_count() == 0
+	) and (
+		_string_ids_match(hq.garrison_soldier_ids, hq_roster)
+		and enemy.garrison_hq_id.is_empty()
+		and enemy.home_stronghold_id == enemy_home
+		and owned.home_stronghold_id == owned_home
+		and _string_ids_match(keep.soldier_ids, keep_roster)
+		and not hq.has_garrison_soldier_id("hg_enemy")
+		and not free_hq.has_garrison_soldier_id("hg_s1")
+	)
+
+
+static func _hq_garrison_missing_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	if hq == null or soldier == null:
+		return false
+	var roster_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	var home_before: String = soldier.home_stronghold_id
+	if state.assign_soldier_to_neighborhood_hq("missing_soldier", "hg_hq_a"):
+		return false
+	if state.assign_soldier_to_neighborhood_hq("hg_s1", "missing_hq"):
+		return false
+	if state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_keep"):
+		return false
+	return (
+		_string_ids_match(hq.garrison_soldier_ids, roster_before)
+		and soldier.garrison_hq_id.is_empty()
+		and soldier.home_stronghold_id == home_before
+		and hq.get_garrison_count() == 0
+		and not state.has_soldier("missing_soldier")
+		and not state.has_map_location("missing_hq")
+	)
+
+
+static func _hq_garrison_unassign_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	var keep: Stronghold = state.get_map_location("hg_keep") as Stronghold
+	if hq == null or soldier == null or keep == null:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	var home_before: String = soldier.home_stronghold_id
+	var roster_before: Array[String] = _copy_ids(keep.soldier_ids)
+	var force_count_before: int = state.traveling_forces.size()
+	if not state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	if (
+		hq.has_garrison_soldier_id("hg_s1")
+		or hq.get_garrison_count() != 0
+		or not soldier.garrison_hq_id.is_empty()
+		or not state.has_soldier("hg_s1")
+		or soldier.home_stronghold_id != home_before
+		or not _string_ids_match(keep.soldier_ids, roster_before)
+		or state.traveling_forces.size() != force_count_before
+	):
+		return false
+	var garrison_after: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	if state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	return (
+		_string_ids_match(hq.garrison_soldier_ids, garrison_after)
+		and soldier.garrison_hq_id.is_empty()
+		and soldier.home_stronghold_id == home_before
+		and _string_ids_match(keep.soldier_ids, roster_before)
+		and state.traveling_forces.size() == force_count_before
+		and state.has_soldier("hg_s1")
+	)
+
+
+static func _hq_garrison_home_affiliation_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	var keep: Stronghold = state.get_map_location("hg_keep") as Stronghold
+	if hq == null or soldier == null or keep == null:
+		return false
+	var home_before: String = soldier.home_stronghold_id
+	var roster_before: Array[String] = _copy_ids(keep.soldier_ids)
+	if home_before != "hg_keep" or not keep.has_soldier_id("hg_s1"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	if (
+		soldier.home_stronghold_id != home_before
+		or not _string_ids_match(keep.soldier_ids, roster_before)
+		or not _hq_garrison_assigned(hq, soldier)
+	):
+		return false
+	if not state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	return (
+		soldier.home_stronghold_id == home_before
+		and soldier.home_stronghold_id == "hg_keep"
+		and _string_ids_match(keep.soldier_ids, roster_before)
+		and keep.has_soldier_id("hg_s1")
+		and soldier.garrison_hq_id.is_empty()
+	)
+
+
+static func _hq_garrison_add_force(
+	game_state: GameState,
+	soldier_id: String,
+	travel_state: String,
+	force_id: String = "hg_tf"
+) -> TravelingForce:
+	var route: Array[String] = []
+	route.append("hg_node_keep")
+	route.append("hg_node_hq")
+	var force: TravelingForce = TravelingForce.new(
+		force_id,
+		"hg_a",
+		"hg_keep",
+		"hg_hq_a",
+		route,
+		5.0,
+		travel_state
+	)
+	force.soldier_group.add_soldier_id(soldier_id)
+	game_state.add_traveling_force(force)
+	return force
+
+
+static func _hq_garrison_force_exclusivity_ok() -> bool:
+	for travel_state: String in ["traveling_outbound", "traveling_return", "at_destination"]:
+		var blocked_state: GameState = _hq_garrison_make_world()
+		var hq: NeighborhoodHQ = _hq_garrison_hq(blocked_state, "hg_hq_a")
+		var soldier: Soldier = blocked_state.get_soldier("hg_force")
+		if hq == null or soldier == null:
+			return false
+		_hq_garrison_add_force(blocked_state, "hg_force", travel_state)
+		if not blocked_state.is_soldier_in_active_traveling_force("hg_force"):
+			return false
+		var roster_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+		if blocked_state.assign_soldier_to_neighborhood_hq("hg_force", "hg_hq_a"):
+			return false
+		if (
+			not _string_ids_match(hq.garrison_soldier_ids, roster_before)
+			or not soldier.garrison_hq_id.is_empty()
+			or hq.has_garrison_soldier_id("hg_force")
+		):
+			return false
+	var complete_state: GameState = _hq_garrison_make_world()
+	var complete_hq: NeighborhoodHQ = _hq_garrison_hq(complete_state, "hg_hq_a")
+	var complete_soldier: Soldier = complete_state.get_soldier("hg_force")
+	if complete_hq == null or complete_soldier == null:
+		return false
+	var complete_force: TravelingForce = _hq_garrison_add_force(
+		complete_state, "hg_force", "complete"
+	)
+	if complete_force.travel_state != "complete":
+		return false
+	if complete_state.is_soldier_in_active_traveling_force("hg_force"):
+		return false
+	if not complete_state.assign_soldier_to_neighborhood_hq("hg_force", "hg_hq_a"):
+		return false
+	return _hq_garrison_assigned(complete_hq, complete_soldier)
+
+
+static func _hq_garrison_deploy_request(
+	force_id: String,
+	soldier_ids: Array[String]
+) -> DeploymentRequest:
+	var vehicle_ids: Array[String] = []
+	vehicle_ids.append("hg_v1")
+	return DeploymentRequest.new(
+		force_id,
+		"hg_a",
+		"hg_keep",
+		"hg_hq_a",
+		soldier_ids,
+		vehicle_ids,
+		10.0
+	)
+
+
+static func _hq_garrison_deploy_reject_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	var keep: Stronghold = state.get_map_location("hg_keep") as Stronghold
+	if hq == null or soldier == null or keep == null:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	var keep_roster: Array[String] = _copy_ids(keep.soldier_ids)
+	var home_before: String = soldier.home_stronghold_id
+	var force_count_before: int = state.traveling_forces.size()
+	var soldier_ids: Array[String] = []
+	soldier_ids.append("hg_s1")
+	var result: DeploymentResult = DeploymentService.deploy(
+		state, _hq_garrison_deploy_request("hg_garrison_force", soldier_ids)
+	)
+	return (
+		not result.success
+		and result.error_code == "soldier_in_hq_garrison"
+		and not state.has_traveling_force("hg_garrison_force")
+		and state.traveling_forces.size() == force_count_before
+		and _hq_garrison_assigned(hq, soldier)
+		and soldier.home_stronghold_id == home_before
+		and _string_ids_match(keep.soldier_ids, keep_roster)
+	)
+
+
+static func _hq_garrison_mixed_deploy_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var keep: Stronghold = state.get_map_location("hg_keep") as Stronghold
+	var garrisoned: Soldier = state.get_soldier("hg_s1")
+	var eligible_a: Soldier = state.get_soldier("hg_da")
+	var eligible_b: Soldier = state.get_soldier("hg_db")
+	if hq == null or keep == null or garrisoned == null or eligible_a == null or eligible_b == null:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	var keep_roster: Array[String] = _copy_ids(keep.soldier_ids)
+	var soldier_ids: Array[String] = []
+	soldier_ids.append("hg_da")
+	soldier_ids.append("hg_s1")
+	soldier_ids.append("hg_db")
+	var result: DeploymentResult = DeploymentService.deploy(
+		state, _hq_garrison_deploy_request("hg_mixed_force", soldier_ids)
+	)
+	return (
+		not result.success
+		and result.error_code == "soldier_in_hq_garrison"
+		and not state.has_traveling_force("hg_mixed_force")
+		and state.traveling_forces.size() == 0
+		and _hq_garrison_assigned(hq, garrisoned)
+		and eligible_a.garrison_hq_id.is_empty()
+		and eligible_b.garrison_hq_id.is_empty()
+		and keep.has_soldier_id("hg_da")
+		and keep.has_soldier_id("hg_db")
+		and keep.has_soldier_id("hg_s1")
+		and _string_ids_match(keep.soldier_ids, keep_roster)
+		and not state.is_soldier_in_active_traveling_force("hg_da")
+		and not state.is_soldier_in_active_traveling_force("hg_db")
+	)
+
+
+static func _hq_garrison_deploy_after_unassign_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var hq: NeighborhoodHQ = _hq_garrison_hq(state, "hg_hq_a")
+	var soldier: Soldier = state.get_soldier("hg_s1")
+	if hq == null or soldier == null:
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	var soldier_ids: Array[String] = []
+	soldier_ids.append("hg_s1")
+	var blocked: DeploymentResult = DeploymentService.deploy(
+		state, _hq_garrison_deploy_request("hg_blocked_force", soldier_ids)
+	)
+	if blocked.success or blocked.error_code != "soldier_in_hq_garrison":
+		return false
+	if not state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	if not soldier.garrison_hq_id.is_empty() or hq.has_garrison_soldier_id("hg_s1"):
+		return false
+	var allowed: DeploymentResult = DeploymentService.deploy(
+		state, _hq_garrison_deploy_request("hg_allowed_force", soldier_ids)
+	)
+	return (
+		allowed.success
+		and allowed.error_code.is_empty()
+		and state.has_traveling_force("hg_allowed_force")
+		and not hq.has_garrison_soldier_id("hg_s1")
+		and soldier.garrison_hq_id.is_empty()
+		and soldier.home_stronghold_id == "hg_keep"
+	)
+
+
+static func _hq_garrison_force_query_ok() -> bool:
+	var deploy_src: String = FileAccess.get_file_as_string(
+		"res://campaign/actions/deployment_service.gd"
+	)
+	var assign_src: String = FileAccess.get_file_as_string("res://core/game_state.gd")
+	var soldier_start: int = deploy_src.find("func _is_soldier_in_active_force")
+	if soldier_start < 0:
+		return false
+	var soldier_fn: String = deploy_src.substr(soldier_start, 240)
+	var assign_fn: String = _attacker_commit_extract_func(
+		assign_src, "assign_soldier_to_neighborhood_hq"
+	)
+	if assign_fn.is_empty():
+		return false
+	if not soldier_fn.contains("is_soldier_in_active_traveling_force"):
+		return false
+	if soldier_fn.contains("for force_id"):
+		return false
+	if not assign_fn.contains("is_soldier_in_active_traveling_force"):
+		return false
+	var state: GameState = _hq_garrison_make_world()
+	_hq_garrison_add_force(state, "hg_force", "traveling_outbound")
+	if not state.is_soldier_in_active_traveling_force("hg_force"):
+		return false
+	var soldier_ids: Array[String] = []
+	soldier_ids.append("hg_force")
+	var result: DeploymentResult = DeploymentService.deploy(
+		state, _hq_garrison_deploy_request("hg_query_force", soldier_ids)
+	)
+	return (
+		not result.success
+		and result.error_code == "soldier_already_deployed"
+		and not state.has_traveling_force("hg_query_force")
+		and not state.assign_soldier_to_neighborhood_hq("hg_force", "hg_hq_a")
+	)
+
+
+static func _hq_garrison_serialize_ok() -> bool:
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new(
+		"ser_hq", "Ser HQ", "ser_hood", Vector2(1.0, 2.0), "ser_a", true, 3
+	)
+	hq.add_garrison_soldier_id("ser_s1")
+	hq.add_garrison_soldier_id("ser_s2")
+	var hq_loaded: NeighborhoodHQ = NeighborhoodHQ.new()
+	hq_loaded.from_dict(hq.to_dict())
+	if (
+		hq_loaded.id != "ser_hq"
+		or hq_loaded.garrison_capacity != 3
+		or hq_loaded.get_garrison_count() != 2
+		or not hq_loaded.has_garrison_soldier_id("ser_s1")
+		or not hq_loaded.has_garrison_soldier_id("ser_s2")
+	):
+		return false
+	var soldier: Soldier = Soldier.new(
+		"ser_s1", "ser_a", "ser_keep", "pistol", 1.0, 0.0, "ser_hq"
+	)
+	var soldier_loaded: Soldier = Soldier.new()
+	soldier_loaded.from_dict(soldier.to_dict())
+	if (
+		soldier_loaded.garrison_hq_id != "ser_hq"
+		or soldier_loaded.home_stronghold_id != "ser_keep"
+		or soldier_loaded.id != "ser_s1"
+	):
+		return false
+	var state: GameState = _hq_garrison_make_world()
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	if not state.assign_soldier_to_neighborhood_hq("hg_s2", "hg_hq_a"):
+		return false
+	var restored: GameState = GameState.new()
+	restored.from_dict(state.to_dict())
+	var restored_hq: NeighborhoodHQ = _hq_garrison_hq(restored, "hg_hq_a")
+	var restored_s1: Soldier = restored.get_soldier("hg_s1")
+	var restored_s2: Soldier = restored.get_soldier("hg_s2")
+	if restored_hq == null or restored_s1 == null or restored_s2 == null:
+		return false
+	return (
+		restored_hq.garrison_capacity == 4
+		and restored_hq.get_garrison_count() == 2
+		and _hq_garrison_assigned(restored_hq, restored_s1)
+		and _hq_garrison_assigned(restored_hq, restored_s2)
+		and restored_s1.home_stronghold_id == "hg_keep"
+		and restored_s2.home_stronghold_id == "hg_keep"
+	)
+
+
+static func _hq_garrison_deserialize_safety_ok() -> bool:
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new(
+		"dup_hq", "Dup HQ", "dup_hood", Vector2.ZERO, "dup_a", true, 4
+	)
+	var data: Dictionary = hq.to_dict()
+	var duplicate_ids: Array = ["dup_a", "dup_a", "dup_b"]
+	data["garrison_soldier_ids"] = duplicate_ids
+	var loaded: NeighborhoodHQ = NeighborhoodHQ.new()
+	loaded.from_dict(data)
+	if (
+		_count_id(loaded.garrison_soldier_ids, "dup_a") != 1
+		or _count_id(loaded.garrison_soldier_ids, "dup_b") != 1
+		or loaded.get_garrison_count() != 2
+	):
+		return false
+	var negative: NeighborhoodHQ = NeighborhoodHQ.new(
+		"neg_hq", "Neg HQ", "neg_hood", Vector2.ZERO, "neg_a", true, 4
+	)
+	var negative_data: Dictionary = negative.to_dict()
+	negative_data["garrison_capacity"] = -11
+	negative_data["garrison_soldier_ids"] = []
+	negative.from_dict(negative_data)
+	return negative.garrison_capacity >= 0 and negative.garrison_capacity == 0
+
+
+static func _hq_garrison_no_composition_ok() -> bool:
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
+	var enemy: Soldier = state.get_soldier("battle_sol_enemy")
+	if hq == null or enemy == null or not _hq_garrison_assigned(hq, enemy):
+		return false
+	_battle_add_force_mission(state)
+	var result: BattleSetupResult = BattleSetupService.create_neighborhood_hq_battle(
+		state, "battle_mission"
+	)
+	if not result.success or result.battle_state == null:
+		return false
+	var defender: BattleSide = result.battle_state.get_side("defender")
+	if defender == null:
+		return false
+	return (
+		defender.participant_ids.is_empty()
+		and defender.vehicle_ids.is_empty()
+		and not result.battle_state.has_participant("battle_sol_enemy")
+		and result.battle_state.participants.size() == 3
+		and _hq_garrison_assigned(hq, enemy)
+	)
+
+
+static func _hq_garrison_starter_ok() -> bool:
+	var starter: GameState = StarterWorldService.create()
+	var hq: NeighborhoodHQ = starter.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	if hq == null:
+		return false
+	var rival_soldiers := 0
+	for soldier_id: String in starter.soldiers:
+		var soldier: Soldier = starter.get_soldier(soldier_id)
+		if soldier != null and soldier.faction_id == StarterWorldService.RIVAL_FACTION_ID:
+			rival_soldiers += 1
+	return (
+		rival_soldiers == 0
+		and hq.get_garrison_count() == 0
+		and hq.garrison_soldier_ids.is_empty()
+		and starter.has_soldier(StarterWorldService.SOLDIER_ID)
+		and starter.get_soldier(StarterWorldService.SOLDIER_ID).garrison_hq_id.is_empty()
+	)
+
+
+static func _hq_garrison_side_effects_ok() -> bool:
+	var state: GameState = _hq_garrison_make_world()
+	var snap_before_assign: Dictionary = _hq_garrison_campaign_snap(state)
+	if not state.assign_soldier_to_neighborhood_hq("hg_s1", "hg_hq_a"):
+		return false
+	if not _hq_garrison_campaign_unchanged(state, snap_before_assign):
+		return false
+	var snap_before_unassign: Dictionary = _hq_garrison_campaign_snap(state)
+	if not state.unassign_soldier_from_neighborhood_hq("hg_s1"):
+		return false
+	return _hq_garrison_campaign_unchanged(state, snap_before_unassign)
+
+
+static func _hq_garrison_capture_boundary_ok() -> bool:
+	var capture_src: String = FileAccess.get_file_as_string(
+		"res://campaign/missions/resolvers/neighborhood_hq_capture_resolver.gd"
+	)
+	if capture_src.contains("garrison_soldier_ids") or capture_src.contains("garrison_hq_id"):
+		return false
+	var state: GameState = _make_battle_world()
+	if not state.assign_soldier_to_neighborhood_hq("battle_sol_enemy", "battle_hq"):
+		return false
+	var hq: NeighborhoodHQ = state.get_map_location("battle_hq") as NeighborhoodHQ
+	var enemy: Soldier = state.get_soldier("battle_sol_enemy")
+	if hq == null or enemy == null:
+		return false
+	var garrison_before: Array[String] = _copy_ids(hq.garrison_soldier_ids)
+	var faction_before: String = enemy.faction_id
+	var home_before: String = enemy.home_stronghold_id
+	_battle_add_force_mission(state)
+	var result: NeighborhoodHQCaptureResult = NeighborhoodHQCaptureResolver.resolve_success(
+		state, "battle_mission"
+	)
+	if not result.success:
+		return false
+	return (
+		hq.owner_faction_id == "battle_a"
+		and _string_ids_match(hq.garrison_soldier_ids, garrison_before)
+		and hq.has_garrison_soldier_id("battle_sol_enemy")
+		and enemy.garrison_hq_id == "battle_hq"
+		and enemy.faction_id == faction_before
+		and enemy.faction_id == "battle_b"
+		and enemy.home_stronghold_id == home_before
+		and state.has_soldier("battle_sol_enemy")
+	)
+
+
+static func _hq_garrison_no_vehicles_ok() -> bool:
+	var hq_src: String = FileAccess.get_file_as_string("res://world/locations/neighborhood_hq.gd")
+	var state_src: String = FileAccess.get_file_as_string("res://core/game_state.gd")
+	var hq: NeighborhoodHQ = NeighborhoodHQ.new(
+		"veh_hq", "Veh HQ", "veh_hood", Vector2.ZERO, "veh_a", true
+	)
+	return (
+		not hq_src.contains("vehicle_ids")
+		and not hq_src.contains("vehicle_capacity")
+		and not hq_src.contains("garrison_vehicle")
+		and not hq.has_method("assign_vehicle")
+		and not hq.has_method("add_garrison_vehicle_id")
+		and not hq.has_method("has_garrison_vehicle_id")
+		and not state_src.contains("assign_vehicle_to_neighborhood_hq")
+		and not state_src.contains("unassign_vehicle_from_neighborhood_hq")
 	)
 
 

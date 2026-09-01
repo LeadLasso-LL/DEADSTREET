@@ -116,6 +116,12 @@ static func _validate_soldiers(game_state: GameState, request: DeploymentRequest
 			return DeploymentResult.failed("soldier_wrong_home", "Deployment failed: soldier '%s' home is not origin '%s'." % [soldier_id, request.origin_stronghold_id])
 		if not origin.has_soldier_id(soldier_id):
 			return DeploymentResult.failed("soldier_not_at_origin", "Deployment failed: origin '%s' does not contain soldier '%s'." % [request.origin_stronghold_id, soldier_id])
+		if not soldier.garrison_hq_id.is_empty():
+			return DeploymentResult.failed(
+				"soldier_in_hq_garrison",
+				"Deployment failed: soldier '%s' is garrisoned at NeighborhoodHQ '%s'."
+				% [soldier_id, soldier.garrison_hq_id]
+			)
 	return DeploymentResult.succeeded("", false, 0.0)
 
 
@@ -156,13 +162,9 @@ static func _is_force_active(force: TravelingForce) -> bool:
 
 
 static func _is_soldier_in_active_force(game_state: GameState, soldier_id: String) -> bool:
-	for force_id: String in game_state.traveling_forces:
-		var force: TravelingForce = game_state.get_traveling_force(force_id)
-		if not _is_force_active(force):
-			continue
-		if force.soldier_group != null and force.soldier_group.has_soldier_id(soldier_id):
-			return true
-	return false
+	if game_state == null:
+		return false
+	return game_state.is_soldier_in_active_traveling_force(soldier_id)
 
 
 static func _is_vehicle_in_active_force(game_state: GameState, vehicle_id: String) -> bool:
