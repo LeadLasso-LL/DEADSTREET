@@ -25,6 +25,10 @@ const COVER_SLOT_RADIUS := 3.5
 const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
 const ROSTER_FONT_SIZE := 13
+const ROSTER_CAMERA_GUTTER_PAD := 24.0
+const VEHICLE_OUTLINE_WIDTH := 3.0
+const VEHICLE_HALO_RADIUS := 28.0
+const VEHICLE_FACING_MARK := 34.0
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
 const PROVISIONAL_BACKGROUND := Color(0.10, 0.10, 0.11, 1.0)
@@ -50,6 +54,10 @@ const PROVISIONAL_OVERLAY := Color(0.88, 0.88, 0.86, 1.0)
 const PROVISIONAL_SELECTED := Color(0.95, 0.86, 0.38, 0.38)
 const PROVISIONAL_SELECTABLE := Color(0.72, 0.88, 1.0, 1.0)
 const PROVISIONAL_STATUS := Color(0.95, 0.78, 0.42, 1.0)
+# Vehicle chrome is presentation only. Physical length/width stay on the catalog.
+const PROVISIONAL_VEHICLE_FILL := Color(0.11, 0.09, 0.07, 1.0)
+const PROVISIONAL_VEHICLE_OUTLINE := Color(0.98, 0.84, 0.28, 1.0)
+const PROVISIONAL_VEHICLE_FACING := Color(1.0, 0.93, 0.48, 1.0)
 
 # Reference only. This view never stores an independent BattleState.
 var session: CampaignBattleSession = null
@@ -205,6 +213,9 @@ func _frame_camera() -> void:
 		bounds = geometry.bounds()
 	var view_rect: Rect2 = _rect_to_view(bounds)
 	view_rect = view_rect.grow(CAMERA_PADDING)
+	var hud_gutter: float = _hud_left_gutter()
+	view_rect.position.x -= hud_gutter
+	view_rect.size.x += hud_gutter
 	_camera.position = view_rect.get_center()
 	var viewport_size: Vector2 = get_viewport_rect().size
 	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
@@ -327,27 +338,34 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if vehicle == null or not vehicle.has_battle_position:
 			continue
+		var view_pos: Vector2 = _to_view(vehicle.battle_position)
+		draw_circle(view_pos, VEHICLE_HALO_RADIUS, Color(0.07, 0.06, 0.04, 0.94), true)
+		draw_circle(view_pos, VEHICLE_HALO_RADIUS, PROVISIONAL_VEHICLE_OUTLINE, false, 4.0, true)
 		var corners: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
-		var fill: Color = _side_fill(battle_state, vehicle.side_id)
+		var min_y: float = view_pos.y - VEHICLE_HALO_RADIUS
 		if corners.size() == 4:
 			var view_corners: PackedVector2Array = PackedVector2Array()
-			var min_y: float = INF
 			for corner: Vector2 in corners:
 				var view_corner: Vector2 = _to_view(corner)
 				view_corners.append(view_corner)
 				if view_corner.y < min_y:
 					min_y = view_corner.y
-			draw_colored_polygon(view_corners, fill)
+			draw_colored_polygon(view_corners, PROVISIONAL_VEHICLE_FILL)
 			var outline: PackedVector2Array = view_corners.duplicate()
 			outline.append(view_corners[0])
-			draw_polyline(outline, Color(0.08, 0.08, 0.09, 1.0), 1.5, true)
-			var view_pos: Vector2 = _to_view(vehicle.battle_position)
-			if vehicle.has_valid_orientation():
-				var nose: Vector2 = _to_view(
-					vehicle.battle_position + vehicle.facing_direction * 0.9
-				)
-				draw_line(view_pos, nose, Color(0.08, 0.08, 0.09, 1.0), 2.0, true)
-			_draw_label(Vector2(view_pos.x, min_y - 12.0), vehicle.battle_vehicle_id, 11)
+			draw_polyline(outline, PROVISIONAL_VEHICLE_OUTLINE, VEHICLE_OUTLINE_WIDTH, true)
+			draw_line(view_corners[0], view_corners[1], _side_fill(battle_state, vehicle.side_id), 3.5, true)
+		if vehicle.has_valid_orientation():
+			var facing: Vector2 = vehicle.facing_direction
+			var nose: Vector2 = view_pos + facing * VEHICLE_FACING_MARK
+			draw_line(view_pos, nose, PROVISIONAL_VEHICLE_FACING, 4.0, true)
+			var side: Vector2 = Vector2(-facing.y, facing.x) * 10.0
+			var chevron: PackedVector2Array = PackedVector2Array(
+				[nose, nose - facing * 14.0 + side, nose - facing * 14.0 - side]
+			)
+			draw_colored_polygon(chevron, PROVISIONAL_VEHICLE_FACING)
+		_draw_label(Vector2(view_pos.x, min_y - 16.0), "CAR", 18)
+		_draw_label(Vector2(view_pos.x, view_pos.y + VEHICLE_HALO_RADIUS + 16.0), vehicle.battle_vehicle_id, 11)
 
 
 func _draw_overlay() -> void:
@@ -670,6 +688,10 @@ func _draw_overlay_row_label(row_rect: Rect2, text: String, font_size: int, colo
 	var pos: Vector2 = Vector2(row_rect.position.x, baseline_y)
 	draw_string(font, pos + Vector2(1.0, 1.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, PROVISIONAL_LABEL_SHADOW)
 	draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+
+
+func _hud_left_gutter() -> float:
+	return maxf(0.0, ROSTER_ROW_WIDTH + ROSTER_CAMERA_GUTTER_PAD - CAMERA_PADDING)
 
 
 func _overlay_origin() -> Vector2:
