@@ -8,6 +8,7 @@ var is_attacker: bool = false
 var participant_ids: Array[String] = []
 var vehicle_ids: Array[String] = []
 var deployment_zone_id: String = ""
+var deployment_committed: bool = false
 
 
 func _init(

@@ -121,6 +121,8 @@ const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
 const BattleDeploymentPlacementService := preload("res://battle/core/battle_deployment_placement_service.gd")
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
+const BattleDeploymentCommitService := preload("res://battle/core/battle_deployment_commit_service.gd")
+const BattleDeploymentCommitResult := preload("res://battle/core/battle_deployment_commit_result.gd")
 
 
 static func run() -> Dictionary:
@@ -15984,6 +15986,30 @@ static func run() -> Dictionary:
 	var interactive_deploy_commit_future_ok: bool = _interactive_deploy_commit_future_ok()
 	var interactive_deploy_geo_safety_ok: bool = _interactive_deploy_geo_safety_ok()
 	var interactive_deploy_absent_ok: bool = _interactive_deploy_absent_ok()
+	var attacker_commit_side_ownership_ok: bool = _attacker_commit_side_ownership_ok()
+	var attacker_commit_generic_service_ok: bool = _attacker_commit_generic_service_ok()
+	var attacker_commit_raw_hardening_ok: bool = _attacker_commit_raw_hardening_ok()
+	var attacker_commit_living_rule_ok: bool = _attacker_commit_living_rule_ok()
+	var attacker_commit_spatial_shared_ok: bool = _attacker_commit_spatial_shared_ok()
+	var attacker_commit_obstacle_bypass_ok: bool = _attacker_commit_obstacle_bypass_ok()
+	var attacker_commit_player_entry_ok: bool = _attacker_commit_player_entry_ok()
+	var attacker_commit_key_b_adapter_ok: bool = _attacker_commit_key_b_adapter_ok()
+	var attacker_commit_legacy_session_ok: bool = _attacker_commit_legacy_session_ok()
+	var attacker_commit_readiness_matrix_ok: bool = _attacker_commit_readiness_matrix_ok()
+	var attacker_commit_controller_order_ok: bool = _attacker_commit_controller_order_ok()
+	var attacker_commit_controller_resync_ok: bool = _attacker_commit_controller_resync_ok()
+	var attacker_commit_attacker_freeze_ok: bool = _attacker_commit_attacker_freeze_ok()
+	var attacker_commit_vehicle_provisional_ok: bool = _attacker_commit_vehicle_provisional_ok()
+	var attacker_commit_failed_atomic_ok: bool = _attacker_commit_failed_atomic_ok()
+	var attacker_commit_repeat_c_ok: bool = _attacker_commit_repeat_c_ok()
+	var attacker_commit_defender_boundary_ok: bool = _attacker_commit_defender_boundary_ok()
+	var attacker_commit_position_preserve_ok: bool = _attacker_commit_position_preserve_ok()
+	var attacker_commit_no_start_ok: bool = _attacker_commit_no_start_ok()
+	var attacker_commit_rng_ok: bool = _attacker_commit_rng_ok()
+	var attacker_commit_campaign_isolation_ok: bool = _attacker_commit_campaign_isolation_ok()
+	var attacker_commit_overlay_ok: bool = _attacker_commit_overlay_ok()
+	var attacker_commit_httb_flow_ok: bool = _attacker_commit_httb_flow_ok()
+	var attacker_commit_absent_ok: bool = _attacker_commit_absent_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -17798,6 +17824,30 @@ static func run() -> Dictionary:
 		"interactive_deploy_commit_future_ok": interactive_deploy_commit_future_ok,
 		"interactive_deploy_geo_safety_ok": interactive_deploy_geo_safety_ok,
 		"interactive_deploy_absent_ok": interactive_deploy_absent_ok,
+		"attacker_commit_side_ownership_ok": attacker_commit_side_ownership_ok,
+		"attacker_commit_generic_service_ok": attacker_commit_generic_service_ok,
+		"attacker_commit_raw_hardening_ok": attacker_commit_raw_hardening_ok,
+		"attacker_commit_living_rule_ok": attacker_commit_living_rule_ok,
+		"attacker_commit_spatial_shared_ok": attacker_commit_spatial_shared_ok,
+		"attacker_commit_obstacle_bypass_ok": attacker_commit_obstacle_bypass_ok,
+		"attacker_commit_player_entry_ok": attacker_commit_player_entry_ok,
+		"attacker_commit_key_b_adapter_ok": attacker_commit_key_b_adapter_ok,
+		"attacker_commit_legacy_session_ok": attacker_commit_legacy_session_ok,
+		"attacker_commit_readiness_matrix_ok": attacker_commit_readiness_matrix_ok,
+		"attacker_commit_controller_order_ok": attacker_commit_controller_order_ok,
+		"attacker_commit_controller_resync_ok": attacker_commit_controller_resync_ok,
+		"attacker_commit_attacker_freeze_ok": attacker_commit_attacker_freeze_ok,
+		"attacker_commit_vehicle_provisional_ok": attacker_commit_vehicle_provisional_ok,
+		"attacker_commit_failed_atomic_ok": attacker_commit_failed_atomic_ok,
+		"attacker_commit_repeat_c_ok": attacker_commit_repeat_c_ok,
+		"attacker_commit_defender_boundary_ok": attacker_commit_defender_boundary_ok,
+		"attacker_commit_position_preserve_ok": attacker_commit_position_preserve_ok,
+		"attacker_commit_no_start_ok": attacker_commit_no_start_ok,
+		"attacker_commit_rng_ok": attacker_commit_rng_ok,
+		"attacker_commit_campaign_isolation_ok": attacker_commit_campaign_isolation_ok,
+		"attacker_commit_overlay_ok": attacker_commit_overlay_ok,
+		"attacker_commit_httb_flow_ok": attacker_commit_httb_flow_ok,
+		"attacker_commit_absent_ok": attacker_commit_absent_ok,
 	}
 
 	var passed := true
@@ -45647,6 +45697,18 @@ static func _battlesession_deploy_all(battle_state: BattleState) -> bool:
 
 
 static func _battlesession_ready_for_begin(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var helper_ids: Array[String] = []
+	if battle_state.requires_deployment_commitments:
+		if not _battlesession_side_has_living(battle_state, battle_state.attacker_side_id):
+			if not _battlesession_ensure_living_side(battle_state, battle_state.attacker_side_id):
+				return false
+			helper_ids.append("ready_living_%s" % battle_state.attacker_side_id)
+		if not _battlesession_side_has_living(battle_state, battle_state.defender_side_id):
+			if not _battlesession_ensure_living_side(battle_state, battle_state.defender_side_id):
+				return false
+			helper_ids.append("ready_living_%s" % battle_state.defender_side_id)
 	if not _battlesession_deploy_all(battle_state):
 		return false
 	var geometry_result: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
@@ -45654,7 +45716,80 @@ static func _battlesession_ready_for_begin(battle_state: BattleState) -> bool:
 	)
 	if geometry_result == null or not geometry_result.success:
 		return false
-	return battle_state.is_battle_ready() and battle_state.is_spatially_ready()
+	if not battle_state.is_spatially_ready():
+		return false
+	if battle_state.requires_deployment_commitments:
+		if not _battlesession_commit_side(battle_state, battle_state.attacker_side_id):
+			return false
+		if not _battlesession_commit_side(battle_state, battle_state.defender_side_id):
+			return false
+		for helper_id: String in helper_ids:
+			var helper: BattleParticipant = battle_state.get_participant(helper_id)
+			if helper != null:
+				helper.is_alive = false
+	return battle_state.is_battle_ready()
+
+
+static func _battlesession_side_has_living(battle_state: BattleState, side_id: String) -> bool:
+	if battle_state == null or side_id.is_empty() or not battle_state.has_side(side_id):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	for participant_id: String in side.participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null and participant.is_alive:
+			return true
+	return false
+
+
+static func _battlesession_ensure_living_side(battle_state: BattleState, side_id: String) -> bool:
+	if _battlesession_side_has_living(battle_state, side_id):
+		return true
+	if battle_state == null or side_id.is_empty() or not battle_state.has_side(side_id):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	var participant_id: String = "ready_living_%s" % side_id
+	if battle_state.has_participant(participant_id):
+		var existing: BattleParticipant = battle_state.get_participant(participant_id)
+		return existing != null and existing.is_alive
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		"",
+		side.faction_id,
+		side_id,
+		"pistol",
+		true,
+		false,
+		"",
+		side.force_id
+	)
+	if not battle_state.add_participant(participant):
+		return false
+	if not side.add_participant_id(participant_id):
+		return false
+	if side.deployment_zone_id.is_empty() or not battle_state.has_deployment_zone(side.deployment_zone_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(side.deployment_zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	return true
+
+
+static func _battlesession_commit_side(battle_state: BattleState, side_id: String) -> bool:
+	if battle_state == null:
+		return false
+	if battle_state.is_side_deployment_committed(side_id):
+		return true
+	var result: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		side_id
+	)
+	return result != null and result.success
 
 
 static func _battlesession_add_defender(battle_state: BattleState) -> bool:
@@ -52493,6 +52628,1046 @@ static func _interactive_deploy_roster_boundaries_ok() -> bool:
 		and header_ok
 		and header_rect.position.y < soldier_rect.position.y
 		and soldier_rect.position.y < vehicle_rect.position.y
+	)
+
+
+static func _attacker_commit_extract_func(source: String, func_name: String) -> String:
+	var start: int = source.find("func %s" % func_name)
+	if start < 0:
+		return ""
+	var rest: String = source.substr(start)
+	var next_func: int = rest.find("\nfunc ", 1)
+	if next_func >= 0:
+		return rest.substr(0, next_func)
+	return rest
+
+
+static func _attacker_commit_add_living(
+	battle_state: BattleState,
+	participant_id: String,
+	side_id: String,
+	zone_id: String,
+	deploy_membership: bool
+) -> bool:
+	if battle_state == null:
+		return false
+	var participant: BattleParticipant = BattleParticipant.new(
+		participant_id,
+		participant_id,
+		"battle_a" if side_id == "attacker" else "battle_b",
+		side_id,
+		"pistol",
+		true,
+		false,
+		""
+	)
+	if not battle_state.add_participant(participant):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null or not side.add_participant_id(participant_id):
+		return false
+	var zone: DeploymentZone = battle_state.get_deployment_zone(zone_id)
+	if zone == null:
+		return false
+	if not zone.allowed_participant_ids.has(participant_id):
+		zone.allowed_participant_ids.append(participant_id)
+	if deploy_membership:
+		return battle_state.deploy_participant(participant_id, zone_id)
+	return true
+
+
+static func _attacker_commit_make_ready_battle(require_commitments: bool) -> BattleState:
+	var battle_state: BattleState = BattleState.new(
+		"ac_ready_battle",
+		"neighborhood_hq_assault",
+		"ac_ready_mission",
+		"ac_ready_hq",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	battle_state.requires_deployment_commitments = require_commitments
+	var attacker_side: BattleSide = BattleSide.new("attacker", "battle_a", "", true, "attacker_deployment")
+	var defender_side: BattleSide = BattleSide.new("defender", "battle_b", "", false, "defender_deployment")
+	if not battle_state.add_side(attacker_side) or not battle_state.add_side(defender_side):
+		return null
+	var attacker_zone: DeploymentZone = DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry")
+	var defender_zone: DeploymentZone = DeploymentZone.new("defender_deployment", "defender", "defender_position")
+	if not battle_state.add_deployment_zone(attacker_zone) or not battle_state.add_deployment_zone(defender_zone):
+		return null
+	if not _attacker_commit_add_living(battle_state, "ac_att", "attacker", "attacker_deployment", true):
+		return null
+	if not _attacker_commit_add_living(battle_state, "ac_def", "defender", "defender_deployment", true):
+		return null
+	var geo: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(battle_state)
+	if geo == null or not geo.success:
+		return null
+	if not battle_state.is_spatially_ready():
+		return null
+	if not battle_state.is_side_ready("attacker") or not battle_state.is_side_ready("defender"):
+		return null
+	return battle_state
+
+
+static func _attacker_commit_legal_point(geometry: BattlefieldGeometry, for_attacker: bool) -> Vector2:
+	if geometry == null:
+		return Vector2.ZERO
+	var rect: Rect2 = geometry.attacker_deployment_rect
+	if not for_attacker:
+		rect = geometry.defender_deployment_rect
+	return rect.position + Vector2(rect.size.x * 0.37, rect.size.y * 0.52)
+
+
+static func _attacker_commit_custom_geometry() -> BattlefieldGeometry:
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = 80.0
+	geometry.height = 50.0
+	geometry.attacker_deployment_rect = Rect2(50.0, 5.0, 22.0, 40.0)
+	geometry.defender_deployment_rect = Rect2(4.0, 5.0, 22.0, 40.0)
+	var move_wall: BattleObstacle = BattleObstacle.new("ac_move", Rect2(56.0, 18.0, 4.0, 4.0), true, false)
+	var los_wall: BattleObstacle = BattleObstacle.new("ac_los", Rect2(58.0, 30.0, 3.0, 3.0), false, true)
+	if not geometry.add_obstacle(move_wall) or not geometry.add_obstacle(los_wall):
+		return null
+	if not geometry.is_valid():
+		return null
+	return geometry
+
+
+static func _attacker_commit_side_ownership_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var attacker_side: BattleSide = battle_state.get_side(battle_state.attacker_side_id)
+	var defender_side: BattleSide = battle_state.get_side(battle_state.defender_side_id)
+	if attacker_side == null or defender_side == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	var before_ok: bool = (
+		attacker_side.deployment_committed == false
+		and defender_side.deployment_committed == false
+		and not battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_ATTACKER_PLACEMENT
+	)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var placed: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_continuous_point(geometry)
+	)
+	var committed: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	var after_ok: bool = (
+		placed != null
+		and placed.success
+		and committed != null
+		and committed.success
+		and attacker_side.deployment_committed
+		and not defender_side.deployment_committed
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+	)
+	var rebuilt: TacticalDeploymentController = TacticalDeploymentController.new()
+	rebuilt.bind_session(session)
+	return _gameplayruntime_finish(
+		runtime,
+		before_ok
+		and after_ok
+		and rebuilt.subrole == "defender_placement"
+		and rebuilt.subrole == TacticalDeploymentController.SUBROLE_DEFENDER_PLACEMENT
+	)
+
+
+static func _attacker_commit_generic_service_ok() -> bool:
+	var service_src: String = FileAccess.get_file_as_string(
+		"res://battle/core/battle_deployment_commit_service.gd"
+	)
+	var source_ok: bool = (
+		not service_src.contains("attacker_not_committed")
+		and not service_src.contains("attacker_placement")
+		and not service_src.contains("defender_placement")
+		and not service_src.contains("SUBROLE_")
+		and not service_src.contains("player_gang")
+		and not service_src.contains("left")
+		and service_src.contains("get_side_deployment_commit_error")
+	)
+	var att: BattleState = _attacker_commit_make_ready_battle(true)
+	var def: BattleState = _attacker_commit_make_ready_battle(true)
+	if att == null or def == null:
+		return false
+	var att_result: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		att,
+		att.attacker_side_id
+	)
+	var def_first: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		def,
+		def.defender_side_id
+	)
+	return (
+		source_ok
+		and att_result != null
+		and att_result.success
+		and att.is_side_deployment_committed(att.attacker_side_id)
+		and not att.is_side_deployment_committed(att.defender_side_id)
+		and def_first != null
+		and def_first.success
+		and def_first.error_code != "attacker_not_committed"
+		and def.is_side_deployment_committed(def.defender_side_id)
+		and not def.is_side_deployment_committed(def.attacker_side_id)
+	)
+
+
+static func _attacker_commit_raw_hardening_ok() -> bool:
+	var ready: BattleState = _attacker_commit_make_ready_battle(true)
+	if ready == null:
+		return false
+	var valid: bool = ready.commit_side_deployment(ready.attacker_side_id)
+	var already: bool = not ready.commit_side_deployment(ready.attacker_side_id)
+	var unknown: bool = not ready.commit_side_deployment("missing_side")
+	var phase: BattleState = _attacker_commit_make_ready_battle(false)
+	if phase == null:
+		return false
+	if not phase.commit_side_deployment(phase.attacker_side_id):
+		return false
+	if not phase.commit_side_deployment(phase.defender_side_id):
+		return false
+	if not phase.begin_battle():
+		return false
+	var phase_reject: bool = not phase.commit_side_deployment(phase.attacker_side_id)
+	var missing_zone: BattleState = BattleState.new(
+		"ac_mz",
+		"neighborhood_hq_assault",
+		"ac_mz",
+		"ac_mz",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	missing_zone.add_side(BattleSide.new("attacker", "battle_a", "", true, ""))
+	missing_zone.add_side(BattleSide.new("defender", "battle_b", "", false, "defender_deployment"))
+	var zone_reject: bool = not missing_zone.commit_side_deployment("attacker")
+	var undeployed: BattleState = BattleState.new(
+		"ac_ud",
+		"neighborhood_hq_assault",
+		"ac_ud",
+		"ac_ud",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	undeployed.add_side(BattleSide.new("attacker", "battle_a", "", true, "attacker_deployment"))
+	undeployed.add_side(BattleSide.new("defender", "battle_b", "", false, "defender_deployment"))
+	undeployed.add_deployment_zone(DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry"))
+	undeployed.add_deployment_zone(DeploymentZone.new("defender_deployment", "defender", "defender_position"))
+	if not _attacker_commit_add_living(undeployed, "ud_att", "attacker", "attacker_deployment", false):
+		return false
+	var undeployed_ok: bool = (
+		not undeployed.commit_side_deployment("attacker")
+		and not undeployed.is_side_deployment_committed("attacker")
+		and undeployed.get_side_deployment_commit_error("attacker") == "undeployed_living_participant"
+	)
+	var no_pos: BattleState = _attacker_commit_make_ready_battle(true)
+	if no_pos == null:
+		return false
+	var living: BattleParticipant = no_pos.get_participant("ac_att")
+	living.has_battle_position = false
+	var no_pos_ok: bool = (
+		no_pos.is_participant_deployed("ac_att")
+		and not no_pos.commit_side_deployment("attacker")
+		and not no_pos.is_side_deployment_committed("attacker")
+		and no_pos.get_side_deployment_commit_error("attacker") == "missing_battle_position"
+	)
+	return (
+		valid
+		and already
+		and ready.is_side_deployment_committed(ready.attacker_side_id)
+		and unknown
+		and phase_reject
+		and zone_reject
+		and undeployed_ok
+		and no_pos_ok
+	)
+
+
+static func _attacker_commit_living_rule_ok() -> bool:
+	var one_undep: BattleState = _attacker_commit_make_ready_battle(true)
+	if one_undep == null:
+		return false
+	if not _attacker_commit_add_living(one_undep, "ac_att_extra", "attacker", "attacker_deployment", false):
+		return false
+	var blocked: bool = (
+		not one_undep.commit_side_deployment("attacker")
+		and one_undep.get_side_deployment_commit_error("attacker") == "undeployed_living_participant"
+	)
+	var dead_ok_state: BattleState = _attacker_commit_make_ready_battle(true)
+	if dead_ok_state == null:
+		return false
+	if not _attacker_commit_add_living(dead_ok_state, "ac_att_dead", "attacker", "attacker_deployment", false):
+		return false
+	dead_ok_state.get_participant("ac_att_dead").is_alive = false
+	var dead_commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		dead_ok_state,
+		"attacker"
+	)
+	var zero: BattleState = BattleState.new(
+		"ac_zero",
+		"neighborhood_hq_assault",
+		"ac_zero",
+		"ac_zero",
+		"attacker",
+		"defender",
+		"deployment"
+	)
+	zero.add_side(BattleSide.new("attacker", "battle_a", "", true, "attacker_deployment"))
+	zero.add_side(BattleSide.new("defender", "battle_b", "", false, "defender_deployment"))
+	zero.add_deployment_zone(DeploymentZone.new("attacker_deployment", "attacker", "attacker_entry"))
+	zero.add_deployment_zone(DeploymentZone.new("defender_deployment", "defender", "defender_position"))
+	var zero_ok: bool = (
+		not zero.commit_side_deployment("attacker")
+		and zero.get_side_deployment_commit_error("attacker") == "no_living_participants"
+		and not zero.is_side_deployment_committed("attacker")
+	)
+	return (
+		blocked
+		and dead_commit != null
+		and dead_commit.success
+		and dead_ok_state.is_side_deployment_committed("attacker")
+		and zero_ok
+	)
+
+
+static func _attacker_commit_spatial_shared_ok() -> bool:
+	var battle_state: BattleState = _attacker_commit_make_ready_battle(true)
+	if battle_state == null:
+		return false
+	var geometry: BattlefieldGeometry = _attacker_commit_custom_geometry()
+	if geometry == null:
+		return false
+	battle_state.battlefield_geometry = geometry
+	var legal: Vector2 = _attacker_commit_legal_point(geometry, true)
+	var nan_pt := Vector2(NAN, 20.0)
+	var inf_pt := Vector2(INF, 20.0)
+	var outside := Vector2(90.0, 20.0)
+	var old_left := Vector2(8.0, 20.0)
+	var blocked := Vector2(58.0, 20.0)
+	var los_pt := Vector2(59.5, 31.5)
+	var legal_err: String = battle_state.get_deployment_position_error("attacker", legal)
+	var nan_err: String = battle_state.get_deployment_position_error("attacker", nan_pt)
+	var inf_err: String = battle_state.get_deployment_position_error("attacker", inf_pt)
+	var out_err: String = battle_state.get_deployment_position_error("attacker", outside)
+	var left_err: String = battle_state.get_deployment_position_error("attacker", old_left)
+	var block_err: String = battle_state.get_deployment_position_error("attacker", blocked)
+	var los_err: String = battle_state.get_deployment_position_error("attacker", los_pt)
+	if not _attacker_commit_add_living(battle_state, "ac_place", "attacker", "attacker_deployment", false):
+		return false
+	var place_nan: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place",
+		nan_pt
+	)
+	var place_inf: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place",
+		inf_pt
+	)
+	var place_out: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place",
+		outside
+	)
+	var place_left: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place",
+		old_left
+	)
+	var place_block: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place",
+		blocked
+	)
+	var place_legal: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place",
+		legal
+	)
+	if not _attacker_commit_add_living(battle_state, "ac_place_los", "attacker", "attacker_deployment", false):
+		return false
+	var place_los: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		"ac_place_los",
+		los_pt
+	)
+	return (
+		legal_err.is_empty()
+		and battle_state.is_legal_deployment_position("attacker", legal)
+		and nan_err == "invalid_position"
+		and inf_err == "invalid_position"
+		and out_err == "outside_battlefield"
+		and left_err == "outside_deployment_zone"
+		and block_err == "inside_blocking_obstacle"
+		and los_err.is_empty()
+		and geometry.attacker_deployment_contains(legal)
+		and not geometry.attacker_deployment_contains(old_left)
+		and not is_equal_approx(geometry.width, 100.0)
+		and not is_equal_approx(geometry.attacker_deployment_rect.position.x, 0.0)
+		and place_nan != null
+		and place_nan.error_code == nan_err
+		and place_inf != null
+		and place_inf.error_code == inf_err
+		and place_out != null
+		and place_out.error_code == out_err
+		and place_left != null
+		and place_left.error_code == left_err
+		and place_block != null
+		and place_block.error_code == block_err
+		and place_legal != null
+		and place_legal.success
+		and place_los != null
+		and place_los.success
+		and battle_state.is_participant_deployed("ac_place")
+	)
+
+
+static func _attacker_commit_obstacle_bypass_ok() -> bool:
+	var battle_state: BattleState = _attacker_commit_make_ready_battle(true)
+	if battle_state == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var legal: Vector2 = _attacker_commit_legal_point(geometry, true)
+	var wall: BattleObstacle = BattleObstacle.new(
+		"ac_bypass_wall",
+		Rect2(legal.x - 1.0, legal.y - 1.0, 3.0, 3.0),
+		true,
+		false
+	)
+	if not geometry.add_obstacle(wall):
+		return false
+	var participant: BattleParticipant = battle_state.get_participant("ac_att")
+	participant.has_battle_position = true
+	participant.battle_position = legal
+	var blocked_ok: bool = (
+		battle_state.is_participant_deployed("ac_att")
+		and participant.has_battle_position
+		and not battle_state.is_participant_fully_deployed("ac_att")
+		and not battle_state.commit_side_deployment("attacker")
+		and not battle_state.is_side_deployment_committed("attacker")
+	)
+	var service_block: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		"attacker"
+	)
+	var clear: Vector2 = geometry.attacker_deployment_rect.position + Vector2(
+		geometry.attacker_deployment_rect.size.x * 0.8,
+		geometry.attacker_deployment_rect.size.y * 0.8
+	)
+	participant.battle_position = clear
+	var legal_ok: bool = (
+		battle_state.is_participant_fully_deployed("ac_att")
+		and battle_state.commit_side_deployment("attacker")
+		and battle_state.is_side_deployment_committed("attacker")
+	)
+	return (
+		blocked_ok
+		and service_block != null
+		and not service_block.success
+		and legal_ok
+		and not wall.contains_point(clear)
+	)
+
+
+static func _attacker_commit_player_entry_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var result: GameFlowResult = runtime.game_flow_controller.enter_pending_battle()
+	var session: CampaignBattleSession = runtime.game_flow_controller.current_session
+	if session == null or session.battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = session.battle_state
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and runtime.game_flow_controller.get_current_mode() == "tactical_deployment"
+		and battle_state.requires_deployment_commitments
+		and not battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+	)
+
+
+static func _attacker_commit_key_b_adapter_ok() -> bool:
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var debug_fn: String = _attacker_commit_extract_func(runtime_src, "_debug_enter_pending_battle")
+	var enter_fn: String = _attacker_commit_extract_func(runtime_src, "enter_battle")
+	var handler: String = _attacker_commit_extract_func(runtime_src, "_unhandled_input")
+	var source_ok: bool = (
+		handler.contains("KEY_B")
+		and handler.contains("_debug_enter_pending_battle()")
+		and debug_fn.contains("enter_battle()")
+		and not debug_fn.contains("requires_deployment_commitments")
+		and not debug_fn.contains("enable_deployment_commitments")
+		and not enter_fn.contains("requires_deployment_commitments")
+		and not enter_fn.contains("enable_deployment_commitments")
+	)
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	_tacticalview_press(runtime, KEY_H)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_B)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	return _gameplayruntime_finish(
+		runtime,
+		source_ok
+		and session != null
+		and session.battle_state != null
+		and session.battle_state.requires_deployment_commitments
+		and runtime.get_current_mode() == "tactical_deployment"
+	)
+
+
+static func _attacker_commit_legacy_session_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var result: CampaignBattleSessionResult = pack.get("result", null) as CampaignBattleSessionResult
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	if result == null or not result.success or session == null or session.battle_state == null:
+		return false
+	var battle_state: BattleState = session.battle_state
+	if battle_state.requires_deployment_commitments:
+		return false
+	if not _battlesession_add_defender(battle_state):
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	return (
+		not battle_state.requires_deployment_commitments
+		and begin_result != null
+		and begin_result.success
+		and battle_state.battle_phase == "active"
+	)
+
+
+static func _attacker_commit_readiness_matrix_ok() -> bool:
+	var none: BattleState = _attacker_commit_make_ready_battle(true)
+	var att_only: BattleState = _attacker_commit_make_ready_battle(true)
+	var def_only: BattleState = _attacker_commit_make_ready_battle(true)
+	var both: BattleState = _attacker_commit_make_ready_battle(true)
+	var unreadiness: BattleState = _attacker_commit_make_ready_battle(true)
+	if none == null or att_only == null or def_only == null or both == null or unreadiness == null:
+		return false
+	var none_ok: bool = (
+		not none.is_battle_ready()
+		and not none.begin_battle()
+		and none.battle_phase == "deployment"
+	)
+	var att_commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		att_only,
+		att_only.attacker_side_id
+	)
+	var att_ok: bool = (
+		att_commit != null
+		and att_commit.success
+		and not att_only.is_battle_ready()
+		and not att_only.begin_battle()
+		and att_only.battle_phase == "deployment"
+	)
+	var def_commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		def_only,
+		def_only.defender_side_id
+	)
+	var def_ok: bool = (
+		def_commit != null
+		and def_commit.success
+		and not def_only.is_battle_ready()
+		and not def_only.begin_battle()
+		and def_only.battle_phase == "deployment"
+	)
+	var both_att: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		both,
+		both.attacker_side_id
+	)
+	var both_def: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		both,
+		both.defender_side_id
+	)
+	var both_ready: bool = (
+		both_att != null
+		and both_att.success
+		and both_def != null
+		and both_def.success
+		and both.is_battle_ready()
+		and both.battle_phase == "deployment"
+	)
+	var begun: bool = both.begin_battle()
+	BattleDeploymentCommitService.commit_side_deployment(unreadiness, unreadiness.attacker_side_id)
+	BattleDeploymentCommitService.commit_side_deployment(unreadiness, unreadiness.defender_side_id)
+	if not _attacker_commit_add_living(
+		unreadiness,
+		"ac_unreadiness",
+		"attacker",
+		"attacker_deployment",
+		false
+	):
+		return false
+	return (
+		none_ok
+		and att_ok
+		and def_ok
+		and both_ready
+		and begun
+		and both.battle_phase == "active"
+		and unreadiness.is_side_deployment_committed(unreadiness.attacker_side_id)
+		and unreadiness.is_side_deployment_committed(unreadiness.defender_side_id)
+		and not unreadiness.is_battle_ready()
+	)
+
+
+static func _attacker_commit_controller_order_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var early: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	var early_ok: bool = (
+		controller.subrole == TacticalDeploymentController.SUBROLE_ATTACKER_PLACEMENT
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+		and early != null
+		and not early.success
+		and not battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+	)
+	var placed: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_continuous_point(battle_state.battlefield_geometry)
+	)
+	var committed: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		early_ok
+		and placed != null
+		and placed.success
+		and committed != null
+		and committed.success
+		and controller.selected_participant_id.is_empty()
+		and controller.subrole == "defender_placement"
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+	)
+
+
+static func _attacker_commit_controller_resync_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var session: CampaignBattleSession = runtime.get_current_session()
+	var battle_state: BattleState = session.battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	var fresh: TacticalDeploymentController = TacticalDeploymentController.new()
+	fresh.bind_session(session)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and fresh.subrole == "defender_placement"
+		and fresh.session == session
+	)
+
+
+static func _attacker_commit_attacker_freeze_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(geometry))
+	var pos: Vector2 = participant.battle_position
+	var slot: String = participant.deployment_slot_id
+	controller.try_commit_attacker()
+	var state_redeploy: bool = battle_state.deploy_participant(
+		StarterWorldService.SOLDIER_ID,
+		battle_state.get_side(battle_state.attacker_side_id).deployment_zone_id
+	)
+	var place_again: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		StarterWorldService.SOLDIER_ID,
+		pos + Vector2(1.0, 0.0)
+	)
+	var select_again: bool = controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var extra: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		not state_redeploy
+		and place_again != null
+		and not place_again.success
+		and not select_again
+		and extra != null
+		and not extra.success
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and participant.deployment_slot_id == slot
+		and participant.has_battle_position
+		and participant.battle_position.is_equal_approx(pos)
+	)
+
+
+static func _attacker_commit_vehicle_provisional_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	var pos: Vector2 = participant.battle_position
+	var commit: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	var vehicle_before: bool = battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+	var attacker_side: BattleSide = battle_state.get_side(battle_state.attacker_side_id)
+	var vehicle_ok: bool = battle_state.deploy_vehicle(
+		StarterWorldService.VEHICLE_ID,
+		attacker_side.deployment_zone_id
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		commit != null
+		and commit.success
+		and not vehicle_before
+		and vehicle_ok
+		and battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and participant.battle_position.is_equal_approx(pos)
+		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and not battle_state.is_battle_ready()
+	)
+
+
+static func _attacker_commit_failed_atomic_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	var snap_slot: String = participant.deployment_slot_id
+	var snap_has: bool = participant.has_battle_position
+	var snap_pos: Vector2 = participant.battle_position
+	var snap_phase: String = battle_state.battle_phase
+	var snap_sel: String = controller.selected_participant_id
+	var snap_sub: String = controller.subrole
+	var failed: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		failed != null
+		and not failed.success
+		and not battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and participant.deployment_slot_id == snap_slot
+		and participant.has_battle_position == snap_has
+		and participant.battle_position.is_equal_approx(snap_pos)
+		and battle_state.battle_phase == snap_phase
+		and controller.selected_participant_id == snap_sel
+		and controller.subrole == snap_sub
+	)
+
+
+static func _attacker_commit_repeat_c_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	var pos: Vector2 = participant.battle_position
+	controller.try_commit_attacker()
+	_tacticalview_press(runtime, KEY_C)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == "defender_placement"
+		and battle_state.battle_phase == "deployment"
+		and participant.battle_position.is_equal_approx(pos)
+		and begin_result != null
+		and not begin_result.success
+	)
+
+
+static func _attacker_commit_defender_boundary_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	if not _gameplayruntime_add_defender(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var selected_def: bool = controller.select_participant("gameplayruntime_defender")
+	var placed_def: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_defender_point(battle_state.battlefield_geometry)
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		not selected_def
+		and placed_def != null
+		and not placed_def.success
+		and not controller.has_method("commit_defender_deployment")
+		and not controller.has_method("place_defender")
+		and not runtime.has_method("commit_defender_deployment")
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and controller.subrole == "defender_placement"
+	)
+
+
+static func _attacker_commit_position_preserve_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var point: Vector2 = _interactive_deploy_continuous_point(battle_state.battlefield_geometry)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(point)
+	var slot: String = participant.deployment_slot_id
+	controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		participant.deployment_slot_id == slot
+		and participant.has_battle_position
+		and participant.battle_position.is_equal_approx(point)
+		and not is_equal_approx(participant.battle_position.x, roundf(participant.battle_position.x))
+	)
+
+
+static func _attacker_commit_no_start_ok() -> bool:
+	var controlled: BattleState = _attacker_commit_make_ready_battle(true)
+	if controlled == null:
+		return false
+	var att: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		controlled,
+		controlled.attacker_side_id
+	)
+	var controlled_ok: bool = (
+		att != null
+		and att.success
+		and controlled.is_side_ready(controlled.attacker_side_id)
+		and controlled.is_side_ready(controlled.defender_side_id)
+		and controlled.is_spatially_ready()
+		and not controlled.is_battle_ready()
+		and not controlled.begin_battle()
+		and controlled.battle_phase == "deployment"
+	)
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	return _gameplayruntime_finish(
+		runtime,
+		controlled_ok
+		and battle_state.battle_phase == "deployment"
+		and runtime.get_current_session().session_state == "deployment"
+		and runtime.get_current_mode() == "tactical_deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and not battle_state.is_battle_ready()
+		and begin_result != null
+		and not begin_result.success
+	)
+
+
+static func _attacker_commit_rng_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var before_fail: int = _battlesession_rng(battle_state)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_commit_attacker()
+	var after_fail: int = _battlesession_rng(battle_state)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	var before_ok: int = _battlesession_rng(battle_state)
+	controller.try_commit_attacker()
+	var after_ok: int = _battlesession_rng(battle_state)
+	_tacticalview_press(runtime, KEY_C)
+	var after_repeat: int = _battlesession_rng(battle_state)
+	return _gameplayruntime_finish(
+		runtime,
+		before_fail == after_fail
+		and before_ok == after_ok
+		and after_ok == after_repeat
+	)
+
+
+static func _attacker_commit_campaign_isolation_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var snap: Dictionary = _interactive_deploy_campaign_snap(runtime.game_state)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	return _gameplayruntime_finish(
+		runtime,
+		_interactive_deploy_campaign_unchanged(runtime.game_state, snap)
+		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
+			== "awaiting_resolution"
+	)
+
+
+static func _attacker_commit_overlay_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if view == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_draw")
+	var before: String = _tacticalview_overlay_blob(view)
+	var before_ok: bool = (
+		before.contains("attacker_placement")
+		and before.contains("attacker_committed=false")
+		and before.contains("attacker placement active")
+		and before.contains("C commits")
+	)
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	controller.try_commit_attacker()
+	view.call("_draw")
+	var after: String = _tacticalview_overlay_blob(view)
+	return _gameplayruntime_finish(
+		runtime,
+		before_ok
+		and after.contains("attacker_committed=true")
+		and after.contains("defender_placement")
+		and after.contains("defender placement not implemented")
+		and battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+	)
+
+
+static func _attacker_commit_httb_flow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	_tacticalview_press(runtime, KEY_H)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_T)
+	_tacticalview_press(runtime, KEY_B)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if battle_state == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	var protocol_ok: bool = battle_state.requires_deployment_commitments
+	controller.select_participant(StarterWorldService.SOLDIER_ID)
+	_tacticalview_press(runtime, KEY_C)
+	var reject_ok: bool = (
+		not battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and controller.subrole == TacticalDeploymentController.SUBROLE_ATTACKER_PLACEMENT
+	)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	_tacticalview_press(runtime, KEY_C)
+	var commit_ok: bool = (
+		battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+		and controller.subrole == "defender_placement"
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and not battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and battle_state.battle_phase == "deployment"
+		and is_equal_approx(battle_state.elapsed_time_seconds, 0.0)
+		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
+			== "awaiting_resolution"
+	)
+	_tacticalview_press(runtime, KEY_C)
+	return _gameplayruntime_finish(
+		runtime,
+		protocol_ok
+		and reject_ok
+		and commit_ok
+		and controller.subrole == "defender_placement"
+		and not battle_state.is_side_deployment_committed(battle_state.defender_side_id)
+		and battle_state.battle_phase == "deployment"
+	)
+
+
+static func _attacker_commit_absent_ok() -> bool:
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	var view_src: String = _tacticalview_source()
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		controller != null
+		and view != null
+		and not controller.has_method("place_defender")
+		and not controller.has_method("commit_defender_deployment")
+		and not controller.has_method("begin_battle")
+		and not runtime.has_method("start_battle")
+		and not runtime.has_method("auto_deploy")
+		and not view.has_method("place_vehicle")
+		and not view.has_method("start_battle")
+		and not controller_src.contains("auto_deploy")
+		and not runtime_src.contains("auto_deploy")
+		and not runtime_src.contains("commit_attacker_deployment")
+		and not view_src.contains("Start Battle")
+		and not controller_src.contains("formation")
+		and not controller_src.contains("unit spacing")
+		and not controller_src.contains("deployment timer")
 	)
 
 

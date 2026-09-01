@@ -16,7 +16,8 @@ const BATTLE_TYPE_HQ_ASSAULT := "neighborhood_hq_assault"
 
 static func create_for_mission(
 	game_state: GameState,
-	mission_id: String
+	mission_id: String,
+	p_requires_deployment_commitments: bool = false
 ) -> CampaignBattleSessionResult:
 	if game_state == null:
 		return CampaignBattleSessionResult.failed(
@@ -112,6 +113,10 @@ static func create_for_mission(
 			null,
 			mission.id
 		)
+
+	# Caller chooses the deployment protocol. Default false keeps headless/generic fixtures legacy.
+	if p_requires_deployment_commitments:
+		battle_state.requires_deployment_commitments = true
 
 	var session: CampaignBattleSession = CampaignBattleSession.new()
 	session.configure(game_state, mission.id, battle_state)

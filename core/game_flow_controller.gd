@@ -152,9 +152,12 @@ func enter_pending_battle(mission_id: String = "") -> GameFlowResult:
 	var ownership_error: GameFlowResult = _reject_if_not_enterable(target_mission_id)
 	if ownership_error != null:
 		return ownership_error
+	# Player-entered Neighborhood HQ battles use sequential place/commit on both sides.
+	# Presentation input only invokes this entry path; it does not choose the protocol.
 	var session_result: CampaignBattleSessionResult = CampaignBattleSessionService.create_for_mission(
 		game_state,
-		target_mission_id
+		target_mission_id,
+		true
 	)
 	if session_result == null or not session_result.success or session_result.session == null:
 		var error_code: String = "battle_insert_failed"

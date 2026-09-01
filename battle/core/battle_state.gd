@@ -32,6 +32,7 @@ var combat_rng_seed: int = 1
 var combat_random: BattleCombatRandom = null
 var combat_pressure_snapshots: Dictionary[String, BattleCombatPressureSnapshot] = {}
 var tactical_result: BattleVictoryResult = null
+var requires_deployment_commitments: bool = false
 
 
 func _init(
@@ -258,6 +259,9 @@ func deploy_participant(participant_id: String, zone_id: String) -> bool:
 	if not has_side(participant.side_id):
 		push_error("BattleState.deploy_participant: participant '%s' side '%s' does not exist." % [participant_id, participant.side_id])
 		return false
+	if is_side_deployment_committed(participant.side_id):
+		push_error("BattleState.deploy_participant: side '%s' deployment is already committed." % participant.side_id)
+		return false
 	var side: BattleSide = get_side(participant.side_id)
 	if not side.has_participant_id(participant_id):
 		push_error("BattleState.deploy_participant: participant '%s' is not registered on side '%s'." % [participant_id, side.side_id])
@@ -297,6 +301,8 @@ func deploy_vehicle(vehicle_id: String, zone_id: String) -> bool:
 	if not has_side(vehicle.side_id):
 		push_error("BattleState.deploy_vehicle: vehicle '%s' side '%s' does not exist." % [vehicle_id, vehicle.side_id])
 		return false
+	# v1: vehicles are outside side-commit eligibility, so commitment does not freeze undeployed vehicles.
+	# When vehicle deployment joins side commit eligibility, freeze deploy_vehicle on that same boundary.
 	var side: BattleSide = get_side(vehicle.side_id)
 	if not side.has_vehicle_id(vehicle_id):
 		push_error("BattleState.deploy_vehicle: vehicle '%s' is not registered on side '%s'." % [vehicle_id, side.side_id])
@@ -327,6 +333,94 @@ func is_vehicle_deployed(vehicle_id: String) -> bool:
 		return false
 	var vehicle: BattleVehicle = get_vehicle(vehicle_id)
 	return not vehicle.deployment_slot_id.is_empty()
+
+
+func is_side_deployment_committed(side_id: String) -> bool:
+	if side_id.is_empty() or not has_side(side_id):
+		return false
+	var side: BattleSide = get_side(side_id)
+	if side == null:
+		return false
+	return side.deployment_committed
+
+
+func get_side_deployment_commit_error(side_id: String) -> String:
+	if battle_phase != "deployment":
+		return "battle_not_in_deployment"
+	if side_id.is_empty() or not has_side(side_id):
+		return "unknown_side"
+	var side: BattleSide = get_side(side_id)
+	if side == null:
+		return "unknown_side"
+	if side.deployment_zone_id.is_empty() or not has_deployment_zone(side.deployment_zone_id):
+		return "missing_deployment_zone"
+	if side.deployment_committed:
+		return "already_committed"
+	var living_count: int = 0
+	for participant_id: String in side.participant_ids:
+		var participant: BattleParticipant = get_participant(participant_id)
+		if participant == null:
+			return "unknown_participant"
+		if not participant.is_alive:
+			continue
+		living_count += 1
+		if not is_participant_deployed(participant_id):
+			return "undeployed_living_participant"
+		if not participant.has_battle_position:
+			return "missing_battle_position"
+		if not is_participant_fully_deployed(participant_id):
+			return "invalid_position"
+	if living_count <= 0:
+		return "no_living_participants"
+	return ""
+
+
+func commit_side_deployment(side_id: String) -> bool:
+	var error_code: String = get_side_deployment_commit_error(side_id)
+	if not error_code.is_empty():
+		push_error("BattleState.commit_side_deployment: %s." % error_code)
+		return false
+	var side: BattleSide = get_side(side_id)
+	side.deployment_committed = true
+	return true
+
+
+func get_deployment_position_error(side_id: String, position: Vector2) -> String:
+	if not BattlefieldGeometry.is_finite_point(position):
+		return "invalid_position"
+	if battlefield_geometry == null or not battlefield_geometry.is_valid():
+		return "missing_battlefield_geometry"
+	if not battlefield_geometry.contains_point(position):
+		return "outside_battlefield"
+	if side_id == attacker_side_id:
+		if not battlefield_geometry.attacker_deployment_contains(position):
+			return "outside_deployment_zone"
+	elif side_id == defender_side_id:
+		if not battlefield_geometry.defender_deployment_contains(position):
+			return "outside_deployment_zone"
+	else:
+		return "unknown_side"
+	var blocking_id: String = battlefield_geometry.get_movement_blocking_obstacle_id_at(position)
+	if not blocking_id.is_empty():
+		return "inside_blocking_obstacle"
+	return ""
+
+
+func is_legal_deployment_position(side_id: String, position: Vector2) -> bool:
+	return get_deployment_position_error(side_id, position).is_empty()
+
+
+func is_participant_fully_deployed(participant_id: String) -> bool:
+	if not has_participant(participant_id):
+		return false
+	var participant: BattleParticipant = get_participant(participant_id)
+	if participant == null:
+		return false
+	if not _participant_assignment_is_valid(participant_id, participant.side_id):
+		return false
+	if not participant.has_battle_position:
+		return false
+	return is_legal_deployment_position(participant.side_id, participant.battle_position)
 
 
 func get_participant_deployment_zone_id(participant_id: String) -> String:
@@ -385,6 +479,11 @@ func is_battle_ready() -> bool:
 		return false
 	if not is_side_ready(defender_side_id):
 		return false
+	if requires_deployment_commitments:
+		if not is_side_deployment_committed(attacker_side_id):
+			return false
+		if not is_side_deployment_committed(defender_side_id):
+			return false
 	return true
 
 

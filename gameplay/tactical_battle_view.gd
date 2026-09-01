@@ -400,6 +400,15 @@ func _overlay_rows() -> Array[Dictionary]:
 			% [deployed_participants, undeployed_participants, deployed_vehicles, undeployed_vehicles]
 		)
 	)
+	var attacker_committed: bool = battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
+	var deploy_subrole: String = ""
+	if deployment_controller != null:
+		deploy_subrole = deployment_controller.subrole
+	rows.append(_overlay_row("deploy_subrole=%s  attacker_committed=%s" % [deploy_subrole, attacker_committed]))
+	if attacker_committed:
+		rows.append(_overlay_row("attacker committed; defender placement not implemented"))
+	else:
+		rows.append(_overlay_row("attacker placement active; C commits when all living attackers are placed"))
 	rows.append(_overlay_row("ROSTER"))
 	for participant_id: String in _sorted_keys(battle_state.participants):
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
@@ -478,6 +487,8 @@ func _status_text() -> String:
 
 func _is_roster_selectable(battle_state: BattleState, participant: BattleParticipant) -> bool:
 	if battle_state == null or participant == null:
+		return false
+	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
 		return false
 	if participant.side_id != battle_state.attacker_side_id:
 		return false

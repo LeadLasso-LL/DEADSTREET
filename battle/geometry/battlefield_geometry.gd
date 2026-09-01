@@ -77,6 +77,16 @@ func defender_deployment_contains(point: Vector2) -> bool:
 	return rect_contains_point(defender_deployment_rect, point)
 
 
+func get_movement_blocking_obstacle_id_at(point: Vector2) -> String:
+	for obstacle_id: String in get_sorted_obstacle_ids():
+		var obstacle: BattleObstacle = get_obstacle(obstacle_id)
+		if obstacle == null or not obstacle.blocks_movement:
+			continue
+		if obstacle.contains_point(point):
+			return obstacle_id
+	return ""
+
+
 func bounds() -> Rect2:
 	return Rect2(0.0, 0.0, width, height)
 

@@ -65,6 +65,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if key_event.keycode == KEY_B:
 			_debug_enter_pending_battle()
 			return
+		if key_event.keycode == KEY_C:
+			_route_tactical_deployment_commit()
+			return
 		if key_event.keycode == KEY_ESCAPE:
 			_route_tactical_deployment_escape()
 			return
@@ -107,6 +110,8 @@ func _sync_tactical_deployment_controller(mode: String, tactical_view: TacticalB
 			tactical_deployment_controller = TacticalDeploymentController.new()
 		if tactical_deployment_controller.session != get_current_session():
 			tactical_deployment_controller.bind_session(get_current_session())
+		else:
+			tactical_deployment_controller.sync_from_authority()
 		if tactical_view != null:
 			tactical_view.bind_deployment_controller(tactical_deployment_controller)
 		return
@@ -123,6 +128,14 @@ func _route_tactical_deployment_escape() -> void:
 	if tactical_deployment_controller == null:
 		return
 	tactical_deployment_controller.clear_selection()
+
+
+func _route_tactical_deployment_commit() -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		return
+	if tactical_deployment_controller == null:
+		return
+	tactical_deployment_controller.try_commit_attacker()
 
 
 func _route_tactical_deployment_input(event: InputEvent) -> void:

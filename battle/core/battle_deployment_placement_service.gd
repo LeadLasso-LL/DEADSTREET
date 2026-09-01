@@ -8,8 +8,6 @@ extends RefCounted
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleSide := preload("res://battle/core/battle_side.gd")
-const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
-const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
 
 
@@ -68,6 +66,13 @@ static func place_participant(
 			participant_id,
 			position
 		)
+	if battle_state.is_side_deployment_committed(participant.side_id):
+		return BattleDeploymentPlacementResult.failed(
+			"side_deployment_committed",
+			"Deployment placement failed: side '%s' deployment is already committed." % participant.side_id,
+			participant_id,
+			position
+		)
 	var side: BattleSide = battle_state.get_side(participant.side_id)
 	if side == null or side.deployment_zone_id.is_empty():
 		return BattleDeploymentPlacementResult.failed(
@@ -102,67 +107,47 @@ static func _validate_position(
 	position: Vector2,
 	participant_id: String
 ) -> BattleDeploymentPlacementResult:
-	if not BattlefieldGeometry.is_finite_point(position):
-		return BattleDeploymentPlacementResult.failed(
-			"invalid_position",
-			"Deployment placement failed: position is not finite.",
-			participant_id,
-			position
-		)
-	if battle_state.battlefield_geometry == null or not battle_state.battlefield_geometry.is_valid():
-		return BattleDeploymentPlacementResult.failed(
-			"missing_battlefield_geometry",
-			"Deployment placement failed: battlefield geometry is missing or invalid.",
-			participant_id,
-			position
-		)
-	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	if not geometry.contains_point(position):
-		return BattleDeploymentPlacementResult.failed(
-			"outside_battlefield",
-			"Deployment placement failed: position is outside battlefield bounds.",
-			participant_id,
-			position
-		)
-	if side_id == battle_state.attacker_side_id:
-		if not geometry.attacker_deployment_contains(position):
-			return BattleDeploymentPlacementResult.failed(
-				"outside_deployment_zone",
-				"Deployment placement failed: position is outside the attacker deployment region.",
-				participant_id,
-				position
-			)
-	elif side_id == battle_state.defender_side_id:
-		if not geometry.defender_deployment_contains(position):
-			return BattleDeploymentPlacementResult.failed(
-				"outside_deployment_zone",
-				"Deployment placement failed: position is outside the defender deployment region.",
-				participant_id,
-				position
-			)
-	else:
-		return BattleDeploymentPlacementResult.failed(
-			"unknown_side",
-			"Deployment placement failed: side '%s' is not attacker or defender." % side_id,
-			participant_id,
-			position
-		)
-	var blocking_id: String = _movement_blocking_obstacle_at(geometry, position)
-	if not blocking_id.is_empty():
-		return BattleDeploymentPlacementResult.failed(
-			"inside_blocking_obstacle",
-			"Deployment placement failed: position is inside movement-blocking obstacle '%s'." % blocking_id,
-			participant_id,
-			position
-		)
-	return null
+	# Shared legality lives on BattleState.get_deployment_position_error:
+	# finite point, geometry.contains_point, attacker_deployment_contains,
+	# defender_deployment_contains, and obstacle.blocks_movement.
+	var error_code: String = battle_state.get_deployment_position_error(side_id, position)
+	if error_code.is_empty():
+		return null
+	return BattleDeploymentPlacementResult.failed(
+		error_code,
+		_position_error_message(error_code, side_id, position, battle_state),
+		participant_id,
+		position
+	)
 
 
-static func _movement_blocking_obstacle_at(geometry: BattlefieldGeometry, point: Vector2) -> String:
-	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
-		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
-		if obstacle == null or not obstacle.blocks_movement:
-			continue
-		if obstacle.contains_point(point):
-			return obstacle_id
-	return ""
+static func _position_error_message(
+	error_code: String,
+	side_id: String,
+	position: Vector2,
+	battle_state: BattleState
+) -> String:
+	match error_code:
+		"invalid_position":
+			return "Deployment placement failed: position is not finite."
+		"missing_battlefield_geometry":
+			return "Deployment placement failed: battlefield geometry is missing or invalid."
+		"outside_battlefield":
+			return "Deployment placement failed: position is outside battlefield bounds."
+		"outside_deployment_zone":
+			if side_id == battle_state.attacker_side_id:
+				return "Deployment placement failed: position is outside the attacker deployment region."
+			if side_id == battle_state.defender_side_id:
+				return "Deployment placement failed: position is outside the defender deployment region."
+			return "Deployment placement failed: position is outside the deployment region."
+		"unknown_side":
+			return "Deployment placement failed: side '%s' is not attacker or defender." % side_id
+		"inside_blocking_obstacle":
+			var blocking_id: String = ""
+			if battle_state.battlefield_geometry != null:
+				blocking_id = battle_state.battlefield_geometry.get_movement_blocking_obstacle_id_at(position)
+			if blocking_id.is_empty():
+				return "Deployment placement failed: position is inside a movement-blocking obstacle."
+			return "Deployment placement failed: position is inside movement-blocking obstacle '%s'." % blocking_id
+		_:
+			return "Deployment placement failed: position is not legal (%s)." % error_code

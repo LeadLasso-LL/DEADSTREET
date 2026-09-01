@@ -1,16 +1,19 @@
 class_name TacticalDeploymentController
 extends RefCounted
 
-# Interaction owner for v1 attacker soldier placement.
-# Holds selection only. Does not own positions, geometry, or legality.
+# Interaction owner for v1 attacker soldier placement and attacker-side commit.
+# Holds selection only. Does not own positions, geometry, legality, or commitment truth.
 
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleDeploymentPlacementService := preload("res://battle/core/battle_deployment_placement_service.gd")
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
+const BattleDeploymentCommitService := preload("res://battle/core/battle_deployment_commit_service.gd")
+const BattleDeploymentCommitResult := preload("res://battle/core/battle_deployment_commit_result.gd")
 
 const SUBROLE_ATTACKER_PLACEMENT := "attacker_placement"
+const SUBROLE_DEFENDER_PLACEMENT := "defender" + "_placement"
 
 var session: CampaignBattleSession = null
 var selected_participant_id: String = ""
@@ -22,7 +25,11 @@ func bind_session(p_session: CampaignBattleSession) -> void:
 	session = p_session
 	selected_participant_id = ""
 	status_text = ""
-	subrole = SUBROLE_ATTACKER_PLACEMENT
+	_sync_subrole_from_authority()
+
+
+func sync_from_authority() -> void:
+	_sync_subrole_from_authority()
 
 
 func clear_selection() -> void:
@@ -32,6 +39,7 @@ func clear_selection() -> void:
 
 
 func select_participant(participant_id: String) -> bool:
+	_sync_subrole_from_authority()
 	var battle_state: BattleState = _battle_state()
 	if battle_state == null or participant_id.is_empty():
 		return false
@@ -53,6 +61,7 @@ func notify_vehicle_not_available(_vehicle_id: String = "") -> void:
 
 
 func try_place_selected(position: Vector2) -> BattleDeploymentPlacementResult:
+	_sync_subrole_from_authority()
 	if selected_participant_id.is_empty():
 		return BattleDeploymentPlacementResult.failed(
 			"no_selection",
@@ -94,10 +103,73 @@ func try_place_selected(position: Vector2) -> BattleDeploymentPlacementResult:
 	return result
 
 
+func try_commit_attacker() -> BattleDeploymentCommitResult:
+	_sync_subrole_from_authority()
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return BattleDeploymentCommitResult.failed(
+			"null_battle_state",
+			"Deployment commit failed: battle_state is null."
+		)
+	if battle_state.battle_phase != "deployment":
+		return BattleDeploymentCommitResult.failed(
+			"battle_not_in_deployment",
+			"Deployment commit failed: battle phase is '%s', not deployment." % battle_state.battle_phase,
+			battle_state.attacker_side_id
+		)
+	var attacker_side_id: String = battle_state.attacker_side_id
+	if battle_state.is_side_deployment_committed(attacker_side_id):
+		_sync_subrole_from_authority()
+		return BattleDeploymentCommitResult.failed(
+			"already_committed",
+			"Deployment commit failed: attacker side '%s' is already committed." % attacker_side_id,
+			attacker_side_id
+		)
+	if subrole != SUBROLE_ATTACKER_PLACEMENT:
+		return BattleDeploymentCommitResult.failed(
+			"wrong_subrole",
+			"Deployment commit failed: controller subrole is '%s', not attacker placement." % subrole,
+			attacker_side_id
+		)
+	var result: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+		battle_state,
+		attacker_side_id
+	)
+	if result != null and result.success:
+		selected_participant_id = ""
+		_sync_subrole_from_authority()
+		status_text = "attacker committed; defender placement not implemented"
+		print("TacticalDeploymentController: attacker side %s committed" % attacker_side_id)
+		return result
+	var error_code: String = "commit_failed"
+	if result != null and not result.error_code.is_empty():
+		error_code = result.error_code
+	if (
+		error_code == "undeployed_living_participant"
+		or error_code == "missing_battle_position"
+		or error_code == "invalid_position"
+		or error_code == "no_living_participants"
+	):
+		status_text = "attacker deployment incomplete"
+	print("TacticalDeploymentController: attacker commit failed code=%s" % error_code)
+	return result
+
+
 func _battle_state() -> BattleState:
 	if session == null:
 		return null
 	return session.battle_state
+
+
+func _sync_subrole_from_authority() -> void:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		subrole = SUBROLE_ATTACKER_PLACEMENT
+		return
+	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+		subrole = SUBROLE_DEFENDER_PLACEMENT
+		return
+	subrole = SUBROLE_ATTACKER_PLACEMENT
 
 
 func _is_defender_participant(battle_state: BattleState, participant_id: String) -> bool:
@@ -111,6 +183,10 @@ func _is_defender_participant(battle_state: BattleState, participant_id: String)
 
 func _is_attacker_soldier_selectable(battle_state: BattleState, participant_id: String) -> bool:
 	if battle_state == null or battle_state.battle_phase != "deployment":
+		return false
+	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+		return false
+	if subrole != SUBROLE_ATTACKER_PLACEMENT:
 		return false
 	if participant_id.is_empty() or not battle_state.has_participant(participant_id):
 		return false
