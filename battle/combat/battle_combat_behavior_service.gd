@@ -94,8 +94,9 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 	var shots_executed: int = 0
 	var misses: int = 0
 	var grazes: int = 0
-	var wounds: int = 0
-	var kills: int = 0
+	var hits: int = 0
+	var wounded: int = 0
+	var killed: int = 0
 	var participants_repositioning: int = 0
 	var participants_holding_defend_position: int = 0
 	var wounded_seeking_cover: int = 0
@@ -121,6 +122,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			continue
 		if not _is_positioned(participant):
 			continue
+		_update_acquire_reaction(battle_state, participant)
+		_update_sniper_aim(battle_state, participant)
 		if participant.defend_position:
 			participants_holding_defend_position += 1
 			_clear_owned_combat_navigation(participant)
@@ -133,6 +136,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			var wounded_action: String = _update_wounded_cover_behavior(battle_state, participant)
 			if wounded_action == WOUNDED_HOLD_COVER:
 				wounded_holding_cover += 1
+				_halt_wounded_stand_motion(participant)
 				if execute_autonomous_attacks:
 					var cover_shot: BattleAttackEvent = _try_execute_shot(battle_state, participant)
 					if cover_shot != null:
@@ -144,7 +148,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 				continue
 			if wounded_action == WOUNDED_THREAT_OVERRIDE:
 				wounded_threat_override += 1
-			# Threat override and no-cover fallback use normal fire-then-move.
+			# Threat override and no-cover fallback may fire, hold, or retreat.
+			# They must not approach the hostile. _update_combat_movement enforces that.
 		else:
 			var healthy_action: String = _update_healthy_role_cover_behavior(battle_state, participant)
 			if healthy_action == HEALTHY_HOLD_COVER:
@@ -167,6 +172,8 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			if executed_event != null:
 				attack_events.append(executed_event)
 				_clear_owned_combat_navigation(participant)
+				if participant.is_wounded:
+					_halt_wounded_stand_motion(participant)
 				continue
 		var movement_status: int = _update_combat_movement(battle_state, participant)
 		if movement_status == MOVEMENT_REPOSITIONING:
@@ -194,17 +201,20 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 				misses += 1
 			BattleAttackProfile.OUTCOME_GRAZE:
 				grazes += 1
-			BattleAttackProfile.OUTCOME_WOUND:
-				wounds += 1
-			BattleAttackProfile.OUTCOME_KILL:
-				kills += 1
+			BattleAttackProfile.OUTCOME_HIT:
+				hits += 1
+			BattleAttackProfile.OUTCOME_WOUNDED:
+				wounded += 1
+			BattleAttackProfile.OUTCOME_KILLED:
+				killed += 1
 	return BattleCombatBehaviorResult.succeeded(
 		participants_considered,
 		shots_executed,
 		misses,
 		grazes,
-		wounds,
-		kills,
+		hits,
+		wounded,
+		killed,
 		participants_repositioning,
 		participants_holding_defend_position,
 		attack_events,
@@ -219,6 +229,85 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		force_command_focus_right,
 		force_command_fall_back,
 		pressure_aggression_suppressed
+	)
+
+
+static func _update_acquire_reaction(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> void:
+	if participant == null:
+		return
+	if not participant.has_target_participant or participant.target_participant_id.is_empty():
+		_clear_acquire_reaction(participant)
+		return
+	if not battle_state.has_participant(participant.target_participant_id):
+		_clear_acquire_reaction(participant)
+		return
+	var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
+	if not BattleFireControlService.is_spatial_fire_engagement(battle_state, participant, target):
+		_clear_acquire_reaction(participant)
+		return
+	var engaged_target_id: String = target.participant_id
+	if participant.acquire_reaction_target_id == engaged_target_id:
+		if participant.has_wound_reaction():
+			participant.acquire_reaction_remaining_seconds = 0.0
+		return
+	participant.acquire_reaction_target_id = engaged_target_id
+	if participant.has_wound_reaction():
+		participant.acquire_reaction_remaining_seconds = 0.0
+		return
+	participant.acquire_reaction_remaining_seconds = (
+		BattleCombatBehaviorCatalog.HEALTHY_FIRST_SHOT_REACTION_SECONDS
+	)
+
+
+static func _clear_acquire_reaction(participant: BattleParticipant) -> void:
+	if participant == null:
+		return
+	participant.acquire_reaction_remaining_seconds = 0.0
+	participant.acquire_reaction_target_id = ""
+
+
+static func _update_sniper_aim(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> void:
+	if participant == null:
+		return
+	if _participant_weapon_type_id(participant) != BattleWeaponCatalog.WEAPON_SNIPER:
+		return
+	if not participant.has_target_participant or participant.target_participant_id.is_empty():
+		participant.sniper_aim_engagement_active = false
+		return
+	if not battle_state.has_participant(participant.target_participant_id):
+		participant.sniper_aim_engagement_active = false
+		return
+	var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
+	if not BattleFireControlService.is_spatial_fire_engagement(battle_state, participant, target):
+		participant.sniper_aim_engagement_active = false
+		return
+	var engaged_target_id: String = target.participant_id
+	if (
+		participant.sniper_aim_engagement_active
+		and participant.sniper_aim_target_id == engaged_target_id
+	):
+		if participant.has_wound_reaction():
+			participant.sniper_aim_remaining_seconds = 0.0
+		return
+	var is_initial_aim: bool = participant.sniper_aim_target_id.is_empty()
+	participant.sniper_aim_target_id = engaged_target_id
+	participant.sniper_aim_engagement_active = true
+	if participant.has_wound_reaction():
+		participant.sniper_aim_remaining_seconds = 0.0
+		return
+	if is_initial_aim:
+		participant.sniper_aim_remaining_seconds = (
+			BattleCombatBehaviorCatalog.SNIPER_INITIAL_AIM_SECONDS
+		)
+		return
+	participant.sniper_aim_remaining_seconds = (
+		BattleCombatBehaviorCatalog.SNIPER_TARGET_CHANGE_REACQUIRE_SECONDS
 	)
 
 
@@ -241,6 +330,10 @@ static func _try_execute_shot(
 		participant.target_participant_id
 	)
 	if eligibility == null or not eligibility.success or not eligibility.can_fire:
+		return null
+	if participant.has_acquire_reaction():
+		return null
+	if participant.has_sniper_aim():
 		return null
 	var combat_random: BattleCombatRandom = battle_state.combat_random
 	if combat_random == null:
@@ -827,6 +920,11 @@ static func _update_combat_movement(
 	if _has_external_navigation(participant):
 		return MOVEMENT_NONE
 	var move_mode: String = _desired_move_mode(battle_state, participant, target)
+	# Wounded threat-override / no-cover fallback reuse this mover, but must never
+	# walk toward the hostile. Too-close still uses existing retreat. Far-side of
+	# the preferred band, max-range, and LOS blocks hold instead of approaching.
+	if participant.is_wounded and move_mode == MOVE_APPROACH:
+		move_mode = MOVE_HOLD
 	var hold_constrained: bool = false
 	var push_pressure: bool = false
 	var focus_bias_applied: bool = false
@@ -840,6 +938,8 @@ static func _update_combat_movement(
 		move_mode = MOVE_FALL_BACK
 	if move_mode == MOVE_HOLD:
 		_clear_owned_combat_navigation(participant)
+		if participant.is_wounded:
+			_halt_wounded_stand_motion(participant)
 		if hold_constrained:
 			return MOVEMENT_HOLD_CONSTRAINED
 		return MOVEMENT_NONE
@@ -1472,6 +1572,13 @@ static func _is_valid_navigation_destination(battle_state: BattleState, point: V
 		if obstacle.contains_point(point):
 			return false
 	return true
+
+
+static func _halt_wounded_stand_motion(participant: BattleParticipant) -> void:
+	if participant == null:
+		return
+	participant.clear_movement_intent()
+	participant.velocity = Vector2.ZERO
 
 
 static func _has_external_navigation(participant: BattleParticipant) -> bool:

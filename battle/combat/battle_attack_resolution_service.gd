@@ -10,12 +10,15 @@ const BattleFireControlResult := preload("res://battle/combat/battle_fire_contro
 const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
 const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
 const BattleAttackResult := preload("res://battle/combat/battle_attack_result.gd")
-const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
 const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
 const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
 const BattleCoverCombatEffectService := preload("res://battle/combat/battle_cover_combat_effect_service.gd")
 const BattleCoverCombatEffectResult := preload("res://battle/combat/battle_cover_combat_effect_result.gd")
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
+const BattleCombatConsequenceService := preload("res://battle/combat/battle_combat_consequence_service.gd")
+const BattleCombatConsequenceResult := preload("res://battle/combat/battle_combat_consequence_result.gd")
+const BattleShotgunRangeFalloffService := preload("res://battle/combat/battle_shotgun_range_falloff_service.gd")
+const BattleShotgunRangeFalloffResult := preload("res://battle/combat/battle_shotgun_range_falloff_result.gd")
 
 
 static func resolve_attack(
@@ -98,7 +101,17 @@ static func resolve_attack(
 			"invalid_weapon_state",
 			"Battle attack resolution failed: weapon definition is missing."
 		)
-	var profile: BattleAttackProfile = BattleAttackProfile.current()
+	var profile: BattleAttackProfile = definition.attack_profile()
+	var shotgun_falloff: BattleShotgunRangeFalloffResult = null
+	if source.has_battle_position and target.has_battle_position:
+		shotgun_falloff = BattleShotgunRangeFalloffService.apply(
+			definition,
+			source.battle_position.distance_to(target.battle_position)
+		)
+	else:
+		shotgun_falloff = BattleShotgunRangeFalloffService.apply(definition, 0.0)
+	if shotgun_falloff != null:
+		profile = shotgun_falloff.attack_profile()
 	if profile == null or not profile.is_valid():
 		return BattleAttackResult.failed(
 			"invalid_attack_profile",
@@ -119,12 +132,17 @@ static func resolve_attack(
 	var resolved_roll: float = outcome_roll
 	if cover_effect != null:
 		resolved_roll = cover_effect.post_cover_roll
-	var outcome: String = profile.resolve_outcome(resolved_roll)
-	if outcome.is_empty():
+	var hit_quality: String = profile.resolve_hit_quality(resolved_roll)
+	if hit_quality.is_empty():
 		return BattleAttackResult.failed(
 			"invalid_attack_profile",
-			"Battle attack resolution failed: outcome could not be resolved."
+			"Battle attack resolution failed: hit quality could not be resolved."
 		)
+	var trauma_applied: float = definition.trauma_for_hit_quality(hit_quality)
+	if shotgun_falloff != null:
+		trauma_applied = shotgun_falloff.trauma_for_hit_quality(hit_quality)
+	if not is_finite(trauma_applied) or trauma_applied < 0.0:
+		trauma_applied = 0.0
 	var fire_rate_multiplier: float = 1.0
 	if source.is_wounded:
 		fire_rate_multiplier = BattleCombatBehaviorCatalog.WOUNDED_FIRE_RATE_MULTIPLIER
@@ -135,7 +153,23 @@ static func resolve_attack(
 			"shot_commit_failed",
 			"Battle attack resolution failed: weapon cycling could not be committed."
 		)
-	_apply_outcome(battle_state, target, outcome)
+	var consequence: BattleCombatConsequenceResult = BattleCombatConsequenceService.apply_trauma(
+		battle_state,
+		target,
+		trauma_applied
+	)
+	if consequence == null or not consequence.success:
+		return BattleAttackResult.failed(
+			"consequence_failed",
+			"Battle attack resolution failed: trauma consequence could not be applied."
+		)
+	var outcome: String = BattleAttackProfile.derive_presentation_outcome(
+		hit_quality,
+		target_was_alive,
+		target.is_alive,
+		target_was_wounded,
+		target.is_wounded
+	)
 	var attack_event: BattleAttackEvent = BattleAttackEvent.new(
 		source.participant_id,
 		target.participant_id,
@@ -147,6 +181,8 @@ static func resolve_attack(
 		target_was_alive,
 		target.is_alive
 	)
+	attack_event.hit_quality = hit_quality
+	attack_event.trauma_applied = trauma_applied
 	attack_event.elapsed_time_seconds = battle_state.elapsed_time_seconds
 	if source.has_battle_position:
 		attack_event.source_position = source.battle_position
@@ -156,26 +192,3 @@ static func resolve_attack(
 		attack_event.has_target_position = true
 	battle_state.record_combat_feedback_event(attack_event)
 	return BattleAttackResult.executed(attack_event)
-
-
-static func _apply_outcome(
-	battle_state: BattleState,
-	target: BattleParticipant,
-	outcome: String
-) -> void:
-	if target == null:
-		return
-	match outcome:
-		BattleAttackProfile.OUTCOME_WOUND:
-			var newly_wounded: bool = not target.is_wounded
-			target.is_wounded = true
-			if newly_wounded:
-				target.wound_reaction_remaining_seconds = (
-					BattleCombatBehaviorCatalog.WOUNDED_REACTION_DELAY_SECONDS
-				)
-		BattleAttackProfile.OUTCOME_KILL:
-			target.is_alive = false
-			target.wound_reaction_remaining_seconds = 0.0
-			BattleCoverService.release_all_for_participant(battle_state, target.participant_id)
-		_:
-			pass

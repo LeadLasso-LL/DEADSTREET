@@ -16,6 +16,7 @@ var weapon_type: String = ""
 var weapon_state: BattleWeaponState = null
 var is_alive: bool = true
 var is_wounded: bool = false
+var vitality: float = 1.0
 var deployment_slot_id: String = ""
 var has_battle_position: bool = false
 var battle_position: Vector2 = Vector2.ZERO
@@ -39,6 +40,11 @@ var combat_move_target_id: String = ""
 var reserved_cover_slot_id: String = ""
 var occupied_cover_slot_id: String = ""
 var wound_reaction_remaining_seconds: float = 0.0
+var acquire_reaction_remaining_seconds: float = 0.0
+var acquire_reaction_target_id: String = ""
+var sniper_aim_remaining_seconds: float = 0.0
+var sniper_aim_target_id: String = ""
+var sniper_aim_engagement_active: bool = false
 
 
 func _init(
@@ -60,6 +66,9 @@ func _init(
 	weapon_state = BattleWeaponCatalog.create_initial_state(p_weapon_type)
 	is_alive = p_is_alive
 	is_wounded = p_is_wounded
+	vitality = 1.0
+	if not p_is_alive:
+		vitality = 0.0
 	deployment_slot_id = p_deployment_slot_id
 	tactical_force_id = p_tactical_force_id
 
@@ -208,3 +217,11 @@ func has_occupied_cover_slot() -> bool:
 
 func has_wound_reaction() -> bool:
 	return is_finite(wound_reaction_remaining_seconds) and wound_reaction_remaining_seconds > 0.0
+
+
+func has_acquire_reaction() -> bool:
+	return is_finite(acquire_reaction_remaining_seconds) and acquire_reaction_remaining_seconds > 0.0
+
+
+func has_sniper_aim() -> bool:
+	return is_finite(sniper_aim_remaining_seconds) and sniper_aim_remaining_seconds > 0.0

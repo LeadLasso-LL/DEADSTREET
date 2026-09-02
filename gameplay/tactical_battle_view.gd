@@ -34,6 +34,10 @@ const VEHICLE_FRONT_MARK := 6.0
 const SHOT_FEEDBACK_SECONDS := 0.45
 const MUZZLE_RADIUS := 5.0
 const IMPACT_RADIUS := 6.5
+# Presentation-only. Opposite-direction tracers on the same segment sit on
+# opposite sides of the true shot axis. Does not mutate event positions.
+const TRACER_PAIR_OFFSET_PIXELS := 4.0
+const MISS_ENDPOINT_RADIUS := 3.0
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
 const PROVISIONAL_BACKGROUND := Color(0.10, 0.10, 0.11, 1.0)
@@ -64,9 +68,13 @@ const PROVISIONAL_STATUS := Color(0.95, 0.78, 0.42, 1.0)
 const PROVISIONAL_VEHICLE_FILL := Color(0.94, 0.78, 0.18, 1.0)
 const PROVISIONAL_VEHICLE_OUTLINE := Color(0.08, 0.07, 0.05, 1.0)
 const PROVISIONAL_VEHICLE_FACING := Color(0.08, 0.07, 0.05, 1.0)
-const PROVISIONAL_MUZZLE := Color(1.0, 0.92, 0.42, 1.0)
+const PROVISIONAL_MUZZLE := Color(1.0, 0.96, 0.72, 1.0)
+const PROVISIONAL_MUZZLE_CORE := Color(1.0, 1.0, 0.94, 1.0)
+const PROVISIONAL_MUZZLE_RING := Color(0.08, 0.06, 0.04, 1.0)
 const PROVISIONAL_TRACER := Color(1.0, 0.84, 0.28, 1.0)
+const PROVISIONAL_MISS_ENDPOINT := Color(0.76, 0.74, 0.68, 1.0)
 const PROVISIONAL_GRAZE_IMPACT := Color(0.95, 0.82, 0.38, 1.0)
+const PROVISIONAL_HIT_IMPACT := Color(0.95, 0.58, 0.22, 1.0)
 const PROVISIONAL_WOUND_IMPACT := Color(0.92, 0.38, 0.22, 1.0)
 const PROVISIONAL_KILL_MARK := Color(0.92, 0.16, 0.14, 1.0)
 const PROVISIONAL_RESULT := Color(0.98, 0.92, 0.42, 1.0)
@@ -615,19 +623,42 @@ func _draw_combat_feedback(battle_state: BattleState) -> void:
 		var target_pos: Vector2 = _event_target_view(battle_state, event)
 		if source_pos == Vector2.INF or target_pos == Vector2.INF:
 			continue
-		draw_circle(source_pos, MUZZLE_RADIUS, PROVISIONAL_MUZZLE, true)
-		draw_line(source_pos, target_pos, PROVISIONAL_TRACER, 2.5, true)
+		var offset: Vector2 = _combat_feedback_offset(source_pos, target_pos)
+		var draw_source: Vector2 = source_pos + offset
+		var draw_target: Vector2 = target_pos + offset
+		_draw_shot_origin(draw_source)
+		draw_line(draw_source, draw_target, PROVISIONAL_TRACER, 2.5, true)
 		match event.outcome:
+			BattleAttackProfile.OUTCOME_MISS:
+				draw_circle(draw_target, MISS_ENDPOINT_RADIUS, PROVISIONAL_MISS_ENDPOINT, false, 1.0, true)
 			BattleAttackProfile.OUTCOME_GRAZE:
-				draw_circle(target_pos, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 2.0, true)
-			BattleAttackProfile.OUTCOME_WOUND:
-				draw_circle(target_pos, IMPACT_RADIUS + 1.5, PROVISIONAL_WOUND_IMPACT, false, 2.5, true)
-				_draw_label(target_pos + Vector2(14.0, -8.0), "WND", 11)
-			BattleAttackProfile.OUTCOME_KILL:
-				_draw_dead_mark(target_pos, PROVISIONAL_KILL_MARK)
-				_draw_label(target_pos + Vector2(16.0, -8.0), "DEAD", 12)
+				draw_circle(draw_target, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 2.0, true)
+			BattleAttackProfile.OUTCOME_HIT:
+				draw_circle(draw_target, IMPACT_RADIUS, PROVISIONAL_HIT_IMPACT, false, 2.2, true)
+			BattleAttackProfile.OUTCOME_WOUNDED:
+				draw_circle(draw_target, IMPACT_RADIUS + 1.5, PROVISIONAL_WOUND_IMPACT, false, 2.5, true)
+				_draw_label(draw_target + Vector2(14.0, -8.0), "WND", 11)
+			BattleAttackProfile.OUTCOME_KILLED:
+				_draw_dead_mark(draw_target, PROVISIONAL_KILL_MARK)
+				_draw_label(draw_target + Vector2(16.0, -8.0), "DEAD", 12)
 			_:
 				pass
+
+
+func _draw_shot_origin(view_pos: Vector2) -> void:
+	draw_circle(view_pos, MUZZLE_RADIUS + 1.6, PROVISIONAL_MUZZLE_RING, false, 1.6, true)
+	draw_circle(view_pos, MUZZLE_RADIUS, PROVISIONAL_MUZZLE, true)
+	draw_circle(view_pos, MUZZLE_RADIUS * 0.42, PROVISIONAL_MUZZLE_CORE, true)
+
+
+func _combat_feedback_offset(source_view: Vector2, target_view: Vector2) -> Vector2:
+	var along: Vector2 = target_view - source_view
+	if not is_finite(along.x) or not is_finite(along.y) or along.is_equal_approx(Vector2.ZERO):
+		return Vector2.ZERO
+	var perp: Vector2 = Vector2(-along.y, along.x)
+	if perp.is_equal_approx(Vector2.ZERO):
+		return Vector2.ZERO
+	return perp.normalized() * TRACER_PAIR_OFFSET_PIXELS
 
 
 func _combat_event_visible(
@@ -715,7 +746,7 @@ func _result_casualty_line(battle_state: BattleState) -> String:
 	for event: BattleAttackEvent in battle_state.combat_feedback_events:
 		if event == null:
 			continue
-		if event.outcome == BattleAttackProfile.OUTCOME_KILL:
+		if event.outcome == BattleAttackProfile.OUTCOME_KILLED:
 			last_kill = event
 	if last_kill != null and not last_kill.target_participant_id.is_empty():
 		return "%s killed" % last_kill.target_participant_id

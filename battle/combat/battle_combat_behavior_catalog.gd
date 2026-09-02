@@ -30,6 +30,18 @@ const WOUNDED_FIRE_RATE_MULTIPLIER := 0.70
 const WOUNDED_ACCURACY_MULTIPLIER := 0.70
 const WOUNDED_REACTION_DELAY_SECONDS := 0.35
 
+# Provisional healthy first-shot acquisition delay. Not a per-shot cadence.
+# Armed only on a new spatial fire engagement. Wounded reaction is stricter.
+const HEALTHY_FIRST_SHOT_REACTION_SECONDS := 0.25
+
+# Sniper-only battle-local fire gates. Independent of healthy acquire.
+# Initial aim arms on the first valid sniper target in an engagement.
+# Target-change reacquisition arms when the valid sniper target ID changes.
+# Same-target follow-up does not re-arm; cyclic cooldown remains the cadence.
+# The stricter of sniper aim and generic acquire wins.
+const SNIPER_INITIAL_AIM_SECONDS := 1.25
+const SNIPER_TARGET_CHANGE_REACQUIRE_SECONDS := 3.00
+
 # Provisional occupied-cover combat mitigation. Not final balance.
 # At protection_factor 1.0, the pre-cover resolution roll is reduced by this amount.
 # cover_multiplier = 1.0 - (MAX_COVER_ROLL_REDUCTION * protection_factor)
