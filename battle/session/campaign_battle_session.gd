@@ -12,6 +12,9 @@ const SESSION_ACTIVE := "active"
 const SESSION_RESOLVED_PENDING_HANDOFF := "resolved_pending_handoff"
 const SESSION_COMPLETE := "complete"
 
+# Presentation hold after BattleState is resolved. Not tactical simulation time.
+const RESULT_PRESENTATION_HOLD_SECONDS := 3.0
+
 # Reference to campaign authority. Not ownership of campaign registries.
 var game_state: GameState = null
 var mission_id: String = ""
@@ -20,6 +23,8 @@ var battle_state: BattleState = null
 var session_state: String = ""
 var campaign_handoff_applied: bool = false
 var campaign_handoff_blocked_as_draw: bool = false
+var result_presentation_elapsed_seconds: float = 0.0
+var result_presentation_started: bool = false
 
 
 func configure(
@@ -33,6 +38,8 @@ func configure(
 	session_state = SESSION_DEPLOYMENT
 	campaign_handoff_applied = false
 	campaign_handoff_blocked_as_draw = false
+	result_presentation_elapsed_seconds = 0.0
+	result_presentation_started = false
 
 
 func has_battle() -> bool:
@@ -81,25 +88,19 @@ func advance_tactical(delta_seconds: float) -> CampaignBattleSessionResult:
 			"session_complete",
 			"Campaign battle session failed: session is complete."
 		)
-	if campaign_handoff_blocked_as_draw:
-		return _fail_without_mutation(
-			"draw_unsupported",
-			"Campaign battle session failed: tactical draw is unsupported for campaign HQ handoff.",
-			false,
-			BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
-		)
 	if battle_state == null:
 		return _fail_without_mutation(
 			"null_battle_state",
 			"Campaign battle session failed: battle_state is null."
 		)
 	if session_state == SESSION_RESOLVED_PENDING_HANDOFF:
-		if battle_state.battle_phase == "resolved":
-			return _apply_campaign_handoff(false)
+		return _advance_resolved_presentation(delta_seconds)
+	if campaign_handoff_blocked_as_draw:
 		return _fail_without_mutation(
-			"battle_not_active",
-			"Campaign battle session failed: battle phase is '%s', not active."
-			% battle_state.battle_phase
+			"draw_unsupported",
+			"Campaign battle session failed: tactical draw is unsupported for campaign HQ handoff.",
+			false,
+			BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
 		)
 	if session_state != SESSION_ACTIVE or battle_state.battle_phase != "active":
 		return _fail_without_mutation(
@@ -118,8 +119,46 @@ func advance_tactical(delta_seconds: float) -> CampaignBattleSessionResult:
 				error_message = runtime_result.error_message
 		return _fail_without_mutation(error_code, error_message)
 	if battle_state.battle_phase == "resolved":
-		return _apply_campaign_handoff(runtime_result.battle_resolved_this_pass)
+		return _begin_resolved_presentation(runtime_result.battle_resolved_this_pass)
 	return CampaignBattleSessionResult.succeeded(self)
+
+
+func _begin_resolved_presentation(p_battle_resolved_this_call: bool) -> CampaignBattleSessionResult:
+	session_state = SESSION_RESOLVED_PENDING_HANDOFF
+	result_presentation_started = true
+	result_presentation_elapsed_seconds = 0.0
+	return CampaignBattleSessionResult.succeeded(self, p_battle_resolved_this_call, false, "")
+
+
+func _advance_resolved_presentation(delta_seconds: float) -> CampaignBattleSessionResult:
+	if campaign_handoff_applied:
+		return CampaignBattleSessionResult.succeeded(
+			self,
+			false,
+			false,
+			BattleCampaignOutcomeBridgeResult.OUTCOME_ALREADY_APPLIED
+		)
+	if campaign_handoff_blocked_as_draw:
+		return CampaignBattleSessionResult.succeeded(
+			self,
+			false,
+			false,
+			BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		)
+	if battle_state.battle_phase != "resolved":
+		return _fail_without_mutation(
+			"battle_not_active",
+			"Campaign battle session failed: battle phase is '%s', not active."
+			% battle_state.battle_phase
+		)
+	if not result_presentation_started:
+		result_presentation_started = true
+		result_presentation_elapsed_seconds = 0.0
+	if is_finite(delta_seconds) and delta_seconds > 0.0:
+		result_presentation_elapsed_seconds += delta_seconds
+	if result_presentation_elapsed_seconds < RESULT_PRESENTATION_HOLD_SECONDS:
+		return CampaignBattleSessionResult.succeeded(self, false, false, "")
+	return _apply_campaign_handoff(false)
 
 
 func _apply_campaign_handoff(p_battle_resolved_this_call: bool) -> CampaignBattleSessionResult:

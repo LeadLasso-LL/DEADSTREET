@@ -13,6 +13,9 @@ const BattleCombatPressureSnapshot := preload("res://battle/combat/battle_combat
 const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
 const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
+
+const COMBAT_FEEDBACK_HISTORY_LIMIT := 12
 
 var battle_id: String = ""
 var battle_type_id: String = ""
@@ -34,6 +37,8 @@ var combat_random: BattleCombatRandom = null
 var combat_pressure_snapshots: Dictionary[String, BattleCombatPressureSnapshot] = {}
 var tactical_result: BattleVictoryResult = null
 var requires_deployment_commitments: bool = false
+var combat_feedback_events: Array[BattleAttackEvent] = []
+var combat_feedback_next_sequence: int = 1
 
 
 func _init(
@@ -197,6 +202,18 @@ func get_result_kind() -> String:
 	if tactical_result == null or not tactical_result.resolved:
 		return ""
 	return tactical_result.result_kind
+
+
+func record_combat_feedback_event(event: BattleAttackEvent) -> void:
+	if event == null:
+		return
+	event.sequence_id = combat_feedback_next_sequence
+	combat_feedback_next_sequence += 1
+	if not is_finite(event.elapsed_time_seconds) or event.elapsed_time_seconds < 0.0:
+		event.elapsed_time_seconds = elapsed_time_seconds
+	combat_feedback_events.append(event)
+	while combat_feedback_events.size() > COMBAT_FEEDBACK_HISTORY_LIMIT:
+		combat_feedback_events.remove_at(0)
 
 
 func get_sorted_side_ids() -> Array[String]:

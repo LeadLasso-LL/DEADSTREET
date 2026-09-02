@@ -147,6 +147,14 @@ static func resolve_attack(
 		target_was_alive,
 		target.is_alive
 	)
+	attack_event.elapsed_time_seconds = battle_state.elapsed_time_seconds
+	if source.has_battle_position:
+		attack_event.source_position = source.battle_position
+		attack_event.has_source_position = true
+	if target.has_battle_position:
+		attack_event.target_position = target.battle_position
+		attack_event.has_target_position = true
+	battle_state.record_combat_feedback_event(attack_event)
 	return BattleAttackResult.executed(attack_event)
 
 

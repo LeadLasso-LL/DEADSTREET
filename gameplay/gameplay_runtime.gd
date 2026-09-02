@@ -46,7 +46,11 @@ func _process(delta: float) -> void:
 	_log_mode_if_changed()
 	if game_flow_controller == null:
 		return
-	if game_flow_controller.get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+	var mode: String = game_flow_controller.get_current_mode()
+	if (
+		mode != GameFlowController.MODE_TACTICAL_ACTIVE
+		and mode != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+	):
 		return
 	game_flow_controller.advance_tactical(delta)
 	_log_mode_if_changed()

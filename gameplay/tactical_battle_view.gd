@@ -17,6 +17,9 @@ const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
 const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
+const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
+const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 
 const TACTICAL_PIXELS_PER_UNIT := 8.0
 const CAMERA_PADDING := 96.0
@@ -28,6 +31,9 @@ const ROSTER_FONT_SIZE := 13
 const ROSTER_CAMERA_GUTTER_PAD := 24.0
 const VEHICLE_OUTLINE_WIDTH := 3.5
 const VEHICLE_FRONT_MARK := 6.0
+const SHOT_FEEDBACK_SECONDS := 0.45
+const MUZZLE_RADIUS := 5.0
+const IMPACT_RADIUS := 6.5
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
 const PROVISIONAL_BACKGROUND := Color(0.10, 0.10, 0.11, 1.0)
@@ -58,6 +64,12 @@ const PROVISIONAL_STATUS := Color(0.95, 0.78, 0.42, 1.0)
 const PROVISIONAL_VEHICLE_FILL := Color(0.94, 0.78, 0.18, 1.0)
 const PROVISIONAL_VEHICLE_OUTLINE := Color(0.08, 0.07, 0.05, 1.0)
 const PROVISIONAL_VEHICLE_FACING := Color(0.08, 0.07, 0.05, 1.0)
+const PROVISIONAL_MUZZLE := Color(1.0, 0.92, 0.42, 1.0)
+const PROVISIONAL_TRACER := Color(1.0, 0.84, 0.28, 1.0)
+const PROVISIONAL_GRAZE_IMPACT := Color(0.95, 0.82, 0.38, 1.0)
+const PROVISIONAL_WOUND_IMPACT := Color(0.92, 0.38, 0.22, 1.0)
+const PROVISIONAL_KILL_MARK := Color(0.92, 0.16, 0.14, 1.0)
+const PROVISIONAL_RESULT := Color(0.98, 0.92, 0.42, 1.0)
 
 # Reference only. This view never stores an independent BattleState.
 var session: CampaignBattleSession = null
@@ -173,6 +185,7 @@ func _draw() -> void:
 	_draw_cover(battle_state)
 	_draw_vehicles(battle_state)
 	_draw_participants(battle_state)
+	_draw_combat_feedback(battle_state)
 	_draw_overlay()
 
 
@@ -321,7 +334,9 @@ func _draw_participants(battle_state: BattleState) -> void:
 		if participant.is_wounded and participant.is_alive:
 			fill = PROVISIONAL_WOUNDED
 		if not participant.is_alive:
-			draw_circle(view_pos, PARTICIPANT_RADIUS, PROVISIONAL_DEAD, false, 2.0, true)
+			draw_circle(view_pos, PARTICIPANT_RADIUS, PROVISIONAL_DEAD, true)
+			draw_circle(view_pos, PARTICIPANT_RADIUS, Color(0.12, 0.12, 0.13, 1.0), false, 1.5, true)
+			_draw_dead_mark(view_pos, PROVISIONAL_KILL_MARK)
 		else:
 			draw_circle(view_pos, PARTICIPANT_RADIUS, fill, true)
 			draw_circle(view_pos, PARTICIPANT_RADIUS, Color(0.08, 0.08, 0.09, 1.0), false, 1.5, true)
@@ -331,6 +346,10 @@ func _draw_participants(battle_state: BattleState) -> void:
 		_draw_label(view_pos + Vector2(0.0, -PARTICIPANT_RADIUS - 12.0), participant.participant_id, 11)
 		if not weapon_abbrev.is_empty():
 			_draw_label(view_pos + Vector2(0.0, PARTICIPANT_RADIUS + 12.0), weapon_abbrev, 10)
+		if not participant.is_alive:
+			_draw_label(view_pos + Vector2(0.0, PARTICIPANT_RADIUS + 24.0), "DEAD", 11)
+		elif participant.is_wounded:
+			_draw_label(view_pos + Vector2(0.0, PARTICIPANT_RADIUS + 24.0), "WND", 11)
 
 
 func _draw_vehicles(battle_state: BattleState) -> void:
@@ -388,8 +407,10 @@ func _draw_overlay() -> void:
 		if kind == "participant" and row_id == selected_id and not selected_id.is_empty():
 			draw_rect(row_rect, PROVISIONAL_SELECTED, true)
 		var color: Color = PROVISIONAL_OVERLAY
-		if kind == "status":
+		if kind == "status" or kind == "result":
 			color = PROVISIONAL_STATUS
+		if kind == "result":
+			color = PROVISIONAL_RESULT
 		elif kind == "participant" and bool(row.get("selectable", false)):
 			color = PROVISIONAL_SELECTABLE
 		_draw_overlay_row_label(row_rect, text, ROSTER_FONT_SIZE, color)
@@ -454,7 +475,14 @@ func _overlay_rows() -> Array[Dictionary]:
 			% [deploy_subrole, attacker_committed, defender_committed]
 		)
 	)
-	if battle_state.battle_phase == "active":
+	if _is_resolved_presentation(battle_state):
+		var result_text: String = _result_banner_text(battle_state)
+		if not result_text.is_empty():
+			rows.append(_overlay_result_row(result_text))
+		var casualty_line: String = _result_casualty_line(battle_state)
+		if not casualty_line.is_empty():
+			rows.append(_overlay_row(casualty_line))
+	elif battle_state.battle_phase == "active":
 		rows.append(_overlay_status_row("BATTLE ACTIVE"))
 	elif not attacker_committed:
 		rows.append(_overlay_row("attacker placement active; C commits when all living attackers are placed"))
@@ -498,12 +526,13 @@ func _overlay_rows() -> Array[Dictionary]:
 			prefix = "> P"
 		rows.append(
 			{
-				"text": "%s %s  %s  %s  %s" % [
+				"text": "%s %s  %s  %s  %s%s" % [
 					prefix,
 					participant.participant_id,
 					_side_label(battle_state, participant.side_id),
 					participant.weapon_type,
 					_deployed_label(battle_state.is_participant_deployed(participant_id)),
+					_participant_condition_suffix(participant),
 				],
 				"kind": "participant",
 				"id": participant.participant_id,
@@ -562,6 +591,149 @@ func _overlay_status_row(text: String) -> Dictionary:
 		"id": "",
 		"selectable": false,
 	}
+
+
+func _overlay_result_row(text: String) -> Dictionary:
+	return {
+		"text": text,
+		"kind": "result",
+		"id": "",
+		"selectable": false,
+	}
+
+
+func _draw_combat_feedback(battle_state: BattleState) -> void:
+	if battle_state == null:
+		return
+	var resolved_hold: bool = _is_resolved_presentation(battle_state)
+	for event: BattleAttackEvent in battle_state.combat_feedback_events:
+		if event == null:
+			continue
+		if not _combat_event_visible(battle_state, event, resolved_hold):
+			continue
+		var source_pos: Vector2 = _event_source_view(battle_state, event)
+		var target_pos: Vector2 = _event_target_view(battle_state, event)
+		if source_pos == Vector2.INF or target_pos == Vector2.INF:
+			continue
+		draw_circle(source_pos, MUZZLE_RADIUS, PROVISIONAL_MUZZLE, true)
+		draw_line(source_pos, target_pos, PROVISIONAL_TRACER, 2.5, true)
+		match event.outcome:
+			BattleAttackProfile.OUTCOME_GRAZE:
+				draw_circle(target_pos, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 2.0, true)
+			BattleAttackProfile.OUTCOME_WOUND:
+				draw_circle(target_pos, IMPACT_RADIUS + 1.5, PROVISIONAL_WOUND_IMPACT, false, 2.5, true)
+				_draw_label(target_pos + Vector2(14.0, -8.0), "WND", 11)
+			BattleAttackProfile.OUTCOME_KILL:
+				_draw_dead_mark(target_pos, PROVISIONAL_KILL_MARK)
+				_draw_label(target_pos + Vector2(16.0, -8.0), "DEAD", 12)
+			_:
+				pass
+
+
+func _combat_event_visible(
+	battle_state: BattleState,
+	event: BattleAttackEvent,
+	resolved_hold: bool
+) -> bool:
+	if event == null or battle_state == null:
+		return false
+	if resolved_hold:
+		return true
+	var age: float = battle_state.elapsed_time_seconds - event.elapsed_time_seconds
+	if not is_finite(age):
+		return false
+	return age <= SHOT_FEEDBACK_SECONDS
+
+
+func _event_source_view(battle_state: BattleState, event: BattleAttackEvent) -> Vector2:
+	if event != null and event.has_source_position:
+		return _to_view(event.source_position)
+	if battle_state == null or event == null:
+		return Vector2.INF
+	var source: BattleParticipant = battle_state.get_participant(event.source_participant_id)
+	if source == null or not source.has_battle_position:
+		return Vector2.INF
+	return _to_view(source.battle_position)
+
+
+func _event_target_view(battle_state: BattleState, event: BattleAttackEvent) -> Vector2:
+	if event != null and event.has_target_position:
+		return _to_view(event.target_position)
+	if battle_state == null or event == null:
+		return Vector2.INF
+	var target: BattleParticipant = battle_state.get_participant(event.target_participant_id)
+	if target == null or not target.has_battle_position:
+		return Vector2.INF
+	return _to_view(target.battle_position)
+
+
+func _draw_dead_mark(view_pos: Vector2, color: Color) -> void:
+	var mark: float = PARTICIPANT_RADIUS + 3.0
+	draw_line(
+		view_pos + Vector2(-mark, -mark),
+		view_pos + Vector2(mark, mark),
+		color,
+		2.5,
+		true
+	)
+	draw_line(
+		view_pos + Vector2(mark, -mark),
+		view_pos + Vector2(-mark, mark),
+		color,
+		2.5,
+		true
+	)
+
+
+func _is_resolved_presentation(battle_state: BattleState) -> bool:
+	if battle_state != null and battle_state.battle_phase == "resolved":
+		return true
+	if session != null and session.session_state == CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF:
+		return true
+	return false
+
+
+func _result_banner_text(battle_state: BattleState) -> String:
+	if battle_state == null:
+		return "BATTLE RESOLVED"
+	var tactical_result: BattleVictoryResult = battle_state.get_tactical_result()
+	if tactical_result == null or not tactical_result.resolved:
+		return "BATTLE RESOLVED"
+	if tactical_result.result_kind == BattleVictoryResult.RESULT_DRAW:
+		return "DRAW"
+	if tactical_result.winning_side_id == battle_state.attacker_side_id:
+		return "ATTACKER VICTORY"
+	if tactical_result.winning_side_id == battle_state.defender_side_id:
+		return "DEFENDER VICTORY"
+	return "BATTLE RESOLVED"
+
+
+func _result_casualty_line(battle_state: BattleState) -> String:
+	if battle_state == null:
+		return ""
+	var last_kill: BattleAttackEvent = null
+	for event: BattleAttackEvent in battle_state.combat_feedback_events:
+		if event == null:
+			continue
+		if event.outcome == BattleAttackProfile.OUTCOME_KILL:
+			last_kill = event
+	if last_kill != null and not last_kill.target_participant_id.is_empty():
+		return "%s killed" % last_kill.target_participant_id
+	for participant_id: String in _sorted_keys(battle_state.participants):
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null and not participant.is_alive:
+			return "%s killed" % participant.participant_id
+	return ""
+
+
+func _participant_condition_suffix(participant: BattleParticipant) -> String:
+	if participant == null:
+		return ""
+	if not participant.is_alive:
+		return "  DEAD"
+	if participant.is_wounded:
+		return "  WND"
+	return ""
 
 
 func _selected_participant_id() -> String:

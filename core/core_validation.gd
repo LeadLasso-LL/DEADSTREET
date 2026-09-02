@@ -16159,6 +16159,21 @@ static func run() -> Dictionary:
 	var battle_push_cover_wounded_ok: bool = _battle_push_cover_wounded_ok()
 	var battle_push_cover_external_nav_ok: bool = _battle_push_cover_external_nav_ok()
 	var battle_push_cover_vehicle_generic_ok: bool = _battle_push_cover_vehicle_generic_ok()
+	var combat_feedback_event_ok: bool = _combat_feedback_event_ok()
+	var combat_feedback_bounded_ok: bool = _combat_feedback_bounded_ok()
+	var combat_feedback_no_rng_ok: bool = _combat_feedback_no_rng_ok()
+	var combat_feedback_outcomes_ok: bool = _combat_feedback_outcomes_ok()
+	var combat_feedback_dead_retention_ok: bool = _combat_feedback_dead_retention_ok()
+	var combat_feedback_wounded_ok: bool = _combat_feedback_wounded_ok()
+	var combat_feedback_terminal_freeze_ok: bool = _combat_feedback_terminal_freeze_ok()
+	var combat_feedback_hold_ok: bool = _combat_feedback_hold_ok()
+	var combat_feedback_bridge_once_ok: bool = _combat_feedback_bridge_once_ok()
+	var combat_feedback_final_state_ok: bool = _combat_feedback_final_state_ok()
+	var combat_feedback_result_data_ok: bool = _combat_feedback_result_data_ok()
+	var combat_feedback_view_visibility_ok: bool = _combat_feedback_view_visibility_ok()
+	var combat_feedback_campaign_isolation_ok: bool = _combat_feedback_campaign_isolation_ok()
+	var combat_feedback_vehicle_ok: bool = _combat_feedback_vehicle_ok()
+	var combat_feedback_gameflow_ok: bool = _combat_feedback_gameflow_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18127,6 +18142,21 @@ static func run() -> Dictionary:
 		"battle_push_cover_wounded_ok": battle_push_cover_wounded_ok,
 		"battle_push_cover_external_nav_ok": battle_push_cover_external_nav_ok,
 		"battle_push_cover_vehicle_generic_ok": battle_push_cover_vehicle_generic_ok,
+		"combat_feedback_event_ok": combat_feedback_event_ok,
+		"combat_feedback_bounded_ok": combat_feedback_bounded_ok,
+		"combat_feedback_no_rng_ok": combat_feedback_no_rng_ok,
+		"combat_feedback_outcomes_ok": combat_feedback_outcomes_ok,
+		"combat_feedback_dead_retention_ok": combat_feedback_dead_retention_ok,
+		"combat_feedback_wounded_ok": combat_feedback_wounded_ok,
+		"combat_feedback_terminal_freeze_ok": combat_feedback_terminal_freeze_ok,
+		"combat_feedback_hold_ok": combat_feedback_hold_ok,
+		"combat_feedback_bridge_once_ok": combat_feedback_bridge_once_ok,
+		"combat_feedback_final_state_ok": combat_feedback_final_state_ok,
+		"combat_feedback_result_data_ok": combat_feedback_result_data_ok,
+		"combat_feedback_view_visibility_ok": combat_feedback_view_visibility_ok,
+		"combat_feedback_campaign_isolation_ok": combat_feedback_campaign_isolation_ok,
+		"combat_feedback_vehicle_ok": combat_feedback_vehicle_ok,
+		"combat_feedback_gameflow_ok": combat_feedback_gameflow_ok,
 	}
 
 	var passed := true
@@ -46219,6 +46249,18 @@ static func _battlesession_tactical_unchanged(
 	return true
 
 
+static func _battlesession_ammo_unchanged(battle_state: BattleState, ammo: Dictionary) -> bool:
+	var now_ammo: Dictionary = _battlesession_ammo_snap(battle_state)
+	if now_ammo.size() != ammo.size():
+		return false
+	for participant_id: Variant in ammo:
+		if not now_ammo.has(str(participant_id)):
+			return false
+		if int(now_ammo[str(participant_id)]) != int(ammo[participant_id]):
+			return false
+	return true
+
+
 static func _battlesession_create_rejected(
 	game_state: GameState,
 	mission_id: String,
@@ -46274,6 +46316,48 @@ static func _battlesession_resolve_via_session(
 	if kill_defender and not _battlesession_kill_side(session.battle_state, session.battle_state.defender_side_id):
 		return null
 	return session.advance_tactical(0.1)
+
+
+static func _presentation_hold_seconds() -> float:
+	return CampaignBattleSession.RESULT_PRESENTATION_HOLD_SECONDS
+
+
+static func _presentation_hold_under_seconds() -> float:
+	var hold: float = _presentation_hold_seconds()
+	if hold <= 0.1:
+		return 0.0
+	return hold - 0.1
+
+
+static func _expire_presentation_hold(session: CampaignBattleSession) -> CampaignBattleSessionResult:
+	if session == null:
+		return null
+	return session.advance_tactical(_presentation_hold_seconds())
+
+
+static func _expire_presentation_hold_gameflow(controller: GameFlowController) -> GameFlowResult:
+	if controller == null:
+		return null
+	return controller.advance_tactical(_presentation_hold_seconds())
+
+
+static func _expire_presentation_hold_runtime(runtime: GameplayRuntime) -> void:
+	if runtime == null:
+		return
+	runtime._process(_presentation_hold_seconds())
+
+
+static func _battlesession_ammo_snap(battle_state: BattleState) -> Dictionary:
+	var snap: Dictionary = {}
+	if battle_state == null:
+		return snap
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or participant.weapon_state == null:
+			snap[participant_id] = -1
+		else:
+			snap[participant_id] = participant.weapon_state.ammo_in_magazine
+	return snap
 
 
 static func _battlesession_create_real_hq_ok() -> bool:
@@ -46655,13 +46739,32 @@ static func _battlesession_attacker_victory_ok() -> bool:
 	var begin_result: CampaignBattleSessionResult = session.begin_battle()
 	if begin_result == null or not begin_result.success:
 		return false
-	var result: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var terminal: CampaignBattleSessionResult = session.advance_tactical(0.1)
 	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
-	if result == null or mission == null:
+	if terminal == null or mission == null:
+		return false
+	var pending_ok: bool = (
+		terminal.success
+		and terminal.battle_resolved_this_call
+		and not terminal.campaign_outcome_applied
+		and terminal.outcome_kind.is_empty()
+		and session.session_state == "resolved_pending_handoff"
+		and battle_state.battle_phase == "resolved"
+		and battle_state.get_result_kind() == BattleVictoryResult.RESULT_VICTORY
+		and battle_state.get_winning_side_id() == battle_state.attacker_side_id
+		and session.battle_state == battle_state
+		and mission.mission_state == "awaiting_resolution"
+		and mission.outcome_code.is_empty()
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+	)
+	if not pending_ok:
+		return false
+	var result: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	if result == null:
 		return false
 	return (
 		result.success
-		and result.battle_resolved_this_call
+		and not result.battle_resolved_this_call
 		and result.campaign_outcome_applied
 		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_ATTACKER_VICTORY_APPLIED
 		and battle_state.battle_phase == "resolved"
@@ -46688,13 +46791,26 @@ static func _battlesession_defender_victory_ok() -> bool:
 	var force: TravelingForce = pack.get("force", null) as TravelingForce
 	if session == null or battle_state == null or game_state == null or force == null:
 		return false
-	var result: CampaignBattleSessionResult = _battlesession_resolve_via_session(session, true, false)
+	var terminal: CampaignBattleSessionResult = _battlesession_resolve_via_session(session, true, false)
 	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
-	if result == null or mission == null:
+	if terminal == null or mission == null:
+		return false
+	var pending_ok: bool = (
+		terminal.success
+		and terminal.battle_resolved_this_call
+		and not terminal.campaign_outcome_applied
+		and session.session_state == "resolved_pending_handoff"
+		and battle_state.get_winning_side_id() == battle_state.defender_side_id
+		and mission.mission_state == "awaiting_resolution"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+	)
+	if not pending_ok:
+		return false
+	var result: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	if result == null:
 		return false
 	return (
 		result.success
-		and result.battle_resolved_this_call
 		and result.campaign_outcome_applied
 		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DEFENDER_VICTORY_APPLIED
 		and battle_state.battle_phase == "resolved"
@@ -46714,7 +46830,34 @@ static func _battlesession_defender_victory_ok() -> bool:
 
 
 static func _battlesession_same_call_handoff_ok() -> bool:
-	return _battlesession_attacker_victory_ok() and _battlesession_defender_victory_ok()
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	var begin_result: CampaignBattleSessionResult = session.begin_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	var terminal: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	if (
+		terminal == null
+		or not terminal.success
+		or not terminal.battle_resolved_this_call
+		or terminal.campaign_outcome_applied
+		or session.session_state != "resolved_pending_handoff"
+	):
+		return false
+	var handoff: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	return (
+		handoff != null
+		and handoff.success
+		and handoff.campaign_outcome_applied
+		and session.session_state == "complete"
+		and _battlesession_attacker_victory_ok()
+		and _battlesession_defender_victory_ok()
+	)
 
 
 static func _battlesession_telemetry_ok() -> bool:
@@ -46777,7 +46920,14 @@ static func _battlesession_complete_noop_ok() -> bool:
 	var begin_result: CampaignBattleSessionResult = session.begin_battle()
 	if begin_result == null or not begin_result.success:
 		return false
-	var win: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var terminal: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	if (
+		terminal == null
+		or not terminal.success
+		or session.session_state != "resolved_pending_handoff"
+	):
+		return false
+	var win: CampaignBattleSessionResult = _expire_presentation_hold(session)
 	if win == null or not win.success or session.session_state != "complete":
 		return false
 	var elapsed: float = battle_state.elapsed_time_seconds
@@ -46815,6 +46965,9 @@ static func _battlesession_handoff_idempotence_ok() -> bool:
 	if begin_result == null or not begin_result.success:
 		return false
 	session.advance_tactical(0.1)
+	if session.session_state != "resolved_pending_handoff":
+		return false
+	_expire_presentation_hold(session)
 	if session.session_state != "complete":
 		return false
 	if battle_state.get("campaign_outcome_applied") != null:
@@ -46845,7 +46998,24 @@ static func _battlesession_pending_handoff_ok() -> bool:
 		return false
 	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
 	mission.mission_state = "traveling_outbound"
-	var result: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var terminal: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var pending_ok: bool = (
+		terminal != null
+		and terminal.success
+		and terminal.battle_resolved_this_call
+		and not terminal.campaign_outcome_applied
+		and terminal.outcome_kind.is_empty()
+		and battle_state.battle_phase == "resolved"
+		and session.session_state == "resolved_pending_handoff"
+		and battle_state.tactical_result != null
+		and battle_state.tactical_result.resolved
+		and mission.mission_state == "traveling_outbound"
+		and mission.outcome_code.is_empty()
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+	)
+	if not pending_ok:
+		return false
+	var result: CampaignBattleSessionResult = _expire_presentation_hold(session)
 	return (
 		result != null
 		and not result.success
@@ -46877,9 +47047,18 @@ static func _battlesession_pending_retry_ok() -> bool:
 	var first: CampaignBattleSessionResult = session.advance_tactical(0.1)
 	if (
 		first == null
-		or first.success
+		or not first.success
 		or session.session_state != "resolved_pending_handoff"
 		or battle_state.battle_phase != "resolved"
+		or first.campaign_outcome_applied
+	):
+		return false
+	var blocked: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	if (
+		blocked == null
+		or blocked.success
+		or blocked.error_code != "mission_not_awaiting_resolution"
+		or session.session_state != "resolved_pending_handoff"
 	):
 		return false
 	var elapsed: float = battle_state.elapsed_time_seconds
@@ -46915,11 +47094,11 @@ static func _battlesession_draw_ok() -> bool:
 	var result: CampaignBattleSessionResult = _battlesession_resolve_via_session(session, true, true)
 	if result == null:
 		return false
-	return (
+	var pending_ok: bool = (
 		result.success
 		and result.battle_resolved_this_call
 		and not result.campaign_outcome_applied
-		and result.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and result.outcome_kind.is_empty()
 		and battle_state.battle_phase == "resolved"
 		and battle_state.get_result_kind() == BattleVictoryResult.RESULT_DRAW
 		and session.session_state == "resolved_pending_handoff"
@@ -46929,6 +47108,21 @@ static func _battlesession_draw_ok() -> bool:
 		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
 		and (game_state.get_map_location("hqattack_hq") as NeighborhoodHQ).owner_faction_id == "hqattack_b"
 		and (game_state.get_map_location("hqattack_biz") as Business).owner_faction_id == "hqattack_b"
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+	if not pending_ok:
+		return false
+	var after_hold: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	return (
+		after_hold != null
+		and after_hold.success
+		and not after_hold.campaign_outcome_applied
+		and after_hold.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and session.campaign_handoff_blocked_as_draw
+		and session.session_state == "resolved_pending_handoff"
+		and battle_state.get_result_kind() == BattleVictoryResult.RESULT_DRAW
+		and game_state.get_mission("battlesession_mission").mission_state == "awaiting_resolution"
+		and game_state.get_mission("battlesession_mission").outcome_code.is_empty()
 		and _hqattack_unchanged(game_state, snap, force)
 	)
 
@@ -46948,17 +47142,36 @@ static func _battlesession_draw_repeat_ok() -> bool:
 	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
 	var positions: Dictionary = _battlesession_position_snap(battle_state)
 	var tactical_result: BattleVictoryResult = battle_state.tactical_result
+	var during_hold: CampaignBattleSessionResult = session.advance_tactical(0.5)
+	if (
+		during_hold == null
+		or not during_hold.success
+		or during_hold.campaign_outcome_applied
+		or session.session_state != "resolved_pending_handoff"
+	):
+		return false
+	var after_hold: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	if (
+		after_hold == null
+		or not after_hold.success
+		or after_hold.campaign_outcome_applied
+		or after_hold.outcome_kind != BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		or not session.campaign_handoff_blocked_as_draw
+		or session.session_state != "resolved_pending_handoff"
+	):
+		return false
 	var again: CampaignBattleSessionResult = session.advance_tactical(0.5)
 	return (
 		again != null
-		and not again.success
-		and again.error_code == "draw_unsupported"
+		and again.success
+		and not again.campaign_outcome_applied
 		and again.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
 		and session.session_state == "resolved_pending_handoff"
 		and battle_state.battle_phase == "resolved"
 		and battle_state.tactical_result == tactical_result
 		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
 		and game_state.get_mission("battlesession_mission").mission_state == "awaiting_resolution"
+		and game_state.get_mission("battlesession_mission").outcome_code.is_empty()
 	)
 
 
@@ -46973,7 +47186,17 @@ static func _battlesession_history_retention_ok() -> bool:
 	var begin_result: CampaignBattleSessionResult = session.begin_battle()
 	if begin_result == null or not begin_result.success:
 		return false
-	var win: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var terminal: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	if terminal == null or session.session_state != "resolved_pending_handoff":
+		return false
+	var retained_pending: bool = (
+		session.battle_state == battle_state
+		and battle_state.tactical_result != null
+		and battle_state.battle_phase == "resolved"
+	)
+	if not retained_pending:
+		return false
+	var win: CampaignBattleSessionResult = _expire_presentation_hold(session)
 	if win == null or session.session_state != "complete":
 		return false
 	var tactical_result: BattleVictoryResult = battle_state.tactical_result
@@ -46999,6 +47222,9 @@ static func _battlesession_mission_history_ok() -> bool:
 	if atk_begin == null or not atk_begin.success:
 		return false
 	atk_session.advance_tactical(0.1)
+	if atk_session.session_state != "resolved_pending_handoff":
+		return false
+	_expire_presentation_hold(atk_session)
 	var atk_mission: CampaignMission = atk_game.get_mission("battlesession_mission")
 	var def_pack: Dictionary = _battlesession_begin_active_continuing()
 	var def_session: CampaignBattleSession = def_pack.get("session", null) as CampaignBattleSession
@@ -47006,6 +47232,9 @@ static func _battlesession_mission_history_ok() -> bool:
 	if def_session == null or def_game == null:
 		return false
 	_battlesession_resolve_via_session(def_session, true, false)
+	if def_session.session_state != "resolved_pending_handoff":
+		return false
+	_expire_presentation_hold(def_session)
 	var def_mission: CampaignMission = def_game.get_mission("battlesession_mission")
 	return (
 		atk_mission != null
@@ -47032,6 +47261,9 @@ static func _battlesession_force_after_ok() -> bool:
 	if atk_begin == null or not atk_begin.success:
 		return false
 	atk_session.advance_tactical(0.1)
+	if atk_session.session_state != "resolved_pending_handoff":
+		return false
+	_expire_presentation_hold(atk_session)
 	var atk_force_ready: bool = (
 		atk_game.has_traveling_force(atk_force.id)
 		and atk_force.travel_state == "at_destination"
@@ -47055,6 +47287,9 @@ static func _battlesession_force_after_ok() -> bool:
 	if def_session == null or def_game == null or def_force == null:
 		return false
 	_battlesession_resolve_via_session(def_session, true, false)
+	if def_session.session_state != "resolved_pending_handoff":
+		return false
+	_expire_presentation_hold(def_session)
 	var def_force_ready: bool = (
 		def_game.has_traveling_force(def_force.id)
 		and def_force.travel_state == "at_destination"
@@ -47154,7 +47389,10 @@ static func _battlesession_rng_ok() -> bool:
 		return false
 	retry_game.get_mission("battlesession_mission").mission_state = "traveling_outbound"
 	var first: CampaignBattleSessionResult = retry_session.advance_tactical(0.1)
-	if first == null or retry_session.session_state != "resolved_pending_handoff":
+	if first == null or not first.success or retry_session.session_state != "resolved_pending_handoff":
+		return false
+	var blocked: CampaignBattleSessionResult = _expire_presentation_hold(retry_session)
+	if blocked == null or blocked.success or retry_session.session_state != "resolved_pending_handoff":
 		return false
 	var rng_before_retry: int = _battlesession_rng(retry_battle)
 	retry_game.get_mission("battlesession_mission").mission_state = "awaiting_resolution"
@@ -47193,6 +47431,9 @@ static func _battlesession_casualty_isolation_ok() -> bool:
 		return false
 	participant.is_wounded = true
 	session.advance_tactical(0.1)
+	if session.session_state != "resolved_pending_handoff":
+		return false
+	_expire_presentation_hold(session)
 	return (
 		session.session_state == "complete"
 		and participant.is_wounded
@@ -48177,9 +48418,25 @@ static func _gameflow_attacker_flow_ok() -> bool:
 	var begin_result: GameFlowResult = controller.begin_current_battle()
 	if begin_result == null or not begin_result.success:
 		return false
-	var result: GameFlowResult = controller.advance_tactical(0.1)
+	var terminal: GameFlowResult = controller.advance_tactical(0.1)
 	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
-	if result == null or mission == null:
+	if terminal == null or mission == null:
+		return false
+	var pending_ok: bool = (
+		terminal.success
+		and not terminal.battle_completed_this_call
+		and terminal.current_mode == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and terminal.outcome_kind.is_empty()
+		and controller.current_session != null
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and mission.mission_state == "awaiting_resolution"
+		and mission.outcome_code.is_empty()
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+	)
+	if not pending_ok:
+		return false
+	var result: GameFlowResult = _expire_presentation_hold_gameflow(controller)
+	if result == null:
 		return false
 	return (
 		result.success
@@ -48207,9 +48464,23 @@ static func _gameflow_defender_flow_ok() -> bool:
 	var battle_state: BattleState = controller.get_battle_state()
 	if not _battlesession_kill_side(battle_state, battle_state.attacker_side_id):
 		return false
-	var result: GameFlowResult = controller.advance_tactical(0.1)
+	var terminal: GameFlowResult = controller.advance_tactical(0.1)
 	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
-	if result == null or mission == null:
+	if terminal == null or mission == null:
+		return false
+	var pending_ok: bool = (
+		terminal.success
+		and not terminal.battle_completed_this_call
+		and terminal.current_mode == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and controller.current_session != null
+		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		and mission.mission_state == "awaiting_resolution"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
+	)
+	if not pending_ok:
+		return false
+	var result: GameFlowResult = _expire_presentation_hold_gameflow(controller)
+	if result == null:
 		return false
 	return (
 		result.success
@@ -48237,7 +48508,16 @@ static func _gameflow_result_retention_ok() -> bool:
 	var begin_result: GameFlowResult = controller.begin_current_battle()
 	if begin_result == null or not begin_result.success:
 		return false
-	var result: GameFlowResult = controller.advance_tactical(0.1)
+	var terminal: GameFlowResult = controller.advance_tactical(0.1)
+	if (
+		terminal == null
+		or not terminal.success
+		or terminal.battle_completed_this_call
+		or controller.get_current_mode() != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		or controller.current_session == null
+	):
+		return false
+	var result: GameFlowResult = _expire_presentation_hold_gameflow(controller)
 	if result == null or not result.success:
 		return false
 	return (
@@ -48273,22 +48553,32 @@ static func _gameflow_draw_ok() -> bool:
 	var rng: int = _battlesession_rng(battle_state)
 	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
 	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var during_hold: GameFlowResult = controller.advance_tactical(0.5)
+	var after_hold: GameFlowResult = _expire_presentation_hold_gameflow(controller)
 	var again: GameFlowResult = controller.advance_tactical(0.5)
 	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
 	return (
 		first.success
 		and not first.battle_completed_this_call
 		and first.current_mode == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
-		and first.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and first.outcome_kind.is_empty()
+		and during_hold != null
+		and during_hold.success
+		and not during_hold.battle_completed_this_call
 		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
 		and controller.current_session == session
 		and session.session_state == CampaignBattleSession.SESSION_RESOLVED_PENDING_HANDOFF
+		and after_hold != null
+		and after_hold.success
+		and after_hold.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
+		and not after_hold.battle_completed_this_call
+		and session.campaign_handoff_blocked_as_draw
 		and mission.mission_state == "awaiting_resolution"
 		and mission.outcome_code.is_empty()
 		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == "hqattack_b"
 		and again != null
-		and not again.success
-		and again.error_code == "draw_unsupported"
+		and again.success
+		and again.outcome_kind == BattleCampaignOutcomeBridgeResult.OUTCOME_DRAW_UNSUPPORTED
 		and not again.battle_completed_this_call
 		and controller.current_session == session
 		and controller.get_current_mode() == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
@@ -48311,7 +48601,17 @@ static func _gameflow_handoff_retry_ok() -> bool:
 	var first: GameFlowResult = controller.advance_tactical(0.1)
 	if (
 		first == null
-		or first.success
+		or not first.success
+		or controller.get_current_mode() != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
+		or controller.current_session == null
+		or first.battle_completed_this_call
+	):
+		return false
+	var blocked: GameFlowResult = _expire_presentation_hold_gameflow(controller)
+	if (
+		blocked == null
+		or blocked.success
+		or blocked.error_code != "mission_not_awaiting_resolution"
 		or controller.get_current_mode() != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
 		or controller.current_session == null
 	):
@@ -48324,7 +48624,7 @@ static func _gameflow_handoff_retry_ok() -> bool:
 	game_state.get_mission("battlesession_mission").mission_state = "awaiting_resolution"
 	var retry: GameFlowResult = controller.advance_tactical(0.4)
 	return (
-		first.error_code == "mission_not_awaiting_resolution"
+		blocked.error_code == "mission_not_awaiting_resolution"
 		and retry != null
 		and retry.success
 		and retry.battle_completed_this_call
@@ -48999,6 +49299,7 @@ static func _gameplayruntime_process_gating_ok() -> bool:
 			process_body = process_rest
 	var source_ok: bool = (
 		process_body.contains("MODE_TACTICAL_ACTIVE")
+		and process_body.contains("MODE_TACTICAL_PENDING_HANDOFF")
 		and process_body.contains("advance_tactical(delta)")
 		and not process_body.contains("advance_campaign_turn")
 	)
@@ -49112,6 +49413,14 @@ static func _gameplayruntime_attacker_flow_ok() -> bool:
 	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
 	var hood: Neighborhood = game_state.get_neighborhood(StarterWorldService.HOOD_ID)
 	var hq: NeighborhoodHQ = game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	if (
+		runtime.get_current_mode() != "tactical_pending_handoff"
+		or runtime.get_current_session() == null
+		or mission == null
+		or mission.mission_state != "awaiting_resolution"
+	):
+		return _gameplayruntime_finish(runtime, false)
+	_expire_presentation_hold_runtime(runtime)
 	return _gameplayruntime_finish(
 		runtime,
 		runtime.get_current_mode() == "campaign"
@@ -49145,6 +49454,14 @@ static func _gameplayruntime_defender_flow_ok() -> bool:
 	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
 	var hood: Neighborhood = game_state.get_neighborhood(StarterWorldService.HOOD_ID)
 	var hq: NeighborhoodHQ = game_state.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
+	if (
+		runtime.get_current_mode() != "tactical_pending_handoff"
+		or runtime.get_current_session() == null
+		or mission == null
+		or mission.mission_state != "awaiting_resolution"
+	):
+		return _gameplayruntime_finish(runtime, false)
+	_expire_presentation_hold_runtime(runtime)
 	return _gameplayruntime_finish(
 		runtime,
 		runtime.get_current_mode() == "campaign"
@@ -51035,6 +51352,13 @@ static func _tacticalview_return_ok() -> bool:
 	runtime._process(0.0)
 	var view: TacticalBattleView = _tacticalview_view(runtime)
 	var map_view: CampaignMapView = _campaignmap_view(runtime)
+	if (
+		runtime.get_current_mode() != "tactical_pending_handoff"
+		or runtime.get_current_session() == null
+		or not _tacticalview_mode_views_ok(runtime, true)
+	):
+		return _gameplayruntime_finish(runtime, false)
+	_expire_presentation_hold_runtime(runtime)
 	return _gameplayruntime_finish(
 		runtime,
 		runtime.get_current_mode() == "campaign"
@@ -59523,6 +59847,47 @@ static func _battle_start_live_ok() -> bool:
 				progressed = true
 		if runtime.get_current_mode() != "tactical_active":
 			break
+	if runtime.get_current_mode() != "tactical_pending_handoff":
+		return _gameplayruntime_finish(runtime, false)
+	var freeze_elapsed: float = battle_state.elapsed_time_seconds
+	var freeze_rng: int = _battlesession_rng(battle_state)
+	var freeze_weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var freeze_positions: Dictionary = _battlesession_position_snap(battle_state)
+	var freeze_ammo: Dictionary = _battlesession_ammo_snap(battle_state)
+	var pending_mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	var pending_hq: MapLocation = game_state.get_map_location(StarterWorldService.HQ_ID)
+	var pending_hood: Neighborhood = game_state.get_neighborhood(StarterWorldService.HOOD_ID)
+	if (
+		pending_mission == null
+		or pending_mission.mission_state != "awaiting_resolution"
+		or pending_hq == null
+		or pending_hood == null
+	):
+		return _gameplayruntime_finish(runtime, false)
+	var pending_isolation_ok: bool = (
+		game_state.current_turn == turn_before
+		and game_state.current_month == month_before
+		and game_state.current_year == year_before
+		and is_equal_approx(money_before, _gameplayruntime_player_money(game_state))
+		and pending_mission.outcome_code.is_empty()
+	)
+	runtime._process(_presentation_hold_under_seconds())
+	var freeze_ok: bool = (
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and pending_isolation_ok
+		and _battlesession_tactical_unchanged(
+			battle_state,
+			freeze_elapsed,
+			freeze_rng,
+			freeze_weapons,
+			freeze_positions
+		)
+		and _battlesession_ammo_unchanged(battle_state, freeze_ammo)
+		and _vehicle_physical_pose_unchanged(battle_state, StarterWorldService.VEHICLE_ID, vehicle_snap)
+	)
+	if not freeze_ok:
+		return _gameplayruntime_finish(runtime, false)
+	_expire_presentation_hold_runtime(runtime)
 	var tactical: BattleVictoryResult = battle_state.get_tactical_result()
 	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
 	var hq: MapLocation = game_state.get_map_location(StarterWorldService.HQ_ID)
@@ -59561,4 +59926,681 @@ static func _battle_start_live_ok() -> bool:
 		and game_state.current_year == year_before
 		and is_equal_approx(money_before, _gameplayruntime_player_money(game_state))
 		and _vehicle_physical_pose_unchanged(battle_state, StarterWorldService.VEHICLE_ID, vehicle_snap)
+	)
+
+
+static func _combat_feedback_arm_weapon(participant: BattleParticipant) -> void:
+	if participant == null or participant.weapon_state == null:
+		return
+	participant.weapon_state.cooldown_remaining_seconds = 0.0
+	participant.weapon_state.is_reloading = false
+	if participant.weapon_state.ammo_in_magazine < 1:
+		participant.weapon_state.ammo_in_magazine = 12
+
+
+static func _combat_feedback_event_fields_ok(
+	event: BattleAttackEvent,
+	sequence_id: int,
+	source_id: String,
+	target_id: String,
+	weapon_type_id: String,
+	elapsed: float,
+	outcome: String
+) -> bool:
+	if event == null:
+		return false
+	return (
+		event.sequence_id == sequence_id
+		and event.source_participant_id == source_id
+		and event.target_participant_id == target_id
+		and event.weapon_type_id == weapon_type_id
+		and event.outcome == outcome
+		and event.has_source_position
+		and event.has_target_position
+		and is_finite(event.source_position.x)
+		and is_finite(event.source_position.y)
+		and is_finite(event.target_position.x)
+		and is_finite(event.target_position.y)
+		and is_finite(event.elapsed_time_seconds)
+		and is_equal_approx(event.elapsed_time_seconds, elapsed)
+	)
+
+
+static func _combat_feedback_events_monotonic(events: Array) -> bool:
+	if events.is_empty():
+		return false
+	var previous: int = (events[0] as BattleAttackEvent).sequence_id
+	for index: int in range(1, events.size()):
+		var event: BattleAttackEvent = events[index] as BattleAttackEvent
+		if event == null or event.sequence_id <= previous:
+			return false
+		previous = event.sequence_id
+	return true
+
+
+static func _combat_feedback_first_dead(battle_state: BattleState) -> BattleParticipant:
+	if battle_state == null:
+		return null
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null and not participant.is_alive:
+			return participant
+	return null
+
+
+static func _combat_feedback_first_wounded(battle_state: BattleState) -> BattleParticipant:
+	if battle_state == null:
+		return null
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null and participant.is_alive and participant.is_wounded:
+			return participant
+	return null
+
+
+static func _combat_feedback_event_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready("cf_ev_src", "cf_ev_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null:
+		return false
+	battle_state.elapsed_time_seconds = 2.5
+	var result: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cf_ev_src",
+		"cf_ev_tgt",
+		0.0
+	)
+	if result == null or not result.shot_executed or result.attack_event == null:
+		return false
+	if battle_state.combat_feedback_events.size() != 1:
+		return false
+	var event: BattleAttackEvent = battle_state.combat_feedback_events[0]
+	if not _combat_feedback_event_fields_ok(
+		event,
+		1,
+		"cf_ev_src",
+		"cf_ev_tgt",
+		"pistol",
+		2.5,
+		BattleAttackProfile.OUTCOME_MISS
+	):
+		return false
+	if event != result.attack_event:
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var live_state: BattleState = runtime.get_current_session().battle_state
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if live_state == null or view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var before_view: int = live_state.combat_feedback_events.size()
+	view.call("_overlay_lines")
+	view.call("_overlay_lines")
+	view.call("_draw_combat_feedback", live_state)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.combat_feedback_events.size() == 1
+		and live_state.combat_feedback_events.size() == before_view
+	)
+
+
+static func _combat_feedback_bounded_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready("cf_bd_src", "cf_bd_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var limit: int = BattleState.COMBAT_FEEDBACK_HISTORY_LIMIT
+	if limit <= 0:
+		return false
+	var fired: int = limit + 3
+	var shot_index: int = 0
+	while shot_index < fired:
+		_combat_feedback_arm_weapon(source)
+		var shot: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+			battle_state,
+			"cf_bd_src",
+			"cf_bd_tgt",
+			0.0
+		)
+		if shot == null or not shot.shot_executed:
+			return false
+		shot_index += 1
+	if battle_state.combat_feedback_events.size() != limit:
+		return false
+	if not _combat_feedback_events_monotonic(battle_state.combat_feedback_events):
+		return false
+	var first_event: BattleAttackEvent = battle_state.combat_feedback_events[0]
+	var last_event: BattleAttackEvent = battle_state.combat_feedback_events[limit - 1]
+	return (
+		first_event != null
+		and last_event != null
+		and first_event.sequence_id == fired - limit + 1
+		and last_event.sequence_id == fired
+		and battle_state.combat_feedback_next_sequence == fired + 1
+	)
+
+
+static func _combat_feedback_no_rng_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready("cf_rng_src", "cf_rng_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	var rng_before: int = _battlesession_rng(battle_state)
+	var shot: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cf_rng_src",
+		"cf_rng_tgt",
+		0.0
+	)
+	if shot == null or not shot.shot_executed:
+		return false
+	var rng_after_attack: int = _battlesession_rng(battle_state)
+	if battle_state.combat_feedback_events.is_empty():
+		return false
+	var event: BattleAttackEvent = battle_state.combat_feedback_events[0]
+	if event == null:
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var live_state: BattleState = runtime.get_current_session().battle_state
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if live_state == null or view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var live_rng: int = _battlesession_rng(live_state)
+	view.call("_overlay_lines")
+	view.call("_draw_combat_feedback", live_state)
+	return _gameplayruntime_finish(
+		runtime,
+		rng_before == rng_after_attack
+		and _battlesession_rng(battle_state) == rng_after_attack
+		and _battlesession_rng(live_state) == live_rng
+	)
+
+
+static func _combat_feedback_outcome_case_ok(outcome_roll: float, expected_outcome: String) -> bool:
+	var pack: Dictionary = _battleattack_make_ready("cf_oc_src", "cf_oc_tgt")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null:
+		return false
+	var shot: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cf_oc_src",
+		"cf_oc_tgt",
+		outcome_roll
+	)
+	if shot == null or not shot.shot_executed or shot.attack_event == null:
+		return false
+	if battle_state.combat_feedback_events.size() != 1:
+		return false
+	var event: BattleAttackEvent = battle_state.combat_feedback_events[0]
+	if event.outcome != expected_outcome or shot.attack_event.outcome != expected_outcome:
+		return false
+	match expected_outcome:
+		BattleAttackProfile.OUTCOME_MISS, BattleAttackProfile.OUTCOME_GRAZE:
+			return target.is_alive and not target.is_wounded
+		BattleAttackProfile.OUTCOME_WOUND:
+			return target.is_alive and target.is_wounded
+		BattleAttackProfile.OUTCOME_KILL:
+			return not target.is_alive
+		_:
+			return false
+
+
+static func _combat_feedback_outcomes_ok() -> bool:
+	return (
+		_combat_feedback_outcome_case_ok(0.0, BattleAttackProfile.OUTCOME_MISS)
+		and _combat_feedback_outcome_case_ok(0.5, BattleAttackProfile.OUTCOME_GRAZE)
+		and _combat_feedback_outcome_case_ok(0.7, BattleAttackProfile.OUTCOME_WOUND)
+		and _combat_feedback_outcome_case_ok(0.95, BattleAttackProfile.OUTCOME_KILL)
+	)
+
+
+static func _combat_feedback_dead_retention_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return false
+	session.advance_tactical(0.1)
+	if session.session_state != "resolved_pending_handoff":
+		return false
+	var dead: BattleParticipant = _combat_feedback_first_dead(battle_state)
+	if dead == null:
+		return false
+	var dead_id: String = dead.participant_id
+	var had_pos: bool = dead.has_battle_position
+	var dead_pos: Vector2 = dead.battle_position
+	session.advance_tactical(_presentation_hold_under_seconds())
+	var retained: BattleParticipant = battle_state.get_participant(dead_id)
+	return (
+		session.session_state == "resolved_pending_handoff"
+		and retained != null
+		and not retained.is_alive
+		and battle_state.has_participant(dead_id)
+		and retained.has_battle_position == had_pos
+		and ((not had_pos) or retained.battle_position.is_equal_approx(dead_pos))
+	)
+
+
+static func _combat_feedback_wounded_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	if session.begin_battle() == null:
+		return false
+	var attacker: BattleParticipant = null
+	for participant_id: String in battle_state.participants:
+		var candidate: BattleParticipant = battle_state.get_participant(participant_id)
+		if candidate != null and candidate.side_id == battle_state.attacker_side_id:
+			attacker = candidate
+			break
+	if attacker == null:
+		return false
+	attacker.is_wounded = true
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return false
+	session.advance_tactical(0.1)
+	session.advance_tactical(_presentation_hold_under_seconds())
+	var wounded: BattleParticipant = battle_state.get_participant(attacker.participant_id)
+	return (
+		session.session_state == "resolved_pending_handoff"
+		and wounded == attacker
+		and wounded.is_alive
+		and wounded.is_wounded
+		and battle_state.has_participant(attacker.participant_id)
+	)
+
+
+static func _combat_feedback_terminal_freeze_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	if session.begin_battle() == null:
+		return false
+	var vehicle_id: String = ""
+	for candidate_id: String in battle_state.vehicles:
+		vehicle_id = candidate_id
+		break
+	var vehicle_snap: Dictionary = _vehicle_physical_pose_snap(battle_state, vehicle_id)
+	session.advance_tactical(0.1)
+	if session.session_state != "resolved_pending_handoff":
+		return false
+	var elapsed: float = battle_state.elapsed_time_seconds
+	var rng: int = _battlesession_rng(battle_state)
+	var weapons: Dictionary = _battlesession_weapon_snap(battle_state)
+	var positions: Dictionary = _battlesession_position_snap(battle_state)
+	var ammo: Dictionary = _battlesession_ammo_snap(battle_state)
+	var event_count: int = battle_state.combat_feedback_events.size()
+	var presentation_before: float = session.result_presentation_elapsed_seconds
+	session.advance_tactical(0.4)
+	session.advance_tactical(_presentation_hold_under_seconds() - 0.4)
+	return (
+		session.session_state == "resolved_pending_handoff"
+		and session.result_presentation_elapsed_seconds > presentation_before
+		and session.result_presentation_elapsed_seconds < _presentation_hold_seconds()
+		and _battlesession_tactical_unchanged(battle_state, elapsed, rng, weapons, positions)
+		and _battlesession_ammo_unchanged(battle_state, ammo)
+		and battle_state.combat_feedback_events.size() == event_count
+		and _vehicle_physical_pose_unchanged(battle_state, vehicle_id, vehicle_snap)
+	)
+
+
+static func _combat_feedback_hold_ok() -> bool:
+	if not is_equal_approx(CampaignBattleSession.RESULT_PRESENTATION_HOLD_SECONDS, 3.0):
+		return false
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	if session == null or battle_state == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	if session.begin_battle() == null:
+		return false
+	var terminal: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	if (
+		terminal == null
+		or not terminal.success
+		or terminal.campaign_outcome_applied
+		or session.session_state != "resolved_pending_handoff"
+		or mission == null
+		or mission.mission_state != "awaiting_resolution"
+	):
+		return false
+	var under: CampaignBattleSessionResult = session.advance_tactical(_presentation_hold_under_seconds())
+	if (
+		under == null
+		or not under.success
+		or under.campaign_outcome_applied
+		or session.session_state != "resolved_pending_handoff"
+		or mission.mission_state != "awaiting_resolution"
+	):
+		return false
+	var handoff: CampaignBattleSessionResult = session.advance_tactical(0.1)
+	return (
+		handoff != null
+		and handoff.success
+		and handoff.campaign_outcome_applied
+		and session.session_state == "complete"
+		and mission.mission_state == "resolved_success"
+	)
+
+
+static func _combat_feedback_bridge_once_ok() -> bool:
+	var pack: Dictionary = _battlesession_open_pack()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var game_state: GameState = pack.get("game_state", null) as GameState
+	var force: TravelingForce = pack.get("force", null) as TravelingForce
+	if session == null or battle_state == null or game_state == null:
+		return false
+	if not _battlesession_ready_for_begin(battle_state):
+		return false
+	if session.begin_battle() == null:
+		return false
+	session.advance_tactical(0.1)
+	var applied: CampaignBattleSessionResult = _expire_presentation_hold(session)
+	if (
+		applied == null
+		or not applied.success
+		or not applied.campaign_outcome_applied
+		or session.session_state != "complete"
+	):
+		return false
+	var mission: CampaignMission = game_state.get_mission("battlesession_mission")
+	var outcome: String = mission.outcome_code
+	var hood_owner: String = game_state.get_neighborhood("hqattack_hood").owner_faction_id
+	var snap: Dictionary = _hqattack_snapshot(game_state, force)
+	var again: CampaignBattleSessionResult = session.advance_tactical(0.5)
+	var third: CampaignBattleSessionResult = session.advance_tactical(1.0)
+	return (
+		again != null
+		and not again.success
+		and again.error_code == "session_complete"
+		and third != null
+		and not third.success
+		and third.error_code == "session_complete"
+		and mission.outcome_code == outcome
+		and mission.mission_state == "resolved_success"
+		and game_state.get_neighborhood("hqattack_hood").owner_faction_id == hood_owner
+		and session.campaign_handoff_applied
+		and battle_state.get("campaign_outcome_applied") == null
+		and _hqattack_unchanged(game_state, snap, force)
+	)
+
+
+static func _combat_feedback_final_state_ok() -> bool:
+	var pack: Dictionary = _battlesession_begin_active_continuing()
+	var session: CampaignBattleSession = pack.get("session", null) as CampaignBattleSession
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if session == null or battle_state == null:
+		return false
+	var attacker: BattleParticipant = null
+	for participant_id: String in battle_state.participants:
+		var candidate: BattleParticipant = battle_state.get_participant(participant_id)
+		if candidate != null and candidate.side_id == battle_state.attacker_side_id and candidate.is_alive:
+			attacker = candidate
+			break
+	if attacker == null:
+		return false
+	attacker.is_wounded = true
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return false
+	session.advance_tactical(0.1)
+	if session.session_state != "resolved_pending_handoff":
+		return false
+	session.advance_tactical(_presentation_hold_under_seconds())
+	var dead: BattleParticipant = _combat_feedback_first_dead(battle_state)
+	var wounded: BattleParticipant = _combat_feedback_first_wounded(battle_state)
+	var victory: BattleVictoryResult = battle_state.get_tactical_result()
+	return (
+		session.session_state == "resolved_pending_handoff"
+		and session.battle_state == battle_state
+		and battle_state.participants.size() > 0
+		and dead != null
+		and battle_state.has_participant(dead.participant_id)
+		and not dead.is_alive
+		and wounded == attacker
+		and wounded.is_wounded
+		and wounded.is_alive
+		and battle_state.combat_feedback_events != null
+		and victory != null
+		and victory.resolved
+		and victory.result_kind == BattleVictoryResult.RESULT_VICTORY
+	)
+
+
+static func _combat_feedback_result_data_ok() -> bool:
+	var attacker_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if attacker_runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(attacker_runtime, true):
+		return _gameplayruntime_finish(attacker_runtime, false)
+	var attacker_state: BattleState = attacker_runtime.get_current_session().battle_state
+	if attacker_state == null or not _battlesession_kill_side(attacker_state, attacker_state.defender_side_id):
+		return _gameplayruntime_finish(attacker_runtime, false)
+	attacker_runtime._process(0.1)
+	var attacker_view: TacticalBattleView = _tacticalview_view(attacker_runtime)
+	if attacker_view == null or attacker_runtime.get_current_mode() != "tactical_pending_handoff":
+		return _gameplayruntime_finish(attacker_runtime, false)
+	var attacker_banner: String = str(attacker_view.call("_result_banner_text", attacker_state))
+	var attacker_casualty: String = str(attacker_view.call("_result_casualty_line", attacker_state))
+	var attacker_ok: bool = (
+		attacker_banner == "ATTACKER VICTORY"
+		and not attacker_casualty.is_empty()
+	)
+	_gameplayruntime_finish(attacker_runtime, true)
+	if not attacker_ok:
+		return false
+
+	var defender_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if defender_runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(defender_runtime, true):
+		return _gameplayruntime_finish(defender_runtime, false)
+	var defender_state: BattleState = defender_runtime.get_current_session().battle_state
+	if defender_state == null or not _battlesession_kill_side(defender_state, defender_state.attacker_side_id):
+		return _gameplayruntime_finish(defender_runtime, false)
+	defender_runtime._process(0.1)
+	var defender_view: TacticalBattleView = _tacticalview_view(defender_runtime)
+	if defender_view == null or defender_runtime.get_current_mode() != "tactical_pending_handoff":
+		return _gameplayruntime_finish(defender_runtime, false)
+	var defender_banner: String = str(defender_view.call("_result_banner_text", defender_state))
+	var defender_casualty: String = str(defender_view.call("_result_casualty_line", defender_state))
+	var defender_ok: bool = (
+		defender_banner == "DEFENDER VICTORY"
+		and not defender_casualty.is_empty()
+	)
+	_gameplayruntime_finish(defender_runtime, true)
+	if not defender_ok:
+		return false
+
+	var draw_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if draw_runtime == null:
+		return false
+	if not _gameplayruntime_force_pending_handoff(draw_runtime):
+		return _gameplayruntime_finish(draw_runtime, false)
+	var draw_state: BattleState = draw_runtime.get_current_session().battle_state
+	var draw_view: TacticalBattleView = _tacticalview_view(draw_runtime)
+	if draw_state == null or draw_view == null:
+		return _gameplayruntime_finish(draw_runtime, false)
+	var draw_banner: String = str(draw_view.call("_result_banner_text", draw_state))
+	return _gameplayruntime_finish(draw_runtime, draw_banner == "DRAW")
+
+
+static func _combat_feedback_view_visibility_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	if not _tacticalview_mode_views_ok(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null or not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.1)
+	if (
+		runtime.get_current_mode() != "tactical_pending_handoff"
+		or not _tacticalview_mode_views_ok(runtime, true)
+	):
+		return _gameplayruntime_finish(runtime, false)
+	_expire_presentation_hold_runtime(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "campaign"
+		and _tacticalview_mode_views_ok(runtime, false)
+	)
+
+
+static func _combat_feedback_campaign_isolation_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var game_state: GameState = runtime.game_state
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null or not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.1)
+	if runtime.get_current_mode() != "tactical_pending_handoff":
+		return _gameplayruntime_finish(runtime, false)
+	var turn_before: int = game_state.current_turn
+	var month_before: int = game_state.current_month
+	var year_before: int = game_state.current_year
+	var money_before: float = _gameplayruntime_player_money(game_state)
+	var mission: CampaignMission = game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID)
+	var hq: MapLocation = game_state.get_map_location(StarterWorldService.HQ_ID)
+	var hood: Neighborhood = game_state.get_neighborhood(StarterWorldService.HOOD_ID)
+	if mission == null or hq == null or hood == null:
+		return _gameplayruntime_finish(runtime, false)
+	var hq_owner: String = hq.owner_faction_id
+	var hood_owner: String = hood.owner_faction_id
+	runtime._process(_presentation_hold_under_seconds())
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and game_state.current_turn == turn_before
+		and game_state.current_month == month_before
+		and game_state.current_year == year_before
+		and is_equal_approx(money_before, _gameplayruntime_player_money(game_state))
+		and mission.mission_state == "awaiting_resolution"
+		and mission.outcome_code.is_empty()
+		and hq.owner_faction_id == hq_owner
+		and hood.owner_faction_id == hood_owner
+	)
+
+
+static func _combat_feedback_vehicle_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_enter_deployed_active(runtime, true):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var vehicle: BattleVehicle = battle_state.get_vehicle(StarterWorldService.VEHICLE_ID)
+	if vehicle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var vehicle_pos: Vector2 = vehicle.battle_position
+	var vehicle_facing: Vector2 = vehicle.facing_direction
+	var had_pos: bool = vehicle.has_battle_position
+	var had_facing: bool = vehicle.has_facing
+	var body_id: String = BattleVehicleCoverService.body_cover_object_id(StarterWorldService.VEHICLE_ID)
+	var had_cover: bool = (
+		battle_state.battlefield_geometry != null
+		and battle_state.battlefield_geometry.has_cover_object(body_id)
+	)
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.1)
+	if runtime.get_current_mode() != "tactical_pending_handoff":
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(_presentation_hold_under_seconds())
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and vehicle.has_battle_position == had_pos
+		and vehicle.has_facing == had_facing
+		and ((not had_pos) or vehicle.battle_position.is_equal_approx(vehicle_pos))
+		and ((not had_facing) or vehicle.facing_direction.is_equal_approx(vehicle_facing))
+		and vehicle.get("hit_points") == null
+		and vehicle.get("is_destroyed") == null
+		and battle_state.is_vehicle_deployed(StarterWorldService.VEHICLE_ID)
+		and (
+			not had_cover
+			or (
+				battle_state.battlefield_geometry != null
+				and battle_state.battlefield_geometry.has_cover_object(body_id)
+			)
+		)
+	)
+
+
+static func _combat_feedback_gameflow_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _gameplayruntime_ensure_pending(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var enter_result: GameFlowResult = runtime.enter_battle()
+	if enter_result == null or not enter_result.success:
+		return _gameplayruntime_finish(runtime, false)
+	if runtime.get_current_mode() != "tactical_deployment":
+		return _gameplayruntime_finish(runtime, false)
+	if not _gameplayruntime_add_defender(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_ready_for_begin(runtime.get_current_session().battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success or runtime.get_current_mode() != "tactical_active":
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var elapsed_active: float = battle_state.elapsed_time_seconds
+	runtime._process(0.2)
+	if battle_state.elapsed_time_seconds <= elapsed_active:
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.1)
+	if runtime.get_current_mode() != "tactical_pending_handoff":
+		return _gameplayruntime_finish(runtime, false)
+	var pending_elapsed: float = battle_state.elapsed_time_seconds
+	var pending_rng: int = _battlesession_rng(battle_state)
+	runtime._process(0.4)
+	if (
+		runtime.get_current_mode() != "tactical_pending_handoff"
+		or not is_equal_approx(battle_state.elapsed_time_seconds, pending_elapsed)
+		or _battlesession_rng(battle_state) != pending_rng
+	):
+		return _gameplayruntime_finish(runtime, false)
+	_expire_presentation_hold_runtime(runtime)
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == "campaign"
+		and runtime.get_current_session() == null
 	)
