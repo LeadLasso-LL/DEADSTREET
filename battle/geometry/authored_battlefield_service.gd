@@ -22,7 +22,7 @@ const LAYOUT_PROVING_GROUND := TacticalProvingGroundCatalog.LAYOUT_ID
 
 
 static func initialize_proving_ground(battle_state: BattleState) -> BattlefieldGeometryResult:
-	return apply_definition(battle_state, TacticalProvingGroundCatalog.west_east_commercial_block_v2())
+	return apply_definition(battle_state, TacticalProvingGroundCatalog.hq_frontage_assault_v1())
 
 
 static func apply_definition(

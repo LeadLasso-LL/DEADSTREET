@@ -29,13 +29,13 @@ const KEEP_MAP_POSITION := Vector2(0.0, 0.0)
 const HQ_MAP_POSITION := Vector2(12.0, 0.0)
 const SEGMENT_DISTANCE := 12.0
 const VEHICLE_MOVEMENT_PER_TURN := 5.0
-# Debug 3v3 starts. Legal west/east pocket points, not cover slots.
-const ATTACKER_RIFLE_START := Vector2(7.25, 31.5)
-const ATTACKER_SMG_START := Vector2(14.2, 21.8)
-const ATTACKER_SHOTGUN_START := Vector2(13.5, 38.6)
-const DEFENDER_PISTOL_START := Vector2(87.2, 22.0)
-const DEFENDER_RIFLE_START := Vector2(94.0, 31.5)
-const DEFENDER_SHOTGUN_START := Vector2(85.5, 34.8)
+# Debug 3v3 starts. Legal south-attack / north-HQ pocket points, not cover slots.
+const ATTACKER_RIFLE_START := Vector2(40.2, 43.6)
+const ATTACKER_SMG_START := Vector2(47.2, 37.2)
+const ATTACKER_SHOTGUN_START := Vector2(83.2, 27.4)
+const DEFENDER_PISTOL_START := Vector2(16.2, 17.4)
+const DEFENDER_RIFLE_START := Vector2(28.4, 25.8)
+const DEFENDER_SHOTGUN_START := Vector2(49.8, 25.6)
 const DEBUG_CAR_PASSENGER_CAPACITY := 4
 
 

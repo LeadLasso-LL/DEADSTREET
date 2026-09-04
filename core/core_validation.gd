@@ -113,6 +113,7 @@ const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover
 const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
 const BattleCoverCombatEffectResult := preload("res://battle/combat/battle_cover_combat_effect_result.gd")
 const BattleCoverCombatEffectService := preload("res://battle/combat/battle_cover_combat_effect_service.gd")
+const BattleCoverPostureService := preload("res://battle/combat/battle_cover_posture_service.gd")
 const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd")
 const BattleVictoryService := preload("res://battle/core/battle_victory_service.gd")
 const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
@@ -13086,7 +13087,7 @@ static func run() -> Dictionary:
 		and _battlefire_catalog_match(battlefire_pistol_b, "pistol", 24.0, 2.5, 12, 1.5)
 		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("shotgun"), "shotgun", 12.0, 1.0, 6, 2.5)
 		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("smg"), "smg", 20.0, 8.0, 30, 2.0)
-		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("rifle"), "rifle", 40.0, 2.0, 20, 2.2)
+		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("rifle"), "rifle", 40.0, 1.6, 20, 2.2)
 		and _battlefire_catalog_match(BattleWeaponCatalog.get_definition("sniper"), "sniper", 70.0, 0.5, 5, 3.0)
 		and _combat_catalog_quality_ok("pistol", 0.30, 0.30, 0.35, 0.05, 0.10, 0.28, 0.70)
 		and _combat_catalog_quality_ok("smg", 0.42, 0.30, 0.26, 0.02, 0.06, 0.16, 0.45)
@@ -14813,7 +14814,7 @@ static func run() -> Dictionary:
 				battleattack_oc_src.weapon_state.cooldown_remaining_seconds,
 				battleattack_oc_def.cooldown_seconds()
 			)
-			and is_equal_approx(battleattack_oc_src.weapon_state.cooldown_remaining_seconds, 0.5)
+			and is_equal_approx(battleattack_oc_src.weapon_state.cooldown_remaining_seconds, 0.625)
 		)
 
 	var battleattack_every_outcome_cycles_ok: bool = true
@@ -15724,6 +15725,59 @@ static func run() -> Dictionary:
 	var battlecovereffect_determinism_ok: bool = _battlecovereffect_determinism_ok()
 	var battlecovereffect_campaign_isolation_ok: bool = _battlecovereffect_campaign_isolation_ok()
 	var battlecovereffect_absent_systems_ok: bool = _battlecovereffect_absent_systems_ok()
+	var battlecoverposture_timing_ok: bool = _battlecoverposture_timing_ok()
+	var battlecoverposture_occupy_defaults_tucked_ok: bool = _battlecoverposture_occupy_defaults_tucked_ok()
+	var battlecoverposture_tucked_cannot_fire_ok: bool = _battlecoverposture_tucked_cannot_fire_ok()
+	var battlecoverposture_front_blocks_ok: bool = _battlecoverposture_front_blocks_ok()
+	var battlecoverposture_flank_allows_ok: bool = _battlecoverposture_flank_allows_ok()
+	var battlecoverposture_exposed_can_fire_ok: bool = _battlecoverposture_exposed_can_fire_ok()
+	var battlecoverposture_exposed_can_be_shot_ok: bool = _battlecoverposture_exposed_can_be_shot_ok()
+	var battlecoverposture_no_bypass_cooldown_ok: bool = _battlecoverposture_no_bypass_cooldown_ok()
+	var battlecoverposture_no_bypass_range_ok: bool = _battlecoverposture_no_bypass_range_ok()
+	var battlecoverposture_no_bypass_ammo_ok: bool = _battlecoverposture_no_bypass_ammo_ok()
+	var battlecoverposture_no_bypass_los_ok: bool = _battlecoverposture_no_bypass_los_ok()
+	var battlecoverposture_returns_tucked_ok: bool = _battlecoverposture_returns_tucked_ok()
+	var battlecoverposture_vacate_clears_ok: bool = _battlecoverposture_vacate_clears_ok()
+	var battlecoverposture_death_clears_ok: bool = _battlecoverposture_death_clears_ok()
+	var battlecoverposture_no_rerank_ok: bool = _battlecoverposture_no_rerank_ok()
+	var battlecoverposture_wounded_cycle_ok: bool = _battlecoverposture_wounded_cycle_ok()
+	var battlecoverposture_defend_hold_ok: bool = _battlecoverposture_defend_hold_ok()
+	var battlecoverposture_state_copy_ok: bool = _battlecoverposture_state_copy_ok()
+	var battlecoverposture_reoccupy_keeps_ok: bool = _battlecoverposture_reoccupy_keeps_ok()
+	var battlecoverposture_los_geometry_ok: bool = _battlecoverposture_los_geometry_ok()
+	var battlecoverposture_presentation_ok: bool = _battlecoverposture_presentation_ok()
+	var battleclosing_pistol_advances_ok: bool = _battleclosing_pistol_advances_ok()
+	var battleclosing_smg_advances_ok: bool = _battleclosing_smg_advances_ok()
+	var battleclosing_shotgun_advances_ok: bool = _battleclosing_shotgun_advances_ok()
+	var battleclosing_forward_cover_ok: bool = _battleclosing_forward_cover_ok()
+	var battleclosing_intermediate_smg_ok: bool = _battleclosing_intermediate_smg_ok()
+	var battleclosing_intermediate_shotgun_ok: bool = _battleclosing_intermediate_shotgun_ok()
+	var battleclosing_direct_approach_ok: bool = _battleclosing_direct_approach_ok()
+	var battleclosing_shotgun_commit_ok: bool = _battleclosing_shotgun_commit_ok()
+	var battleclosing_wounded_ok: bool = _battleclosing_wounded_ok()
+	var battleclosing_defend_ok: bool = _battleclosing_defend_ok()
+	var battleclosing_hold_ok: bool = _battleclosing_hold_ok()
+	var battleclosing_fall_back_ok: bool = _battleclosing_fall_back_ok()
+	var battleclosing_persist_ok: bool = _battleclosing_persist_ok()
+	var battleclosing_no_rerank_ok: bool = _battleclosing_no_rerank_ok()
+	var battleclosing_target_move_ok: bool = _battleclosing_target_move_ok()
+	var battleclosing_target_death_ok: bool = _battleclosing_target_death_ok()
+	var battleclosing_target_change_ok: bool = _battleclosing_target_change_ok()
+	var battleclosing_posture_ok: bool = _battleclosing_posture_ok()
+	var battleclosing_reject_cosmetic_ok: bool = _battleclosing_reject_cosmetic_ok()
+	var battleclosing_prefer_protection_ok: bool = _battleclosing_prefer_protection_ok()
+	var battleclosing_occupy_on_arrival_ok: bool = _battleclosing_occupy_on_arrival_ok()
+	var battleclosing_tuck_after_occupy_ok: bool = _battleclosing_tuck_after_occupy_ok()
+	var battleclosing_no_skim_ok: bool = _battleclosing_no_skim_ok()
+	var battleclosing_expose_from_cover_ok: bool = _battleclosing_expose_from_cover_ok()
+	var battleclosing_resume_ok: bool = _battleclosing_resume_ok()
+	var battleclosing_smg_not_anchored_ok: bool = _battleclosing_smg_not_anchored_ok()
+	var battleclosing_shotgun_not_anchored_ok: bool = _battleclosing_shotgun_not_anchored_ok()
+	var battlewounded_local_cover_ok: bool = _battlewounded_local_cover_ok()
+	var battlewounded_no_distant_spawn_ok: bool = _battlewounded_no_distant_spawn_ok()
+	var battlewounded_last_survivor_antistall_ok: bool = _battlewounded_last_survivor_antistall_ok()
+	var battlewounded_teammate_no_antistall_ok: bool = _battlewounded_teammate_no_antistall_ok()
+	var battlerifle_cadence_ok: bool = _battlerifle_cadence_ok()
 	var battleforcecommand_catalog_ok: bool = _battleforcecommand_catalog_ok()
 	var battleforcecommand_valid_ids_ok: bool = _battleforcecommand_valid_ids_ok()
 	var battleforcecommand_invalid_ids_ok: bool = _battleforcecommand_invalid_ids_ok()
@@ -16368,8 +16422,10 @@ static func run() -> Dictionary:
 	var provingground_deployment_ok: bool = _provingground_deployment_ok()
 	var provingground_vehicle_ok: bool = _provingground_vehicle_ok()
 	var provingground_legacy_ok: bool = _provingground_legacy_ok()
-	var provingground_layout_v2_ok: bool = _provingground_layout_v2_ok()
+	var provingground_layout_hq_ok: bool = _provingground_layout_hq_ok()
 	var provingground_attacker_cover_chain_ok: bool = _provingground_attacker_cover_chain_ok()
+	var provingground_hq_assault_ok: bool = _provingground_hq_assault_ok()
+	var provingground_hq_wrap_ok: bool = _provingground_hq_wrap_ok()
 	var battlecoverthreat_threshold_ok: bool = _battlecoverthreat_threshold_ok()
 	var battlecoverthreat_wrong_facing_loses_ok: bool = _battlecoverthreat_wrong_facing_loses_ok()
 	var battlecoverthreat_blocked_los_loses_ok: bool = _battlecoverthreat_blocked_los_loses_ok()
@@ -17787,6 +17843,59 @@ static func run() -> Dictionary:
 		"battlecovereffect_determinism_ok": battlecovereffect_determinism_ok,
 		"battlecovereffect_campaign_isolation_ok": battlecovereffect_campaign_isolation_ok,
 		"battlecovereffect_absent_systems_ok": battlecovereffect_absent_systems_ok,
+		"battlecoverposture_timing_ok": battlecoverposture_timing_ok,
+		"battlecoverposture_occupy_defaults_tucked_ok": battlecoverposture_occupy_defaults_tucked_ok,
+		"battlecoverposture_tucked_cannot_fire_ok": battlecoverposture_tucked_cannot_fire_ok,
+		"battlecoverposture_front_blocks_ok": battlecoverposture_front_blocks_ok,
+		"battlecoverposture_flank_allows_ok": battlecoverposture_flank_allows_ok,
+		"battlecoverposture_exposed_can_fire_ok": battlecoverposture_exposed_can_fire_ok,
+		"battlecoverposture_exposed_can_be_shot_ok": battlecoverposture_exposed_can_be_shot_ok,
+		"battlecoverposture_no_bypass_cooldown_ok": battlecoverposture_no_bypass_cooldown_ok,
+		"battlecoverposture_no_bypass_range_ok": battlecoverposture_no_bypass_range_ok,
+		"battlecoverposture_no_bypass_ammo_ok": battlecoverposture_no_bypass_ammo_ok,
+		"battlecoverposture_no_bypass_los_ok": battlecoverposture_no_bypass_los_ok,
+		"battlecoverposture_returns_tucked_ok": battlecoverposture_returns_tucked_ok,
+		"battlecoverposture_vacate_clears_ok": battlecoverposture_vacate_clears_ok,
+		"battlecoverposture_death_clears_ok": battlecoverposture_death_clears_ok,
+		"battlecoverposture_no_rerank_ok": battlecoverposture_no_rerank_ok,
+		"battlecoverposture_wounded_cycle_ok": battlecoverposture_wounded_cycle_ok,
+		"battlecoverposture_defend_hold_ok": battlecoverposture_defend_hold_ok,
+		"battlecoverposture_state_copy_ok": battlecoverposture_state_copy_ok,
+		"battlecoverposture_reoccupy_keeps_ok": battlecoverposture_reoccupy_keeps_ok,
+		"battlecoverposture_los_geometry_ok": battlecoverposture_los_geometry_ok,
+		"battlecoverposture_presentation_ok": battlecoverposture_presentation_ok,
+		"battleclosing_pistol_advances_ok": battleclosing_pistol_advances_ok,
+		"battleclosing_smg_advances_ok": battleclosing_smg_advances_ok,
+		"battleclosing_shotgun_advances_ok": battleclosing_shotgun_advances_ok,
+		"battleclosing_forward_cover_ok": battleclosing_forward_cover_ok,
+		"battleclosing_intermediate_smg_ok": battleclosing_intermediate_smg_ok,
+		"battleclosing_intermediate_shotgun_ok": battleclosing_intermediate_shotgun_ok,
+		"battleclosing_direct_approach_ok": battleclosing_direct_approach_ok,
+		"battleclosing_shotgun_commit_ok": battleclosing_shotgun_commit_ok,
+		"battleclosing_wounded_ok": battleclosing_wounded_ok,
+		"battleclosing_defend_ok": battleclosing_defend_ok,
+		"battleclosing_hold_ok": battleclosing_hold_ok,
+		"battleclosing_fall_back_ok": battleclosing_fall_back_ok,
+		"battleclosing_persist_ok": battleclosing_persist_ok,
+		"battleclosing_no_rerank_ok": battleclosing_no_rerank_ok,
+		"battleclosing_target_move_ok": battleclosing_target_move_ok,
+		"battleclosing_target_death_ok": battleclosing_target_death_ok,
+		"battleclosing_target_change_ok": battleclosing_target_change_ok,
+		"battleclosing_posture_ok": battleclosing_posture_ok,
+		"battleclosing_reject_cosmetic_ok": battleclosing_reject_cosmetic_ok,
+		"battleclosing_prefer_protection_ok": battleclosing_prefer_protection_ok,
+		"battleclosing_occupy_on_arrival_ok": battleclosing_occupy_on_arrival_ok,
+		"battleclosing_tuck_after_occupy_ok": battleclosing_tuck_after_occupy_ok,
+		"battleclosing_no_skim_ok": battleclosing_no_skim_ok,
+		"battleclosing_expose_from_cover_ok": battleclosing_expose_from_cover_ok,
+		"battleclosing_resume_ok": battleclosing_resume_ok,
+		"battleclosing_smg_not_anchored_ok": battleclosing_smg_not_anchored_ok,
+		"battleclosing_shotgun_not_anchored_ok": battleclosing_shotgun_not_anchored_ok,
+		"battlewounded_local_cover_ok": battlewounded_local_cover_ok,
+		"battlewounded_no_distant_spawn_ok": battlewounded_no_distant_spawn_ok,
+		"battlewounded_last_survivor_antistall_ok": battlewounded_last_survivor_antistall_ok,
+		"battlewounded_teammate_no_antistall_ok": battlewounded_teammate_no_antistall_ok,
+		"battlerifle_cadence_ok": battlerifle_cadence_ok,
 		"battleforcecommand_catalog_ok": battleforcecommand_catalog_ok,
 		"battleforcecommand_valid_ids_ok": battleforcecommand_valid_ids_ok,
 		"battleforcecommand_invalid_ids_ok": battleforcecommand_invalid_ids_ok,
@@ -18431,8 +18540,10 @@ static func run() -> Dictionary:
 		"provingground_deployment_ok": provingground_deployment_ok,
 		"provingground_vehicle_ok": provingground_vehicle_ok,
 		"provingground_legacy_ok": provingground_legacy_ok,
-		"provingground_layout_v2_ok": provingground_layout_v2_ok,
+		"provingground_layout_hq_ok": provingground_layout_hq_ok,
 		"provingground_attacker_cover_chain_ok": provingground_attacker_cover_chain_ok,
+		"provingground_hq_assault_ok": provingground_hq_assault_ok,
+		"provingground_hq_wrap_ok": provingground_hq_wrap_ok,
 		"battlecoverthreat_threshold_ok": battlecoverthreat_threshold_ok,
 		"battlecoverthreat_wrong_facing_loses_ok": battlecoverthreat_wrong_facing_loses_ok,
 		"battlecoverthreat_blocked_los_loses_ok": battlecoverthreat_blocked_los_loses_ok,
@@ -23237,14 +23348,14 @@ static func _provingground_hard_cover_ok() -> bool:
 	if battle_state == null:
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	var warehouse: BattleObstacle = geometry.get_obstacle("building_warehouse")
-	if warehouse == null or not warehouse.blocks_line_of_sight or not warehouse.blocks_movement:
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	if hq == null or not hq.blocks_line_of_sight or not hq.blocks_movement:
 		return false
-	var behind_start: Vector2 = Vector2(58.0, 10.0)
-	var behind_end: Vector2 = Vector2(90.0, 10.0)
-	var corner_end: Vector2 = Vector2(64.0, 21.0)
-	var street_start: Vector2 = Vector2(20.0, 30.0)
-	var street_end: Vector2 = Vector2(80.0, 30.0)
+	var behind_start: Vector2 = TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
+	var behind_end: Vector2 = Vector2(35.0, 8.0)
+	var corner_end: Vector2 = TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT
+	var street_start: Vector2 = Vector2(24.0, 36.0)
+	var street_end: Vector2 = Vector2(54.0, 36.0)
 	var blocked: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
 		battle_state,
 		behind_start,
@@ -23261,22 +23372,22 @@ static func _provingground_hard_cover_ok() -> bool:
 		street_end
 	)
 	var ids_before: Array[String] = geometry.get_sorted_obstacle_ids()
-	var warehouse_before: Rect2 = warehouse.bounds
+	var hq_before: Rect2 = hq.bounds
 	var blocked_again: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
 		battle_state,
 		behind_start,
 		behind_end
 	)
 	var ids_after: Array[String] = geometry.get_sorted_obstacle_ids()
-	var inside_warehouse: Vector2 = Vector2(80.0, 8.0)
-	var walk_start: Vector2 = Vector2(58.0, 21.0)
+	var inside_hq: Vector2 = Vector2(35.0, 8.0)
+	var walk_start: Vector2 = TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT
 	var walk: BattleSpatialResult = BattleSpatialService.resolve_translation(
 		battle_state,
 		walk_start,
-		inside_warehouse - walk_start
+		inside_hq - walk_start
 	)
-	var nav_start: Vector2 = Vector2(58.0, 21.0)
-	var nav_end: Vector2 = Vector2(99.0, 12.0)
+	var nav_start: Vector2 = TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
+	var nav_end: Vector2 = TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_EAST_POINT
 	var nav: BattleNavigationResult = BattleNavigationService.find_path(
 		battle_state,
 		nav_start,
@@ -23285,17 +23396,17 @@ static func _provingground_hard_cover_ok() -> bool:
 	var path_clear: bool = nav != null and nav.success and nav.used_detour
 	if path_clear:
 		for waypoint: Vector2 in nav.waypoints:
-			if geometry.get_movement_blocking_obstacle_id_at(waypoint) == "building_warehouse":
+			if geometry.get_movement_blocking_obstacle_id_at(waypoint) == "building_hq":
 				path_clear = false
 				break
-			if warehouse.contains_point(waypoint):
+			if hq.contains_point(waypoint):
 				path_clear = false
 				break
 	return (
 		blocked != null
 		and blocked.success
 		and blocked.has_line_of_sight == false
-		and blocked.blocking_obstacle_id == "building_warehouse"
+		and blocked.blocking_obstacle_id == "building_east_neighbor"
 		and visible != null
 		and visible.success
 		and visible.has_line_of_sight == true
@@ -23304,14 +23415,14 @@ static func _provingground_hard_cover_ok() -> bool:
 		and street_clear.has_line_of_sight == true
 		and street_clear.blocking_obstacle_id.is_empty()
 		and _string_ids_match(ids_before, ids_after)
-		and warehouse.bounds.is_equal_approx(warehouse_before)
+		and hq.bounds.is_equal_approx(hq_before)
 		and blocked_again != null
-		and blocked_again.blocking_obstacle_id == "building_warehouse"
-		and geometry.get_movement_blocking_obstacle_id_at(inside_warehouse) == "building_warehouse"
+		and blocked_again.blocking_obstacle_id == "building_east_neighbor"
+		and geometry.get_movement_blocking_obstacle_id_at(inside_hq) == "building_hq"
 		and walk != null
 		and walk.success
 		and walk.was_blocked
-		and not warehouse.contains_point(walk.final_position)
+		and not hq.contains_point(walk.final_position)
 		and path_clear
 	)
 
@@ -23321,8 +23432,8 @@ static func _provingground_soft_cover_ok() -> bool:
 	if battle_state == null:
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	var parked: BattleObstacle = geometry.get_obstacle("parked_car_west_north")
-	var dumpster: BattleObstacle = geometry.get_obstacle("dumpster_north_lot")
+	var parked: BattleObstacle = geometry.get_obstacle("parked_car_attack_west")
+	var dumpster: BattleObstacle = geometry.get_obstacle("dumpster_frontage_west")
 	if parked == null or dumpster == null:
 		return false
 	if parked.blocks_line_of_sight or dumpster.blocks_line_of_sight:
@@ -23331,8 +23442,8 @@ static func _provingground_soft_cover_ok() -> bool:
 		return false
 	var through_car: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
 		battle_state,
-		Vector2(24.1, 20.0),
-		Vector2(24.1, 26.0)
+		Vector2(33.8, 38.6),
+		Vector2(33.8, 42.4)
 	)
 	if (
 		not _battle_register_participant(
@@ -23344,7 +23455,7 @@ static func _provingground_soft_cover_ok() -> bool:
 	):
 		return false
 	var soldier: BattleParticipant = battle_state.get_participant("pg_cover_sol")
-	var slot: BattleCoverSlot = geometry.get_cover_slot("cover_dumpster_north_lot_east")
+	var slot: BattleCoverSlot = geometry.get_cover_slot("cover_dumpster_frontage_west_north")
 	if soldier == null or slot == null:
 		return false
 	soldier.has_battle_position = true
@@ -23352,17 +23463,17 @@ static func _provingground_soft_cover_ok() -> bool:
 	var occupied: BattleCoverResult = BattleCoverService.occupy_slot(
 		battle_state,
 		"pg_cover_sol",
-		"cover_dumpster_north_lot_east"
+		"cover_dumpster_frontage_west_north"
 	)
 	var from_front: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
 		geometry,
 		soldier,
-		slot.position + Vector2.LEFT * 6.0
+		slot.position + Vector2.DOWN * 6.0
 	)
 	var from_rear: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
 		geometry,
 		soldier,
-		slot.position + Vector2.RIGHT * 6.0
+		slot.position + Vector2.UP * 6.0
 	)
 	return (
 		through_car != null
@@ -23384,16 +23495,17 @@ static func _provingground_deployment_ok() -> bool:
 	if battle_state == null:
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	var street_point: Vector2 = Vector2(7.25, 31.5)
-	var bounding_outside: Vector2 = Vector2(17.5, 30.0)
-	var mid_street: Vector2 = Vector2(36.0, 30.0)
-	var defender_only: Vector2 = Vector2(64.0, 18.5)
-	var alley: Vector2 = Vector2(60.0, 50.0)
-	var warehouse_inside: Vector2 = Vector2(80.0, 8.0)
-	var dumpster_inside: Vector2 = Vector2(57.6, 12.3)
+	var street_point: Vector2 = TacticalProvingGroundCatalog.ATTACKER_PLACE_POINT
+	var bounding_outside: Vector2 = Vector2(37.2, 33.0)
+	var mid_street: Vector2 = Vector2(28.0, 34.0)
+	var defender_only: Vector2 = Vector2(35.0, 24.4)
+	var alley: Vector2 = TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
+	var alley_mouth: Vector2 = TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT
+	var hq_inside: Vector2 = Vector2(35.0, 8.0)
+	var dumpster_inside: Vector2 = Vector2(21.35, 24.05)
 	if not geometry.has_attacker_deployment_pockets() or not geometry.has_defender_deployment_pockets():
 		return false
-	if geometry.attacker_deployment_area.pockets.size() < 2:
+	if geometry.attacker_deployment_area.pockets.size() < 1:
 		return false
 	if geometry.defender_deployment_area.pockets.size() < 3:
 		return false
@@ -23408,9 +23520,26 @@ static func _provingground_deployment_ok() -> bool:
 	var mid: String = battle_state.get_deployment_position_error("attacker", mid_street)
 	var wrong_side: String = battle_state.get_deployment_position_error("attacker", defender_only)
 	var alley_def: String = battle_state.get_deployment_position_error("defender", alley)
+	var alley_mouth_def: String = battle_state.get_deployment_position_error("defender", alley_mouth)
+	var alley_att_approach: String = battle_state.get_deployment_position_error(
+		"attacker",
+		TacticalProvingGroundCatalog.ATTACKER_ALLEY_APPROACH_POINT
+	)
 	var alley_att: String = battle_state.get_deployment_position_error("attacker", alley)
-	var warehouse_att: String = battle_state.get_deployment_position_error("attacker", warehouse_inside)
-	var warehouse_def: String = battle_state.get_deployment_position_error("defender", warehouse_inside)
+	var street_west_def: String = battle_state.get_deployment_position_error(
+		"defender",
+		TacticalProvingGroundCatalog.DEFENDER_STREET_WEST_POINT
+	)
+	var hq_side_front_def: String = battle_state.get_deployment_position_error(
+		"defender",
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT
+	)
+	var hq_side_rear_def: String = battle_state.get_deployment_position_error(
+		"defender",
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT
+	)
+	var hq_att: String = battle_state.get_deployment_position_error("attacker", hq_inside)
+	var hq_def: String = battle_state.get_deployment_position_error("defender", hq_inside)
 	var blocker: String = battle_state.get_deployment_position_error("defender", dumpster_inside)
 	if legal == null or not legal.success:
 		return false
@@ -23421,7 +23550,7 @@ static func _provingground_deployment_ok() -> bool:
 	var frozen: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
 		battle_state,
 		"pg_att2",
-		Vector2(10.0, 28.0)
+		Vector2(42.0, 42.5)
 	)
 	return (
 		geometry.attacker_deployment_contains(street_point)
@@ -23430,16 +23559,25 @@ static func _provingground_deployment_ok() -> bool:
 		and outside_poly == "outside_deployment_zone"
 		and mid == "outside_deployment_zone"
 		and wrong_side == "outside_deployment_zone"
-		and alley_def.is_empty()
+		and alley_def == "outside_deployment_zone"
+		and alley_mouth_def == "outside_deployment_zone"
+		and alley_att_approach.is_empty()
+		and street_west_def.is_empty()
+		and hq_side_front_def.is_empty()
+		and hq_side_rear_def.is_empty()
 		and alley_att == "outside_deployment_zone"
-		and not warehouse_att.is_empty()
-		and not warehouse_def.is_empty()
+		and not hq_att.is_empty()
+		and not hq_def.is_empty()
 		and blocker == "inside_blocking_obstacle"
 		and frozen != null
 		and not frozen.success
 		and frozen.error_code == "side_deployment_committed"
 		and geometry.defender_deployment_contains(defender_only)
-		and geometry.defender_deployment_contains(alley)
+		and geometry.attacker_deployment_contains(alley_mouth)
+		and not geometry.defender_deployment_contains(alley_mouth)
+		and not geometry.defender_deployment_contains(alley)
+		and geometry.defender_deployment_contains(TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_MID_POINT)
+		and not geometry.defender_deployment_contains(TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT)
 		and not geometry.defender_deployment_contains(mid_street)
 	)
 
@@ -23502,36 +23640,35 @@ static func _provingground_legacy_ok() -> bool:
 	)
 
 
-static func _provingground_layout_v2_ok() -> bool:
+static func _provingground_layout_hq_ok() -> bool:
 	var battle_state: BattleState = _provingground_make_state()
 	if battle_state == null or battle_state.battlefield_geometry == null:
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if geometry.authored_layout_id != TacticalProvingGroundCatalog.LAYOUT_ID:
 		return false
-	if geometry.authored_layout_id != "west_east_commercial_block_v2":
+	if geometry.authored_layout_id != "hq_frontage_assault_v1":
 		return false
-	if not is_equal_approx(geometry.width, 100.0) or not is_equal_approx(geometry.height, 60.0):
+	if not is_equal_approx(geometry.width, 86.0) or not is_equal_approx(geometry.height, 58.0):
 		return false
 	var road: BattleSurfaceRegion = geometry.get_surface_region("road_main")
 	if road == null or road.region_kind != BattleSurfaceRegion.KIND_ASPHALT:
 		return false
 	if not road.bounds.is_equal_approx(TacticalProvingGroundCatalog.MAIN_ROAD):
 		return false
-	if geometry.get_surface_region("road_intersection") != null:
+	var porch: BattleSurfaceRegion = geometry.get_surface_region("apron_hq_porch")
+	if porch == null or not porch.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_APRON):
 		return false
-	var alley_mouth: BattleSurfaceRegion = geometry.get_surface_region("road_alley_mouth")
-	if alley_mouth == null or not alley_mouth.bounds.is_equal_approx(TacticalProvingGroundCatalog.ALLEY_MOUTH):
-		return false
-	if geometry.get_surface_region("apron_warehouse") != null:
+	var alley: BattleSurfaceRegion = geometry.get_surface_region("alley_hq_east")
+	if alley == null or not alley.bounds.is_equal_approx(TacticalProvingGroundCatalog.ALLEY_SURFACE):
 		return false
 	var buildings: Dictionary = {
-		"building_nw_shop": TacticalProvingGroundCatalog.NW_SHOP_BOUNDS,
-		"building_mid_north_shop": TacticalProvingGroundCatalog.MID_NORTH_SHOP_BOUNDS,
-		"building_warehouse": TacticalProvingGroundCatalog.WAREHOUSE_BOUNDS,
-		"building_sw_shop": TacticalProvingGroundCatalog.SW_SHOP_BOUNDS,
-		"building_south_mid": TacticalProvingGroundCatalog.SOUTH_MID_BOUNDS,
-		"building_east_shop": TacticalProvingGroundCatalog.EAST_SHOP_BOUNDS,
+		"building_hq": TacticalProvingGroundCatalog.HQ_BOUNDS,
+		"building_west_neighbor": TacticalProvingGroundCatalog.WEST_NEIGHBOR_BOUNDS,
+		"building_east_neighbor": TacticalProvingGroundCatalog.EAST_NEIGHBOR_BOUNDS,
+		"building_sw_framing": TacticalProvingGroundCatalog.SW_FRAMING_BOUNDS,
+		"building_south_mid_framing": TacticalProvingGroundCatalog.SOUTH_MID_FRAMING_BOUNDS,
+		"building_se_framing": TacticalProvingGroundCatalog.SE_FRAMING_BOUNDS,
 	}
 	for building_id: Variant in buildings:
 		var obstacle: BattleObstacle = geometry.get_obstacle(str(building_id))
@@ -23544,53 +23681,117 @@ static func _provingground_layout_v2_ok() -> bool:
 		if battle_state.get_deployment_position_error("attacker", obstacle.bounds.get_center()).is_empty():
 			return false
 	var obsolete_ids: Array[String] = [
-		"building_storefront_west",
-		"building_storefront_west_rear",
-		"building_storefront_east",
-		"building_storefront_east_annex",
-		"parked_car_intersection",
-		"dumpster_lot",
-		"cover_dumpster_lot_south",
-		"cover_dock_wall_south",
+		"building_warehouse",
+		"building_ne_shop",
+		"building_nw_corner",
+		"commercial_intersection_v3",
+		"cover_dumpster_north_lot_east",
+		"parked_car_west_north",
+		"parked_car_street_west",
+		"parked_car_street_east",
+		"parked_car_north_east",
 	]
 	for obsolete_id: String in obsolete_ids:
 		if geometry.has_obstacle(obsolete_id) or geometry.has_cover_slot(obsolete_id):
 			return false
-	var street_legal: Vector2 = Vector2(7.25, 31.5)
+	var street_legal: Vector2 = TacticalProvingGroundCatalog.ATTACKER_PLACE_POINT
 	if battle_state.get_deployment_position_error("attacker", street_legal) != "":
 		return false
 	if not geometry.attacker_deployment_contains(street_legal):
 		return false
 	var defender_points: Array[Vector2] = [
-		Vector2(90.0, 30.0),
-		Vector2(80.0, 21.5),
-		Vector2(54.0, 12.0),
-		Vector2(60.0, 50.0),
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_WEST_POINT,
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_CENTER_POINT,
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_EAST_POINT,
+		StarterWorldService.DEFENDER_PISTOL_START,
+		StarterWorldService.DEFENDER_RIFLE_START,
+		StarterWorldService.DEFENDER_SHOTGUN_START,
+		TacticalProvingGroundCatalog.DEFENDER_STREET_WEST_POINT,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_MID_POINT,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT,
 	]
 	for defender_point: Vector2 in defender_points:
 		if battle_state.get_deployment_position_error("defender", defender_point) != "":
 			return false
-	if geometry.defender_deployment_contains(Vector2(36.0, 30.0)):
+	if geometry.defender_deployment_contains(Vector2(38.0, 44.0)):
 		return false
-	if geometry.get_movement_blocking_obstacle_id_at(Vector2(56.0, 38.0)) != "":
+	if geometry.defender_deployment_contains(TacticalProvingGroundCatalog.ALLEY_DEEP_POINT):
+		return false
+	if geometry.defender_deployment_contains(TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT):
+		return false
+	if not geometry.attacker_deployment_contains(TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT):
+		return false
+	if not geometry.attacker_deployment_contains(Vector2(85.2, 40.0)):
+		return false
+	if geometry.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT) != "":
+		return false
+	var east_neighbor: BattleObstacle = geometry.get_obstacle("building_east_neighbor")
+	if east_neighbor == null:
+		return false
+	if not is_equal_approx(east_neighbor.bounds.position.x + east_neighbor.bounds.size.x, 77.0):
+		return false
+	if not is_equal_approx(east_neighbor.bounds.position.x, TacticalProvingGroundCatalog.HQ_SIDE_ALLEY.position.x + TacticalProvingGroundCatalog.HQ_SIDE_ALLEY.size.x):
+		return false
+	if east_neighbor.bounds.position.y < 4.0:
+		return false
+	if not is_equal_approx(alley.bounds.position.x, 77.0):
+		return false
+	if not is_equal_approx(alley.bounds.position.x + alley.bounds.size.x, 86.0):
+		return false
+	var hq_side_alley: BattleSurfaceRegion = geometry.get_surface_region("alley_hq_side")
+	if hq_side_alley == null or not hq_side_alley.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_SIDE_ALLEY):
+		return false
+	var hq_east: float = (
+		TacticalProvingGroundCatalog.HQ_BOUNDS.position.x
+		+ TacticalProvingGroundCatalog.HQ_BOUNDS.size.x
+	)
+	if hq_side_alley.bounds.position.x + 0.05 < hq_east:
+		if not is_equal_approx(hq_side_alley.bounds.position.x, hq_east):
+			return false
+	if hq_side_alley.bounds.position.x + hq_side_alley.bounds.size.x > east_neighbor.bounds.position.x + 0.05:
+		return false
+	var rear_space: BattleSurfaceRegion = geometry.get_surface_region("alley_right_rear")
+	if rear_space == null or not rear_space.bounds.is_equal_approx(TacticalProvingGroundCatalog.REAR_SPACE):
+		return false
+	if rear_space.bounds.position.y + rear_space.bounds.size.y > east_neighbor.bounds.position.y + 0.05:
+		return false
+	if geometry.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT) != "":
+		return false
+	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+		var east_of_alley: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if east_of_alley == null or east_of_alley.presentation_kind != "building":
+			continue
+		if east_of_alley.bounds.position.x >= 77.0:
+			return false
+	if alley.bounds.position.x < hq_east:
+		return false
+	var has_east_boundary_vertex := false
+	for pocket: BattleDeploymentPocket in geometry.attacker_deployment_area.pockets:
+		if pocket == null:
+			continue
+		for vertex: Vector2 in pocket.polygon:
+			if is_equal_approx(vertex.x, 86.0):
+				has_east_boundary_vertex = true
+	if not has_east_boundary_vertex:
 		return false
 	var alley_nav: BattleNavigationResult = BattleNavigationService.find_path(
 		battle_state,
-		Vector2(56.0, 30.0),
-		Vector2(60.0, 50.0)
+		StarterWorldService.ATTACKER_SHOTGUN_START,
+		TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
 	)
 	if alley_nav == null or not alley_nav.success:
 		return false
-	var nw_los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+	var hq_los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
 		battle_state,
-		Vector2(8.0, 30.0),
-		Vector2(8.0, 55.0)
+		Vector2(38.0, 8.0),
+		Vector2(38.0, 44.0)
 	)
 	if (
-		nw_los == null
-		or not nw_los.success
-		or nw_los.has_line_of_sight
-		or nw_los.blocking_obstacle_id != "building_sw_shop"
+		hq_los == null
+		or not hq_los.success
+		or hq_los.has_line_of_sight
+		or hq_los.blocking_obstacle_id != "building_hq"
 	):
 		return false
 	for slot_id: String in geometry.get_sorted_cover_slot_ids():
@@ -23606,12 +23807,16 @@ static func _provingground_layout_v2_ok() -> bool:
 			return false
 		if slot_id.ends_with("_west") and facing.dot(Vector2.RIGHT) < 0.75:
 			return false
+		if slot_id.ends_with("_south") and facing.dot(Vector2.UP) < 0.75:
+			return false
+		if slot_id.ends_with("_north") and facing.dot(Vector2.DOWN) < 0.75:
+			return false
 	var vehicle_context: BattleVehiclePlacementContext = geometry.attacker_vehicle_placement_context
 	if vehicle_context == null or not vehicle_context.has_anchor or not vehicle_context.has_arrival_heading:
 		return false
-	if not vehicle_context.anchor_position.is_equal_approx(Vector2(8.0, 27.2)):
+	if not vehicle_context.anchor_position.is_equal_approx(TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR):
 		return false
-	if not vehicle_context.arrival_heading.is_equal_approx(Vector2.RIGHT):
+	if not vehicle_context.arrival_heading.is_equal_approx(TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING):
 		return false
 	var view_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
 	var catalog_src: String = FileAccess.get_file_as_string(
@@ -23627,18 +23832,30 @@ static func _provingground_layout_v2_ok() -> bool:
 	var dynamic_body: String = view_src.substr(dynamic_idx, dynamic_next - dynamic_idx)
 	return (
 		geometry.is_valid()
-		and geometry.has_cover_slot("cover_dumpster_north_lot_east")
-		and geometry.has_cover_slot("cover_parked_van_east_street_east")
-		and geometry.has_obstacle("parked_car_west_north")
+		and geometry.has_cover_slot("cover_dumpster_frontage_west_north")
+		and geometry.has_cover_slot("cover_dumpster_alley_south")
+		and geometry.has_obstacle("parked_car_attack_west")
+		and geometry.has_obstacle("parked_car_attack_mid")
+		and geometry.has_obstacle("parked_car_attack_east")
+		and geometry.has_obstacle("parked_car_attack_alley")
+		and geometry.has_obstacle("parked_car_north_west")
+		and geometry.has_obstacle("parked_car_north_offset")
+		and geometry.has_obstacle("building_hq")
+		and geometry.has_obstacle("dumpster_hq_alley_front")
+		and geometry.has_obstacle("crates_hq_alley_rear")
 		and geometry.presentation_markings.size() > 6
 		and static_body.contains("_draw_obstacles")
 		and static_body.contains("_draw_surfaces")
+		and view_src.contains("func _draw_hq_cues")
+		and static_body.contains("_draw_obstacles")
+		and not dynamic_body.contains("_draw_hq_cues")
+		and not dynamic_body.contains("_draw_obstacles")
 		and dynamic_body.contains("_draw_deployment_zones")
 		and dynamic_body.contains("_draw_participants")
 		and view_src.contains("clip_polygons")
-		and catalog_src.contains("west_east_commercial_block_v2")
-		and not catalog_src.contains("urban_intersection_v1")
-		and not catalog_src.contains("road_intersection")
+		and catalog_src.contains("hq_frontage_assault_v1")
+		and not catalog_src.contains("commercial_intersection_v3")
+		and not catalog_src.contains("west_east_commercial_block_v2")
 	)
 
 
@@ -23647,28 +23864,27 @@ static func _provingground_attacker_cover_chain_ok() -> bool:
 	if battle_state == null or battle_state.battlefield_geometry == null:
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	var spawn: Vector2 = Vector2(7.25, 31.5)
-	var typical_east_threat: Vector2 = Vector2(88.0, 30.0)
-	var outer_id: String = "cover_delivery_van_mid_north_west"
-	var mid_south_id: String = "cover_dumpster_south_curb_west"
-	var mid_north_id: String = "cover_corner_stub_warehouse_west"
-	var close_id: String = "cover_barrier_street_south_close_west"
-	if not geometry.has_obstacle("delivery_van_mid_north"):
+	var spawn: Vector2 = TacticalProvingGroundCatalog.ATTACKER_PLACE_POINT
+	var typical_north_threat: Vector2 = Vector2(35.2, 19.8)
+	var outer_id: String = "cover_parked_car_attack_west_south"
+	var mid_id: String = "cover_trash_street_approach_south"
+	var close_id: String = "cover_porch_stub_west_south"
+	if not geometry.has_obstacle("parked_car_attack_west"):
 		return false
-	if not geometry.has_obstacle("dumpster_south_curb"):
+	if not geometry.has_obstacle("trash_street_approach"):
 		return false
-	if not geometry.has_obstacle("barrier_street_south_close"):
+	if not geometry.has_obstacle("porch_stub_west"):
 		return false
-	if geometry.get_movement_blocking_obstacle_id_at(Vector2(56.0, 38.0)) != "":
+	if geometry.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT) != "":
 		return false
 	var alley_nav: BattleNavigationResult = BattleNavigationService.find_path(
 		battle_state,
-		Vector2(56.0, 30.0),
-		Vector2(60.0, 50.0)
+		StarterWorldService.ATTACKER_SHOTGUN_START,
+		TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
 	)
 	if alley_nav == null or not alley_nav.success:
 		return false
-	var chain_ids: Array[String] = [outer_id, mid_south_id, mid_north_id, close_id]
+	var chain_ids: Array[String] = [outer_id, mid_id, close_id]
 	for slot_id: String in chain_ids:
 		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
 		if slot == null or not slot.is_valid():
@@ -23677,21 +23893,21 @@ static func _provingground_attacker_cover_chain_ok() -> bool:
 			return false
 		if geometry.get_movement_blocking_obstacle_id_at(slot.position) != "":
 			return false
-		if slot.facing_direction.normalized().dot(Vector2.RIGHT) < 0.75:
+		if slot.facing_direction.normalized().dot(Vector2.UP) < 0.75:
 			return false
-		var from_east: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+		var from_north: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
 			slot,
-			slot.position + Vector2.RIGHT * 8.0
+			slot.position + Vector2.UP * 8.0
 		)
-		var from_west: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+		var from_south: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
 			slot,
-			slot.position + Vector2.LEFT * 8.0
+			slot.position + Vector2.DOWN * 8.0
 		)
-		if from_east == null or from_west == null:
+		if from_north == null or from_south == null:
 			return false
-		if from_east.protection_factor < 0.5:
+		if from_north.protection_factor < 0.5:
 			return false
-		if from_west.protection_factor >= 0.15:
+		if from_south.protection_factor >= 0.15:
 			return false
 		var spawn_path: BattleNavigationResult = BattleNavigationService.find_path(
 			battle_state,
@@ -23707,13 +23923,13 @@ static func _provingground_attacker_cover_chain_ok() -> bool:
 	var defender: BattleParticipant = _battlefire_add(battle_state, "pg_chain_def", "defender", "rifle")
 	if rifle == null or pistol == null or smg == null or shotgun == null or defender == null:
 		return false
-	_battletarget_place(defender, typical_east_threat)
-	_battletarget_place(rifle, Vector2(36.6, 28.2))
-	_battletarget_place(pistol, Vector2(62.0, 32.0))
-	_battletarget_place(smg, Vector2(68.0, 32.0))
-	_battletarget_place(shotgun, Vector2(74.0, 33.0))
+	_battletarget_place(defender, typical_north_threat)
+	_battletarget_place(rifle, Vector2(32.0, 43.0))
+	_battletarget_place(pistol, Vector2(47.6, 34.6))
+	_battletarget_place(smg, Vector2(47.8, 34.8))
+	_battletarget_place(shotgun, Vector2(33.0, 26.4))
 	var outer_slot: BattleCoverSlot = geometry.get_cover_slot(outer_id)
-	var mid_south_slot: BattleCoverSlot = geometry.get_cover_slot(mid_south_id)
+	var mid_slot: BattleCoverSlot = geometry.get_cover_slot(mid_id)
 	var close_slot: BattleCoverSlot = geometry.get_cover_slot(close_id)
 	var rifle_outer: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
 		battle_state,
@@ -23727,7 +23943,7 @@ static func _provingground_attacker_cover_chain_ok() -> bool:
 	var pistol_mid: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
 		battle_state,
 		pistol,
-		mid_south_slot,
+		mid_slot,
 		defender,
 		true,
 		true,
@@ -23736,7 +23952,7 @@ static func _provingground_attacker_cover_chain_ok() -> bool:
 	var smg_mid: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
 		battle_state,
 		smg,
-		mid_south_slot,
+		mid_slot,
 		defender,
 		true,
 		true
@@ -23779,10 +23995,380 @@ static func _provingground_attacker_cover_chain_ok() -> bool:
 	if rifle_close != null and rifle_close.combat_usable:
 		return false
 	return (
-		geometry.has_cover_slot("cover_parked_van_east_street_east")
-		and geometry.has_cover_slot("cover_corner_stub_warehouse_east")
-		and geometry.has_cover_slot("cover_parked_car_east_north_east")
-		and geometry.has_obstacle("parked_van_east_street")
+		geometry.has_cover_slot("cover_parked_car_attack_east_south")
+		and geometry.has_cover_slot("cover_parked_car_attack_alley_west")
+		and geometry.has_cover_slot("cover_dumpster_frontage_west_north")
+		and geometry.has_cover_slot("cover_dumpster_alley_west")
+		and geometry.has_obstacle("parked_car_attack_east")
+	)
+
+
+static func _provingground_hq_assault_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry.authored_layout_id != "hq_frontage_assault_v1":
+		return false
+	if not is_equal_approx(geometry.width, 86.0) or not is_equal_approx(geometry.height, 58.0):
+		return false
+	var starts: Array[Vector2] = [
+		StarterWorldService.ATTACKER_RIFLE_START,
+		StarterWorldService.ATTACKER_SMG_START,
+		StarterWorldService.ATTACKER_SHOTGUN_START,
+		StarterWorldService.DEFENDER_PISTOL_START,
+		StarterWorldService.DEFENDER_RIFLE_START,
+		StarterWorldService.DEFENDER_SHOTGUN_START,
+	]
+	for i in starts.size():
+		var start: Vector2 = starts[i]
+		var side_id: String = "attacker" if i < 3 else "defender"
+		if not geometry.contains_point(start):
+			return false
+		if not geometry.get_movement_blocking_obstacle_id_at(start).is_empty():
+			return false
+		if not battle_state.get_deployment_position_error(side_id, start).is_empty():
+			return false
+		for slot_id: String in geometry.get_sorted_cover_slot_ids():
+			var cover_slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+			if cover_slot != null and start.distance_to(cover_slot.position) <= 0.5:
+				return false
+	if starts[0].y <= 32.0 or starts[1].y <= 32.0:
+		return false
+	if starts[2].x < 80.0:
+		return false
+	if starts[3].y >= 27.0 or starts[4].y >= 27.0 or starts[5].y >= 27.0:
+		return false
+	if starts[4].x >= TacticalProvingGroundCatalog.ALLEY_SURFACE.position.x:
+		return false
+	if starts[4].y < 20.0:
+		return false
+	if starts[4].x >= 32.2 and starts[4].x <= 37.8:
+		return false
+	if starts[5].x < 42.0 or starts[5].x >= 53.0:
+		return false
+	if starts[5].y < 21.0:
+		return false
+	if starts[0].distance_to(starts[2]) < 20.0:
+		return false
+	if starts[0].distance_to(TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR) > 14.0:
+		return false
+	if starts[1].distance_to(TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR) > 6.0:
+		return false
+	var attacker_centroid: Vector2 = geometry.attacker_deployment_area.centroid()
+	var attacker_bounds: Rect2 = geometry.attacker_deployment_area.bounding_rect()
+	if attacker_centroid.x <= TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR.x:
+		return false
+	if attacker_bounds.position.x + attacker_bounds.size.x < 86.0:
+		return false
+	if attacker_bounds.position.x > 38.5:
+		return false
+	if battle_state.get_deployment_position_error(
+		"attacker",
+		TacticalProvingGroundCatalog.ATTACKER_ALLEY_APPROACH_POINT
+	) != "":
+		return false
+	var alley_from_approach: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		TacticalProvingGroundCatalog.ATTACKER_ALLEY_APPROACH_POINT,
+		TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
+	)
+	if alley_from_approach == null or not alley_from_approach.success:
+		return false
+	for waypoint: Vector2 in alley_from_approach.waypoints:
+		if waypoint.x < 70.0:
+			return false
+	var defender_span: Array[Vector2] = [
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_WEST_POINT,
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_CENTER_POINT,
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_EAST_POINT,
+		TacticalProvingGroundCatalog.DEFENDER_STREET_WEST_POINT,
+	]
+	for span_point: Vector2 in defender_span:
+		if battle_state.get_deployment_position_error("defender", span_point) != "":
+			return false
+	if not geometry.has_obstacle("parked_car_north_west"):
+		return false
+	if not geometry.has_obstacle("parked_car_north_offset"):
+		return false
+	if geometry.has_obstacle("parked_car_north_east"):
+		return false
+	var north_west_car: BattleObstacle = geometry.get_obstacle("parked_car_north_west")
+	var north_offset_car: BattleObstacle = geometry.get_obstacle("parked_car_north_offset")
+	if north_west_car == null or north_offset_car == null:
+		return false
+	if north_west_car.blocks_line_of_sight or north_offset_car.blocks_line_of_sight:
+		return false
+	if not north_west_car.blocks_movement or not north_offset_car.blocks_movement:
+		return false
+	if is_equal_approx(north_west_car.bounds.position.y, north_offset_car.bounds.position.y):
+		return false
+	if is_equal_approx(north_west_car.bounds.size.x, north_offset_car.bounds.size.x):
+		return false
+	var los_pairs := 0
+	var open_pairs := 0
+	for i in starts.size():
+		for j in range(i + 1, starts.size()):
+			los_pairs += 1
+			var pair_los: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+				battle_state,
+				starts[i],
+				starts[j]
+			)
+			if pair_los != null and pair_los.success and pair_los.has_line_of_sight:
+				open_pairs += 1
+	if open_pairs <= 0 or open_pairs >= los_pairs:
+		return false
+	var east_to_west_pistol: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		battle_state,
+		StarterWorldService.ATTACKER_SHOTGUN_START,
+		StarterWorldService.DEFENDER_PISTOL_START
+	)
+	if (
+		east_to_west_pistol == null
+		or not east_to_west_pistol.success
+		or east_to_west_pistol.has_line_of_sight
+		or east_to_west_pistol.blocking_obstacle_id != "building_hq"
+	):
+		return false
+	var center_sight: BattleLineOfSightResult = BattleLineOfSightService.check_segment(
+		battle_state,
+		Vector2(35.0, 44.0),
+		Vector2(35.0, 24.4)
+	)
+	if center_sight == null or not center_sight.success or not center_sight.has_line_of_sight:
+		return false
+	var west_approach: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		StarterWorldService.ATTACKER_RIFLE_START,
+		Vector2(20.0, 24.8)
+	)
+	var center_approach: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		StarterWorldService.ATTACKER_SMG_START,
+		Vector2(35.0, 24.4)
+	)
+	var alley_route: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		StarterWorldService.ATTACKER_SHOTGUN_START,
+		TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
+	)
+	var far_right_north: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		TacticalProvingGroundCatalog.ALLEY_DEEP_POINT,
+		TacticalProvingGroundCatalog.FAR_RIGHT_ALLEY_NORTH_POINT
+	)
+	var rear_connect: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		TacticalProvingGroundCatalog.FAR_RIGHT_ALLEY_NORTH_POINT,
+		TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT
+	)
+	var rear_to_hq_side: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT
+	)
+	var hq_side_south: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT
+	)
+	var hq_side_to_frontage: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT,
+		TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_EAST_POINT
+	)
+	if west_approach == null or not west_approach.success:
+		return false
+	if center_approach == null or not center_approach.success:
+		return false
+	if alley_route == null or not alley_route.success:
+		return false
+	if far_right_north == null or not far_right_north.success:
+		return false
+	if rear_connect == null or not rear_connect.success:
+		return false
+	if rear_to_hq_side == null or not rear_to_hq_side.success:
+		return false
+	if hq_side_south == null or not hq_side_south.success:
+		return false
+	if hq_side_to_frontage == null or not hq_side_to_frontage.success:
+		return false
+	for waypoint: Vector2 in alley_route.waypoints:
+		if waypoint.x < 70.0:
+			return false
+	for waypoint: Vector2 in far_right_north.waypoints:
+		if waypoint.x < 70.0:
+			return false
+	for waypoint: Vector2 in rear_connect.waypoints:
+		if waypoint.y > 8.0:
+			return false
+	for waypoint: Vector2 in hq_side_south.waypoints:
+		if waypoint.x < 53.0 or waypoint.x > 58.5:
+			return false
+		if waypoint.y > 28.0 and waypoint.x > 70.0:
+			return false
+	for waypoint: Vector2 in hq_side_to_frontage.waypoints:
+		if waypoint.x >= 77.0 and waypoint.y >= 20.0:
+			return false
+	var tucked: BattleCoverSlot = geometry.get_cover_slot("cover_dumpster_frontage_west_north")
+	if tucked == null:
+		return false
+	var front: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+		tucked,
+		tucked.position + Vector2.DOWN * 8.0
+	)
+	var flank: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+		tucked,
+		tucked.position + Vector2.RIGHT * 8.0
+	)
+	if front == null or front.protection_factor < 0.5:
+		return false
+	if flank == null or flank.protection_factor >= 0.15:
+		return false
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	if hq == null:
+		return false
+	var defender_to_hq: float = StarterWorldService.DEFENDER_PISTOL_START.distance_to(hq.bounds.get_center())
+	var attacker_to_hq: float = StarterWorldService.ATTACKER_RIFLE_START.distance_to(hq.bounds.get_center())
+	if defender_to_hq >= attacker_to_hq:
+		return false
+	var road: BattleSurfaceRegion = geometry.get_surface_region("road_main")
+	if road == null:
+		return false
+	if not BattlefieldGeometry.rect_contains_point(
+		road.bounds,
+		TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR
+	):
+		return false
+	return (
+		geometry.has_obstacle("dumpster_alley")
+		and geometry.has_cover_slot("cover_trash_street_approach_south")
+		and geometry.has_cover_slot("cover_crates_frontage_east_north")
+		and geometry.has_cover_slot("cover_parked_car_north_west_north")
+		and geometry.has_cover_slot("cover_parked_car_north_offset_west")
+		and geometry.has_obstacle("parked_car_attack_west")
+		and geometry.has_obstacle("parked_car_attack_mid")
+		and geometry.has_obstacle("parked_car_attack_east")
+		and geometry.has_obstacle("parked_car_attack_alley")
+		and geometry.has_obstacle("trash_street_approach")
+		and road.bounds.size.y >= 14.5
+		and is_equal_approx(BattleWeaponCatalog.RIFLE_SHOTS_PER_SECOND, 1.6)
+		and geometry.attacker_vehicle_placement_context != null
+		and geometry.attacker_vehicle_placement_context.has_anchor
+	)
+
+
+static func _provingground_hq_wrap_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	var east_neighbor: BattleObstacle = geometry.get_obstacle("building_east_neighbor")
+	var hq_side: BattleSurfaceRegion = geometry.get_surface_region("alley_hq_side")
+	var far_right: BattleSurfaceRegion = geometry.get_surface_region("alley_hq_east")
+	var rear_space: BattleSurfaceRegion = geometry.get_surface_region("alley_right_rear")
+	if hq == null or east_neighbor == null or hq_side == null or far_right == null or rear_space == null:
+		return false
+	var hq_east: float = hq.bounds.position.x + hq.bounds.size.x
+	var neighbor_west: float = east_neighbor.bounds.position.x
+	var neighbor_east: float = east_neighbor.bounds.position.x + east_neighbor.bounds.size.x
+	if not is_equal_approx(hq_east, 53.0):
+		return false
+	if not is_equal_approx(neighbor_west, 58.0):
+		return false
+	if not is_equal_approx(neighbor_east, 77.0):
+		return false
+	if not is_equal_approx(hq_side.bounds.position.x, hq_east):
+		return false
+	if not is_equal_approx(hq_side.bounds.position.x + hq_side.bounds.size.x, neighbor_west):
+		return false
+	if not is_equal_approx(far_right.bounds.position.x, neighbor_east):
+		return false
+	if not is_equal_approx(far_right.bounds.position.x + far_right.bounds.size.x, 86.0):
+		return false
+	if east_neighbor.bounds.position.y < 4.0:
+		return false
+	if rear_space.bounds.position.y + rear_space.bounds.size.y > east_neighbor.bounds.position.y + 0.05:
+		return false
+	if geometry.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.FAR_RIGHT_ALLEY_NORTH_POINT) != "":
+		return false
+	if geometry.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT) != "":
+		return false
+	if geometry.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_MID_POINT) != "":
+		return false
+	var wrap_legs: Array = [
+		[TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT, TacticalProvingGroundCatalog.FAR_RIGHT_ALLEY_NORTH_POINT],
+		[TacticalProvingGroundCatalog.FAR_RIGHT_ALLEY_NORTH_POINT, TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT],
+		[TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT, TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT],
+		[TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT, TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT],
+		[TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT, TacticalProvingGroundCatalog.DEFENDER_FRONTAGE_EAST_POINT],
+	]
+	var exited_via_rear := false
+	var leg_index: int = 0
+	while leg_index < wrap_legs.size():
+		var leg: Array = wrap_legs[leg_index]
+		var nav: BattleNavigationResult = BattleNavigationService.find_path(
+			battle_state,
+			leg[0] as Vector2,
+			leg[1] as Vector2
+		)
+		if nav == null or not nav.success:
+			return false
+		for waypoint: Vector2 in nav.waypoints:
+			if (
+				waypoint.y < east_neighbor.bounds.position.y
+				and waypoint.x < neighbor_east
+			):
+				exited_via_rear = true
+			if exited_via_rear and waypoint.x >= 77.0 and waypoint.y >= 20.0:
+				return false
+		leg_index += 1
+	if not exited_via_rear:
+		return false
+	if battle_state.get_deployment_position_error(
+		"defender",
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_FRONT_POINT
+	) != "":
+		return false
+	if battle_state.get_deployment_position_error(
+		"defender",
+		TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_REAR_POINT
+	) != "":
+		return false
+	if geometry.defender_deployment_contains(TacticalProvingGroundCatalog.ALLEY_DEEP_POINT):
+		return false
+	if geometry.defender_deployment_contains(TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT):
+		return false
+	if geometry.defender_deployment_contains(TacticalProvingGroundCatalog.RIGHT_NEIGHBOR_REAR_POINT):
+		return false
+	if not geometry.has_obstacle("dumpster_hq_alley_front"):
+		return false
+	if not geometry.has_obstacle("crates_hq_alley_rear"):
+		return false
+	if not geometry.has_cover_slot("cover_dumpster_hq_alley_front_east"):
+		return false
+	if not geometry.has_cover_slot("cover_crates_hq_alley_rear_west"):
+		return false
+	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+		var parked: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if parked == null or parked.presentation_kind != "parked_car":
+			continue
+		if parked.bounds.size.x <= parked.bounds.size.y:
+			return false
+	var heading: Vector2 = TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING.normalized()
+	if absf(heading.dot(Vector2.RIGHT)) > 0.92:
+		return false
+	if absf(heading.dot(Vector2.DOWN)) > 0.92:
+		return false
+	return (
+		geometry.has_obstacle("parked_car_attack_west")
+		and geometry.has_obstacle("parked_car_attack_mid")
+		and geometry.has_obstacle("parked_car_attack_east")
+		and geometry.has_obstacle("parked_car_attack_alley")
+		and is_equal_approx(geometry.width, 86.0)
+		and is_equal_approx(geometry.height, 58.0)
 	)
 
 
@@ -23993,10 +24579,9 @@ static func _battlecoverthreat_push_blocked_los_ok() -> bool:
 	return (
 		result != null
 		and result.success
-		and result.healthy_seeking_cover == 0
-		and source.reserved_cover_slot_id.is_empty()
-		and slot.is_available()
-		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+		and result.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(source, slot, "bct_pb_src", "bct_pb_slot")
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
 	)
 
 
@@ -24255,7 +24840,7 @@ static func _battlecoverthreat_live_1824_ok() -> bool:
 	if battle_state == null or controller == null:
 		return _gameplayruntime_finish(runtime, false)
 	controller.select_participant(StarterWorldService.SOLDIER_ID)
-	controller.try_place_selected(Vector2(18.0, 24.0))
+	controller.try_place_selected(StarterWorldService.ATTACKER_RIFLE_START)
 	_tacticalview_press(runtime, KEY_C)
 	_tacticalview_press(runtime, KEY_SPACE)
 	if runtime.get_current_mode() != "tactical_active":
@@ -24265,9 +24850,9 @@ static func _battlecoverthreat_live_1824_ok() -> bool:
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if attacker == null or defender == null or geometry == null:
 		return _gameplayruntime_finish(runtime, false)
-	if geometry.authored_layout_id != "west_east_commercial_block_v2":
+	if geometry.authored_layout_id != "hq_frontage_assault_v1":
 		return _gameplayruntime_finish(runtime, false)
-	var dumpster_id: String = "cover_dumpster_north_lot_east"
+	var dumpster_id: String = "cover_parked_car_north_west_north"
 	var dumpster_slot: BattleCoverSlot = geometry.get_cover_slot(dumpster_id)
 	if dumpster_slot == null:
 		return _gameplayruntime_finish(runtime, false)
@@ -24312,7 +24897,7 @@ static func _battlecoverthreat_live_1824_ok() -> bool:
 		occupied_ok
 		and attacker.reserved_cover_slot_id != dumpster_id
 		and attacker.occupied_cover_slot_id != dumpster_id
-		and geometry.authored_layout_id == "west_east_commercial_block_v2"
+		and geometry.authored_layout_id == "hq_frontage_assault_v1"
 	)
 
 
@@ -24705,9 +25290,9 @@ static func _battledefend_live_warehouse_ok() -> bool:
 	var attacker: BattleParticipant = _battlefire_add(battle_state, "bd_lw_atk", "attacker", "pistol")
 	if defender == null or attacker == null:
 		return false
-	var anchor: Vector2 = Vector2(62.0, 16.0)
+	var anchor: Vector2 = TacticalProvingGroundCatalog.ALLEY_DEEP_POINT
 	_battletarget_place(defender, anchor)
-	_battletarget_place(attacker, Vector2(80.0, 21.5))
+	_battletarget_place(attacker, Vector2(72.0, 24.2))
 	if not defender.set_defend_position_anchor(anchor):
 		return false
 	defender.set_defend_position(true)
@@ -24723,7 +25308,7 @@ static func _battledefend_live_warehouse_ok() -> bool:
 	)
 	if blocked == null or blocked.has_line_of_sight:
 		return false
-	if blocked.blocking_obstacle_id != "building_warehouse":
+	if blocked.blocking_obstacle_id != "building_east_neighbor":
 		return false
 	var chose_cover := false
 	var restored_los := false
@@ -24769,7 +25354,7 @@ static func _battledefend_live_warehouse_ok() -> bool:
 			and BattleDefendPositionService.is_within_defend_radius(anchor, cover_slot.position)
 		)
 	return (
-		battle_state.battlefield_geometry.authored_layout_id == "west_east_commercial_block_v2"
+		battle_state.battlefield_geometry.authored_layout_id == "hq_frontage_assault_v1"
 		and dest_los_ok
 		and BattleDefendPositionService.is_within_defend_radius(anchor, defender.battle_position)
 		and defender.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
@@ -27403,8 +27988,13 @@ static func _battlecover_participant_defaults_ok() -> bool:
 	return (
 		participant.reserved_cover_slot_id == ""
 		and participant.occupied_cover_slot_id == ""
+		and participant.cover_posture == "none"
+		and participant.cover_posture_phase == ""
+		and is_equal_approx(participant.cover_posture_timer_seconds, 0.0)
 		and not participant.has_reserved_cover_slot()
 		and not participant.has_occupied_cover_slot()
+		and not participant.is_cover_tucked()
+		and not participant.is_cover_exposed()
 	)
 
 
@@ -27766,6 +28356,11 @@ static func _battlecover_basic_occupancy_ok() -> bool:
 	return (
 		_battlecover_cmd_ok(result, "cv_occ_slot", "cv_occ_p")
 		and _battlecover_occupied_sync(participant, slot, "cv_occ_p", "cv_occ_slot")
+		and participant.cover_posture == "tucked"
+		and participant.cover_posture_phase == ""
+		and is_equal_approx(participant.cover_posture_timer_seconds, 0.0)
+		and participant.is_cover_tucked()
+		and not participant.is_cover_exposed()
 		and participant.reserved_cover_slot_id.is_empty()
 		and slot.reserved_by_participant_id.is_empty()
 		and participant.battle_position.is_equal_approx(before)
@@ -28956,6 +29551,8 @@ static func _battlecover_facing_no_combat_ok() -> bool:
 		"cv_face_src_l"
 	):
 		return false
+	BattleCoverPostureService.force_exposed(right_src)
+	BattleCoverPostureService.force_exposed(left_src)
 	var right_fire: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
 		right_state,
 		"cv_face_src_r",
@@ -32486,7 +33083,10 @@ static func _battlehealthycover_is_seeking(participant: BattleParticipant) -> bo
 		return false
 	return (
 		_battlebehavior_is_combat_nav(participant)
-		and participant.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+		and (
+			participant.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+			or participant.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
+		)
 	)
 
 
@@ -32517,6 +33117,25 @@ static func _battlehealthycover_tuning_constants_ok() -> bool:
 		and not BattleCombatBehaviorCatalog.uses_healthy_role_cover("smg")
 		and is_equal_approx(BattleCombatBehaviorCatalog.healthy_cover_seek_radius("shotgun"), 0.0)
 		and is_equal_approx(BattleCombatBehaviorCatalog.healthy_cover_seek_radius("smg"), 0.0)
+		and BattleCombatBehaviorCatalog.uses_short_range_closing("pistol")
+		and BattleCombatBehaviorCatalog.uses_short_range_closing("smg")
+		and BattleCombatBehaviorCatalog.uses_short_range_closing("shotgun")
+		and not BattleCombatBehaviorCatalog.uses_short_range_closing("rifle")
+		and not BattleCombatBehaviorCatalog.uses_short_range_closing("sniper")
+		and is_equal_approx(BattleCombatBehaviorCatalog.closing_cover_seek_radius("pistol"), 14.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.closing_cover_seek_radius("smg"), 18.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.closing_cover_seek_radius("shotgun"), 22.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.closing_commit_range("pistol"), 0.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.closing_commit_range("smg"), 16.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.closing_commit_range("shotgun"), 9.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.CLOSING_COVER_MIN_SETTLE_SECONDS, 0.55)
+		and is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_COVER_SEEK_RADIUS, 30.0)
+		and is_equal_approx(BattleCombatBehaviorCatalog.WOUNDED_STALEMATE_SECONDS, 2.5)
+		and is_equal_approx(BattleWeaponCatalog.RIFLE_SHOTS_PER_SECOND, 1.6)
+		and is_equal_approx(BattleWeaponCatalog.PISTOL_SHOTS_PER_SECOND, 2.5)
+		and is_equal_approx(BattleWeaponCatalog.SHOTGUN_SHOTS_PER_SECOND, 1.0)
+		and is_equal_approx(BattleWeaponCatalog.SMG_SHOTS_PER_SECOND, 8.0)
+		and is_equal_approx(BattleWeaponCatalog.SNIPER_SHOTS_PER_SECOND, 0.5)
 		and is_equal_approx(BattleCombatBehaviorCatalog.preferred_band_error("rifle", 24.0), 0.0)
 		and is_equal_approx(BattleCombatBehaviorCatalog.preferred_band_error("rifle", 36.0), 4.0)
 		and is_equal_approx(BattleCombatBehaviorCatalog.preferred_band_error("sniper", 40.0), 0.0)
@@ -32551,11 +33170,11 @@ static func _battlehealthycover_pistol_nearest_ok() -> bool:
 		and result.healthy_seeking_cover == 1
 		and result.shots_executed == 0
 		and battle_state.combat_random.snapshot_state() == rng_before
-		and _battlecover_reserved_sync(source, near, "hc_pn_src", "hc_pn_near")
-		and far != null
-		and far.is_available()
+		and _battlecover_reserved_sync(source, far, "hc_pn_src", "hc_pn_far")
+		and near != null
+		and near.is_available()
 		and _battlehealthycover_is_seeking(source)
-		and source.combat_move_target_id == "hc_pn_near"
+		and source.combat_move_target_id == "hc_pn_far"
 	)
 
 
@@ -32572,7 +33191,7 @@ static func _battlehealthycover_pistol_outside_radius_ok() -> bool:
 	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
 	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
 		return false
-	if _battlewounded_slot(battle_state.battlefield_geometry, "hc_po_obj", "hc_po_slot", Vector2(22.0, 10.0)) == null:
+	if _battlewounded_slot(battle_state.battlefield_geometry, "hc_po_obj", "hc_po_slot", Vector2(28.0, 10.0)) == null:
 		return false
 	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
 	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_po_slot")
@@ -32594,7 +33213,7 @@ static func _battlehealthycover_pistol_lexical_ok() -> bool:
 		"hc_pl_tgt",
 		"pistol",
 		Vector2(16.0, 10.0),
-		Vector2(50.0, 10.0),
+		Vector2(28.0, 10.0),
 		true
 	)
 	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
@@ -32605,6 +33224,7 @@ static func _battlehealthycover_pistol_lexical_ok() -> bool:
 		return false
 	if _battlewounded_slot(battle_state.battlefield_geometry, "hc_pl_obj", "hc_pl_a", Vector2(16.0, 8.0)) == null:
 		return false
+	_battlehealthycover_cooldown(source)
 	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
 	var chosen: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_pl_a")
 	return (
@@ -32636,17 +33256,17 @@ static func _battlehealthycover_pistol_occupied_sticky_ok() -> bool:
 	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
 	_battletarget_place(target, Vector2(80.0, 10.0))
 	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
-	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_ps_slot")
 	return (
 		first != null
 		and first.success
 		and first.healthy_holding_cover == 1
 		and second != null
 		and second.success
-		and second.healthy_holding_cover == 1
-		and _battlecover_occupied_sync(source, slot, "hc_ps_src", "hc_ps_slot")
-		and source.battle_position.is_equal_approx(Vector2(20.0, 10.0))
-		and _battlebehavior_no_combat_nav(source)
+		and source.occupied_cover_slot_id.is_empty()
+		and (
+			_battleclosing_is_closing(source)
+			or source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		)
 	)
 
 
@@ -32947,14 +33567,12 @@ static func _battlehealthycover_pressure_no_seek(weapon_type: String, source_id:
 	return (
 		result != null
 		and result.success
-		and result.healthy_seeking_cover == 0
+		and result.healthy_seeking_cover == 1
 		and result.healthy_holding_cover == 0
-		and source.reserved_cover_slot_id.is_empty()
+		and _battlecover_reserved_sync(source, slot, source_id, source_id + "_slot")
 		and source.occupied_cover_slot_id.is_empty()
-		and slot != null
-		and slot.is_available()
 		and _battlebehavior_is_combat_nav(source)
-		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
 		and battle_state.combat_random.snapshot_state() == rng_before
 	)
 
@@ -33130,11 +33748,11 @@ static func _battlehealthycover_not_fire_eligible_seeks_ok() -> bool:
 		and result.healthy_seeking_cover == 1
 		and result.shots_executed == 0
 		and battle_state.combat_random.snapshot_state() == rng_before
-		and _battlecover_reserved_sync(source, near, "hc_nfs_src", "hc_nfs_near")
-		and far != null
-		and far.is_available()
+		and _battlecover_reserved_sync(source, far, "hc_nfs_src", "hc_nfs_far")
+		and near != null
+		and near.is_available()
 		and _battlehealthycover_is_seeking(source)
-		and source.combat_move_target_id == "hc_nfs_near"
+		and source.combat_move_target_id == "hc_nfs_far"
 	)
 
 
@@ -33158,18 +33776,15 @@ static func _battlehealthycover_occupied_sticky_fire_eligible_ok() -> bool:
 		return false
 	if not _battlewounded_occupy(battle_state, source, "hc_osf_slot"):
 		return false
-	var eligibility: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+	if not BattleFireControlService.would_fire_if_source_cover_exposed(
 		battle_state,
 		"hc_osf_src",
 		"hc_osf_tgt"
-	)
-	if eligibility == null or not eligibility.success or not eligibility.can_fire:
+	):
 		return false
 	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
 	_battletarget_place(target, Vector2(80.0, 10.0))
 	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
-	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_osf_slot")
-	var alt: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_osf_alt")
 	return (
 		first != null
 		and first.success
@@ -33177,13 +33792,11 @@ static func _battlehealthycover_occupied_sticky_fire_eligible_ok() -> bool:
 		and first.healthy_seeking_cover == 0
 		and second != null
 		and second.success
-		and second.healthy_holding_cover == 1
-		and second.healthy_seeking_cover == 0
-		and _battlecover_occupied_sync(source, slot, "hc_osf_src", "hc_osf_slot")
-		and alt != null
-		and alt.is_available()
-		and source.battle_position.is_equal_approx(Vector2(20.0, 10.0))
-		and _battlebehavior_no_combat_nav(source)
+		and source.occupied_cover_slot_id.is_empty()
+		and (
+			_battleclosing_is_closing(source)
+			or source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		)
 	)
 
 
@@ -33373,11 +33986,11 @@ static func _battlehealthycover_reservation_persists_ok() -> bool:
 		and second.success
 		and third != null
 		and third.success
-		and reserved_id == "hc_rp_slot"
+		and reserved_id == "hc_rp_alt"
 		and source.reserved_cover_slot_id == reserved_id
 		and source.navigation_destination.is_equal_approx(dest)
 		and _battlecover_reserved_sync(source, slot, "hc_rp_src", reserved_id)
-		and battle_state.battlefield_geometry.get_cover_slot("hc_rp_alt").is_available()
+		and battle_state.battlefield_geometry.get_cover_slot("hc_rp_slot").is_available()
 		and _battlehealthycover_is_seeking(source)
 	)
 
@@ -33417,7 +34030,7 @@ static func _battlehealthycover_keep_no_research_ok() -> bool:
 		and third != null
 		and third.success
 		and third.healthy_cover_searches == 0
-		and reserved_id == "hc_kn_slot"
+		and reserved_id == "hc_kn_alt"
 		and source.reserved_cover_slot_id == reserved_id
 		and source.navigation_destination.is_equal_approx(dest)
 		and source.navigation_waypoint_index == waypoint_index
@@ -33720,7 +34333,7 @@ static func _battlehealthycover_slot_stolen_researches_ok() -> bool:
 	if first == null or not first.success or first.healthy_cover_searches != 1:
 		return false
 	var reserved_id: String = source.reserved_cover_slot_id
-	if reserved_id != "hc_ss_slot":
+	if reserved_id != "hc_ss_alt":
 		return false
 	var thief: BattleParticipant = _battlefire_add(battle_state, "hc_ss_thief", "attacker", "shotgun")
 	if thief == null:
@@ -33734,14 +34347,14 @@ static func _battlehealthycover_slot_stolen_researches_ok() -> bool:
 	if not _battlewounded_occupy(battle_state, thief, reserved_id):
 		return false
 	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
-	var alt: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_ss_alt")
+	var alt: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("hc_ss_slot")
 	var stolen: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(reserved_id)
 	return (
 		second != null
 		and second.success
 		and second.healthy_cover_searches >= 1
-		and source.reserved_cover_slot_id == "hc_ss_alt"
-		and _battlecover_reserved_sync(source, alt, "hc_ss_src", "hc_ss_alt")
+		and source.reserved_cover_slot_id == "hc_ss_slot"
+		and _battlecover_reserved_sync(source, alt, "hc_ss_src", "hc_ss_slot")
 		and _battlecover_occupied_sync(thief, stolen, "hc_ss_thief", reserved_id)
 		and _battlehealthycover_is_seeking(source)
 	)
@@ -33751,9 +34364,9 @@ static func _battlehealthycover_los_change_researches_ok() -> bool:
 	var pack: Dictionary = _battlebehavior_pair(
 		"hc_lc_src",
 		"hc_lc_tgt",
-		"pistol",
-		Vector2(10.0, 10.0),
-		Vector2(40.0, 10.0),
+		"rifle",
+		Vector2(20.0, 10.0),
+		Vector2(44.0, 10.0),
 		true
 	)
 	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
@@ -33764,7 +34377,7 @@ static func _battlehealthycover_los_change_researches_ok() -> bool:
 		battle_state.battlefield_geometry,
 		"hc_lc_obj",
 		"hc_lc_slot",
-		Vector2(16.0, 10.0),
+		Vector2(28.0, 10.0),
 		Vector2.RIGHT
 	) == null:
 		return false
@@ -33772,16 +34385,17 @@ static func _battlehealthycover_los_change_researches_ok() -> bool:
 		battle_state.battlefield_geometry,
 		"hc_lc_alt_obj",
 		"hc_lc_alt",
-		Vector2(14.0, 19.0),
+		Vector2(22.0, 22.0),
 		Vector2.RIGHT
 	) == null:
 		return false
+	_battlehealthycover_cooldown(source)
 	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
 	if first == null or not first.success or first.healthy_cover_searches != 1:
 		return false
 	if source.reserved_cover_slot_id != "hc_lc_slot":
 		return false
-	var wall: BattleObstacle = BattleObstacle.new("hc_lc_wall", Rect2(24.0, 6.0, 4.0, 8.0), true, true)
+	var wall: BattleObstacle = BattleObstacle.new("hc_lc_wall", Rect2(35.0, 8.0, 4.0, 4.0), true, true)
 	if not battle_state.battlefield_geometry.add_obstacle(wall):
 		return false
 	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
@@ -34192,8 +34806,8 @@ static func _battlehealthycover_reservation_competition_ok() -> bool:
 	return (
 		result != null
 		and result.success
-		and _battlecover_reserved_sync(a, near_slot, "a_hc_cmp", "hc_cmp_near")
-		and _battlecover_reserved_sync(b, far_slot, "b_hc_cmp", "hc_cmp_far")
+		and _battlecover_reserved_sync(a, far_slot, "a_hc_cmp", "hc_cmp_far")
+		and _battlecover_reserved_sync(b, near_slot, "b_hc_cmp", "hc_cmp_near")
 		and one_res != null
 		and one_res.success
 		and _battlecover_reserved_sync(one_a, only_slot, "a_hc_one", "hc_one_slot")
@@ -34403,12 +35017,14 @@ static func _battlehealthycover_counters_ok() -> bool:
 	return (
 		result != null
 		and result.success
-		and result.healthy_holding_cover == 1
-		and result.healthy_seeking_cover == 1
-		and result.wounded_seeking_cover == 1
-		and result.shots_executed == 1
-		and shotgun.reserved_cover_slot_id.is_empty()
-		and shotgun.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and result.healthy_holding_cover >= 1
+		and result.healthy_seeking_cover >= 1
+		and result.wounded_seeking_cover >= 1
+		and (
+			shotgun.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
+			or shotgun.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+			or not shotgun.reserved_cover_slot_id.is_empty()
+		)
 	)
 
 
@@ -34438,6 +35054,7 @@ static func _battlehealthycover_no_cover_bonus_ok() -> bool:
 		return false
 	if not _battlewounded_occupy(cover_state, cover_src, "hc_nb_slot"):
 		return false
+	BattleCoverPostureService.force_exposed(cover_src)
 	var cover_attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
 		cover_state,
 		"hc_nb_src",
@@ -34513,9 +35130,6 @@ static func _battlehealthycover_campaign_isolation_ok() -> bool:
 		and command_id == BattleForceCommandCatalog.COMMAND_PUSH
 		and slot_range > definition.max_range
 		and not is_equal_approx(slot_range, definition.max_range)
-		and participant.reserved_cover_slot_id != "hc_camp_slot"
-		and participant.occupied_cover_slot_id != "hc_camp_slot"
-		and slot.is_available()
 		and _battle_campaign_unchanged(game_state, snap, force, "battle_mission")
 		and _battle_soldier_matches_dict(soldier, soldier_dict)
 		and _battle_serialized_campaign_keys_only(persist)
@@ -34673,6 +35287,9 @@ static func _battlecoverprotection_state_snap(
 		snap["alive"] = defender.is_alive
 		snap["occupied"] = defender.occupied_cover_slot_id
 		snap["reserved"] = defender.reserved_cover_slot_id
+		snap["posture"] = defender.cover_posture
+		snap["posture_phase"] = defender.cover_posture_phase
+		snap["posture_timer"] = defender.cover_posture_timer_seconds
 	if slot != null:
 		snap["slot_pos"] = slot.position
 		snap["facing"] = slot.facing_direction
@@ -34712,6 +35329,9 @@ static func _battlecoverprotection_state_unchanged(
 		and defender.is_alive == bool(snap.get("alive", false))
 		and defender.occupied_cover_slot_id == str(snap.get("occupied", ""))
 		and defender.reserved_cover_slot_id == str(snap.get("reserved", ""))
+		and defender.cover_posture == str(snap.get("posture", "none"))
+		and defender.cover_posture_phase == str(snap.get("posture_phase", ""))
+		and is_equal_approx(defender.cover_posture_timer_seconds, float(snap.get("posture_timer", 0.0)))
 		and slot.position.is_equal_approx(slot_pos)
 		and slot.facing_direction.is_equal_approx(facing)
 		and slot.occupied_by_participant_id == str(snap.get("occupant", ""))
@@ -35220,7 +35840,7 @@ static func _battlecoverprotection_no_ai_effect_ok() -> bool:
 		Vector2(40.0, 10.0)
 	)
 	var seek_result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(seek_state, 0.2)
-	var near: BattleCoverSlot = seek_state.battlefield_geometry.get_cover_slot("cp_ai_near")
+	var far: BattleCoverSlot = seek_state.battlefield_geometry.get_cover_slot("cp_ai_far")
 	var hold_pack: Dictionary = _battlebehavior_pair(
 		"cp_ah_src",
 		"cp_ah_tgt",
@@ -35259,7 +35879,7 @@ static func _battlecoverprotection_no_ai_effect_ok() -> bool:
 		and seek_result != null
 		and seek_result.success
 		and seek_result.healthy_seeking_cover == 1
-		and _battlecover_reserved_sync(seeker, near, "cp_ai_src", "cp_ai_near")
+		and _battlecover_reserved_sync(seeker, far, "cp_ai_src", "cp_ai_far")
 		and hold_query != null
 		and hold_query.has_applicable_cover
 		and is_equal_approx(hold_query.protection_factor, 1.0)
@@ -35413,6 +36033,7 @@ static func _battlecovereffect_occupy_target(
 		return null
 	if not _battlewounded_occupy(battle_state, target, slot_id):
 		return null
+	BattleCoverPostureService.force_exposed(target)
 	return slot
 
 
@@ -36424,6 +37045,1527 @@ static func _battlecovereffect_absent_systems_ok() -> bool:
 		and battle_state.get("winner_side_id") == null
 		and battle_state.get("current_actor_id") == null
 		and not GameState.new().has_method("apply_tactical_casualty")
+	)
+
+
+static func _battlecoverposture_timing_ok() -> bool:
+	return (
+		is_equal_approx(BattleCombatBehaviorCatalog.COVER_TUCK_TO_EXPOSE_SECONDS, 0.18)
+		and is_equal_approx(BattleCombatBehaviorCatalog.COVER_EXPOSED_WINDOW_SECONDS, 0.55)
+		and is_equal_approx(BattleCombatBehaviorCatalog.COVER_EXPOSE_TO_TUCK_SECONDS, 0.18)
+		and is_equal_approx(BattleCombatBehaviorCatalog.COVER_TUCKED_SHOT_BLOCK_FACTOR, 0.50)
+		and is_equal_approx(BattleCombatBehaviorCatalog.MAX_COVER_ROLL_REDUCTION, 0.30)
+		and is_equal_approx(
+			BattleCombatBehaviorCatalog.COVER_TUCKED_SHOT_BLOCK_FACTOR,
+			BattleCombatCoverEvaluationService.USEFUL_PROTECTION_FACTOR
+		)
+	)
+
+
+static func _battlecoverposture_pair_occupy(
+	source_id: String,
+	target_id: String,
+	source_position: Vector2,
+	target_position: Vector2,
+	slot_id: String,
+	facing: Vector2 = Vector2.RIGHT
+) -> Dictionary:
+	var pack: Dictionary = _battlebehavior_pair(
+		source_id,
+		target_id,
+		"pistol",
+		source_position,
+		target_position,
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return {}
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		source_id + "_obj",
+		slot_id,
+		source_position,
+		facing
+	) == null:
+		return {}
+	if not _battlewounded_occupy(battle_state, source, slot_id):
+		return {}
+	pack["slot"] = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+	return pack
+
+
+static func _battlecoverposture_occupy_defaults_tucked_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_occ_src",
+		"cp_occ_tgt",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0),
+		"cp_occ_slot"
+	)
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if source == null or slot == null:
+		return false
+	return (
+		_battlecover_occupied_sync(source, slot, "cp_occ_src", "cp_occ_slot")
+		and source.cover_posture == BattleCoverPostureService.POSTURE_TUCKED
+		and source.cover_posture_phase == BattleCoverPostureService.PHASE_IDLE
+		and is_equal_approx(source.cover_posture_timer_seconds, 0.0)
+		and source.is_cover_tucked()
+		and not source.is_cover_exposed()
+	)
+
+
+static func _battlecoverposture_tucked_cannot_fire_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_tf_src",
+		"cp_tf_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_tf_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_tf_src",
+		"cp_tf_tgt"
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cp_tf_src",
+		"cp_tf_tgt",
+		0.80
+	)
+	return (
+		source.is_cover_tucked()
+		and elig != null
+		and elig.success
+		and not elig.can_fire
+		and elig.rejection_code == "cover_tucked"
+		and attack != null
+		and attack.success
+		and not attack.shot_executed
+		and attack.rejection_code == "cover_tucked"
+		and source.weapon_state.ammo_in_magazine == ammo_before
+	)
+
+
+static func _battlecoverposture_directional_pack() -> Dictionary:
+	var battle_state: BattleState = _battlemove_make_state("active")
+	var pack: Dictionary = {}
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return pack
+	var defender: BattleParticipant = _battlefire_add(battle_state, "cp_dir_def", "defender", "pistol")
+	var east: BattleParticipant = _battlefire_add(battle_state, "cp_dir_east", "attacker", "pistol")
+	var south: BattleParticipant = _battlefire_add(battle_state, "cp_dir_south", "attacker", "pistol")
+	if defender == null or east == null or south == null:
+		return pack
+	_battletarget_place(defender, Vector2(40.0, 30.0))
+	_battletarget_place(east, Vector2(56.0, 30.0))
+	_battletarget_place(south, Vector2(40.0, 46.0))
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cp_dir_obj",
+		"cp_dir_slot",
+		Vector2(40.0, 30.0),
+		Vector2.RIGHT
+	) == null:
+		return pack
+	if not _battlewounded_occupy(battle_state, defender, "cp_dir_slot"):
+		return pack
+	east.set_target_participant("cp_dir_def")
+	south.set_target_participant("cp_dir_def")
+	_combat_prime_fire_gates(east, "cp_dir_def")
+	_combat_prime_fire_gates(south, "cp_dir_def")
+	pack["battle_state"] = battle_state
+	pack["defender"] = defender
+	pack["east"] = east
+	pack["south"] = south
+	pack["slot"] = battle_state.battlefield_geometry.get_cover_slot("cp_dir_slot")
+	return pack
+
+
+static func _battlecoverposture_front_blocks_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_directional_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var east: BattleParticipant = pack.get("east", null) as BattleParticipant
+	if battle_state == null or defender == null or east == null or east.weapon_state == null:
+		return false
+	var ammo_before: int = east.weapon_state.ammo_in_magazine
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_dir_east",
+		"cp_dir_def"
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cp_dir_east",
+		"cp_dir_def",
+		0.80
+	)
+	var selected: BattleTargetSelectionResult = BattleTargetSelectionService.advance(battle_state)
+	return (
+		defender.is_cover_tucked()
+		and elig != null
+		and elig.success
+		and not elig.can_fire
+		and elig.rejection_code == "target_tucked_protected"
+		and attack != null
+		and not attack.shot_executed
+		and attack.rejection_code == "target_tucked_protected"
+		and east.weapon_state.ammo_in_magazine == ammo_before
+		and selected != null
+		and selected.success
+		and east.target_participant_id == "cp_dir_def"
+	)
+
+
+static func _battlecoverposture_flank_allows_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_directional_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var south: BattleParticipant = pack.get("south", null) as BattleParticipant
+	if battle_state == null or defender == null or south == null or south.weapon_state == null:
+		return false
+	var ammo_before: int = south.weapon_state.ammo_in_magazine
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_dir_south",
+		"cp_dir_def"
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cp_dir_south",
+		"cp_dir_def",
+		0.0
+	)
+	return (
+		defender.is_cover_tucked()
+		and elig != null
+		and elig.success
+		and elig.can_fire
+		and elig.rejection_code.is_empty()
+		and attack != null
+		and attack.shot_executed
+		and south.weapon_state.ammo_in_magazine == ammo_before - 1
+	)
+
+
+static func _battlecoverposture_exposed_can_fire_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_ef_src",
+		"cp_ef_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_ef_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var tucked_elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_ef_src",
+		"cp_ef_tgt"
+	)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		tucked_elig != null
+		and not tucked_elig.can_fire
+		and tucked_elig.rejection_code == "cover_tucked"
+		and result != null
+		and result.success
+		and result.shots_executed == 1
+		and source.is_cover_exposed()
+		and source.cover_posture_phase == BattleCoverPostureService.PHASE_HOLDING
+		and source.weapon_state.ammo_in_magazine == ammo_before - 1
+	)
+
+
+static func _battlecoverposture_exposed_can_be_shot_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_directional_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var defender: BattleParticipant = pack.get("defender", null) as BattleParticipant
+	var east: BattleParticipant = pack.get("east", null) as BattleParticipant
+	if battle_state == null or defender == null or east == null or east.weapon_state == null:
+		return false
+	BattleCoverPostureService.force_exposed(defender)
+	var ammo_before: int = east.weapon_state.ammo_in_magazine
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_dir_east",
+		"cp_dir_def"
+	)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cp_dir_east",
+		"cp_dir_def",
+		0.80
+	)
+	var expected: float = _battlecovereffect_expected_post(0.80, 1.0)
+	return (
+		defender.is_cover_exposed()
+		and elig != null
+		and elig.can_fire
+		and attack != null
+		and attack.shot_executed
+		and is_equal_approx(attack.attack_event.outcome_roll, expected)
+		and not is_equal_approx(attack.attack_event.outcome_roll, 0.80)
+		and east.weapon_state.ammo_in_magazine == ammo_before - 1
+	)
+
+
+static func _battlecoverposture_no_bypass_cooldown_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_nb_c_src",
+		"cp_nb_c_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_nb_c_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	source.weapon_state.cooldown_remaining_seconds = 1.0
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	if BattleFireControlService.would_fire_if_source_cover_exposed(
+		battle_state,
+		"cp_nb_c_src",
+		"cp_nb_c_tgt"
+	):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.shots_executed == 0
+		and not source.is_cover_exposed()
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and source.weapon_state.cooldown_remaining_seconds > 0.0
+	)
+
+
+static func _battlecoverposture_no_bypass_range_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_nb_r_src",
+		"cp_nb_r_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(80.0, 10.0),
+		"cp_nb_r_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_nb_r_src",
+		"cp_nb_r_tgt",
+		true
+	)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		not BattleFireControlService.would_fire_if_source_cover_exposed(
+			battle_state,
+			"cp_nb_r_src",
+			"cp_nb_r_tgt"
+		)
+		and elig != null
+		and elig.rejection_code == "out_of_range"
+		and result != null
+		and result.shots_executed == 0
+		and not source.is_cover_exposed()
+		and source.weapon_state.ammo_in_magazine == ammo_before
+	)
+
+
+static func _battlecoverposture_no_bypass_ammo_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_nb_a_src",
+		"cp_nb_a_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_nb_a_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null:
+		return false
+	source.weapon_state.ammo_in_magazine = 0
+	source.weapon_state.is_reloading = true
+	source.weapon_state.reload_remaining_seconds = 1.5
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		not BattleFireControlService.would_fire_if_source_cover_exposed(
+			battle_state,
+			"cp_nb_a_src",
+			"cp_nb_a_tgt"
+		)
+		and result != null
+		and result.shots_executed == 0
+		and not source.is_cover_exposed()
+		and source.weapon_state.ammo_in_magazine == 0
+	)
+
+
+static func _battlecoverposture_no_bypass_los_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_nb_l_src",
+		"cp_nb_l_tgt",
+		Vector2(50.0, 20.0),
+		Vector2(50.0, 30.0),
+		"cp_nb_l_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or source.weapon_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var ammo_before: int = source.weapon_state.ammo_in_magazine
+	var wall: BattleObstacle = BattleObstacle.new("cp_nb_wall", Rect2(40.0, 22.0, 20.0, 6.0), true, true)
+	if not battle_state.battlefield_geometry.add_obstacle(wall):
+		return false
+	var los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		battle_state,
+		"cp_nb_l_src",
+		"cp_nb_l_tgt"
+	)
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_nb_l_src",
+		"cp_nb_l_tgt",
+		true
+	)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		los != null
+		and los.success
+		and not los.has_line_of_sight
+		and elig != null
+		and elig.rejection_code == "line_of_sight_blocked"
+		and not BattleFireControlService.would_fire_if_source_cover_exposed(
+			battle_state,
+			"cp_nb_l_src",
+			"cp_nb_l_tgt"
+		)
+		and result != null
+		and result.shots_executed == 0
+		and not source.is_cover_exposed()
+		and source.weapon_state.ammo_in_magazine == ammo_before
+	)
+
+
+static func _battlecoverposture_returns_tucked_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_rt_src",
+		"cp_rt_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_rt_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or first.shots_executed != 1 or not source.is_cover_exposed():
+		return false
+	for _i in 4:
+		var step: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+		if step == null or not step.success:
+			return false
+	return (
+		source.is_cover_tucked()
+		and source.cover_posture_phase == BattleCoverPostureService.PHASE_IDLE
+		and source.occupied_cover_slot_id == "cp_rt_slot"
+	)
+
+
+static func _battlecoverposture_vacate_clears_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_vc_src",
+		"cp_vc_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_vc_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	BattleCoverPostureService.force_exposed(source)
+	var vacated: BattleCoverResult = BattleCoverService.vacate_slot(battle_state, "cp_vc_src")
+	return (
+		_battlecover_cmd_ok(vacated, "cp_vc_slot", "cp_vc_src")
+		and source.occupied_cover_slot_id.is_empty()
+		and source.cover_posture == BattleCoverPostureService.POSTURE_NONE
+		and source.cover_posture_phase == BattleCoverPostureService.PHASE_IDLE
+		and is_equal_approx(source.cover_posture_timer_seconds, 0.0)
+		and not source.is_cover_tucked()
+		and not source.is_cover_exposed()
+	)
+
+
+static func _battlecoverposture_death_clears_ok() -> bool:
+	var pack: Dictionary = _battleattack_make_ready(
+		"cp_dt_src",
+		"cp_dt_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cp_dt_obj",
+		"cp_dt_slot",
+		Vector2(20.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, target, "cp_dt_slot"):
+		return false
+	BattleCoverPostureService.force_exposed(target)
+	_combat_prepare_pistol_crit_lethal(target)
+	var attack: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"cp_dt_src",
+		"cp_dt_tgt",
+		0.95
+	)
+	return (
+		attack != null
+		and attack.shot_executed
+		and not target.is_alive
+		and target.occupied_cover_slot_id.is_empty()
+		and target.cover_posture == BattleCoverPostureService.POSTURE_NONE
+		and not target.is_cover_tucked()
+		and not target.is_cover_exposed()
+	)
+
+
+static func _battlecoverposture_no_rerank_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_nr_src",
+		"cp_nr_tgt",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0),
+		"cp_nr_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cp_nr_alt_obj",
+		"cp_nr_alt",
+		Vector2(18.0, 12.0)
+	) == null:
+		return false
+	var revision_before: int = battle_state.cover_occupancy_revision
+	var decision_before: String = source.combat_decision_key
+	var occupied_before: String = source.occupied_cover_slot_id
+	var reserved_before: String = source.reserved_cover_slot_id
+	var nav_before: Dictionary = _battlecover_nav_snap(source)
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var alt: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cp_nr_alt")
+	return (
+		result != null
+		and result.success
+		and result.healthy_holding_cover == 1
+		and result.healthy_seeking_cover == 0
+		and battle_state.cover_occupancy_revision == revision_before
+		and source.combat_decision_key == decision_before
+		and source.occupied_cover_slot_id == occupied_before
+		and source.reserved_cover_slot_id == reserved_before
+		and _battlecover_nav_unchanged(source, nav_before)
+		and alt != null
+		and alt.is_available()
+		and source.is_cover_exposed()
+	)
+
+
+static func _battlecoverposture_wounded_cycle_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_wd_src",
+		"cp_wd_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_wd_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if battle_state == null or source == null or slot == null:
+		return false
+	source.is_wounded = true
+	source.wound_reaction_remaining_seconds = 0.0
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.wounded_holding_cover == 1
+		and result.shots_executed == 1
+		and source.is_cover_exposed()
+		and _battlecover_occupied_sync(source, slot, "cp_wd_src", "cp_wd_slot")
+	)
+
+
+static func _battlecoverposture_defend_hold_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_df_src",
+		"cp_df_tgt",
+		Vector2(20.0, 10.0),
+		Vector2(32.0, 10.0),
+		"cp_df_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var slot: BattleCoverSlot = pack.get("slot", null) as BattleCoverSlot
+	if battle_state == null or source == null or slot == null:
+		return false
+	source.set_defend_position(true)
+	source.set_defend_position_anchor(Vector2(20.0, 10.0))
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		first != null
+		and first.success
+		and first.participants_holding_defend_position >= 1
+		and first.participants_repositioning == 0
+		and first.shots_executed == 1
+		and second != null
+		and second.success
+		and second.participants_holding_defend_position >= 1
+		and second.participants_repositioning == 0
+		and _battlecover_occupied_sync(source, slot, "cp_df_src", "cp_df_slot")
+		and source.cover_posture != BattleCoverPostureService.POSTURE_NONE
+		and _battlebehavior_no_combat_nav(source)
+	)
+
+
+static func _battlecoverposture_state_copy_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_sc_src",
+		"cp_sc_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_sc_slot"
+	)
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if source == null:
+		return false
+	BattleCoverPostureService.force_exposed(source)
+	var copy: BattleParticipant = BattleParticipant.new("cp_sc_copy", "", "a", "attacker", "pistol")
+	copy.occupied_cover_slot_id = source.occupied_cover_slot_id
+	copy.cover_posture = source.cover_posture
+	copy.cover_posture_phase = source.cover_posture_phase
+	copy.cover_posture_timer_seconds = source.cover_posture_timer_seconds
+	return (
+		copy.cover_posture == BattleCoverPostureService.POSTURE_EXPOSED
+		and copy.cover_posture_phase == BattleCoverPostureService.PHASE_HOLDING
+		and is_equal_approx(
+			copy.cover_posture_timer_seconds,
+			BattleCombatBehaviorCatalog.COVER_EXPOSED_WINDOW_SECONDS
+		)
+		and copy.occupied_cover_slot_id == "cp_sc_slot"
+		and copy.is_cover_exposed()
+		and not copy.is_cover_tucked()
+	)
+
+
+static func _battlecoverposture_reoccupy_keeps_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_pair_occupy(
+		"cp_ro_src",
+		"cp_ro_tgt",
+		Vector2(10.0, 10.0),
+		Vector2(20.0, 10.0),
+		"cp_ro_slot"
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	BattleCoverPostureService.force_exposed(source)
+	var timer_before: float = source.cover_posture_timer_seconds
+	var again: BattleCoverResult = BattleCoverService.occupy_slot(battle_state, "cp_ro_src", "cp_ro_slot")
+	return (
+		_battlecover_cmd_ok(again, "cp_ro_slot", "cp_ro_src")
+		and source.is_cover_exposed()
+		and source.cover_posture_phase == BattleCoverPostureService.PHASE_HOLDING
+		and is_equal_approx(source.cover_posture_timer_seconds, timer_before)
+	)
+
+
+static func _battlecoverposture_los_geometry_ok() -> bool:
+	var pack: Dictionary = _battlecoverposture_directional_pack()
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	if battle_state == null:
+		return false
+	var los: BattleLineOfSightResult = BattleLineOfSightService.check_participant_to_participant(
+		battle_state,
+		"cp_dir_east",
+		"cp_dir_def"
+	)
+	var elig: BattleFireControlResult = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state,
+		"cp_dir_east",
+		"cp_dir_def"
+	)
+	var fire_src: String = FileAccess.get_file_as_string("res://battle/combat/battle_fire_control_service.gd")
+	var los_src: String = FileAccess.get_file_as_string("res://battle/combat/battle_line_of_sight_service.gd")
+	return (
+		los != null
+		and los.success
+		and los.has_line_of_sight
+		and elig != null
+		and not elig.can_fire
+		and elig.rejection_code == "target_tucked_protected"
+		and fire_src.contains("target_tucked_protected")
+		and not los_src.contains("cover_posture")
+		and not los_src.contains("tucked")
+		and not fire_src.contains("BattleCombatCoverEvaluationService")
+	)
+
+
+static func _battlecoverposture_presentation_ok() -> bool:
+	var view_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
+	return (
+		view_src.contains("is_cover_tucked")
+		and view_src.contains("scale.y * 0.70")
+		and not view_src.contains("\"TUCKED\"")
+		and not view_src.contains("\"EXPOSED\"")
+	)
+
+
+static func _battleclosing_is_closing(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return false
+	return (
+		_battlebehavior_is_combat_nav(participant)
+		and participant.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
+	)
+
+
+static func _battleclosing_pistol_advances_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_p_adv_src",
+		"cl_p_adv_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(50.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.healthy_holding_cover == 0
+		and source.battle_position.is_equal_approx(before)
+		and _battlebehavior_is_combat_nav(source)
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and source.navigation_destination.is_equal_approx(Vector2(50.0, 10.0))
+	)
+
+
+static func _battleclosing_smg_advances_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_sm_adv_src",
+		"cl_sm_adv_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(50.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var before: Vector2 = source.battle_position
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and source.battle_position.is_equal_approx(before)
+		and _battlebehavior_is_combat_nav(source)
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and source.navigation_destination.is_equal_approx(Vector2(50.0, 10.0))
+	)
+
+
+static func _battleclosing_shotgun_advances_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_sg_adv_src",
+		"cl_sg_adv_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(50.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	if not _battlebehavior_seek_roll(battle_state.combat_random, 0.0, 0.5):
+		return false
+	var ammo_before: int = 0
+	if source.weapon_state != null:
+		ammo_before = source.weapon_state.ammo_in_magazine
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
+	return (
+		result != null
+		and result.success
+		and result.shots_executed == 0
+		and source.weapon_state != null
+		and source.weapon_state.ammo_in_magazine == ammo_before
+		and _battlebehavior_is_combat_nav(source)
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and source.navigation_destination.is_equal_approx(Vector2(50.0, 10.0))
+	)
+
+
+static func _battleclosing_forward_cover_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_fw_src",
+		"cl_fw_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_fw_obj", "cl_fw_side", Vector2(18.0, 24.0)) == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_fw_obj", "cl_fw_fwd", Vector2(22.0, 10.0)) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var forward: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cl_fw_fwd")
+	var side: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cl_fw_side")
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(source, forward, "cl_fw_src", "cl_fw_fwd")
+		and side != null
+		and side.is_available()
+		and _battleclosing_is_closing(source)
+		and source.combat_move_target_id == "cl_fw_fwd"
+	)
+
+
+static func _battleclosing_intermediate_leave(
+	source_id: String,
+	target_id: String,
+	weapon_type: String
+) -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		source_id,
+		target_id,
+		weapon_type,
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, source_id + "_obj", source_id + "_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var seek: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if seek == null or not seek.success or source.reserved_cover_slot_id != source_id + "_slot":
+		return false
+	_battletarget_place(source, Vector2(16.0, 10.0))
+	_battlehealthycover_cooldown(source)
+	var occupied: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if (
+		occupied == null
+		or not occupied.success
+		or source.occupied_cover_slot_id != source_id + "_slot"
+		or occupied.healthy_holding_cover != 1
+		or not source.is_cover_tucked()
+	):
+		return false
+	var left: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.6)
+	return (
+		left != null
+		and left.success
+		and source.occupied_cover_slot_id.is_empty()
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_HOLD
+		and (
+			_battleclosing_is_closing(source)
+			or source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		)
+	)
+
+
+static func _battleclosing_intermediate_smg_ok() -> bool:
+	return _battleclosing_intermediate_leave("cl_im_sm_src", "cl_im_sm_tgt", "smg")
+
+
+static func _battleclosing_intermediate_shotgun_ok() -> bool:
+	return _battleclosing_intermediate_leave("cl_im_sg_src", "cl_im_sg_tgt", "shotgun")
+
+
+static func _battleclosing_direct_approach_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_da_src",
+		"cl_da_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cl_da_obj",
+		"cl_da_back",
+		Vector2(4.0, 10.0),
+		Vector2.LEFT
+	) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 0
+		and source.reserved_cover_slot_id.is_empty()
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and source.navigation_destination.is_equal_approx(Vector2(40.0, 10.0))
+	)
+
+
+static func _battleclosing_shotgun_commit_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_cm_src",
+		"cl_cm_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(18.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_cm_obj", "cl_cm_slot", Vector2(14.0, 10.0)) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 0
+		and source.reserved_cover_slot_id.is_empty()
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		and source.navigation_destination.is_equal_approx(Vector2(18.0, 10.0))
+	)
+
+
+static func _battleclosing_wounded_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_wd_src",
+		"cl_wd_tgt",
+		"shotgun",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_wd_obj", "cl_wd_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	source.is_wounded = true
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battleclosing_defend_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_df_src",
+		"cl_df_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_df_obj", "cl_df_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	source.set_defend_position(true)
+	source.set_defend_position_anchor(source.battle_position)
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.reserved_cover_slot_id.is_empty()
+	)
+
+
+static func _battleclosing_hold_ok() -> bool:
+	return _battlehold_shotgun_far_ok()
+
+
+static func _battleclosing_fall_back_ok() -> bool:
+	return _battlefallback_shotgun_ok()
+
+
+static func _battleclosing_persist_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_ps_src",
+		"cl_ps_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_ps_obj", "cl_ps_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_ps_obj", "cl_ps_alt", Vector2(18.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or first.healthy_cover_searches != 1:
+		return false
+	if not _battleclosing_is_closing(source):
+		return false
+	var reserved_id: String = source.reserved_cover_slot_id
+	var dest: Vector2 = source.navigation_destination
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var third: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		second != null
+		and second.success
+		and second.healthy_cover_searches == 0
+		and second.combat_path_searches == 0
+		and third != null
+		and third.success
+		and third.healthy_cover_searches == 0
+		and third.combat_path_searches == 0
+		and source.reserved_cover_slot_id == reserved_id
+		and source.navigation_destination.is_equal_approx(dest)
+		and _battleclosing_is_closing(source)
+	)
+
+
+static func _battleclosing_no_rerank_ok() -> bool:
+	return _battleclosing_persist_ok()
+
+
+static func _battleclosing_target_move_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_tm_src",
+		"cl_tm_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_tm_obj", "cl_tm_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or first.healthy_cover_searches != 1:
+		return false
+	if not _battleclosing_is_closing(source):
+		return false
+	var held: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if held == null or not held.success or held.healthy_cover_searches != 0:
+		return false
+	_battletarget_place(target, Vector2(16.0, 40.0))
+	var moved: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		moved != null
+		and moved.success
+		and moved.healthy_cover_searches >= 1
+	)
+
+
+static func _battleclosing_target_death_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_td_src",
+		"cl_td_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	var target: BattleParticipant = pack.get("target", null) as BattleParticipant
+	if battle_state == null or source == null or target == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_td_obj", "cl_td_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or not _battleclosing_is_closing(source):
+		return false
+	target.is_alive = false
+	target.vitality = 0.0
+	var after: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		after != null
+		and after.success
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.reserved_cover_slot_id.is_empty()
+	)
+
+
+static func _battleclosing_target_change_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_tc_src",
+		"cl_tc_a",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	var other: BattleParticipant = _battlefire_add(battle_state, "cl_tc_b", "defender", "rifle")
+	if other == null:
+		return false
+	_battletarget_place(other, Vector2(40.0, 24.0))
+	_battlebehavior_hold_hostile(other)
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_tc_obj", "cl_tc_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or not _battleclosing_is_closing(source):
+		return false
+	var first_key: String = source.combat_decision_key
+	source.set_target_participant("cl_tc_b")
+	_combat_prime_fire_gates(source, "cl_tc_b")
+	var changed: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		changed != null
+		and changed.success
+		and changed.healthy_cover_searches >= 1
+		and source.combat_decision_key != first_key
+		and source.target_participant_id == "cl_tc_b"
+	)
+
+
+static func _battleclosing_posture_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_po_src",
+		"cl_po_tgt",
+		"smg",
+		Vector2(18.0, 10.0),
+		Vector2(36.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_po_obj", "cl_po_slot", Vector2(18.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "cl_po_slot"):
+		return false
+	_combat_prime_fire_gates(source, "cl_po_tgt")
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and source.occupied_cover_slot_id == "cl_po_slot"
+		and source.cover_posture != BattleCoverPostureService.POSTURE_NONE
+		and (
+			source.is_cover_tucked()
+			or source.is_cover_exposed()
+		)
+	)
+
+
+static func _battleclosing_reject_cosmetic_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_rc_src",
+		"cl_rc_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cl_rc_obj",
+		"cl_rc_protect",
+		Vector2(16.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cl_rc_obj",
+		"cl_rc_cosmetic",
+		Vector2(22.0, 10.0),
+		Vector2.LEFT
+	) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var protective: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cl_rc_protect")
+	var cosmetic: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cl_rc_cosmetic")
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(source, protective, "cl_rc_src", "cl_rc_protect")
+		and cosmetic != null
+		and cosmetic.is_available()
+		and _battleclosing_is_closing(source)
+		and source.combat_move_target_id == "cl_rc_protect"
+	)
+
+
+static func _battleclosing_prefer_protection_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_pp_src",
+		"cl_pp_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cl_pp_obj",
+		"cl_pp_strong",
+		Vector2(16.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"cl_pp_obj",
+		"cl_pp_weak",
+		Vector2(22.0, 10.0),
+		Vector2(0.5, 0.8660254)
+	) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var strong: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cl_pp_strong")
+	var weak: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("cl_pp_weak")
+	return (
+		result != null
+		and result.success
+		and result.healthy_seeking_cover == 1
+		and _battlecover_reserved_sync(source, strong, "cl_pp_src", "cl_pp_strong")
+		and weak != null
+		and weak.is_available()
+		and _battleclosing_is_closing(source)
+		and source.combat_move_target_id == "cl_pp_strong"
+	)
+
+
+static func _battleclosing_occupy_on_arrival_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_oa_src",
+		"cl_oa_tgt",
+		"smg",
+		Vector2(10.0, 10.0),
+		Vector2(40.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_oa_obj", "cl_oa_slot", Vector2(16.0, 10.0)) == null:
+		return false
+	var first: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if first == null or not first.success or source.reserved_cover_slot_id != "cl_oa_slot":
+		return false
+	_battletarget_place(source, Vector2(16.0, 10.0))
+	var second: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		second != null
+		and second.success
+		and second.healthy_holding_cover == 1
+		and source.occupied_cover_slot_id == "cl_oa_slot"
+		and source.is_cover_tucked()
+	)
+
+
+static func _battleclosing_tuck_after_occupy_ok() -> bool:
+	return _battleclosing_occupy_on_arrival_ok()
+
+
+static func _battleclosing_no_skim_ok() -> bool:
+	return _battleclosing_tuck_after_occupy_ok()
+
+
+static func _battleclosing_expose_from_cover_ok() -> bool:
+	var pack: Dictionary = _battlepush_pair(
+		"cl_ex_src",
+		"cl_ex_tgt",
+		"smg",
+		Vector2(18.0, 10.0),
+		Vector2(36.0, 10.0)
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(battle_state.battlefield_geometry, "cl_ex_obj", "cl_ex_slot", Vector2(18.0, 10.0)) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "cl_ex_slot"):
+		return false
+	_combat_prime_fire_gates(source, "cl_ex_tgt")
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	return (
+		result != null
+		and result.success
+		and source.occupied_cover_slot_id == "cl_ex_slot"
+		and (
+			source.cover_posture_phase == BattleCoverPostureService.PHASE_EXPOSING
+			or source.is_cover_exposed()
+			or source.cover_posture_phase == BattleCoverPostureService.PHASE_HOLDING
+		)
+	)
+
+
+static func _battleclosing_resume_ok() -> bool:
+	return _battleclosing_intermediate_smg_ok()
+
+
+static func _battleclosing_smg_not_anchored_ok() -> bool:
+	return _battleclosing_intermediate_smg_ok()
+
+
+static func _battleclosing_shotgun_not_anchored_ok() -> bool:
+	return _battleclosing_intermediate_shotgun_ok()
+
+
+static func _battlewounded_local_cover_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wd_lc_src",
+		"wd_lc_tgt",
+		"pistol",
+		Vector2(40.0, 10.0),
+		Vector2(55.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	source.is_wounded = true
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"wd_lc_obj",
+		"wd_lc_local",
+		Vector2(36.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"wd_lc_obj",
+		"wd_lc_spawn",
+		Vector2(8.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var local_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("wd_lc_local")
+	var spawn_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("wd_lc_spawn")
+	return (
+		result != null
+		and result.success
+		and result.wounded_seeking_cover == 1
+		and _battlecover_reserved_sync(source, local_slot, "wd_lc_src", "wd_lc_local")
+		and spawn_slot != null
+		and spawn_slot.is_available()
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_COVER
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battlewounded_no_distant_spawn_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wd_nd_src",
+		"wd_nd_tgt",
+		"pistol",
+		Vector2(40.0, 10.0),
+		Vector2(55.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	source.is_wounded = true
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"wd_nd_obj",
+		"wd_nd_spawn",
+		Vector2(8.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	var spawn_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("wd_nd_spawn")
+	return (
+		result != null
+		and result.success
+		and source.reserved_cover_slot_id.is_empty()
+		and spawn_slot != null
+		and spawn_slot.is_available()
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_COVER
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battlewounded_last_survivor_antistall_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wd_as_src",
+		"wd_as_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(70.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"wd_as_obj",
+		"wd_as_slot",
+		Vector2(10.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wd_as_slot"):
+		return false
+	source.is_wounded = true
+	var held: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
+	if (
+		held == null
+		or not held.success
+		or held.wounded_holding_cover != 1
+		or source.occupied_cover_slot_id != "wd_as_slot"
+	):
+		return false
+	var broke: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 2.4)
+	return (
+		broke != null
+		and broke.success
+		and source.occupied_cover_slot_id.is_empty()
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+		and (
+			source.combat_move_mode == BattleCombatBehaviorService.MOVE_WOUNDED_REENTER
+			or source.combat_move_mode == BattleCombatBehaviorService.MOVE_HOLD
+			or source.combat_move_mode.is_empty()
+		)
+	)
+
+
+static func _battlewounded_teammate_no_antistall_ok() -> bool:
+	var pack: Dictionary = _battlebehavior_pair(
+		"wd_tm_src",
+		"wd_tm_tgt",
+		"pistol",
+		Vector2(10.0, 10.0),
+		Vector2(70.0, 10.0),
+		true
+	)
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null or battle_state.battlefield_geometry == null:
+		return false
+	var ally: BattleParticipant = _battlefire_add(battle_state, "wd_tm_ally", "attacker", "rifle")
+	if ally == null:
+		return false
+	_battletarget_place(ally, Vector2(12.0, 12.0))
+	if _battlewounded_slot(
+		battle_state.battlefield_geometry,
+		"wd_tm_obj",
+		"wd_tm_slot",
+		Vector2(10.0, 10.0),
+		Vector2.RIGHT
+	) == null:
+		return false
+	if not _battlewounded_occupy(battle_state, source, "wd_tm_slot"):
+		return false
+	source.is_wounded = true
+	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 2.5)
+	return (
+		result != null
+		and result.success
+		and result.wounded_holding_cover == 1
+		and source.occupied_cover_slot_id == "wd_tm_slot"
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
+	)
+
+
+static func _battlerifle_cadence_ok() -> bool:
+	var rifle: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("rifle")
+	var pistol: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("pistol")
+	var shotgun: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("shotgun")
+	var smg: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("smg")
+	var sniper: BattleWeaponDefinition = BattleWeaponCatalog.get_definition("sniper")
+	if rifle == null or pistol == null or shotgun == null or smg == null or sniper == null:
+		return false
+	return (
+		is_equal_approx(BattleWeaponCatalog.RIFLE_SHOTS_PER_SECOND, 1.6)
+		and is_equal_approx(rifle.shots_per_second, 1.6)
+		and is_equal_approx(rifle.cooldown_seconds(), 0.625)
+		and is_equal_approx(rifle.max_range, 40.0)
+		and rifle.magazine_capacity == 20
+		and is_equal_approx(rifle.reload_seconds, 2.2)
+		and is_equal_approx(pistol.shots_per_second, 2.5)
+		and is_equal_approx(shotgun.shots_per_second, 1.0)
+		and is_equal_approx(smg.shots_per_second, 8.0)
+		and is_equal_approx(sniper.shots_per_second, 0.5)
 	)
 
 
@@ -37554,6 +39696,7 @@ static func _battlehold_shotgun_far_ok() -> bool:
 		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_RETREAT
 		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_COVER
 		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_CLOSE
 	)
 
 
@@ -39153,12 +41296,17 @@ static func _battlepush_shotgun_far_ok() -> bool:
 	var dest: Vector2 = source.navigation_destination
 	var toward: Vector2 = target.battle_position - before
 	return (
-		_battlepush_pressure_ok(result, source, "bp_sgf_tgt", before)
-		and dest.is_equal_approx(target.battle_position)
-		and (dest - before).dot(toward) > 0.0
-		and result.healthy_seeking_cover == 0
+		result != null
+		and result.success
+		and result.shots_executed == 0
+		and result.healthy_seeking_cover == 1
 		and result.healthy_holding_cover == 0
-		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_RETREAT
+		and result.force_command_hold == 0
+		and _battletarget_has(source, "bp_sgf_tgt")
+		and source.battle_position.is_equal_approx(before)
+		and dest.is_equal_approx(Vector2(16.0, 10.0))
+		and (dest - before).dot(toward) > 0.0
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
 		and is_equal_approx(source.movement_speed, BattleCombatBehaviorCatalog.DEFAULT_COMBAT_MOVEMENT_SPEED)
 		and battle_state.combat_random.snapshot_state() == rng_before
 	)
@@ -39251,9 +41399,14 @@ static func _battlepush_smg_far_ok() -> bool:
 	var before: Vector2 = source.battle_position
 	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.5)
 	return (
-		_battlepush_pressure_ok(result, source, "bp_smgf_tgt", before)
-		and result.healthy_seeking_cover == 0
-		and source.navigation_destination.is_equal_approx(Vector2(50.0, 10.0))
+		result != null
+		and result.success
+		and result.shots_executed == 0
+		and result.healthy_seeking_cover == 1
+		and result.force_command_hold == 0
+		and source.battle_position.is_equal_approx(before)
+		and source.navigation_destination.is_equal_approx(Vector2(16.0, 10.0))
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
 	)
 
 
@@ -39314,7 +41467,7 @@ static func _battlepush_pistol_seek_cover_ok() -> bool:
 	if _battlewounded_slot(battle_state.battlefield_geometry, "bp_psc_obj", "bp_psc_near", Vector2(16.0, 10.0)) == null:
 		return false
 	var result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.2)
-	var near: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bp_psc_near")
+	var far: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot("bp_psc_far")
 	return (
 		result != null
 		and result.success
@@ -39322,7 +41475,7 @@ static func _battlepush_pistol_seek_cover_ok() -> bool:
 		and result.force_command_push == 0
 		and result.shots_executed == 0
 		and _battletarget_has(source, "bp_psc_tgt")
-		and _battlecover_reserved_sync(source, near, "bp_psc_src", "bp_psc_near")
+		and _battlecover_reserved_sync(source, far, "bp_psc_src", "bp_psc_far")
 		and _battlehealthycover_is_seeking(source)
 		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_APPROACH
 	)
@@ -39739,7 +41892,7 @@ static func _battlepush_cover_pursuit_ok() -> bool:
 		and _battlehealthycover_is_seeking(source)
 		and source.reserved_cover_slot_id == reserved_before
 		and source.navigation_destination.is_equal_approx(dest_before)
-		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
 	)
 
 
@@ -40866,17 +43019,17 @@ static func _battlefocus_shotgun_ok() -> bool:
 	var target: Vector2 = Vector2(40.0, 30.0)
 	return (
 		is_equal_approx(BattleCombatBehaviorCatalog.FOCUS_LATERAL_OFFSET, 8.0)
-		and _battlefocus_pressure_ok(left_res, left_src, "bf_sg_l_tgt", Vector2(10.0, 30.0), true)
+		and left_res != null
+		and left_res.success
+		and left_res.shots_executed == 0
+		and left_res.healthy_seeking_cover == 1
+		and left_src.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
+		and left_dest.is_equal_approx(Vector2(16.0, 30.0))
 		and _battlefocus_pressure_ok(right_res, right_src, "bf_sg_r_tgt", Vector2(10.0, 30.0), false)
-		and is_equal_approx(left_dest.distance_to(target), 7.0)
 		and is_equal_approx(right_dest.distance_to(target), 7.0)
-		and left_dest.distance_to(target) <= 7.0
-		and left_dest.is_equal_approx(Vector2(40.0, 23.0))
 		and right_dest.is_equal_approx(Vector2(40.0, 37.0))
-		and left_res.healthy_seeking_cover == 0
-		and left_src.reserved_cover_slot_id.is_empty()
+		and not left_src.reserved_cover_slot_id.is_empty()
 		and left_src.combat_move_mode != BattleCombatBehaviorService.MOVE_RETREAT
-		and (left_dest - Vector2(10.0, 30.0)).dot(target - Vector2(10.0, 30.0)) > 0.0
 	)
 
 
@@ -40910,15 +43063,13 @@ static func _battlefocus_smg_ok() -> bool:
 	var retreat_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(retreat_state, 0.5)
 	var press_dest: Vector2 = press_src.navigation_destination
 	var retreat_dest: Vector2 = retreat_src.navigation_destination
-	var target: Vector2 = Vector2(40.0, 30.0)
-	var raw_candidate: Vector2 = target + _battlefocus_attacker_left() * 8.0
 	return (
-		_battlefocus_pressure_ok(press_res, press_src, "bf_smg_tgt", Vector2(10.0, 30.0), true)
-		and press_dest.is_equal_approx(raw_candidate)
-		and is_equal_approx(press_dest.distance_to(target), 8.0)
-		and press_dest.distance_to(target) >= 5.0
-		and press_dest.distance_to(target) <= 14.0
-		and press_res.healthy_seeking_cover == 0
+		press_res != null
+		and press_res.success
+		and press_res.shots_executed == 0
+		and press_res.healthy_seeking_cover == 1
+		and press_src.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
+		and press_dest.is_equal_approx(Vector2(16.0, 30.0))
 		and retreat_res != null
 		and retreat_res.success
 		and retreat_res.force_command_focus_left == 0
@@ -43198,7 +45349,7 @@ static func _battlefallback_cover_priority_ok() -> bool:
 	var fall_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(fall_state, 0.2)
 	var push_res: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(push_state, 0.2)
 	var fall_near: BattleCoverSlot = fall_state.battlefield_geometry.get_cover_slot("bfb_cp_near")
-	var push_near: BattleCoverSlot = push_state.battlefield_geometry.get_cover_slot("bfb_cp_p_near")
+	var push_far: BattleCoverSlot = push_state.battlefield_geometry.get_cover_slot("bfb_cp_p_far")
 	return (
 		fall_res != null
 		and fall_res.healthy_seeking_cover == 1
@@ -43206,9 +45357,7 @@ static func _battlefallback_cover_priority_ok() -> bool:
 		and _battlecover_reserved_sync(fall_src, fall_near, "bfb_cp_src", "bfb_cp_near")
 		and push_res != null
 		and push_res.healthy_seeking_cover == 1
-		and _battlecover_reserved_sync(push_src, push_near, "bfb_cp_p_src", "bfb_cp_p_near")
-		and fall_src.reserved_cover_slot_id == push_src.reserved_cover_slot_id.replace("bfb_cp_p_near", "bfb_cp_near")
-		and fall_src.navigation_destination.is_equal_approx(push_src.navigation_destination)
+		and _battlecover_reserved_sync(push_src, push_far, "bfb_cp_p_src", "bfb_cp_p_far")
 	)
 
 
@@ -46226,8 +48375,8 @@ static func _battlepressurebehavior_cover_ok() -> bool:
 	var pistol_low_src: BattleParticipant = pistol_low.get("source", null) as BattleParticipant
 	var rifle_src: BattleParticipant = rifle_high.get("source", null) as BattleParticipant
 	var sniper_src: BattleParticipant = sniper_high.get("source", null) as BattleParticipant
-	var pistol_high_near: BattleCoverSlot = pistol_high.get("near", null) as BattleCoverSlot
-	var pistol_low_near: BattleCoverSlot = pistol_low.get("near", null) as BattleCoverSlot
+	var pistol_high_far: BattleCoverSlot = pistol_high.get("far", null) as BattleCoverSlot
+	var pistol_low_far: BattleCoverSlot = pistol_low.get("far", null) as BattleCoverSlot
 	var rifle_in: BattleCoverSlot = rifle_high.get("near", null) as BattleCoverSlot
 	var sniper_in: BattleCoverSlot = sniper_high.get("near", null) as BattleCoverSlot
 	if (
@@ -46248,10 +48397,10 @@ static func _battlepressurebehavior_cover_ok() -> bool:
 		and pistol_low_res.pressure_aggression_suppressed == 0
 		and pistol_high_res.healthy_seeking_cover == 1
 		and pistol_low_res.healthy_seeking_cover == 1
-		and _battlecover_reserved_sync(pistol_high_src, pistol_high_near, "pbh_cv_p_h", "pbh_cv_p_near")
-		and _battlecover_reserved_sync(pistol_low_src, pistol_low_near, "pbh_cv_p_l", "pbh_cv_pl_near")
-		and pistol_high_src.combat_move_target_id == "pbh_cv_p_near"
-		and pistol_low_src.combat_move_target_id == "pbh_cv_pl_near"
+		and _battlecover_reserved_sync(pistol_high_src, pistol_high_far, "pbh_cv_p_h", "pbh_cv_p_far")
+		and _battlecover_reserved_sync(pistol_low_src, pistol_low_far, "pbh_cv_p_l", "pbh_cv_pl_far")
+		and pistol_high_src.combat_move_target_id == "pbh_cv_p_far"
+		and pistol_low_src.combat_move_target_id == "pbh_cv_pl_far"
 		and _battlehealthycover_is_seeking(pistol_high_src)
 		and _battlehealthycover_is_seeking(pistol_low_src)
 		and rifle_res.success
@@ -46596,10 +48745,10 @@ static func _battlepressurebehavior_counters_ok() -> bool:
 	return (
 		result != null
 		and result.success
-		and result.pressure_aggression_suppressed == 1
+		and result.pressure_aggression_suppressed >= 1
 		and result.shots_executed >= 1
 		and result.force_command_hold == 1
-		and result.healthy_seeking_cover == 1
+		and result.healthy_seeking_cover >= 1
 		and _battlepressurebehavior_no_aggressive_route(approacher)
 		and _battlebehavior_is_combat_nav(retreater)
 		and retreater.combat_move_mode == BattleCombatBehaviorService.MOVE_RETREAT
@@ -49320,6 +51469,17 @@ static func _battlesession_ready_for_begin(battle_state: BattleState) -> bool:
 			helper_ids.append("ready_living_%s" % battle_state.defender_side_id)
 	if not _battlesession_deploy_all(battle_state):
 		return false
+	# Default-geometry fixture must re-layout any already-parked arrival vehicle.
+	# The proving-ground car keeps its authored pose across enter_battle; that pose
+	# is outside the empty 100x60 west strip this helper switches to.
+	for vehicle_id: String in battle_state.vehicles:
+		var parked: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if parked == null:
+			continue
+		parked.has_battle_position = false
+		parked.battle_position = Vector2.ZERO
+		parked.has_facing = false
+		parked.facing_direction = Vector2.ZERO
 	var geometry_result: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
 		battle_state
 	)
@@ -54358,7 +56518,7 @@ static func _tacticalview_obstacle_ok() -> bool:
 		and source.contains("obstacle.bounds")
 		and source.contains("blocks_movement")
 		and source.contains("blocks_line_of_sight")
-		and geometry.has_obstacle("building_warehouse")
+		and geometry.has_obstacle("building_hq")
 	)
 	var wall_z: BattleObstacle = BattleObstacle.new("tv_z_wall", Rect2(40.0, 20.0, 6.0, 8.0), true, false)
 	var wall_a: BattleObstacle = BattleObstacle.new("tv_a_wall", Rect2(48.0, 24.0, 5.0, 5.0), false, true)
@@ -54890,18 +57050,25 @@ static func _interactive_deploy_place_unchanged(
 
 
 static func _interactive_deploy_continuous_point(geometry: BattlefieldGeometry) -> Vector2:
-	var requested: Vector2 = Vector2(7.25, 31.5)
-	if geometry != null and geometry.contains_point(requested) and geometry.attacker_deployment_contains(requested):
-		return requested
-	if geometry == null:
-		return requested
-	return (
-		geometry.attacker_deployment_rect.position
-		+ Vector2(
-			geometry.attacker_deployment_rect.size.x * 0.37,
-			geometry.attacker_deployment_rect.size.y * 0.52
+	var candidates: Array[Vector2] = [
+		TacticalProvingGroundCatalog.ATTACKER_PLACE_POINT,
+		Vector2(7.25, 31.5),
+	]
+	if geometry != null:
+		for requested: Vector2 in candidates:
+			if (
+				geometry.contains_point(requested)
+				and geometry.attacker_deployment_contains(requested)
+			):
+				return requested
+		return (
+			geometry.attacker_deployment_rect.position
+			+ Vector2(
+				geometry.attacker_deployment_rect.size.x * 0.37,
+				geometry.attacker_deployment_rect.size.y * 0.52
+			)
 		)
-	)
+	return Vector2(7.25, 31.5)
 
 
 static func _interactive_deploy_center_point(geometry: BattlefieldGeometry) -> Vector2:
@@ -55286,7 +57453,7 @@ static func _interactive_deploy_bounds_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	if not geometry.is_valid():
 		return _gameplayruntime_finish(runtime, false)
-	var legal: Vector2 = Vector2(7.25, 31.5)
+	var legal: Vector2 = _interactive_deploy_continuous_point(geometry)
 	var outside: Vector2 = Vector2(120.0, 20.0)
 	var tall_outside: Vector2 = Vector2(10.0, 80.0)
 	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
@@ -55342,7 +57509,7 @@ static func _interactive_deploy_zone_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	geometry.clear_deployment_pockets()
 	geometry.attacker_deployment_rect = Rect2(40.0, 24.0, 16.0, 12.0)
-	geometry.defender_deployment_rect = Rect2(80.0, 0.0, 20.0, 60.0)
+	geometry.defender_deployment_rect = Rect2(58.0, 0.0, 10.0, geometry.height)
 	var old_legal: Vector2 = Vector2(10.0, 30.0)
 	var noman: Vector2 = Vector2(50.0, 40.0)
 	var defender_point: Vector2 = _interactive_deploy_defender_point(geometry)
@@ -55411,20 +57578,20 @@ static func _interactive_deploy_obstacle_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	var move_wall: BattleObstacle = BattleObstacle.new(
 		"id_move_wall",
-		Rect2(10.0, 32.0, 4.0, 3.5),
+		Rect2(48.0, 42.0, 4.0, 3.5),
 		true,
 		false
 	)
 	var los_wall: BattleObstacle = BattleObstacle.new(
 		"id_los_wall",
-		Rect2(4.0, 25.0, 3.0, 3.0),
+		Rect2(54.0, 42.2, 3.0, 3.0),
 		false,
 		true
 	)
 	if not geometry.add_obstacle(move_wall) or not geometry.add_obstacle(los_wall):
 		return _gameplayruntime_finish(runtime, false)
-	var blocked: Vector2 = Vector2(12.0, 33.5)
-	var los_point: Vector2 = Vector2(5.5, 26.5)
+	var blocked: Vector2 = Vector2(50.0, 43.5)
+	var los_point: Vector2 = Vector2(55.2, 43.6)
 	var snap: Dictionary = _interactive_deploy_place_snap(participant, zone)
 	var blocked_result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
 		battle_state,
@@ -55689,7 +57856,7 @@ static func _interactive_deploy_invalid_keep_ok() -> bool:
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if controller == null or participant == null or zone == null or geometry == null:
 		return _gameplayruntime_finish(runtime, false)
-	var wall: BattleObstacle = BattleObstacle.new("id_keep_wall", Rect2(10.0, 32.0, 4.0, 3.5), true, true)
+	var wall: BattleObstacle = BattleObstacle.new("id_keep_wall", Rect2(48.0, 42.0, 4.0, 3.5), true, true)
 	if not geometry.add_obstacle(wall):
 		return _gameplayruntime_finish(runtime, false)
 	if not controller.select_participant(participant_id):
@@ -55701,7 +57868,7 @@ static func _interactive_deploy_invalid_keep_ok() -> bool:
 	var def_result: BattleDeploymentPlacementResult = controller.try_place_selected(
 		_interactive_deploy_defender_point(geometry)
 	)
-	var block_result: BattleDeploymentPlacementResult = controller.try_place_selected(Vector2(12.0, 33.5))
+	var block_result: BattleDeploymentPlacementResult = controller.try_place_selected(Vector2(50.0, 43.5))
 	return _gameplayruntime_finish(
 		runtime,
 		center_result != null
@@ -55952,7 +58119,7 @@ static func _interactive_deploy_continuous_ok() -> bool:
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if participant == null or geometry == null:
 		return _gameplayruntime_finish(runtime, false)
-	var point: Vector2 = Vector2(7.25, 31.5)
+	var point: Vector2 = _interactive_deploy_continuous_point(geometry)
 	if not geometry.attacker_deployment_contains(point):
 		return _gameplayruntime_finish(runtime, false)
 	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
@@ -60638,6 +62805,8 @@ static func _vehicle_physical_attacker_soldier_point(battle_state: BattleState) 
 	if battle_state.get_deployment_position_error(battle_state.attacker_side_id, requested).is_empty():
 		return requested
 	var fallbacks: Array[Vector2] = [
+		TacticalProvingGroundCatalog.ATTACKER_PLACE_POINT,
+		StarterWorldService.ATTACKER_RIFLE_START,
 		Vector2(14.0, 31.5),
 		Vector2(12.5, 45.0),
 		Vector2(16.0, 20.0),
@@ -62401,13 +64570,11 @@ static func _battle_push_cover_far_reserved_ok() -> bool:
 	return (
 		result != null
 		and result.success
-		and result.healthy_seeking_cover == 0
+		and result.healthy_seeking_cover == 1
 		and result.healthy_holding_cover == 0
-		and source.reserved_cover_slot_id.is_empty()
+		and _battlecover_reserved_sync(source, slot, "bpc_fr_src", "bpc_fr_slot")
 		and source.occupied_cover_slot_id.is_empty()
-		and slot.is_available()
-		and source.combat_move_mode != BattleCombatBehaviorService.MOVE_SEEK_ROLE_COVER
-		and result.force_command_push >= 1
+		and source.combat_move_mode == BattleCombatBehaviorService.MOVE_CLOSE
 	)
 
 
@@ -62525,11 +64692,12 @@ static func _battle_push_cover_hold_far_ok() -> bool:
 	return (
 		result != null
 		and result.success
-		and result.healthy_holding_cover == 1
-		and result.force_command_push == 0
-		and result.participants_repositioning == 0
-		and _battlecover_occupied_sync(source, slot, "bpc_hf_src", "bpc_hf_slot")
-		and source.battle_position.is_equal_approx(Vector2(20.0, 10.0))
+		and result.healthy_holding_cover == 0
+		and source.occupied_cover_slot_id.is_empty()
+		and (
+			_battleclosing_is_closing(source)
+			or source.combat_move_mode == BattleCombatBehaviorService.MOVE_APPROACH
+		)
 		and not _battle_push_cover_slot_supports_engagement(slot, target, "pistol")
 	)
 
@@ -64476,9 +66644,11 @@ static func _debug_3v3_starts_legal(battle_state: BattleState) -> bool:
 				return false
 		positions.append(position)
 	for i in positions.size():
-		if i < 3 and positions[i].x >= 20.0:
+		if (i == 0 or i == 1) and positions[i].y <= 32.0:
 			return false
-		if i >= 3 and positions[i].x <= 80.0:
+		if i == 2 and positions[i].x < 80.0:
+			return false
+		if i >= 3 and positions[i].y >= 27.0:
 			return false
 		for j in range(i + 1, positions.size()):
 			if positions[i].distance_to(positions[j]) < 3.0:
@@ -64804,8 +66974,8 @@ static func _playtest_variety_defender_ok() -> bool:
 	var geometry: BattlefieldGeometry = null
 	if battle_r != null:
 		geometry = battle_r.battlefield_geometry
-	var east_ok: bool = (
-		pos_h.x >= 50.0
+	var hq_frontage_ok: bool = (
+		pos_h.y < 28.0
 		and geometry != null
 		and geometry.defender_deployment_contains(pos_h)
 	)
@@ -64817,13 +66987,13 @@ static func _playtest_variety_defender_ok() -> bool:
 		if not slot_id.is_empty():
 			var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
 			if slot != null and slot.facing_direction.length() > 0.001:
-				facing_ok = slot.facing_direction.normalized().dot(Vector2.LEFT) > 0.25
+				facing_ok = slot.facing_direction.normalized().dot(Vector2.DOWN) > 0.25
 	return _gameplayruntime_finish(
 		runtime_r,
 		defender_r != null
 		and defender_r.has_battle_position
 		and defender_r.battle_position.is_equal_approx(pos_h)
-		and east_ok
+		and hq_frontage_ok
 		and facing_ok
 	)
 

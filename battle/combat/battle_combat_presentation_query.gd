@@ -22,6 +22,7 @@ const STATE_WAIT := "WAIT"
 
 const MOVE_SEEK_COVER := "seek_cover"
 const MOVE_SEEK_ROLE_COVER := "seek_role_cover"
+const MOVE_CLOSE := "close"
 const MOVE_DEFEND_REPOSITION := "defend_reposition"
 
 const RELOCATING_SPEED_EPSILON := 0.05
@@ -66,7 +67,7 @@ static func _is_seeking_cover(participant: BattleParticipant) -> bool:
 	if participant == null:
 		return false
 	match participant.combat_move_mode:
-		MOVE_SEEK_COVER, MOVE_SEEK_ROLE_COVER, MOVE_DEFEND_REPOSITION:
+		MOVE_SEEK_COVER, MOVE_SEEK_ROLE_COVER, MOVE_CLOSE, MOVE_DEFEND_REPOSITION:
 			return true
 		_:
 			return false

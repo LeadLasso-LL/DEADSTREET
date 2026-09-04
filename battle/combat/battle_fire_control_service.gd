@@ -9,6 +9,9 @@ const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
 const BattleFireControlResult := preload("res://battle/combat/battle_fire_control_result.gd")
 const BattleLineOfSightService := preload("res://battle/combat/battle_line_of_sight_service.gd")
 const BattleLineOfSightResult := preload("res://battle/combat/battle_line_of_sight_result.gd")
+const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
+const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
+const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 
 
 static func initialize_weapon_state(participant: BattleParticipant) -> bool:
@@ -131,7 +134,8 @@ static func evaluate_fire_eligibility(battle_state: BattleState) -> BattleFireCo
 static func evaluate_participant_target_eligibility(
 	battle_state: BattleState,
 	source_participant_id: String,
-	target_participant_id: String
+	target_participant_id: String,
+	ignore_source_cover_posture: bool = false
 ) -> BattleFireControlResult:
 	if battle_state == null:
 		return BattleFireControlResult.failed(
@@ -167,7 +171,12 @@ static func evaluate_participant_target_eligibility(
 		)
 	var source: BattleParticipant = battle_state.get_participant(source_participant_id)
 	var target: BattleParticipant = battle_state.get_participant(target_participant_id)
-	var rejection_code: String = _pair_rejection_code(battle_state, source, target)
+	var rejection_code: String = _pair_rejection_code(
+		battle_state,
+		source,
+		target,
+		ignore_source_cover_posture
+	)
 	if rejection_code.is_empty():
 		return BattleFireControlResult.pair_eligible(source_participant_id, target_participant_id)
 	return BattleFireControlResult.pair_rejected(
@@ -175,6 +184,20 @@ static func evaluate_participant_target_eligibility(
 		source_participant_id,
 		target_participant_id
 	)
+
+
+static func would_fire_if_source_cover_exposed(
+	battle_state: BattleState,
+	source_participant_id: String,
+	target_participant_id: String
+) -> bool:
+	var eligibility: BattleFireControlResult = evaluate_participant_target_eligibility(
+		battle_state,
+		source_participant_id,
+		target_participant_id,
+		true
+	)
+	return eligibility != null and eligibility.success and eligibility.can_fire
 
 
 # Explicit shot commit for a future attack-resolution layer.
@@ -318,6 +341,10 @@ static func _aggregate_block_reason(rejection_code: String) -> String:
 			return "not_ready"
 		"sniper_aim":
 			return "not_ready"
+		"cover_tucked":
+			return "not_ready"
+		"target_tucked_protected":
+			return "not_ready"
 		_:
 			return "not_ready"
 
@@ -325,9 +352,14 @@ static func _aggregate_block_reason(rejection_code: String) -> String:
 static func _pair_rejection_code(
 	battle_state: BattleState,
 	source: BattleParticipant,
-	target: BattleParticipant
+	target: BattleParticipant,
+	ignore_source_cover_posture: bool = false
 ) -> String:
-	var source_rejection: String = _source_rejection_code(battle_state, source)
+	var source_rejection: String = _source_rejection_code(
+		battle_state,
+		source,
+		ignore_source_cover_posture
+	)
 	if not source_rejection.is_empty():
 		return source_rejection
 	var target_rejection: String = _target_rejection_code(battle_state, source, target)
@@ -354,6 +386,8 @@ static func _pair_rejection_code(
 		return "source_not_eligible"
 	if not los_result.has_line_of_sight:
 		return "line_of_sight_blocked"
+	if _is_target_tucked_protected(battle_state, source, target):
+		return "target_tucked_protected"
 	return ""
 
 
@@ -415,14 +449,45 @@ static func _advance_sniper_aim(participant: BattleParticipant, delta_seconds: f
 
 static func _source_rejection_code(
 	battle_state: BattleState,
-	participant: BattleParticipant
+	participant: BattleParticipant,
+	ignore_source_cover_posture: bool = false
 ) -> String:
 	var identity_rejection: String = _source_identity_rejection_code(battle_state, participant)
 	if not identity_rejection.is_empty():
 		return identity_rejection
 	if participant.has_wound_reaction():
 		return "wound_reaction"
+	if not ignore_source_cover_posture and participant.is_cover_tucked():
+		return "cover_tucked"
 	return ""
+
+
+static func _is_target_tucked_protected(
+	battle_state: BattleState,
+	source: BattleParticipant,
+	target: BattleParticipant
+) -> bool:
+	if battle_state == null or source == null or target == null:
+		return false
+	if not target.is_cover_tucked():
+		return false
+	if battle_state.battlefield_geometry == null:
+		return false
+	if not source.has_battle_position:
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_protection(
+		battle_state.battlefield_geometry,
+		target,
+		source.battle_position
+	)
+	if protection == null or not protection.has_applicable_cover:
+		return false
+	if not is_finite(protection.protection_factor):
+		return false
+	return (
+		protection.protection_factor
+		>= BattleCombatBehaviorCatalog.COVER_TUCKED_SHOT_BLOCK_FACTOR
+	)
 
 
 static func _source_identity_rejection_code(

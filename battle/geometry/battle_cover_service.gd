@@ -9,6 +9,7 @@ const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd
 const BattleCoverQueryResult := preload("res://battle/geometry/battle_cover_query_result.gd")
 const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
 const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
+const BattleCoverPostureService := preload("res://battle/combat/battle_cover_posture_service.gd")
 
 # Participant must be this close to a slot to occupy it. Reservation has no range.
 const COVER_OCCUPANCY_EPSILON := 0.5
@@ -81,6 +82,8 @@ static func occupy_slot(
 			slot.reserved_by_participant_id = ""
 			if participant.reserved_cover_slot_id == cover_slot_id:
 				participant.reserved_cover_slot_id = ""
+		participant.occupied_cover_slot_id = cover_slot_id
+		BattleCoverPostureService.ensure_occupied_posture(participant)
 		return BattleCoverResult.succeeded(cover_slot_id, participant_id)
 	if slot.is_occupied():
 		return BattleCoverResult.failed(
@@ -110,6 +113,7 @@ static func occupy_slot(
 			participant.reserved_cover_slot_id = ""
 	slot.occupied_by_participant_id = participant_id
 	participant.occupied_cover_slot_id = cover_slot_id
+	BattleCoverPostureService.enter_tucked(participant)
 	return BattleCoverResult.succeeded(cover_slot_id, participant_id)
 
 
@@ -338,6 +342,7 @@ static func _clear_occupancy(battle_state: BattleState, participant: BattleParti
 			slot.occupied_by_participant_id = ""
 			freed = true
 	participant.occupied_cover_slot_id = ""
+	BattleCoverPostureService.clear(participant)
 	if freed:
 		_bump_cover_occupancy_revision(battle_state)
 

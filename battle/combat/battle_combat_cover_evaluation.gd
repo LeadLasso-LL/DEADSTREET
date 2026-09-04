@@ -16,3 +16,4 @@ var move_distance: float = INF
 var combat_usable: bool = false
 var in_band: bool = true
 var band_error: float = 0.0
+var closing_progress: float = 0.0

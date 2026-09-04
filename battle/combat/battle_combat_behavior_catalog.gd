@@ -45,7 +45,18 @@ const SNIPER_TARGET_CHANGE_REACQUIRE_SECONDS := 3.00
 # Provisional occupied-cover combat mitigation. Not final balance.
 # At protection_factor 1.0, the pre-cover resolution roll is reduced by this amount.
 # cover_multiplier = 1.0 - (MAX_COVER_ROLL_REDUCTION * protection_factor)
+# Applies only while EXPOSED in cover. Tucked protection is a separate fire gate.
 const MAX_COVER_ROLL_REDUCTION := 0.30
+
+# Provisional occupied-cover posture cycle. Weapon-independent. Not final balance.
+# Tucked soldiers cannot fire. Exposed soldiers use existing fire control.
+const COVER_TUCK_TO_EXPOSE_SECONDS := 0.18
+const COVER_EXPOSED_WINDOW_SECONDS := 0.55
+const COVER_EXPOSE_TO_TUCK_SECONDS := 0.18
+
+# Occupied tucked cover blocks a legal shot when protection_factor meets this.
+# Same threshold as useful cover ranking. Flanks below this remain shootable.
+const COVER_TUCKED_SHOT_BLOCK_FACTOR := 0.50
 
 # Replan combat-owned paths when the tracked destination drifts this far.
 const REPLAN_DISTANCE_EPSILON := 0.5
@@ -57,13 +68,30 @@ const FOCUS_LATERAL_OFFSET := 8.0
 const FALL_BACK_DISTANCE := 10.0
 
 # Provisional healthy weapon-role cover positioning. Not final balance.
-# Shotgun and SMG do not autonomously seek healthy cover in v1.
+# Shotgun and SMG do not autonomously seek healthy firing cover in v1.
 const PISTOL_COVER_SEEK_RADIUS := 10.0
 const PISTOL_COVER_REPLAN_DISTANCE := 3.0
 const RIFLE_COVER_SEEK_RADIUS := 18.0
 const RIFLE_COVER_REPLAN_DISTANCE := 4.0
 const SNIPER_COVER_SEEK_RADIUS := 28.0
 const SNIPER_COVER_REPLAN_DISTANCE := 6.0
+
+# Short-range closing. Separate from healthy rifle/pistol/sniper firing-cover seek.
+# Cover is a means to close, not the objective. Ranking runs on decision/invalidation only.
+const PISTOL_CLOSING_SEEK_RADIUS := 14.0
+const SMG_CLOSING_SEEK_RADIUS := 18.0
+const SHOTGUN_CLOSING_SEEK_RADIUS := 22.0
+const CLOSING_PROGRESS_EPSILON := 2.0
+const SMG_CLOSING_COMMIT_RANGE := 16.0
+const SHOTGUN_CLOSING_COMMIT_RANGE := 9.0
+# Anti-skim only. Occupied closing cover still leaves by tactical usefulness.
+const CLOSING_COVER_MIN_SETTLE_SECONDS := 0.55
+
+# Wounded retreat-to-cover stays local. Not a map-wide safest-refuge search.
+# 30 is below half the 100-wide battlefield and still covers current local fixtures.
+const WOUNDED_COVER_SEEK_RADIUS := 30.0
+# Last-survivor deadlock only. Not a wounded camping timer for normal fights.
+const WOUNDED_STALEMATE_SECONDS := 2.5
 
 # Provisional local Defend Position radius. Not UI-exposed.
 # Defenders may reposition inside this radius to restore a firing position.
@@ -122,6 +150,36 @@ static func healthy_cover_replan_distance(weapon_type_id: String) -> float:
 			return RIFLE_COVER_REPLAN_DISTANCE
 		BattleWeaponCatalog.WEAPON_SNIPER:
 			return SNIPER_COVER_REPLAN_DISTANCE
+		_:
+			return 0.0
+
+
+static func uses_short_range_closing(weapon_type_id: String) -> bool:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_SMG, BattleWeaponCatalog.WEAPON_SHOTGUN:
+			return true
+		_:
+			return false
+
+
+static func closing_cover_seek_radius(weapon_type_id: String) -> float:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_PISTOL:
+			return PISTOL_CLOSING_SEEK_RADIUS
+		BattleWeaponCatalog.WEAPON_SMG:
+			return SMG_CLOSING_SEEK_RADIUS
+		BattleWeaponCatalog.WEAPON_SHOTGUN:
+			return SHOTGUN_CLOSING_SEEK_RADIUS
+		_:
+			return 0.0
+
+
+static func closing_commit_range(weapon_type_id: String) -> float:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_SMG:
+			return SMG_CLOSING_COMMIT_RANGE
+		BattleWeaponCatalog.WEAPON_SHOTGUN:
+			return SHOTGUN_CLOSING_COMMIT_RANGE
 		_:
 			return 0.0
 

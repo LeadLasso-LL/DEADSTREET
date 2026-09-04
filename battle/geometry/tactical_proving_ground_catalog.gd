@@ -1,9 +1,11 @@
 class_name TacticalProvingGroundCatalog
 extends RefCounted
 
-# Authored west-to-east commercial / light-industrial proving ground.
+# Authored south-to-north Neighborhood HQ frontage assault.
 # Testing environment, not campaign-map localization.
-# Coordinates are tactical battlefield units on a 100 x 60 field.
+# North row: left neighbor → HQ → HQ-side alley → right neighbor → FAR-RIGHT ALLEY → east edge.
+# Rear strip north of the right building connects the two alleys into a wrap route.
+# Visual dressing stays presentation-only.
 
 const AuthoredBattlefieldDefinition := preload("res://battle/geometry/authored_battlefield_definition.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
@@ -14,27 +16,48 @@ const BattlePresentationMarking := preload("res://battle/geometry/battle_present
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
 const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
 
-const LAYOUT_ID := "west_east_commercial_block_v2"
-const WIDTH := 100.0
-const HEIGHT := 60.0
+const LAYOUT_ID := "hq_frontage_assault_v1"
+const WIDTH := 86.0
+const HEIGHT := 58.0
 
-const MAIN_ROAD := Rect2(0.0, 24.0, 100.0, 12.0)
-const NORTH_SIDEWALK := Rect2(0.0, 20.0, 100.0, 4.0)
-const SOUTH_SIDEWALK := Rect2(0.0, 36.0, 100.0, 4.0)
-const ALLEY_MOUTH := Rect2(52.0, 36.0, 8.0, 4.0)
-const ALLEY_SURFACE := Rect2(48.0, 40.0, 26.0, 20.0)
-const NW_SHOP_BOUNDS := Rect2(1.0, 1.0, 16.0, 18.0)
-const MID_NORTH_SHOP_BOUNDS := Rect2(30.0, 1.0, 20.0, 18.0)
-const WAREHOUSE_BOUNDS := Rect2(66.0, 1.0, 32.0, 18.0)
-const SW_SHOP_BOUNDS := Rect2(1.0, 42.0, 15.0, 17.0)
-const SOUTH_MID_BOUNDS := Rect2(28.0, 44.0, 20.0, 15.0)
-const EAST_SHOP_BOUNDS := Rect2(74.0, 42.0, 24.0, 17.0)
+const MAIN_ROAD := Rect2(0.0, 26.8, 86.0, 15.2)
+const NORTH_SIDEWALK := Rect2(0.0, 22.4, 77.0, 4.4)
+const SOUTH_SIDEWALK := Rect2(0.0, 42.0, 86.0, 4.4)
+const ALLEY_SURFACE := Rect2(77.0, 0.6, 9.0, 26.2)
+const HQ_SIDE_ALLEY := Rect2(53.0, 0.6, 5.0, 22.2)
+const REAR_SPACE := Rect2(53.0, 0.6, 33.0, 3.8)
+const PORCH_APRON := Rect2(17.0, 18.2, 36.0, 4.2)
+const STAIRS_BOUNDS := Rect2(32.2, 18.3, 5.6, 4.0)
 
-const ATTACKER_VEHICLE_ANCHOR := Vector2(8.0, 27.2)
-const ATTACKER_VEHICLE_HEADING := Vector2.RIGHT
+const HQ_BOUNDS := Rect2(17.0, 0.6, 36.0, 17.6)
+const WEST_NEIGHBOR_BOUNDS := Rect2(0.5, 0.6, 14.6, 19.4)
+const EAST_NEIGHBOR_BOUNDS := Rect2(58.0, 4.4, 19.0, 16.4)
+const SW_FRAMING_BOUNDS := Rect2(0.5, 50.4, 17.5, 7.2)
+const SOUTH_MID_FRAMING_BOUNDS := Rect2(30.5, 51.0, 15.5, 6.6)
+const SE_FRAMING_BOUNDS := Rect2(58.0, 50.4, 16.0, 7.2)
+
+const ATTACKER_VEHICLE_ANCHOR := Vector2(46.5, 35.2)
+# Blueprint heading (-0.50, -0.87) is not unit-length; vehicle facing requires a unit vector.
+const ATTACKER_VEHICLE_HEADING := Vector2(-0.498283875853458, -0.867013943985018)
+const ATTACKER_PLACE_POINT := Vector2(47.2, 37.2)
+const ATTACKER_ALLEY_APPROACH_POINT := Vector2(83.0, 25.8)
+const ALLEY_DEEP_POINT := Vector2(81.5, 10.0)
+const ALLEY_MOUTH_POINT := Vector2(83.0, 25.8)
+const FAR_RIGHT_ALLEY_NORTH_POINT := Vector2(81.5, 2.4)
+const RIGHT_NEIGHBOR_REAR_POINT := Vector2(67.5, 2.4)
+const RIGHT_NEIGHBOR_SE_POINT := Vector2(77.8, 21.4)
+const HQ_SIDE_ALLEY_FRONT_POINT := Vector2(56.0, 21.6)
+const HQ_SIDE_ALLEY_MID_POINT := Vector2(55.4, 12.0)
+const HQ_SIDE_ALLEY_REAR_POINT := Vector2(54.6, 5.6)
+const DEFENDER_FRONTAGE_WEST_POINT := Vector2(19.2, 24.4)
+const DEFENDER_FRONTAGE_CENTER_POINT := Vector2(35.0, 24.4)
+const DEFENDER_FRONTAGE_EAST_POINT := Vector2(49.6, 25.6)
+const DEFENDER_STREET_WEST_POINT := Vector2(24.8, 29.4)
+
+const COVER_SLOT_OFFSET := 0.8
 
 
-static func west_east_commercial_block_v2() -> AuthoredBattlefieldDefinition:
+static func hq_frontage_assault_v1() -> AuthoredBattlefieldDefinition:
 	var definition: AuthoredBattlefieldDefinition = AuthoredBattlefieldDefinition.new()
 	definition.definition_id = LAYOUT_ID
 	definition.width = WIDTH
@@ -56,25 +79,7 @@ static func west_east_commercial_block_v2() -> AuthoredBattlefieldDefinition:
 
 static func _add_surfaces(definition: AuthoredBattlefieldDefinition) -> void:
 	definition.surfaces.append(
-		BattleSurfaceRegion.new("lot_west_north", BattleSurfaceRegion.KIND_LOT, Rect2(17.0, 0.0, 13.0, 20.0))
-	)
-	definition.surfaces.append(
-		BattleSurfaceRegion.new("lot_east_north", BattleSurfaceRegion.KIND_LOT, Rect2(50.0, 0.0, 16.0, 20.0))
-	)
-	definition.surfaces.append(
-		BattleSurfaceRegion.new("lot_west_south", BattleSurfaceRegion.KIND_LOT, Rect2(16.0, 40.0, 12.0, 20.0))
-	)
-	definition.surfaces.append(
-		BattleSurfaceRegion.new("lot_east_south", BattleSurfaceRegion.KIND_LOT, Rect2(74.0, 40.0, 26.0, 2.0))
-	)
-	definition.surfaces.append(
-		BattleSurfaceRegion.new("alley_service", BattleSurfaceRegion.KIND_ALLEY, ALLEY_SURFACE)
-	)
-	definition.surfaces.append(
 		BattleSurfaceRegion.new("road_main", BattleSurfaceRegion.KIND_ASPHALT, MAIN_ROAD)
-	)
-	definition.surfaces.append(
-		BattleSurfaceRegion.new("road_alley_mouth", BattleSurfaceRegion.KIND_ASPHALT, ALLEY_MOUTH)
 	)
 	definition.surfaces.append(
 		BattleSurfaceRegion.new("sidewalk_north", BattleSurfaceRegion.KIND_SIDEWALK, NORTH_SIDEWALK)
@@ -83,13 +88,22 @@ static func _add_surfaces(definition: AuthoredBattlefieldDefinition) -> void:
 		BattleSurfaceRegion.new("sidewalk_south", BattleSurfaceRegion.KIND_SIDEWALK, SOUTH_SIDEWALK)
 	)
 	definition.surfaces.append(
-		BattleSurfaceRegion.new("curb_north", BattleSurfaceRegion.KIND_CURB, Rect2(0.0, 23.5, 100.0, 0.5))
+		BattleSurfaceRegion.new("alley_hq_east", BattleSurfaceRegion.KIND_ALLEY, ALLEY_SURFACE)
 	)
 	definition.surfaces.append(
-		BattleSurfaceRegion.new("curb_south_west", BattleSurfaceRegion.KIND_CURB, Rect2(0.0, 36.0, 52.0, 0.5))
+		BattleSurfaceRegion.new("alley_hq_side", BattleSurfaceRegion.KIND_ALLEY, HQ_SIDE_ALLEY)
 	)
 	definition.surfaces.append(
-		BattleSurfaceRegion.new("curb_south_east", BattleSurfaceRegion.KIND_CURB, Rect2(60.0, 36.0, 40.0, 0.5))
+		BattleSurfaceRegion.new("alley_right_rear", BattleSurfaceRegion.KIND_ALLEY, REAR_SPACE)
+	)
+	definition.surfaces.append(
+		BattleSurfaceRegion.new("apron_hq_porch", BattleSurfaceRegion.KIND_APRON, PORCH_APRON)
+	)
+	definition.surfaces.append(
+		BattleSurfaceRegion.new("curb_north", BattleSurfaceRegion.KIND_CURB, Rect2(0.0, 26.6, 86.0, 0.4))
+	)
+	definition.surfaces.append(
+		BattleSurfaceRegion.new("curb_south", BattleSurfaceRegion.KIND_CURB, Rect2(0.0, 41.8, 86.0, 0.4))
 	)
 
 
@@ -98,169 +112,273 @@ static func _add_presentation_markings(definition: AuthoredBattlefieldDefinition
 		BattlePresentationMarking.new(
 			"lane_main",
 			BattlePresentationMarking.KIND_LANE,
-			Rect2(2.0, 29.86, 96.0, 0.28)
+			Rect2(2.0, 34.3, 82.0, 0.26)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"lane_edge_north",
+			BattlePresentationMarking.KIND_PARKING,
+			Rect2(1.5, 28.2, 83.0, 0.10)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"lane_edge_south",
+			BattlePresentationMarking.KIND_PARKING,
+			Rect2(1.5, 40.4, 83.0, 0.10)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"sidewalk_joint_north",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(0.0, 22.35, 77.0, 0.12)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"sidewalk_joint_south",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(0.0, 46.28, 86.0, 0.12)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stairs_hq_center",
+			BattlePresentationMarking.KIND_LOADING,
+			STAIRS_BOUNDS
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stairs_step_a",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(32.4, 19.3, 5.2, 0.16)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stairs_step_b",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(32.4, 20.4, 5.2, 0.16)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stairs_step_c",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(32.4, 21.5, 5.2, 0.16)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stairs_riser",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(34.9, 18.4, 0.14, 3.7)
 		)
 	)
 	definition.presentation_markings.append(
 		BattlePresentationMarking.new(
 			"stop_bar_alley",
 			BattlePresentationMarking.KIND_STOP_BAR,
-			Rect2(52.2, 36.05, 7.6, 0.32)
-		)
-	)
-	definition.presentation_markings.append(
-		BattlePresentationMarking.new(
-			"parking_east_lot_a",
-			BattlePresentationMarking.KIND_PARKING,
-			Rect2(52.0, 6.0, 10.0, 0.16)
-		)
-	)
-	definition.presentation_markings.append(
-		BattlePresentationMarking.new(
-			"parking_east_lot_b",
-			BattlePresentationMarking.KIND_PARKING,
-			Rect2(52.0, 8.4, 10.0, 0.16)
-		)
-	)
-	definition.presentation_markings.append(
-		BattlePresentationMarking.new(
-			"parking_west_lot_a",
-			BattlePresentationMarking.KIND_PARKING,
-			Rect2(18.0, 6.0, 8.0, 0.16)
-		)
-	)
-	definition.presentation_markings.append(
-		BattlePresentationMarking.new(
-			"loading_warehouse",
-			BattlePresentationMarking.KIND_LOADING,
-			Rect2(72.0, 19.15, 14.0, 0.28)
-		)
-	)
-	definition.presentation_markings.append(
-		BattlePresentationMarking.new(
-			"loading_delivery_north",
-			BattlePresentationMarking.KIND_LOADING,
-			Rect2(51.6, 23.85, 6.2, 0.22)
-		)
-	)
-	definition.presentation_markings.append(
-		BattlePresentationMarking.new(
-			"seam_south_west",
-			BattlePresentationMarking.KIND_SEAM,
-			Rect2(8.0, 36.15, 0.12, 3.7)
+			Rect2(77.2, 26.45, 8.6, 0.28)
 		)
 	)
 	definition.presentation_markings.append(
 		BattlePresentationMarking.new(
 			"bollard_alley_west",
 			BattlePresentationMarking.KIND_BOLLARD,
-			Rect2(51.7, 35.7, 0.28, 0.28)
+			Rect2(77.15, 26.05, 0.28, 0.28)
 		)
 	)
 	definition.presentation_markings.append(
 		BattlePresentationMarking.new(
 			"bollard_alley_east",
 			BattlePresentationMarking.KIND_BOLLARD,
-			Rect2(59.95, 35.7, 0.28, 0.28)
+			Rect2(85.45, 26.05, 0.28, 0.28)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"alley_edge_west",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(77.0, 0.7, 0.14, 26.0)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"alley_edge_east",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(85.86, 0.7, 0.14, 26.0)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"hq_side_alley_edge_west",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(53.0, 0.7, 0.14, 21.8)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"hq_side_alley_edge_east",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(57.86, 0.7, 0.14, 21.8)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"rear_connector_seam",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(53.2, 4.32, 23.6, 0.14)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"porch_seam_west",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(17.2, 18.25, 14.8, 0.14)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"porch_seam_east",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(38.0, 18.25, 14.8, 0.14)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"porch_front_edge",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(17.1, 22.28, 35.8, 0.14)
 		)
 	)
 
 
 static func _add_hard_structures(definition: AuthoredBattlefieldDefinition) -> void:
 	definition.obstacles.append(
-		BattleObstacle.new("building_nw_shop", NW_SHOP_BOUNDS, true, true, "building")
+		BattleObstacle.new("building_hq", HQ_BOUNDS, true, true, "building")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("building_mid_north_shop", MID_NORTH_SHOP_BOUNDS, true, true, "building")
+		BattleObstacle.new("building_west_neighbor", WEST_NEIGHBOR_BOUNDS, true, true, "building")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("building_warehouse", WAREHOUSE_BOUNDS, true, true, "building")
+		BattleObstacle.new("building_east_neighbor", EAST_NEIGHBOR_BOUNDS, true, true, "building")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("building_sw_shop", SW_SHOP_BOUNDS, true, true, "building")
+		BattleObstacle.new("building_sw_framing", SW_FRAMING_BOUNDS, true, true, "building")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("building_south_mid", SOUTH_MID_BOUNDS, true, true, "building")
+		BattleObstacle.new("building_south_mid_framing", SOUTH_MID_FRAMING_BOUNDS, true, true, "building")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("building_east_shop", EAST_SHOP_BOUNDS, true, true, "building")
+		BattleObstacle.new("building_se_framing", SE_FRAMING_BOUNDS, true, true, "building")
 	)
 
 
 static func _add_soft_cover(definition: AuthoredBattlefieldDefinition) -> void:
+	var dumpster_frontage_west := Rect2(20.2, 23.2, 2.3, 1.7)
+	var table_frontage_west := Rect2(26.6, 23.6, 1.9, 1.1)
+	var trash_frontage_east := Rect2(42.6, 23.3, 1.8, 1.5)
+	var crates_frontage_east := Rect2(48.4, 23.5, 2.1, 1.3)
+	var dumpster_alley := Rect2(83.2, 11.2, 2.0, 2.4)
+	var dumpster_hq_alley_front := Rect2(53.2, 20.8, 1.7, 1.9)
+	var crates_hq_alley_rear := Rect2(56.2, 4.6, 1.6, 1.8)
+	var porch_stub_west := Rect2(31.4, 19.0, 0.8, 2.6)
+	var porch_stub_east := Rect2(38.0, 19.0, 0.8, 2.6)
+	var parked_car_attack_west := Rect2(31.6, 39.4, 4.3, 1.8)
+	var parked_car_attack_mid := Rect2(40.4, 38.6, 4.1, 1.75)
+	var parked_car_attack_east := Rect2(58.8, 37.2, 4.3, 1.8)
+	var parked_car_attack_alley := Rect2(71.8, 33.8, 4.2, 1.85)
+	var trash_street_approach := Rect2(48.4, 30.4, 1.6, 1.3)
+	var parked_car_north_west := Rect2(21.8, 27.6, 4.5, 1.7)
+	var parked_car_north_offset := Rect2(39.9, 28.9, 3.6, 1.85)
+
 	definition.obstacles.append(
-		BattleObstacle.new("parked_car_west_north", Rect2(22.0, 21.8, 4.2, 1.8), true, false, "parked_car")
+		BattleObstacle.new("dumpster_frontage_west", dumpster_frontage_west, true, false, "dumpster")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("parked_car_mid_south", Rect2(42.0, 36.4, 4.2, 1.8), true, false, "parked_car")
+		BattleObstacle.new("table_frontage_west", table_frontage_west, true, false, "barrier")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("parked_car_east_north", Rect2(78.0, 21.8, 4.2, 1.8), true, false, "parked_car")
+		BattleObstacle.new("trash_frontage_east", trash_frontage_east, true, false, "dumpster")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("parked_van_east_street", Rect2(88.0, 25.2, 1.8, 4.2), true, false, "parked_car")
+		BattleObstacle.new("crates_frontage_east", crates_frontage_east, true, false, "crates")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("dumpster_north_lot", Rect2(56.5, 11.5, 2.2, 1.6), true, false, "dumpster")
+		BattleObstacle.new("dumpster_alley", dumpster_alley, true, false, "dumpster")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("dumpster_alley", Rect2(58.0, 48.0, 2.2, 1.6), true, false, "dumpster")
+		BattleObstacle.new("dumpster_hq_alley_front", dumpster_hq_alley_front, true, false, "dumpster")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("corner_stub_warehouse", Rect2(65.4, 19.0, 0.7, 4.2), true, false, "low_wall")
+		BattleObstacle.new("crates_hq_alley_rear", crates_hq_alley_rear, true, false, "crates")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("barrier_street_north_lane", Rect2(38.0, 26.6, 0.8, 3.0), true, false, "barrier")
+		BattleObstacle.new("porch_stub_west", porch_stub_west, true, false, "low_wall")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("delivery_van_mid_north", Rect2(52.1, 21.6, 5.4, 2.1), true, false, "parked_car")
+		BattleObstacle.new("porch_stub_east", porch_stub_east, true, false, "low_wall")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("dumpster_south_curb", Rect2(70.3, 36.35, 2.2, 1.65), true, false, "dumpster")
+		BattleObstacle.new("parked_car_attack_west", parked_car_attack_west, true, false, "parked_car")
 	)
 	definition.obstacles.append(
-		BattleObstacle.new("barrier_street_south_close", Rect2(77.4, 32.0, 0.85, 2.4), true, false, "barrier")
+		BattleObstacle.new("parked_car_attack_mid", parked_car_attack_mid, true, false, "parked_car")
 	)
+	definition.obstacles.append(
+		BattleObstacle.new("parked_car_attack_east", parked_car_attack_east, true, false, "parked_car")
+	)
+	definition.obstacles.append(
+		BattleObstacle.new("parked_car_attack_alley", parked_car_attack_alley, true, false, "parked_car")
+	)
+	definition.obstacles.append(
+		BattleObstacle.new("trash_street_approach", trash_street_approach, true, false, "dumpster")
+	)
+	definition.obstacles.append(
+		BattleObstacle.new("parked_car_north_west", parked_car_north_west, true, false, "parked_car")
+	)
+	definition.obstacles.append(
+		BattleObstacle.new("parked_car_north_offset", parked_car_north_offset, true, false, "parked_car")
+	)
+
 	_add_cover_object(
 		definition,
-		"cover_parked_car_west_north",
-		"parked_car_west_north",
+		"cover_dumpster_frontage_west",
+		"dumpster_frontage_west",
 		[
-			["cover_parked_car_west_north_west", Vector2(21.2, 22.7), Vector2.RIGHT],
-			["cover_parked_car_west_north_east", Vector2(27.0, 22.7), Vector2.LEFT],
+			["cover_dumpster_frontage_west_north", _slot_north(dumpster_frontage_west), Vector2.DOWN],
+			["cover_dumpster_frontage_west_east", _slot_east(dumpster_frontage_west), Vector2.LEFT],
+			["cover_dumpster_frontage_west_west", _slot_west(dumpster_frontage_west), Vector2.RIGHT],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_parked_car_mid_south",
-		"parked_car_mid_south",
+		"cover_table_frontage_west",
+		"table_frontage_west",
 		[
-			["cover_parked_car_mid_south_west", Vector2(41.2, 37.3), Vector2.RIGHT],
-			["cover_parked_car_mid_south_east", Vector2(47.0, 37.3), Vector2.LEFT],
+			["cover_table_frontage_west_north", _slot_north(table_frontage_west), Vector2.DOWN],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_parked_car_east_north",
-		"parked_car_east_north",
+		"cover_trash_frontage_east",
+		"trash_frontage_east",
 		[
-			["cover_parked_car_east_north_east", Vector2(83.0, 22.7), Vector2.LEFT],
+			["cover_trash_frontage_east_north", _slot_north(trash_frontage_east), Vector2.DOWN],
+			["cover_trash_frontage_east_east", _slot_east(trash_frontage_east), Vector2.LEFT],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_parked_van_east_street",
-		"parked_van_east_street",
+		"cover_crates_frontage_east",
+		"crates_frontage_east",
 		[
-			["cover_parked_van_east_street_east", Vector2(91.0, 27.5), Vector2.LEFT],
-		]
-	)
-	_add_cover_object(
-		definition,
-		"cover_dumpster_north_lot",
-		"dumpster_north_lot",
-		[
-			["cover_dumpster_north_lot_east", Vector2(59.5, 12.3), Vector2.LEFT],
+			["cover_crates_frontage_east_north", _slot_north(crates_frontage_east), Vector2.DOWN],
+			["cover_crates_frontage_east_west", _slot_west(crates_frontage_east), Vector2.RIGHT],
 		]
 	)
 	_add_cover_object(
@@ -268,51 +386,133 @@ static func _add_soft_cover(definition: AuthoredBattlefieldDefinition) -> void:
 		"cover_dumpster_alley",
 		"dumpster_alley",
 		[
-			["cover_dumpster_alley_east", Vector2(61.0, 48.8), Vector2.LEFT],
-			["cover_dumpster_alley_north", Vector2(59.1, 46.8), Vector2.UP],
+			["cover_dumpster_alley_west", _slot_west(dumpster_alley), Vector2.RIGHT],
+			["cover_dumpster_alley_south", _slot_south(dumpster_alley), Vector2.UP],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_corner_stub_warehouse",
-		"corner_stub_warehouse",
+		"cover_dumpster_hq_alley_front",
+		"dumpster_hq_alley_front",
 		[
-			["cover_corner_stub_warehouse_west", Vector2(64.6, 21.4), Vector2.RIGHT],
-			["cover_corner_stub_warehouse_east", Vector2(67.2, 21.4), Vector2.LEFT],
+			["cover_dumpster_hq_alley_front_east", _slot_east(dumpster_hq_alley_front), Vector2.LEFT],
+			["cover_dumpster_hq_alley_front_south", _slot_south(dumpster_hq_alley_front), Vector2.UP],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_barrier_street_north_lane",
-		"barrier_street_north_lane",
+		"cover_crates_hq_alley_rear",
+		"crates_hq_alley_rear",
 		[
-			["cover_barrier_street_north_lane_west", Vector2(36.6, 28.2), Vector2.RIGHT],
-			["cover_barrier_street_north_lane_east", Vector2(39.6, 28.2), Vector2.LEFT],
+			["cover_crates_hq_alley_rear_west", _slot_west(crates_hq_alley_rear), Vector2.RIGHT],
+			["cover_crates_hq_alley_rear_north", _slot_north(crates_hq_alley_rear), Vector2.DOWN],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_delivery_van_mid_north",
-		"delivery_van_mid_north",
+		"cover_porch_stub_west",
+		"porch_stub_west",
 		[
-			["cover_delivery_van_mid_north_west", Vector2(51.3, 22.65), Vector2.RIGHT],
+			["cover_porch_stub_west_east", _slot_east(porch_stub_west), Vector2.LEFT],
+			["cover_porch_stub_west_south", _slot_south(porch_stub_west), Vector2.UP],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_dumpster_south_curb",
-		"dumpster_south_curb",
+		"cover_porch_stub_east",
+		"porch_stub_east",
 		[
-			["cover_dumpster_south_curb_west", Vector2(69.5, 37.15), Vector2.RIGHT],
+			["cover_porch_stub_east_west", _slot_west(porch_stub_east), Vector2.RIGHT],
+			["cover_porch_stub_east_south", _slot_south(porch_stub_east), Vector2.UP],
 		]
 	)
 	_add_cover_object(
 		definition,
-		"cover_barrier_street_south_close",
-		"barrier_street_south_close",
+		"cover_parked_car_attack_west",
+		"parked_car_attack_west",
 		[
-			["cover_barrier_street_south_close_west", Vector2(76.55, 33.2), Vector2.RIGHT],
+			["cover_parked_car_attack_west_south", _slot_south(parked_car_attack_west), Vector2.UP],
+			["cover_parked_car_attack_west_east", _slot_east(parked_car_attack_west), Vector2.LEFT],
 		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_parked_car_attack_mid",
+		"parked_car_attack_mid",
+		[
+			["cover_parked_car_attack_mid_south", _slot_south(parked_car_attack_mid), Vector2.UP],
+			["cover_parked_car_attack_mid_east", _slot_east(parked_car_attack_mid), Vector2.LEFT],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_parked_car_attack_east",
+		"parked_car_attack_east",
+		[
+			["cover_parked_car_attack_east_south", _slot_south(parked_car_attack_east), Vector2.UP],
+			["cover_parked_car_attack_east_west", _slot_west(parked_car_attack_east), Vector2.RIGHT],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_parked_car_attack_alley",
+		"parked_car_attack_alley",
+		[
+			["cover_parked_car_attack_alley_west", _slot_west(parked_car_attack_alley), Vector2.RIGHT],
+			["cover_parked_car_attack_alley_south", _slot_south(parked_car_attack_alley), Vector2.UP],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_trash_street_approach",
+		"trash_street_approach",
+		[
+			["cover_trash_street_approach_south", _slot_south(trash_street_approach), Vector2.UP],
+			["cover_trash_street_approach_north", _slot_north(trash_street_approach), Vector2.DOWN],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_parked_car_north_west",
+		"parked_car_north_west",
+		[
+			["cover_parked_car_north_west_north", _slot_north(parked_car_north_west), Vector2.DOWN],
+			["cover_parked_car_north_west_south", _slot_south(parked_car_north_west), Vector2.UP],
+			["cover_parked_car_north_west_east", _slot_east(parked_car_north_west), Vector2.LEFT],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_parked_car_north_offset",
+		"parked_car_north_offset",
+		[
+			["cover_parked_car_north_offset_west", _slot_west(parked_car_north_offset), Vector2.RIGHT],
+			["cover_parked_car_north_offset_east", _slot_east(parked_car_north_offset), Vector2.LEFT],
+			["cover_parked_car_north_offset_south", _slot_south(parked_car_north_offset), Vector2.UP],
+			["cover_parked_car_north_offset_north", _slot_north(parked_car_north_offset), Vector2.DOWN],
+		]
+	)
+
+
+static func _slot_west(bounds: Rect2) -> Vector2:
+	return Vector2(bounds.position.x - COVER_SLOT_OFFSET, bounds.position.y + bounds.size.y * 0.5)
+
+
+static func _slot_east(bounds: Rect2) -> Vector2:
+	return Vector2(
+		bounds.position.x + bounds.size.x + COVER_SLOT_OFFSET,
+		bounds.position.y + bounds.size.y * 0.5
+	)
+
+
+static func _slot_north(bounds: Rect2) -> Vector2:
+	return Vector2(bounds.position.x + bounds.size.x * 0.5, bounds.position.y - COVER_SLOT_OFFSET)
+
+
+static func _slot_south(bounds: Rect2) -> Vector2:
+	return Vector2(
+		bounds.position.x + bounds.size.x * 0.5,
+		bounds.position.y + bounds.size.y + COVER_SLOT_OFFSET
 	)
 
 
@@ -335,42 +535,23 @@ static func _add_cover_object(
 
 
 static func _add_attacker_pockets(definition: AuthoredBattlefieldDefinition) -> void:
-	# West street mouth. Includes the existing HTTB legal point (7.25, 31.5).
 	definition.attacker_deployment_area.add_pocket(
 		BattleDeploymentPocket.new(
-			"attacker_street_mouth",
+			"attacker_east_sweep",
 			PackedVector2Array(
 				[
-					Vector2(0.0, 24.0),
-					Vector2(16.0, 24.0),
-					Vector2(16.0, 36.0),
-					Vector2(0.0, 36.0),
-				]
-			)
-		)
-	)
-	definition.attacker_deployment_area.add_pocket(
-		BattleDeploymentPocket.new(
-			"attacker_north_sidewalk",
-			PackedVector2Array(
-				[
-					Vector2(0.0, 20.0),
-					Vector2(18.5, 20.0),
-					Vector2(18.5, 24.25),
-					Vector2(0.0, 24.25),
-				]
-			)
-		)
-	)
-	definition.attacker_deployment_area.add_pocket(
-		BattleDeploymentPocket.new(
-			"attacker_south_sidewalk",
-			PackedVector2Array(
-				[
-					Vector2(0.0, 36.0),
-					Vector2(18.0, 36.0),
-					Vector2(18.0, 41.5),
-					Vector2(0.0, 41.5),
+					Vector2(38.0, 37.2),
+					Vector2(39.6, 33.0),
+					Vector2(46.8, 32.2),
+					Vector2(54.0, 32.8),
+					Vector2(64.0, 30.6),
+					Vector2(72.5, 28.0),
+					Vector2(77.2, 25.4),
+					Vector2(86.0, 24.6),
+					Vector2(86.0, 46.4),
+					Vector2(52.0, 46.4),
+					Vector2(38.4, 45.8),
+					Vector2(37.0, 41.2),
 				]
 			)
 		)
@@ -380,52 +561,52 @@ static func _add_attacker_pockets(definition: AuthoredBattlefieldDefinition) -> 
 static func _add_defender_pockets(definition: AuthoredBattlefieldDefinition) -> void:
 	definition.defender_deployment_area.add_pocket(
 		BattleDeploymentPocket.new(
-			"defender_street_mouth",
+			"defender_hq_frontage",
 			PackedVector2Array(
 				[
-					Vector2(82.0, 24.0),
-					Vector2(100.0, 24.0),
-					Vector2(100.0, 36.0),
-					Vector2(82.0, 36.0),
+					Vector2(17.0, 18.4),
+					Vector2(53.0, 18.4),
+					Vector2(53.0, 27.0),
+					Vector2(17.0, 27.0),
 				]
 			)
 		)
 	)
 	definition.defender_deployment_area.add_pocket(
 		BattleDeploymentPocket.new(
-			"defender_north_sidewalk",
+			"defender_west_wrap",
 			PackedVector2Array(
 				[
-					Vector2(66.0, 19.4),
-					Vector2(92.0, 19.4),
-					Vector2(92.0, 24.0),
-					Vector2(66.0, 24.0),
+					Vector2(15.2, 16.0),
+					Vector2(17.2, 16.0),
+					Vector2(17.2, 27.0),
+					Vector2(15.2, 27.0),
 				]
 			)
 		)
 	)
 	definition.defender_deployment_area.add_pocket(
 		BattleDeploymentPocket.new(
-			"defender_north_lot",
+			"defender_street_front",
 			PackedVector2Array(
 				[
-					Vector2(51.0, 4.0),
-					Vector2(65.5, 4.0),
-					Vector2(65.5, 19.0),
-					Vector2(51.0, 19.0),
+					Vector2(18.5, 26.6),
+					Vector2(50.5, 26.6),
+					Vector2(50.5, 31.2),
+					Vector2(18.5, 31.2),
 				]
 			)
 		)
 	)
 	definition.defender_deployment_area.add_pocket(
 		BattleDeploymentPocket.new(
-			"defender_alley",
+			"defender_hq_side_alley",
 			PackedVector2Array(
 				[
-					Vector2(49.0, 40.5),
-					Vector2(72.0, 40.5),
-					Vector2(72.0, 58.0),
-					Vector2(49.0, 58.0),
+					Vector2(53.15, 4.5),
+					Vector2(57.75, 4.5),
+					Vector2(57.75, 26.6),
+					Vector2(53.15, 26.6),
 				]
 			)
 		)

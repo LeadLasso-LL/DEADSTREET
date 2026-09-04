@@ -44,6 +44,14 @@ var combat_no_role_cover_self_position: Vector2 = Vector2.ZERO
 var combat_no_role_cover_target_position: Vector2 = Vector2.ZERO
 var reserved_cover_slot_id: String = ""
 var occupied_cover_slot_id: String = ""
+var combat_closing_hold_slot_id: String = ""
+var combat_closing_settle_seconds: float = 0.0
+var combat_closing_peek_served: bool = false
+var combat_wounded_stall_seconds: float = 0.0
+var combat_wounded_abandoned_slot_id: String = ""
+var cover_posture: String = "none"
+var cover_posture_phase: String = ""
+var cover_posture_timer_seconds: float = 0.0
 var wound_reaction_remaining_seconds: float = 0.0
 var acquire_reaction_remaining_seconds: float = 0.0
 var acquire_reaction_target_id: String = ""
@@ -220,6 +228,14 @@ func has_reserved_cover_slot() -> bool:
 
 func has_occupied_cover_slot() -> bool:
 	return not occupied_cover_slot_id.is_empty()
+
+
+func is_cover_tucked() -> bool:
+	return cover_posture == "tucked"
+
+
+func is_cover_exposed() -> bool:
+	return cover_posture == "exposed"
 
 
 func has_wound_reaction() -> bool:

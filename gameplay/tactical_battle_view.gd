@@ -59,42 +59,46 @@ const PROVISIONAL_SURROUND_BLOCK := Color(0.19, 0.17, 0.15, 1.0)
 const PROVISIONAL_SURROUND_PARCEL := Color(0.15, 0.14, 0.13, 1.0)
 const PROVISIONAL_SURROUND_STUB := Color(0.13, 0.13, 0.135, 0.42)
 const PROVISIONAL_FIELD := Color(0.21, 0.18, 0.16, 1.0)
-const PROVISIONAL_ASPHALT := Color(0.11, 0.11, 0.12, 1.0)
+const PROVISIONAL_ASPHALT := Color(0.10, 0.10, 0.11, 1.0)
 const PROVISIONAL_ASPHALT_INTERSECTION := Color(0.15, 0.15, 0.155, 1.0)
-const PROVISIONAL_SIDEWALK := Color(0.44, 0.42, 0.38, 1.0)
+const PROVISIONAL_SIDEWALK := Color(0.50, 0.47, 0.42, 1.0)
 const PROVISIONAL_LOT := Color(0.28, 0.24, 0.20, 1.0)
-const PROVISIONAL_ALLEY := Color(0.17, 0.15, 0.14, 1.0)
-const PROVISIONAL_CURB := Color(0.56, 0.53, 0.47, 1.0)
-const PROVISIONAL_CURB_EDGE := Color(0.18, 0.16, 0.14, 0.90)
-const PROVISIONAL_APRON := Color(0.34, 0.32, 0.28, 1.0)
-const PROVISIONAL_LANE := Color(0.74, 0.66, 0.38, 0.52)
-const PROVISIONAL_PARKING := Color(0.84, 0.84, 0.78, 0.38)
-const PROVISIONAL_LOADING := Color(0.74, 0.42, 0.16, 0.48)
-const PROVISIONAL_SEAM := Color(0.22, 0.20, 0.18, 0.55)
+const PROVISIONAL_ALLEY := Color(0.15, 0.135, 0.125, 1.0)
+const PROVISIONAL_CURB := Color(0.62, 0.58, 0.50, 1.0)
+const PROVISIONAL_CURB_EDGE := Color(0.16, 0.14, 0.12, 0.95)
+const PROVISIONAL_APRON := Color(0.42, 0.37, 0.31, 1.0)
+const PROVISIONAL_LANE := Color(0.78, 0.70, 0.40, 0.58)
+const PROVISIONAL_PARKING := Color(0.84, 0.84, 0.78, 0.28)
+const PROVISIONAL_LOADING := Color(0.74, 0.42, 0.16, 0.55)
+const PROVISIONAL_SEAM := Color(0.20, 0.18, 0.16, 0.62)
 const PROVISIONAL_BOLLARD := Color(0.20, 0.18, 0.16, 1.0)
 const PROVISIONAL_UTILITY := Color(0.32, 0.34, 0.32, 1.0)
 const PROVISIONAL_BUILDING := Color(0.27, 0.23, 0.21, 1.0)
+const PROVISIONAL_BUILDING_HQ := Color(0.40, 0.22, 0.20, 1.0)
 const PROVISIONAL_BUILDING_WAREHOUSE := Color(0.25, 0.24, 0.23, 1.0)
 const PROVISIONAL_BUILDING_SHOP_A := Color(0.34, 0.23, 0.20, 1.0)
 const PROVISIONAL_BUILDING_SHOP_B := Color(0.30, 0.22, 0.18, 1.0)
 const PROVISIONAL_BUILDING_ROOF := Color(0.16, 0.145, 0.135, 1.0)
+const PROVISIONAL_BUILDING_ROOF_HQ := Color(0.18, 0.12, 0.12, 1.0)
 const PROVISIONAL_BUILDING_LINE := Color(0.07, 0.055, 0.05, 1.0)
 const PROVISIONAL_BUILDING_ACCENT := Color(0.36, 0.13, 0.13, 1.0)
 const PROVISIONAL_AWNING := Color(0.26, 0.16, 0.14, 1.0)
 const PROVISIONAL_WINDOW := Color(0.11, 0.13, 0.15, 0.90)
+const PROVISIONAL_DOOR := Color(0.14, 0.10, 0.09, 1.0)
 const PROVISIONAL_FENCE := Color(0.38, 0.37, 0.34, 0.92)
 const PROVISIONAL_PARKED_CAR := Color(0.28, 0.36, 0.44, 1.0)
 const PROVISIONAL_PARKED_CAR_CABIN := Color(0.10, 0.13, 0.16, 1.0)
 const PROVISIONAL_DUMPSTER := Color(0.20, 0.38, 0.24, 1.0)
+const PROVISIONAL_CRATE := Color(0.46, 0.34, 0.20, 1.0)
 const PROVISIONAL_LOW_WALL := Color(0.50, 0.47, 0.42, 1.0)
 const PROVISIONAL_BARRIER := Color(0.58, 0.42, 0.28, 1.0)
 const PROVISIONAL_PROP_SHADOW := Color(0.04, 0.03, 0.03, 0.42)
 const PROVISIONAL_PROP_OUTLINE := Color(0.05, 0.04, 0.04, 1.0)
 const PROVISIONAL_BOUNDS := Color(0.50, 0.46, 0.40, 0.88)
-const PROVISIONAL_ATTACKER_ZONE := Color(0.28, 0.48, 0.72, 0.10)
-const PROVISIONAL_ATTACKER_ZONE_LINE := Color(0.52, 0.74, 0.92, 0.78)
-const PROVISIONAL_DEFENDER_ZONE := Color(0.72, 0.42, 0.24, 0.10)
-const PROVISIONAL_DEFENDER_ZONE_LINE := Color(0.90, 0.66, 0.44, 0.78)
+const PROVISIONAL_ATTACKER_ZONE := Color(0.28, 0.48, 0.72, 0.07)
+const PROVISIONAL_ATTACKER_ZONE_LINE := Color(0.52, 0.74, 0.92, 0.55)
+const PROVISIONAL_DEFENDER_ZONE := Color(0.72, 0.42, 0.24, 0.07)
+const PROVISIONAL_DEFENDER_ZONE_LINE := Color(0.90, 0.66, 0.44, 0.55)
 const PROVISIONAL_ATTACKER := Color(0.42, 0.70, 0.92, 1.0)
 const PROVISIONAL_DEFENDER := Color(0.86, 0.64, 0.40, 1.0)
 const PROVISIONAL_DEAD := Color(0.42, 0.42, 0.44, 1.0)
@@ -768,7 +772,7 @@ func _draw_deployment_area(
 			_paint_canvas().draw_colored_polygon(piece, fill)
 			var outline: PackedVector2Array = piece.duplicate()
 			outline.append(piece[0])
-			_paint_canvas().draw_polyline(outline, Color(line.r, line.g, line.b, minf(line.a + 0.12, 1.0)), 2.2, true)
+			_paint_canvas().draw_polyline(outline, Color(line.r, line.g, line.b, minf(line.a + 0.10, 1.0)), 1.6, true)
 			if first_label:
 				var centroid: Vector2 = Vector2.ZERO
 				for pt: Vector2 in piece:
@@ -851,6 +855,8 @@ func _draw_soft_cover_prop(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 			_draw_parked_car(view_rect)
 		"dumpster":
 			_draw_dumpster(view_rect)
+		"crates":
+			_draw_crates(view_rect)
 		"low_wall":
 			_draw_low_wall(view_rect)
 		"barrier":
@@ -935,6 +941,29 @@ func _draw_dumpster(view_rect: Rect2) -> void:
 	_paint_canvas().draw_rect(bar, Color(0.08, 0.12, 0.09, 1.0), true)
 
 
+func _draw_crates(view_rect: Rect2) -> void:
+	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.6)
+	_draw_prop_shadow(body)
+	var left: Rect2 = Rect2(
+		body.position,
+		Vector2(body.size.x * 0.58, body.size.y * 0.78)
+	)
+	left.position.y += body.size.y * 0.22
+	var right: Rect2 = Rect2(
+		body.position + Vector2(body.size.x * 0.38, 0.0),
+		Vector2(body.size.x * 0.62, body.size.y * 0.62)
+	)
+	_paint_canvas().draw_rect(left, PROVISIONAL_CRATE, true)
+	_paint_canvas().draw_rect(right, Color(0.40, 0.28, 0.16, 1.0), true)
+	_paint_canvas().draw_rect(left, PROVISIONAL_PROP_OUTLINE, false, 1.8)
+	_paint_canvas().draw_rect(right, PROVISIONAL_PROP_OUTLINE, false, 1.8)
+	var strap: Rect2 = Rect2(
+		left.position + Vector2(1.4, left.size.y * 0.42),
+		Vector2(maxf(left.size.x - 2.8, 1.0), 1.4)
+	)
+	_paint_canvas().draw_rect(strap, Color(0.22, 0.16, 0.10, 1.0), true)
+
+
 func _draw_low_wall(view_rect: Rect2) -> void:
 	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.7)
 	_draw_prop_shadow(body)
@@ -1000,13 +1029,20 @@ func _draw_fence(view_rect: Rect2) -> void:
 func _draw_building(obstacle: BattleObstacle) -> void:
 	var view_rect: Rect2 = _rect_to_view(obstacle.bounds)
 	var fill: Color = PROVISIONAL_BUILDING
+	var is_hq: bool = obstacle.obstacle_id == "building_hq"
 	var is_warehouse: bool = obstacle.obstacle_id.find("warehouse") >= 0
 	var is_shop: bool = (
 		obstacle.obstacle_id.find("shop") >= 0
 		or obstacle.obstacle_id.find("storefront") >= 0
 		or obstacle.obstacle_id.find("south_mid") >= 0
+		or obstacle.obstacle_id.find("sw_framing") >= 0
+		or obstacle.obstacle_id.find("se_framing") >= 0
 	)
-	if is_warehouse:
+	var roof_fill: Color = PROVISIONAL_BUILDING_ROOF
+	if is_hq:
+		fill = PROVISIONAL_BUILDING_HQ
+		roof_fill = PROVISIONAL_BUILDING_ROOF_HQ
+	elif is_warehouse:
 		fill = PROVISIONAL_BUILDING_WAREHOUSE
 	elif obstacle.obstacle_id.find("south_mid") >= 0 or obstacle.obstacle_id.find("east_shop") >= 0:
 		fill = PROVISIONAL_BUILDING_SHOP_B
@@ -1014,12 +1050,91 @@ func _draw_building(obstacle: BattleObstacle) -> void:
 		fill = PROVISIONAL_BUILDING_SHOP_A
 	_paint_canvas().draw_rect(view_rect, fill, true)
 	var roof: Rect2 = _inset_view_rect(view_rect, 4.0, 3.5)
-	_paint_canvas().draw_rect(roof, PROVISIONAL_BUILDING_ROOF, true)
-	_paint_canvas().draw_rect(view_rect, PROVISIONAL_BUILDING_LINE, false, 2.4)
-	if is_warehouse:
+	_paint_canvas().draw_rect(roof, roof_fill, true)
+	var outline_w: float = 3.2 if is_hq else 2.4
+	_paint_canvas().draw_rect(view_rect, PROVISIONAL_BUILDING_LINE, false, outline_w)
+	if is_hq:
+		_draw_hq_cues(view_rect)
+	elif is_warehouse:
 		_draw_warehouse_cues(view_rect)
 	elif is_shop:
 		_draw_storefront_cues(obstacle, view_rect)
+	else:
+		_draw_neighbor_facade(obstacle, view_rect)
+
+
+func _draw_hq_cues(view_rect: Rect2) -> void:
+	var frontage: Rect2 = Rect2(
+		Vector2(view_rect.position.x + 3.0, view_rect.end.y - 10.0),
+		Vector2(maxf(view_rect.size.x - 6.0, 8.0), 10.0)
+	)
+	_paint_canvas().draw_rect(frontage, Color(0.32, 0.16, 0.15, 0.55), true)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(view_rect.position.x, view_rect.end.y - 2.4), Vector2(view_rect.size.x, 2.4)),
+		Color(0.22, 0.12, 0.10, 0.95),
+		true
+	)
+	var door_w: float = 11.0
+	var door_h: float = 13.0
+	var door: Rect2 = Rect2(
+		Vector2(view_rect.get_center().x - door_w * 0.5, view_rect.end.y - door_h),
+		Vector2(door_w, door_h)
+	)
+	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
+	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.4)
+	var jamb: Rect2 = Rect2(
+		Vector2(door.position.x + 1.6, door.position.y + 1.4),
+		Vector2(maxf(door.size.x - 3.2, 2.0), maxf(door.size.y - 2.2, 2.0))
+	)
+	_paint_canvas().draw_rect(jamb, Color(0.20, 0.13, 0.11, 1.0), true)
+	var window_w: float = 9.0
+	var window_h: float = 8.0
+	var window_y: float = view_rect.end.y - 18.0
+	var left_window: Rect2 = Rect2(
+		Vector2(view_rect.position.x + 18.0, window_y),
+		Vector2(window_w, window_h)
+	)
+	var right_window: Rect2 = Rect2(
+		Vector2(view_rect.end.x - 18.0 - window_w, window_y),
+		Vector2(window_w, window_h)
+	)
+	_paint_canvas().draw_rect(left_window, PROVISIONAL_WINDOW, true)
+	_paint_canvas().draw_rect(right_window, PROVISIONAL_WINDOW, true)
+	_paint_canvas().draw_rect(left_window, Color(0.06, 0.05, 0.05, 1.0), false, 1.0)
+	_paint_canvas().draw_rect(right_window, Color(0.06, 0.05, 0.05, 1.0), false, 1.0)
+	var lintel: Rect2 = Rect2(
+		Vector2(door.position.x - 2.0, door.position.y - 2.2),
+		Vector2(door.size.x + 4.0, 2.2)
+	)
+	_paint_canvas().draw_rect(lintel, PROVISIONAL_BUILDING_ACCENT, true)
+
+
+func _draw_neighbor_facade(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	var street_south: bool = obstacle.obstacle_id.find("framing") >= 0
+	var window_h: float = minf(11.0, view_rect.size.y * 0.28)
+	var window_w: float = 8.0
+	var window_y: float = view_rect.position.y + 8.0
+	if street_south:
+		window_y = view_rect.position.y + 5.0
+	else:
+		window_y = view_rect.end.y - window_h - 8.0
+	var x: float = view_rect.position.x + 8.0
+	var count: int = 0
+	while x + window_w < view_rect.end.x - 8.0 and count < 4:
+		var window: Rect2 = Rect2(Vector2(x, window_y), Vector2(window_w, window_h))
+		_paint_canvas().draw_rect(window, PROVISIONAL_WINDOW, true)
+		_paint_canvas().draw_rect(window, Color(0.06, 0.06, 0.07, 1.0), false, 1.0)
+		x += window_w + 7.0
+		count += 1
+	var door_w: float = 6.5
+	var door_h: float = 8.5
+	var door_x: float = view_rect.position.x + view_rect.size.x * 0.42
+	var door_y: float = view_rect.end.y - door_h
+	if street_south:
+		door_y = view_rect.position.y
+	var door: Rect2 = Rect2(Vector2(door_x, door_y), Vector2(door_w, door_h))
+	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
+	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.0)
 
 
 func _draw_warehouse_cues(view_rect: Rect2) -> void:
@@ -1153,6 +1268,7 @@ func _draw_soldier_standing(
 	participant: BattleParticipant
 ) -> void:
 	var wounded: bool = participant.is_wounded
+	var tucked: bool = participant.is_cover_tucked()
 	var body: Color = PROVISIONAL_SOLDIER_BODY
 	if wounded:
 		body = PROVISIONAL_SOLDIER_BODY_WOUNDED
@@ -1163,6 +1279,8 @@ func _draw_soldier_standing(
 	var scale: Vector2 = Vector2.ONE
 	if wounded:
 		scale = Vector2(0.94, 0.82)
+	if tucked:
+		scale = Vector2(scale.x * 0.90, scale.y * 0.70)
 	_paint_canvas().draw_set_transform(view_pos, angle, scale)
 	var leg_l: Rect2 = Rect2(Vector2(-5.4, -3.1), Vector2(4.2, 2.2))
 	var leg_r: Rect2 = Rect2(Vector2(-5.4, 0.9), Vector2(4.2, 2.2))
@@ -1184,7 +1302,11 @@ func _draw_soldier_standing(
 	_paint_canvas().draw_rect(arm_r, body.darkened(0.08), true)
 	_paint_canvas().draw_rect(arm_l, PROVISIONAL_SOLDIER_OUTLINE, false, 1.0)
 	_paint_canvas().draw_rect(arm_r, PROVISIONAL_SOLDIER_OUTLINE, false, 1.0)
-	_draw_soldier_weapon(participant.weapon_type)
+	if tucked:
+		var lowered: Rect2 = Rect2(Vector2(-1.2, 1.6), Vector2(3.2, 1.1))
+		_paint_canvas().draw_rect(lowered, PROVISIONAL_SOLDIER_WEAPON, true)
+	else:
+		_draw_soldier_weapon(participant.weapon_type)
 	_paint_canvas().draw_circle(Vector2(5.4, 0.0), SOLDIER_HEAD_RADIUS, PROVISIONAL_SOLDIER_HEAD, true)
 	_paint_canvas().draw_circle(Vector2(5.4, 0.0), SOLDIER_HEAD_RADIUS, PROVISIONAL_SOLDIER_OUTLINE, false, 1.3, true)
 	if wounded:
