@@ -16368,6 +16368,7 @@ static func run() -> Dictionary:
 	var provingground_vehicle_ok: bool = _provingground_vehicle_ok()
 	var provingground_legacy_ok: bool = _provingground_legacy_ok()
 	var provingground_layout_v2_ok: bool = _provingground_layout_v2_ok()
+	var provingground_attacker_cover_chain_ok: bool = _provingground_attacker_cover_chain_ok()
 	var battlecoverthreat_threshold_ok: bool = _battlecoverthreat_threshold_ok()
 	var battlecoverthreat_wrong_facing_loses_ok: bool = _battlecoverthreat_wrong_facing_loses_ok()
 	var battlecoverthreat_blocked_los_loses_ok: bool = _battlecoverthreat_blocked_los_loses_ok()
@@ -18428,6 +18429,7 @@ static func run() -> Dictionary:
 		"provingground_vehicle_ok": provingground_vehicle_ok,
 		"provingground_legacy_ok": provingground_legacy_ok,
 		"provingground_layout_v2_ok": provingground_layout_v2_ok,
+		"provingground_attacker_cover_chain_ok": provingground_attacker_cover_chain_ok,
 		"battlecoverthreat_threshold_ok": battlecoverthreat_threshold_ok,
 		"battlecoverthreat_wrong_facing_loses_ok": battlecoverthreat_wrong_facing_loses_ok,
 		"battlecoverthreat_blocked_los_loses_ok": battlecoverthreat_blocked_los_loses_ok,
@@ -23632,6 +23634,150 @@ static func _provingground_layout_v2_ok() -> bool:
 		and catalog_src.contains("west_east_commercial_block_v2")
 		and not catalog_src.contains("urban_intersection_v1")
 		and not catalog_src.contains("road_intersection")
+	)
+
+
+static func _provingground_attacker_cover_chain_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var spawn: Vector2 = Vector2(7.25, 31.5)
+	var typical_east_threat: Vector2 = Vector2(88.0, 30.0)
+	var outer_id: String = "cover_delivery_van_mid_north_west"
+	var mid_south_id: String = "cover_dumpster_south_curb_west"
+	var mid_north_id: String = "cover_corner_stub_warehouse_west"
+	var close_id: String = "cover_barrier_street_south_close_west"
+	if not geometry.has_obstacle("delivery_van_mid_north"):
+		return false
+	if not geometry.has_obstacle("dumpster_south_curb"):
+		return false
+	if not geometry.has_obstacle("barrier_street_south_close"):
+		return false
+	if geometry.get_movement_blocking_obstacle_id_at(Vector2(56.0, 38.0)) != "":
+		return false
+	var alley_nav: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		Vector2(56.0, 30.0),
+		Vector2(60.0, 50.0)
+	)
+	if alley_nav == null or not alley_nav.success:
+		return false
+	var chain_ids: Array[String] = [outer_id, mid_south_id, mid_north_id, close_id]
+	for slot_id: String in chain_ids:
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null or not slot.is_valid():
+			return false
+		if not geometry.contains_point(slot.position):
+			return false
+		if geometry.get_movement_blocking_obstacle_id_at(slot.position) != "":
+			return false
+		if slot.facing_direction.normalized().dot(Vector2.RIGHT) < 0.75:
+			return false
+		var from_east: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+			slot,
+			slot.position + Vector2.RIGHT * 8.0
+		)
+		var from_west: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+			slot,
+			slot.position + Vector2.LEFT * 8.0
+		)
+		if from_east == null or from_west == null:
+			return false
+		if from_east.protection_factor < 0.5:
+			return false
+		if from_west.protection_factor >= 0.15:
+			return false
+		var spawn_path: BattleNavigationResult = BattleNavigationService.find_path(
+			battle_state,
+			spawn,
+			slot.position
+		)
+		if spawn_path == null or not spawn_path.success:
+			return false
+	var rifle: BattleParticipant = _battlefire_add(battle_state, "pg_chain_rifle", "attacker", "rifle")
+	var pistol: BattleParticipant = _battlefire_add(battle_state, "pg_chain_pistol", "attacker", "pistol")
+	var smg: BattleParticipant = _battlefire_add(battle_state, "pg_chain_smg", "attacker", "smg")
+	var shotgun: BattleParticipant = _battlefire_add(battle_state, "pg_chain_shotgun", "attacker", "shotgun")
+	var defender: BattleParticipant = _battlefire_add(battle_state, "pg_chain_def", "defender", "rifle")
+	if rifle == null or pistol == null or smg == null or shotgun == null or defender == null:
+		return false
+	_battletarget_place(defender, typical_east_threat)
+	_battletarget_place(rifle, Vector2(36.6, 28.2))
+	_battletarget_place(pistol, Vector2(62.0, 32.0))
+	_battletarget_place(smg, Vector2(68.0, 32.0))
+	_battletarget_place(shotgun, Vector2(74.0, 33.0))
+	var outer_slot: BattleCoverSlot = geometry.get_cover_slot(outer_id)
+	var mid_south_slot: BattleCoverSlot = geometry.get_cover_slot(mid_south_id)
+	var close_slot: BattleCoverSlot = geometry.get_cover_slot(close_id)
+	var rifle_outer: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		rifle,
+		outer_slot,
+		defender,
+		true,
+		true,
+		BattleCombatBehaviorCatalog.RIFLE_COVER_SEEK_RADIUS
+	)
+	var pistol_mid: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		pistol,
+		mid_south_slot,
+		defender,
+		true,
+		true,
+		BattleCombatBehaviorCatalog.PISTOL_COVER_SEEK_RADIUS
+	)
+	var smg_mid: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		smg,
+		mid_south_slot,
+		defender,
+		true,
+		true
+	)
+	var shotgun_close: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		shotgun,
+		close_slot,
+		defender,
+		true,
+		true
+	)
+	var smg_close: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		smg,
+		close_slot,
+		defender,
+		true,
+		true
+	)
+	var rifle_close: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		rifle,
+		close_slot,
+		defender,
+		false,
+		true,
+		BattleCombatBehaviorCatalog.RIFLE_COVER_SEEK_RADIUS
+	)
+	if rifle_outer == null or not rifle_outer.combat_usable:
+		return false
+	if pistol_mid == null or not pistol_mid.combat_usable:
+		return false
+	if smg_mid == null or not smg_mid.combat_usable:
+		return false
+	if shotgun_close == null or not shotgun_close.combat_usable:
+		return false
+	if smg_close == null or not smg_close.combat_usable:
+		return false
+	if rifle_close != null and rifle_close.combat_usable:
+		return false
+	return (
+		geometry.has_cover_slot("cover_parked_van_east_street_east")
+		and geometry.has_cover_slot("cover_corner_stub_warehouse_east")
+		and geometry.has_cover_slot("cover_parked_car_east_north_east")
+		and geometry.has_obstacle("parked_van_east_street")
 	)
 
 

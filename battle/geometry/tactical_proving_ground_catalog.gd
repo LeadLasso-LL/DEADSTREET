@@ -138,6 +138,13 @@ static func _add_presentation_markings(definition: AuthoredBattlefieldDefinition
 	)
 	definition.presentation_markings.append(
 		BattlePresentationMarking.new(
+			"loading_delivery_north",
+			BattlePresentationMarking.KIND_LOADING,
+			Rect2(51.6, 23.85, 6.2, 0.22)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
 			"seam_south_west",
 			BattlePresentationMarking.KIND_SEAM,
 			Rect2(8.0, 36.15, 0.12, 3.7)
@@ -205,6 +212,15 @@ static func _add_soft_cover(definition: AuthoredBattlefieldDefinition) -> void:
 	definition.obstacles.append(
 		BattleObstacle.new("barrier_street_north_lane", Rect2(38.0, 26.6, 0.8, 3.0), true, false, "barrier")
 	)
+	definition.obstacles.append(
+		BattleObstacle.new("delivery_van_mid_north", Rect2(52.1, 21.6, 5.4, 2.1), true, false, "parked_car")
+	)
+	definition.obstacles.append(
+		BattleObstacle.new("dumpster_south_curb", Rect2(70.3, 36.35, 2.2, 1.65), true, false, "dumpster")
+	)
+	definition.obstacles.append(
+		BattleObstacle.new("barrier_street_south_close", Rect2(77.4, 32.0, 0.85, 2.4), true, false, "barrier")
+	)
 	_add_cover_object(
 		definition,
 		"cover_parked_car_west_north",
@@ -261,6 +277,7 @@ static func _add_soft_cover(definition: AuthoredBattlefieldDefinition) -> void:
 		"cover_corner_stub_warehouse",
 		"corner_stub_warehouse",
 		[
+			["cover_corner_stub_warehouse_west", Vector2(64.6, 21.4), Vector2.RIGHT],
 			["cover_corner_stub_warehouse_east", Vector2(67.2, 21.4), Vector2.LEFT],
 		]
 	)
@@ -271,6 +288,30 @@ static func _add_soft_cover(definition: AuthoredBattlefieldDefinition) -> void:
 		[
 			["cover_barrier_street_north_lane_west", Vector2(36.6, 28.2), Vector2.RIGHT],
 			["cover_barrier_street_north_lane_east", Vector2(39.6, 28.2), Vector2.LEFT],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_delivery_van_mid_north",
+		"delivery_van_mid_north",
+		[
+			["cover_delivery_van_mid_north_west", Vector2(51.3, 22.65), Vector2.RIGHT],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_dumpster_south_curb",
+		"dumpster_south_curb",
+		[
+			["cover_dumpster_south_curb_west", Vector2(69.5, 37.15), Vector2.RIGHT],
+		]
+	)
+	_add_cover_object(
+		definition,
+		"cover_barrier_street_south_close",
+		"barrier_street_south_close",
+		[
+			["cover_barrier_street_south_close_west", Vector2(76.55, 33.2), Vector2.RIGHT],
 		]
 	)
 
