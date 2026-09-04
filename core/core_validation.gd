@@ -127,6 +127,7 @@ const GameplayRuntime := preload("res://gameplay/gameplay_runtime.gd")
 const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
 const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
+const TacticalShotPresentation := preload("res://gameplay/tactical_shot_presentation.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
 const BattleDeploymentPlacementService := preload("res://battle/core/battle_deployment_placement_service.gd")
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
@@ -16411,6 +16412,7 @@ static func run() -> Dictionary:
 	var combat_presentation_query_ok: bool = _combat_presentation_query_ok()
 	var combat_presentation_lull_ok: bool = _combat_presentation_lull_ok()
 	var combat_presentation_view_ok: bool = _combat_presentation_view_ok()
+	var combat_shot_presentation_ok: bool = _combat_shot_presentation_ok()
 	var tacticalclock_static_no_per_frame_ok: bool = _tacticalclock_static_no_per_frame_ok()
 	var tacticalclock_dynamic_redraw_ok: bool = _tacticalclock_dynamic_redraw_ok()
 
@@ -18472,6 +18474,7 @@ static func run() -> Dictionary:
 		"combat_presentation_query_ok": combat_presentation_query_ok,
 		"combat_presentation_lull_ok": combat_presentation_lull_ok,
 		"combat_presentation_view_ok": combat_presentation_view_ok,
+		"combat_shot_presentation_ok": combat_shot_presentation_ok,
 		"tacticalclock_static_no_per_frame_ok": tacticalclock_static_no_per_frame_ok,
 		"tacticalclock_dynamic_redraw_ok": tacticalclock_dynamic_redraw_ok,
 	}
@@ -54774,9 +54777,7 @@ static func _tacticalview_no_art_ok() -> bool:
 		and not source.contains("AnimatedSprite")
 		and not source.contains("Texture2D")
 		and not source.contains("AudioStream")
-		and not source.contains("muzzle")
 		and not source.contains("blood")
-		and not source.contains("bullet")
 		and not source.contains("CanvasLayer")
 	)
 
@@ -64140,9 +64141,15 @@ static func _combat_presentation_view_ok() -> bool:
 		and source.contains("compact_state")
 		and source.contains("COMPACT_STATE_FONT_SIZE")
 		and source.contains("SHOT_FEEDBACK_SECONDS := 0.45")
-		and source.contains("TRACER_FADE_SECONDS := 0.35")
-		and source.contains("0.50 + 0.40 * tracer_alpha")
-		and source.contains("remaining * remaining")
+		and source.contains("TacticalShotPresentation")
+		and source.contains("_draw_shot_muzzle_flash")
+		and source.contains("_draw_shot_projectile")
+		and source.contains("_draw_projectile_tail")
+		and source.contains("_draw_shot_impact")
+		and not source.contains("PROVISIONAL_TRACER")
+		and not source.contains("TRACER_FADE_SECONDS")
+		and not source.contains("tracer_alpha")
+		and not source.contains("0.50 + 0.40 * tracer_alpha")
 		and not source.contains("BattleCombatBehaviorService")
 		and not source.contains("BattleRuntimeService")
 		and not source.contains("advance_tactical")
@@ -64151,6 +64158,109 @@ static func _combat_presentation_view_ok() -> bool:
 		and not query_src.contains("advance_weapon_state")
 		and query_src.contains("evaluate_participant_target_eligibility")
 		and query_src.contains("Does not mutate")
+	)
+
+
+static func _combat_shot_presentation_ok() -> bool:
+	var pistol_len: float = TacticalShotPresentation.silhouette_length("pistol")
+	var smg_len: float = TacticalShotPresentation.silhouette_length("smg")
+	var shotgun_len: float = TacticalShotPresentation.silhouette_length("shotgun")
+	var rifle_len: float = TacticalShotPresentation.silhouette_length("rifle")
+	var sniper_len: float = TacticalShotPresentation.silhouette_length("sniper")
+	var pistol_w: float = TacticalShotPresentation.silhouette_width("pistol")
+	var smg_w: float = TacticalShotPresentation.silhouette_width("smg")
+	var shotgun_w: float = TacticalShotPresentation.silhouette_width("shotgun")
+	var rifle_w: float = TacticalShotPresentation.silhouette_width("rifle")
+	var sniper_w: float = TacticalShotPresentation.silhouette_width("sniper")
+	if pistol_len >= smg_len or smg_len >= shotgun_len:
+		return false
+	if shotgun_len >= rifle_len or rifle_len >= sniper_len:
+		return false
+	if sniper_w >= pistol_w or pistol_w >= rifle_w:
+		return false
+	if rifle_w >= smg_w or smg_w >= shotgun_w:
+		return false
+	var pistol_flash: float = TacticalShotPresentation.muzzle_flash_radius("pistol")
+	var smg_flash: float = TacticalShotPresentation.muzzle_flash_radius("smg")
+	var shotgun_flash: float = TacticalShotPresentation.muzzle_flash_radius("shotgun")
+	var rifle_flash: float = TacticalShotPresentation.muzzle_flash_radius("rifle")
+	var sniper_flash: float = TacticalShotPresentation.muzzle_flash_radius("sniper")
+	if pistol_flash >= rifle_flash or rifle_flash >= shotgun_flash:
+		return false
+	if smg_flash >= shotgun_flash or sniper_flash <= rifle_flash:
+		return false
+	if TacticalShotPresentation.muzzle_flash_alpha(0.0) <= 0.0:
+		return false
+	if TacticalShotPresentation.muzzle_flash_alpha(0.04) > 0.0:
+		return false
+	var origin: Vector2 = Vector2(0.0, 0.0)
+	var endpoint: Vector2 = Vector2(240.0, 0.0)
+	var path_pixels: float = origin.distance_to(endpoint)
+	var early: Vector2 = TacticalShotPresentation.projectile_position(origin, endpoint, "rifle", 0.0)
+	var later: Vector2 = TacticalShotPresentation.projectile_position(origin, endpoint, "rifle", 0.04)
+	if later.x <= early.x:
+		return false
+	if not TacticalShotPresentation.projectile_visible("rifle", 0.04, path_pixels):
+		return false
+	if TacticalShotPresentation.projectile_visible("rifle", 1.0, path_pixels):
+		return false
+	var mid_tail: float = TacticalShotPresentation.tail_length_pixels("rifle", 0.05, path_pixels)
+	if mid_tail <= 0.0:
+		return false
+	if mid_tail >= path_pixels:
+		return false
+	if mid_tail > TacticalShotPresentation.max_tail_pixels("rifle"):
+		return false
+	if mid_tail > path_pixels * TacticalShotPresentation.MAX_TAIL_PATH_FRACTION:
+		return false
+	if not TacticalShotPresentation.uses_short_shotgun_cue("shotgun"):
+		return false
+	if TacticalShotPresentation.visual_travel_pixels("shotgun", path_pixels) >= path_pixels:
+		return false
+	if TacticalShotPresentation.projectile_visible("shotgun", 0.08, path_pixels):
+		return false
+	var pack: Dictionary = _battleattack_make_ready("shotpres_src", "shotpres_tgt", "rifle")
+	var battle_state: BattleState = pack.get("battle_state", null) as BattleState
+	var source: BattleParticipant = pack.get("source", null) as BattleParticipant
+	if battle_state == null or source == null:
+		return false
+	var elapsed_before: float = battle_state.elapsed_time_seconds
+	_combat_feedback_arm_weapon(source)
+	var shot: BattleAttackResult = BattleAttackResolutionService.resolve_attack(
+		battle_state,
+		"shotpres_src",
+		"shotpres_tgt",
+		0.0
+	)
+	if shot == null or not shot.shot_executed:
+		return false
+	if battle_state.combat_feedback_events.is_empty():
+		return false
+	var event: BattleAttackEvent = battle_state.combat_feedback_events[battle_state.combat_feedback_events.size() - 1]
+	if event == null or event.outcome.is_empty():
+		return false
+	if not is_equal_approx(battle_state.elapsed_time_seconds, elapsed_before):
+		return false
+	if TacticalShotPresentation.projectile_progress("rifle", 0.0, path_pixels) > 0.0:
+		return false
+	if battle_state.combat_feedback_events.size() > BattleState.COMBAT_FEEDBACK_HISTORY_LIMIT:
+		return false
+	var view_src: String = _tacticalview_source()
+	var helper_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_shot_presentation.gd")
+	return (
+		is_equal_approx(TacticalShotPresentation.OUTCOME_LABEL_SECONDS, 0.45)
+		and is_equal_approx(TacticalShotPresentation.MUZZLE_FLASH_SECONDS, 0.032)
+		and BattleState.COMBAT_FEEDBACK_HISTORY_LIMIT == 12
+		and view_src.contains("_draw_shot_muzzle_flash")
+		and view_src.contains("_draw_shot_projectile")
+		and view_src.contains("_draw_projectile_tail")
+		and not view_src.contains("PROVISIONAL_TRACER")
+		and not view_src.contains("draw_line(draw_source, draw_target")
+		and not view_src.contains("PackedScene")
+		and helper_src.contains("Does not own combat resolution")
+		and not helper_src.contains("commit_shot")
+		and not helper_src.contains("add_child")
+		and not helper_src.contains("RigidBody")
 	)
 
 

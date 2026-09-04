@@ -27,6 +27,7 @@ const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd
 const BattleCombatPresentationQuery := preload("res://battle/combat/battle_combat_presentation_query.gd")
 const TacticalStaticBattlefieldLayer := preload("res://gameplay/tactical_static_battlefield_layer.gd")
 const TacticalDynamicBattlefieldLayer := preload("res://gameplay/tactical_dynamic_battlefield_layer.gd")
+const TacticalShotPresentation := preload("res://gameplay/tactical_shot_presentation.gd")
 
 const TACTICAL_PIXELS_PER_UNIT := 8.0
 # Edge padding around the playable field. HUD uses a separate left gutter.
@@ -48,13 +49,8 @@ const ROSTER_CAMERA_GUTTER_PAD := 24.0
 const VEHICLE_OUTLINE_WIDTH := 3.5
 const VEHICLE_FRONT_MARK := 6.0
 const SHOT_FEEDBACK_SECONDS := 0.45
-const TRACER_FADE_SECONDS := 0.35
-const MUZZLE_RADIUS := 1.6
-const IMPACT_RADIUS := 2.8
-# Presentation-only. Opposite-direction tracers on the same segment sit on
-# opposite sides of the true shot axis. Does not mutate event positions.
-const TRACER_PAIR_OFFSET_PIXELS := 4.0
-const MISS_ENDPOINT_RADIUS := 2.0
+const IMPACT_RADIUS := 1.6
+const MISS_ENDPOINT_RADIUS := 1.3
 const COMPACT_STATE_FONT_SIZE := 8
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
@@ -141,8 +137,8 @@ const PROVISIONAL_VEHICLE_OUTLINE := Color(0.08, 0.07, 0.05, 1.0)
 const PROVISIONAL_VEHICLE_FACING := Color(0.08, 0.07, 0.05, 1.0)
 const PROVISIONAL_MUZZLE := Color(1.0, 0.96, 0.72, 1.0)
 const PROVISIONAL_MUZZLE_CORE := Color(1.0, 1.0, 0.94, 1.0)
-const PROVISIONAL_MUZZLE_RING := Color(0.08, 0.06, 0.04, 1.0)
-const PROVISIONAL_TRACER := Color(1.0, 0.84, 0.28, 1.0)
+const PROVISIONAL_PROJECTILE := Color(0.96, 0.96, 0.94, 1.0)
+const PROVISIONAL_PROJECTILE_TAIL := Color(0.88, 0.88, 0.86, 1.0)
 const PROVISIONAL_MISS_ENDPOINT := Color(0.76, 0.74, 0.68, 1.0)
 const PROVISIONAL_GRAZE_IMPACT := Color(0.95, 0.82, 0.38, 1.0)
 const PROVISIONAL_HIT_IMPACT := Color(0.95, 0.58, 0.22, 1.0)
@@ -307,6 +303,7 @@ func paint_dynamic_battlefield(canvas: CanvasItem) -> void:
 		_draw_overlay()
 		_paint = null
 		return
+	# Dynamic order: cover → vehicles → soldiers/weapons → muzzle/projectile/impact → overlay.
 	_draw_deployment_zones(battle_state)
 	_draw_cover(battle_state)
 	_draw_vehicles(battle_state)
@@ -1130,7 +1127,7 @@ func _draw_soldier(battle_state: BattleState, participant: BattleParticipant) ->
 	if _selected_participant_id() == participant.participant_id:
 		_draw_soldier_selection(view_pos)
 	if not participant.is_alive:
-		_draw_soldier_downed(view_pos, facing)
+		_draw_soldier_downed(view_pos, facing, participant.weapon_type)
 		_draw_compact_combat_state(battle_state, participant, view_pos)
 		return
 	_draw_soldier_standing(view_pos, facing, battle_state, participant)
@@ -1198,7 +1195,7 @@ func _draw_soldier_standing(
 	_paint_canvas().draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
-func _draw_soldier_downed(view_pos: Vector2, facing: Vector2) -> void:
+func _draw_soldier_downed(view_pos: Vector2, facing: Vector2, weapon_type: String = "") -> void:
 	_paint_canvas().draw_set_transform(view_pos, facing.angle() + 0.18, Vector2.ONE)
 	var torso: Rect2 = Rect2(Vector2(-6.4, -2.1), Vector2(12.6, 4.2))
 	_paint_canvas().draw_rect(torso, PROVISIONAL_SOLDIER_BODY_DEAD, true)
@@ -1213,79 +1210,67 @@ func _draw_soldier_downed(view_pos: Vector2, facing: Vector2) -> void:
 	_paint_canvas().draw_rect(arm_r, PROVISIONAL_SOLDIER_BODY_DEAD.darkened(0.08), true)
 	_paint_canvas().draw_circle(Vector2(7.4, 1.2), SOLDIER_HEAD_RADIUS, PROVISIONAL_SOLDIER_HEAD_DEAD, true)
 	_paint_canvas().draw_circle(Vector2(7.4, 1.2), SOLDIER_HEAD_RADIUS, PROVISIONAL_SOLDIER_OUTLINE, false, 1.2, true)
-	var dropped: Rect2 = Rect2(Vector2(1.0, 5.2), Vector2(7.0, 1.3))
+	var dropped_len: float = maxf(TacticalShotPresentation.silhouette_length(weapon_type) * 0.55, 4.2)
+	var dropped: Rect2 = Rect2(Vector2(1.0, 5.2), Vector2(dropped_len, 1.3))
 	_paint_canvas().draw_rect(dropped, PROVISIONAL_SOLDIER_WEAPON, true)
 	_paint_canvas().draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _draw_soldier_weapon(weapon_type: String) -> void:
-	var length: float = _weapon_presentation_length(weapon_type)
-	var width: float = _weapon_presentation_width(weapon_type)
-	var stock: float = _weapon_presentation_stock(weapon_type)
+	var length: float = TacticalShotPresentation.silhouette_length(weapon_type)
+	var width: float = TacticalShotPresentation.silhouette_width(weapon_type)
+	var stock: float = TacticalShotPresentation.silhouette_stock(weapon_type)
 	var hand: Vector2 = Vector2(SOLDIER_HAND_FORWARD, 2.3)
 	if stock > 0.2:
 		var stock_rect: Rect2 = Rect2(
-			hand + Vector2(-stock + 0.4, width * -0.35),
-			Vector2(stock, width * 0.7)
+			hand + Vector2(-stock + 0.4, width * -0.32),
+			Vector2(stock, width * 0.64)
 		)
 		_paint_canvas().draw_rect(stock_rect, PROVISIONAL_SOLDIER_WEAPON_STOCK, true)
 	var barrel: Rect2 = Rect2(hand + Vector2(0.0, width * -0.5), Vector2(length, width))
 	_paint_canvas().draw_rect(barrel, PROVISIONAL_SOLDIER_WEAPON, true)
 	_paint_canvas().draw_rect(barrel, PROVISIONAL_SOLDIER_OUTLINE, false, 0.9)
-	if weapon_type == "shotgun":
-		var sleeve: Rect2 = Rect2(hand + Vector2(1.2, width * -0.72), Vector2(2.4, width * 1.44))
-		_paint_canvas().draw_rect(sleeve, PROVISIONAL_SOLDIER_WEAPON.lightened(0.18), true)
-	elif weapon_type == "sniper":
-		var optic: Rect2 = Rect2(hand + Vector2(length * 0.28, width * -1.35), Vector2(2.6, 1.1))
-		_paint_canvas().draw_rect(optic, Color(0.12, 0.13, 0.14, 1.0), true)
+	match weapon_type:
+		"pistol":
+			var grip: Rect2 = Rect2(hand + Vector2(-0.15, width * 0.12), Vector2(1.55, 2.35))
+			_paint_canvas().draw_rect(grip, PROVISIONAL_SOLDIER_WEAPON_STOCK, true)
+			_paint_canvas().draw_rect(grip, PROVISIONAL_SOLDIER_OUTLINE, false, 0.7)
+		"smg":
+			var mag: Rect2 = Rect2(hand + Vector2(1.05, width * 0.28), Vector2(1.45, 2.15))
+			_paint_canvas().draw_rect(mag, PROVISIONAL_SOLDIER_WEAPON, true)
+			_paint_canvas().draw_rect(mag, PROVISIONAL_SOLDIER_OUTLINE, false, 0.7)
+			var receiver: Rect2 = Rect2(hand + Vector2(0.2, width * -0.78), Vector2(2.8, width * 0.42))
+			_paint_canvas().draw_rect(receiver, PROVISIONAL_SOLDIER_WEAPON.lightened(0.12), true)
+		"shotgun":
+			var sleeve: Rect2 = Rect2(hand + Vector2(2.1, width * -0.72), Vector2(2.8, width * 1.44))
+			_paint_canvas().draw_rect(sleeve, PROVISIONAL_SOLDIER_WEAPON.lightened(0.16), true)
+		"rifle":
+			var mag: Rect2 = Rect2(hand + Vector2(1.6, width * 0.22), Vector2(1.7, 2.05))
+			_paint_canvas().draw_rect(mag, PROVISIONAL_SOLDIER_WEAPON, true)
+			var front: Rect2 = Rect2(hand + Vector2(length - 1.6, width * -0.95), Vector2(0.7, width * 0.38))
+			_paint_canvas().draw_rect(front, PROVISIONAL_SOLDIER_WEAPON.lightened(0.10), true)
+		"sniper":
+			var optic: Rect2 = Rect2(hand + Vector2(length * 0.30, width * -1.55), Vector2(3.1, 1.05))
+			_paint_canvas().draw_rect(optic, Color(0.12, 0.13, 0.14, 1.0), true)
+			var barrel_tip: Rect2 = Rect2(
+				hand + Vector2(length * 0.62, width * -0.22),
+				Vector2(length * 0.38, width * 0.44)
+			)
+			_paint_canvas().draw_rect(barrel_tip, PROVISIONAL_SOLDIER_WEAPON.lightened(0.08), true)
+		_:
+			pass
 
 
 func _weapon_presentation_length(weapon_type: String) -> float:
-	match weapon_type:
-		"pistol":
-			return 5.4
-		"smg":
-			return 9.2
-		"shotgun":
-			return 8.6
-		"rifle":
-			return 12.8
-		"sniper":
-			return 16.8
-		_:
-			return 9.0
+	return TacticalShotPresentation.silhouette_length(weapon_type)
 
 
 func _weapon_presentation_width(weapon_type: String) -> float:
-	match weapon_type:
-		"pistol":
-			return 1.45
-		"smg":
-			return 1.85
-		"shotgun":
-			return 2.7
-		"rifle":
-			return 1.65
-		"sniper":
-			return 1.2
-		_:
-			return 1.7
+	return TacticalShotPresentation.silhouette_width(weapon_type)
 
 
 func _weapon_presentation_stock(weapon_type: String) -> float:
-	match weapon_type:
-		"pistol":
-			return 0.0
-		"smg":
-			return 2.0
-		"shotgun":
-			return 2.4
-		"rifle":
-			return 2.8
-		"sniper":
-			return 3.2
-		_:
-			return 1.6
+	return TacticalShotPresentation.silhouette_stock(weapon_type)
 
 
 func _weapon_tip_pixels(weapon_type: String) -> float:
@@ -1691,60 +1676,173 @@ func _draw_combat_feedback(battle_state: BattleState) -> void:
 		return
 	var resolved_hold: bool = _is_resolved_presentation(battle_state)
 	for event: BattleAttackEvent in battle_state.combat_feedback_events:
-		if event == null:
-			continue
-		var age: float = _combat_event_age(battle_state, event)
-		if not is_finite(age) or age < 0.0:
-			continue
-		var tracer_alpha: float = _tracer_fade_alpha(age)
-		var show_impact: bool = resolved_hold or age <= SHOT_FEEDBACK_SECONDS
-		if tracer_alpha <= 0.0 and not show_impact:
-			continue
-		var source_pos: Vector2 = _event_source_view(battle_state, event)
-		var target_pos: Vector2 = _event_target_view(battle_state, event)
-		if source_pos == Vector2.INF or target_pos == Vector2.INF:
-			continue
-		var offset: Vector2 = _combat_feedback_offset(source_pos, target_pos)
-		var draw_source: Vector2 = _presentation_weapon_tip(battle_state, event, source_pos, target_pos) + offset
-		var draw_target: Vector2 = target_pos + offset
-		if tracer_alpha > 0.0:
-			_draw_shot_origin(draw_source, tracer_alpha)
-			var tracer_color: Color = PROVISIONAL_TRACER
-			tracer_color.a = tracer_alpha
-			var tracer_width: float = 0.50 + 0.40 * tracer_alpha
-			_paint_canvas().draw_line(draw_source, draw_target, tracer_color, tracer_width, true)
-		if not show_impact:
-			continue
+		_draw_shot_muzzle_flash(battle_state, event, resolved_hold)
+	for event: BattleAttackEvent in battle_state.combat_feedback_events:
+		_draw_shot_projectile(battle_state, event, resolved_hold)
+	for event: BattleAttackEvent in battle_state.combat_feedback_events:
+		_draw_shot_impact(battle_state, event, resolved_hold)
+
+
+func _draw_shot_muzzle_flash(
+	battle_state: BattleState,
+	event: BattleAttackEvent,
+	resolved_hold: bool
+) -> void:
+	if resolved_hold or event == null:
+		return
+	var age: float = _combat_event_age(battle_state, event)
+	var flash_alpha: float = TacticalShotPresentation.muzzle_flash_alpha(age)
+	if flash_alpha <= 0.0:
+		return
+	var segment: Dictionary = _shot_draw_segment(battle_state, event)
+	if not bool(segment.get("ok", false)):
+		return
+	var muzzle: Vector2 = segment["muzzle"] as Vector2
+	var along: Vector2 = segment["along"] as Vector2
+	var weapon_type: String = _event_weapon_type(battle_state, event)
+	var radius: float = TacticalShotPresentation.muzzle_flash_radius(weapon_type)
+	var fill: Color = PROVISIONAL_MUZZLE
+	fill.a = flash_alpha
+	var core: Color = PROVISIONAL_MUZZLE_CORE
+	core.a = flash_alpha
+	if weapon_type == "sniper":
+		var bloom: Color = core
+		bloom.a = flash_alpha * 0.45
+		_paint_canvas().draw_circle(muzzle, radius * 1.18, bloom, true)
+	_paint_canvas().draw_circle(muzzle, radius, fill, true)
+	_paint_canvas().draw_circle(muzzle, radius * 0.42, core, true)
+	if weapon_type == "shotgun" and _view_facing_usable(along):
+		var dir: Vector2 = along.normalized()
+		var side: Vector2 = Vector2(-dir.y, dir.x)
+		var lobe: Color = fill
+		lobe.a = flash_alpha * 0.72
+		_paint_canvas().draw_circle(muzzle + dir * radius * 0.35 + side * radius * 0.62, radius * 0.38, lobe, true)
+		_paint_canvas().draw_circle(muzzle + dir * radius * 0.35 - side * radius * 0.62, radius * 0.38, lobe, true)
+
+
+func _draw_shot_projectile(
+	battle_state: BattleState,
+	event: BattleAttackEvent,
+	resolved_hold: bool
+) -> void:
+	if resolved_hold or event == null:
+		return
+	var age: float = _combat_event_age(battle_state, event)
+	var segment: Dictionary = _shot_draw_segment(battle_state, event)
+	if not bool(segment.get("ok", false)):
+		return
+	var muzzle: Vector2 = segment["muzzle"] as Vector2
+	var endpoint: Vector2 = segment["endpoint"] as Vector2
+	var along: Vector2 = segment["along"] as Vector2
+	var path_pixels: float = along.length()
+	var weapon_type: String = _event_weapon_type(battle_state, event)
+	if not TacticalShotPresentation.projectile_visible(weapon_type, age, path_pixels):
+		return
+	var pos: Vector2 = TacticalShotPresentation.projectile_position(muzzle, endpoint, weapon_type, age)
+	var tail_len: float = TacticalShotPresentation.tail_length_pixels(weapon_type, age, path_pixels)
+	if tail_len > 0.05 and _view_facing_usable(along):
+		_draw_projectile_tail(pos, along.normalized(), tail_len, weapon_type)
+	var bullet: Color = PROVISIONAL_PROJECTILE
+	if weapon_type == "sniper":
+		bullet = Color(0.98, 0.98, 0.96, 1.0)
+	_paint_canvas().draw_circle(pos, TacticalShotPresentation.projectile_radius(weapon_type), bullet, true)
+
+
+func _draw_projectile_tail(tip: Vector2, direction: Vector2, tail_len: float, weapon_type: String) -> void:
+	if not _view_facing_usable(direction) or tail_len <= 0.05:
+		return
+	var width: float = 1.05
+	if weapon_type == "sniper":
+		width = 0.85
+	elif weapon_type == "smg":
+		width = 0.95
+	elif weapon_type == "shotgun":
+		width = 1.15
+	var back: Vector2 = -direction
+	var segments: int = TacticalShotPresentation.TAIL_SEGMENTS
+	var i: int = 0
+	while i < segments:
+		var t0: float = float(i) / float(segments)
+		var t1: float = float(i + 1) / float(segments)
+		var color: Color = PROVISIONAL_PROJECTILE_TAIL
+		color.a = 0.58 * (1.0 - t0)
+		_paint_canvas().draw_line(
+			tip + back * (tail_len * t0),
+			tip + back * (tail_len * t1),
+			color,
+			width,
+			true
+		)
+		i += 1
+
+
+func _draw_shot_impact(
+	battle_state: BattleState,
+	event: BattleAttackEvent,
+	resolved_hold: bool
+) -> void:
+	if event == null:
+		return
+	var age: float = _combat_event_age(battle_state, event)
+	var show_spark: bool = TacticalShotPresentation.impact_visible(age, resolved_hold)
+	var show_label: bool = TacticalShotPresentation.outcome_label_visible(age, resolved_hold)
+	if not show_spark and not show_label:
+		return
+	var segment: Dictionary = _shot_draw_segment(battle_state, event)
+	if not bool(segment.get("ok", false)):
+		return
+	var endpoint: Vector2 = segment["endpoint"] as Vector2
+	if show_spark:
 		match event.outcome:
 			BattleAttackProfile.OUTCOME_MISS:
-				_paint_canvas().draw_circle(draw_target, MISS_ENDPOINT_RADIUS, PROVISIONAL_MISS_ENDPOINT, false, 1.0, true)
+				_paint_canvas().draw_circle(endpoint, MISS_ENDPOINT_RADIUS, PROVISIONAL_MISS_ENDPOINT, false, 0.9, true)
 			BattleAttackProfile.OUTCOME_GRAZE:
-				_paint_canvas().draw_circle(draw_target, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 2.0, true)
+				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 1.2, true)
 			BattleAttackProfile.OUTCOME_HIT:
-				_paint_canvas().draw_circle(draw_target, IMPACT_RADIUS, PROVISIONAL_HIT_IMPACT, false, 2.2, true)
+				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS, PROVISIONAL_HIT_IMPACT, false, 1.3, true)
 			BattleAttackProfile.OUTCOME_WOUNDED:
-				_paint_canvas().draw_circle(draw_target, IMPACT_RADIUS + 1.5, PROVISIONAL_WOUND_IMPACT, false, 2.5, true)
-				_draw_label(draw_target + Vector2(14.0, -8.0), "WND", 11)
+				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS + 0.4, PROVISIONAL_WOUND_IMPACT, false, 1.4, true)
 			BattleAttackProfile.OUTCOME_KILLED:
-				_draw_dead_mark(draw_target, PROVISIONAL_KILL_MARK)
-				_draw_label(draw_target + Vector2(16.0, -8.0), "DEAD", 12)
+				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS + 0.3, PROVISIONAL_KILL_MARK, false, 1.3, true)
 			_:
 				pass
-
-
-func _draw_shot_origin(view_pos: Vector2, fade_alpha: float = 1.0) -> void:
-	var alpha: float = clampf(fade_alpha * fade_alpha, 0.0, 1.0)
-	if alpha <= 0.0:
+	if not show_label:
 		return
-	var ring: Color = PROVISIONAL_MUZZLE_RING
-	ring.a = alpha
-	var fill: Color = PROVISIONAL_MUZZLE
-	fill.a = alpha
-	var core: Color = PROVISIONAL_MUZZLE_CORE
-	core.a = alpha
-	_paint_canvas().draw_circle(view_pos, MUZZLE_RADIUS + 1.2, ring, false, 1.0, true)
-	_paint_canvas().draw_circle(view_pos, MUZZLE_RADIUS, fill, true)
-	_paint_canvas().draw_circle(view_pos, MUZZLE_RADIUS * 0.42, core, true)
+	match event.outcome:
+		BattleAttackProfile.OUTCOME_WOUNDED:
+			_draw_label(endpoint + Vector2(14.0, -8.0), "WND", 11)
+		BattleAttackProfile.OUTCOME_KILLED:
+			_draw_dead_mark(endpoint, PROVISIONAL_KILL_MARK)
+			_draw_label(endpoint + Vector2(16.0, -8.0), "DEAD", 12)
+		_:
+			pass
+
+
+func _shot_draw_segment(battle_state: BattleState, event: BattleAttackEvent) -> Dictionary:
+	var source_pos: Vector2 = _event_source_view(battle_state, event)
+	var target_pos: Vector2 = _event_target_view(battle_state, event)
+	if source_pos == Vector2.INF or target_pos == Vector2.INF:
+		return {"ok": false, "muzzle": Vector2.INF, "endpoint": Vector2.INF, "along": Vector2.ZERO}
+	var offset: Vector2 = _combat_feedback_offset(source_pos, target_pos)
+	var muzzle: Vector2 = _presentation_weapon_tip(battle_state, event, source_pos, target_pos) + offset
+	var endpoint: Vector2 = target_pos + offset
+	return {
+		"ok": true,
+		"muzzle": muzzle,
+		"endpoint": endpoint,
+		"along": endpoint - muzzle,
+	}
+
+
+func _event_weapon_type(battle_state: BattleState, event: BattleAttackEvent) -> String:
+	var weapon_type: String = ""
+	if event != null:
+		weapon_type = event.weapon_type_id
+	if battle_state != null and event != null:
+		var source: BattleParticipant = battle_state.get_participant(event.source_participant_id)
+		if source != null and not source.weapon_type.is_empty():
+			weapon_type = source.weapon_type
+	return weapon_type
 
 
 func _combat_feedback_offset(source_view: Vector2, target_view: Vector2) -> Vector2:
@@ -1754,7 +1852,7 @@ func _combat_feedback_offset(source_view: Vector2, target_view: Vector2) -> Vect
 	var perp: Vector2 = Vector2(-along.y, along.x)
 	if perp.is_equal_approx(Vector2.ZERO):
 		return Vector2.ZERO
-	return perp.normalized() * TRACER_PAIR_OFFSET_PIXELS
+	return perp.normalized() * TacticalShotPresentation.SHOT_PAIR_OFFSET_PIXELS
 
 
 func _combat_event_age(battle_state: BattleState, event: BattleAttackEvent) -> float:
@@ -1766,15 +1864,6 @@ func _combat_event_age(battle_state: BattleState, event: BattleAttackEvent) -> f
 	return age
 
 
-func _tracer_fade_alpha(age: float) -> float:
-	if not is_finite(age) or age < 0.0:
-		return 0.0
-	if age >= TRACER_FADE_SECONDS:
-		return 0.0
-	var remaining: float = 1.0 - (age / TRACER_FADE_SECONDS)
-	return remaining * remaining
-
-
 func _combat_event_visible(
 	battle_state: BattleState,
 	event: BattleAttackEvent,
@@ -1782,12 +1871,18 @@ func _combat_event_visible(
 ) -> bool:
 	if event == null or battle_state == null:
 		return false
-	if resolved_hold:
-		return true
 	var age: float = _combat_event_age(battle_state, event)
-	if not is_finite(age) or age < 0.0:
-		return false
-	return age <= maxf(SHOT_FEEDBACK_SECONDS, TRACER_FADE_SECONDS)
+	var source_pos: Vector2 = _event_source_view(battle_state, event)
+	var target_pos: Vector2 = _event_target_view(battle_state, event)
+	var path_pixels: float = 0.0
+	if source_pos != Vector2.INF and target_pos != Vector2.INF:
+		path_pixels = (target_pos - source_pos).length()
+	return TacticalShotPresentation.cue_visible(
+		_event_weapon_type(battle_state, event),
+		age,
+		path_pixels,
+		resolved_hold
+	)
 
 
 func _presentation_weapon_tip(
