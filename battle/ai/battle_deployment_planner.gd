@@ -355,31 +355,42 @@ static func _generate_legal_candidates(
 	own_rect: Rect2
 ) -> Array[Dictionary]:
 	var candidates: Array[Dictionary] = []
-	var sample_rect: Rect2 = _inset_rect(own_rect, SAMPLE_INSET)
-	if not BattlefieldGeometry.rect_is_usable(sample_rect):
-		sample_rect = own_rect
-	var nx: int = clampi(int(round(sample_rect.size.x / 3.5)), 3, 8)
-	var ny: int = clampi(int(round(sample_rect.size.y / 6.0)), 4, 10)
-	var iy: int = 0
-	while iy < ny:
-		var ix: int = 0
-		while ix < nx:
-			var point: Vector2 = Vector2(
-				sample_rect.position.x + (float(ix) + 0.5) * sample_rect.size.x / float(nx),
-				sample_rect.position.y + (float(iy) + 0.5) * sample_rect.size.y / float(ny)
-			)
-			if battle_state.get_deployment_position_error(side_id, point).is_empty():
-				candidates.append(
-					{
-						"position": point,
-						"is_cover": false,
-						"cover_slot_id": "",
-						"facing": Vector2.ZERO,
-					}
+	var sample_rects: Array[Rect2] = []
+	var geometry: BattlefieldGeometry = null
+	if battle_state != null:
+		geometry = battle_state.battlefield_geometry
+	if geometry != null:
+		var for_attacker: bool = side_id == battle_state.attacker_side_id
+		sample_rects = geometry.deployment_sample_rects(for_attacker)
+	if sample_rects.is_empty() and BattlefieldGeometry.rect_is_usable(own_rect):
+		sample_rects.append(own_rect)
+	for sample_source: Rect2 in sample_rects:
+		var sample_rect: Rect2 = _inset_rect(sample_source, SAMPLE_INSET)
+		if not BattlefieldGeometry.rect_is_usable(sample_rect):
+			sample_rect = sample_source
+		if not BattlefieldGeometry.rect_is_usable(sample_rect):
+			continue
+		var nx: int = clampi(int(round(sample_rect.size.x / 3.5)), 3, 8)
+		var ny: int = clampi(int(round(sample_rect.size.y / 6.0)), 4, 10)
+		var iy: int = 0
+		while iy < ny:
+			var ix: int = 0
+			while ix < nx:
+				var point: Vector2 = Vector2(
+					sample_rect.position.x + (float(ix) + 0.5) * sample_rect.size.x / float(nx),
+					sample_rect.position.y + (float(iy) + 0.5) * sample_rect.size.y / float(ny)
 				)
-			ix += 1
-		iy += 1
-	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+				if battle_state.get_deployment_position_error(side_id, point).is_empty():
+					candidates.append(
+						{
+							"position": point,
+							"is_cover": false,
+							"cover_slot_id": "",
+							"facing": Vector2.ZERO,
+						}
+					)
+				ix += 1
+			iy += 1
 	if geometry != null:
 		for slot_id: String in geometry.get_sorted_cover_slot_ids():
 			var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)

@@ -265,8 +265,8 @@ static func initialize_assault_frames_from_geometry(battle_state: BattleState) -
 		return
 	initialize_assault_frames(
 		battle_state,
-		geometry.attacker_deployment_rect.get_center(),
-		geometry.defender_deployment_rect.get_center()
+		geometry.attacker_deployment_centroid(),
+		geometry.defender_deployment_centroid()
 	)
 
 

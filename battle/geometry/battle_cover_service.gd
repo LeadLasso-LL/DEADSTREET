@@ -316,19 +316,33 @@ static func _clear_reservation(battle_state: BattleState, participant: BattlePar
 	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
 		return
 	var slot_id: String = participant.reserved_cover_slot_id
+	var freed: bool = false
 	if not slot_id.is_empty():
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot != null and slot.reserved_by_participant_id == participant.participant_id:
 			slot.reserved_by_participant_id = ""
+			freed = true
 	participant.reserved_cover_slot_id = ""
+	if freed:
+		_bump_cover_occupancy_revision(battle_state)
 
 
 static func _clear_occupancy(battle_state: BattleState, participant: BattleParticipant) -> void:
 	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
 		return
 	var slot_id: String = participant.occupied_cover_slot_id
+	var freed: bool = false
 	if not slot_id.is_empty():
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot != null and slot.occupied_by_participant_id == participant.participant_id:
 			slot.occupied_by_participant_id = ""
+			freed = true
 	participant.occupied_cover_slot_id = ""
+	if freed:
+		_bump_cover_occupancy_revision(battle_state)
+
+
+static func _bump_cover_occupancy_revision(battle_state: BattleState) -> void:
+	if battle_state == null:
+		return
+	battle_state.cover_occupancy_revision += 1

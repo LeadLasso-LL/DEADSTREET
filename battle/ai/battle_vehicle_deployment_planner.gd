@@ -244,10 +244,11 @@ static func _generate_candidates(
 	var rearward: Vector2 = -facing
 	var lateral: Vector2 = Vector2(-facing.y, facing.x)
 	var rear_center: Vector2 = _rect_rear_center(usable, rearward)
-	if context != null and context.has_anchor and BattlefieldGeometry.rect_contains_point(usable, context.anchor_position):
-		candidates.append(
-			_scored_candidate(context.anchor_position, facing, rearward, lateral, rear_center, 1)
-		)
+	if context != null and context.has_anchor and BattlefieldGeometry.is_finite_point(context.anchor_position):
+		if BattlefieldGeometry.rect_contains_point(own_rect, context.anchor_position):
+			candidates.append(
+				_scored_candidate(context.anchor_position, facing, rearward, lateral, rear_center, 1)
+			)
 	candidates.append(_scored_candidate(rear_center, facing, rearward, lateral, rear_center, 0))
 	var origin: Vector2 = usable.position
 	var cols: int = maxi(1, int(floor(usable.size.x / SAMPLE_STEP)))

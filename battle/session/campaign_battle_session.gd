@@ -25,6 +25,10 @@ var campaign_handoff_applied: bool = false
 var campaign_handoff_blocked_as_draw: bool = false
 var result_presentation_elapsed_seconds: float = 0.0
 var result_presentation_started: bool = false
+# Debug/manual playtest only. Not campaign identity and not serialized.
+var has_combat_seed_override: bool = false
+var combat_seed_override: int = 0
+var manual_playtest_serial: int = 0
 
 
 func configure(
@@ -40,6 +44,9 @@ func configure(
 	campaign_handoff_blocked_as_draw = false
 	result_presentation_elapsed_seconds = 0.0
 	result_presentation_started = false
+	has_combat_seed_override = false
+	combat_seed_override = 0
+	manual_playtest_serial = 0
 
 
 func has_battle() -> bool:

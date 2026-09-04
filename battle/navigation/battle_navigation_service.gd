@@ -8,12 +8,33 @@ const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")
 const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 const BattleSpatialService := preload("res://battle/geometry/battle_spatial_service.gd")
 const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
+const BattleNavigationGraph := preload("res://battle/navigation/battle_navigation_graph.gd")
 
 # Geometric clearance only. Matches spatial collision epsilon so planned
 # segments sit outside authored blockers and positioned vehicle bodies.
 # Vehicle corners are queried live from BattleState; they are not written
 # into BattlefieldGeometry obstacles.
 const NAVIGATION_CLEARANCE_EPSILON := 0.0001
+
+
+static func is_reachable(
+	battle_state: BattleState,
+	start_position: Vector2,
+	destination: Vector2
+) -> bool:
+	if battle_state == null:
+		return false
+	var cached: int = battle_state.nav_cache_lookup(start_position, destination)
+	if cached >= 0:
+		return cached == 1
+	var result: BattleNavigationResult = find_path(battle_state, start_position, destination)
+	var reachable: bool = result != null and result.success
+	battle_state.nav_cache_store(start_position, destination, reachable)
+	return reachable
+
+
+static func prewarm(battle_state: BattleState) -> void:
+	_ensure_static_graph(battle_state)
 
 
 static func find_path(
@@ -117,8 +138,20 @@ static func find_path(
 			direct_waypoints,
 			false
 		)
-	var nodes: Array[Vector2] = _collect_nodes(battle_state, start_position, destination)
-	var route: Array[Vector2] = _shortest_route(battle_state, nodes)
+	var graph: BattleNavigationGraph = _ensure_static_graph(battle_state)
+	if graph == null:
+		return BattleNavigationResult.failed(
+			"no_path",
+			"Battle navigation failed: no legal path exists.",
+			start_position,
+			destination
+		)
+	var route: Array[Vector2] = _query_shortest_route(
+		battle_state,
+		graph,
+		start_position,
+		destination
+	)
 	if route.is_empty():
 		return BattleNavigationResult.failed(
 			"no_path",
@@ -136,14 +169,30 @@ static func find_path(
 	)
 
 
-static func _collect_nodes(
-	battle_state: BattleState,
-	start_position: Vector2,
-	destination: Vector2
-) -> Array[Vector2]:
+static func _ensure_static_graph(battle_state: BattleState) -> BattleNavigationGraph:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return null
+	if not battle_state.battlefield_geometry.is_valid():
+		return null
+	var stamp: String = battle_state.navigation_topology_stamp()
+	var graph: BattleNavigationGraph = battle_state.get_static_nav_graph()
+	if graph != null and graph.stamp == stamp:
+		return graph
+	graph = BattleNavigationGraph.new()
+	graph.stamp = stamp
+	graph.nodes = _collect_static_nodes(battle_state)
+	graph.blocking_rects = _collect_blocking_rects(battle_state)
+	graph.adjacency = _build_adjacency(battle_state, graph.nodes, graph.blocking_rects)
+	graph.build_count = battle_state.get_static_nav_build_count() + 1
+	battle_state.increment_static_nav_build_count()
+	battle_state.set_static_nav_graph(graph)
+	return graph
+
+
+static func _collect_static_nodes(battle_state: BattleState) -> Array[Vector2]:
 	var nodes: Array[Vector2] = []
-	nodes.append(start_position)
-	nodes.append(destination)
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return nodes
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
 	for obstacle_id: String in obstacle_ids:
@@ -215,11 +264,79 @@ static func _has_equivalent_point(points: Array[Vector2], candidate: Vector2) ->
 	return false
 
 
-static func _shortest_route(battle_state: BattleState, nodes: Array[Vector2]) -> Array[Vector2]:
+static func _query_shortest_route(
+	battle_state: BattleState,
+	graph: BattleNavigationGraph,
+	start_position: Vector2,
+	destination: Vector2
+) -> Array[Vector2]:
+	var nodes: Array[Vector2] = []
+	nodes.append(start_position)
+	nodes.append(destination)
+	var static_to_query: Array[int] = []
+	static_to_query.resize(graph.nodes.size())
+	var static_index: int = 0
+	while static_index < graph.nodes.size():
+		var static_point: Vector2 = graph.nodes[static_index]
+		if (
+			static_point.is_equal_approx(start_position)
+			or static_point.is_equal_approx(destination)
+		):
+			static_to_query[static_index] = -1
+			static_index += 1
+			continue
+		static_to_query[static_index] = nodes.size()
+		nodes.append(static_point)
+		static_index += 1
+	var adjacency: Array = _empty_adjacency(nodes.size())
+	var i: int = 0
+	while i < graph.nodes.size():
+		var qi: int = static_to_query[i]
+		if qi < 0:
+			i += 1
+			continue
+		var from_map: Dictionary = graph.adjacency[i]
+		var neighbor_ids: Array = from_map.keys()
+		for neighbor_value: Variant in neighbor_ids:
+			var j: int = int(neighbor_value)
+			if j < 0 or j >= static_to_query.size():
+				continue
+			var qj: int = static_to_query[j]
+			if qj < 0:
+				continue
+			adjacency[qi][qj] = from_map[j]
+		i += 1
+	var query_index: int = 2
+	while query_index < nodes.size():
+		var static_point: Vector2 = nodes[query_index]
+		if _segment_open(battle_state, graph.blocking_rects, start_position, static_point):
+			var start_weight: float = start_position.distance_to(static_point)
+			if is_finite(start_weight) and start_weight >= 0.0:
+				adjacency[0][query_index] = start_weight
+				adjacency[query_index][0] = start_weight
+		if _segment_open(battle_state, graph.blocking_rects, destination, static_point):
+			var dest_weight: float = destination.distance_to(static_point)
+			if is_finite(dest_weight) and dest_weight >= 0.0:
+				adjacency[1][query_index] = dest_weight
+				adjacency[query_index][1] = dest_weight
+		query_index += 1
+	return _shortest_route(nodes, adjacency)
+
+
+static func _empty_adjacency(node_count: int) -> Array:
+	var adjacency: Array = []
+	var index: int = 0
+	while index < node_count:
+		var empty_neighbors: Dictionary = {}
+		adjacency.append(empty_neighbors)
+		index += 1
+	return adjacency
+
+
+static func _shortest_route(nodes: Array[Vector2], adjacency: Array) -> Array[Vector2]:
 	var node_count: int = nodes.size()
 	if node_count < 2:
 		return []
-	var adjacency: Array = _build_adjacency(battle_state, nodes)
 	var distances: Array[float] = []
 	var previous: Array[int] = []
 	var visited: Array[bool] = []
@@ -266,17 +383,79 @@ static func _shortest_route(battle_state: BattleState, nodes: Array[Vector2]) ->
 	return _reconstruct_route(nodes, previous)
 
 
-static func _build_adjacency(battle_state: BattleState, nodes: Array[Vector2]) -> Array:
+static func _collect_blocking_rects(battle_state: BattleState) -> Array[Rect2]:
+	var rects: Array[Rect2] = []
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return rects
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null or not obstacle.blocks_movement:
+			continue
+		if not obstacle.bounds_are_usable():
+			continue
+		rects.append(obstacle.bounds)
+	return rects
+
+
+static func _segment_open(
+	battle_state: BattleState,
+	blocking_rects: Array[Rect2],
+	start_position: Vector2,
+	destination: Vector2
+) -> bool:
+	if start_position.is_equal_approx(destination):
+		return true
+	var displacement: Vector2 = destination - start_position
+	if not BattlefieldGeometry.is_finite_point(displacement):
+		return false
+	for rect: Rect2 in blocking_rects:
+		if _segment_hits_rect(start_position, displacement, rect):
+			return false
+	if battle_state == null:
+		return true
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.vehicles[vehicle_id]
+		var hit_t: float = BattleVehicleBodyService.segment_entry_t(
+			vehicle,
+			start_position,
+			displacement
+		)
+		if is_inf(hit_t):
+			continue
+		if hit_t < 0.0 or hit_t > 1.0:
+			continue
+		return false
+	return true
+
+
+static func _segment_hits_rect(start_position: Vector2, displacement: Vector2, rect: Rect2) -> bool:
+	var overlap: Vector2 = BattleSpatialService.segment_aabb_overlap_t(start_position, displacement, rect)
+	var t_enter: float = overlap.x
+	var t_exit: float = overlap.y
+	if t_enter > t_exit:
+		return false
+	if t_exit < 0.0:
+		return false
+	if t_enter > 1.0:
+		return false
+	if t_enter <= 0.0:
+		return true
+	return t_enter >= 0.0 and t_enter <= 1.0
+
+
+static func _build_adjacency(
+	battle_state: BattleState,
+	nodes: Array[Vector2],
+	blocking_rects: Array[Rect2]
+) -> Array:
 	var node_count: int = nodes.size()
-	var adjacency: Array = []
-	for _i: int in range(node_count):
-		var empty_neighbors: Dictionary = {}
-		adjacency.append(empty_neighbors)
+	var adjacency: Array = _empty_adjacency(node_count)
 	for i: int in range(node_count):
 		for j: int in range(i + 1, node_count):
 			if nodes[i].is_equal_approx(nodes[j]):
 				continue
-			if not BattleSpatialService.is_translation_clear(battle_state, nodes[i], nodes[j]):
+			if not _segment_open(battle_state, blocking_rects, nodes[i], nodes[j]):
 				continue
 			var weight: float = nodes[i].distance_to(nodes[j])
 			if not is_finite(weight) or weight < 0.0:
@@ -331,13 +510,14 @@ static func _reconstruct_route(nodes: Array[Vector2], previous: Array[int]) -> A
 static func _simplify_route(battle_state: BattleState, route: Array[Vector2]) -> Array[Vector2]:
 	if route.size() <= 1:
 		return []
+	var blocking_rects: Array[Rect2] = _collect_blocking_rects(battle_state)
 	var simplified: Array[Vector2] = []
 	var current_index: int = 0
 	while current_index < route.size() - 1:
 		var farthest: int = current_index + 1
 		var probe: int = route.size() - 1
 		while probe > current_index + 1:
-			if BattleSpatialService.is_translation_clear(battle_state, route[current_index], route[probe]):
+			if _segment_open(battle_state, blocking_rects, route[current_index], route[probe]):
 				farthest = probe
 				break
 			probe -= 1

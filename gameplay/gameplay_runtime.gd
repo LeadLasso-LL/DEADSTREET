@@ -13,12 +13,17 @@ const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
+const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
 
 var game_state: GameState = null
 var game_flow_controller: GameFlowController = null
 var tactical_deployment_controller: TacticalDeploymentController = null
+# Process-local debug playtest serial. Not campaign state. Resets on runtime boot.
+var manual_playtest_serial: int = 0
 
 var _last_logged_mode: String = ""
+var _pending_manual_playtest_serial: int = 0
+var _pending_combat_seed_override: int = 0
 
 
 func _ready() -> void:
@@ -65,7 +70,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			advance_campaign_turn()
 			return
 		if key_event.keycode == KEY_H:
+			_clear_pending_manual_playtest_seed()
 			debug_launch_test_hq_assault()
+			return
+		if key_event.keycode == KEY_R:
+			_debug_launch_manual_playtest_hq_assault()
 			return
 		if key_event.keycode == KEY_B:
 			_debug_enter_pending_battle()
@@ -289,6 +298,8 @@ func enter_battle(mission_id: String = "") -> GameFlowResult:
 		)
 	var result: GameFlowResult = game_flow_controller.enter_pending_battle(mission_id)
 	_log_mode_if_changed()
+	if result != null and result.success:
+		_apply_pending_manual_playtest_seed()
 	return result
 
 
@@ -345,6 +356,121 @@ func debug_launch_test_hq_assault() -> NeighborhoodHQAttackResult:
 		)
 	_log_debug_force_campaign_position("after_launch")
 	return result
+
+
+func _debug_launch_manual_playtest_hq_assault() -> NeighborhoodHQAttackResult:
+	if _debug_proving_ground_should_restore():
+		_restore_debug_proving_ground_world()
+	_stamp_next_manual_playtest_seed()
+	var result: NeighborhoodHQAttackResult = debug_launch_test_hq_assault()
+	if (
+		(result == null or not result.success)
+		and not StarterWorldService.debug_hq_assault_in_progress(game_state)
+	):
+		_restore_debug_proving_ground_world()
+		result = debug_launch_test_hq_assault()
+	_apply_pending_manual_playtest_seed()
+	print(
+		"GameplayRuntime: manual playtest serial=%d seed=%d"
+		% [manual_playtest_serial, _pending_or_session_seed()]
+	)
+	return result
+
+
+func _debug_proving_ground_should_restore() -> bool:
+	var mode: String = get_current_mode()
+	if (
+		mode == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		or mode == GameFlowController.MODE_TACTICAL_ACTIVE
+	):
+		return false
+	if mode == GameFlowController.MODE_TACTICAL_PENDING_HANDOFF:
+		return true
+	if StarterWorldService.debug_hq_assault_in_progress(game_state):
+		return false
+	return not StarterWorldService.debug_hq_assault_can_launch(game_state)
+
+
+func _restore_debug_proving_ground_world() -> bool:
+	# Debug proving-ground replay only. Rebuilds the starter fixture via
+	# StarterWorldService.create(). Does not change campaign resolution rules.
+	# Preserves the process-local manual playtest serial.
+	var preserved_serial: int = manual_playtest_serial
+	var preserved_pending_serial: int = _pending_manual_playtest_serial
+	var preserved_pending_seed: int = _pending_combat_seed_override
+	if tactical_deployment_controller != null:
+		tactical_deployment_controller.clear_selection()
+		tactical_deployment_controller.bind_session(null)
+	if game_flow_controller != null:
+		game_flow_controller.current_session = null
+	var restored: GameState = StarterWorldService.create()
+	if restored == null:
+		push_error("GameplayRuntime: debug proving-ground restore failed: StarterWorldService.create returned null.")
+		return false
+	var create_result: GameFlowResult = GameFlowController.create(restored)
+	if create_result == null or not create_result.success or create_result.controller == null:
+		push_error("GameplayRuntime: debug proving-ground restore failed: GameFlowController could not be created.")
+		return false
+	game_state = restored
+	game_flow_controller = create_result.controller
+	manual_playtest_serial = preserved_serial
+	_pending_manual_playtest_serial = preserved_pending_serial
+	_pending_combat_seed_override = preserved_pending_seed
+	_last_logged_mode = ""
+	_bind_campaign_map_view()
+	_sync_presentation_views()
+	_log_mode_if_changed()
+	print(
+		"GameplayRuntime: restored debug proving-ground world serial=%d turn=%d"
+		% [manual_playtest_serial, game_state.current_turn]
+	)
+	return true
+
+
+func _stamp_next_manual_playtest_seed() -> void:
+	manual_playtest_serial += 1
+	_pending_manual_playtest_serial = manual_playtest_serial
+	var battle_id: String = "battle_%s" % StarterWorldService.DEBUG_MISSION_ID
+	_pending_combat_seed_override = BattleCombatRandom.seed_from_string(
+		"%s#manual_%d" % [battle_id, manual_playtest_serial]
+	)
+
+
+func _clear_pending_manual_playtest_seed() -> void:
+	_pending_manual_playtest_serial = 0
+	_pending_combat_seed_override = 0
+
+
+func _apply_pending_manual_playtest_seed() -> void:
+	if _pending_manual_playtest_serial <= 0:
+		return
+	var session: CampaignBattleSession = get_current_session()
+	if session == null or session.battle_state == null:
+		return
+	if session.battle_state.battle_phase != "deployment":
+		return
+	session.has_combat_seed_override = true
+	session.combat_seed_override = _pending_combat_seed_override
+	session.manual_playtest_serial = _pending_manual_playtest_serial
+	session.battle_state.apply_combat_seed(_pending_combat_seed_override)
+	print(
+		"GameplayRuntime: applied playtest seed serial=%d seed=%d battle_id=%s"
+		% [
+			_pending_manual_playtest_serial,
+			_pending_combat_seed_override,
+			session.battle_state.battle_id,
+		]
+	)
+	_clear_pending_manual_playtest_seed()
+
+
+func _pending_or_session_seed() -> int:
+	if _pending_combat_seed_override != 0:
+		return _pending_combat_seed_override
+	var session: CampaignBattleSession = get_current_session()
+	if session != null and session.has_combat_seed_override:
+		return session.combat_seed_override
+	return 0
 
 
 func _log_debug_force_campaign_position(reason: String) -> void:

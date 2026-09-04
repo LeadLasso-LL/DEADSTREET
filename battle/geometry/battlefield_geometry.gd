@@ -4,14 +4,29 @@ extends RefCounted
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
+const BattleDeploymentArea := preload("res://battle/geometry/battle_deployment_area.gd")
+const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
+const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_region.gd")
+const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
+const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
 
+var authored_layout_id: String = ""
 var width: float = 0.0
 var height: float = 0.0
 var attacker_deployment_rect: Rect2 = Rect2()
 var defender_deployment_rect: Rect2 = Rect2()
+var attacker_deployment_area: BattleDeploymentArea = BattleDeploymentArea.new()
+var defender_deployment_area: BattleDeploymentArea = BattleDeploymentArea.new()
+var attacker_vehicle_placement_context: BattleVehiclePlacementContext = null
+var defender_vehicle_placement_context: BattleVehiclePlacementContext = null
 var obstacles: Dictionary[String, BattleObstacle] = {}
 var cover_objects: Dictionary[String, BattleCoverObject] = {}
 var cover_slots: Dictionary[String, BattleCoverSlot] = {}
+var surface_regions: Dictionary[String, BattleSurfaceRegion] = {}
+var presentation_markings: Array[BattlePresentationMarking] = []
+var content_revision: int = 0
+# Cheap cover-catalog stamp. Independent of occupancy and movement blockers.
+var cover_slot_revision: int = 0
 
 
 func is_valid() -> bool:
@@ -27,6 +42,20 @@ func is_valid() -> bool:
 		return false
 	if not _rect_is_within_battlefield(defender_deployment_rect):
 		return false
+	if attacker_deployment_area == null or not attacker_deployment_area.is_valid():
+		return false
+	if defender_deployment_area == null or not defender_deployment_area.is_valid():
+		return false
+	if attacker_deployment_area.has_pockets() and not _area_is_within_battlefield(attacker_deployment_area):
+		return false
+	if defender_deployment_area.has_pockets() and not _area_is_within_battlefield(defender_deployment_area):
+		return false
+	for surface_id: String in surface_regions:
+		var surface: BattleSurfaceRegion = surface_regions[surface_id]
+		if surface == null or surface.region_id != surface_id:
+			return false
+		if not surface.is_valid():
+			return false
 	for obstacle_id: String in obstacles:
 		var obstacle: BattleObstacle = obstacles[obstacle_id]
 		if obstacle == null or obstacle.obstacle_id != obstacle_id:
@@ -70,11 +99,110 @@ func contains_point(point: Vector2) -> bool:
 
 
 func attacker_deployment_contains(point: Vector2) -> bool:
+	if attacker_deployment_area != null and attacker_deployment_area.has_pockets():
+		return attacker_deployment_area.contains_point(point)
 	return rect_contains_point(attacker_deployment_rect, point)
 
 
 func defender_deployment_contains(point: Vector2) -> bool:
+	if defender_deployment_area != null and defender_deployment_area.has_pockets():
+		return defender_deployment_area.contains_point(point)
 	return rect_contains_point(defender_deployment_rect, point)
+
+
+func has_attacker_deployment_pockets() -> bool:
+	return attacker_deployment_area != null and attacker_deployment_area.has_pockets()
+
+
+func has_defender_deployment_pockets() -> bool:
+	return defender_deployment_area != null and defender_deployment_area.has_pockets()
+
+
+func attacker_deployment_centroid() -> Vector2:
+	if has_attacker_deployment_pockets():
+		return attacker_deployment_area.centroid()
+	return attacker_deployment_rect.get_center()
+
+
+func defender_deployment_centroid() -> Vector2:
+	if has_defender_deployment_pockets():
+		return defender_deployment_area.centroid()
+	return defender_deployment_rect.get_center()
+
+
+func deployment_sample_rects(for_attacker: bool) -> Array[Rect2]:
+	var area: BattleDeploymentArea = attacker_deployment_area
+	var fallback: Rect2 = attacker_deployment_rect
+	if not for_attacker:
+		area = defender_deployment_area
+		fallback = defender_deployment_rect
+	if area != null and area.has_pockets():
+		var pocket_rects: Array[Rect2] = area.pocket_bounding_rects()
+		if not pocket_rects.is_empty():
+			return pocket_rects
+	var rects: Array[Rect2] = []
+	if rect_is_usable(fallback):
+		rects.append(fallback)
+	return rects
+
+
+func add_surface_region(surface: BattleSurfaceRegion) -> bool:
+	if surface == null:
+		push_error("BattlefieldGeometry.add_surface_region: surface is null.")
+		return false
+	if surface.region_id.is_empty():
+		push_error("BattlefieldGeometry.add_surface_region: region id is empty.")
+		return false
+	if surface_regions.has(surface.region_id):
+		push_error(
+			"BattlefieldGeometry.add_surface_region: duplicate region id '%s'." % surface.region_id
+		)
+		return false
+	if not surface.is_valid():
+		push_error(
+			"BattlefieldGeometry.add_surface_region: region '%s' is invalid." % surface.region_id
+		)
+		return false
+	surface_regions[surface.region_id] = surface
+	return true
+
+
+func add_presentation_marking(marking: BattlePresentationMarking) -> bool:
+	if marking == null:
+		push_error("BattlefieldGeometry.add_presentation_marking: marking is null.")
+		return false
+	if not marking.is_valid():
+		push_error(
+			"BattlefieldGeometry.add_presentation_marking: marking '%s' is invalid." % marking.mark_id
+		)
+		return false
+	for existing: BattlePresentationMarking in presentation_markings:
+		if existing != null and existing.mark_id == marking.mark_id:
+			push_error(
+				"BattlefieldGeometry.add_presentation_marking: duplicate mark id '%s'." % marking.mark_id
+			)
+			return false
+	presentation_markings.append(marking)
+	return true
+
+
+func get_surface_region(region_id: String) -> BattleSurfaceRegion:
+	if surface_regions.has(region_id):
+		return surface_regions[region_id]
+	return null
+
+
+func get_sorted_surface_region_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for region_id: String in surface_regions:
+		ids.append(region_id)
+	ids.sort()
+	return ids
+
+
+func clear_deployment_pockets() -> void:
+	attacker_deployment_area = BattleDeploymentArea.new()
+	defender_deployment_area = BattleDeploymentArea.new()
 
 
 func get_movement_blocking_obstacle_id_at(point: Vector2) -> String:
@@ -105,6 +233,7 @@ func add_obstacle(obstacle: BattleObstacle) -> bool:
 		push_error("BattlefieldGeometry.add_obstacle: obstacle '%s' bounds are invalid." % obstacle.obstacle_id)
 		return false
 	obstacles[obstacle.obstacle_id] = obstacle
+	content_revision += 1
 	return true
 
 
@@ -229,6 +358,7 @@ func add_cover_slot(cover_slot: BattleCoverSlot) -> bool:
 		return false
 	cover_slots[cover_slot.cover_slot_id] = cover_slot
 	cover_object.slot_ids.append(cover_slot.cover_slot_id)
+	cover_slot_revision += 1
 	return true
 
 
@@ -268,6 +398,7 @@ func remove_cover_slot(cover_slot_id: String) -> bool:
 				remaining.append(owned_id)
 		cover_object.slot_ids = remaining
 	cover_slots.erase(cover_slot_id)
+	cover_slot_revision += 1
 	return true
 
 
@@ -319,3 +450,15 @@ func _rect_is_within_battlefield(rect: Rect2) -> bool:
 		and rect.position.x + rect.size.x <= width
 		and rect.position.y + rect.size.y <= height
 	)
+
+
+func _area_is_within_battlefield(area: BattleDeploymentArea) -> bool:
+	if area == null:
+		return false
+	for pocket: BattleDeploymentPocket in area.pockets:
+		if pocket == null:
+			return false
+		for point: Vector2 in pocket.polygon:
+			if not contains_point(point):
+				return false
+	return true

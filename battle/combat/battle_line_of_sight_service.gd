@@ -54,8 +54,8 @@ static func check_participant_to_participant(
 			source_participant_id,
 			target_participant_id
 		)
-	return _trace_segment(
-		battle_state.battlefield_geometry,
+	return _trace_segment_cached(
+		battle_state,
 		source.battle_position,
 		target.battle_position,
 		source_participant_id,
@@ -76,8 +76,8 @@ static func check_segment(
 			"invalid_segment",
 			"Battle line of sight failed: segment endpoints are invalid."
 		)
-	return _trace_segment(
-		battle_state.battlefield_geometry,
+	return _trace_segment_cached(
+		battle_state,
 		start_position,
 		end_position,
 		"",
@@ -122,6 +122,39 @@ static func _is_eligible_endpoint(participant: BattleParticipant) -> bool:
 	if not participant.has_battle_position:
 		return false
 	return BattlefieldGeometry.is_finite_point(participant.battle_position)
+
+
+static func _trace_segment_cached(
+	battle_state: BattleState,
+	start_position: Vector2,
+	end_position: Vector2,
+	source_participant_id: String,
+	target_participant_id: String
+) -> BattleLineOfSightResult:
+	var cached: Variant = battle_state.los_cache_lookup(start_position, end_position)
+	if cached is Dictionary:
+		var cached_row: Dictionary = cached
+		return BattleLineOfSightResult.succeeded(
+			bool(cached_row.get("has_los", false)),
+			source_participant_id,
+			target_participant_id,
+			str(cached_row.get("blocking_obstacle_id", ""))
+		)
+	var result: BattleLineOfSightResult = _trace_segment(
+		battle_state.battlefield_geometry,
+		start_position,
+		end_position,
+		source_participant_id,
+		target_participant_id
+	)
+	if result != null and result.success:
+		battle_state.los_cache_store(
+			start_position,
+			end_position,
+			result.has_line_of_sight,
+			result.blocking_obstacle_id
+		)
+	return result
 
 
 # Future elevation-aware visibility (source/target elevation_level, obstacle

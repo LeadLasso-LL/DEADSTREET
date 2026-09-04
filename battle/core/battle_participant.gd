@@ -37,6 +37,11 @@ var defend_position_anchor: Vector2 = Vector2.ZERO
 var navigation_source: String = ""
 var combat_move_mode: String = ""
 var combat_move_target_id: String = ""
+var combat_decision_key: String = ""
+var combat_no_role_cover: bool = false
+var combat_no_role_cover_key: String = ""
+var combat_no_role_cover_self_position: Vector2 = Vector2.ZERO
+var combat_no_role_cover_target_position: Vector2 = Vector2.ZERO
 var reserved_cover_slot_id: String = ""
 var occupied_cover_slot_id: String = ""
 var wound_reaction_remaining_seconds: float = 0.0
@@ -133,6 +138,7 @@ func set_navigation_path(
 	if p_source != NAVIGATION_SOURCE_COMBAT:
 		combat_move_mode = ""
 		combat_move_target_id = ""
+		combat_decision_key = ""
 	clear_movement_target_position()
 	return true
 
@@ -145,6 +151,7 @@ func clear_navigation_path() -> void:
 	navigation_source = NAVIGATION_SOURCE_NONE
 	combat_move_mode = ""
 	combat_move_target_id = ""
+	combat_decision_key = ""
 	clear_movement_target_position()
 
 

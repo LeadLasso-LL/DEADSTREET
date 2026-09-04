@@ -99,3 +99,61 @@ static func create() -> GameState:
 
 	DiplomacyService.declare_war(state, PLAYER_FACTION_ID, RIVAL_FACTION_ID)
 	return state
+
+
+# Debug proving-ground only. True while the starter HQ assault mission is still
+# traveling or awaiting resolution. Not a campaign consumption rule.
+static func debug_hq_assault_in_progress(game_state: GameState) -> bool:
+	if game_state == null or not game_state.has_mission(DEBUG_MISSION_ID):
+		return false
+	var mission: CampaignMission = game_state.get_mission(DEBUG_MISSION_ID)
+	if mission == null:
+		return false
+	return (
+		mission.mission_state == "traveling_outbound"
+		or mission.mission_state == "awaiting_resolution"
+	)
+
+
+# Debug proving-ground only. True when StarterWorldService.create() fixture
+# could accept a fresh debug HQ assault launch.
+static func debug_hq_assault_can_launch(game_state: GameState) -> bool:
+	if game_state == null:
+		return false
+	if game_state.has_mission(DEBUG_MISSION_ID):
+		return false
+	if game_state.has_traveling_force(DEBUG_FORCE_ID):
+		return false
+	if not game_state.has_soldier(SOLDIER_ID) or not game_state.has_soldier(RIVAL_SOLDIER_ID):
+		return false
+	if not game_state.has_vehicle(VEHICLE_ID):
+		return false
+	if not game_state.has_map_location(KEEP_ID) or not game_state.has_map_location(HQ_ID):
+		return false
+	if not game_state.has_neighborhood(HOOD_ID):
+		return false
+	var keep: Stronghold = game_state.get_map_location(KEEP_ID) as Stronghold
+	var hq: NeighborhoodHQ = game_state.get_map_location(HQ_ID) as NeighborhoodHQ
+	var hood: Neighborhood = game_state.get_neighborhood(HOOD_ID)
+	if keep == null or hq == null or hood == null:
+		return false
+	if keep.owner_faction_id != PLAYER_FACTION_ID:
+		return false
+	if hq.owner_faction_id != RIVAL_FACTION_ID:
+		return false
+	if hood.owner_faction_id != RIVAL_FACTION_ID:
+		return false
+	var soldier: Soldier = game_state.get_soldier(SOLDIER_ID)
+	var rival_soldier: Soldier = game_state.get_soldier(RIVAL_SOLDIER_ID)
+	var vehicle: Vehicle = game_state.get_vehicle(VEHICLE_ID)
+	if soldier == null or rival_soldier == null or vehicle == null:
+		return false
+	if soldier.home_stronghold_id != KEEP_ID or not keep.has_soldier_id(SOLDIER_ID):
+		return false
+	if vehicle.home_stronghold_id != KEEP_ID or not keep.has_vehicle_id(VEHICLE_ID):
+		return false
+	if rival_soldier.garrison_hq_id != HQ_ID or not hq.has_garrison_soldier_id(RIVAL_SOLDIER_ID):
+		return false
+	if not DiplomacyService.are_at_war(game_state, PLAYER_FACTION_ID, RIVAL_FACTION_ID):
+		return false
+	return true

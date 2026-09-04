@@ -9,6 +9,7 @@ extends RefCounted
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
+const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleDeploymentPlacementService := preload("res://battle/core/battle_deployment_placement_service.gd")
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
 const BattleDeploymentCommitService := preload("res://battle/core/battle_deployment_commit_service.gd")
@@ -18,6 +19,7 @@ const BattleDeploymentAiResult := preload("res://battle/ai/battle_deployment_ai_
 const BattleDeploymentPlanner := preload("res://battle/ai/battle_deployment_planner.gd")
 const BattleVehicleDeploymentService := preload("res://battle/vehicles/battle_vehicle_deployment_service.gd")
 const BattleVehicleDeploymentResult := preload("res://battle/vehicles/battle_vehicle_deployment_result.gd")
+const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
 
 const SUBROLE_ATTACKER_PLACEMENT := "attacker_placement"
 const SUBROLE_DEFENDER_PLACEMENT := "defender" + "_placement"
@@ -187,10 +189,15 @@ func _ensure_attacker_vehicles() -> void:
 		return
 	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
 		return
+	var context: BattleVehiclePlacementContext = null
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry != null:
+		context = geometry.attacker_vehicle_placement_context
 	var result: BattleVehicleDeploymentResult = BattleVehicleDeploymentService.apply_side(
 		battle_state,
 		battle_state.attacker_side_id,
-		battle_state.defender_side_id
+		battle_state.defender_side_id,
+		context
 	)
 	if result != null and result.success:
 		if result.placed_count > 0:

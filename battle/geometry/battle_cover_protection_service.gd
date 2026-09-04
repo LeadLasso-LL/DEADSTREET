@@ -16,8 +16,18 @@ static func query_protection(
 	defender: BattleParticipant,
 	attacker_position: Vector2
 ) -> BattleCoverProtectionResult:
-	var slot: BattleCoverSlot = _applicable_occupied_slot(geometry, defender)
-	if slot == null:
+	return query_slot_protection(_applicable_occupied_slot(geometry, defender), attacker_position)
+
+
+static func query_slot_protection(
+	slot: BattleCoverSlot,
+	attacker_position: Vector2
+) -> BattleCoverProtectionResult:
+	if slot == null or not slot.is_valid():
+		return BattleCoverProtectionResult.none_applicable()
+	if not BattlefieldGeometry.is_finite_point(slot.position):
+		return BattleCoverProtectionResult.none_applicable()
+	if not _facing_is_usable(slot.facing_direction):
 		return BattleCoverProtectionResult.none_applicable()
 	if not BattlefieldGeometry.is_finite_point(attacker_position):
 		return BattleCoverProtectionResult.none_applicable()

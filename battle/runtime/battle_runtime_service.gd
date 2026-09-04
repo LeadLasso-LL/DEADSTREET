@@ -27,6 +27,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRu
 			delta_seconds,
 			0.0
 		)
+	battle_state.clear_los_cache()
 	var elapsed_before: float = battle_state.elapsed_time_seconds
 	if battle_state.battle_phase != "active":
 		return BattleRuntimeResult.failed(

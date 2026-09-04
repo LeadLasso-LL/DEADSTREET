@@ -14,6 +14,8 @@ const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd
 const BattleCampaignSource := preload("res://battle/core/battle_campaign_source.gd")
 const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
+const BattleNavigationGraph := preload("res://battle/navigation/battle_navigation_graph.gd")
+const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
 
 const COMBAT_FEEDBACK_HISTORY_LIMIT := 12
 
@@ -39,6 +41,22 @@ var tactical_result: BattleVictoryResult = null
 var requires_deployment_commitments: bool = false
 var combat_feedback_events: Array[BattleAttackEvent] = []
 var combat_feedback_next_sequence: int = 1
+# Per-tick LOS cache. Cleared at the start of each BattleRuntimeService.advance()
+# and whenever authored geometry content_revision changes.
+# Key: Vector4(from.x, from.y, to.x, to.y) — exact float equality.
+# Value: Dictionary {has_los: bool, blocking_obstacle_id: String}.
+var _los_cache: Dictionary = {}
+var _los_cache_stamp: String = ""
+# Reachability cache. Independent of LOS. Invalidated when authored geometry
+# or vehicle bodies change, not on every simulation tick.
+# Key: Vector4(from.x, from.y, to.x, to.y) — exact float equality.
+# Value: true = path exists, false = no path.
+var _nav_cache: Dictionary = {}
+var _nav_cache_stamp: String = ""
+var _static_nav_graph: BattleNavigationGraph = null
+var _static_nav_build_count: int = 0
+# Cheap occupancy/reservation stamp. Bumped only when a slot becomes free.
+var cover_occupancy_revision: int = 0
 
 
 func _init(
@@ -58,6 +76,15 @@ func _init(
 	defender_side_id = p_defender_side_id
 	battle_phase = p_battle_phase
 	combat_rng_seed = BattleCombatRandom.seed_from_string(p_battle_id)
+	combat_random = BattleCombatRandom.new(combat_rng_seed)
+
+
+func apply_combat_seed(p_seed: int) -> void:
+	# Battle-local LCG replace. Does not change battle_id or campaign identity.
+	var seed_value: int = p_seed
+	if seed_value == 0:
+		seed_value = 1
+	combat_rng_seed = seed_value
 	combat_random = BattleCombatRandom.new(combat_rng_seed)
 
 
@@ -143,6 +170,113 @@ func has_combat_pressure_snapshot(participant_id: String) -> bool:
 	if participant_id.is_empty():
 		return false
 	return combat_pressure_snapshots.has(participant_id)
+
+
+func clear_los_cache() -> void:
+	_los_cache.clear()
+	_los_cache_stamp = _current_los_cache_stamp()
+
+
+func los_cache_lookup(from_pos: Vector2, to_pos: Vector2) -> Variant:
+	_sync_los_cache_stamp()
+	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
+	if _los_cache.has(key):
+		return _los_cache[key]
+	return null
+
+
+func los_cache_store(
+	from_pos: Vector2,
+	to_pos: Vector2,
+	has_los: bool,
+	blocking_obstacle_id: String = ""
+) -> void:
+	_sync_los_cache_stamp()
+	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
+	_los_cache[key] = {
+		"has_los": has_los,
+		"blocking_obstacle_id": blocking_obstacle_id,
+	}
+
+
+func _current_los_cache_stamp() -> String:
+	if battlefield_geometry == null:
+		return "null"
+	return "%s:%s" % [battlefield_geometry.get_instance_id(), battlefield_geometry.content_revision]
+
+
+func _sync_los_cache_stamp() -> void:
+	var stamp: String = _current_los_cache_stamp()
+	if _los_cache_stamp == stamp:
+		return
+	_los_cache.clear()
+	_los_cache_stamp = stamp
+
+
+func nav_cache_lookup(from_pos: Vector2, to_pos: Vector2) -> int:
+	_sync_nav_cache_stamp()
+	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
+	if _nav_cache.has(key):
+		return 1 if _nav_cache[key] else 0
+	return -1
+
+
+func nav_cache_store(from_pos: Vector2, to_pos: Vector2, reachable: bool) -> void:
+	_sync_nav_cache_stamp()
+	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
+	_nav_cache[key] = reachable
+
+
+func _current_nav_cache_stamp() -> String:
+	var parts: PackedStringArray = PackedStringArray()
+	parts.append(_current_los_cache_stamp())
+	var vehicle_ids: Array = vehicles.keys()
+	vehicle_ids.sort()
+	for vehicle_id: Variant in vehicle_ids:
+		var vehicle: BattleVehicle = vehicles[str(vehicle_id)]
+		if vehicle == null:
+			continue
+		if vehicle.has_battle_position:
+			parts.append(
+				"%s:%.5f:%.5f:%.5f:%.5f" % [
+					vehicle.battle_vehicle_id,
+					vehicle.battle_position.x,
+					vehicle.battle_position.y,
+					vehicle.facing_direction.x,
+					vehicle.facing_direction.y,
+				]
+			)
+		else:
+			parts.append("%s:undeployed" % vehicle.battle_vehicle_id)
+	return "|".join(parts)
+
+
+func _sync_nav_cache_stamp() -> void:
+	var stamp: String = _current_nav_cache_stamp()
+	if _nav_cache_stamp == stamp:
+		return
+	_nav_cache.clear()
+	_nav_cache_stamp = stamp
+
+
+func navigation_topology_stamp() -> String:
+	return _current_nav_cache_stamp()
+
+
+func get_static_nav_graph() -> BattleNavigationGraph:
+	return _static_nav_graph
+
+
+func set_static_nav_graph(graph: BattleNavigationGraph) -> void:
+	_static_nav_graph = graph
+
+
+func get_static_nav_build_count() -> int:
+	return _static_nav_build_count
+
+
+func increment_static_nav_build_count() -> void:
+	_static_nav_build_count += 1
 
 
 func add_tactical_force(force: BattleTacticalForce) -> bool:
@@ -579,6 +713,7 @@ func begin_battle() -> bool:
 	battle_phase = "active"
 	combat_pressure_snapshots.clear()
 	_initialize_defender_posture()
+	BattleNavigationService.prewarm(self)
 	return true
 
 
@@ -670,7 +805,13 @@ func _zone_is_spatially_ready(
 			return false
 		if participant.deployment_slot_id != zone.zone_id:
 			return false
-		if not BattlefieldGeometry.rect_contains_point(zone.deployment_rect, participant.battle_position):
+		if expected_side_id == attacker_side_id:
+			if not battlefield_geometry.attacker_deployment_contains(participant.battle_position):
+				return false
+		elif expected_side_id == defender_side_id:
+			if not battlefield_geometry.defender_deployment_contains(participant.battle_position):
+				return false
+		else:
 			return false
 	for vehicle_id: String in zone.deployed_vehicle_ids:
 		if not has_vehicle(vehicle_id):
@@ -691,6 +832,12 @@ func _zone_is_spatially_ready(
 			vehicle.facing_direction
 		) != "":
 			return false
-		if not BattlefieldGeometry.rect_contains_point(zone.deployment_rect, vehicle.battle_position):
+		if expected_side_id == attacker_side_id:
+			if not battlefield_geometry.attacker_deployment_contains(vehicle.battle_position):
+				return false
+		elif expected_side_id == defender_side_id:
+			if not battlefield_geometry.defender_deployment_contains(vehicle.battle_position):
+				return false
+		else:
 			return false
 	return true

@@ -263,7 +263,13 @@ static func get_placement_error(
 	var zone_rect: Rect2 = _side_deployment_rect(battle_state, vehicle.side_id)
 	if not BattlefieldGeometry.rect_is_usable(zone_rect):
 		return "unknown_side"
-	if not pose_contained_in_rect(position, facing, profile, zone_rect):
+	if not _pose_contained_in_side_deployment(
+		battle_state,
+		vehicle.side_id,
+		position,
+		facing,
+		profile
+	):
 		return "outside_deployment_zone"
 	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
@@ -360,6 +366,37 @@ static func _side_deployment_rect(battle_state: BattleState, side_id: String) ->
 	if side_id == battle_state.defender_side_id:
 		return battle_state.battlefield_geometry.defender_deployment_rect
 	return Rect2()
+
+
+static func _pose_contained_in_side_deployment(
+	battle_state: BattleState,
+	side_id: String,
+	position: Vector2,
+	facing: Vector2,
+	profile: BattleVehiclePhysicalProfile
+) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var use_pockets: bool = false
+	if side_id == battle_state.attacker_side_id:
+		use_pockets = geometry.has_attacker_deployment_pockets()
+	elif side_id == battle_state.defender_side_id:
+		use_pockets = geometry.has_defender_deployment_pockets()
+	else:
+		return false
+	if not use_pockets:
+		return pose_contained_in_rect(position, facing, profile, _side_deployment_rect(battle_state, side_id))
+	var corners: PackedVector2Array = corners_for_pose(position, facing, profile)
+	if corners.size() != 4:
+		return false
+	for corner: Vector2 in corners:
+		if side_id == battle_state.attacker_side_id:
+			if not geometry.attacker_deployment_contains(corner):
+				return false
+		elif not geometry.defender_deployment_contains(corner):
+			return false
+	return true
 
 
 static func _facing_is_usable(facing: Vector2) -> bool:

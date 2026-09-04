@@ -65,6 +65,15 @@ const RIFLE_COVER_REPLAN_DISTANCE := 4.0
 const SNIPER_COVER_SEEK_RADIUS := 28.0
 const SNIPER_COVER_REPLAN_DISTANCE := 6.0
 
+# Provisional local Defend Position radius. Not UI-exposed.
+# Defenders may reposition inside this radius to restore a firing position.
+const DEFEND_POSITION_RADIUS := 10.0
+const DEFEND_POSITION_SAMPLE_DIRECTIONS := 16
+const DEFEND_POSITION_SAMPLE_RADIUS_A := 2.5
+const DEFEND_POSITION_SAMPLE_RADIUS_B := 5.0
+const DEFEND_POSITION_SAMPLE_RADIUS_C := 7.5
+const DEFEND_POSITION_SAMPLE_RADIUS_D := 10.0
+
 
 static func get_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile:
 	var profile: BattleCombatBehaviorProfile = _make_profile(weapon_type_id)

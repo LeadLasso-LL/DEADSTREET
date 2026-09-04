@@ -4,8 +4,8 @@ extends RefCounted
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleSetupService := preload("res://battle/core/battle_setup_service.gd")
 const BattleSetupResult := preload("res://battle/core/battle_setup_result.gd")
-const BattlefieldGeometryService := preload("res://battle/geometry/battlefield_geometry_service.gd")
 const BattlefieldGeometryResult := preload("res://battle/geometry/battlefield_geometry_result.gd")
+const AuthoredBattlefieldService := preload("res://battle/geometry/authored_battlefield_service.gd")
 const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const CampaignBattleSessionResult := preload("res://battle/session/campaign_battle_session_result.gd")
@@ -93,10 +93,9 @@ static func create_for_mission(
 			mission.id
 		)
 
-	# Provisional default geometry is required for spatial readiness / begin_battle.
-	# Called before any deployment so no participants or vehicles are placed.
-	# This is not campaign-location battlefield generation.
-	var geometry_result: BattlefieldGeometryResult = BattlefieldGeometryService.initialize_default_geometry(
+	# Authored proving-ground geometry is required for the standard HQ assault
+	# spatial path. Legacy/raw rectangular fields still use initialize_default_geometry.
+	var geometry_result: BattlefieldGeometryResult = AuthoredBattlefieldService.initialize_proving_ground(
 		battle_state
 	)
 	if geometry_result == null or not geometry_result.success:

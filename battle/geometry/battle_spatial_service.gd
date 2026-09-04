@@ -164,6 +164,70 @@ static func is_translation_clear(
 	return result.final_position.is_equal_approx(destination)
 
 
+# Boolean clearance for visibility-graph edges. Same blockers as
+# is_translation_clear, without allocating a spatial result or searching
+# for the earliest hit. assume_legal_endpoints skips point-in-blocker
+# retests when both ends were already accepted as navigation nodes.
+static func is_open_segment(
+	battle_state: BattleState,
+	start_position: Vector2,
+	destination: Vector2,
+	assume_legal_endpoints: bool = false
+) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if not BattlefieldGeometry.is_finite_point(start_position):
+		return false
+	if not BattlefieldGeometry.is_finite_point(destination):
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if not geometry.is_valid():
+		return false
+	if not assume_legal_endpoints:
+		if not geometry.contains_point(start_position) or not geometry.contains_point(destination):
+			return false
+	if start_position.is_equal_approx(destination):
+		return true
+	if not assume_legal_endpoints:
+		if not _blocking_obstacle_at(geometry, start_position).is_empty():
+			return false
+		if not BattleVehicleBodyService.blocking_vehicle_id_at(battle_state, start_position).is_empty():
+			return false
+	var displacement: Vector2 = destination - start_position
+	if not BattlefieldGeometry.is_finite_point(displacement):
+		return false
+	for obstacle_id: String in geometry.obstacles:
+		var obstacle: BattleObstacle = geometry.obstacles[obstacle_id]
+		if obstacle == null or not obstacle.blocks_movement:
+			continue
+		if not obstacle.bounds_are_usable():
+			continue
+		var hit_t: float = _segment_rect_entry_t(start_position, displacement, obstacle.bounds)
+		if is_inf(hit_t):
+			continue
+		if hit_t < 0.0 or hit_t > 1.0:
+			continue
+		return false
+	for vehicle_id: String in battle_state.vehicles:
+		var vehicle: BattleVehicle = battle_state.vehicles[vehicle_id]
+		var hit_t: float = BattleVehicleBodyService.segment_entry_t(
+			vehicle,
+			start_position,
+			displacement
+		)
+		if is_inf(hit_t):
+			continue
+		if hit_t < 0.0 or hit_t > 1.0:
+			continue
+		return false
+	if not assume_legal_endpoints:
+		if not _blocking_obstacle_at(geometry, destination).is_empty():
+			return false
+		if not BattleVehicleBodyService.blocking_vehicle_id_at(battle_state, destination).is_empty():
+			return false
+	return true
+
+
 static func _resolve_legal_translation(
 	battle_state: BattleState,
 	geometry: BattlefieldGeometry,
