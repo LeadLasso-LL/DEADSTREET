@@ -16413,6 +16413,7 @@ static func run() -> Dictionary:
 	var combat_presentation_lull_ok: bool = _combat_presentation_lull_ok()
 	var combat_presentation_view_ok: bool = _combat_presentation_view_ok()
 	var combat_shot_presentation_ok: bool = _combat_shot_presentation_ok()
+	var debug_3v3_fixture_ok: bool = _debug_3v3_fixture_ok()
 	var tacticalclock_static_no_per_frame_ok: bool = _tacticalclock_static_no_per_frame_ok()
 	var tacticalclock_dynamic_redraw_ok: bool = _tacticalclock_dynamic_redraw_ok()
 
@@ -18475,6 +18476,7 @@ static func run() -> Dictionary:
 		"combat_presentation_lull_ok": combat_presentation_lull_ok,
 		"combat_presentation_view_ok": combat_presentation_view_ok,
 		"combat_shot_presentation_ok": combat_shot_presentation_ok,
+		"debug_3v3_fixture_ok": debug_3v3_fixture_ok,
 		"tacticalclock_static_no_per_frame_ok": tacticalclock_static_no_per_frame_ok,
 		"tacticalclock_dynamic_redraw_ok": tacticalclock_dynamic_redraw_ok,
 	}
@@ -52899,9 +52901,13 @@ static func _gameplayruntime_tiny_world_ok() -> bool:
 		and game_state.has_faction("rival_gang")
 		and game_state.neighborhoods.size() == 1
 		and game_state.map_locations.size() == 2
-		and game_state.soldiers.size() == 2
+		and game_state.soldiers.size() == 6
 		and game_state.has_soldier("player_soldier")
+		and game_state.has_soldier("player_soldier_smg")
+		and game_state.has_soldier("player_soldier_shotgun")
 		and game_state.has_soldier("rival_soldier")
+		and game_state.has_soldier("rival_soldier_rifle")
+		and game_state.has_soldier("rival_soldier_shotgun")
 		and game_state.get_soldier("player_soldier").home_stronghold_id == "player_keep"
 		and game_state.get_soldier("rival_soldier").faction_id == "rival_gang"
 		and game_state.vehicles.size() == 1
@@ -53787,9 +53793,13 @@ static func _campaignmap_tiny_world_ok() -> bool:
 		runtime,
 		game_state.factions.size() == 2
 		and game_state.map_locations.size() == 2
-		and game_state.soldiers.size() == 2
+		and game_state.soldiers.size() == 6
 		and game_state.has_soldier(StarterWorldService.SOLDIER_ID)
+		and game_state.has_soldier(StarterWorldService.SOLDIER_SMG_ID)
+		and game_state.has_soldier(StarterWorldService.SOLDIER_SHOTGUN_ID)
 		and game_state.has_soldier(StarterWorldService.RIVAL_SOLDIER_ID)
+		and game_state.has_soldier(StarterWorldService.RIVAL_RIFLE_ID)
+		and game_state.has_soldier(StarterWorldService.RIVAL_SHOTGUN_ID)
 		and game_state.vehicles.size() == 1
 		and game_state.neighborhoods.size() == 1
 		and game_state.road_graph.nodes.size() == 2
@@ -58417,8 +58427,10 @@ static func _hq_garrison_starter_ok() -> bool:
 	var hq: NeighborhoodHQ = starter.get_map_location(StarterWorldService.HQ_ID) as NeighborhoodHQ
 	var keep: Stronghold = starter.get_map_location(StarterWorldService.KEEP_ID) as Stronghold
 	var rival: Soldier = starter.get_soldier(StarterWorldService.RIVAL_SOLDIER_ID)
+	var rival_rifle: Soldier = starter.get_soldier(StarterWorldService.RIVAL_RIFLE_ID)
+	var rival_shotgun: Soldier = starter.get_soldier(StarterWorldService.RIVAL_SHOTGUN_ID)
 	var player: Soldier = starter.get_soldier(StarterWorldService.SOLDIER_ID)
-	if hq == null or keep == null or rival == null or player == null:
+	if hq == null or keep == null or rival == null or rival_rifle == null or rival_shotgun == null or player == null:
 		return false
 	var rival_strongholds := 0
 	for location_id: String in starter.map_locations:
@@ -58426,13 +58438,18 @@ static func _hq_garrison_starter_ok() -> bool:
 		if location is Stronghold and location.owner_faction_id == StarterWorldService.RIVAL_FACTION_ID:
 			rival_strongholds += 1
 	return (
-		starter.soldiers.size() == 2
+		starter.soldiers.size() == 6
 		and rival.faction_id == StarterWorldService.RIVAL_FACTION_ID
 		and rival.weapon_type_id == "pistol"
+		and rival_rifle.weapon_type_id == "rifle"
+		and rival_shotgun.weapon_type_id == "shotgun"
+		and player.weapon_type_id == "rifle"
 		and rival.garrison_hq_id == StarterWorldService.HQ_ID
 		and hq.has_garrison_soldier_id(StarterWorldService.RIVAL_SOLDIER_ID)
+		and hq.has_garrison_soldier_id(StarterWorldService.RIVAL_RIFLE_ID)
+		and hq.has_garrison_soldier_id(StarterWorldService.RIVAL_SHOTGUN_ID)
 		and _count_id(hq.garrison_soldier_ids, StarterWorldService.RIVAL_SOLDIER_ID) == 1
-		and hq.get_garrison_count() == 1
+		and hq.get_garrison_count() == 3
 		and not keep.has_soldier_id(StarterWorldService.RIVAL_SOLDIER_ID)
 		and not starter.is_soldier_in_active_traveling_force(StarterWorldService.RIVAL_SOLDIER_ID)
 		and rival.home_stronghold_id.is_empty()
@@ -60106,7 +60123,7 @@ static func _defender_ai_controller_resync_ok() -> bool:
 		session.battle_state.is_side_deployment_committed(session.battle_state.attacker_side_id)
 		and session.battle_state.is_side_deployment_committed(session.battle_state.defender_side_id)
 		and fresh.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
-		and fresh.last_defender_ai_posture == BattleDeploymentPlan.POSTURE_EVEN
+		and fresh.last_defender_ai_posture == BattleDeploymentPlan.POSTURE_WEAKER
 	)
 
 
@@ -60302,7 +60319,7 @@ static func _defender_ai_httb_ok() -> bool:
 		and battle_state.is_participant_deployed(StarterWorldService.RIVAL_SOLDIER_ID)
 		and battle_state.is_legal_deployment_position(battle_state.defender_side_id, defender.battle_position)
 		and controller.subrole == TacticalDeploymentController.SUBROLE_DEPLOYMENT_COMPLETE
-		and posture == BattleDeploymentPlan.POSTURE_EVEN
+		and posture == BattleDeploymentPlan.POSTURE_WEAKER
 		and runtime.game_state.get_soldier(StarterWorldService.RIVAL_SOLDIER_ID).garrison_hq_id
 			== StarterWorldService.HQ_ID
 		and runtime.game_state.get_mission(StarterWorldService.DEBUG_MISSION_ID).mission_state
@@ -60371,7 +60388,7 @@ static func _defender_ai_overlay_ok() -> bool:
 		and after.contains("defender AI deployed")
 		and after.contains("deployment complete")
 		and after.contains("battle waiting to start")
-		and after.contains("defender posture=even")
+		and after.contains("defender posture=weaker")
 		and after.contains("defender AI pos")
 	)
 
@@ -64261,6 +64278,291 @@ static func _combat_shot_presentation_ok() -> bool:
 		and not helper_src.contains("commit_shot")
 		and not helper_src.contains("add_child")
 		and not helper_src.contains("RigidBody")
+		and not view_src.contains("MISS_ENDPOINT_RADIUS")
+		and not view_src.contains("PROVISIONAL_MISS_ENDPOINT")
+		and view_src.contains("OUTCOME_GRAZE")
+		and view_src.contains("OUTCOME_HIT")
+		and view_src.contains("OUTCOME_WOUNDED")
+		and view_src.contains("_draw_dead_mark")
+		and view_src.contains("WND")
+		and is_equal_approx(TacticalShotPresentation.IMPACT_SECONDS, 0.14)
+	)
+
+
+static func _debug_3v3_fixture_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var controller: TacticalDeploymentController = _interactive_deploy_controller(runtime)
+	if battle_state == null or controller == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not _debug_3v3_roster_ok(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _debug_3v3_place_authored(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _debug_3v3_starts_legal(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var committed: BattleDeploymentCommitResult = controller.try_commit_attacker()
+	if committed == null or not committed.success:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalview_press(runtime, KEY_SPACE)
+	if runtime.get_current_mode() != "tactical_active" or battle_state.battle_phase != "active":
+		return _gameplayruntime_finish(runtime, false)
+	if not _debug_3v3_cover_reservation_unique(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	runtime._process(0.2)
+	if not _debug_3v3_autonomous_targets(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _debug_3v3_cover_claims_unique(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	var pistol: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	if pistol == null:
+		return _gameplayruntime_finish(runtime, false)
+	pistol.is_alive = false
+	runtime._process(0.2)
+	if runtime.get_current_mode() != "tactical_active" or battle_state.battle_phase != "active":
+		return _gameplayruntime_finish(runtime, false)
+	if BattleVictoryService.is_resolved(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _debug_3v3_autonomous_targets(battle_state):
+		return _gameplayruntime_finish(runtime, false)
+	if not _battlesession_kill_side(battle_state, battle_state.defender_side_id):
+		return _gameplayruntime_finish(runtime, false)
+	_validation_tick_while_active(runtime, 12)
+	var attacker_win: bool = (
+		runtime.get_current_mode() == "tactical_pending_handoff"
+		and BattleVictoryService.get_winning_side_id(battle_state) == battle_state.attacker_side_id
+	)
+	_gameplayruntime_finish(runtime, true)
+	if not attacker_win:
+		return false
+	var defender_runtime: GameplayRuntime = _gameplayruntime_boot()
+	if defender_runtime == null:
+		return false
+	if not _tacticalview_enter(defender_runtime):
+		return _gameplayruntime_finish(defender_runtime, false)
+	var defender_state: BattleState = defender_runtime.get_current_session().battle_state
+	var defender_controller: TacticalDeploymentController = _interactive_deploy_controller(defender_runtime)
+	if defender_state == null or defender_controller == null:
+		return _gameplayruntime_finish(defender_runtime, false)
+	if not _debug_3v3_place_authored(defender_state):
+		return _gameplayruntime_finish(defender_runtime, false)
+	var defender_commit: BattleDeploymentCommitResult = defender_controller.try_commit_attacker()
+	if defender_commit == null or not defender_commit.success:
+		return _gameplayruntime_finish(defender_runtime, false)
+	_tacticalview_press(defender_runtime, KEY_SPACE)
+	if defender_runtime.get_current_mode() != "tactical_active":
+		return _gameplayruntime_finish(defender_runtime, false)
+	if not _battlesession_kill_side(defender_state, defender_state.attacker_side_id):
+		return _gameplayruntime_finish(defender_runtime, false)
+	_validation_tick_while_active(defender_runtime, 12)
+	return _gameplayruntime_finish(
+		defender_runtime,
+		defender_runtime.get_current_mode() == "tactical_pending_handoff"
+		and BattleVictoryService.get_winning_side_id(defender_state) == defender_state.defender_side_id
+	)
+
+
+static func _debug_3v3_roster_ok(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var attacker_side: BattleSide = battle_state.get_side(battle_state.attacker_side_id)
+	var defender_side: BattleSide = battle_state.get_side(battle_state.defender_side_id)
+	if attacker_side == null or defender_side == null:
+		return false
+	if attacker_side.participant_ids.size() != 3 or defender_side.participant_ids.size() != 3:
+		return false
+	if battle_state.participants.size() != 6:
+		return false
+	var seen: Dictionary = {}
+	for participant_id: String in battle_state.participants:
+		if seen.has(participant_id):
+			return false
+		seen[participant_id] = true
+	var attacker_weapons: Dictionary = {}
+	var defender_weapons: Dictionary = {}
+	for participant_id: String in attacker_side.participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			return false
+		attacker_weapons[participant.weapon_type] = true
+	for participant_id: String in defender_side.participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			return false
+		defender_weapons[participant.weapon_type] = true
+	var rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var shotgun: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SHOTGUN_ID)
+	var pistol: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SOLDIER_ID)
+	var def_rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_RIFLE_ID)
+	var def_shotgun: BattleParticipant = battle_state.get_participant(StarterWorldService.RIVAL_SHOTGUN_ID)
+	if rifle == null or smg == null or shotgun == null or pistol == null or def_rifle == null or def_shotgun == null:
+		return false
+	var controller_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_deployment_controller.gd"
+	)
+	var starter_src: String = FileAccess.get_file_as_string("res://gameplay/starter_world_service.gd")
+	return (
+		rifle.weapon_type == "rifle"
+		and smg.weapon_type == "smg"
+		and shotgun.weapon_type == "shotgun"
+		and pistol.weapon_type == "pistol"
+		and def_rifle.weapon_type == "rifle"
+		and def_shotgun.weapon_type == "shotgun"
+		and attacker_weapons.has("rifle")
+		and attacker_weapons.has("smg")
+		and attacker_weapons.has("shotgun")
+		and defender_weapons.has("rifle")
+		and defender_weapons.has("pistol")
+		and defender_weapons.has("shotgun")
+		and not controller_src.contains("set_target_participant")
+		and not starter_src.contains("set_target_participant")
+		and not starter_src.contains("target_participant_id")
+	)
+
+
+static func _debug_3v3_place_authored(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	var ids: Array[String] = []
+	for attacker_id: String in StarterWorldService.debug_attacker_soldier_ids():
+		ids.append(attacker_id)
+	for defender_id: String in StarterWorldService.debug_defender_soldier_ids():
+		ids.append(defender_id)
+	for participant_id: String in ids:
+		if battle_state.is_participant_deployed(participant_id):
+			continue
+		var start: Vector2 = StarterWorldService.debug_start_position(participant_id)
+		if start == Vector2.INF:
+			return false
+		var placed: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+			battle_state,
+			participant_id,
+			start
+		)
+		if placed == null or not placed.success:
+			return false
+	return true
+
+
+static func _debug_3v3_starts_legal(battle_state: BattleState) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var positions: Array[Vector2] = []
+	var ids: Array[String] = []
+	for attacker_id: String in StarterWorldService.debug_attacker_soldier_ids():
+		ids.append(attacker_id)
+	for defender_id: String in StarterWorldService.debug_defender_soldier_ids():
+		ids.append(defender_id)
+	for participant_id: String in ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.has_battle_position:
+			return false
+		var position: Vector2 = participant.battle_position
+		if not geometry.contains_point(position):
+			return false
+		if not geometry.get_movement_blocking_obstacle_id_at(position).is_empty():
+			return false
+		if not battle_state.get_deployment_position_error(participant.side_id, position).is_empty():
+			return false
+		for slot_id: String in geometry.get_sorted_cover_slot_ids():
+			var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+			if slot != null and position.distance_to(slot.position) <= 0.5:
+				return false
+		positions.append(position)
+	for i in positions.size():
+		if i < 3 and positions[i].x >= 20.0:
+			return false
+		if i >= 3 and positions[i].x <= 80.0:
+			return false
+		for j in range(i + 1, positions.size()):
+			if positions[i].distance_to(positions[j]) < 3.0:
+				return false
+	return true
+
+
+static func _debug_3v3_autonomous_targets(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.is_alive:
+			continue
+		if not participant.has_target_participant:
+			return false
+		var target: BattleParticipant = battle_state.get_participant(participant.target_participant_id)
+		if target == null or not target.is_alive:
+			return false
+		if target.side_id == participant.side_id:
+			return false
+	return true
+
+
+static func _debug_3v3_cover_claims_unique(battle_state: BattleState) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var occupied_owners: Dictionary = {}
+	var reserved_owners: Dictionary = {}
+	for slot_id: String in geometry.get_sorted_cover_slot_ids():
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null:
+			return false
+		if not slot.occupied_by_participant_id.is_empty():
+			if occupied_owners.has(slot.occupied_by_participant_id):
+				return false
+			occupied_owners[slot.occupied_by_participant_id] = slot_id
+		if not slot.reserved_by_participant_id.is_empty():
+			if reserved_owners.has(slot.reserved_by_participant_id):
+				return false
+			reserved_owners[slot.reserved_by_participant_id] = slot_id
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		if not participant.occupied_cover_slot_id.is_empty():
+			var occ: BattleCoverSlot = geometry.get_cover_slot(participant.occupied_cover_slot_id)
+			if occ == null or occ.occupied_by_participant_id != participant_id:
+				return false
+		if not participant.reserved_cover_slot_id.is_empty():
+			var reserved: BattleCoverSlot = geometry.get_cover_slot(participant.reserved_cover_slot_id)
+			if reserved == null or reserved.reserved_by_participant_id != participant_id:
+				return false
+	return true
+
+
+static func _debug_3v3_cover_reservation_unique(battle_state: BattleState) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var empty_ids: Array[String] = []
+	for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+		if slot != null and slot.is_available():
+			empty_ids.append(slot_id)
+	if empty_ids.size() < 2:
+		return _debug_3v3_cover_claims_unique(battle_state)
+	var attackers: Array[String] = StarterWorldService.debug_attacker_soldier_ids()
+	var first: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, attackers[0], empty_ids[0])
+	var second: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, attackers[1], empty_ids[1])
+	var duplicate: BattleCoverResult = BattleCoverService.reserve_slot(battle_state, attackers[2], empty_ids[0])
+	var unique: bool = _debug_3v3_cover_claims_unique(battle_state)
+	BattleCoverService.release_all_for_participant(battle_state, attackers[0])
+	BattleCoverService.release_all_for_participant(battle_state, attackers[1])
+	BattleCoverService.release_all_for_participant(battle_state, attackers[2])
+	return (
+		first != null
+		and first.success
+		and second != null
+		and second.success
+		and duplicate != null
+		and not duplicate.success
+		and duplicate.error_code == "cover_slot_reserved"
+		and unique
 	)
 
 

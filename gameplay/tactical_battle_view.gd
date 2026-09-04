@@ -50,7 +50,6 @@ const VEHICLE_OUTLINE_WIDTH := 3.5
 const VEHICLE_FRONT_MARK := 6.0
 const SHOT_FEEDBACK_SECONDS := 0.45
 const IMPACT_RADIUS := 1.6
-const MISS_ENDPOINT_RADIUS := 1.3
 const COMPACT_STATE_FONT_SIZE := 8
 
 # Provisional visualization tints. Not Dead Street art direction or faction language.
@@ -139,7 +138,6 @@ const PROVISIONAL_MUZZLE := Color(1.0, 0.96, 0.72, 1.0)
 const PROVISIONAL_MUZZLE_CORE := Color(1.0, 1.0, 0.94, 1.0)
 const PROVISIONAL_PROJECTILE := Color(0.96, 0.96, 0.94, 1.0)
 const PROVISIONAL_PROJECTILE_TAIL := Color(0.88, 0.88, 0.86, 1.0)
-const PROVISIONAL_MISS_ENDPOINT := Color(0.76, 0.74, 0.68, 1.0)
 const PROVISIONAL_GRAZE_IMPACT := Color(0.95, 0.82, 0.38, 1.0)
 const PROVISIONAL_HIT_IMPACT := Color(0.95, 0.58, 0.22, 1.0)
 const PROVISIONAL_WOUND_IMPACT := Color(0.92, 0.38, 0.22, 1.0)
@@ -1794,8 +1792,6 @@ func _draw_shot_impact(
 	var endpoint: Vector2 = segment["endpoint"] as Vector2
 	if show_spark:
 		match event.outcome:
-			BattleAttackProfile.OUTCOME_MISS:
-				_paint_canvas().draw_circle(endpoint, MISS_ENDPOINT_RADIUS, PROVISIONAL_MISS_ENDPOINT, false, 0.9, true)
 			BattleAttackProfile.OUTCOME_GRAZE:
 				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 1.2, true)
 			BattleAttackProfile.OUTCOME_HIT:
@@ -1803,7 +1799,7 @@ func _draw_shot_impact(
 			BattleAttackProfile.OUTCOME_WOUNDED:
 				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS + 0.4, PROVISIONAL_WOUND_IMPACT, false, 1.4, true)
 			BattleAttackProfile.OUTCOME_KILLED:
-				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS + 0.3, PROVISIONAL_KILL_MARK, false, 1.3, true)
+				pass
 			_:
 				pass
 	if not show_label:

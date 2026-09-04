@@ -20,6 +20,7 @@ const BattleDeploymentPlanner := preload("res://battle/ai/battle_deployment_plan
 const BattleVehicleDeploymentService := preload("res://battle/vehicles/battle_vehicle_deployment_service.gd")
 const BattleVehicleDeploymentResult := preload("res://battle/vehicles/battle_vehicle_deployment_result.gd")
 const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
+const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
 
 const SUBROLE_ATTACKER_PLACEMENT := "attacker_placement"
 const SUBROLE_DEFENDER_PLACEMENT := "defender" + "_placement"
@@ -147,6 +148,7 @@ func try_commit_attacker() -> BattleDeploymentCommitResult:
 			"Deployment commit failed: controller subrole is '%s', not attacker placement." % subrole,
 			attacker_side_id
 		)
+	_fill_unplaced_debug_attackers()
 	var result: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
 		battle_state,
 		attacker_side_id
@@ -244,6 +246,24 @@ func _invoke_standard_assault_defender_ai() -> void:
 		return
 	if battle_state.is_side_deployment_committed(battle_state.defender_side_id):
 		return
+	if _side_living_soldiers_all_placed(battle_state, battle_state.defender_side_id):
+		var commit: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
+			battle_state,
+			battle_state.defender_side_id
+		)
+		if commit != null and commit.success:
+			last_defender_ai_error = ""
+			last_defender_ai_posture = BattleDeploymentPlanner.relative_posture(
+				battle_state,
+				battle_state.defender_side_id,
+				battle_state.attacker_side_id
+			)
+			status_text = "attacker committed; defender AI deployed; defender committed; deployment complete"
+			print(
+				"TacticalDeploymentController: defender already placed; committed side %s posture=%s"
+				% [battle_state.defender_side_id, last_defender_ai_posture]
+			)
+			return
 	var ai_result: BattleDeploymentAiResult = BattleDeploymentAiService.apply_and_commit_side(
 		battle_state,
 		battle_state.defender_side_id,
@@ -273,6 +293,52 @@ func _invoke_standard_assault_defender_ai() -> void:
 		last_defender_ai_posture = ai_result.plan.posture
 	status_text = "attacker committed; defender AI failed (%s)" % error_code
 	print("TacticalDeploymentController: defender AI failed code=%s" % error_code)
+
+
+func _fill_unplaced_debug_attackers() -> void:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return
+	if battle_state.mission_id != StarterWorldService.DEBUG_MISSION_ID:
+		return
+	if battle_state.battle_phase != "deployment":
+		return
+	var placed_any: bool = false
+	var unplaced: Array[String] = []
+	for participant_id: String in StarterWorldService.debug_attacker_soldier_ids():
+		if not battle_state.has_participant(participant_id):
+			continue
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.is_alive:
+			continue
+		if battle_state.is_participant_deployed(participant_id) or participant.has_battle_position:
+			placed_any = true
+		else:
+			unplaced.append(participant_id)
+	if not placed_any or unplaced.is_empty():
+		return
+	for participant_id: String in unplaced:
+		var start: Vector2 = StarterWorldService.debug_start_position(participant_id)
+		if start == Vector2.INF:
+			continue
+		BattleDeploymentPlacementService.place_participant(battle_state, participant_id, start)
+
+
+func _side_living_soldiers_all_placed(battle_state: BattleState, side_id: String) -> bool:
+	if battle_state == null or side_id.is_empty() or not battle_state.has_side(side_id):
+		return false
+	var side: BattleSide = battle_state.get_side(side_id)
+	if side == null:
+		return false
+	var living: int = 0
+	for participant_id: String in side.participant_ids:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.is_alive:
+			continue
+		living += 1
+		if not battle_state.is_participant_deployed(participant_id) or not participant.has_battle_position:
+			return false
+	return living > 0
 
 
 func _is_defender_participant(battle_state: BattleState, participant_id: String) -> bool:

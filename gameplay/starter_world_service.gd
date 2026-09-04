@@ -14,7 +14,11 @@ const NODE_KEEP_ID := "node_keep"
 const NODE_HQ_ID := "node_hq"
 const SEGMENT_ID := "seg_keep_hq"
 const SOLDIER_ID := "player_soldier"
+const SOLDIER_SMG_ID := "player_soldier_smg"
+const SOLDIER_SHOTGUN_ID := "player_soldier_shotgun"
 const RIVAL_SOLDIER_ID := "rival_soldier"
+const RIVAL_RIFLE_ID := "rival_soldier_rifle"
+const RIVAL_SHOTGUN_ID := "rival_soldier_shotgun"
 const VEHICLE_ID := "player_vehicle"
 const DEBUG_MISSION_ID := "debug_hq_assault"
 const DEBUG_FORCE_ID := "debug_hq_force"
@@ -25,6 +29,14 @@ const KEEP_MAP_POSITION := Vector2(0.0, 0.0)
 const HQ_MAP_POSITION := Vector2(12.0, 0.0)
 const SEGMENT_DISTANCE := 12.0
 const VEHICLE_MOVEMENT_PER_TURN := 5.0
+# Debug 3v3 starts. Legal west/east pocket points, not cover slots.
+const ATTACKER_RIFLE_START := Vector2(7.25, 31.5)
+const ATTACKER_SMG_START := Vector2(14.2, 21.8)
+const ATTACKER_SHOTGUN_START := Vector2(13.5, 38.6)
+const DEFENDER_PISTOL_START := Vector2(87.2, 22.0)
+const DEFENDER_RIFLE_START := Vector2(94.0, 31.5)
+const DEFENDER_SHOTGUN_START := Vector2(85.5, 34.8)
+const DEBUG_CAR_PASSENGER_CAPACITY := 4
 
 
 static func create() -> GameState:
@@ -76,29 +88,61 @@ static func create() -> GameState:
 	graph.add_node(RoadNode.new(NODE_HQ_ID, HQ_MAP_POSITION))
 	graph.add_segment(RoadSegment.new(SEGMENT_ID, NODE_KEEP_ID, NODE_HQ_ID, SEGMENT_DISTANCE))
 
-	var soldier: Soldier = Soldier.new(SOLDIER_ID, PLAYER_FACTION_ID, "", "pistol", 1.0, 0.0)
 	var vehicle: Vehicle = Vehicle.new(
 		VEHICLE_ID,
 		PLAYER_FACTION_ID,
 		"car",
 		"",
-		2,
+		DEBUG_CAR_PASSENGER_CAPACITY,
 		VEHICLE_MOVEMENT_PER_TURN,
 		0.0
 	)
-	state.add_soldier(soldier)
 	state.add_vehicle(vehicle)
-	state.assign_soldier_to_stronghold(SOLDIER_ID, KEEP_ID)
 	state.assign_vehicle_to_stronghold(VEHICLE_ID, KEEP_ID)
 
-	# Provisional one-soldier rival HQ garrison so starter HQ assaults have a real defender.
-	var rival_soldier: Soldier = Soldier.new(RIVAL_SOLDIER_ID, RIVAL_FACTION_ID, "", "pistol", 1.0, 0.0)
-	state.add_soldier(rival_soldier)
-	if not state.assign_soldier_to_neighborhood_hq(RIVAL_SOLDIER_ID, HQ_ID):
-		push_error("StarterWorldService.create: failed to assign rival soldier '%s' to NeighborhoodHQ '%s'." % [RIVAL_SOLDIER_ID, HQ_ID])
+	_add_keep_soldier(state, SOLDIER_ID, "rifle", 1.90, 35.0)
+	_add_keep_soldier(state, SOLDIER_SMG_ID, "smg", 1.55, 30.0)
+	_add_keep_soldier(state, SOLDIER_SHOTGUN_ID, "shotgun", 1.25, 25.0)
+	_add_hq_soldier(state, RIVAL_SOLDIER_ID, "pistol", 1.00, 20.0)
+	_add_hq_soldier(state, RIVAL_RIFLE_ID, "rifle", 1.90, 35.0)
+	_add_hq_soldier(state, RIVAL_SHOTGUN_ID, "shotgun", 1.25, 25.0)
 
 	DiplomacyService.declare_war(state, PLAYER_FACTION_ID, RIVAL_FACTION_ID)
 	return state
+
+
+static func debug_attacker_soldier_ids() -> Array[String]:
+	var ids: Array[String] = []
+	ids.append(SOLDIER_ID)
+	ids.append(SOLDIER_SMG_ID)
+	ids.append(SOLDIER_SHOTGUN_ID)
+	return ids
+
+
+static func debug_defender_soldier_ids() -> Array[String]:
+	var ids: Array[String] = []
+	ids.append(RIVAL_SOLDIER_ID)
+	ids.append(RIVAL_RIFLE_ID)
+	ids.append(RIVAL_SHOTGUN_ID)
+	return ids
+
+
+static func debug_start_position(participant_id: String) -> Vector2:
+	match participant_id:
+		SOLDIER_ID:
+			return ATTACKER_RIFLE_START
+		SOLDIER_SMG_ID:
+			return ATTACKER_SMG_START
+		SOLDIER_SHOTGUN_ID:
+			return ATTACKER_SHOTGUN_START
+		RIVAL_SOLDIER_ID:
+			return DEFENDER_PISTOL_START
+		RIVAL_RIFLE_ID:
+			return DEFENDER_RIFLE_START
+		RIVAL_SHOTGUN_ID:
+			return DEFENDER_SHOTGUN_START
+		_:
+			return Vector2.INF
 
 
 # Debug proving-ground only. True while the starter HQ assault mission is still
@@ -124,8 +168,6 @@ static func debug_hq_assault_can_launch(game_state: GameState) -> bool:
 		return false
 	if game_state.has_traveling_force(DEBUG_FORCE_ID):
 		return false
-	if not game_state.has_soldier(SOLDIER_ID) or not game_state.has_soldier(RIVAL_SOLDIER_ID):
-		return false
 	if not game_state.has_vehicle(VEHICLE_ID):
 		return false
 	if not game_state.has_map_location(KEEP_ID) or not game_state.has_map_location(HQ_ID):
@@ -143,17 +185,87 @@ static func debug_hq_assault_can_launch(game_state: GameState) -> bool:
 		return false
 	if hood.owner_faction_id != RIVAL_FACTION_ID:
 		return false
-	var soldier: Soldier = game_state.get_soldier(SOLDIER_ID)
-	var rival_soldier: Soldier = game_state.get_soldier(RIVAL_SOLDIER_ID)
 	var vehicle: Vehicle = game_state.get_vehicle(VEHICLE_ID)
-	if soldier == null or rival_soldier == null or vehicle == null:
-		return false
-	if soldier.home_stronghold_id != KEEP_ID or not keep.has_soldier_id(SOLDIER_ID):
+	if vehicle == null:
 		return false
 	if vehicle.home_stronghold_id != KEEP_ID or not keep.has_vehicle_id(VEHICLE_ID):
 		return false
-	if rival_soldier.garrison_hq_id != HQ_ID or not hq.has_garrison_soldier_id(RIVAL_SOLDIER_ID):
+	if vehicle.passenger_capacity < debug_attacker_soldier_ids().size():
 		return false
+	for attacker_id: String in debug_attacker_soldier_ids():
+		if not _debug_keep_soldier_ready(game_state, keep, attacker_id):
+			return false
+	for defender_id: String in debug_defender_soldier_ids():
+		if not _debug_hq_soldier_ready(game_state, hq, defender_id):
+			return false
 	if not DiplomacyService.are_at_war(game_state, PLAYER_FACTION_ID, RIVAL_FACTION_ID):
 		return false
 	return true
+
+
+static func _add_keep_soldier(
+	state: GameState,
+	soldier_id: String,
+	weapon_type_id: String,
+	strategic_strength: float,
+	upkeep_per_turn: float
+) -> void:
+	var soldier: Soldier = Soldier.new(
+		soldier_id,
+		PLAYER_FACTION_ID,
+		"",
+		weapon_type_id,
+		strategic_strength,
+		upkeep_per_turn
+	)
+	state.add_soldier(soldier)
+	state.assign_soldier_to_stronghold(soldier_id, KEEP_ID)
+
+
+static func _add_hq_soldier(
+	state: GameState,
+	soldier_id: String,
+	weapon_type_id: String,
+	strategic_strength: float,
+	upkeep_per_turn: float
+) -> void:
+	var soldier: Soldier = Soldier.new(
+		soldier_id,
+		RIVAL_FACTION_ID,
+		"",
+		weapon_type_id,
+		strategic_strength,
+		upkeep_per_turn
+	)
+	state.add_soldier(soldier)
+	if not state.assign_soldier_to_neighborhood_hq(soldier_id, HQ_ID):
+		push_error(
+			"StarterWorldService.create: failed to assign rival soldier '%s' to NeighborhoodHQ '%s'."
+			% [soldier_id, HQ_ID]
+		)
+
+
+static func _debug_keep_soldier_ready(
+	game_state: GameState,
+	keep: Stronghold,
+	soldier_id: String
+) -> bool:
+	if not game_state.has_soldier(soldier_id):
+		return false
+	var soldier: Soldier = game_state.get_soldier(soldier_id)
+	if soldier == null:
+		return false
+	return soldier.home_stronghold_id == KEEP_ID and keep.has_soldier_id(soldier_id)
+
+
+static func _debug_hq_soldier_ready(
+	game_state: GameState,
+	hq: NeighborhoodHQ,
+	soldier_id: String
+) -> bool:
+	if not game_state.has_soldier(soldier_id):
+		return false
+	var soldier: Soldier = game_state.get_soldier(soldier_id)
+	if soldier == null:
+		return false
+	return soldier.garrison_hq_id == HQ_ID and hq.has_garrison_soldier_id(soldier_id)

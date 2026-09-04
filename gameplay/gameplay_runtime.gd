@@ -321,8 +321,7 @@ func debug_launch_test_hq_assault() -> NeighborhoodHQAttackResult:
 			"null_game_state",
 			"GameplayRuntime debug HQ assault failed: game_state is null."
 		)
-	var soldier_ids: Array[String] = []
-	soldier_ids.append(StarterWorldService.SOLDIER_ID)
+	var soldier_ids: Array[String] = StarterWorldService.debug_attacker_soldier_ids()
 	var vehicle_ids: Array[String] = []
 	vehicle_ids.append(StarterWorldService.VEHICLE_ID)
 	var deployment: DeploymentRequest = DeploymentRequest.new(
