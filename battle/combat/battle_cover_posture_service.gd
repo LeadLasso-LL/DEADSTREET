@@ -104,7 +104,7 @@ static func update_for_combat(
 ) -> void:
 	if participant == null:
 		return
-	if not participant.is_alive or not _has_valid_occupancy(battle_state, participant):
+	if not participant.is_alive or not BattleCoverService.occupancy_is_valid(battle_state, participant):
 		clear(participant)
 		return
 	ensure_occupied_posture(participant)
@@ -170,19 +170,3 @@ static func _advance_timers(participant: BattleParticipant, delta_seconds: float
 			enter_tucked(participant)
 		_:
 			enter_tucked(participant)
-
-
-static func _has_valid_occupancy(
-	battle_state: BattleState,
-	participant: BattleParticipant
-) -> bool:
-	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
-		return false
-	if participant.occupied_cover_slot_id.is_empty():
-		return false
-	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
-		participant.occupied_cover_slot_id
-	)
-	if slot == null or not slot.is_valid():
-		return false
-	return slot.occupied_by_participant_id == participant.participant_id

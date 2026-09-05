@@ -7,15 +7,19 @@ const BattleCoverService := preload("res://battle/geometry/battle_cover_service.
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
 const BattleCombatConsequenceResult := preload("res://battle/combat/battle_combat_consequence_result.gd")
 
-# Hidden tactical vitality threshold. Not a player-facing HP value.
-# vitality > 0.35 → Healthy; vitality <= 0.35 and > 0 → Wounded; vitality == 0 → Dead.
-const WOUNDED_VITALITY_THRESHOLD := 0.35
+# Hidden tactical vitality. Not a player-facing HP value.
+# Survival-first v1 provisional baseline is 1.5× the prior 1.0 max.
+# Wound remains at 35% of baseline remaining: 0.525 of 1.5.
+# vitality > 0.525 → Healthy; vitality <= 0.525 and > 0 → Wounded; vitality == 0 → Dead.
+const BASELINE_VITALITY := 1.5
+const WOUNDED_VITALITY_FRACTION := 0.35
+const WOUNDED_VITALITY_THRESHOLD := BASELINE_VITALITY * WOUNDED_VITALITY_FRACTION
 
 
 static func clamp_vitality(value: float) -> float:
 	if not is_finite(value):
 		return 0.0
-	return clampf(value, 0.0, 1.0)
+	return clampf(value, 0.0, BASELINE_VITALITY)
 
 
 static func is_dead_vitality(vitality: float) -> bool:

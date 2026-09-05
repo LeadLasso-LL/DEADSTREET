@@ -53,6 +53,16 @@ static func place_participant(
 			position
 		)
 	if battle_state.is_participant_deployed(participant_id) or participant.has_battle_position:
+		if (
+			battle_state.is_participant_deployed(participant_id)
+			and participant.has_battle_position
+		):
+			return _reposition_deployed_participant(
+				battle_state,
+				participant,
+				participant_id,
+				position
+			)
 		return BattleDeploymentPlacementResult.failed(
 			"already_deployed",
 			"Deployment placement failed: participant '%s' is already deployed." % participant_id,
@@ -96,6 +106,32 @@ static func place_participant(
 			participant_id,
 			position
 		)
+	participant.has_battle_position = true
+	participant.battle_position = position
+	return BattleDeploymentPlacementResult.succeeded(participant_id, position)
+
+
+static func _reposition_deployed_participant(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	participant_id: String,
+	position: Vector2
+) -> BattleDeploymentPlacementResult:
+	if battle_state.is_side_deployment_committed(participant.side_id):
+		return BattleDeploymentPlacementResult.failed(
+			"side_deployment_committed",
+			"Deployment placement failed: side '%s' deployment is already committed." % participant.side_id,
+			participant_id,
+			position
+		)
+	var geometry_error: BattleDeploymentPlacementResult = _validate_position(
+		battle_state,
+		participant.side_id,
+		position,
+		participant_id
+	)
+	if geometry_error != null:
+		return geometry_error
 	participant.has_battle_position = true
 	participant.battle_position = position
 	return BattleDeploymentPlacementResult.succeeded(participant_id, position)

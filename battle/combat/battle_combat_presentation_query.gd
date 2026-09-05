@@ -14,6 +14,7 @@ const STATE_DEAD := "DEAD"
 const STATE_WND := "WND"
 const STATE_MOV := "MOV"
 const STATE_COVER := "COVER"
+const STATE_HOLD := "HOLD"
 const STATE_RLD := "RLD"
 const STATE_NO_LOS := "NO LOS"
 const STATE_RANGE := "RANGE"
@@ -39,6 +40,8 @@ static func compact_state(battle_state: BattleState, participant: BattleParticip
 		return STATE_MOV
 	if _is_reloading(participant):
 		return STATE_RLD
+	if participant.has_occupied_cover_slot():
+		return STATE_HOLD
 	var rejection: String = _fire_rejection(battle_state, participant)
 	if rejection == "line_of_sight_blocked":
 		return STATE_NO_LOS

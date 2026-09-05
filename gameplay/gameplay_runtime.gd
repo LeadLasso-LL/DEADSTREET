@@ -183,6 +183,10 @@ func _route_tactical_deployment_input(event: InputEvent) -> void:
 	if kind == "vehicle":
 		tactical_deployment_controller.notify_vehicle_not_available(hit_id)
 		return
+	var placed_id: String = tactical_view.hit_test_placed_attacker_soldier(local_pos)
+	if not placed_id.is_empty():
+		tactical_deployment_controller.select_participant(placed_id)
+		return
 	var tactical_pos: Vector2 = tactical_view.screen_to_tactical_position(mouse.position)
 	tactical_deployment_controller.try_place_selected(tactical_pos)
 

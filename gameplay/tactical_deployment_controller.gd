@@ -63,7 +63,7 @@ func select_participant(participant_id: String) -> bool:
 	if not _is_attacker_soldier_selectable(battle_state, participant_id):
 		if _is_defender_participant(battle_state, participant_id):
 			status_text = "defender deployment not available"
-		elif battle_state.has_participant(participant_id) and battle_state.is_participant_deployed(participant_id):
+		elif battle_state.has_participant(participant_id) and battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
 			status_text = ""
 		else:
 			status_text = ""
@@ -365,9 +365,5 @@ func _is_attacker_soldier_selectable(battle_state: BattleState, participant_id: 
 	if participant.side_id != battle_state.attacker_side_id:
 		return false
 	if not participant.is_alive:
-		return false
-	if battle_state.is_participant_deployed(participant_id):
-		return false
-	if participant.has_battle_position:
 		return false
 	return true

@@ -41,6 +41,8 @@ const SOLDIER_GROUND_RADIUS := 6.2
 const SOLDIER_SELECTION_RADIUS := 13.0
 const SOLDIER_HEAD_RADIUS := 2.7
 const SOLDIER_HAND_FORWARD := 3.6
+# Presentation-only body scale. Does not change collision, nav, or hit model.
+const SOLDIER_VISUAL_SCALE := 1.12
 const COVER_SLOT_RADIUS := 3.5
 const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
@@ -220,6 +222,39 @@ func hit_test_roster(local_position: Vector2) -> Dictionary:
 			hit["id"] = str(row.get("id", ""))
 			return hit
 	return hit
+
+
+func hit_test_placed_attacker_soldier(local_position: Vector2) -> String:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null or battle_state.battle_phase != "deployment":
+		return ""
+	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+		return ""
+	var pick_radius: float = SOLDIER_SELECTION_RADIUS * SOLDIER_VISUAL_SCALE
+	var best_id: String = ""
+	var best_distance: float = INF
+	for participant_id: String in _sorted_keys(battle_state.participants):
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		if participant.side_id != battle_state.attacker_side_id:
+			continue
+		if not participant.is_alive or not participant.has_battle_position:
+			continue
+		if not battle_state.is_participant_deployed(participant_id):
+			continue
+		var view_pos: Vector2 = _to_view(participant.battle_position)
+		var distance: float = view_pos.distance_to(local_position)
+		if not is_finite(distance):
+			continue
+		if distance > pick_radius and not is_equal_approx(distance, pick_radius):
+			continue
+		if best_id.is_empty() or distance < best_distance or (
+			is_equal_approx(distance, best_distance) and participant_id < best_id
+		):
+			best_id = participant_id
+			best_distance = distance
+	return best_id
 
 
 func _overlay_row_rect(origin: Vector2, row_index: int) -> Rect2:
@@ -1253,12 +1288,12 @@ func _draw_soldier_ground(view_pos: Vector2, battle_state: BattleState, particip
 		marker = PROVISIONAL_DEFENDER_FOOT
 	if not participant.is_alive:
 		marker = Color(0.18, 0.17, 0.16, 0.42)
-	_paint_canvas().draw_circle(view_pos, SOLDIER_GROUND_RADIUS, marker, true)
+	_paint_canvas().draw_circle(view_pos, SOLDIER_GROUND_RADIUS * SOLDIER_VISUAL_SCALE, marker, true)
 
 
 func _draw_soldier_selection(view_pos: Vector2) -> void:
-	_paint_canvas().draw_circle(view_pos, SOLDIER_SELECTION_RADIUS, PROVISIONAL_SELECTABLE, false, 2.0, true)
-	_paint_canvas().draw_circle(view_pos, SOLDIER_SELECTION_RADIUS - 2.4, Color(0.08, 0.08, 0.07, 0.55), false, 1.0, true)
+	_paint_canvas().draw_circle(view_pos, SOLDIER_SELECTION_RADIUS * SOLDIER_VISUAL_SCALE, PROVISIONAL_SELECTABLE, false, 2.0, true)
+	_paint_canvas().draw_circle(view_pos, SOLDIER_SELECTION_RADIUS * SOLDIER_VISUAL_SCALE - 2.4, Color(0.08, 0.08, 0.07, 0.55), false, 1.0, true)
 
 
 func _draw_soldier_standing(
@@ -1281,6 +1316,7 @@ func _draw_soldier_standing(
 		scale = Vector2(0.94, 0.82)
 	if tucked:
 		scale = Vector2(scale.x * 0.90, scale.y * 0.70)
+	scale *= SOLDIER_VISUAL_SCALE
 	_paint_canvas().draw_set_transform(view_pos, angle, scale)
 	var leg_l: Rect2 = Rect2(Vector2(-5.4, -3.1), Vector2(4.2, 2.2))
 	var leg_r: Rect2 = Rect2(Vector2(-5.4, 0.9), Vector2(4.2, 2.2))
@@ -1316,7 +1352,7 @@ func _draw_soldier_standing(
 
 
 func _draw_soldier_downed(view_pos: Vector2, facing: Vector2, weapon_type: String = "") -> void:
-	_paint_canvas().draw_set_transform(view_pos, facing.angle() + 0.18, Vector2.ONE)
+	_paint_canvas().draw_set_transform(view_pos, facing.angle() + 0.18, Vector2(SOLDIER_VISUAL_SCALE, SOLDIER_VISUAL_SCALE))
 	var torso: Rect2 = Rect2(Vector2(-6.4, -2.1), Vector2(12.6, 4.2))
 	_paint_canvas().draw_rect(torso, PROVISIONAL_SOLDIER_BODY_DEAD, true)
 	_paint_canvas().draw_rect(torso, PROVISIONAL_SOLDIER_OUTLINE, false, 1.3)
@@ -1394,7 +1430,7 @@ func _weapon_presentation_stock(weapon_type: String) -> float:
 
 
 func _weapon_tip_pixels(weapon_type: String) -> float:
-	return SOLDIER_HAND_FORWARD + _weapon_presentation_length(weapon_type)
+	return (SOLDIER_HAND_FORWARD + _weapon_presentation_length(weapon_type)) * SOLDIER_VISUAL_SCALE
 
 
 func _side_accent(battle_state: BattleState, side_id: String) -> Color:
@@ -1490,6 +1526,8 @@ func _compact_state_color(label: String) -> Color:
 			return PROVISIONAL_COMPACT_WND
 		BattleCombatPresentationQuery.STATE_WAIT, BattleCombatPresentationQuery.STATE_AIM:
 			return PROVISIONAL_COMPACT_WAIT
+		BattleCombatPresentationQuery.STATE_HOLD, BattleCombatPresentationQuery.STATE_COVER:
+			return PROVISIONAL_COMPACT_STATE
 		BattleCombatPresentationQuery.STATE_DEAD:
 			return PROVISIONAL_DEAD
 		_:
@@ -2045,7 +2083,7 @@ func _event_target_view(battle_state: BattleState, event: BattleAttackEvent) -> 
 
 
 func _draw_dead_mark(view_pos: Vector2, color: Color) -> void:
-	var mark: float = PARTICIPANT_RADIUS + 3.0
+	var mark: float = PARTICIPANT_RADIUS * SOLDIER_VISUAL_SCALE + 3.0
 	_paint_canvas().draw_line(
 		view_pos + Vector2(-mark, -mark),
 		view_pos + Vector2(mark, mark),
@@ -2133,10 +2171,6 @@ func _is_roster_selectable(battle_state: BattleState, participant: BattlePartici
 	if participant.side_id != battle_state.attacker_side_id:
 		return false
 	if not participant.is_alive:
-		return false
-	if battle_state.is_participant_deployed(participant.participant_id):
-		return false
-	if participant.has_battle_position:
 		return false
 	return true
 

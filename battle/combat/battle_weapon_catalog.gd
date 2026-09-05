@@ -24,7 +24,7 @@ const SHOTGUN_MAGAZINE_CAPACITY := 6
 const SHOTGUN_RELOAD_SECONDS := 2.5
 
 const SMG_MAX_RANGE := 20.0
-const SMG_SHOTS_PER_SECOND := 8.0
+const SMG_SHOTS_PER_SECOND := 6.0
 const SMG_MAGAZINE_CAPACITY := 30
 const SMG_RELOAD_SECONDS := 2.0
 
@@ -66,7 +66,7 @@ const SNIPER_SOLID_PROBABILITY := 0.45
 const SNIPER_CRITICAL_PROBABILITY := 0.20
 
 # Provisional trauma in vitality units. Miss trauma is 0.
-# Pistol solid is below the 0.65 drop needed to wound from 1.0.
+# Identities are unchanged. Baseline vitality is 1.5; wound is at 0.525 remaining.
 const PISTOL_GRAZE_TRAUMA := 0.10
 const PISTOL_SOLID_TRAUMA := 0.28
 const PISTOL_CRITICAL_TRAUMA := 0.70

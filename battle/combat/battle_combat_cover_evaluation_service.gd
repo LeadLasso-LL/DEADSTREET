@@ -75,6 +75,31 @@ static func occupied_cover_is_suitable(
 	return true
 
 
+static func occupied_cover_still_protects(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	hostile: BattleParticipant
+) -> bool:
+	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if participant.occupied_cover_slot_id.is_empty():
+		return false
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		participant.occupied_cover_slot_id
+	)
+	if slot == null or slot.occupied_by_participant_id != participant.participant_id:
+		return false
+	if hostile == null or not hostile.is_alive or not _is_positioned(hostile):
+		return true
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+		slot,
+		hostile.battle_position
+	)
+	if protection == null or not protection.has_applicable_cover:
+		return false
+	return is_useful_protection_factor(protection.protection_factor)
+
+
 static func select_best_combat_usable_slot(
 	battle_state: BattleState,
 	participant: BattleParticipant,
@@ -259,6 +284,121 @@ static func rank_closing_cover(
 	return ranked
 
 
+# IN_USEFUL_RANGE SMG/shotgun: survive and fight. Nearby useful directional
+# cover outranks farther equivalent or marginally better slots.
+static func rank_short_range_in_useful_range(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	hostile: BattleParticipant,
+	max_move_distance: float
+) -> Array[BattleCombatCoverEvaluation]:
+	var ranked: Array[BattleCombatCoverEvaluation] = []
+	for evaluation: BattleCombatCoverEvaluation in evaluate_all(
+		battle_state,
+		participant,
+		hostile,
+		false,
+		true,
+		max_move_distance
+	):
+		if evaluation == null or not evaluation.combat_usable:
+			continue
+		_insert_near_first_ranked(ranked, evaluation)
+	return ranked
+
+
+# OUT_OF_RANGE SMG/shotgun fallback when closing cover is unavailable:
+# nearby useful protective cover, even if it is still outside weapon max range.
+static func rank_short_range_nearby_useful(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	hostile: BattleParticipant,
+	require_weapon_range: bool,
+	max_move_distance: float
+) -> Array[BattleCombatCoverEvaluation]:
+	var ranked: Array[BattleCombatCoverEvaluation] = []
+	for evaluation: BattleCombatCoverEvaluation in evaluate_all(
+		battle_state,
+		participant,
+		hostile,
+		false,
+		require_weapon_range,
+		max_move_distance
+	):
+		if evaluation == null or not evaluation.combat_usable:
+			continue
+		_insert_near_first_ranked(ranked, evaluation)
+	return ranked
+
+
+# OUT_OF_RANGE SMG/shotgun staging: advance toward useful range, but take the
+# nearer sufficiently protective progressive slot instead of leaping farther.
+static func rank_short_range_out_of_range_staging(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	hostile: BattleParticipant,
+	weapon_type_id: String,
+	max_move_distance: float
+) -> Array[BattleCombatCoverEvaluation]:
+	var ranked: Array[BattleCombatCoverEvaluation] = []
+	if battle_state == null or participant == null or battle_state.battlefield_geometry == null:
+		return ranked
+	if not _is_positioned(participant) or hostile == null or not _is_positioned(hostile):
+		return ranked
+	if not is_finite(max_move_distance) or max_move_distance <= 0.0:
+		return ranked
+	var current_range: float = participant.battle_position.distance_to(hostile.battle_position)
+	if not is_finite(current_range):
+		return ranked
+	var preferred_min: float = 0.0
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	if profile != null:
+		preferred_min = profile.preferred_min_distance
+	var progress_epsilon: float = BattleCombatBehaviorCatalog.CLOSING_PROGRESS_EPSILON
+	for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+		if slot == null or not slot.is_valid():
+			continue
+		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
+			battle_state,
+			participant,
+			slot,
+			hostile,
+			false,
+			false,
+			max_move_distance
+		)
+		if evaluation == null or not evaluation.legal:
+			continue
+		if not is_finite(evaluation.move_distance):
+			continue
+		if (
+			evaluation.move_distance > max_move_distance
+			and not is_equal_approx(evaluation.move_distance, max_move_distance)
+		):
+			continue
+		if not evaluation.has_useful_direction:
+			continue
+		var slot_range: float = slot.position.distance_to(hostile.battle_position)
+		if not is_finite(slot_range):
+			continue
+		if (
+			is_finite(preferred_min)
+			and preferred_min > 0.0
+			and slot_range < preferred_min
+			and not is_equal_approx(slot_range, preferred_min)
+		):
+			continue
+		var progress: float = current_range - slot_range
+		if not is_finite(progress):
+			continue
+		if progress < progress_epsilon and not is_equal_approx(progress, progress_epsilon):
+			continue
+		evaluation.closing_progress = progress
+		_insert_staging_ranked(ranked, evaluation)
+	return ranked
+
+
 static func evaluate_all(
 	battle_state: BattleState,
 	participant: BattleParticipant,
@@ -402,6 +542,26 @@ static func _insert_closing_ranked(
 	ranked.insert(index, candidate)
 
 
+static func _insert_near_first_ranked(
+	ranked: Array[BattleCombatCoverEvaluation],
+	candidate: BattleCombatCoverEvaluation
+) -> void:
+	var index: int = 0
+	while index < ranked.size() and not _near_first_rank_less(candidate, ranked[index]):
+		index += 1
+	ranked.insert(index, candidate)
+
+
+static func _insert_staging_ranked(
+	ranked: Array[BattleCombatCoverEvaluation],
+	candidate: BattleCombatCoverEvaluation
+) -> void:
+	var index: int = 0
+	while index < ranked.size() and not _staging_rank_less(candidate, ranked[index]):
+		index += 1
+	ranked.insert(index, candidate)
+
+
 static func _rank_less(
 	left: BattleCombatCoverEvaluation,
 	right: BattleCombatCoverEvaluation,
@@ -426,6 +586,30 @@ static func _closing_rank_less(left: BattleCombatCoverEvaluation, right: BattleC
 		return left.closing_progress > right.closing_progress
 	if not is_equal_approx(left.move_distance, right.move_distance):
 		return left.move_distance < right.move_distance
+	return left.slot_id < right.slot_id
+
+
+static func _near_first_rank_less(
+	left: BattleCombatCoverEvaluation,
+	right: BattleCombatCoverEvaluation
+) -> bool:
+	if not is_equal_approx(left.move_distance, right.move_distance):
+		return left.move_distance < right.move_distance
+	if not is_equal_approx(left.protection_factor, right.protection_factor):
+		return left.protection_factor > right.protection_factor
+	return left.slot_id < right.slot_id
+
+
+static func _staging_rank_less(
+	left: BattleCombatCoverEvaluation,
+	right: BattleCombatCoverEvaluation
+) -> bool:
+	if not is_equal_approx(left.move_distance, right.move_distance):
+		return left.move_distance < right.move_distance
+	if not is_equal_approx(left.closing_progress, right.closing_progress):
+		return left.closing_progress > right.closing_progress
+	if not is_equal_approx(left.protection_factor, right.protection_factor):
+		return left.protection_factor > right.protection_factor
 	return left.slot_id < right.slot_id
 
 

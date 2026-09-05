@@ -15,6 +15,33 @@ const BattleCoverPostureService := preload("res://battle/combat/battle_cover_pos
 const COVER_OCCUPANCY_EPSILON := 0.5
 
 
+static func is_at_slot(participant: BattleParticipant, slot: BattleCoverSlot) -> bool:
+	if participant == null or slot == null:
+		return false
+	if not participant.has_battle_position:
+		return false
+	if not BattlefieldGeometry.is_finite_point(participant.battle_position):
+		return false
+	if not BattlefieldGeometry.is_finite_point(slot.position):
+		return false
+	return participant.battle_position.distance_to(slot.position) <= COVER_OCCUPANCY_EPSILON
+
+
+static func occupancy_is_valid(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if participant == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if participant.occupied_cover_slot_id.is_empty():
+		return false
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		participant.occupied_cover_slot_id
+	)
+	if slot == null or not slot.is_valid():
+		return false
+	if slot.occupied_by_participant_id != participant.participant_id:
+		return false
+	return is_at_slot(participant, slot)
+
+
 static func reserve_slot(
 	battle_state: BattleState,
 	participant_id: String,
@@ -99,7 +126,7 @@ static func occupy_slot(
 			cover_slot_id,
 			participant_id
 		)
-	if participant.battle_position.distance_to(slot.position) > COVER_OCCUPANCY_EPSILON:
+	if not is_at_slot(participant, slot):
 		return BattleCoverResult.failed(
 			"participant_not_at_slot",
 			"Battle cover failed: participant '%s' is not at cover slot '%s'." % [participant_id, cover_slot_id],

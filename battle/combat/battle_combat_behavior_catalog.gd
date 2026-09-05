@@ -3,6 +3,7 @@ extends RefCounted
 
 const BattleCombatBehaviorProfile := preload("res://battle/combat/battle_combat_behavior_profile.gd")
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
+const BattleWeaponDefinition := preload("res://battle/combat/battle_weapon_definition.gd")
 
 # Provisional autonomous engagement bands. Not final combat balance.
 # Separate from weapon ballistic max range.
@@ -18,11 +19,13 @@ const SNIPER_PREFERRED_MIN := 32.0
 const SNIPER_PREFERRED_MAX := 60.0
 
 # Used only when a mobile combat participant has no usable movement speed yet.
-const DEFAULT_COMBAT_MOVEMENT_SPEED := 4.0
+# Survival-first v1: ~10% slower than the prior 4.0 healthy baseline.
+const DEFAULT_COMBAT_MOVEMENT_SPEED := 3.6
 
 # Provisional wounded limp speed for autonomous combat movement.
 # Independent of wounded fire-rate, accuracy, and reaction delay.
-const WOUNDED_COMBAT_MOVEMENT_SPEED := 2.0
+# Keeps the prior 1:2 wounded-to-healthy relationship (was 2.0 vs 4.0).
+const WOUNDED_COMBAT_MOVEMENT_SPEED := 1.8
 
 # Provisional wounded combat-performance tuning. Not final balance.
 # Same multipliers for every current weapon type.
@@ -68,13 +71,21 @@ const FOCUS_LATERAL_OFFSET := 8.0
 const FALL_BACK_DISTANCE := 10.0
 
 # Provisional healthy weapon-role cover positioning. Not final balance.
-# Shotgun and SMG do not autonomously seek healthy firing cover in v1.
+# Every combat role values useful protective cover. Closing remains a separate
+# staged-advance path for short-range weapons that are too far to engage.
 const PISTOL_COVER_SEEK_RADIUS := 10.0
 const PISTOL_COVER_REPLAN_DISTANCE := 3.0
+const SMG_COVER_SEEK_RADIUS := 12.0
+const SMG_COVER_REPLAN_DISTANCE := 3.0
+const SHOTGUN_COVER_SEEK_RADIUS := 10.0
+const SHOTGUN_COVER_REPLAN_DISTANCE := 3.0
 const RIFLE_COVER_SEEK_RADIUS := 18.0
 const RIFLE_COVER_REPLAN_DISTANCE := 4.0
 const SNIPER_COVER_SEEK_RADIUS := 28.0
 const SNIPER_COVER_REPLAN_DISTANCE := 6.0
+
+# Occupied useful cover is abandoned only for a close unprotected threat.
+const CLOSE_THREAT_UNSAFE_RANGE := 4.0
 
 # Short-range closing. Separate from healthy rifle/pistol/sniper firing-cover seek.
 # Cover is a means to close, not the objective. Ranking runs on decision/invalidation only.
@@ -84,7 +95,11 @@ const SHOTGUN_CLOSING_SEEK_RADIUS := 22.0
 const CLOSING_PROGRESS_EPSILON := 2.0
 const SMG_CLOSING_COMMIT_RANGE := 16.0
 const SHOTGUN_CLOSING_COMMIT_RANGE := 9.0
-# Anti-skim only. Occupied closing cover still leaves by tactical usefulness.
+# Healthy SMG/shotgun cover uses weapon max range, not preferred band.
+# OUT_OF_RANGE closes cover-to-cover. IN_USEFUL_RANGE survives and fights.
+const SHORT_RANGE_OUT_OF_RANGE := "OUT_OF_RANGE"
+const SHORT_RANGE_IN_USEFUL_RANGE := "IN_USEFUL_RANGE"
+# Occupied-cover settle / posture pacing only. Does not force vacate.
 const CLOSING_COVER_MIN_SETTLE_SECONDS := 0.55
 
 # Wounded retreat-to-cover stays local. Not a map-wide safest-refuge search.
@@ -124,7 +139,7 @@ static func wounded_effective_outcome_roll(raw_roll: float) -> float:
 
 static func uses_healthy_role_cover(weapon_type_id: String) -> bool:
 	match weapon_type_id:
-		BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_SNIPER:
+		BattleWeaponCatalog.WEAPON_PISTOL, BattleWeaponCatalog.WEAPON_SMG, BattleWeaponCatalog.WEAPON_SHOTGUN, BattleWeaponCatalog.WEAPON_RIFLE, BattleWeaponCatalog.WEAPON_SNIPER:
 			return true
 		_:
 			return false
@@ -134,6 +149,10 @@ static func healthy_cover_seek_radius(weapon_type_id: String) -> float:
 	match weapon_type_id:
 		BattleWeaponCatalog.WEAPON_PISTOL:
 			return PISTOL_COVER_SEEK_RADIUS
+		BattleWeaponCatalog.WEAPON_SMG:
+			return SMG_COVER_SEEK_RADIUS
+		BattleWeaponCatalog.WEAPON_SHOTGUN:
+			return SHOTGUN_COVER_SEEK_RADIUS
 		BattleWeaponCatalog.WEAPON_RIFLE:
 			return RIFLE_COVER_SEEK_RADIUS
 		BattleWeaponCatalog.WEAPON_SNIPER:
@@ -146,6 +165,10 @@ static func healthy_cover_replan_distance(weapon_type_id: String) -> float:
 	match weapon_type_id:
 		BattleWeaponCatalog.WEAPON_PISTOL:
 			return PISTOL_COVER_REPLAN_DISTANCE
+		BattleWeaponCatalog.WEAPON_SMG:
+			return SMG_COVER_REPLAN_DISTANCE
+		BattleWeaponCatalog.WEAPON_SHOTGUN:
+			return SHOTGUN_COVER_REPLAN_DISTANCE
 		BattleWeaponCatalog.WEAPON_RIFLE:
 			return RIFLE_COVER_REPLAN_DISTANCE
 		BattleWeaponCatalog.WEAPON_SNIPER:
@@ -160,6 +183,27 @@ static func uses_short_range_closing(weapon_type_id: String) -> bool:
 			return true
 		_:
 			return false
+
+
+static func uses_short_range_range_state(weapon_type_id: String) -> bool:
+	match weapon_type_id:
+		BattleWeaponCatalog.WEAPON_SMG, BattleWeaponCatalog.WEAPON_SHOTGUN:
+			return true
+		_:
+			return false
+
+
+static func is_in_useful_firing_range(weapon_type_id: String, range_distance: float) -> bool:
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(weapon_type_id)
+	if definition == null or not definition.is_valid() or not is_finite(range_distance):
+		return false
+	return range_distance < definition.max_range or is_equal_approx(range_distance, definition.max_range)
+
+
+static func short_range_state(weapon_type_id: String, range_distance: float) -> String:
+	if is_in_useful_firing_range(weapon_type_id, range_distance):
+		return SHORT_RANGE_IN_USEFUL_RANGE
+	return SHORT_RANGE_OUT_OF_RANGE
 
 
 static func closing_cover_seek_radius(weapon_type_id: String) -> float:
