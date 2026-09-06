@@ -15,6 +15,8 @@ const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_regio
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
 const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
+const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
+const TacticalVisualCatalog := preload("res://battle/presentation/tactical_visual_catalog.gd")
 
 const LAYOUT_ID := "hq_frontage_assault_v1"
 const WIDTH := 86.0
@@ -72,6 +74,7 @@ static func hq_frontage_assault_v1() -> AuthoredBattlefieldDefinition:
 	_add_soft_cover(definition)
 	_add_attacker_pockets(definition)
 	_add_defender_pockets(definition)
+	_add_visual_bindings(definition)
 	definition.attacker_vehicle_placement_context = BattleVehiclePlacementContext.new(
 		true,
 		ATTACKER_VEHICLE_ANCHOR,
@@ -700,5 +703,31 @@ static func _add_defender_pockets(definition: AuthoredBattlefieldDefinition) -> 
 					Vector2(53.15, 26.6),
 				]
 			)
+		)
+	)
+
+
+static func _add_visual_bindings(definition: AuthoredBattlefieldDefinition) -> void:
+	# Presentation-only. Obstacle/vehicle gameplay footprints stay authoritative.
+	definition.visual_bindings.append(
+		BattleVisualBinding.new(
+			BattleVisualBinding.KIND_OBSTACLE,
+			"parked_car_attack_west",
+			TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
+			TacticalVisualCatalog.VARIANT_TEST_01,
+			0.0,
+			Vector2.ZERO,
+			1.0
+		)
+	)
+	definition.visual_bindings.append(
+		BattleVisualBinding.new(
+			BattleVisualBinding.KIND_VEHICLE,
+			"player_vehicle",
+			TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
+			TacticalVisualCatalog.VARIANT_TEST_01,
+			0.0,
+			Vector2.ZERO,
+			1.0
 		)
 	)

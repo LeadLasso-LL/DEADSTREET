@@ -9,6 +9,7 @@ const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment
 const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_region.gd")
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
 const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
+const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
 
 var authored_layout_id: String = ""
 var width: float = 0.0
@@ -24,6 +25,8 @@ var cover_objects: Dictionary[String, BattleCoverObject] = {}
 var cover_slots: Dictionary[String, BattleCoverSlot] = {}
 var surface_regions: Dictionary[String, BattleSurfaceRegion] = {}
 var presentation_markings: Array[BattlePresentationMarking] = []
+# Presentation-only. Never used by collision, LOS, cover, nav, or deployment.
+var visual_bindings: Array[BattleVisualBinding] = []
 var content_revision: int = 0
 # Cheap cover-catalog stamp. Independent of occupancy and movement blockers.
 var cover_slot_revision: int = 0
@@ -184,6 +187,35 @@ func add_presentation_marking(marking: BattlePresentationMarking) -> bool:
 			return false
 	presentation_markings.append(marking)
 	return true
+
+
+func add_visual_binding(binding: BattleVisualBinding) -> bool:
+	if binding == null:
+		push_error("BattlefieldGeometry.add_visual_binding: binding is null.")
+		return false
+	if not binding.is_valid():
+		push_error("BattlefieldGeometry.add_visual_binding: binding is invalid.")
+		return false
+	for existing: BattleVisualBinding in visual_bindings:
+		if existing == null:
+			continue
+		if existing.target_kind == binding.target_kind and existing.target_id == binding.target_id:
+			push_error(
+				"BattlefieldGeometry.add_visual_binding: duplicate target '%s:%s'."
+				% [binding.target_kind, binding.target_id]
+			)
+			return false
+	visual_bindings.append(binding)
+	return true
+
+
+func get_visual_binding(target_kind: String, target_id: String) -> BattleVisualBinding:
+	for binding: BattleVisualBinding in visual_bindings:
+		if binding == null:
+			continue
+		if binding.target_kind == target_kind and binding.target_id == target_id:
+			return binding
+	return null
 
 
 func get_surface_region(region_id: String) -> BattleSurfaceRegion:

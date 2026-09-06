@@ -31,6 +31,8 @@ const BattleCombatPresentationQuery := preload("res://battle/combat/battle_comba
 const TacticalStaticBattlefieldLayer := preload("res://gameplay/tactical_static_battlefield_layer.gd")
 const TacticalDynamicBattlefieldLayer := preload("res://gameplay/tactical_dynamic_battlefield_layer.gd")
 const TacticalShotPresentation := preload("res://gameplay/tactical_shot_presentation.gd")
+const TacticalEnvironmentPresenter := preload("res://gameplay/tactical_environment_presenter.gd")
+const TacticalActorPresenter := preload("res://gameplay/tactical_actor_presenter.gd")
 
 const TACTICAL_PIXELS_PER_UNIT := 8.0
 # Edge padding around the playable field. HUD uses a separate left gutter.
@@ -239,6 +241,10 @@ var _deployment_cache_valid: bool = false
 var _surface_cache_valid: bool = false
 var static_layer: TacticalStaticBattlefieldLayer = null
 var dynamic_layer: TacticalDynamicBattlefieldLayer = null
+var static_asset_root: Node2D = null
+var dynamic_asset_root: Node2D = null
+var environment_presenter: TacticalEnvironmentPresenter = null
+var actor_presenter: TacticalActorPresenter = null
 var static_redraw_requests: int = 0
 var dynamic_redraw_requests: int = 0
 var _cached_static_stamp: String = ""
@@ -263,13 +269,16 @@ func bind_session(p_session: CampaignBattleSession) -> void:
 	if session_changed or stamp_changed:
 		_invalidate_presentation_caches()
 		_cached_static_stamp = stamp
+		_sync_environment_presenter()
 		request_static_redraw()
+	_sync_actor_presenter()
 	request_dynamic_redraw()
 
 
 func bind_deployment_controller(p_controller: TacticalDeploymentController) -> void:
 	var controller_changed: bool = deployment_controller != p_controller
 	deployment_controller = p_controller
+	_sync_actor_presenter()
 	if controller_changed:
 		request_dynamic_redraw()
 
@@ -438,7 +447,9 @@ func _process(_delta: float) -> void:
 	if stamp != _cached_static_stamp:
 		_cached_static_stamp = stamp
 		_invalidate_presentation_caches()
+		_sync_environment_presenter()
 		request_static_redraw()
+	_sync_actor_presenter()
 	request_dynamic_redraw()
 
 
@@ -508,12 +519,28 @@ func _ensure_layers() -> void:
 		static_layer.host = self
 		static_layer.z_index = 0
 		add_child(static_layer)
+	if static_asset_root == null:
+		static_asset_root = Node2D.new()
+		static_asset_root.name = "StaticAssetRoot"
+		static_asset_root.z_index = 1
+		add_child(static_asset_root)
+	if dynamic_asset_root == null:
+		dynamic_asset_root = Node2D.new()
+		dynamic_asset_root.name = "DynamicAssetRoot"
+		dynamic_asset_root.z_index = 2
+		add_child(dynamic_asset_root)
 	if dynamic_layer == null:
 		dynamic_layer = TacticalDynamicBattlefieldLayer.new()
 		dynamic_layer.name = "DynamicBattlefieldLayer"
 		dynamic_layer.host = self
-		dynamic_layer.z_index = 1
+		dynamic_layer.z_index = 3
 		add_child(dynamic_layer)
+	if environment_presenter == null:
+		environment_presenter = TacticalEnvironmentPresenter.new()
+		environment_presenter.bind_root(static_asset_root, TACTICAL_PIXELS_PER_UNIT)
+	if actor_presenter == null:
+		actor_presenter = TacticalActorPresenter.new()
+		actor_presenter.bind_root(dynamic_asset_root, TACTICAL_PIXELS_PER_UNIT)
 
 
 func _static_geometry_stamp() -> String:
@@ -542,6 +569,28 @@ func _to_view(tactical_pos: Vector2) -> Vector2:
 
 func _rect_to_view(tactical_rect: Rect2) -> Rect2:
 	return Rect2(_to_view(tactical_rect.position), tactical_rect.size * TACTICAL_PIXELS_PER_UNIT)
+
+
+func _sync_environment_presenter() -> void:
+	_ensure_layers()
+	if environment_presenter == null:
+		return
+	environment_presenter.sync_static(_geometry(), _static_geometry_stamp())
+
+
+func _sync_actor_presenter() -> void:
+	_ensure_layers()
+	if actor_presenter == null:
+		return
+	actor_presenter.sync_dynamic(_battle_state())
+
+
+func _obstacle_uses_retained_visual(obstacle_id: String) -> bool:
+	return environment_presenter != null and environment_presenter.claims_obstacle(obstacle_id)
+
+
+func _vehicle_uses_retained_visual(vehicle_id: String) -> bool:
+	return actor_presenter != null and actor_presenter.claims_vehicle(vehicle_id)
 
 
 func _ensure_camera() -> void:
@@ -1519,6 +1568,8 @@ func _parked_car_profile(variant: String) -> Dictionary:
 
 func _draw_parked_car(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	# Road-parallel presentation. Existing parked-car AABBs are wide-X / short-Y.
+	if _obstacle_uses_retained_visual(obstacle.obstacle_id):
+		return
 	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW)
 	var along_x: bool = body.size.x >= body.size.y
 	var hood_east: bool = obstacle.obstacle_id.begins_with("parked_car_attack")
@@ -2830,7 +2881,8 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 		var visual: PackedVector2Array = _inflate_view_quad(view_corners, ARRIVAL_VISUAL_INFLATE_PX)
 		var spec: Dictionary = _parked_car_profile("sedan_large")
 		var paint: Color = Color(0.20, 0.22, 0.23, 1.0)
-		_draw_civilian_car(visual, spec, paint, false)
+		if not _vehicle_uses_retained_visual(vehicle.battle_vehicle_id):
+			_draw_civilian_car(visual, spec, paint, false)
 		if vehicle.has_valid_orientation() and facing.length_squared() > 0.0001:
 			_draw_arrival_open_doors(visual)
 		if DEBUG_DRAW_DEVELOPER_OVERLAY:

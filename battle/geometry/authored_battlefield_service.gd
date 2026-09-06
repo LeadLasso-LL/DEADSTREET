@@ -16,6 +16,7 @@ const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_region.gd")
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
+const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
 const BattleForceCommandService := preload("res://battle/core/battle_force_command_service.gd")
 
 const LAYOUT_PROVING_GROUND := TacticalProvingGroundCatalog.LAYOUT_ID
@@ -107,6 +108,9 @@ static func _build_geometry(definition: AuthoredBattlefieldDefinition) -> Battle
 			return null
 	for marking: BattlePresentationMarking in definition.presentation_markings:
 		if marking == null or not geometry.add_presentation_marking(marking):
+			return null
+	for binding: BattleVisualBinding in definition.visual_bindings:
+		if binding == null or not geometry.add_visual_binding(binding):
 			return null
 	for obstacle: BattleObstacle in definition.obstacles:
 		if obstacle == null or not geometry.add_obstacle(obstacle):

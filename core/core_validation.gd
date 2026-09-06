@@ -63,6 +63,8 @@ const AuthoredBattlefieldService := preload("res://battle/geometry/authored_batt
 const TacticalProvingGroundCatalog := preload("res://battle/geometry/tactical_proving_ground_catalog.gd")
 const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_region.gd")
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
+const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
+const TacticalVisualCatalog := preload("res://battle/presentation/tactical_visual_catalog.gd")
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
@@ -16599,6 +16601,13 @@ static func run() -> Dictionary:
 	var vispass2b_street_features_readable_ok: bool = _vispass2b_street_features_readable_ok()
 	var vispass2b_porch_frontage_unchanged_ok: bool = _vispass2b_porch_frontage_unchanged_ok()
 	var vispass3_roof_and_arrival_door_ok: bool = _vispass3_roof_and_arrival_door_ok()
+	var vispass_m1_visual_binding_resolves_ok: bool = _vispass_m1_visual_binding_resolves_ok()
+	var vispass_m1_geometry_unchanged_ok: bool = _vispass_m1_geometry_unchanged_ok()
+	var vispass_m1_static_rebuild_gated_ok: bool = _vispass_m1_static_rebuild_gated_ok()
+	var vispass_m1_dynamic_sprite_persistent_ok: bool = _vispass_m1_dynamic_sprite_persistent_ok()
+	var vispass_m1_hit_test_still_physical_ok: bool = _vispass_m1_hit_test_still_physical_ok()
+	var vispass_m1_view_has_no_asset_path_ok: bool = _vispass_m1_view_has_no_asset_path_ok()
+	var vispass_m1_fallback_drawer_still_present_ok: bool = _vispass_m1_fallback_drawer_still_present_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18838,6 +18847,13 @@ static func run() -> Dictionary:
 		"vispass2b_street_features_readable_ok": vispass2b_street_features_readable_ok,
 		"vispass2b_porch_frontage_unchanged_ok": vispass2b_porch_frontage_unchanged_ok,
 		"vispass3_roof_and_arrival_door_ok": vispass3_roof_and_arrival_door_ok,
+		"vispass_m1_visual_binding_resolves_ok": vispass_m1_visual_binding_resolves_ok,
+		"vispass_m1_geometry_unchanged_ok": vispass_m1_geometry_unchanged_ok,
+		"vispass_m1_static_rebuild_gated_ok": vispass_m1_static_rebuild_gated_ok,
+		"vispass_m1_dynamic_sprite_persistent_ok": vispass_m1_dynamic_sprite_persistent_ok,
+		"vispass_m1_hit_test_still_physical_ok": vispass_m1_hit_test_still_physical_ok,
+		"vispass_m1_view_has_no_asset_path_ok": vispass_m1_view_has_no_asset_path_ok,
+		"vispass_m1_fallback_drawer_still_present_ok": vispass_m1_fallback_drawer_still_present_ok,
 	}
 
 	var passed := true
@@ -71826,4 +71842,201 @@ static func _vispass3_roof_and_arrival_door_ok() -> bool:
 		and hq_body.contains("cornice")
 		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
 		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9)
+	)
+
+
+static func _vispass_m1_visual_binding_resolves_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var parked: BattleVisualBinding = geometry.get_visual_binding(
+		BattleVisualBinding.KIND_OBSTACLE,
+		"parked_car_attack_west"
+	)
+	var vehicle: BattleVisualBinding = geometry.get_visual_binding(
+		BattleVisualBinding.KIND_VEHICLE,
+		"player_vehicle"
+	)
+	if parked == null or vehicle == null:
+		return false
+	if not parked.is_valid() or not vehicle.is_valid():
+		return false
+	var parked_spec: Dictionary = TacticalVisualCatalog.spec_for(parked.archetype_id, parked.variant_id)
+	var vehicle_spec: Dictionary = TacticalVisualCatalog.spec_for(vehicle.archetype_id, vehicle.variant_id)
+	if parked_spec.is_empty() or vehicle_spec.is_empty():
+		return false
+	var path: String = str(parked_spec.get("resource_path", ""))
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return false
+	var texture: Texture2D = TacticalVisualCatalog.texture_for(parked_spec)
+	if texture == null:
+		return false
+	var cached: Texture2D = TacticalVisualCatalog.texture_for(parked_spec)
+	return cached == texture and TacticalVisualCatalog.cache_size() >= 1
+
+
+static func _vispass_m1_geometry_unchanged_ok() -> bool:
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5):
+		return false
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9):
+		return false
+	if not _vispass2_parked_car_geometry_frozen_ok():
+		return false
+	if not _vispass2_arrival_vehicle_dimensions_frozen_ok():
+		return false
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var parked: BattleObstacle = battle_state.battlefield_geometry.get_obstacle("parked_car_attack_west")
+	if parked == null:
+		return false
+	return parked.bounds.is_equal_approx(Rect2(24.0, 40.0, 4.5, 1.8))
+
+
+static func _vispass_m1_static_rebuild_gated_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.environment_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	if not view.environment_presenter.claims_obstacle("parked_car_attack_west"):
+		return _gameplayruntime_finish(runtime, false)
+	var rebuild_before: int = view.environment_presenter.rebuild_count
+	var static_before: int = view.static_redraw_requests
+	view._process(0.016)
+	view._process(0.016)
+	view._process(0.016)
+	return _gameplayruntime_finish(
+		runtime,
+		rebuild_before >= 1
+		and view.environment_presenter.rebuild_count == rebuild_before
+		and view.static_redraw_requests == static_before
+		and view.static_asset_root != null
+		and view.static_asset_root.z_index == 1
+		and view.dynamic_asset_root != null
+		and view.dynamic_asset_root.z_index == 2
+		and view.dynamic_layer != null
+		and view.dynamic_layer.z_index == 3
+	)
+
+
+static func _vispass_m1_dynamic_sprite_persistent_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	if not view.actor_presenter.claims_vehicle("player_vehicle"):
+		return _gameplayruntime_finish(runtime, false)
+	var spawn_before: int = view.actor_presenter.spawn_count
+	var instance_before: int = view.actor_presenter.sprite_instance_id("player_vehicle")
+	if instance_before == 0 or spawn_before < 1:
+		return _gameplayruntime_finish(runtime, false)
+	view._process(0.016)
+	view._process(0.016)
+	view._process(0.016)
+	return _gameplayruntime_finish(
+		runtime,
+		view.actor_presenter.spawn_count == spawn_before
+		and view.actor_presenter.sprite_instance_id("player_vehicle") == instance_before
+		and view.actor_presenter.claims_vehicle("player_vehicle")
+	)
+
+
+static func _vispass_m1_hit_test_still_physical_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var parked: BattleObstacle = battle_state.battlefield_geometry.get_obstacle("parked_car_attack_west")
+	if parked == null:
+		return _gameplayruntime_finish(runtime, false)
+	var cover_id: String = ""
+	for cover_object_id: String in battle_state.battlefield_geometry.get_sorted_cover_object_ids():
+		var cover_object: BattleCoverObject = battle_state.battlefield_geometry.get_cover_object(cover_object_id)
+		if cover_object != null and cover_object.associated_obstacle_id == "parked_car_attack_west":
+			cover_id = cover_object_id
+			break
+	if cover_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var hit_rect: Rect2 = view._cover_object_hit_rect(battle_state, cover_id)
+	var expected: Rect2 = view._rect_to_view(parked.bounds).grow(5.0)
+	var hit_id: String = view.hit_test_cover_object(expected.get_center())
+	var vehicle: BattleVehicle = battle_state.get_vehicle("player_vehicle")
+	if vehicle == null or not vehicle.has_battle_position:
+		return _gameplayruntime_finish(runtime, false)
+	var body_cover_id: String = BattleVehicleCoverService.body_cover_object_id("player_vehicle")
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		"%s__front" % body_cover_id
+	)
+	if slot == null:
+		for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+			var candidate: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+			if candidate != null and candidate.cover_object_id == body_cover_id:
+				slot = candidate
+				break
+	var view_src: String = _tacticalview_source()
+	var hit_body: String = _vispass2_func_body(view_src, "_cover_object_hit_rect")
+	return _gameplayruntime_finish(
+		runtime,
+		hit_rect.is_equal_approx(expected)
+		and hit_id == cover_id
+		and parked.bounds.is_equal_approx(Rect2(24.0, 40.0, 4.5, 1.8))
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9)
+		and slot != null
+		and not hit_body.contains("get_rect")
+		and not view_src.contains("get_rect()")
+	)
+
+
+static func _vispass_m1_view_has_no_asset_path_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/geometry/tactical_proving_ground_catalog.gd"
+	)
+	return (
+		not view_src.contains(".png")
+		and not view_src.contains("assets/tactical")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and not catalog_src.contains(".png")
+		and catalog_src.contains("parked_car_attack_west")
+		and catalog_src.contains("player_vehicle")
+		and FileAccess.file_exists("res://gameplay/tactical_environment_presenter.gd")
+		and FileAccess.file_exists("res://gameplay/tactical_actor_presenter.gd")
+		and FileAccess.get_file_as_string("res://gameplay/tactical_environment_presenter.gd").contains("Sprite2D")
+		and FileAccess.get_file_as_string("res://gameplay/tactical_actor_presenter.gd").contains("Sprite2D")
+	)
+
+
+static func _vispass_m1_fallback_drawer_still_present_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var parked_body: String = _vispass2_func_body(view_src, "_draw_parked_car")
+	var vehicles_body: String = _vispass2_func_body(view_src, "_draw_vehicles")
+	return (
+		view_src.contains("func _draw_civilian_car")
+		and parked_body.contains("_obstacle_uses_retained_visual")
+		and parked_body.contains("_draw_civilian_car")
+		and vehicles_body.contains("_vehicle_uses_retained_visual")
+		and vehicles_body.contains("_draw_civilian_car")
+		and vehicles_body.contains("_draw_arrival_open_doors")
 	)

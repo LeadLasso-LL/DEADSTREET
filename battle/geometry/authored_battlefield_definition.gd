@@ -11,12 +11,14 @@ const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_regio
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
 const BattleDeploymentArea := preload("res://battle/geometry/battle_deployment_area.gd")
 const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
+const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
 
 var definition_id: String = ""
 var width: float = 0.0
 var height: float = 0.0
 var surfaces: Array[BattleSurfaceRegion] = []
 var presentation_markings: Array[BattlePresentationMarking] = []
+var visual_bindings: Array[BattleVisualBinding] = []
 var obstacles: Array[BattleObstacle] = []
 var cover_objects: Array[BattleCoverObject] = []
 var cover_slots: Array[BattleCoverSlot] = []
