@@ -16576,6 +16576,29 @@ static func run() -> Dictionary:
 	var envdepth_geometry_frozen_ok: bool = _envdepth_geometry_frozen_ok()
 	var envdepth_static_presentation_ok: bool = _envdepth_static_presentation_ok()
 	var envdepth_tactical_load_ok: bool = _envdepth_tactical_load_ok()
+	var vispass2_parked_car_geometry_frozen_ok: bool = _vispass2_parked_car_geometry_frozen_ok()
+	var vispass2_parked_car_orientation_visual_ok: bool = _vispass2_parked_car_orientation_visual_ok()
+	var vispass2_vehicle_visual_variants_deterministic_ok: bool = _vispass2_vehicle_visual_variants_deterministic_ok()
+	var vispass2_arrival_vehicle_diagonal_preserved_ok: bool = _vispass2_arrival_vehicle_diagonal_preserved_ok()
+	var vispass2_arrival_vehicle_open_doors_visual_only_ok: bool = _vispass2_arrival_vehicle_open_doors_visual_only_ok()
+	var vispass2_arrival_vehicle_dimensions_frozen_ok: bool = _vispass2_arrival_vehicle_dimensions_frozen_ok()
+	var vispass2_prop_geometry_frozen_ok: bool = _vispass2_prop_geometry_frozen_ok()
+	var vispass2_trash_has_distinct_presentation_ok: bool = _vispass2_trash_has_distinct_presentation_ok()
+	var vispass2_technical_cover_slots_still_hidden_ok: bool = _vispass2_technical_cover_slots_still_hidden_ok()
+	var vispass2_cover_hover_still_operational_ok: bool = _vispass2_cover_hover_still_operational_ok()
+	var vispass2_hq_geometry_frozen_ok: bool = _vispass2_hq_geometry_frozen_ok()
+	var vispass2_porch_stairs_presentation_only_ok: bool = _vispass2_porch_stairs_presentation_only_ok()
+	var vispass2_debug_vehicle_labels_off_ok: bool = _vispass2_debug_vehicle_labels_off_ok()
+	var vispass2_no_new_sprites_textures_shaders_ok: bool = _vispass2_no_new_sprites_textures_shaders_ok()
+	var hqfix_porch_frontage_cover_ok: bool = _hqfix_porch_frontage_cover_ok()
+	var hqfix_parked_cars_curbside_ok: bool = _hqfix_parked_cars_curbside_ok()
+	var hqfix_no_midroad_clutter_object_ok: bool = _hqfix_no_midroad_clutter_object_ok()
+	var hqfix_arrival_vehicle_staging_ok: bool = _hqfix_arrival_vehicle_staging_ok()
+	var vispass2b_arrival_body_honest_ok: bool = _vispass2b_arrival_body_honest_ok()
+	var vispass2b_parked_silhouette_ok: bool = _vispass2b_parked_silhouette_ok()
+	var vispass2b_street_features_readable_ok: bool = _vispass2b_street_features_readable_ok()
+	var vispass2b_porch_frontage_unchanged_ok: bool = _vispass2b_porch_frontage_unchanged_ok()
+	var vispass3_roof_and_arrival_door_ok: bool = _vispass3_roof_and_arrival_door_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18792,6 +18815,29 @@ static func run() -> Dictionary:
 		"envdepth_geometry_frozen_ok": envdepth_geometry_frozen_ok,
 		"envdepth_static_presentation_ok": envdepth_static_presentation_ok,
 		"envdepth_tactical_load_ok": envdepth_tactical_load_ok,
+		"vispass2_parked_car_geometry_frozen_ok": vispass2_parked_car_geometry_frozen_ok,
+		"vispass2_parked_car_orientation_visual_ok": vispass2_parked_car_orientation_visual_ok,
+		"vispass2_vehicle_visual_variants_deterministic_ok": vispass2_vehicle_visual_variants_deterministic_ok,
+		"vispass2_arrival_vehicle_diagonal_preserved_ok": vispass2_arrival_vehicle_diagonal_preserved_ok,
+		"vispass2_arrival_vehicle_open_doors_visual_only_ok": vispass2_arrival_vehicle_open_doors_visual_only_ok,
+		"vispass2_arrival_vehicle_dimensions_frozen_ok": vispass2_arrival_vehicle_dimensions_frozen_ok,
+		"vispass2_prop_geometry_frozen_ok": vispass2_prop_geometry_frozen_ok,
+		"vispass2_trash_has_distinct_presentation_ok": vispass2_trash_has_distinct_presentation_ok,
+		"vispass2_technical_cover_slots_still_hidden_ok": vispass2_technical_cover_slots_still_hidden_ok,
+		"vispass2_cover_hover_still_operational_ok": vispass2_cover_hover_still_operational_ok,
+		"vispass2_hq_geometry_frozen_ok": vispass2_hq_geometry_frozen_ok,
+		"vispass2_porch_stairs_presentation_only_ok": vispass2_porch_stairs_presentation_only_ok,
+		"vispass2_debug_vehicle_labels_off_ok": vispass2_debug_vehicle_labels_off_ok,
+		"vispass2_no_new_sprites_textures_shaders_ok": vispass2_no_new_sprites_textures_shaders_ok,
+		"hqfix_porch_frontage_cover_ok": hqfix_porch_frontage_cover_ok,
+		"hqfix_parked_cars_curbside_ok": hqfix_parked_cars_curbside_ok,
+		"hqfix_no_midroad_clutter_object_ok": hqfix_no_midroad_clutter_object_ok,
+		"hqfix_arrival_vehicle_staging_ok": hqfix_arrival_vehicle_staging_ok,
+		"vispass2b_arrival_body_honest_ok": vispass2b_arrival_body_honest_ok,
+		"vispass2b_parked_silhouette_ok": vispass2b_parked_silhouette_ok,
+		"vispass2b_street_features_readable_ok": vispass2b_street_features_readable_ok,
+		"vispass2b_porch_frontage_unchanged_ok": vispass2b_porch_frontage_unchanged_ok,
+		"vispass3_roof_and_arrival_door_ok": vispass3_roof_and_arrival_door_ok,
 	}
 
 	var passed := true
@@ -24317,7 +24363,13 @@ static func _provingground_hq_assault_ok() -> bool:
 		return false
 	if not north_west_car.blocks_movement or not north_offset_car.blocks_movement:
 		return false
-	if is_equal_approx(north_west_car.bounds.position.y, north_offset_car.bounds.position.y):
+	if north_west_car.bounds.size.x <= north_west_car.bounds.size.y:
+		return false
+	if north_offset_car.bounds.size.x <= north_offset_car.bounds.size.y:
+		return false
+	if north_west_car.bounds.position.y < 26.8 or north_west_car.bounds.position.y > 27.4:
+		return false
+	if north_offset_car.bounds.position.y < 26.8 or north_offset_car.bounds.position.y > 27.4:
 		return false
 	if is_equal_approx(north_west_car.bounds.size.x, north_offset_car.bounds.size.x):
 		return false
@@ -38760,7 +38812,9 @@ static func _battleshortrange_hq_opening_trace_ok() -> bool:
 	var smg_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(smg_slot_id)
 	if smg_slot == null:
 		return _gameplayruntime_finish(runtime, false)
-	if smg_slot.position.distance_to(StarterWorldService.ATTACKER_SMG_START) > 4.0:
+	if not smg_slot_id.begins_with("%s__body_cover" % StarterWorldService.VEHICLE_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if smg_slot.position.distance_to(StarterWorldService.ATTACKER_SMG_START) > 8.0:
 		return _gameplayruntime_finish(runtime, false)
 	if shotgun.has_reserved_cover_slot():
 		var sg_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(shotgun.reserved_cover_slot_id)
@@ -70537,12 +70591,12 @@ static func _envdepth_geometry_frozen_ok() -> bool:
 		"parked_car_north_offset",
 	]
 	var parked_bounds: Dictionary = {
-		"parked_car_attack_west": Rect2(31.6, 39.4, 4.3, 1.8),
-		"parked_car_attack_mid": Rect2(40.4, 38.6, 4.1, 1.75),
-		"parked_car_attack_east": Rect2(58.8, 37.2, 4.3, 1.8),
-		"parked_car_attack_alley": Rect2(71.8, 33.8, 4.2, 1.85),
-		"parked_car_north_west": Rect2(21.8, 27.6, 4.5, 1.7),
-		"parked_car_north_offset": Rect2(39.9, 28.9, 3.6, 1.85),
+		"parked_car_attack_west": Rect2(24.0, 40.0, 4.5, 1.8),
+		"parked_car_attack_mid": Rect2(38.6, 40.0, 4.3, 1.8),
+		"parked_car_attack_east": Rect2(58.6, 40.0, 4.4, 1.8),
+		"parked_car_attack_alley": Rect2(70.2, 40.0, 4.5, 1.8),
+		"parked_car_north_west": Rect2(18.6, 27.00, 4.6, 1.7),
+		"parked_car_north_offset": Rect2(32.4, 27.28, 3.8, 1.7),
 	}
 	for parked_id: String in parked_ids:
 		var parked: BattleObstacle = geometry.get_obstacle(parked_id)
@@ -70554,7 +70608,7 @@ static func _envdepth_geometry_frozen_ok() -> bool:
 	var dumpster_slot: BattleCoverSlot = geometry.get_cover_slot("cover_dumpster_frontage_west_north")
 	if west_slot == null or dumpster_slot == null:
 		return false
-	if not west_slot.position.is_equal_approx(Vector2(33.75, 42.0)):
+	if not west_slot.position.is_equal_approx(Vector2(26.25, 42.6)):
 		return false
 	if not dumpster_slot.position.is_equal_approx(Vector2(21.35, 22.4)):
 		return false
@@ -70563,7 +70617,7 @@ static func _envdepth_geometry_frozen_ok() -> bool:
 		if slot_id.begins_with("vehicle_"):
 			continue
 		authored_slot_count += 1
-	if authored_slot_count != 35:
+	if authored_slot_count != 39:
 		return false
 	var has_east_boundary := false
 	for pocket: BattleDeploymentPocket in geometry.attacker_deployment_area.pockets:
@@ -70593,7 +70647,8 @@ static func _envdepth_static_presentation_ok() -> bool:
 	var has_stain := false
 	var has_patch := false
 	var has_utility := false
-	var has_fade_lane := false
+	var has_center_lane := false
+	var has_manhole := false
 	for marking: BattlePresentationMarking in geometry.presentation_markings:
 		if marking == null:
 			continue
@@ -70603,8 +70658,10 @@ static func _envdepth_static_presentation_ok() -> bool:
 			has_patch = true
 		elif marking.mark_kind == BattlePresentationMarking.KIND_UTILITY:
 			has_utility = true
-		if marking.mark_id == "lane_fade_west":
-			has_fade_lane = true
+		if marking.mark_id == "lane_main":
+			has_center_lane = true
+		if marking.mark_id == "manhole_center":
+			has_manhole = true
 	var view_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
 	var catalog_src: String = FileAccess.get_file_as_string(
 		"res://battle/geometry/tactical_proving_ground_catalog.gd"
@@ -70625,8 +70682,9 @@ static func _envdepth_static_presentation_ok() -> bool:
 		has_stain
 		and has_patch
 		and has_utility
-		and has_fade_lane
-		and geometry.presentation_markings.size() >= 30
+		and has_center_lane
+		and has_manhole
+		and geometry.presentation_markings.size() >= 28
 		and view_src.contains("DEPTH_SHADOW_OFFSET := Vector2(3.2, 3.6)")
 		and view_src.contains("DEPTH_SOUTH_FACE_PX := 7.0")
 		and view_src.contains("DEPTH_HQ_SOUTH_FACE_PX := 9.0")
@@ -71075,7 +71133,7 @@ static func _threatcover_prepare_two_slot(
 ) -> bool:
 	if battle_state == null or smg == null:
 		return false
-	smg.battle_position = Vector2(46.0, 34.0)
+	smg.battle_position = Vector2(42.5, 32.8)
 	smg.has_battle_position = true
 	smg.clear_navigation_path()
 	_threatcover_silence_extra_hostiles(battle_state)
@@ -71118,3 +71176,654 @@ static func _threatcover_kill_hostiles(battle_state: BattleState) -> void:
 		var hostile: BattleParticipant = battle_state.get_participant(defender_id)
 		if hostile != null:
 			hostile.is_alive = false
+
+
+static func _vispass2_parked_bounds() -> Dictionary:
+	return {
+		"parked_car_attack_west": Rect2(24.0, 40.0, 4.5, 1.8),
+		"parked_car_attack_mid": Rect2(38.6, 40.0, 4.3, 1.8),
+		"parked_car_attack_east": Rect2(58.6, 40.0, 4.4, 1.8),
+		"parked_car_attack_alley": Rect2(70.2, 40.0, 4.5, 1.8),
+		"parked_car_north_west": Rect2(18.6, 27.00, 4.6, 1.7),
+		"parked_car_north_offset": Rect2(32.4, 27.28, 3.8, 1.7),
+	}
+
+
+static func _vispass2_slot_anchor(side: String, bounds: Rect2) -> Vector2:
+	var offset: float = TacticalProvingGroundCatalog.COVER_SLOT_OFFSET
+	match side:
+		"west":
+			return Vector2(bounds.position.x - offset, bounds.position.y + bounds.size.y * 0.5)
+		"east":
+			return Vector2(bounds.position.x + bounds.size.x + offset, bounds.position.y + bounds.size.y * 0.5)
+		"north":
+			return Vector2(bounds.position.x + bounds.size.x * 0.5, bounds.position.y - offset)
+		"south":
+			return Vector2(bounds.position.x + bounds.size.x * 0.5, bounds.position.y + bounds.size.y + offset)
+		_:
+			return Vector2.ZERO
+
+
+static func _vispass2_func_body(source: String, func_name: String) -> String:
+	var needle: String = "func " + func_name
+	var idx: int = source.find(needle)
+	if idx < 0:
+		return ""
+	var nxt: int = source.find("\nfunc ", idx + 1)
+	if nxt < 0:
+		nxt = source.length()
+	return source.substr(idx, nxt - idx)
+
+
+static func _vispass2_parked_car_geometry_frozen_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var parked_bounds: Dictionary = _vispass2_parked_bounds()
+	for parked_id: Variant in parked_bounds:
+		var parked: BattleObstacle = geometry.get_obstacle(str(parked_id))
+		if parked == null or parked.presentation_kind != "parked_car":
+			return false
+		if not parked.bounds.is_equal_approx(parked_bounds[parked_id]):
+			return false
+		if not parked.blocks_movement or parked.blocks_line_of_sight:
+			return false
+	for cover_object_id: String in geometry.get_sorted_cover_object_ids():
+		var cover_object: BattleCoverObject = geometry.get_cover_object(cover_object_id)
+		if cover_object == null:
+			continue
+		if not parked_bounds.has(cover_object.associated_obstacle_id):
+			continue
+		var bounds: Rect2 = parked_bounds[cover_object.associated_obstacle_id]
+		for slot_id: String in cover_object.slot_ids:
+			var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+			if slot == null:
+				return false
+			var matched := false
+			for side: String in ["north", "south", "east", "west"]:
+				if slot.position.is_equal_approx(_vispass2_slot_anchor(side, bounds)):
+					matched = true
+					break
+			if not matched:
+				return false
+	return true
+
+
+static func _vispass2_parked_car_orientation_visual_ok() -> bool:
+	var parked_bounds: Dictionary = _vispass2_parked_bounds()
+	for parked_id: Variant in parked_bounds:
+		var bounds: Rect2 = parked_bounds[parked_id]
+		if bounds.size.x <= bounds.size.y:
+			return false
+	var view_src: String = _tacticalview_source()
+	var parked_body: String = _vispass2_func_body(view_src, "_draw_parked_car")
+	if parked_body.is_empty():
+		return false
+	return (
+		parked_body.contains("along_x")
+		and parked_body.contains("hood_east")
+		and parked_body.contains("Road-parallel")
+		and not parked_body.contains(".rotated(")
+		and view_src.contains("func _parked_car_variant")
+		and TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING.x < -0.2
+		and TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING.y < -0.2
+	)
+
+
+static func _vispass2_vehicle_visual_variants_deterministic_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var variant_body: String = _vispass2_func_body(view_src, "_parked_car_variant")
+	var parked_body: String = _vispass2_func_body(view_src, "_draw_parked_car")
+	if variant_body.is_empty() or parked_body.is_empty():
+		return false
+	if parked_body.contains("randf") or parked_body.contains("randi") or parked_body.contains("RandomNumberGenerator"):
+		return false
+	if variant_body.contains("randf") or variant_body.contains("randi"):
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null:
+		return _gameplayruntime_finish(runtime, false)
+	var first: String = view._parked_car_variant("parked_car_north_west")
+	var second: String = view._parked_car_variant("parked_car_north_west")
+	var compact: String = view._parked_car_variant("parked_car_north_offset")
+	var pickup: String = view._parked_car_variant("parked_car_north_west")
+	var suv: String = view._parked_car_variant("parked_car_attack_east")
+	var older: String = view._parked_car_variant("parked_car_attack_mid")
+	var boxy: String = view._parked_car_variant("parked_car_attack_alley")
+	var large: String = view._parked_car_variant("parked_car_attack_west")
+	return _gameplayruntime_finish(
+		runtime,
+		first == second
+		and compact == "compact"
+		and pickup == "pickup"
+		and suv == "suv"
+		and older == "older"
+		and boxy == "boxy"
+		and large == "sedan_large"
+		and view._deterministic_index("parked_car_attack_west", 6)
+			== view._deterministic_index("parked_car_attack_west", 6)
+		and variant_body.contains("parked_car_north_offset")
+		and view_src.contains("func _parked_car_profile")
+		and view_src.contains("func _parked_car_shell")
+	)
+
+
+static func _vispass2_arrival_vehicle_diagonal_preserved_ok() -> bool:
+	var heading: Vector2 = TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING
+	if not heading.is_equal_approx(Vector2(-0.498283875853458, -0.867013943985018)):
+		return false
+	if is_zero_approx(heading.x) or is_zero_approx(heading.y):
+		return false
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/geometry/tactical_proving_ground_catalog.gd"
+	)
+	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("car")
+	var corners: PackedVector2Array = BattleVehicleBodyService.corners_for_pose(
+		TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR,
+		heading,
+		profile
+	)
+	if corners.size() != 4:
+		return false
+	var axis_aligned := (
+		is_equal_approx(corners[0].y, corners[1].y) or is_equal_approx(corners[0].x, corners[1].x)
+	)
+	return (
+		not axis_aligned
+		and catalog_src.contains("ATTACKER_VEHICLE_HEADING")
+		and catalog_src.contains("attacker_vehicle_placement_context")
+	)
+
+
+static func _vispass2_arrival_vehicle_open_doors_visual_only_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var body_src: String = FileAccess.get_file_as_string("res://battle/vehicles/battle_vehicle_body_service.gd")
+	var cover_src: String = FileAccess.get_file_as_string("res://battle/vehicles/battle_vehicle_cover_service.gd")
+	var vehicles_body: String = _vispass2_func_body(view_src, "_draw_vehicles")
+	return (
+		vehicles_body.contains("_draw_arrival_open_doors")
+		and view_src.contains("func _draw_arrival_open_doors")
+		and view_src.contains("Presentation-only")
+		and view_src.contains("ARRIVAL_DOOR_SWING_PX")
+		and not body_src.contains("open_door")
+		and not body_src.contains("_draw_arrival_door")
+		and not cover_src.contains("open_door")
+		and not cover_src.contains("ARRIVAL_DOOR_SWING")
+	)
+
+
+static func _vispass2_arrival_vehicle_dimensions_frozen_ok() -> bool:
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5):
+		return false
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9):
+		return false
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/vehicles/battle_vehicle_physical_catalog.gd"
+	)
+	if not catalog_src.contains("const CAR_LENGTH := 4.5"):
+		return false
+	if not catalog_src.contains("const CAR_WIDTH := 1.9"):
+		return false
+	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog.get_profile("car")
+	var corners: PackedVector2Array = BattleVehicleBodyService.corners_for_pose(
+		TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR,
+		TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING,
+		profile
+	)
+	if corners.size() != 4:
+		return false
+	var body_length: float = corners[0].distance_to(corners[3])
+	var body_width: float = corners[0].distance_to(corners[1])
+	if not is_equal_approx(body_length, BattleVehiclePhysicalCatalog.CAR_LENGTH):
+		return false
+	if not is_equal_approx(body_width, BattleVehiclePhysicalCatalog.CAR_WIDTH):
+		return false
+	return true
+
+
+static func _vispass2_prop_geometry_frozen_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var props: Dictionary = {
+		"dumpster_frontage_west": Rect2(20.2, 23.2, 2.3, 1.7),
+		"table_frontage_west": Rect2(26.6, 23.6, 1.9, 1.1),
+		"trash_frontage_east": Rect2(42.6, 23.3, 1.8, 1.5),
+		"crates_frontage_east": Rect2(48.4, 23.5, 2.1, 1.3),
+		"dumpster_alley": Rect2(83.2, 11.2, 2.0, 2.4),
+		"dumpster_hq_alley_front": Rect2(53.2, 20.8, 1.7, 1.9),
+		"crates_hq_alley_rear": Rect2(56.2, 4.6, 1.6, 1.8),
+		"porch_stub_west": TacticalProvingGroundCatalog.PORCH_STUB_WEST,
+		"porch_stub_east": TacticalProvingGroundCatalog.PORCH_STUB_EAST,
+		"porch_wall_west": TacticalProvingGroundCatalog.PORCH_WALL_WEST,
+		"porch_wall_east": TacticalProvingGroundCatalog.PORCH_WALL_EAST,
+		"trash_street_approach": Rect2(44.6, 27.2, 1.8, 1.4),
+	}
+	for prop_id: Variant in props:
+		var obstacle: BattleObstacle = geometry.get_obstacle(str(prop_id))
+		if obstacle == null:
+			return false
+		if not obstacle.bounds.is_equal_approx(props[prop_id]):
+			return false
+		if not obstacle.blocks_movement or obstacle.blocks_line_of_sight:
+			return false
+	var authored_slot_count: int = 0
+	for slot_id: String in geometry.get_sorted_cover_slot_ids():
+		if slot_id.begins_with("vehicle_"):
+			continue
+		authored_slot_count += 1
+	return authored_slot_count == 39
+
+
+static func _vispass2_trash_has_distinct_presentation_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var trash_a: BattleObstacle = geometry.get_obstacle("trash_frontage_east")
+	var trash_b: BattleObstacle = geometry.get_obstacle("trash_street_approach")
+	var dumpster: BattleObstacle = geometry.get_obstacle("dumpster_frontage_west")
+	var view_src: String = _tacticalview_source()
+	var trash_body: String = _vispass2_func_body(view_src, "_draw_trash")
+	var dumpster_body: String = _vispass2_func_body(view_src, "_draw_dumpster")
+	return (
+		trash_a != null
+		and trash_b != null
+		and dumpster != null
+		and trash_a.presentation_kind == "trash"
+		and trash_b.presentation_kind == "trash"
+		and dumpster.presentation_kind == "dumpster"
+		and view_src.contains('"trash":')
+		and view_src.contains("func _draw_trash")
+		and not trash_body.contains("_draw_dumpster")
+		and dumpster_body.contains("lid")
+		and trash_body.contains("PROVISIONAL_TRASH_BAG")
+	)
+
+
+static func _vispass2_technical_cover_slots_still_hidden_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var cover_body: String = _vispass2_func_body(view_src, "_draw_cover")
+	return (
+		view_src.contains("const DEBUG_DRAW_COVER_SLOTS := false")
+		and cover_body.contains("if not DEBUG_DRAW_COVER_SLOTS:")
+		and not view_src.contains("COVER_SLOT_RADIUS := 0")
+	)
+
+
+static func _vispass2_cover_hover_still_operational_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var parked: BattleObstacle = battle_state.battlefield_geometry.get_obstacle("parked_car_attack_west")
+	var trash: BattleObstacle = battle_state.battlefield_geometry.get_obstacle("trash_frontage_east")
+	if parked == null or trash == null:
+		return _gameplayruntime_finish(runtime, false)
+	var parked_hit: String = view.hit_test_cover_object(view._to_view(parked.bounds.get_center()))
+	var trash_hit: String = view.hit_test_cover_object(view._to_view(trash.bounds.get_center()))
+	var parked_rect: Rect2 = view._cover_object_hit_rect(battle_state, "cover_parked_car_attack_west")
+	var visual: Rect2 = view._rect_to_view(parked.bounds)
+	return _gameplayruntime_finish(
+		runtime,
+		parked_hit == "cover_parked_car_attack_west"
+		and trash_hit == "cover_trash_frontage_east"
+		and parked_rect.size.x > visual.size.x
+		and parked_rect.size.y > visual.size.y
+		and view._cover_object_hit_rect(battle_state, "cover_parked_car_attack_west").has_point(
+			view._to_view(parked.bounds.get_center())
+		)
+	)
+
+
+static func _vispass2_hq_geometry_frozen_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	var west: BattleObstacle = geometry.get_obstacle("porch_stub_west")
+	var east: BattleObstacle = geometry.get_obstacle("porch_stub_east")
+	var apron: BattleSurfaceRegion = geometry.get_surface_region("apron_hq_porch")
+	if hq == null or west == null or east == null or apron == null:
+		return false
+	if not hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS):
+		return false
+	if not apron.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_APRON):
+		return false
+	if not TacticalProvingGroundCatalog.STAIRS_BOUNDS.is_equal_approx(Rect2(32.2, 18.3, 5.6, 4.0)):
+		return false
+	if not west.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_STUB_WEST):
+		return false
+	if not east.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_STUB_EAST):
+		return false
+	var west_wall: BattleObstacle = geometry.get_obstacle("porch_wall_west")
+	var east_wall: BattleObstacle = geometry.get_obstacle("porch_wall_east")
+	if west_wall == null or east_wall == null:
+		return false
+	if not west_wall.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_WALL_WEST):
+		return false
+	if not east_wall.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_WALL_EAST):
+		return false
+	if not hq.blocks_movement or not hq.blocks_line_of_sight:
+		return false
+	if west.blocks_line_of_sight or east.blocks_line_of_sight:
+		return false
+	return true
+
+
+static func _vispass2_porch_stairs_presentation_only_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var static_body: String = _vispass2_func_body(view_src, "paint_static_battlefield")
+	var dynamic_body: String = _vispass2_func_body(view_src, "paint_dynamic_battlefield")
+	var porch_body: String = _vispass2_func_body(view_src, "_draw_hq_porch_and_stairs")
+	var markings_body: String = _vispass2_func_body(view_src, "_draw_presentation_markings")
+	if static_body.is_empty() or porch_body.is_empty() or markings_body.is_empty():
+		return false
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry.get_obstacle("stairs_hq_center") != null:
+		return false
+	var has_stairs_mark := false
+	for marking: BattlePresentationMarking in geometry.presentation_markings:
+		if marking != null and marking.mark_id == "stairs_hq_center":
+			has_stairs_mark = true
+	return (
+		static_body.contains("_draw_hq_porch_and_stairs")
+		and not dynamic_body.contains("_draw_hq_porch_and_stairs")
+		and markings_body.contains('marking.mark_id.begins_with("stairs_")')
+		and porch_body.contains("Presentation only")
+		and porch_body.contains("tread")
+		and has_stairs_mark
+		and geometry.get_sorted_obstacle_ids().size() == 24
+	)
+
+
+static func _vispass2_debug_vehicle_labels_off_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var car_label_idx: int = view_src.find(', "CAR", 11)')
+	if car_label_idx < 0:
+		return false
+	var car_window: String = view_src.substr(maxi(car_label_idx - 90, 0), 90)
+	return (
+		view_src.contains("const DEBUG_DRAW_DEVELOPER_OVERLAY := false")
+		and car_window.contains("DEBUG_DRAW_DEVELOPER_OVERLAY")
+		and view_src.contains("vehicle.battle_vehicle_id")
+	)
+
+
+static func _vispass2_no_new_sprites_textures_shaders_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/geometry/tactical_proving_ground_catalog.gd"
+	)
+	return (
+		not view_src.contains("Sprite2D")
+		and not view_src.contains("AnimatedSprite")
+		and not view_src.contains("Texture2D")
+		and not view_src.contains("ShaderMaterial")
+		and not view_src.contains(".gdshader")
+		and not catalog_src.contains("Sprite2D")
+		and not catalog_src.contains("Texture2D")
+		and not catalog_src.contains(".png")
+	)
+
+
+static func _hqfix_porch_frontage_cover_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var west_wall: BattleObstacle = geometry.get_obstacle("porch_wall_west")
+	var east_wall: BattleObstacle = geometry.get_obstacle("porch_wall_east")
+	var west_stub: BattleObstacle = geometry.get_obstacle("porch_stub_west")
+	var east_stub: BattleObstacle = geometry.get_obstacle("porch_stub_east")
+	if west_wall == null or east_wall == null or west_stub == null or east_stub == null:
+		return false
+	if west_wall.blocks_line_of_sight or east_wall.blocks_line_of_sight:
+		return false
+	if not west_wall.blocks_movement or not east_wall.blocks_movement:
+		return false
+	var west_porch: BattleCoverSlot = geometry.get_cover_slot("cover_porch_wall_west_north")
+	var east_porch: BattleCoverSlot = geometry.get_cover_slot("cover_porch_wall_east_north")
+	var stairs_left: BattleCoverSlot = geometry.get_cover_slot("cover_porch_stub_west_east")
+	var stairs_right: BattleCoverSlot = geometry.get_cover_slot("cover_porch_stub_east_west")
+	if west_porch == null or east_porch == null or stairs_left == null or stairs_right == null:
+		return false
+	if west_porch.facing_direction.normalized().dot(Vector2.DOWN) < 0.75:
+		return false
+	if east_porch.facing_direction.normalized().dot(Vector2.DOWN) < 0.75:
+		return false
+	if west_porch.position.x >= TacticalProvingGroundCatalog.STAIRS_BOUNDS.position.x:
+		return false
+	if east_porch.position.x <= TacticalProvingGroundCatalog.STAIRS_BOUNDS.end.x:
+		return false
+	if stairs_left.position.x > 35.0:
+		return false
+	if stairs_right.position.x < 35.0:
+		return false
+	if geometry.get_obstacle("stairs_hq_center") != null:
+		return false
+	return (
+		geometry.has_cover_slot("cover_porch_stub_west_south")
+		and geometry.has_cover_slot("cover_porch_wall_west_south")
+		and west_porch.position.y < 22.4
+		and east_porch.position.y < 22.4
+	)
+
+
+static func _hqfix_parked_cars_curbside_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var south_ids: Array[String] = [
+		"parked_car_attack_west",
+		"parked_car_attack_mid",
+		"parked_car_attack_east",
+		"parked_car_attack_alley",
+	]
+	var north_ids: Array[String] = [
+		"parked_car_north_west",
+		"parked_car_north_offset",
+	]
+	for parked_id: String in south_ids:
+		var parked: BattleObstacle = geometry.get_obstacle(parked_id)
+		if parked == null or parked.presentation_kind != "parked_car":
+			return false
+		if parked.bounds.size.x <= parked.bounds.size.y:
+			return false
+		if parked.bounds.position.y < 39.4:
+			return false
+		if parked.bounds.end.y > 42.2:
+			return false
+	for parked_id: String in north_ids:
+		var parked: BattleObstacle = geometry.get_obstacle(parked_id)
+		if parked == null or parked.presentation_kind != "parked_car":
+			return false
+		if parked.bounds.size.x <= parked.bounds.size.y:
+			return false
+		if parked.bounds.position.y < 26.8:
+			return false
+		if parked.bounds.position.y > 27.4:
+			return false
+	var heading: Vector2 = TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING.normalized()
+	if absf(heading.dot(Vector2.RIGHT)) > 0.92:
+		return false
+	if absf(heading.dot(Vector2.DOWN)) > 0.92:
+		return false
+	return true
+
+
+static func _hqfix_arrival_vehicle_staging_ok() -> bool:
+	if not TacticalProvingGroundCatalog.ATTACKER_PLACE_POINT.is_equal_approx(
+		StarterWorldService.ATTACKER_SMG_START
+	):
+		return false
+	if StarterWorldService.ATTACKER_SMG_START.distance_to(
+		TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR
+	) > 6.0:
+		return false
+	if not TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR.is_equal_approx(Vector2(46.5, 35.2)):
+		return false
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5):
+		return false
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9):
+		return false
+	var heading: Vector2 = TacticalProvingGroundCatalog.ATTACKER_VEHICLE_HEADING.normalized()
+	if absf(heading.dot(Vector2.RIGHT)) > 0.92:
+		return false
+	if absf(heading.dot(Vector2.DOWN)) > 0.92:
+		return false
+	return true
+
+
+static func _hqfix_no_midroad_clutter_object_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var road: BattleSurfaceRegion = geometry.get_surface_region("road_main")
+	if road == null:
+		return false
+	var trash: BattleObstacle = geometry.get_obstacle("trash_street_approach")
+	if trash == null or trash.presentation_kind != "trash":
+		return false
+	if trash.bounds.position.y > 28.2:
+		return false
+	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
+		if obstacle == null or obstacle.presentation_kind == "building":
+			continue
+		if obstacle.presentation_kind == "parked_car":
+			continue
+		var center: Vector2 = obstacle.bounds.get_center()
+		if not BattlefieldGeometry.rect_contains_point(road.bounds, center):
+			continue
+		if center.y > 29.5 and center.y < 39.0:
+			return false
+	return true
+
+
+static func _vispass2b_arrival_body_honest_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	if not view_src.contains("const ARRIVAL_VISUAL_INFLATE_PX := 0.8"):
+		return false
+	if not view_src.contains("const ARRIVAL_DOOR_SWING_PX := 7.0"):
+		return false
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5):
+		return false
+	if not is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9):
+		return false
+	var vehicles_body: String = _vispass2_func_body(view_src, "_draw_vehicles")
+	var parked_body: String = _vispass2_func_body(view_src, "_draw_parked_car")
+	var door_body: String = _vispass2_func_body(view_src, "_draw_arrival_open_doors")
+	return (
+		vehicles_body.contains("_draw_civilian_car")
+		and parked_body.contains("_draw_civilian_car")
+		and vehicles_body.contains("_draw_arrival_open_doors")
+		and door_body.contains("Presentation-only")
+		and view_src.contains("func _car_body_shell")
+		and view_src.contains("No mid-body waist")
+		and TacticalProvingGroundCatalog.ATTACKER_VEHICLE_ANCHOR.is_equal_approx(Vector2(46.5, 35.2))
+	)
+
+
+static func _vispass2b_parked_silhouette_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var parked_body: String = _vispass2_func_body(view_src, "_draw_parked_car")
+	var profile_body: String = _vispass2_func_body(view_src, "_parked_car_profile")
+	if parked_body.is_empty() or profile_body.is_empty():
+		return false
+	return (
+		parked_body.contains("_draw_civilian_car")
+		and parked_body.contains("Road-parallel")
+		and parked_body.contains("along_x")
+		and not parked_body.contains(".rotated(")
+		and profile_body.contains("\"compact\"")
+		and profile_body.contains("\"older\"")
+		and profile_body.contains("\"sedan_large\"")
+		and profile_body.contains("\"suv\"")
+		and profile_body.contains("\"boxy\"")
+		and profile_body.contains("\"pickup\"")
+		and profile_body.contains("has_bed")
+		and view_src.contains("func _parked_car_shell")
+		and view_src.contains("func _car_body_shell")
+	)
+
+
+static func _vispass2b_street_features_readable_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var ids: Dictionary = {}
+	for marking: BattlePresentationMarking in geometry.presentation_markings:
+		if marking != null:
+			ids[marking.mark_id] = marking.mark_kind
+	if ids.has("lane_fade_west") or ids.has("manhole_east") or ids.has("asphalt_patch_east"):
+		return false
+	if ids.has("parking_fade_north") or ids.has("asphalt_repair_seam"):
+		return false
+	var view_src: String = _tacticalview_source()
+	var utility_body: String = _vispass2_func_body(view_src, "_draw_utility_cover")
+	var patch_body: String = _vispass2_func_body(view_src, "_draw_pavement_patch")
+	var stain_body: String = _vispass2_func_body(view_src, "_draw_pavement_stain")
+	return (
+		ids.has("manhole_center")
+		and ids.has("manhole_west")
+		and ids.has("asphalt_patch_west")
+		and ids.has("stain_oil_west")
+		and ids.has("lane_main")
+		and utility_body.contains("draw_circle")
+		and not utility_body.contains("draw_rect")
+		and patch_body.contains("PackedVector2Array")
+		and stain_body.contains("draw_circle")
+		and view_src.contains("DEBUG_DRAW_DEVELOPER_OVERLAY := false")
+	)
+
+
+static func _vispass2b_porch_frontage_unchanged_ok() -> bool:
+	return (
+		TacticalProvingGroundCatalog.PORCH_WALL_WEST.is_equal_approx(Rect2(18.2, 21.15, 12.2, 1.0))
+		and TacticalProvingGroundCatalog.PORCH_WALL_EAST.is_equal_approx(Rect2(39.5, 21.15, 12.0, 1.0))
+		and TacticalProvingGroundCatalog.PORCH_STUB_WEST.is_equal_approx(Rect2(30.6, 18.7, 1.4, 3.4))
+		and TacticalProvingGroundCatalog.PORCH_STUB_EAST.is_equal_approx(Rect2(38.0, 18.7, 1.4, 3.4))
+		and TacticalProvingGroundCatalog.STAIRS_BOUNDS.is_equal_approx(Rect2(32.2, 18.3, 5.6, 4.0))
+		and _hqfix_porch_frontage_cover_ok()
+	)
+
+
+static func _vispass3_roof_and_arrival_door_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var roof_body: String = _vispass2_func_body(view_src, "_draw_building_roof")
+	var door_body: String = _vispass2_func_body(view_src, "_draw_arrival_open_doors")
+	var hq_body: String = _vispass2_func_body(view_src, "_draw_hq_cues")
+	return (
+		roof_body.contains("_draw_roof_dressing")
+		and view_src.contains("func _draw_roof_dressing")
+		and view_src.contains("func _draw_roof_hvac")
+		and view_src.contains("func _draw_ajar_crew_door")
+		and view_src.contains("const ARRIVAL_DOOR_ANGLE_DEG := 32.0")
+		and view_src.contains("const ARRIVAL_DOOR_THICK_PX := 2.6")
+		and door_body.contains("One front crew-side door")
+		and door_body.contains("Presentation-only")
+		and hq_body.contains("plate")
+		and hq_body.contains("cornice")
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9)
+	)

@@ -104,14 +104,14 @@ const PROVISIONAL_SURROUND_BLOCK := Color(0.19, 0.17, 0.15, 1.0)
 const PROVISIONAL_SURROUND_PARCEL := Color(0.15, 0.14, 0.13, 1.0)
 const PROVISIONAL_SURROUND_STUB := Color(0.13, 0.13, 0.135, 0.42)
 const PROVISIONAL_FIELD := Color(0.21, 0.18, 0.16, 1.0)
-const PROVISIONAL_ASPHALT := Color(0.10, 0.10, 0.11, 1.0)
+const PROVISIONAL_ASPHALT := Color(0.11, 0.11, 0.125, 1.0)
 const PROVISIONAL_ASPHALT_INTERSECTION := Color(0.15, 0.15, 0.155, 1.0)
-const PROVISIONAL_SIDEWALK := Color(0.58, 0.55, 0.47, 1.0)
+const PROVISIONAL_SIDEWALK := Color(0.64, 0.61, 0.52, 1.0)
 const PROVISIONAL_LOT := Color(0.28, 0.24, 0.20, 1.0)
-const PROVISIONAL_ALLEY := Color(0.075, 0.068, 0.062, 1.0)
-const PROVISIONAL_CURB := Color(0.74, 0.70, 0.58, 1.0)
+const PROVISIONAL_ALLEY := Color(0.09, 0.08, 0.07, 1.0)
+const PROVISIONAL_CURB := Color(0.80, 0.76, 0.64, 1.0)
 const PROVISIONAL_CURB_EDGE := Color(0.12, 0.10, 0.08, 1.0)
-const PROVISIONAL_APRON := Color(0.42, 0.37, 0.31, 1.0)
+const PROVISIONAL_APRON := Color(0.50, 0.44, 0.36, 1.0)
 const PROVISIONAL_LANE := Color(0.88, 0.78, 0.38, 0.78)
 const PROVISIONAL_PARKING := Color(0.86, 0.86, 0.80, 0.46)
 const PROVISIONAL_LOADING := Color(0.74, 0.42, 0.16, 0.55)
@@ -131,12 +131,19 @@ const PROVISIONAL_AWNING := Color(0.26, 0.16, 0.14, 1.0)
 const PROVISIONAL_WINDOW := Color(0.42, 0.56, 0.62, 0.95)
 const PROVISIONAL_DOOR := Color(0.14, 0.10, 0.09, 1.0)
 const PROVISIONAL_FENCE := Color(0.38, 0.37, 0.34, 0.92)
-const PROVISIONAL_PARKED_CAR := Color(0.28, 0.36, 0.44, 1.0)
-const PROVISIONAL_PARKED_CAR_CABIN := Color(0.10, 0.13, 0.16, 1.0)
-const PROVISIONAL_DUMPSTER := Color(0.20, 0.38, 0.24, 1.0)
-const PROVISIONAL_CRATE := Color(0.46, 0.34, 0.20, 1.0)
-const PROVISIONAL_LOW_WALL := Color(0.50, 0.47, 0.42, 1.0)
+const PROVISIONAL_PARKED_CAR := Color(0.28, 0.32, 0.34, 1.0)
+const PROVISIONAL_PARKED_CAR_CABIN := Color(0.10, 0.11, 0.12, 1.0)
+const PROVISIONAL_DUMPSTER := Color(0.18, 0.32, 0.22, 1.0)
+const PROVISIONAL_CRATE := Color(0.50, 0.38, 0.22, 1.0)
+const PROVISIONAL_LOW_WALL := Color(0.54, 0.48, 0.40, 1.0)
 const PROVISIONAL_BARRIER := Color(0.58, 0.42, 0.28, 1.0)
+const PROVISIONAL_TABLE := Color(0.42, 0.32, 0.22, 1.0)
+const PROVISIONAL_TRASH_BAG := Color(0.12, 0.14, 0.12, 1.0)
+const PROVISIONAL_TRASH_BOX := Color(0.46, 0.38, 0.26, 1.0)
+const PROVISIONAL_PORCH_DECK := Color(0.56, 0.50, 0.40, 1.0)
+const PROVISIONAL_STAIR_TREAD := Color(0.56, 0.50, 0.40, 1.0)
+const PROVISIONAL_STAIR_RISER := Color(0.20, 0.15, 0.11, 1.0)
+const PROVISIONAL_STAIR_NOSING := Color(0.78, 0.72, 0.58, 0.88)
 const PROVISIONAL_PROP_SHADOW := Color(0.04, 0.03, 0.03, 0.42)
 const PROVISIONAL_PROP_OUTLINE := Color(0.05, 0.04, 0.04, 1.0)
 const PROVISIONAL_BOUNDS := Color(0.50, 0.46, 0.40, 0.88)
@@ -191,11 +198,18 @@ const PROVISIONAL_SELECTABLE := Color(0.72, 0.88, 1.0, 1.0)
 const PROVISIONAL_STATUS := Color(0.95, 0.78, 0.42, 1.0)
 # Vehicle chrome is presentation only. Physical length/width stay on the catalog.
 # Fill/outline follow the authoritative body; they must not read as a larger collider.
-const PROVISIONAL_VEHICLE_FILL := Color(0.90, 0.74, 0.20, 1.0)
-const PROVISIONAL_VEHICLE_CABIN := Color(0.16, 0.14, 0.10, 1.0)
-const PROVISIONAL_VEHICLE_GLASS := Color(0.32, 0.40, 0.46, 0.88)
-const PROVISIONAL_VEHICLE_OUTLINE := Color(0.08, 0.07, 0.05, 1.0)
+const PROVISIONAL_VEHICLE_FILL := Color(0.22, 0.24, 0.23, 1.0)
+const PROVISIONAL_VEHICLE_CABIN := Color(0.11, 0.10, 0.09, 1.0)
+const PROVISIONAL_VEHICLE_GLASS := Color(0.36, 0.46, 0.52, 0.90)
+const PROVISIONAL_VEHICLE_OUTLINE := Color(0.06, 0.05, 0.04, 1.0)
 const PROVISIONAL_VEHICLE_FACING := Color(0.08, 0.07, 0.05, 1.0)
+const PROVISIONAL_VEHICLE_DOOR := Color(0.30, 0.32, 0.30, 1.0)
+const ARRIVAL_DOOR_SWING_PX := 7.0
+const ARRIVAL_DOOR_THICK_PX := 2.6
+const ARRIVAL_DOOR_ANGLE_DEG := 32.0
+const ARRIVAL_VISUAL_INFLATE_PX := 0.8
+const ARRIVAL_TAIL_LIGHT := Color(0.72, 0.16, 0.14, 0.95)
+const ARRIVAL_HEAD_LIGHT := Color(0.94, 0.90, 0.62, 0.96)
 const PROVISIONAL_MUZZLE := Color(1.0, 0.96, 0.72, 1.0)
 const PROVISIONAL_MUZZLE_CORE := Color(1.0, 1.0, 0.94, 1.0)
 const PROVISIONAL_PROJECTILE := Color(0.96, 0.96, 0.94, 1.0)
@@ -442,6 +456,7 @@ func paint_static_battlefield(canvas: CanvasItem) -> void:
 		_draw_battlefield(battle_state)
 		_draw_surfaces(battle_state)
 		_draw_presentation_markings(battle_state)
+		_draw_hq_porch_and_stairs(battle_state)
 		_draw_obstacles(battle_state)
 		_draw_field_bounds(battle_state)
 	_paint = null
@@ -700,8 +715,21 @@ func _draw_surface_depth(surface: BattleSurfaceRegion) -> void:
 
 func _draw_sidewalk_elevation(bounds: Rect2) -> void:
 	var view_rect: Rect2 = _rect_to_view(bounds)
+	var wash: Rect2 = _inset_view_rect(view_rect, 1.2, 1.0)
+	_paint_canvas().draw_rect(wash, Color(0.78, 0.74, 0.64, 0.18), true)
 	var north_light: Rect2 = Rect2(view_rect.position, Vector2(view_rect.size.x, minf(3.2, view_rect.size.y)))
 	_paint_canvas().draw_rect(north_light, Color(0.82, 0.78, 0.68, 0.48), true)
+	var slab: float = 28.0
+	var sx: float = view_rect.position.x + 10.0
+	while sx < view_rect.end.x - 8.0:
+		_paint_canvas().draw_line(
+			Vector2(sx, view_rect.position.y + 2.0),
+			Vector2(sx, view_rect.end.y - 2.0),
+			Color(0.42, 0.38, 0.32, 0.28),
+			1.0,
+			true
+		)
+		sx += slab
 	var band: float = minf(4.6, view_rect.size.y)
 	var road_drop: Rect2
 	if bounds.get_center().y < 35.0:
@@ -738,6 +766,11 @@ func _draw_alley_contact(bounds: Rect2) -> void:
 		Vector2(maxf(view_rect.size.x - strip * 0.7, 2.0), maxf(view_rect.size.y - north_strip * 0.4, 2.0))
 	)
 	_paint_canvas().draw_rect(floor_shade, Color(0.05, 0.04, 0.035, 0.26), true)
+	var drain: Rect2 = Rect2(
+		Vector2(view_rect.position.x + view_rect.size.x * 0.5 - 1.1, view_rect.position.y + 6.0),
+		Vector2(2.2, maxf(view_rect.size.y - 12.0, 4.0))
+	)
+	_paint_canvas().draw_rect(drain, Color(0.04, 0.04, 0.04, 0.55), true)
 
 
 func _draw_apron_edge(bounds: Rect2) -> void:
@@ -749,6 +782,113 @@ func _draw_apron_edge(bounds: Rect2) -> void:
 	_paint_canvas().draw_rect(south, DEPTH_EDGE_AO, true)
 	var north: Rect2 = Rect2(view_rect.position, Vector2(view_rect.size.x, minf(3.0, view_rect.size.y)))
 	_paint_canvas().draw_rect(north, Color(0.18, 0.12, 0.10, 0.34), true)
+
+
+func _draw_hq_porch_and_stairs(battle_state: BattleState) -> void:
+	# Presentation only. Uses existing apron/stairs surface bounds. No obstacles or LOS.
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var apron: BattleSurfaceRegion = geometry.get_surface_region("apron_hq_porch")
+	if apron == null or not apron.is_valid():
+		return
+	var porch: Rect2 = _rect_to_view(apron.bounds)
+	_paint_canvas().draw_rect(porch, PROVISIONAL_PORCH_DECK, true)
+	var north_contact: Rect2 = Rect2(porch.position, Vector2(porch.size.x, minf(4.6, porch.size.y)))
+	_paint_canvas().draw_rect(north_contact, DEPTH_CONTACT_SHADOW, true)
+	var plank: float = 5.5
+	var py: float = porch.position.y + 5.0
+	while py < porch.end.y - 4.0:
+		_paint_canvas().draw_line(
+			Vector2(porch.position.x + 2.0, py),
+			Vector2(porch.end.x - 2.0, py),
+			Color(0.32, 0.26, 0.18, 0.38),
+			1.0,
+			true
+		)
+		py += plank
+	var deck_light: Rect2 = Rect2(
+		porch.position + Vector2(3.0, 4.2),
+		Vector2(maxf(porch.size.x - 6.0, 4.0), minf(6.0, porch.size.y * 0.28))
+	)
+	_paint_canvas().draw_rect(deck_light, Color(0.68, 0.60, 0.48, 0.22), true)
+	var stairs_bounds: Rect2 = Rect2()
+	for marking: BattlePresentationMarking in geometry.presentation_markings:
+		if marking != null and marking.mark_id == "stairs_hq_center" and marking.is_valid():
+			stairs_bounds = _rect_to_view(marking.bounds)
+			break
+	if stairs_bounds.size.x <= 0.0 or stairs_bounds.size.y <= 0.0:
+		return
+	var south_lip: Rect2 = Rect2(
+		Vector2(porch.position.x, porch.end.y - 3.4),
+		Vector2(porch.size.x, 3.4)
+	)
+	_paint_canvas().draw_rect(south_lip, DEPTH_CURB_DROP, true)
+	# Cut the stair opening out of the south lip by overdrawing treads.
+	var tread_count: int = 5
+	var tread_h: float = stairs_bounds.size.y / float(tread_count)
+	for i: int in range(tread_count):
+		# i=0 is the highest tread at the HQ doorway (north).
+		var tread: Rect2 = Rect2(
+			Vector2(stairs_bounds.position.x, stairs_bounds.position.y + float(i) * tread_h),
+			Vector2(stairs_bounds.size.x, tread_h)
+		)
+		var shade: float = 0.06 * float(i)
+		var tread_fill: Color = Color(
+			PROVISIONAL_STAIR_TREAD.r + shade * 0.35,
+			PROVISIONAL_STAIR_TREAD.g + shade * 0.32,
+			PROVISIONAL_STAIR_TREAD.b + shade * 0.22,
+			1.0
+		)
+		_paint_canvas().draw_rect(tread, tread_fill, true)
+		var riser: Rect2 = Rect2(
+			Vector2(tread.position.x, tread.end.y - 2.2),
+			Vector2(tread.size.x, 2.2)
+		)
+		_paint_canvas().draw_rect(riser, PROVISIONAL_STAIR_RISER, true)
+		var nosing: Rect2 = Rect2(
+			Vector2(tread.position.x, tread.end.y - 2.8),
+			Vector2(tread.size.x, 1.1)
+		)
+		_paint_canvas().draw_rect(nosing, PROVISIONAL_STAIR_NOSING, true)
+		var seam: Rect2 = Rect2(
+			Vector2(tread.position.x + 1.6, tread.position.y + tread_h * 0.38),
+			Vector2(maxf(tread.size.x - 3.2, 2.0), 0.8)
+		)
+		_paint_canvas().draw_rect(seam, Color(0.28, 0.22, 0.16, 0.55), true)
+	var stringer_w: float = 2.4
+	_paint_canvas().draw_rect(
+		Rect2(stairs_bounds.position, Vector2(stringer_w, stairs_bounds.size.y)),
+		Color(0.28, 0.22, 0.16, 0.92),
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(
+			Vector2(stairs_bounds.end.x - stringer_w, stairs_bounds.position.y),
+			Vector2(stringer_w, stairs_bounds.size.y)
+		),
+		Color(0.28, 0.22, 0.16, 0.92),
+		true
+	)
+	_paint_canvas().draw_rect(stairs_bounds, Color(0.10, 0.07, 0.05, 0.90), false, 1.4)
+	# Door threshold landing at the top of the stairs.
+	var landing: Rect2 = Rect2(
+		Vector2(stairs_bounds.position.x + 2.0, stairs_bounds.position.y - 1.2),
+		Vector2(maxf(stairs_bounds.size.x - 4.0, 4.0), 3.2)
+	)
+	_paint_canvas().draw_rect(landing, Color(0.22, 0.16, 0.12, 0.80), true)
+	var post_w: float = 3.2
+	var post_h: float = 8.0
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(stairs_bounds.position.x - 1.0, stairs_bounds.end.y - 3.0), Vector2(post_w, post_h)),
+		Color(0.34, 0.28, 0.20, 1.0),
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(stairs_bounds.end.x - post_w + 1.0, stairs_bounds.end.y - 3.0), Vector2(post_w, post_h)),
+		Color(0.34, 0.28, 0.20, 1.0),
+		true
+	)
 
 
 func _draw_asphalt_edge(bounds: Rect2) -> void:
@@ -764,6 +904,19 @@ func _draw_asphalt_edge(bounds: Rect2) -> void:
 		Color(0.04, 0.04, 0.045, 0.28),
 		true
 	)
+	var center_h: float = minf(18.0, view_rect.size.y * 0.22)
+	var wear: Rect2 = Rect2(
+		Vector2(view_rect.position.x + 8.0, view_rect.position.y + view_rect.size.y * 0.5 - center_h * 0.5),
+		Vector2(maxf(view_rect.size.x - 16.0, 4.0), center_h)
+	)
+	_paint_canvas().draw_rect(wear, Color(0.16, 0.16, 0.17, 0.22), true)
+	var track: Rect2 = Rect2(
+		Vector2(view_rect.position.x + 14.0, view_rect.position.y + view_rect.size.y * 0.38),
+		Vector2(maxf(view_rect.size.x - 28.0, 4.0), 2.2)
+	)
+	_paint_canvas().draw_rect(track, Color(0.08, 0.08, 0.09, 0.16), true)
+	track.position.y = view_rect.position.y + view_rect.size.y * 0.62
+	_paint_canvas().draw_rect(track, Color(0.08, 0.08, 0.09, 0.14), true)
 
 
 func _draw_curb_edge(bounds: Rect2) -> void:
@@ -847,6 +1000,9 @@ func _draw_presentation_markings(battle_state: BattleState) -> void:
 	for marking: BattlePresentationMarking in geometry.presentation_markings:
 		if marking == null or not marking.is_valid():
 			continue
+		# Stair chrome is drawn as real treads in _draw_hq_porch_and_stairs.
+		if marking.mark_id.begins_with("stairs_"):
+			continue
 		var view_rect: Rect2 = _rect_to_view(marking.bounds)
 		match marking.mark_kind:
 			BattlePresentationMarking.KIND_LANE:
@@ -871,28 +1027,80 @@ func _draw_presentation_markings(battle_state: BattleState) -> void:
 			BattlePresentationMarking.KIND_UTILITY:
 				_draw_utility_cover(view_rect)
 			BattlePresentationMarking.KIND_STAIN:
-				_paint_canvas().draw_rect(view_rect, DEPTH_STAIN, true)
+				_draw_pavement_stain(view_rect)
 			BattlePresentationMarking.KIND_PATCH:
-				_paint_canvas().draw_rect(view_rect, DEPTH_PATCH, true)
-				_paint_canvas().draw_rect(view_rect, DEPTH_PATCH_LINE, false, 1.6)
+				_draw_pavement_patch(view_rect)
 			_:
 				_paint_canvas().draw_rect(view_rect, PROVISIONAL_SEAM, true)
 
 
-func _draw_utility_cover(view_rect: Rect2) -> void:
-	_paint_canvas().draw_rect(view_rect, PROVISIONAL_UTILITY, true)
-	_paint_canvas().draw_rect(view_rect, Color(0.08, 0.08, 0.08, 1.0), false, 1.6)
-	var radius: float = minf(view_rect.size.x, view_rect.size.y) * 0.42
-	_paint_canvas().draw_circle(view_rect.get_center(), radius, Color(0.22, 0.22, 0.22, 0.95), true)
-	_paint_canvas().draw_circle(view_rect.get_center(), radius, Color(0.08, 0.08, 0.08, 1.0), false, 1.0, true)
+func _draw_pavement_stain(view_rect: Rect2) -> void:
+	var stain: Color = Color(0.05, 0.04, 0.03, 0.28)
 	var mid: Vector2 = view_rect.get_center()
+	var rx: float = view_rect.size.x * 0.48
+	var ry: float = view_rect.size.y * 0.42
+	_paint_canvas().draw_circle(mid, minf(rx, ry), stain, true)
+	_paint_canvas().draw_circle(mid + Vector2(rx * 0.42, ry * 0.18), minf(rx, ry) * 0.55, stain, true)
+	_paint_canvas().draw_circle(mid + Vector2(-rx * 0.28, ry * 0.32), minf(rx, ry) * 0.40, stain, true)
+	_paint_canvas().draw_circle(mid + Vector2(rx * 0.08, -ry * 0.36), minf(rx, ry) * 0.32, stain, true)
+
+
+func _draw_pavement_patch(view_rect: Rect2) -> void:
+	var mid: Vector2 = view_rect.get_center()
+	var hx: float = view_rect.size.x * 0.5
+	var hy: float = view_rect.size.y * 0.5
+	var patch: PackedVector2Array = PackedVector2Array(
+		[
+			mid + Vector2(-hx * 0.92, -hy * 0.28),
+			mid + Vector2(-hx * 0.38, -hy * 0.96),
+			mid + Vector2(hx * 0.34, -hy * 0.86),
+			mid + Vector2(hx * 0.98, -hy * 0.18),
+			mid + Vector2(hx * 0.70, hy * 0.78),
+			mid + Vector2(-hx * 0.12, hy * 0.98),
+			mid + Vector2(-hx * 0.88, hy * 0.36),
+		]
+	)
+	var fill: Color = Color(0.16, 0.15, 0.145, 0.78)
+	_paint_canvas().draw_colored_polygon(patch, fill)
+	var seam: PackedVector2Array = patch.duplicate()
+	seam.append(patch[0])
+	_paint_canvas().draw_polyline(seam, Color(0.08, 0.07, 0.06, 0.70), 1.2, true)
 	_paint_canvas().draw_line(
-		mid + Vector2(-radius * 0.72, 0.0),
-		mid + Vector2(radius * 0.72, 0.0),
-		Color(0.08, 0.08, 0.08, 0.85),
+		mid + Vector2(-hx * 0.55, hy * 0.08),
+		mid + Vector2(hx * 0.48, -hy * 0.12),
+		Color(0.10, 0.09, 0.08, 0.40),
 		1.0,
 		true
 	)
+
+
+func _draw_utility_cover(view_rect: Rect2) -> void:
+	var mid: Vector2 = view_rect.get_center()
+	var radius: float = minf(view_rect.size.x, view_rect.size.y) * 0.48
+	var metal: Color = Color(0.34, 0.34, 0.33, 1.0)
+	var rim: Color = Color(0.16, 0.16, 0.15, 1.0)
+	var grate: Color = Color(0.12, 0.12, 0.12, 0.92)
+	_paint_canvas().draw_circle(mid, radius, metal, true)
+	_paint_canvas().draw_circle(mid, radius, rim, false, 1.8, true)
+	_paint_canvas().draw_circle(mid, radius * 0.78, Color(0.28, 0.28, 0.27, 1.0), true)
+	_paint_canvas().draw_circle(mid, radius * 0.78, rim, false, 1.1, true)
+	for i: int in range(-2, 3):
+		var t: float = float(i) * radius * 0.22
+		_paint_canvas().draw_line(
+			mid + Vector2(-radius * 0.58, t),
+			mid + Vector2(radius * 0.58, t),
+			grate,
+			1.0,
+			true
+		)
+	_paint_canvas().draw_line(
+		mid + Vector2(0.0, -radius * 0.58),
+		mid + Vector2(0.0, radius * 0.58),
+		grate,
+		1.0,
+		true
+	)
+	_paint_canvas().draw_circle(mid, 1.15, rim, true)
 
 
 func _draw_depth_south_east_edges(view_rect: Rect2, color: Color, thickness: float) -> void:
@@ -912,8 +1120,9 @@ func _draw_depth_south_east_edges(view_rect: Rect2, color: Color, thickness: flo
 
 func _draw_dashed_band(view_rect: Rect2, color: Color) -> void:
 	var along_x: bool = view_rect.size.x >= view_rect.size.y
-	var dash: float = 10.0
-	var gap: float = 8.0
+	var dash: float = 12.0
+	var gap: float = 10.0
+	var paint: Color = Color(color.r, color.g, color.b, color.a * 0.72)
 	if along_x:
 		var x: float = view_rect.position.x
 		var y: float = view_rect.position.y
@@ -921,7 +1130,7 @@ func _draw_dashed_band(view_rect: Rect2, color: Color) -> void:
 		var end_x: float = view_rect.position.x + view_rect.size.x
 		while x < end_x:
 			var w: float = minf(dash, end_x - x)
-			_paint_canvas().draw_rect(Rect2(Vector2(x, y), Vector2(w, h)), color, true)
+			_paint_canvas().draw_rect(Rect2(Vector2(x, y), Vector2(w, h)), paint, true)
 			x += dash + gap
 		return
 	var x0: float = view_rect.position.x
@@ -930,7 +1139,7 @@ func _draw_dashed_band(view_rect: Rect2, color: Color) -> void:
 	var end_y: float = view_rect.position.y + view_rect.size.y
 	while y < end_y:
 		var h: float = minf(dash, end_y - y)
-		_paint_canvas().draw_rect(Rect2(Vector2(x0, y), Vector2(w, h)), color, true)
+		_paint_canvas().draw_rect(Rect2(Vector2(x0, y), Vector2(w, h)), paint, true)
 		y += dash + gap
 
 
@@ -1150,13 +1359,17 @@ func _draw_obstacles(battle_state: BattleState) -> void:
 func _draw_soft_cover_prop(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	match obstacle.presentation_kind:
 		"parked_car":
-			_draw_parked_car(view_rect)
+			_draw_parked_car(obstacle, view_rect)
 		"dumpster":
-			_draw_dumpster(view_rect)
+			_draw_dumpster(obstacle, view_rect)
+		"trash":
+			_draw_trash(obstacle, view_rect)
 		"crates":
-			_draw_crates(view_rect)
+			_draw_crates(obstacle, view_rect)
 		"low_wall":
-			_draw_low_wall(view_rect)
+			_draw_low_wall(obstacle, view_rect)
+		"table":
+			_draw_table(obstacle, view_rect)
 		"barrier":
 			_draw_barrier(view_rect)
 		"fence":
@@ -1174,105 +1387,621 @@ func _draw_soft_cover_prop(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 			_paint_canvas().draw_rect(view_rect, line, false, 1.5)
 
 
-func _draw_parked_car(view_rect: Rect2) -> void:
+func _parked_car_variant(obstacle_id: String) -> String:
+	# Deterministic visual variant from authored id. Honest to existing AABB size.
+	match obstacle_id:
+		"parked_car_north_offset":
+			return "compact"
+		"parked_car_attack_mid":
+			return "older"
+		"parked_car_attack_alley":
+			return "boxy"
+		"parked_car_attack_west":
+			return "sedan_large"
+		"parked_car_attack_east":
+			return "suv"
+		"parked_car_north_west":
+			return "pickup"
+		_:
+			return "sedan"
+
+
+func _parked_car_tone(obstacle_id: String) -> Color:
+	var tones: Array[Color] = [
+		Color(0.20, 0.26, 0.32, 1.0),
+		Color(0.36, 0.20, 0.18, 1.0),
+		Color(0.70, 0.68, 0.62, 1.0),
+		Color(0.26, 0.30, 0.22, 1.0),
+		Color(0.16, 0.16, 0.18, 1.0),
+		Color(0.34, 0.28, 0.20, 1.0),
+	]
+	return tones[_deterministic_index(obstacle_id, tones.size())]
+
+
+func _deterministic_index(text: String, modulo: int) -> int:
+	if modulo <= 0:
+		return 0
+	var hash_value: int = 2166136261
+	for i: int in range(text.length()):
+		hash_value ^= text.unicode_at(i)
+		hash_value = (hash_value * 16777619) & 0x7fffffff
+	return hash_value % modulo
+
+
+func _parked_car_profile(variant: String) -> Dictionary:
+	# Proportions are along-length fractions. Silhouette must change, not just paint.
+	match variant:
+		"compact":
+			return {
+				"front_taper": 0.22,
+				"rear_taper": 0.20,
+				"cabin_from": 0.30,
+				"cabin_to": 0.78,
+				"cabin_side": 0.16,
+				"roof_side": 0.24,
+				"wheel_from": 0.18,
+				"wheel_to": 0.80,
+				"has_bed": false,
+			}
+		"older":
+			return {
+				"front_taper": 0.12,
+				"rear_taper": 0.10,
+				"cabin_from": 0.26,
+				"cabin_to": 0.80,
+				"cabin_side": 0.08,
+				"roof_side": 0.14,
+				"wheel_from": 0.16,
+				"wheel_to": 0.84,
+				"has_bed": false,
+			}
+		"sedan_large":
+			return {
+				"front_taper": 0.18,
+				"rear_taper": 0.16,
+				"cabin_from": 0.32,
+				"cabin_to": 0.66,
+				"cabin_side": 0.14,
+				"roof_side": 0.22,
+				"wheel_from": 0.13,
+				"wheel_to": 0.86,
+				"has_bed": false,
+			}
+		"suv":
+			return {
+				"front_taper": 0.10,
+				"rear_taper": 0.08,
+				"cabin_from": 0.18,
+				"cabin_to": 0.90,
+				"cabin_side": 0.05,
+				"roof_side": 0.10,
+				"wheel_from": 0.14,
+				"wheel_to": 0.84,
+				"has_bed": false,
+			}
+		"boxy":
+			return {
+				"front_taper": 0.08,
+				"rear_taper": 0.03,
+				"cabin_from": 0.22,
+				"cabin_to": 0.88,
+				"cabin_side": 0.06,
+				"roof_side": 0.10,
+				"wheel_from": 0.15,
+				"wheel_to": 0.85,
+				"has_bed": false,
+			}
+		"pickup":
+			return {
+				"front_taper": 0.16,
+				"rear_taper": 0.04,
+				"cabin_from": 0.14,
+				"cabin_to": 0.48,
+				"cabin_side": 0.12,
+				"roof_side": 0.18,
+				"wheel_from": 0.14,
+				"wheel_to": 0.88,
+				"has_bed": true,
+			}
+		_:
+			return {
+				"front_taper": 0.18,
+				"rear_taper": 0.16,
+				"cabin_from": 0.28,
+				"cabin_to": 0.72,
+				"cabin_side": 0.13,
+				"roof_side": 0.20,
+				"wheel_from": 0.16,
+				"wheel_to": 0.84,
+				"has_bed": false,
+			}
+
+
+func _draw_parked_car(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	# Road-parallel presentation. Existing parked-car AABBs are wide-X / short-Y.
 	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW)
-	_draw_prop_shadow(body)
-	_paint_canvas().draw_rect(body, PROVISIONAL_PARKED_CAR, true)
-	var cabin: Rect2 = _inset_view_rect(body, 3.5, 2.4)
-	if body.size.x >= body.size.y:
-		cabin.position.x += body.size.x * 0.10
-		cabin.size.x *= 0.58
-	else:
-		cabin.position.y += body.size.y * 0.10
-		cabin.size.y *= 0.58
-	_paint_canvas().draw_rect(cabin, PROVISIONAL_PARKED_CAR_CABIN, true)
-	var glass: Rect2 = _inset_view_rect(cabin, 1.6, 1.3)
-	_paint_canvas().draw_rect(glass, Color(0.42, 0.52, 0.58, 0.78), true)
-	_paint_canvas().draw_rect(body, PROVISIONAL_PROP_OUTLINE, false, 2.6)
-	_draw_wheel_marks(body)
-
-
-func _draw_wheel_marks(view_rect: Rect2) -> void:
-	var along_x: bool = view_rect.size.x >= view_rect.size.y
-	var wheel: float = 3.0
-	var inset: float = 2.4
-	var rubber: Color = Color(0.06, 0.06, 0.07, 1.0)
-	if along_x:
-		var y0: float = view_rect.position.y + 0.5
-		var y1: float = view_rect.end.y - 1.4
-		var x0: float = view_rect.position.x + inset
-		var x1: float = view_rect.end.x - inset - wheel
-		_paint_canvas().draw_rect(Rect2(Vector2(x0, y0), Vector2(wheel, 1.3)), rubber, true)
-		_paint_canvas().draw_rect(Rect2(Vector2(x1, y0), Vector2(wheel, 1.3)), rubber, true)
-		_paint_canvas().draw_rect(Rect2(Vector2(x0, y1), Vector2(wheel, 1.3)), rubber, true)
-		_paint_canvas().draw_rect(Rect2(Vector2(x1, y1), Vector2(wheel, 1.3)), rubber, true)
+	var along_x: bool = body.size.x >= body.size.y
+	var hood_east: bool = obstacle.obstacle_id.begins_with("parked_car_attack")
+	var variant: String = _parked_car_variant(obstacle.obstacle_id)
+	var paint: Color = _parked_car_tone(obstacle.obstacle_id)
+	var spec: Dictionary = _parked_car_profile(variant)
+	if not along_x:
+		_draw_prop_shadow(body)
+		_paint_canvas().draw_rect(body, paint, true)
+		_paint_canvas().draw_rect(body, PROVISIONAL_PROP_OUTLINE, false, 2.4)
 		return
-	var x0: float = view_rect.position.x + 0.5
-	var x1: float = view_rect.end.x - 1.4
-	var y0: float = view_rect.position.y + inset
-	var y1: float = view_rect.end.y - inset - wheel
-	_paint_canvas().draw_rect(Rect2(Vector2(x0, y0), Vector2(1.3, wheel)), rubber, true)
-	_paint_canvas().draw_rect(Rect2(Vector2(x0, y1), Vector2(1.3, wheel)), rubber, true)
-	_paint_canvas().draw_rect(Rect2(Vector2(x1, y0), Vector2(1.3, wheel)), rubber, true)
-	_paint_canvas().draw_rect(Rect2(Vector2(x1, y1), Vector2(1.3, wheel)), rubber, true)
+	_draw_civilian_car(_car_corners_from_rect(body, hood_east), spec, paint, false)
 
 
-func _draw_dumpster(view_rect: Rect2) -> void:
-	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW)
+func _car_corners_from_rect(body: Rect2, hood_east: bool) -> PackedVector2Array:
+	if hood_east:
+		return PackedVector2Array(
+			[
+				Vector2(body.end.x, body.position.y),
+				Vector2(body.end.x, body.end.y),
+				Vector2(body.position.x, body.end.y),
+				Vector2(body.position.x, body.position.y),
+			]
+		)
+	return PackedVector2Array(
+		[
+			Vector2(body.position.x, body.end.y),
+			Vector2(body.position.x, body.position.y),
+			Vector2(body.end.x, body.position.y),
+			Vector2(body.end.x, body.end.y),
+		]
+	)
+
+
+func _car_quad_point(corners: PackedVector2Array, along: float, across: float) -> Vector2:
+	var left: Vector2 = corners[0].lerp(corners[3], clampf(along, 0.0, 1.0))
+	var right: Vector2 = corners[1].lerp(corners[2], clampf(along, 0.0, 1.0))
+	return left.lerp(right, clampf(across, 0.0, 1.0))
+
+
+func _car_band(corners: PackedVector2Array, along0: float, along1: float, side_inset: float) -> PackedVector2Array:
+	return PackedVector2Array(
+		[
+			_car_quad_point(corners, along0, side_inset),
+			_car_quad_point(corners, along0, 1.0 - side_inset),
+			_car_quad_point(corners, along1, 1.0 - side_inset),
+			_car_quad_point(corners, along1, side_inset),
+		]
+	)
+
+
+func _car_body_shell(corners: PackedVector2Array, spec: Dictionary) -> PackedVector2Array:
+	# Rounded rectangle. No mid-body waist — that read as a shoe on the diagonal car.
+	var ft: float = float(spec.get("front_taper", 0.12))
+	var rt: float = float(spec.get("rear_taper", 0.12))
+	return PackedVector2Array(
+		[
+			_car_quad_point(corners, 0.00, ft),
+			_car_quad_point(corners, 0.00, 1.0 - ft),
+			_car_quad_point(corners, 0.12, 0.98),
+			_car_quad_point(corners, 0.88, 0.98),
+			_car_quad_point(corners, 1.00, 1.0 - rt),
+			_car_quad_point(corners, 1.00, rt),
+			_car_quad_point(corners, 0.88, 0.02),
+			_car_quad_point(corners, 0.12, 0.02),
+		]
+	)
+
+
+func _draw_civilian_car(
+	corners: PackedVector2Array,
+	spec: Dictionary,
+	paint: Color,
+	open_crew_doors: bool
+) -> void:
+	if corners.size() != 4:
+		return
+	var cabin_from: float = float(spec.get("cabin_from", 0.28))
+	var cabin_to: float = float(spec.get("cabin_to", 0.72))
+	var cabin_side: float = float(spec.get("cabin_side", 0.13))
+	var roof_side: float = float(spec.get("roof_side", 0.20))
+	var has_bed: bool = bool(spec.get("has_bed", false))
+	var shell: PackedVector2Array = _car_body_shell(corners, spec)
+	_draw_poly_shadow(shell)
+	_draw_car_wheels(corners, spec)
+	_paint_canvas().draw_colored_polygon(shell, paint)
+	var hood: PackedVector2Array = _car_band(corners, 0.00, cabin_from, 0.08)
+	_paint_canvas().draw_colored_polygon(hood, paint.lightened(0.08))
+	if has_bed:
+		var bed: PackedVector2Array = _car_band(corners, cabin_to, 0.98, 0.08)
+		_paint_canvas().draw_colored_polygon(bed, paint.darkened(0.16))
+		var well: PackedVector2Array = _car_band(corners, cabin_to + 0.04, 0.94, 0.18)
+		_paint_canvas().draw_colored_polygon(well, Color(0.10, 0.10, 0.11, 0.94))
+		var gate: PackedVector2Array = _car_band(corners, 0.94, 1.00, 0.08)
+		_paint_canvas().draw_colored_polygon(gate, paint.darkened(0.04))
+	var cabin: PackedVector2Array = _car_band(corners, cabin_from, cabin_to, cabin_side)
+	_paint_canvas().draw_colored_polygon(cabin, paint.darkened(0.30))
+	var roof: PackedVector2Array = _car_band(corners, cabin_from + 0.04, cabin_to - 0.04, roof_side)
+	_paint_canvas().draw_colored_polygon(roof, paint.darkened(0.42))
+	var windshield: PackedVector2Array = _car_band(corners, cabin_from, cabin_from + 0.12, roof_side + 0.04)
+	_paint_canvas().draw_colored_polygon(windshield, Color(0.40, 0.52, 0.58, 0.90))
+	var rear_glass: PackedVector2Array = _car_band(corners, cabin_to - 0.10, cabin_to, roof_side + 0.04)
+	_paint_canvas().draw_colored_polygon(rear_glass, Color(0.30, 0.40, 0.46, 0.86))
+	var side_l: PackedVector2Array = _car_band(corners, cabin_from + 0.10, cabin_to - 0.08, 0.04)
+	var side_r: PackedVector2Array = PackedVector2Array(
+		[
+			_car_quad_point(corners, cabin_from + 0.10, 0.82),
+			_car_quad_point(corners, cabin_from + 0.10, 0.96),
+			_car_quad_point(corners, cabin_to - 0.08, 0.96),
+			_car_quad_point(corners, cabin_to - 0.08, 0.82),
+		]
+	)
+	_paint_canvas().draw_colored_polygon(side_l, Color(0.34, 0.44, 0.50, 0.55))
+	_paint_canvas().draw_colored_polygon(side_r, Color(0.34, 0.44, 0.50, 0.55))
+	var bumper_f: PackedVector2Array = _car_band(corners, 0.00, 0.07, 0.04)
+	var bumper_r: PackedVector2Array = _car_band(corners, 0.93, 1.00, 0.04)
+	_paint_canvas().draw_colored_polygon(bumper_f, Color(0.12, 0.12, 0.12, 1.0))
+	_paint_canvas().draw_colored_polygon(bumper_r, Color(0.12, 0.12, 0.12, 1.0))
+	_paint_canvas().draw_circle(_car_quad_point(corners, 0.03, 0.22), 1.7, ARRIVAL_HEAD_LIGHT, true)
+	_paint_canvas().draw_circle(_car_quad_point(corners, 0.03, 0.78), 1.7, ARRIVAL_HEAD_LIGHT, true)
+	_paint_canvas().draw_circle(_car_quad_point(corners, 0.97, 0.22), 1.55, ARRIVAL_TAIL_LIGHT, true)
+	_paint_canvas().draw_circle(_car_quad_point(corners, 0.97, 0.78), 1.55, ARRIVAL_TAIL_LIGHT, true)
+	var outline: PackedVector2Array = shell.duplicate()
+	if outline.size() > 0:
+		outline.append(outline[0])
+		_paint_canvas().draw_polyline(outline, PROVISIONAL_PROP_OUTLINE, 2.2, true)
+	if open_crew_doors:
+		_draw_arrival_open_doors(corners)
+
+
+func _draw_car_wheels(corners: PackedVector2Array, spec: Dictionary) -> void:
+	var rubber: Color = Color(0.07, 0.07, 0.08, 1.0)
+	var hub: Color = Color(0.30, 0.30, 0.32, 1.0)
+	var wf: float = float(spec.get("wheel_from", 0.16))
+	var wt: float = float(spec.get("wheel_to", 0.84))
+	var hubs: Array[Vector2] = [
+		_car_quad_point(corners, wf, 0.04),
+		_car_quad_point(corners, wf, 0.96),
+		_car_quad_point(corners, wt, 0.04),
+		_car_quad_point(corners, wt, 0.96),
+	]
+	for center: Vector2 in hubs:
+		_paint_canvas().draw_circle(center, 2.45, rubber, true)
+		_paint_canvas().draw_circle(center, 1.00, hub, true)
+
+
+func _parked_along(body: Rect2, from_front: float, across: float, hood_east: bool) -> Vector2:
+	var u: float = from_front if hood_east else (1.0 - from_front)
+	return Vector2(body.position.x + body.size.x * clampf(u, 0.0, 1.0), body.position.y + body.size.y * clampf(across, 0.0, 1.0))
+
+
+func _parked_car_shell(body: Rect2, spec: Dictionary, hood_east: bool) -> PackedVector2Array:
+	return _car_body_shell(_car_corners_from_rect(body, hood_east), spec)
+
+
+func _parked_car_band(body: Rect2, from_front: float, to_front: float, side_inset: float, hood_east: bool) -> PackedVector2Array:
+	return PackedVector2Array(
+		[
+			_parked_along(body, from_front, side_inset, hood_east),
+			_parked_along(body, from_front, 1.0 - side_inset, hood_east),
+			_parked_along(body, to_front, 1.0 - side_inset, hood_east),
+			_parked_along(body, to_front, side_inset, hood_east),
+		]
+	)
+
+
+func _parked_pickup_bed(body: Rect2, spec: Dictionary, paint: Color, hood_east: bool) -> void:
+	# Presentation-only civilian pickup bed at the rear. Does not change cover, LOS, or height.
+	var bed: PackedVector2Array = _parked_car_band(body, 0.50, 0.98, 0.08, hood_east)
+	_paint_canvas().draw_colored_polygon(bed, paint.darkened(0.18))
+	var well: PackedVector2Array = _parked_car_band(body, 0.54, 0.94, 0.18, hood_east)
+	_paint_canvas().draw_colored_polygon(well, Color(0.10, 0.10, 0.11, 0.94))
+	var gate: PackedVector2Array = _parked_car_band(body, 0.94, 1.00, 0.08, hood_east)
+	_paint_canvas().draw_colored_polygon(gate, paint.darkened(0.04))
+
+
+func _draw_parked_pickup_bed(body: Rect2, spec: Dictionary, paint: Color, hood_east: bool) -> void:
+	_parked_pickup_bed(body, spec, paint, hood_east)
+
+
+func _draw_parked_car_lights(body: Rect2, _paint: Color, hood_east: bool, is_pickup: bool) -> void:
+	var lamp_w: float = 0.07
+	var lamp_h: float = 0.16
+	var front_b: PackedVector2Array = PackedVector2Array(
+		[
+			_parked_along(body, 0.00, 0.12, hood_east),
+			_parked_along(body, 0.00, 0.12 + lamp_h, hood_east),
+			_parked_along(body, lamp_w, 0.12 + lamp_h, hood_east),
+			_parked_along(body, lamp_w, 0.12, hood_east),
+		]
+	)
+	var front_c: PackedVector2Array = PackedVector2Array(
+		[
+			_parked_along(body, 0.00, 0.88 - lamp_h, hood_east),
+			_parked_along(body, 0.00, 0.88, hood_east),
+			_parked_along(body, lamp_w, 0.88, hood_east),
+			_parked_along(body, lamp_w, 0.88 - lamp_h, hood_east),
+		]
+	)
+	_paint_canvas().draw_colored_polygon(front_b, ARRIVAL_HEAD_LIGHT)
+	_paint_canvas().draw_colored_polygon(front_c, ARRIVAL_HEAD_LIGHT)
+	var tail: Color = ARRIVAL_TAIL_LIGHT
+	if is_pickup:
+		tail = Color(0.62, 0.18, 0.14, 0.92)
+	var rear_b: PackedVector2Array = PackedVector2Array(
+		[
+			_parked_along(body, 1.0 - lamp_w, 0.12, hood_east),
+			_parked_along(body, 1.0 - lamp_w, 0.12 + lamp_h, hood_east),
+			_parked_along(body, 1.00, 0.12 + lamp_h, hood_east),
+			_parked_along(body, 1.00, 0.12, hood_east),
+		]
+	)
+	var rear_c: PackedVector2Array = PackedVector2Array(
+		[
+			_parked_along(body, 1.0 - lamp_w, 0.88 - lamp_h, hood_east),
+			_parked_along(body, 1.0 - lamp_w, 0.88, hood_east),
+			_parked_along(body, 1.00, 0.88, hood_east),
+			_parked_along(body, 1.00, 0.88 - lamp_h, hood_east),
+		]
+	)
+	_paint_canvas().draw_colored_polygon(rear_b, tail)
+	_paint_canvas().draw_colored_polygon(rear_c, tail)
+
+
+func _draw_parked_car_wheels(body: Rect2, spec: Dictionary, hood_east: bool) -> void:
+	var radius: float = 2.45
+	var rubber: Color = Color(0.07, 0.07, 0.08, 1.0)
+	var hub: Color = Color(0.30, 0.30, 0.32, 1.0)
+	var wf: float = float(spec.get("wheel_from", 0.16))
+	var wt: float = float(spec.get("wheel_to", 0.84))
+	var hubs: Array[Vector2] = [
+		_parked_along(body, wf, 0.04, hood_east),
+		_parked_along(body, wf, 0.96, hood_east),
+		_parked_along(body, wt, 0.04, hood_east),
+		_parked_along(body, wt, 0.96, hood_east),
+	]
+	for center: Vector2 in hubs:
+		_paint_canvas().draw_circle(center, radius, rubber, true)
+		_paint_canvas().draw_circle(center, radius * 0.42, hub, true)
+
+
+func _draw_poly_shadow(points: PackedVector2Array) -> void:
+	if points.size() < 3:
+		return
+	var shadow: PackedVector2Array = PackedVector2Array()
+	for point: Vector2 in points:
+		shadow.append(point + DEPTH_SHADOW_OFFSET)
+	_paint_canvas().draw_colored_polygon(shadow, PROVISIONAL_PROP_SHADOW)
+
+
+func _along_slice(body: Rect2, from_t: float, to_t: float, inset_y: float) -> Rect2:
+	var x0: float = body.position.x + body.size.x * clampf(from_t, 0.0, 1.0)
+	var x1: float = body.position.x + body.size.x * clampf(to_t, 0.0, 1.0)
+	return Rect2(
+		Vector2(minf(x0, x1), body.position.y + inset_y),
+		Vector2(absf(x1 - x0), maxf(body.size.y - inset_y * 2.0, 2.0))
+	)
+
+
+func _draw_dumpster(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.85)
+	var wear: float = 0.04 * float(_deterministic_index(obstacle.obstacle_id, 4))
+	var metal: Color = Color(
+		PROVISIONAL_DUMPSTER.r + wear,
+		PROVISIONAL_DUMPSTER.g - wear * 0.4,
+		PROVISIONAL_DUMPSTER.b + wear * 0.1,
+		1.0
+	)
 	_draw_prop_shadow(body)
-	_paint_canvas().draw_rect(body, PROVISIONAL_DUMPSTER, true)
+	_paint_canvas().draw_rect(body, metal, true)
 	var lid: Rect2 = Rect2(
 		body.position,
-		Vector2(body.size.x, maxf(body.size.y * 0.30, 3.0))
+		Vector2(body.size.x, maxf(body.size.y * 0.28, 3.4))
 	)
-	_paint_canvas().draw_rect(lid, Color(0.14, 0.28, 0.18, 1.0), true)
-	var lid_lip: Rect2 = Rect2(
-		body.position + Vector2(0.0, lid.size.y - 1.5),
-		Vector2(body.size.x, 1.8)
+	_paint_canvas().draw_rect(lid, metal.darkened(0.18), true)
+	var hinge: Rect2 = Rect2(
+		Vector2(body.position.x + 1.2, lid.end.y - 1.1),
+		Vector2(maxf(body.size.x - 2.4, 2.0), 1.2)
 	)
-	_paint_canvas().draw_rect(lid_lip, Color(0.10, 0.18, 0.12, 1.0), true)
-	_paint_canvas().draw_rect(body, PROVISIONAL_PROP_OUTLINE, false, 2.6)
+	_paint_canvas().draw_rect(hinge, Color(0.08, 0.10, 0.08, 1.0), true)
+	var split: Rect2 = Rect2(
+		Vector2(body.position.x + body.size.x * 0.5 - 0.6, body.position.y + 0.6),
+		Vector2(1.2, maxf(lid.size.y - 1.0, 1.0))
+	)
+	_paint_canvas().draw_rect(split, Color(0.08, 0.10, 0.08, 0.90), true)
+	var lip: Rect2 = Rect2(
+		Vector2(body.position.x, lid.end.y),
+		Vector2(body.size.x, 2.0)
+	)
+	_paint_canvas().draw_rect(lip, metal.lightened(0.08), true)
+	var indent: Rect2 = Rect2(
+		body.position + Vector2(2.2, lid.size.y + 3.2),
+		Vector2(maxf(body.size.x - 4.4, 2.0), maxf(body.size.y - lid.size.y - 7.0, 2.0))
+	)
+	_paint_canvas().draw_rect(indent, metal.darkened(0.16), true)
 	var bar: Rect2 = Rect2(
-		body.position + Vector2(2.5, body.size.y * 0.48),
-		Vector2(maxf(body.size.x - 5.0, 1.0), 2.0)
+		body.position + Vector2(2.4, body.size.y * 0.58),
+		Vector2(maxf(body.size.x - 4.8, 1.0), 1.8)
 	)
 	_paint_canvas().draw_rect(bar, Color(0.08, 0.12, 0.09, 1.0), true)
+	var handle: Rect2 = Rect2(
+		Vector2(body.position.x + body.size.x * 0.42, lid.position.y + 1.0),
+		Vector2(maxf(body.size.x * 0.16, 2.4), 1.6)
+	)
+	_paint_canvas().draw_rect(handle, Color(0.12, 0.12, 0.10, 1.0), true)
+	var rake: Rect2 = Rect2(
+		Vector2(body.position.x - 0.8, body.position.y + lid.size.y + 2.0),
+		Vector2(1.4, maxf(body.size.y * 0.42, 3.0))
+	)
+	_paint_canvas().draw_rect(rake, Color(0.10, 0.12, 0.10, 1.0), true)
+	var caster: float = 1.8
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(body.position.x + 1.4, body.end.y - 1.4), Vector2(caster, 1.6)),
+		Color(0.08, 0.08, 0.08, 1.0),
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(body.end.x - 1.4 - caster, body.end.y - 1.4), Vector2(caster, 1.6)),
+		Color(0.08, 0.08, 0.08, 1.0),
+		true
+	)
+	_paint_canvas().draw_rect(body, PROVISIONAL_PROP_OUTLINE, false, 2.4)
 
 
-func _draw_crates(view_rect: Rect2) -> void:
-	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.6)
+func _draw_trash(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.45)
 	_draw_prop_shadow(body)
+	var pile: int = _deterministic_index(obstacle.obstacle_id, 2)
+	var bag_a: Vector2 = body.position + Vector2(body.size.x * 0.32, body.size.y * 0.58)
+	var bag_b: Vector2 = body.position + Vector2(body.size.x * 0.68, body.size.y * 0.62)
+	var bag_r: float = minf(body.size.x, body.size.y) * 0.38
+	_paint_canvas().draw_circle(bag_a, bag_r, PROVISIONAL_TRASH_BAG, true)
+	_paint_canvas().draw_circle(bag_b, bag_r * 0.82, Color(0.16, 0.18, 0.14, 1.0), true)
+	var box: Rect2 = Rect2(
+		body.position + Vector2(body.size.x * 0.08, body.size.y * 0.08),
+		Vector2(body.size.x * 0.46, body.size.y * 0.42)
+	)
+	if pile == 1:
+		box.position.x = body.position.x + body.size.x * 0.44
+		box.size = Vector2(body.size.x * 0.50, body.size.y * 0.38)
+	_paint_canvas().draw_rect(box, PROVISIONAL_TRASH_BOX, true)
+	_paint_canvas().draw_rect(box, Color(0.22, 0.16, 0.10, 1.0), false, 1.2)
+	var flap: Rect2 = Rect2(box.position, Vector2(box.size.x, maxf(box.size.y * 0.28, 1.4)))
+	_paint_canvas().draw_rect(flap, Color(0.38, 0.30, 0.20, 1.0), true)
+	if pile == 0:
+		var bin_c: Vector2 = Vector2(body.position.x + body.size.x * 0.72, body.position.y + body.size.y * 0.38)
+		var bin_r: float = minf(body.size.x, body.size.y) * 0.28
+		_paint_canvas().draw_circle(bin_c, bin_r, Color(0.30, 0.32, 0.28, 1.0), true)
+		_paint_canvas().draw_circle(bin_c, bin_r, Color(0.10, 0.10, 0.09, 1.0), false, 1.4, true)
+		_paint_canvas().draw_circle(bin_c, bin_r * 0.62, Color(0.18, 0.20, 0.16, 1.0), true)
+		_paint_canvas().draw_rect(
+			Rect2(Vector2(bin_c.x - bin_r * 0.35, bin_c.y - bin_r - 1.2), Vector2(bin_r * 0.7, 2.2)),
+			Color(0.16, 0.16, 0.14, 1.0),
+			true
+		)
+	_paint_canvas().draw_circle(bag_a, bag_r, Color(0.05, 0.05, 0.05, 0.90), false, 1.1, true)
+
+
+func _draw_crates(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.55)
+	_draw_prop_shadow(body)
+	var offset: float = 1.2 * float(_deterministic_index(obstacle.obstacle_id, 3) - 1)
 	var left: Rect2 = Rect2(
-		body.position,
+		body.position + Vector2(maxf(offset, 0.0), body.size.y * 0.22),
 		Vector2(body.size.x * 0.58, body.size.y * 0.78)
 	)
-	left.position.y += body.size.y * 0.22
 	var right: Rect2 = Rect2(
-		body.position + Vector2(body.size.x * 0.38, 0.0),
-		Vector2(body.size.x * 0.62, body.size.y * 0.62)
+		body.position + Vector2(body.size.x * 0.36, maxf(-offset, 0.0)),
+		Vector2(body.size.x * 0.62, body.size.y * 0.60)
 	)
-	_paint_canvas().draw_rect(left, PROVISIONAL_CRATE, true)
-	_paint_canvas().draw_rect(right, Color(0.40, 0.28, 0.16, 1.0), true)
-	_paint_canvas().draw_rect(left, PROVISIONAL_PROP_OUTLINE, false, 1.8)
-	_paint_canvas().draw_rect(right, PROVISIONAL_PROP_OUTLINE, false, 1.8)
+	_draw_crate_box(left, PROVISIONAL_CRATE)
+	_draw_crate_box(right, Color(0.44, 0.32, 0.18, 1.0))
+
+
+func _draw_crate_box(box: Rect2, fill: Color) -> void:
+	_paint_canvas().draw_rect(box, fill, true)
+	_paint_canvas().draw_rect(box, Color(0.22, 0.14, 0.08, 1.0), false, 1.8)
+	var plank_step: float = maxf(box.size.y / 4.0, 2.4)
+	var py: float = box.position.y + plank_step
+	while py < box.end.y - 1.0:
+		_paint_canvas().draw_line(
+			Vector2(box.position.x + 1.0, py),
+			Vector2(box.end.x - 1.0, py),
+			Color(0.28, 0.18, 0.10, 0.70),
+			1.0,
+			true
+		)
+		py += plank_step
+	_paint_canvas().draw_line(
+		box.position + Vector2(1.2, 1.2),
+		box.end - Vector2(1.2, 1.2),
+		Color(0.24, 0.16, 0.10, 0.85),
+		1.4,
+		true
+	)
 	var strap: Rect2 = Rect2(
-		left.position + Vector2(1.4, left.size.y * 0.42),
-		Vector2(maxf(left.size.x - 2.8, 1.0), 1.4)
+		box.position + Vector2(1.6, box.size.y * 0.42),
+		Vector2(maxf(box.size.x - 3.2, 1.0), 1.5)
 	)
-	_paint_canvas().draw_rect(strap, Color(0.22, 0.16, 0.10, 1.0), true)
+	_paint_canvas().draw_rect(strap, Color(0.20, 0.14, 0.08, 1.0), true)
+	var corner: float = minf(2.6, minf(box.size.x, box.size.y) * 0.28)
+	_paint_canvas().draw_rect(Rect2(box.position, Vector2(corner, 1.4)), Color(0.26, 0.16, 0.10, 1.0), true)
+	_paint_canvas().draw_rect(Rect2(Vector2(box.end.x - corner, box.position.y), Vector2(corner, 1.4)), Color(0.26, 0.16, 0.10, 1.0), true)
+	_paint_canvas().draw_rect(Rect2(Vector2(box.position.x, box.end.y - 1.4), Vector2(corner, 1.4)), Color(0.26, 0.16, 0.10, 1.0), true)
+	_paint_canvas().draw_rect(Rect2(Vector2(box.end.x - corner, box.end.y - 1.4), Vector2(corner, 1.4)), Color(0.26, 0.16, 0.10, 1.0), true)
 
 
-func _draw_low_wall(view_rect: Rect2) -> void:
-	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.7)
+func _draw_low_wall(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	var body: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.55)
 	_draw_prop_shadow(body)
-	_paint_canvas().draw_rect(body, PROVISIONAL_LOW_WALL, true)
-	var cap: Rect2 = body
-	if body.size.x >= body.size.y:
-		cap.size.y = minf(3.0, body.size.y)
-	else:
-		cap.size.x = minf(3.0, body.size.x)
-	_paint_canvas().draw_rect(cap, Color(0.62, 0.58, 0.52, 1.0), true)
-	_paint_canvas().draw_rect(body, PROVISIONAL_PROP_OUTLINE, false, 2.4)
+	var masonry: Color = PROVISIONAL_LOW_WALL
+	if obstacle.obstacle_id.begins_with("porch_"):
+		masonry = Color(0.50, 0.44, 0.36, 1.0)
+	_paint_canvas().draw_rect(body, masonry, true)
+	var course: float = 3.2
+	var cy: float = body.position.y + course
+	while cy < body.end.y - 1.0:
+		_paint_canvas().draw_line(
+			Vector2(body.position.x + 0.6, cy),
+			Vector2(body.end.x - 0.6, cy),
+			Color(0.32, 0.28, 0.22, 0.55),
+			1.0,
+			true
+		)
+		cy += course
+	var cap: Rect2 = Rect2(body.position, Vector2(body.size.x, minf(3.6, body.size.y)))
+	_paint_canvas().draw_rect(cap, Color(0.68, 0.62, 0.50, 1.0), true)
+	if obstacle.obstacle_id.begins_with("porch_"):
+		var post_w: float = minf(3.4, body.size.x)
+		_paint_canvas().draw_rect(
+			Rect2(body.position, Vector2(post_w, body.size.y)),
+			Color(0.38, 0.32, 0.24, 1.0),
+			true
+		)
+		_paint_canvas().draw_rect(
+			Rect2(Vector2(body.end.x - post_w, body.position.y), Vector2(post_w, body.size.y)),
+			Color(0.38, 0.32, 0.24, 1.0),
+			true
+		)
+		_paint_canvas().draw_rect(cap, Color(0.72, 0.66, 0.54, 1.0), true)
+		var brick: float = 4.4
+		var bx: float = body.position.x + post_w + 1.0
+		while bx < body.end.x - post_w - 1.0:
+			_paint_canvas().draw_line(
+				Vector2(bx, body.position.y + 3.8),
+				Vector2(bx, body.end.y - 0.6),
+				Color(0.32, 0.26, 0.20, 0.45),
+				1.0,
+				true
+			)
+			bx += brick
+		if obstacle.obstacle_id.begins_with("porch_stub"):
+			var cheek: Rect2 = Rect2(
+				Vector2(body.position.x, body.end.y - 2.4),
+				Vector2(body.size.x, 2.4)
+			)
+			_paint_canvas().draw_rect(cheek, Color(0.30, 0.24, 0.18, 0.90), true)
+	_paint_canvas().draw_rect(body, PROVISIONAL_PROP_OUTLINE, false, 2.0)
+
+
+func _draw_table(_obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	var top: Rect2 = view_rect.grow(PROP_VISUAL_GROW * 0.7)
+	_draw_prop_shadow(top)
+	_paint_canvas().draw_rect(top, PROVISIONAL_TABLE, true)
+	var apron: Rect2 = _inset_view_rect(top, 1.2, 1.0)
+	_paint_canvas().draw_rect(apron, Color(0.32, 0.24, 0.16, 1.0), false, 1.6)
+	var plank: float = maxf(top.size.y / 3.0, 2.0)
+	var ty: float = top.position.y + plank
+	while ty < top.end.y - 1.0:
+		_paint_canvas().draw_line(
+			Vector2(top.position.x + 1.0, ty),
+			Vector2(top.end.x - 1.0, ty),
+			Color(0.24, 0.16, 0.10, 0.55),
+			1.0,
+			true
+		)
+		ty += plank
+	var leg: float = 2.0
+	_paint_canvas().draw_rect(Rect2(top.position + Vector2(1.2, 1.2), Vector2(leg, leg)), Color(0.18, 0.12, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(Rect2(Vector2(top.end.x - 1.2 - leg, top.position.y + 1.2), Vector2(leg, leg)), Color(0.18, 0.12, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(Rect2(Vector2(top.position.x + 1.2, top.end.y - 1.2 - leg), Vector2(leg, leg)), Color(0.18, 0.12, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(Rect2(Vector2(top.end.x - 1.2 - leg, top.end.y - 1.2 - leg), Vector2(leg, leg)), Color(0.18, 0.12, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(top, PROVISIONAL_PROP_OUTLINE, false, 1.8)
 
 
 func _draw_barrier(view_rect: Rect2) -> void:
@@ -1291,7 +2020,11 @@ func _draw_barrier(view_rect: Rect2) -> void:
 
 
 func _draw_prop_shadow(view_rect: Rect2) -> void:
-	_paint_canvas().draw_rect(Rect2(view_rect.position + PROP_SHADOW_OFFSET, view_rect.size), PROVISIONAL_PROP_SHADOW, true)
+	_paint_canvas().draw_rect(
+		Rect2(view_rect.position + DEPTH_SHADOW_OFFSET, view_rect.size),
+		PROVISIONAL_PROP_SHADOW,
+		true
+	)
 
 
 func _draw_fence(view_rect: Rect2) -> void:
@@ -1349,7 +2082,7 @@ func _draw_building(obstacle: BattleObstacle) -> void:
 	_draw_building_contact_shadow(view_rect, is_hq)
 	_paint_canvas().draw_rect(view_rect, fill, true)
 	_draw_building_side_faces(view_rect, fill, is_hq)
-	_draw_building_roof(view_rect, roof_fill, is_hq)
+	_draw_building_roof(view_rect, roof_fill, is_hq, obstacle.obstacle_id)
 	_draw_building_parapet(view_rect, is_hq)
 	var outline_w: float = 4.0 if is_hq else 2.8
 	_paint_canvas().draw_rect(view_rect, PROVISIONAL_BUILDING_LINE, false, outline_w)
@@ -1406,11 +2139,100 @@ func _draw_building_side_faces(view_rect: Rect2, fill: Color, is_hq: bool) -> vo
 	_paint_canvas().draw_rect(east, fill.darkened(0.26 if is_hq else 0.22), true)
 
 
-func _draw_building_roof(view_rect: Rect2, roof_fill: Color, is_hq: bool) -> void:
+func _draw_building_roof(view_rect: Rect2, roof_fill: Color, is_hq: bool, roof_id: String = "") -> void:
 	var roof: Rect2 = _building_roof_rect(view_rect, is_hq)
 	_paint_canvas().draw_rect(roof, roof_fill, true)
+	var panel_shift: Rect2 = _inset_view_rect(roof, 3.0, 3.0)
+	_paint_canvas().draw_rect(panel_shift, roof_fill.darkened(0.07), true)
 	var light: Rect2 = Rect2(roof.position, Vector2(roof.size.x, minf(3.0 if is_hq else 2.2, roof.size.y)))
 	_paint_canvas().draw_rect(light, Color(1.0, 1.0, 1.0, 0.12 if is_hq else 0.08), true)
+	_draw_roof_dressing(roof, is_hq, roof_id)
+
+
+func _draw_roof_dressing(roof: Rect2, is_hq: bool, roof_id: String) -> void:
+	if roof.size.x < 18.0 or roof.size.y < 14.0:
+		return
+	var seam: Color = Color(0.12, 0.10, 0.09, 0.28 if is_hq else 0.22)
+	var step_x: float = 22.0 if is_hq else 18.0
+	var x: float = roof.position.x + 10.0
+	while x < roof.end.x - 8.0:
+		_paint_canvas().draw_line(
+			Vector2(x, roof.position.y + 3.0),
+			Vector2(x, roof.end.y - 4.0),
+			seam,
+			1.0,
+			true
+		)
+		x += step_x
+	var step_y: float = 16.0 if is_hq else 14.0
+	var y: float = roof.position.y + 8.0
+	while y < roof.end.y - 6.0:
+		_paint_canvas().draw_line(
+			Vector2(roof.position.x + 4.0, y),
+			Vector2(roof.end.x - 4.0, y),
+			seam,
+			1.0,
+			true
+		)
+		y += step_y
+	var seed: int = _deterministic_index(roof_id + ":roof", 4)
+	var hvac_w: float = 14.0 if is_hq else 11.0
+	var hvac_h: float = 10.0 if is_hq else 8.0
+	var hvac: Rect2 = Rect2(
+		Vector2(
+			roof.position.x + 10.0 + float(seed) * 6.0,
+			roof.position.y + 8.0 + float(seed % 2) * 4.0
+		),
+		Vector2(hvac_w, hvac_h)
+	)
+	if roof.encloses(hvac):
+		_draw_roof_hvac(hvac, is_hq)
+	var second: Rect2 = Rect2(
+		Vector2(roof.end.x - hvac_w - 12.0, roof.end.y - hvac_h - 10.0),
+		Vector2(hvac_w * 0.85, hvac_h * 0.80)
+	)
+	if roof.encloses(second) and (is_hq or seed != 0):
+		_draw_roof_hvac(second, false)
+	var vent_r: float = 2.4 if is_hq else 2.0
+	var vent: Vector2 = Vector2(roof.position.x + roof.size.x * 0.62, roof.position.y + roof.size.y * 0.38)
+	if roof.has_point(vent):
+		_paint_canvas().draw_circle(vent, vent_r, Color(0.22, 0.20, 0.18, 0.95), true)
+		_paint_canvas().draw_circle(vent, vent_r * 0.45, Color(0.10, 0.09, 0.08, 1.0), true)
+	if is_hq:
+		var walk: Rect2 = Rect2(
+			Vector2(roof.position.x + 8.0, roof.position.y + roof.size.y * 0.58),
+			Vector2(maxf(roof.size.x - 16.0, 8.0), 3.2)
+		)
+		_paint_canvas().draw_rect(walk, Color(0.28, 0.22, 0.18, 0.55), true)
+		var housing: Rect2 = Rect2(
+			Vector2(roof.position.x + roof.size.x * 0.42, roof.position.y + 6.0),
+			Vector2(18.0, 7.0)
+		)
+		if roof.encloses(housing):
+			_paint_canvas().draw_rect(housing, Color(0.34, 0.30, 0.26, 1.0), true)
+			_paint_canvas().draw_rect(housing, Color(0.12, 0.10, 0.09, 1.0), false, 1.3)
+			_paint_canvas().draw_rect(
+				_inset_view_rect(housing, 2.0, 1.6),
+				Color(0.18, 0.16, 0.14, 0.90),
+				true
+			)
+
+
+func _draw_roof_hvac(box: Rect2, heavy: bool) -> void:
+	_paint_canvas().draw_rect(box, Color(0.38, 0.36, 0.34, 1.0) if heavy else Color(0.42, 0.40, 0.38, 1.0), true)
+	_paint_canvas().draw_rect(box, Color(0.12, 0.11, 0.10, 1.0), false, 1.4)
+	var grill: Rect2 = _inset_view_rect(box, 1.6, 1.4)
+	_paint_canvas().draw_rect(grill, Color(0.22, 0.22, 0.22, 0.90), true)
+	var gy: float = grill.position.y + 1.6
+	while gy < grill.end.y - 1.0:
+		_paint_canvas().draw_line(
+			Vector2(grill.position.x + 0.6, gy),
+			Vector2(grill.end.x - 0.6, gy),
+			Color(0.10, 0.10, 0.10, 0.70),
+			1.0,
+			true
+		)
+		gy += 2.2
 
 
 func _draw_building_parapet(view_rect: Rect2, is_hq: bool) -> void:
@@ -1489,6 +2311,45 @@ func _draw_hq_cues(view_rect: Rect2) -> void:
 		Vector2(frame.size.x, 4.0)
 	)
 	_paint_canvas().draw_rect(lintel, PROVISIONAL_BUILDING_ACCENT, true)
+	var awning: Rect2 = Rect2(
+		Vector2(frame.position.x - 6.0, door.position.y - 8.0),
+		Vector2(frame.size.x + 12.0, 6.0)
+	)
+	_paint_canvas().draw_rect(awning, Color(0.18, 0.10, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(awning.position.x, awning.end.y - 1.6), Vector2(awning.size.x, 1.6)),
+		Color(0.10, 0.06, 0.05, 1.0),
+		true
+	)
+	var cornice: Rect2 = Rect2(
+		Vector2(view_rect.position.x, view_rect.end.y - wall_h - 3.4),
+		Vector2(view_rect.size.x, 3.4)
+	)
+	_paint_canvas().draw_rect(cornice, Color(0.42, 0.22, 0.18, 1.0), true)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(cornice.position.x, cornice.end.y - 1.2), Vector2(cornice.size.x, 1.2)),
+		Color(0.22, 0.10, 0.08, 1.0),
+		true
+	)
+	var plate: Rect2 = Rect2(
+		Vector2(view_rect.get_center().x - 22.0, awning.position.y - 9.5),
+		Vector2(44.0, 7.4)
+	)
+	_paint_canvas().draw_rect(plate, Color(0.10, 0.07, 0.06, 1.0), true)
+	_paint_canvas().draw_rect(plate, Color(0.62, 0.52, 0.34, 1.0), false, 1.6)
+	_paint_canvas().draw_rect(
+		_inset_view_rect(plate, 3.0, 1.8),
+		Color(0.72, 0.62, 0.42, 0.85),
+		true
+	)
+	var transom: Rect2 = Rect2(
+		Vector2(door.position.x + 2.4, door.position.y + 1.4),
+		Vector2(maxf(door.size.x - 4.8, 4.0), 4.2)
+	)
+	_draw_window_pane(transom)
+	var lamp_r: float = 1.8
+	_paint_canvas().draw_circle(Vector2(frame.position.x - 4.0, door.position.y + 6.0), lamp_r, Color(0.86, 0.78, 0.52, 0.92), true)
+	_paint_canvas().draw_circle(Vector2(frame.end.x + 4.0, door.position.y + 6.0), lamp_r, Color(0.86, 0.78, 0.52, 0.92), true)
 
 
 func _draw_window_pane(window: Rect2) -> void:
@@ -1514,18 +2375,29 @@ func _draw_window_pane(window: Rect2) -> void:
 
 func _draw_neighbor_facade(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	var street_south: bool = obstacle.obstacle_id.find("framing") >= 0
+	var band_y: float = view_rect.end.y - 5.0 if not street_south else view_rect.position.y
+	var band: Rect2 = Rect2(Vector2(view_rect.position.x, band_y), Vector2(view_rect.size.x, 5.0))
+	_paint_canvas().draw_rect(band, Color(0.36, 0.28, 0.22, 0.72), true)
 	var window_h: float = minf(16.0, view_rect.size.y * 0.34)
-	var window_w: float = 14.0
+	var window_w: float = 11.0
 	var window_y: float = view_rect.position.y + 8.0
 	if street_south:
-		window_y = view_rect.position.y + 6.0
+		window_y = view_rect.position.y + 8.0
 	else:
-		window_y = view_rect.end.y - window_h - 10.0
+		window_y = view_rect.end.y - window_h - 12.0
 	var x: float = view_rect.position.x + 10.0
 	var count: int = 0
-	while x + window_w < view_rect.end.x - 10.0 and count < 4:
-		_draw_window_pane(Rect2(Vector2(x, window_y), Vector2(window_w, window_h)))
-		x += window_w + 8.0
+	while x + window_w * 2.0 + 3.0 < view_rect.end.x - 10.0 and count < 3:
+		var left_win: Rect2 = Rect2(Vector2(x, window_y), Vector2(window_w, window_h))
+		var right_win: Rect2 = Rect2(Vector2(x + window_w + 2.4, window_y), Vector2(window_w, window_h))
+		_draw_window_pane(left_win)
+		_draw_window_pane(right_win)
+		var sill: Rect2 = Rect2(
+			Vector2(x - 1.2, window_y + window_h),
+			Vector2(window_w * 2.0 + 4.8, 2.0)
+		)
+		_paint_canvas().draw_rect(sill, Color(0.22, 0.18, 0.14, 0.90), true)
+		x += window_w * 2.0 + 12.0
 		count += 1
 	var door_w: float = 10.0
 	var door_h: float = 14.0
@@ -1534,8 +2406,16 @@ func _draw_neighbor_facade(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	if street_south:
 		door_y = view_rect.position.y
 	var door: Rect2 = Rect2(Vector2(door_x, door_y), Vector2(door_w, door_h))
+	_paint_canvas().draw_rect(door.grow(1.6), Color(0.16, 0.10, 0.08, 1.0), true)
 	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
 	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.6)
+	var sign: Rect2 = Rect2(
+		Vector2(view_rect.position.x + 8.0, window_y - 8.0),
+		Vector2(minf(22.0, view_rect.size.x * 0.28), 6.0)
+	)
+	if view_rect.encloses(sign) or view_rect.intersects(sign):
+		_paint_canvas().draw_rect(sign, Color(0.18, 0.16, 0.14, 1.0), true)
+		_paint_canvas().draw_rect(sign, Color(0.50, 0.42, 0.28, 1.0), false, 1.2)
 
 
 func _draw_warehouse_cues(view_rect: Rect2) -> void:
@@ -1587,6 +2467,18 @@ func _draw_storefront_cues(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	elif obstacle.obstacle_id.find("south_mid") >= 0:
 		accent = Color(0.40, 0.28, 0.14, 1.0)
 	_paint_canvas().draw_rect(sign, accent, true)
+	_paint_canvas().draw_rect(sign, Color(0.10, 0.07, 0.05, 1.0), false, 1.3)
+	var door: Rect2 = Rect2(
+		Vector2(view_rect.position.x + view_rect.size.x * 0.46, view_rect.position.y + 2.0),
+		Vector2(9.0, minf(16.0, view_rect.size.y * 0.42))
+	)
+	_paint_canvas().draw_rect(door.grow(1.4), Color(0.16, 0.10, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
+	var cornice: Rect2 = Rect2(
+		Vector2(view_rect.position.x, view_rect.position.y),
+		Vector2(view_rect.size.x, 3.2)
+	)
+	_paint_canvas().draw_rect(cornice, Color(0.28, 0.20, 0.16, 0.80), true)
 
 
 func _inset_view_rect(view_rect: Rect2, inset_x: float, inset_y: float) -> Rect2:
@@ -1934,42 +2826,150 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 			if view_corner.y > max_y:
 				max_y = view_corner.y
 		var view_pos: Vector2 = _to_view(vehicle.battle_position)
-		_paint_canvas().draw_colored_polygon(view_corners, PROVISIONAL_VEHICLE_FILL)
-		var cabin: PackedVector2Array = PackedVector2Array(
-			[
-				view_corners[0].lerp(view_corners[3], 0.28),
-				view_corners[1].lerp(view_corners[2], 0.28),
-				view_corners[1].lerp(view_corners[2], 0.78),
-				view_corners[0].lerp(view_corners[3], 0.78),
-			]
-		)
-		_paint_canvas().draw_colored_polygon(cabin, PROVISIONAL_VEHICLE_CABIN)
-		var glass: PackedVector2Array = PackedVector2Array(
-			[
-				view_corners[0].lerp(view_corners[3], 0.30),
-				view_corners[1].lerp(view_corners[2], 0.30),
-				view_corners[1].lerp(view_corners[2], 0.46),
-				view_corners[0].lerp(view_corners[3], 0.46),
-			]
-		)
-		_paint_canvas().draw_colored_polygon(glass, PROVISIONAL_VEHICLE_GLASS)
-		var outline: PackedVector2Array = view_corners.duplicate()
-		outline.append(view_corners[0])
-		_paint_canvas().draw_polyline(outline, PROVISIONAL_VEHICLE_OUTLINE, VEHICLE_OUTLINE_WIDTH, true)
-		_paint_canvas().draw_line(view_corners[0], view_corners[1], PROVISIONAL_VEHICLE_OUTLINE, VEHICLE_OUTLINE_WIDTH + 1.5, true)
-		if vehicle.has_valid_orientation():
-			var facing: Vector2 = vehicle.facing_direction
-			var front_mid: Vector2 = (view_corners[0] + view_corners[1]) * 0.5
-			var nose: Vector2 = front_mid + facing * VEHICLE_FRONT_MARK
-			_paint_canvas().draw_line(front_mid, nose, PROVISIONAL_VEHICLE_FACING, 2.5, true)
-			var side: Vector2 = Vector2(-facing.y, facing.x) * 4.0
-			var chevron: PackedVector2Array = PackedVector2Array(
-				[nose, nose - facing * 5.0 + side, nose - facing * 5.0 - side]
-			)
-			_paint_canvas().draw_colored_polygon(chevron, PROVISIONAL_VEHICLE_FACING)
+		var facing: Vector2 = vehicle.facing_direction
+		var visual: PackedVector2Array = _inflate_view_quad(view_corners, ARRIVAL_VISUAL_INFLATE_PX)
+		var spec: Dictionary = _parked_car_profile("sedan_large")
+		var paint: Color = Color(0.20, 0.22, 0.23, 1.0)
+		_draw_civilian_car(visual, spec, paint, false)
+		if vehicle.has_valid_orientation() and facing.length_squared() > 0.0001:
+			_draw_arrival_open_doors(visual)
 		if DEBUG_DRAW_DEVELOPER_OVERLAY:
 			_draw_label(Vector2(view_pos.x, min_y - 12.0), "CAR", 11)
 			_draw_label(Vector2(view_pos.x, max_y + 12.0), vehicle.battle_vehicle_id, 10)
+
+
+func _arrival_quad_point(corners: PackedVector2Array, along: float, across: float) -> Vector2:
+	var left: Vector2 = corners[0].lerp(corners[3], clampf(along, 0.0, 1.0))
+	var right: Vector2 = corners[1].lerp(corners[2], clampf(along, 0.0, 1.0))
+	return left.lerp(right, clampf(across, 0.0, 1.0))
+
+
+func _arrival_band(corners: PackedVector2Array, along0: float, along1: float, side_inset: float) -> PackedVector2Array:
+	return PackedVector2Array(
+		[
+			_arrival_quad_point(corners, along0, side_inset),
+			_arrival_quad_point(corners, along0, 1.0 - side_inset),
+			_arrival_quad_point(corners, along1, 1.0 - side_inset),
+			_arrival_quad_point(corners, along1, side_inset),
+		]
+	)
+
+
+func _arrival_body_shell(corners: PackedVector2Array) -> PackedVector2Array:
+	return _car_body_shell(corners, _parked_car_profile("sedan_large"))
+
+
+func _inflate_view_quad(corners: PackedVector2Array, pixels: float) -> PackedVector2Array:
+	var inflated: PackedVector2Array = PackedVector2Array()
+	if corners.size() != 4:
+		return corners
+	var center: Vector2 = (corners[0] + corners[1] + corners[2] + corners[3]) * 0.25
+	for corner: Vector2 in corners:
+		var delta: Vector2 = corner - center
+		if delta.length_squared() <= 0.0001:
+			inflated.append(corner)
+		else:
+			inflated.append(corner + delta.normalized() * pixels)
+	return inflated
+
+
+func _draw_arrival_vehicle_shadow(view_corners: PackedVector2Array) -> void:
+	if view_corners.size() != 4:
+		return
+	_draw_poly_shadow(_arrival_body_shell(view_corners))
+
+
+func _draw_arrival_open_doors(view_corners: PackedVector2Array) -> void:
+	# Presentation-only. One front crew-side door, ajar.
+	# Thin hinged slice attached at the A-pillar. Does not affect collision, cover, or LOS.
+	if view_corners.size() != 4:
+		return
+	_draw_ajar_crew_door(view_corners, 0.22, 0.40)
+
+
+func _draw_ajar_crew_door(corners: PackedVector2Array, along_hinge: float, along_closed: float) -> void:
+	var hinge: Vector2 = _car_quad_point(corners, along_hinge, 0.98)
+	var closed_end: Vector2 = _car_quad_point(corners, along_closed, 0.98)
+	var along: Vector2 = closed_end - hinge
+	if along.length_squared() <= 0.0001:
+		return
+	var along_n: Vector2 = along.normalized()
+	var outward: Vector2 = _car_quad_point(corners, along_hinge, 1.0) - _car_quad_point(corners, along_hinge, 0.0)
+	if outward.length_squared() <= 0.0001:
+		return
+	outward = outward.normalized()
+	var open_dir: Vector2 = along_n.rotated(deg_to_rad(ARRIVAL_DOOR_ANGLE_DEG))
+	if open_dir.dot(outward) < 0.12:
+		open_dir = along_n.rotated(-deg_to_rad(ARRIVAL_DOOR_ANGLE_DEG))
+	var length: float = minf(along.length(), ARRIVAL_DOOR_SWING_PX)
+	var tip: Vector2 = hinge + open_dir * length
+	var thick: Vector2 = open_dir.orthogonal().normalized() * (ARRIVAL_DOOR_THICK_PX * 0.5)
+	if thick.dot(outward) < 0.0:
+		thick = -thick
+	var gap: PackedVector2Array = PackedVector2Array(
+		[
+			_car_quad_point(corners, along_hinge, 0.90),
+			_car_quad_point(corners, along_hinge, 0.99),
+			_car_quad_point(corners, along_closed, 0.99),
+			_car_quad_point(corners, along_closed, 0.90),
+		]
+	)
+	_paint_canvas().draw_colored_polygon(gap, Color(0.08, 0.08, 0.08, 0.92))
+	var panel: PackedVector2Array = PackedVector2Array(
+		[
+			hinge - thick * 0.20,
+			hinge + thick,
+			tip + thick,
+			tip - thick * 0.20,
+		]
+	)
+	_paint_canvas().draw_colored_polygon(panel, PROVISIONAL_VEHICLE_DOOR)
+	var glass: PackedVector2Array = PackedVector2Array(
+		[
+			hinge.lerp(tip, 0.18) + thick * 0.12,
+			hinge.lerp(tip, 0.18) + thick * 0.72,
+			hinge.lerp(tip, 0.78) + thick * 0.72,
+			hinge.lerp(tip, 0.78) + thick * 0.12,
+		]
+	)
+	_paint_canvas().draw_colored_polygon(glass, Color(0.34, 0.44, 0.50, 0.62))
+	var outline: PackedVector2Array = panel.duplicate()
+	outline.append(panel[0])
+	_paint_canvas().draw_polyline(outline, PROVISIONAL_VEHICLE_OUTLINE, 1.6, true)
+
+
+func _draw_arrival_side_glass(view_corners: PackedVector2Array) -> void:
+	if view_corners.size() != 4:
+		return
+	var left: PackedVector2Array = _arrival_band(view_corners, 0.36, 0.70, 0.04)
+	var right: PackedVector2Array = PackedVector2Array(
+		[
+			_arrival_quad_point(view_corners, 0.36, 0.82),
+			_arrival_quad_point(view_corners, 0.36, 0.96),
+			_arrival_quad_point(view_corners, 0.70, 0.96),
+			_arrival_quad_point(view_corners, 0.70, 0.82),
+		]
+	)
+	_paint_canvas().draw_colored_polygon(left, Color(0.34, 0.44, 0.50, 0.62))
+	_paint_canvas().draw_colored_polygon(right, Color(0.34, 0.44, 0.50, 0.62))
+
+
+func _draw_arrival_wheels(view_corners: PackedVector2Array) -> void:
+	if view_corners.size() != 4:
+		return
+	var rubber: Color = Color(0.05, 0.05, 0.06, 1.0)
+	var hub: Color = Color(0.32, 0.32, 0.34, 1.0)
+	var hubs: PackedVector2Array = PackedVector2Array(
+		[
+			_arrival_quad_point(view_corners, 0.18, 0.04),
+			_arrival_quad_point(view_corners, 0.18, 0.96),
+			_arrival_quad_point(view_corners, 0.82, 0.04),
+			_arrival_quad_point(view_corners, 0.82, 0.96),
+		]
+	)
+	for center: Vector2 in hubs:
+		_paint_canvas().draw_circle(center, 2.55, rubber, true)
+		_paint_canvas().draw_circle(center, 1.05, hub, true)
 
 
 func _draw_overlay() -> void:
@@ -2755,7 +3755,15 @@ func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) 
 	if not cover_object.associated_obstacle_id.is_empty():
 		var obstacle: BattleObstacle = geometry.get_obstacle(cover_object.associated_obstacle_id)
 		if obstacle != null and obstacle.bounds_are_usable():
-			return _rect_to_view(obstacle.bounds).grow(4.0)
+			var grow: float = 4.5
+			match obstacle.presentation_kind:
+				"parked_car":
+					grow = 5.0
+				"dumpster", "trash", "crates", "table":
+					grow = 4.8
+				"low_wall":
+					grow = 4.5
+			return _rect_to_view(obstacle.bounds).grow(grow)
 	for vehicle_id: String in _sorted_keys(battle_state.vehicles):
 		if BattleVehicleCoverService.body_cover_object_id(vehicle_id) != cover_object_id:
 			continue
@@ -2773,7 +3781,7 @@ func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) 
 			min_pos.y = minf(min_pos.y, view_corner.y)
 			max_pos.x = maxf(max_pos.x, view_corner.x)
 			max_pos.y = maxf(max_pos.y, view_corner.y)
-		return Rect2(min_pos, max_pos - min_pos).grow(4.0)
+		return Rect2(min_pos, max_pos - min_pos).grow(3.2)
 	var min_slot: Vector2 = Vector2.ZERO
 	var max_slot: Vector2 = Vector2.ZERO
 	var has_slot: bool = false

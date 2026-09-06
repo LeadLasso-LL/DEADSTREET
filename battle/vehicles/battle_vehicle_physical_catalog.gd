@@ -5,11 +5,9 @@ const BattleVehiclePhysicalProfile := preload("res://battle/vehicles/battle_vehi
 
 const TYPE_CAR := "car"
 
-# Provisional world-space car body from the existing tactical renderer:
-# VEHICLE_SIZE pixels (16 x 10) / TACTICAL_PIXELS_PER_UNIT (8) = 2.0 x 1.25.
-# Not a permanent balance lock.
-const CAR_LENGTH := 2.0
-const CAR_WIDTH := 1.25
+# Slightly larger than a curb sedan so the just-arrived car has real mass at F5.
+const CAR_LENGTH := 4.5
+const CAR_WIDTH := 1.9
 
 
 static func get_profile(vehicle_type_id: String) -> BattleVehiclePhysicalProfile:
