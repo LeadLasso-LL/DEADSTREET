@@ -937,6 +937,28 @@ static func _bind_surface(
 	)
 
 
+static func _bind_block(
+	definition: AuthoredBattlefieldDefinition,
+	block_id: String,
+	variant_id: String,
+	world_anchor: Vector2,
+	anchor_mode: String = "center",
+	rotation_deg: float = 0.0,
+	scale: float = 1.0
+) -> void:
+	var binding: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BLOCK,
+		block_id,
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		variant_id,
+		rotation_deg,
+		world_anchor,
+		scale
+	)
+	binding.anchor_mode = anchor_mode
+	definition.visual_bindings.append(binding)
+
+
 static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition) -> void:
 	# First-class building/surface identities. Pipeline-test variants prove bind/retain
 	# without suppressing procedural canvas or appearing in F5.
@@ -952,3 +974,12 @@ static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition)
 	_bind_surface(definition, "alley_hq_east", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
 	_bind_surface(definition, "alley_hq_side", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
 	_bind_surface(definition, "apron_hq_porch", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	# Invisible pipeline-test block. Proves KIND_BLOCK + authored world anchor
+	# without suppressing procedural canvas or appearing in F5.
+	_bind_block(
+		definition,
+		"block_pipeline_test",
+		TacticalVisualCatalog.VARIANT_PIPELINE_TEST,
+		Vector2(35.0, 18.2),
+		"south"
+	)

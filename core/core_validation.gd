@@ -65,6 +65,8 @@ const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_regio
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
 const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
 const TacticalVisualCatalog := preload("res://battle/presentation/tactical_visual_catalog.gd")
+const TacticalVisualPlacement := preload("res://battle/presentation/tactical_visual_placement.gd")
+const TacticalEnvironmentPresenter := preload("res://gameplay/tactical_environment_presenter.gd")
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
@@ -16621,6 +16623,12 @@ static func run() -> Dictionary:
 	var vispass_m3_view_has_no_asset_path_ok: bool = _vispass_m3_view_has_no_asset_path_ok()
 	var vispass_m3_decals_do_not_affect_hit_ok: bool = _vispass_m3_decals_do_not_affect_hit_ok()
 	var vispass_m3_fallback_and_determinism_ok: bool = _vispass_m3_fallback_and_determinism_ok()
+	var vispass_m4b_native_transform_ok: bool = _vispass_m4b_native_transform_ok()
+	var vispass_m4b_overhang_hit_ok: bool = _vispass_m4b_overhang_hit_ok()
+	var vispass_m4b_block_suppress_ok: bool = _vispass_m4b_block_suppress_ok()
+	var vispass_m4b_static_rebuild_gated_ok: bool = _vispass_m4b_static_rebuild_gated_ok()
+	var vispass_m4b_view_has_no_asset_path_ok: bool = _vispass_m4b_view_has_no_asset_path_ok()
+	var vispass_m4b_geometry_unchanged_ok: bool = _vispass_m4b_geometry_unchanged_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18880,6 +18888,12 @@ static func run() -> Dictionary:
 		"vispass_m3_view_has_no_asset_path_ok": vispass_m3_view_has_no_asset_path_ok,
 		"vispass_m3_decals_do_not_affect_hit_ok": vispass_m3_decals_do_not_affect_hit_ok,
 		"vispass_m3_fallback_and_determinism_ok": vispass_m3_fallback_and_determinism_ok,
+		"vispass_m4b_native_transform_ok": vispass_m4b_native_transform_ok,
+		"vispass_m4b_overhang_hit_ok": vispass_m4b_overhang_hit_ok,
+		"vispass_m4b_block_suppress_ok": vispass_m4b_block_suppress_ok,
+		"vispass_m4b_static_rebuild_gated_ok": vispass_m4b_static_rebuild_gated_ok,
+		"vispass_m4b_view_has_no_asset_path_ok": vispass_m4b_view_has_no_asset_path_ok,
+		"vispass_m4b_geometry_unchanged_ok": vispass_m4b_geometry_unchanged_ok,
 	}
 
 	var passed := true
@@ -72645,4 +72659,508 @@ static func _vispass_m3_fallback_and_determinism_ok() -> bool:
 		and view_src.contains("_facade_uses_retained_visual")
 		and view_src.contains("_marking_uses_retained_visual")
 		and FileAccess.file_exists("res://assets/tactical/environment/hvac_large_01.png")
+	)
+
+
+static func _vispass_m4b_harness() -> Dictionary:
+	var presenter: TacticalEnvironmentPresenter = TacticalEnvironmentPresenter.new()
+	var asset_root: Node2D = Node2D.new()
+	var surface_root: Node2D = Node2D.new()
+	var composite_root: Node2D = Node2D.new()
+	var building_root: Node2D = Node2D.new()
+	var detail_root: Node2D = Node2D.new()
+	presenter.bind_root(asset_root, TacticalBattleView.TACTICAL_PIXELS_PER_UNIT)
+	presenter.bind_surface_root(surface_root)
+	presenter.bind_composite_root(composite_root)
+	presenter.bind_building_root(building_root)
+	presenter.bind_detail_root(detail_root)
+	return {
+		"presenter": presenter,
+		"asset_root": asset_root,
+		"surface_root": surface_root,
+		"composite_root": composite_root,
+		"building_root": building_root,
+		"detail_root": detail_root,
+	}
+
+
+static func _vispass_m4b_approx_vec(a: Vector2, b: Vector2) -> bool:
+	return is_equal_approx(a.x, b.x) and is_equal_approx(a.y, b.y)
+
+
+static func _vispass_m4b_native_transform_ok() -> bool:
+	var spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	var texture: Texture2D = TacticalVisualCatalog.texture_for(spec)
+	if spec.is_empty() or texture == null:
+		return false
+	if texture.get_width() <= 0 or texture.get_height() <= 0:
+		return false
+	var tex_aspect: float = float(texture.get_width()) / float(texture.get_height())
+	var native: Vector2 = TacticalVisualPlacement.native_world_size(
+		texture,
+		float(spec.get("art_pixels_per_unit", 0.0))
+	)
+	if native.x <= 0.0 or native.y <= 0.0:
+		return false
+	if not is_equal_approx(native.x / native.y, tex_aspect):
+		return false
+	var harness: Dictionary = _vispass_m4b_harness()
+	var presenter: TacticalEnvironmentPresenter = harness["presenter"]
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = TacticalProvingGroundCatalog.WIDTH
+	geometry.height = TacticalProvingGroundCatalog.HEIGHT
+	if not geometry.add_obstacle(
+		BattleObstacle.new("building_hq", TacticalProvingGroundCatalog.HQ_BOUNDS, true, true, "building")
+	):
+		return false
+	if not geometry.add_surface_region(
+		BattleSurfaceRegion.new(
+			"road_main",
+			BattleSurfaceRegion.KIND_ASPHALT,
+			TacticalProvingGroundCatalog.MAIN_ROAD
+		)
+	):
+		return false
+	if not geometry.add_surface_region(
+		BattleSurfaceRegion.new(
+			"sidewalk_north",
+			BattleSurfaceRegion.KIND_SIDEWALK,
+			TacticalProvingGroundCatalog.NORTH_SIDEWALK
+		)
+	):
+		return false
+	var building_binding: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq",
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01,
+		0.0,
+		Vector2(1.5, 0.0),
+		1.0
+	)
+	building_binding.anchor_mode = TacticalVisualPlacement.ANCHOR_SOUTH
+	var surface_native: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_SURFACE,
+		"sidewalk_north",
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	var surface_tile: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_SURFACE,
+		"road_main",
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	surface_tile.placement_mode = TacticalVisualPlacement.MODE_TILE
+	if not geometry.add_visual_binding(building_binding):
+		return false
+	if not geometry.add_visual_binding(surface_native):
+		return false
+	if not geometry.add_visual_binding(surface_tile):
+		return false
+	presenter.sync_static(geometry, "m4b_native_a")
+	var building_xf: Dictionary = presenter.visual_transform_for(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq"
+	)
+	var sidewalk_xf: Dictionary = presenter.visual_transform_for(
+		BattleVisualBinding.KIND_SURFACE,
+		"sidewalk_north"
+	)
+	var road_xf: Dictionary = presenter.visual_transform_for(
+		BattleVisualBinding.KIND_SURFACE,
+		"road_main"
+	)
+	if building_xf.is_empty() or sidewalk_xf.is_empty() or road_xf.is_empty():
+		return false
+	var building_size: Vector2 = building_xf["world_size"]
+	var sidewalk_size: Vector2 = sidewalk_xf["world_size"]
+	var road_size: Vector2 = road_xf["world_size"]
+	var building_scale: float = float(building_xf["view_scale"])
+	var sidewalk_scale: float = float(sidewalk_xf["view_scale"])
+	var road_scale: float = float(road_xf["view_scale"])
+	var hq: Rect2 = TacticalProvingGroundCatalog.HQ_BOUNDS
+	var expected_center: Vector2 = Vector2(
+		hq.get_center().x + 1.5,
+		hq.position.y + hq.size.y - building_size.y * 0.5
+	)
+	var south_edge: float = expected_center.y + building_size.y * 0.5
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_environment_presenter.gd"
+	)
+	var placement_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_visual_placement.gd"
+	)
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_visual_catalog.gd"
+	)
+	return (
+		bool(building_xf["uniform"])
+		and bool(sidewalk_xf["uniform"])
+		and bool(road_xf["uniform"])
+		and is_equal_approx(building_size.x / building_size.y, tex_aspect)
+		and _vispass_m4b_approx_vec(building_size, native)
+		and not building_size.is_equal_approx(hq.size)
+		and _vispass_m4b_approx_vec(building_xf["world_center"], expected_center)
+		and is_equal_approx(south_edge, hq.position.y + hq.size.y)
+		and _vispass_m4b_approx_vec(sidewalk_size, native)
+		and not sidewalk_size.is_equal_approx(TacticalProvingGroundCatalog.NORTH_SIDEWALK.size)
+		and road_size.is_equal_approx(TacticalProvingGroundCatalog.MAIN_ROAD.size)
+		and bool(road_xf["region_enabled"])
+		and not bool(building_xf["region_enabled"])
+		and not is_equal_approx(
+			float(texture.get_width()) / float(texture.get_height()),
+			TacticalProvingGroundCatalog.MAIN_ROAD.size.x
+			/ TacticalProvingGroundCatalog.MAIN_ROAD.size.y
+		)
+		and is_equal_approx(building_scale, sidewalk_scale)
+		and presenter.building_root.get_child_count() == 1
+		and is_equal_approx(
+			(presenter.building_root.get_child(0) as Sprite2D).scale.x,
+			(presenter.building_root.get_child(0) as Sprite2D).scale.y
+		)
+		and is_equal_approx(
+			(presenter.surface_root.get_node("surface_road_main") as Sprite2D).scale.x,
+			(presenter.surface_root.get_node("surface_road_main") as Sprite2D).scale.y
+		)
+		and not presenter_src.contains("fit_bounds")
+		and not placement_src.contains("fit_bounds")
+		and not catalog_src.contains("fit_bounds")
+		and presenter_src.contains("TacticalVisualPlacement")
+		and road_scale > 0.0
+	)
+
+
+static func _vispass_m4b_overhang_hit_ok() -> bool:
+	var harness: Dictionary = _vispass_m4b_harness()
+	var presenter: TacticalEnvironmentPresenter = harness["presenter"]
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = TacticalProvingGroundCatalog.WIDTH
+	geometry.height = TacticalProvingGroundCatalog.HEIGHT
+	var hq: Rect2 = TacticalProvingGroundCatalog.HQ_BOUNDS
+	if not geometry.add_obstacle(BattleObstacle.new("building_hq", hq, true, true, "building")):
+		return false
+	var binding: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq",
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	binding.anchor_mode = TacticalVisualPlacement.ANCHOR_SOUTH
+	if not geometry.add_visual_binding(binding):
+		return false
+	presenter.sync_static(geometry, "m4b_overhang")
+	var xf: Dictionary = presenter.visual_transform_for(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq"
+	)
+	if xf.is_empty():
+		return false
+	var world_rect: Rect2 = xf["world_rect"]
+	var outside: Vector2 = Vector2(hq.get_center().x, hq.position.y - 0.4)
+	var inside: Vector2 = hq.get_center()
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var live: BattlefieldGeometry = battle_state.battlefield_geometry
+	var live_hq: BattleObstacle = live.get_obstacle("building_hq")
+	var view_src: String = _tacticalview_source()
+	return (
+		world_rect.has_point(outside)
+		and not hq.has_point(outside)
+		and world_rect.has_point(inside)
+		and hq.has_point(inside)
+		and geometry.get_movement_blocking_obstacle_id_at(outside).is_empty()
+		and geometry.get_movement_blocking_obstacle_id_at(inside) == "building_hq"
+		and live_hq != null
+		and live_hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS)
+		and live.get_sorted_obstacle_ids().size() == 24
+		and not view_src.contains("get_rect()")
+		and presenter.claims_building("building_hq")
+	)
+
+
+static func _vispass_m4b_block_suppress_ok() -> bool:
+	var spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	if spec.is_empty() or TacticalVisualCatalog.texture_for(spec) == null:
+		return false
+	if TacticalVisualCatalog.is_pipeline_test(spec):
+		return false
+	if not TacticalVisualCatalog.should_claim_canvas(spec):
+		return false
+	var harness: Dictionary = _vispass_m4b_harness()
+	var presenter: TacticalEnvironmentPresenter = harness["presenter"]
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = TacticalProvingGroundCatalog.WIDTH
+	geometry.height = TacticalProvingGroundCatalog.HEIGHT
+	if not geometry.add_obstacle(
+		BattleObstacle.new("building_hq", TacticalProvingGroundCatalog.HQ_BOUNDS, true, true, "building")
+	):
+		return false
+	if not geometry.add_obstacle(
+		BattleObstacle.new(
+			"building_west_neighbor",
+			TacticalProvingGroundCatalog.WEST_NEIGHBOR_BOUNDS,
+			true,
+			true,
+			"building"
+		)
+	):
+		return false
+	if not geometry.add_surface_region(
+		BattleSurfaceRegion.new(
+			"sidewalk_north",
+			BattleSurfaceRegion.KIND_SIDEWALK,
+			TacticalProvingGroundCatalog.NORTH_SIDEWALK
+		)
+	):
+		return false
+	if not geometry.add_surface_region(
+		BattleSurfaceRegion.new(
+			"apron_hq_porch",
+			BattleSurfaceRegion.KIND_APRON,
+			TacticalProvingGroundCatalog.PORCH_APRON
+		)
+	):
+		return false
+	if not geometry.add_surface_region(
+		BattleSurfaceRegion.new(
+			"road_main",
+			BattleSurfaceRegion.KIND_ASPHALT,
+			TacticalProvingGroundCatalog.MAIN_ROAD
+		)
+	):
+		return false
+	var block: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BLOCK,
+		"hq_north_block",
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01,
+		0.0,
+		Vector2(35.0, 18.2)
+	)
+	block.anchor_mode = TacticalVisualPlacement.ANCHOR_SOUTH
+	block.suppress_building_ids = PackedStringArray(["building_hq", "building_west_neighbor"])
+	block.suppress_surface_ids = PackedStringArray(["sidewalk_north", "apron_hq_porch"])
+	var missing_block: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BLOCK,
+		"missing_block",
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		"missing_variant",
+		0.0,
+		Vector2(10.0, 10.0)
+	)
+	missing_block.suppress_surface_ids = PackedStringArray(["road_main"])
+	var building: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq",
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	var west: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_west_neighbor",
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	var sidewalk: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_SURFACE,
+		"sidewalk_north",
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	var apron: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_SURFACE,
+		"apron_hq_porch",
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	var road: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_SURFACE,
+		"road_main",
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_PIPELINE_TEST
+	)
+	if not geometry.add_visual_binding(block):
+		return false
+	if not geometry.add_visual_binding(missing_block):
+		return false
+	if not geometry.add_visual_binding(building):
+		return false
+	if not geometry.add_visual_binding(west):
+		return false
+	if not geometry.add_visual_binding(sidewalk):
+		return false
+	if not geometry.add_visual_binding(apron):
+		return false
+	if not geometry.add_visual_binding(road):
+		return false
+	presenter.sync_static(geometry, "m4b_block")
+	var live: AuthoredBattlefieldDefinition = TacticalProvingGroundCatalog.hq_frontage_assault_v1()
+	var live_block: BattleVisualBinding = null
+	for i: int in range(live.visual_bindings.size()):
+		var candidate: BattleVisualBinding = live.visual_bindings[i]
+		if candidate == null:
+			continue
+		if candidate.target_kind == BattleVisualBinding.KIND_BLOCK and candidate.target_id == "block_pipeline_test":
+			live_block = candidate
+			break
+	var pipeline_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_PIPELINE_TEST
+	)
+	return (
+		presenter.claims_building("building_hq")
+		and presenter.claims_building("building_west_neighbor")
+		and presenter.claims_surface("sidewalk_north")
+		and presenter.claims_surface("apron_hq_porch")
+		and not presenter.claims_surface("road_main")
+		and presenter.building_child_count() == 0
+		and presenter.composite_child_count() == 1
+		and presenter.surface_child_count() == 1
+		and live_block != null
+		and live_block.anchor_mode == TacticalVisualPlacement.ANCHOR_SOUTH
+		and TacticalVisualCatalog.is_pipeline_test(pipeline_spec)
+		and not TacticalVisualCatalog.should_claim_canvas(pipeline_spec)
+		and TacticalVisualCatalog.texture_for(pipeline_spec) != null
+		and geometry.get_sorted_obstacle_ids().size() == 2
+	)
+
+
+static func _vispass_m4b_static_rebuild_gated_ok() -> bool:
+	var harness: Dictionary = _vispass_m4b_harness()
+	var presenter: TacticalEnvironmentPresenter = harness["presenter"]
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = TacticalProvingGroundCatalog.WIDTH
+	geometry.height = TacticalProvingGroundCatalog.HEIGHT
+	if not geometry.add_obstacle(
+		BattleObstacle.new("building_hq", TacticalProvingGroundCatalog.HQ_BOUNDS, true, true, "building")
+	):
+		return false
+	var binding: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq",
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_CALIBRATION_01
+	)
+	binding.anchor_mode = TacticalVisualPlacement.ANCHOR_SOUTH
+	if not geometry.add_visual_binding(binding):
+		return false
+	presenter.sync_static(geometry, "m4b_det_a")
+	var first: Dictionary = presenter.visual_transform_for(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq"
+	)
+	var rebuild_before: int = presenter.rebuild_count
+	var sprite_id: int = presenter.building_root.get_child(0).get_instance_id()
+	presenter.sync_static(geometry, "m4b_det_a")
+	if presenter.rebuild_count != rebuild_before:
+		return false
+	if presenter.building_root.get_child(0).get_instance_id() != sprite_id:
+		return false
+	presenter.sync_static(geometry, "m4b_det_b")
+	var second: Dictionary = presenter.visual_transform_for(
+		BattleVisualBinding.KIND_BUILDING,
+		"building_hq"
+	)
+	if first.is_empty() or second.is_empty():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.environment_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var live_rebuild: int = view.environment_presenter.rebuild_count
+	view._process(0.016)
+	view._process(0.016)
+	return _gameplayruntime_finish(
+		runtime,
+		_vispass_m4b_approx_vec(first["world_center"], second["world_center"])
+		and _vispass_m4b_approx_vec(first["world_size"], second["world_size"])
+		and is_equal_approx(float(first["view_scale"]), float(second["view_scale"]))
+		and presenter.rebuild_count == rebuild_before + 1
+		and view.environment_presenter.rebuild_count == live_rebuild
+		and view.environment_presenter.claims_obstacle("parked_car_attack_west")
+		and view.environment_presenter.claims_obstacle("dumpster_frontage_west")
+		and not view.environment_presenter.claims_building("building_hq")
+		and not view.environment_presenter.claims_surface("road_main")
+		and view.environment_presenter.building_child_count() == _vispass_m3_building_ids().size()
+		and view.environment_presenter.surface_child_count() == _vispass_m3_surface_ids().size()
+		and view.environment_presenter.composite_child_count() == 1
+		and view.environment_presenter.detail_child_count() == 0
+		and view.static_asset_root != null
+		and view.static_asset_root.z_index == 1
+		and view.static_asset_root.get_child_count() == (
+			_vispass_m2_vehicle_obstacle_ids().size() + _vispass_m2_prop_obstacle_ids().size()
+		)
+		and view.static_composite_root != null
+		and view.static_composite_root.z_index == 0
+		and view.static_composite_root.get_index() > view.static_layer.get_index()
+		and view.static_composite_root.get_index() < view.static_building_root.get_index()
+		and view.dynamic_layer != null
+		and view.dynamic_layer.z_index == 3
+	)
+
+
+static func _vispass_m4b_view_has_no_asset_path_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/geometry/tactical_proving_ground_catalog.gd"
+	)
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_environment_presenter.gd"
+	)
+	return (
+		not view_src.contains(".png")
+		and not view_src.contains("assets/tactical")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and view_src.contains("static_composite_root")
+		and view_src.contains("StaticCompositeRoot")
+		and view_src.contains("bind_composite_root")
+		and catalog_src.contains("KIND_BLOCK")
+		and catalog_src.contains("_bind_block")
+		and catalog_src.contains("block_pipeline_test")
+		and not catalog_src.contains(".png")
+		and presenter_src.contains("KIND_BLOCK")
+		and presenter_src.contains("composite_root")
+		and presenter_src.contains("TacticalVisualPlacement")
+		and FileAccess.file_exists("res://assets/tactical/environment/composition_calibration_01.png")
+		and FileAccess.file_exists("res://battle/presentation/tactical_visual_placement.gd")
+	)
+
+
+static func _vispass_m4b_geometry_unchanged_ok() -> bool:
+	if not _vispass_m3_geometry_unchanged_ok():
+		return false
+	if not _vispass_m2_geometry_unchanged_ok():
+		return false
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	var road: BattleSurfaceRegion = geometry.get_surface_region("road_main")
+	return (
+		hq != null
+		and hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS)
+		and road != null
+		and road.bounds.is_equal_approx(TacticalProvingGroundCatalog.MAIN_ROAD)
+		and geometry.get_sorted_obstacle_ids().size() == 24
+		and geometry.get_visual_binding(BattleVisualBinding.KIND_BLOCK, "block_pipeline_test") != null
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9)
+		and is_equal_approx(TacticalBattleView.TACTICAL_PIXELS_PER_UNIT, 8.0)
 	)

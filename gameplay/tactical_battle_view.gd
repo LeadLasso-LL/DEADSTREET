@@ -243,6 +243,7 @@ var static_layer: TacticalStaticBattlefieldLayer = null
 var dynamic_layer: TacticalDynamicBattlefieldLayer = null
 var static_surface_root: Node2D = null
 var static_building_root: Node2D = null
+var static_composite_root: Node2D = null
 var static_asset_root: Node2D = null
 var static_detail_root: Node2D = null
 var dynamic_asset_root: Node2D = null
@@ -527,6 +528,11 @@ func _ensure_layers() -> void:
 		static_layer.host = self
 		static_layer.z_index = 0
 		add_child(static_layer)
+	if static_composite_root == null:
+		static_composite_root = Node2D.new()
+		static_composite_root.name = "StaticCompositeRoot"
+		static_composite_root.z_index = 0
+		add_child(static_composite_root)
 	if static_building_root == null:
 		static_building_root = Node2D.new()
 		static_building_root.name = "StaticBuildingRoot"
@@ -558,11 +564,14 @@ func _ensure_layers() -> void:
 		environment_presenter = TacticalEnvironmentPresenter.new()
 		environment_presenter.bind_root(static_asset_root, TACTICAL_PIXELS_PER_UNIT)
 		environment_presenter.bind_surface_root(static_surface_root)
+		environment_presenter.bind_composite_root(static_composite_root)
 		environment_presenter.bind_building_root(static_building_root)
 		environment_presenter.bind_detail_root(static_detail_root)
 	else:
 		if environment_presenter.surface_root == null:
 			environment_presenter.bind_surface_root(static_surface_root)
+		if environment_presenter.composite_root == null:
+			environment_presenter.bind_composite_root(static_composite_root)
 		if environment_presenter.building_root == null:
 			environment_presenter.bind_building_root(static_building_root)
 		if environment_presenter.detail_root == null:
@@ -576,6 +585,7 @@ func _order_presentation_roots() -> void:
 	var ordered: Array[Node] = [
 		static_surface_root,
 		static_layer,
+		static_composite_root,
 		static_building_root,
 		static_detail_root,
 		static_asset_root,

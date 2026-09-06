@@ -2,11 +2,12 @@ class_name TacticalEnvironmentPresenter
 extends RefCounted
 
 # Retained static asset visuals. Rebuilds only when geometry stamp changes.
-# Surfaces, buildings, optional decals, then cars/props.
+# Surfaces, block composites, buildings, optional decals, then cars/props.
 # Does not own collision, cover, hit-testing, or navigation.
 
 const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
 const TacticalVisualCatalog := preload("res://battle/presentation/tactical_visual_catalog.gd")
+const TacticalVisualPlacement := preload("res://battle/presentation/tactical_visual_placement.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_region.gd")
@@ -14,6 +15,7 @@ const BattlePresentationMarking := preload("res://battle/geometry/battle_present
 
 var root: Node2D = null
 var surface_root: Node2D = null
+var composite_root: Node2D = null
 var building_root: Node2D = null
 var detail_root: Node2D = null
 var pixels_per_unit: float = 8.0
@@ -25,6 +27,7 @@ var _claimed_surfaces: Dictionary = {}
 var _claimed_markings: Dictionary = {}
 var _claimed_roof: Dictionary = {}
 var _claimed_facade: Dictionary = {}
+var _transforms: Dictionary = {}
 
 
 func bind_root(p_root: Node2D, p_pixels_per_unit: float) -> void:
@@ -34,6 +37,10 @@ func bind_root(p_root: Node2D, p_pixels_per_unit: float) -> void:
 
 func bind_surface_root(p_root: Node2D) -> void:
 	surface_root = p_root
+
+
+func bind_composite_root(p_root: Node2D) -> void:
+	composite_root = p_root
 
 
 func bind_building_root(p_root: Node2D) -> void:
@@ -74,6 +81,12 @@ func surface_child_count() -> int:
 	return surface_root.get_child_count()
 
 
+func composite_child_count() -> int:
+	if composite_root == null:
+		return 0
+	return composite_root.get_child_count()
+
+
 func building_child_count() -> int:
 	if building_root == null:
 		return 0
@@ -84,6 +97,14 @@ func detail_child_count() -> int:
 	if detail_root == null:
 		return 0
 	return detail_root.get_child_count()
+
+
+func visual_transform_for(target_kind: String, target_id: String) -> Dictionary:
+	var key: String = "%s:%s" % [target_kind, target_id]
+	if not _transforms.has(key):
+		return {}
+	var stored: Dictionary = _transforms[key]
+	return stored.duplicate(true)
 
 
 func sync_static(geometry: BattlefieldGeometry, stamp: String) -> void:
@@ -101,24 +122,38 @@ func _rebuild(geometry: BattlefieldGeometry, stamp: String) -> void:
 	_claimed_markings.clear()
 	_claimed_roof.clear()
 	_claimed_facade.clear()
+	_transforms.clear()
 	_clear_node(root)
 	_clear_node(surface_root)
+	_clear_node(composite_root)
 	_clear_node(building_root)
 	_clear_node(detail_root)
 	if geometry == null:
 		return
+	var deferred: Array[BattleVisualBinding] = []
 	for binding: BattleVisualBinding in geometry.visual_bindings:
 		if binding == null or not binding.is_valid():
 			continue
+		if binding.target_kind == BattleVisualBinding.KIND_BLOCK:
+			_spawn_block_visual(binding)
+		else:
+			deferred.append(binding)
+	for binding: BattleVisualBinding in deferred:
 		if binding.target_kind == BattleVisualBinding.KIND_OBSTACLE:
 			if not _spawn_obstacle_visual(geometry, binding):
 				continue
 			_claimed[binding.target_id] = true
 		elif binding.target_kind == BattleVisualBinding.KIND_SURFACE:
+			if _claimed_surfaces.has(binding.target_id):
+				continue
 			_spawn_surface_visual(geometry, binding)
 		elif binding.target_kind == BattleVisualBinding.KIND_BUILDING:
+			if _claimed_buildings.has(binding.target_id):
+				continue
 			_spawn_building_visual(geometry, binding)
 		elif binding.target_kind == BattleVisualBinding.KIND_DECAL:
+			if _claimed_markings.has(binding.target_id):
+				continue
 			_spawn_decal_visual(geometry, binding)
 
 
@@ -147,11 +182,16 @@ func _spawn_surface_visual(geometry: BattlefieldGeometry, binding: BattleVisualB
 	var texture: Texture2D = TacticalVisualCatalog.texture_for(spec)
 	if texture == null:
 		return
-	var sprite: Sprite2D = _make_sprite("surface_%s" % binding.target_id, texture, spec, binding)
+	var sprite: Sprite2D = _make_placed_sprite(
+		"surface_%s" % binding.target_id,
+		texture,
+		spec,
+		binding,
+		surface.bounds,
+		true
+	)
 	if sprite == null or surface_root == null:
 		return
-	var world_pos: Vector2 = surface.bounds.get_center() + binding.offset
-	sprite.position = world_pos * pixels_per_unit
 	if TacticalVisualCatalog.is_pipeline_test(spec):
 		sprite.visible = false
 	surface_root.add_child(sprite)
@@ -167,16 +207,52 @@ func _spawn_building_visual(geometry: BattlefieldGeometry, binding: BattleVisual
 	var texture: Texture2D = TacticalVisualCatalog.texture_for(spec)
 	if texture == null:
 		return
-	var sprite: Sprite2D = _make_sprite("building_%s" % binding.target_id, texture, spec, binding)
+	var sprite: Sprite2D = _make_placed_sprite(
+		"building_%s" % binding.target_id,
+		texture,
+		spec,
+		binding,
+		obstacle.bounds,
+		true
+	)
 	if sprite == null or building_root == null:
 		return
-	var world_pos: Vector2 = obstacle.bounds.get_center() + binding.offset
-	sprite.position = world_pos * pixels_per_unit
 	if TacticalVisualCatalog.is_pipeline_test(spec):
 		sprite.visible = false
 	building_root.add_child(sprite)
 	if TacticalVisualCatalog.should_claim_canvas(spec):
 		_claimed_buildings[binding.target_id] = true
+
+
+func _spawn_block_visual(binding: BattleVisualBinding) -> void:
+	var spec: Dictionary = TacticalVisualCatalog.spec_for(binding.archetype_id, binding.variant_id)
+	var texture: Texture2D = TacticalVisualCatalog.texture_for(spec)
+	if texture == null:
+		return
+	var sprite: Sprite2D = _make_placed_sprite(
+		"block_%s" % binding.target_id,
+		texture,
+		spec,
+		binding,
+		Rect2(),
+		false
+	)
+	if sprite == null or composite_root == null:
+		return
+	if TacticalVisualCatalog.is_pipeline_test(spec):
+		sprite.visible = false
+	composite_root.add_child(sprite)
+	if not TacticalVisualCatalog.should_claim_canvas(spec):
+		return
+	for building_id: String in binding.suppress_building_ids:
+		if not building_id.is_empty():
+			_claimed_buildings[building_id] = true
+	for surface_id: String in binding.suppress_surface_ids:
+		if not surface_id.is_empty():
+			_claimed_surfaces[surface_id] = true
+	for mark_id: String in binding.suppress_marking_ids:
+		if not mark_id.is_empty():
+			_claimed_markings[mark_id] = true
 
 
 func _spawn_decal_visual(geometry: BattlefieldGeometry, binding: BattleVisualBinding) -> void:
@@ -233,6 +309,45 @@ func _make_sprite(
 	sprite.rotation = deg_to_rad(binding.rotation_deg)
 	var view_scale: float = (pixels_per_unit / art_ppu) * binding.scale
 	sprite.scale = Vector2(view_scale, view_scale)
+	return sprite
+
+
+func _make_placed_sprite(
+	sprite_name: String,
+	texture: Texture2D,
+	spec: Dictionary,
+	binding: BattleVisualBinding,
+	gameplay_bounds: Rect2,
+	use_gameplay_bounds: bool
+) -> Sprite2D:
+	var placed: Dictionary = TacticalVisualPlacement.compute(
+		texture,
+		spec,
+		binding,
+		pixels_per_unit,
+		gameplay_bounds,
+		use_gameplay_bounds
+	)
+	if placed.is_empty():
+		return null
+	if not bool(placed.get("uniform", false)):
+		return null
+	var view_scale: float = float(placed.get("view_scale", 0.0))
+	if view_scale <= 0.0:
+		return null
+	var sprite: Sprite2D = Sprite2D.new()
+	sprite.name = sprite_name
+	sprite.texture = texture
+	sprite.centered = true
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	sprite.rotation = deg_to_rad(binding.rotation_deg)
+	sprite.scale = Vector2(view_scale, view_scale)
+	sprite.position = placed.get("view_position", Vector2.ZERO)
+	if bool(placed.get("region_enabled", false)):
+		sprite.region_enabled = true
+		sprite.region_rect = placed.get("region_rect", Rect2())
+		sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	_transforms["%s:%s" % [binding.target_kind, binding.target_id]] = placed
 	return sprite
 
 

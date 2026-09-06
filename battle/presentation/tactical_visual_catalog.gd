@@ -30,6 +30,7 @@ const ARCHETYPE_SIDEWALK_CRACK := "sidewalk_crack"
 const ARCHETYPE_GRIME_STRIP := "grime_strip"
 const ARCHETYPE_BUILDING_TACTICAL := "building_tactical"
 const ARCHETYPE_SURFACE_TACTICAL := "surface_tactical"
+const ARCHETYPE_ENVIRONMENT_BLOCK := "environment_block"
 
 const VARIANT_TEST_01 := "test_01"
 const VARIANT_CREAM_01 := "cream_01"
@@ -47,6 +48,7 @@ const VARIANT_SHOP_01 := "shop_01"
 const VARIANT_FLAT_01 := "flat_01"
 const VARIANT_PIPELINE_TEST := "pipeline_test"
 const VARIANT_ASPHALT_01 := "asphalt_01"
+const VARIANT_CALIBRATION_01 := "calibration_01"
 
 const FALLBACK_CIVILIAN_CAR := "civilian_car"
 const DEFAULT_PPU := 32.0
@@ -367,6 +369,35 @@ static func _ensure_specs() -> void:
 		ARCHETYPE_SURFACE_TACTICAL,
 		VARIANT_ASPHALT_01,
 		"res://assets/tactical/environment/surface_road_01.png",
+		DEFAULT_PPU,
+		"surface"
+	)
+	_register(
+		ARCHETYPE_ENVIRONMENT_BLOCK,
+		VARIANT_PIPELINE_TEST,
+		"res://assets/tactical/environment/building_pipeline_test.png",
+		DEFAULT_PPU,
+		"building",
+		{"pipeline_test": true}
+	)
+	_register(
+		ARCHETYPE_ENVIRONMENT_BLOCK,
+		VARIANT_CALIBRATION_01,
+		"res://assets/tactical/environment/composition_calibration_01.png",
+		DEFAULT_PPU,
+		"building"
+	)
+	_register(
+		ARCHETYPE_BUILDING_TACTICAL,
+		VARIANT_CALIBRATION_01,
+		"res://assets/tactical/environment/composition_calibration_01.png",
+		DEFAULT_PPU,
+		"building"
+	)
+	_register(
+		ARCHETYPE_SURFACE_TACTICAL,
+		VARIANT_CALIBRATION_01,
+		"res://assets/tactical/environment/composition_calibration_01.png",
 		DEFAULT_PPU,
 		"surface"
 	)
