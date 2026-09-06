@@ -20,6 +20,10 @@ const BattleDeploymentPlanner := preload("res://battle/ai/battle_deployment_plan
 const BattleVehicleDeploymentService := preload("res://battle/vehicles/battle_vehicle_deployment_service.gd")
 const BattleVehicleDeploymentResult := preload("res://battle/vehicles/battle_vehicle_deployment_result.gd")
 const BattleVehiclePlacementContext := preload("res://battle/vehicles/battle_vehicle_placement_context.gd")
+const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
+const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
+const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
+const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
 const StarterWorldService := preload("res://gameplay/starter_world_service.gd")
 
 const SUBROLE_ATTACKER_PLACEMENT := "attacker_placement"
@@ -105,11 +109,11 @@ func try_place_selected(position: Vector2) -> BattleDeploymentPlacementResult:
 		position
 	)
 	if result != null and result.success:
+		_clear_deployment_cover_assignment(battle_state, selected_participant_id)
 		print(
 			"TacticalDeploymentController: deployed %s at (%s, %s)"
 			% [result.participant_id, result.position.x, result.position.y]
 		)
-		selected_participant_id = ""
 		status_text = "DEPLOYED %s" % result.participant_id
 		return result
 	var error_code: String = "invalid_placement"
@@ -118,6 +122,200 @@ func try_place_selected(position: Vector2) -> BattleDeploymentPlacementResult:
 	status_text = "INVALID DEPLOYMENT"
 	print("TacticalDeploymentController: invalid placement code=%s" % error_code)
 	return result
+
+
+func try_place_selected_cover(cover_object_id: String) -> BattleDeploymentPlacementResult:
+	_sync_subrole_from_authority()
+	if selected_participant_id.is_empty():
+		return BattleDeploymentPlacementResult.failed(
+			"no_selection",
+			"Deployment cover placement failed: no participant is selected."
+		)
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return BattleDeploymentPlacementResult.failed(
+			"null_battle_state",
+			"Deployment cover placement failed: battle_state is null.",
+			selected_participant_id
+		)
+	if not _is_attacker_soldier_selectable(battle_state, selected_participant_id):
+		return BattleDeploymentPlacementResult.failed(
+			"not_eligible",
+			"Deployment cover placement failed: selected participant is not an eligible attacker soldier.",
+			selected_participant_id
+		)
+	var slot: BattleCoverSlot = resolve_deployment_cover_slot(
+		battle_state,
+		selected_participant_id,
+		cover_object_id
+	)
+	if slot == null:
+		status_text = "INVALID DEPLOYMENT"
+		print(
+			"TacticalDeploymentController: invalid cover object %s for %s"
+			% [cover_object_id, selected_participant_id]
+		)
+		return BattleDeploymentPlacementResult.failed(
+			"cover_unavailable",
+			"Deployment cover placement failed: cover object '%s' has no legal deployment slot." % cover_object_id,
+			selected_participant_id
+		)
+	var result: BattleDeploymentPlacementResult = BattleDeploymentPlacementService.place_participant(
+		battle_state,
+		selected_participant_id,
+		slot.position
+	)
+	if result == null or not result.success:
+		var error_code: String = "invalid_placement"
+		if result != null and not result.error_code.is_empty():
+			error_code = result.error_code
+		status_text = "INVALID DEPLOYMENT"
+		print("TacticalDeploymentController: invalid cover placement code=%s" % error_code)
+		return result
+	_assign_deployment_cover(
+		battle_state,
+		selected_participant_id,
+		cover_object_id,
+		slot.cover_slot_id
+	)
+	print(
+		"TacticalDeploymentController: deployed %s to cover %s slot %s"
+		% [selected_participant_id, cover_object_id, slot.cover_slot_id]
+	)
+	status_text = "DEPLOYED %s" % selected_participant_id
+	return result
+
+
+func resolve_deployment_cover_slot(
+	battle_state: BattleState,
+	participant_id: String,
+	cover_object_id: String
+) -> BattleCoverSlot:
+	if battle_state == null or participant_id.is_empty() or cover_object_id.is_empty():
+		return null
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	if participant == null:
+		return null
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry == null or not geometry.has_cover_object(cover_object_id):
+		return null
+	var cover_object: BattleCoverObject = geometry.get_cover_object(cover_object_id)
+	if cover_object == null:
+		return null
+	var slot_ids: Array[String] = []
+	for slot_id: String in cover_object.slot_ids:
+		slot_ids.append(slot_id)
+	slot_ids.sort()
+	var legal: Array[BattleCoverSlot] = []
+	for slot_id: String in slot_ids:
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null or not slot.is_valid():
+			continue
+		if slot.cover_object_id != cover_object_id:
+			continue
+		if slot.occupied_by_participant_id == participant_id:
+			return slot
+		if slot.is_occupied():
+			continue
+		if slot.is_reserved() and slot.reserved_by_participant_id != participant_id:
+			continue
+		if not battle_state.get_deployment_position_error(participant.side_id, slot.position).is_empty():
+			continue
+		if BattleCoverService.is_at_slot(participant, slot):
+			return slot
+		legal.append(slot)
+	if legal.is_empty():
+		return null
+	if not participant.has_battle_position:
+		return legal[0]
+	var best: BattleCoverSlot = legal[0]
+	var best_distance: float = participant.battle_position.distance_squared_to(best.position)
+	for i in range(1, legal.size()):
+		var candidate: BattleCoverSlot = legal[i]
+		var distance: float = participant.battle_position.distance_squared_to(candidate.position)
+		if not is_finite(distance):
+			continue
+		if distance < best_distance:
+			best = candidate
+			best_distance = distance
+	return best
+
+
+func apply_pending_cover_to_live() -> void:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null:
+			continue
+		if not participant.has_pending_deployment_cover():
+			continue
+		var object_id: String = participant.pending_deployment_cover_object_id
+		var slot_id: String = participant.pending_deployment_cover_slot_id
+		if participant.occupied_cover_slot_id != slot_id:
+			var occupied: BattleCoverResult = BattleCoverService.occupy_slot(
+				battle_state,
+				participant_id,
+				slot_id
+			)
+			if occupied == null or not occupied.success:
+				var reserved: BattleCoverResult = BattleCoverService.reserve_slot(
+					battle_state,
+					participant_id,
+					slot_id
+				)
+				if reserved != null and reserved.success:
+					BattleCoverService.occupy_slot(battle_state, participant_id, slot_id)
+		participant.set_player_cover_intent(object_id, slot_id)
+		participant.clear_pending_deployment_cover()
+
+
+func _clear_deployment_cover_assignment(battle_state: BattleState, participant_id: String) -> void:
+	if battle_state == null or participant_id.is_empty():
+		return
+	BattleCoverService.release_all_for_participant(battle_state, participant_id)
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	if participant == null:
+		return
+	participant.clear_pending_deployment_cover()
+	if participant.current_player_intent() == BattleParticipant.PLAYER_INTENT_COVER:
+		participant.clear_player_tactical_intent()
+
+
+func _assign_deployment_cover(
+	battle_state: BattleState,
+	participant_id: String,
+	cover_object_id: String,
+	cover_slot_id: String
+) -> void:
+	if battle_state == null or participant_id.is_empty():
+		return
+	var participant: BattleParticipant = battle_state.get_participant(participant_id)
+	if participant == null:
+		return
+	if (
+		participant.occupied_cover_slot_id != cover_slot_id
+		and participant.reserved_cover_slot_id != cover_slot_id
+	):
+		BattleCoverService.release_all_for_participant(battle_state, participant_id)
+	var occupied: BattleCoverResult = BattleCoverService.occupy_slot(
+		battle_state,
+		participant_id,
+		cover_slot_id
+	)
+	if occupied == null or not occupied.success:
+		var reserved: BattleCoverResult = BattleCoverService.reserve_slot(
+			battle_state,
+			participant_id,
+			cover_slot_id
+		)
+		if reserved != null and reserved.success:
+			occupied = BattleCoverService.occupy_slot(battle_state, participant_id, cover_slot_id)
+	if occupied != null and occupied.success:
+		participant.set_pending_deployment_cover(cover_object_id, cover_slot_id)
+		return
+	participant.clear_pending_deployment_cover()
 
 
 func try_commit_attacker() -> BattleDeploymentCommitResult:

@@ -16542,6 +16542,26 @@ static func run() -> Dictionary:
 	var hud_selection_still_canonical_ok: bool = _hud_selection_still_canonical_ok()
 	var target_from_cover_no_click_fallthrough_ok: bool = _target_from_cover_no_click_fallthrough_ok()
 	var cover_replacement_no_click_fallthrough_ok: bool = _cover_replacement_no_click_fallthrough_ok()
+	var deployhud_roster_ok: bool = _deployhud_roster_ok()
+	var deployhud_select_ok: bool = _deployhud_select_ok()
+	var deployhud_ground_place_ok: bool = _deployhud_ground_place_ok()
+	var deployhud_illegal_ground_preserves_ok: bool = _deployhud_illegal_ground_preserves_ok()
+	var deployhud_cover_place_ok: bool = _deployhud_cover_place_ok()
+	var deployhud_cover_object_only_ok: bool = _deployhud_cover_object_only_ok()
+	var deployhud_cover_to_ground_ok: bool = _deployhud_cover_to_ground_ok()
+	var deployhud_cover_to_cover_ok: bool = _deployhud_cover_to_cover_ok()
+	var deployhud_ground_to_cover_ok: bool = _deployhud_ground_to_cover_ok()
+	var deployhud_cover_confirms_to_live_cover_ok: bool = _deployhud_cover_confirms_to_live_cover_ok()
+	var deployhud_ground_confirms_without_cover_ok: bool = _deployhud_ground_confirms_without_cover_ok()
+	var deployhud_selection_clears_on_start_ok: bool = _deployhud_selection_clears_on_start_ok()
+	var deployhud_cover_hover_no_pathfind_ok: bool = _deployhud_cover_hover_no_pathfind_ok()
+	var deployhud_hud_click_no_fallthrough_ok: bool = _deployhud_hud_click_no_fallthrough_ok()
+	var deployhud_confirm_no_fallthrough_ok: bool = _deployhud_confirm_no_fallthrough_ok()
+	var deployhud_cover_click_no_terrain_fallthrough_ok: bool = _deployhud_cover_click_no_terrain_fallthrough_ok()
+	var deployhud_debug_left_panel_off_ok: bool = _deployhud_debug_left_panel_off_ok()
+	var deployhud_confirm_control_ok: bool = _deployhud_confirm_control_ok()
+	var deployhud_live_order_regression_ok: bool = _deployhud_live_order_regression_ok()
+	var deployhud_sticky_cover_regression_ok: bool = _deployhud_sticky_cover_regression_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18725,6 +18745,26 @@ static func run() -> Dictionary:
 		"hud_selection_still_canonical_ok": hud_selection_still_canonical_ok,
 		"target_from_cover_no_click_fallthrough_ok": target_from_cover_no_click_fallthrough_ok,
 		"cover_replacement_no_click_fallthrough_ok": cover_replacement_no_click_fallthrough_ok,
+		"deployhud_roster_ok": deployhud_roster_ok,
+		"deployhud_select_ok": deployhud_select_ok,
+		"deployhud_ground_place_ok": deployhud_ground_place_ok,
+		"deployhud_illegal_ground_preserves_ok": deployhud_illegal_ground_preserves_ok,
+		"deployhud_cover_place_ok": deployhud_cover_place_ok,
+		"deployhud_cover_object_only_ok": deployhud_cover_object_only_ok,
+		"deployhud_cover_to_ground_ok": deployhud_cover_to_ground_ok,
+		"deployhud_cover_to_cover_ok": deployhud_cover_to_cover_ok,
+		"deployhud_ground_to_cover_ok": deployhud_ground_to_cover_ok,
+		"deployhud_cover_confirms_to_live_cover_ok": deployhud_cover_confirms_to_live_cover_ok,
+		"deployhud_ground_confirms_without_cover_ok": deployhud_ground_confirms_without_cover_ok,
+		"deployhud_selection_clears_on_start_ok": deployhud_selection_clears_on_start_ok,
+		"deployhud_cover_hover_no_pathfind_ok": deployhud_cover_hover_no_pathfind_ok,
+		"deployhud_hud_click_no_fallthrough_ok": deployhud_hud_click_no_fallthrough_ok,
+		"deployhud_confirm_no_fallthrough_ok": deployhud_confirm_no_fallthrough_ok,
+		"deployhud_cover_click_no_terrain_fallthrough_ok": deployhud_cover_click_no_terrain_fallthrough_ok,
+		"deployhud_debug_left_panel_off_ok": deployhud_debug_left_panel_off_ok,
+		"deployhud_confirm_control_ok": deployhud_confirm_control_ok,
+		"deployhud_live_order_regression_ok": deployhud_live_order_regression_ok,
+		"deployhud_sticky_cover_regression_ok": deployhud_sticky_cover_regression_ok,
 	}
 
 	var passed := true
@@ -58813,8 +58853,8 @@ static func _interactive_deploy_vehicle_ok() -> bool:
 		runtime,
 		blob.contains(StarterWorldService.VEHICLE_ID)
 		and blob.contains("parked")
-		and str(hit.get("kind", "")) == "vehicle"
-		and str(hit.get("id", "")) == StarterWorldService.VEHICLE_ID
+		and hit.is_empty()
+		and TacticalBattleView.DEBUG_DRAW_DEVELOPER_OVERLAY == false
 		and vehicle_status_ok
 		and vehicle_select_ok
 		and controller.selected_participant_id.is_empty()
@@ -58930,7 +58970,7 @@ static func _interactive_deploy_success_clear_ok() -> bool:
 		runtime,
 		result != null
 		and result.success
-		and controller.selected_participant_id.is_empty()
+		and controller.selected_participant_id == participant_id
 		and battle_state.is_participant_deployed(participant_id)
 		and participant.has_battle_position
 		and blob.contains("deployed")
@@ -59335,37 +59375,28 @@ static func _interactive_deploy_roster_hit_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	if not _tacticalview_add_participant(battle_state, defender_id, battle_state.defender_side_id, "pistol"):
 		return _gameplayruntime_finish(runtime, false)
-	var soldier_rect: Rect2 = _interactive_deploy_roster_rect(
+	view.call("_frame_camera")
+	var soldier_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_ID)
+	var defender_hud: Rect2 = _tacticalhud_card_rect(view, defender_id)
+	var layout_soldier: Rect2 = _interactive_deploy_roster_rect(
 		view,
 		"participant",
 		StarterWorldService.SOLDIER_ID
 	)
-	var defender_rect: Rect2 = _interactive_deploy_roster_rect(view, "participant", defender_id)
-	var vehicle_rect: Rect2 = _interactive_deploy_roster_rect(
-		view,
-		"vehicle",
-		StarterWorldService.VEHICLE_ID
-	)
-	var soldier_hit: Dictionary = view.hit_test_roster(soldier_rect.get_center())
-	var defender_hit: Dictionary = view.hit_test_roster(defender_rect.get_center())
-	var vehicle_hit: Dictionary = view.hit_test_roster(vehicle_rect.get_center())
-	var miss_hit: Dictionary = view.hit_test_roster(Vector2(-4000.0, -4000.0))
-	var soldier_ok: bool = controller.select_participant(str(soldier_hit.get("id", "")))
+	var roster_hit: Dictionary = view.hit_test_roster(layout_soldier.get_center())
+	if soldier_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	runtime.call("_handle_tactical_deployment_local_click", soldier_rect.get_center(), MOUSE_BUTTON_LEFT)
+	var soldier_ok: bool = controller.selected_participant_id == StarterWorldService.SOLDIER_ID
 	controller.clear_selection()
-	var defender_ok: bool = not controller.select_participant(str(defender_hit.get("id", "")))
-	controller.notify_vehicle_not_available(str(vehicle_hit.get("id", "")))
+	var defender_ok: bool = not controller.select_participant(defender_id)
+	controller.notify_vehicle_not_available(StarterWorldService.VEHICLE_ID)
 	return _gameplayruntime_finish(
 		runtime,
-		soldier_rect.size.x > 0.0
-		and defender_rect.size.x > 0.0
-		and vehicle_rect.size.x > 0.0
-		and str(soldier_hit.get("kind", "")) == "participant"
-		and str(soldier_hit.get("id", "")) == StarterWorldService.SOLDIER_ID
-		and str(defender_hit.get("kind", "")) == "participant"
-		and str(defender_hit.get("id", "")) == defender_id
-		and str(vehicle_hit.get("kind", "")) == "vehicle"
-		and str(vehicle_hit.get("id", "")) == StarterWorldService.VEHICLE_ID
-		and miss_hit.is_empty()
+		TacticalBattleView.DEBUG_DRAW_DEVELOPER_OVERLAY == false
+		and roster_hit.is_empty()
+		and view.hit_test_roster(Vector2(-4000.0, -4000.0)).is_empty()
+		and defender_hud.size.x <= 0.0
 		and soldier_ok
 		and defender_ok
 		and controller.status_text == "vehicle deployment not available"
@@ -59555,16 +59586,9 @@ static func _interactive_deploy_htb_mouse_ok() -> bool:
 	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
 	if view == null or controller == null or geometry == null or participant == null:
 		return _gameplayruntime_finish(runtime, false)
-	var soldier_rect: Rect2 = _interactive_deploy_roster_rect(
-		view,
-		"participant",
-		StarterWorldService.SOLDIER_ID
-	)
-	var vehicle_rect: Rect2 = _interactive_deploy_roster_rect(
-		view,
-		"vehicle",
-		StarterWorldService.VEHICLE_ID
-	)
+	var soldier_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_ID)
+	if soldier_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
 	_interactive_deploy_click(runtime, _interactive_deploy_local_to_viewport(view, soldier_rect.get_center()))
 	var selected_ok: bool = controller.selected_participant_id == StarterWorldService.SOLDIER_ID
 	_interactive_deploy_click(
@@ -59584,7 +59608,7 @@ static func _interactive_deploy_htb_mouse_ok() -> bool:
 		not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
 		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
 	)
-	_interactive_deploy_click(runtime, _interactive_deploy_local_to_viewport(view, vehicle_rect.get_center()))
+	controller.notify_vehicle_not_available(StarterWorldService.VEHICLE_ID)
 	var vehicle_ok: bool = (
 		controller.status_text == "vehicle deployment not available"
 		and battle_state.is_vehicle_fully_deployed(StarterWorldService.VEHICLE_ID)
@@ -59602,7 +59626,7 @@ static func _interactive_deploy_htb_mouse_ok() -> bool:
 		and battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
 		and participant.has_battle_position
 		and participant.battle_position.distance_to(legal) < 0.05
-		and controller.selected_participant_id.is_empty()
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
 		and battle_state.battle_phase == "deployment"
 		and session.session_state == CampaignBattleSession.SESSION_DEPLOYMENT
 		and runtime.get_current_mode() == "tactical_deployment"
@@ -59959,24 +59983,20 @@ static func _interactive_deploy_roster_visual_hit_ok() -> bool:
 		return _gameplayruntime_finish(runtime, false)
 	controller.clear_selection()
 	var soldier_hit: Dictionary = view.hit_test_roster(soldier_rect.get_center())
-	var soldier_select: bool = controller.select_participant(str(soldier_hit.get("id", "")))
+	var hud_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_ID)
+	if hud_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	runtime.call("_handle_tactical_deployment_local_click", hud_rect.get_center(), MOUSE_BUTTON_LEFT)
 	var soldier_ok: bool = (
-		str(soldier_hit.get("kind", "")) == "participant"
-		and str(soldier_hit.get("id", "")) == StarterWorldService.SOLDIER_ID
-		and soldier_select
+		soldier_hit.is_empty()
+		and TacticalBattleView.DEBUG_DRAW_DEVELOPER_OVERLAY == false
 		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
 	)
 	controller.clear_selection()
 	var vehicle_hit: Dictionary = view.hit_test_roster(vehicle_rect.get_center())
-	if str(vehicle_hit.get("kind", "")) == "vehicle":
-		controller.notify_vehicle_not_available(str(vehicle_hit.get("id", "")))
-	elif str(vehicle_hit.get("kind", "")) == "participant":
-		controller.select_participant(str(vehicle_hit.get("id", "")))
+	controller.notify_vehicle_not_available(StarterWorldService.VEHICLE_ID)
 	var vehicle_ok: bool = (
-		str(vehicle_hit.get("kind", "")) == "vehicle"
-		and str(vehicle_hit.get("id", "")) == StarterWorldService.VEHICLE_ID
-		and str(vehicle_hit.get("id", "")) != StarterWorldService.SOLDIER_ID
-		and controller.selected_participant_id != StarterWorldService.SOLDIER_ID
+		vehicle_hit.is_empty()
 		and controller.selected_participant_id.is_empty()
 		and controller.status_text == "vehicle deployment not available"
 	)
@@ -60025,19 +60045,16 @@ static func _interactive_deploy_roster_boundaries_ok() -> bool:
 	)
 	var header_hit: Dictionary = view.hit_test_roster(header_rect.get_center())
 	controller.clear_selection()
-	if str(header_hit.get("kind", "")) == "participant":
-		controller.select_participant(str(header_hit.get("id", "")))
 	var header_ok: bool = (
-		str(header_hit.get("id", "")) != StarterWorldService.SOLDIER_ID
+		header_hit.is_empty()
 		and controller.selected_participant_id != StarterWorldService.SOLDIER_ID
 	)
 	return _gameplayruntime_finish(
 		runtime,
-		str(soldier_center.get("id", "")) == StarterWorldService.SOLDIER_ID
-		and str(vehicle_center.get("id", "")) == StarterWorldService.VEHICLE_ID
-		and str(soldier_center.get("id", "")) != StarterWorldService.VEHICLE_ID
-		and str(vehicle_center.get("id", "")) != StarterWorldService.SOLDIER_ID
-		and str(above_soldier.get("id", "")) != StarterWorldService.SOLDIER_ID
+		TacticalBattleView.DEBUG_DRAW_DEVELOPER_OVERLAY == false
+		and soldier_center.is_empty()
+		and vehicle_center.is_empty()
+		and above_soldier.is_empty()
 		and below_last.is_empty()
 		and header_ok
 		and header_rect.position.y < soldier_rect.position.y
@@ -69678,4 +69695,778 @@ static func _cover_replacement_no_click_fallthrough_ok() -> bool:
 		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_COVER
 		and smg.player_cover_object_id == object_b
 		and smg.player_cover_object_id != object_a
+	)
+
+
+static func _deployhud_click(runtime: GameplayRuntime, local_pos: Vector2) -> void:
+	if runtime == null:
+		return
+	runtime.call("_handle_tactical_deployment_local_click", local_pos, MOUSE_BUTTON_LEFT)
+
+
+static func _deployhud_slot_held(
+	battle_state: BattleState,
+	slot_id: String,
+	participant_id: String
+) -> bool:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	if slot_id.is_empty() or participant_id.is_empty():
+		return false
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+	if slot == null:
+		return false
+	return (
+		slot.occupied_by_participant_id == participant_id
+		or slot.reserved_by_participant_id == participant_id
+	)
+
+
+static func _deployhud_legal_cover_object(
+	controller: TacticalDeploymentController,
+	battle_state: BattleState,
+	participant_id: String,
+	except_object_id: String = ""
+) -> String:
+	if controller == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return ""
+	for cover_object_id: String in battle_state.battlefield_geometry.get_sorted_cover_object_ids():
+		if cover_object_id == except_object_id:
+			continue
+		var slot: BattleCoverSlot = controller.resolve_deployment_cover_slot(
+			battle_state,
+			participant_id,
+			cover_object_id
+		)
+		if slot != null:
+			return cover_object_id
+	return ""
+
+
+static func _deployhud_cover_click_local(
+	view: TacticalBattleView,
+	battle_state: BattleState,
+	cover_object_id: String
+) -> Vector2:
+	if view == null or battle_state == null or cover_object_id.is_empty():
+		return Vector2.ZERO
+	var cover_rect: Rect2 = view.call("_cover_object_hit_rect", battle_state, cover_object_id)
+	if cover_rect.size.x <= 0.0 or cover_rect.size.y <= 0.0:
+		return Vector2.ZERO
+	var candidates: Array[Vector2] = [
+		cover_rect.get_center(),
+		cover_rect.position + cover_rect.size * 0.25,
+		cover_rect.position + cover_rect.size * 0.75,
+		Vector2(cover_rect.get_center().x, cover_rect.position.y + 4.0),
+	]
+	for candidate: Vector2 in candidates:
+		if view.hit_test_cover_object(candidate) != cover_object_id:
+			continue
+		if not view.hit_test_unit_hud(candidate).is_empty():
+			continue
+		if view.hit_test_confirm_control(candidate):
+			continue
+		return candidate
+	return Vector2.ZERO
+
+
+static func _deployhud_roster_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_frame_camera")
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(battle_state, "")
+	var enemy_seen: bool = false
+	var friendly_ids: Array[String] = []
+	for card: Dictionary in cards:
+		var card_id: String = str(card.get("participant_id", ""))
+		var participant: BattleParticipant = battle_state.get_participant(card_id)
+		if participant == null:
+			return _gameplayruntime_finish(runtime, false)
+		if participant.side_id != TacticalUnitHudQuery.player_side_id(battle_state):
+			enemy_seen = true
+		friendly_ids.append(card_id)
+		if _tacticalhud_card_rect(view, card_id).size.x <= 0.0:
+			return _gameplayruntime_finish(runtime, false)
+	var expected: int = 0
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null and participant.side_id == battle_state.attacker_side_id:
+			expected += 1
+	return _gameplayruntime_finish(
+		runtime,
+		cards.size() == expected
+		and expected >= 3
+		and friendly_ids.size() == expected
+		and not enemy_seen
+		and str(cards[0].get("display_name", "")) == ""
+		and str(cards[0].get("firearm_label", "")) == ""
+		and runtime.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+	)
+
+
+static func _deployhud_select_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_frame_camera")
+	var card_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_SMG_ID)
+	if card_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	_deployhud_click(runtime, card_rect.get_center())
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var card: Dictionary = TacticalUnitHudQuery.card_for(smg, controller.selected_participant_id)
+	return _gameplayruntime_finish(
+		runtime,
+		controller.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+		and view.call("_selected_participant_id") == StarterWorldService.SOLDIER_SMG_ID
+		and bool(card.get("is_selected", false))
+		and runtime.tactical_orders_controller == null
+		and smg != null
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and not smg.has_player_cover_intent()
+	)
+
+
+static func _deployhud_ground_place_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var point: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var local: Vector2 = view.call("_to_view", point)
+	_deployhud_click(runtime, local)
+	return _gameplayruntime_finish(
+		runtime,
+		battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and participant.battle_position.distance_to(point) < 0.05
+		and not participant.has_pending_deployment_cover()
+		and participant.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and participant.occupied_cover_slot_id.is_empty()
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+	)
+
+
+static func _deployhud_illegal_ground_preserves_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if participant == null or geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var legal: Vector2 = _interactive_deploy_continuous_point(geometry)
+	var placed: BattleDeploymentPlacementResult = controller.try_place_selected(legal)
+	if placed == null or not placed.success:
+		return _gameplayruntime_finish(runtime, false)
+	_deployhud_click(runtime, Vector2(-4000.0, -4000.0))
+	return _gameplayruntime_finish(
+		runtime,
+		participant.battle_position.is_equal_approx(legal)
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+		and controller.status_text == "INVALID DEPLOYMENT"
+		and not participant.has_pending_deployment_cover()
+	)
+
+
+static func _deployhud_cover_place_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	var click_local: Vector2 = _deployhud_cover_click_local(view, battle_state, cover_object_id)
+	if cover_object_id.is_empty() or click_local == Vector2.ZERO:
+		return _gameplayruntime_finish(runtime, false)
+	_deployhud_click(runtime, click_local)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		participant.pending_deployment_cover_slot_id
+	)
+	var source: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		participant.has_pending_deployment_cover()
+		and participant.pending_deployment_cover_object_id == cover_object_id
+		and slot != null
+		and slot.cover_object_id == cover_object_id
+		and participant.occupied_cover_slot_id == slot.cover_slot_id
+		and participant.battle_position.is_equal_approx(slot.position)
+		and TacticalBattleView.DEBUG_DRAW_COVER_SLOTS == false
+		and source.contains("DEBUG_DRAW_COVER_SLOTS := false")
+		and controller.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+	)
+
+
+static func _deployhud_cover_object_only_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var object_a: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	var object_b: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID,
+		object_a
+	)
+	var click_local: Vector2 = _deployhud_cover_click_local(view, battle_state, object_a)
+	if object_a.is_empty() or object_b.is_empty() or click_local == Vector2.ZERO:
+		return _gameplayruntime_finish(runtime, false)
+	_deployhud_click(runtime, click_local)
+	return _gameplayruntime_finish(
+		runtime,
+		participant.pending_deployment_cover_object_id == object_a
+		and participant.pending_deployment_cover_object_id != object_b
+	)
+
+
+static func _deployhud_cover_to_ground_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	if cover_object_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var cover_result: BattleDeploymentPlacementResult = controller.try_place_selected_cover(cover_object_id)
+	var old_slot_id: String = participant.pending_deployment_cover_slot_id
+	if cover_result == null or not cover_result.success or old_slot_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var ground: Vector2 = _interactive_deploy_continuous_point(battle_state.battlefield_geometry)
+	_deployhud_click(runtime, view.call("_to_view", ground))
+	return _gameplayruntime_finish(
+		runtime,
+		not participant.has_pending_deployment_cover()
+		and participant.occupied_cover_slot_id.is_empty()
+		and participant.reserved_cover_slot_id.is_empty()
+		and not _deployhud_slot_held(battle_state, old_slot_id, StarterWorldService.SOLDIER_SMG_ID)
+		and participant.battle_position.distance_to(ground) < 0.05
+		and participant.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+	)
+
+
+static func _deployhud_cover_to_cover_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var object_a: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	if object_a.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var first: BattleDeploymentPlacementResult = controller.try_place_selected_cover(object_a)
+	var slot_a: String = participant.pending_deployment_cover_slot_id
+	var object_b: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID,
+		object_a
+	)
+	if first == null or not first.success or object_b.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var second: BattleDeploymentPlacementResult = controller.try_place_selected_cover(object_b)
+	return _gameplayruntime_finish(
+		runtime,
+		second != null
+		and second.success
+		and participant.pending_deployment_cover_object_id == object_b
+		and participant.pending_deployment_cover_object_id != object_a
+		and not _deployhud_slot_held(battle_state, slot_a, StarterWorldService.SOLDIER_SMG_ID)
+		and _deployhud_slot_held(
+			battle_state,
+			participant.pending_deployment_cover_slot_id,
+			StarterWorldService.SOLDIER_SMG_ID
+		)
+	)
+
+
+static func _deployhud_ground_to_cover_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var ground: BattleDeploymentPlacementResult = controller.try_place_selected(
+		_interactive_deploy_continuous_point(battle_state.battlefield_geometry)
+	)
+	var cover_object_id: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	if ground == null or not ground.success or cover_object_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var cover_result: BattleDeploymentPlacementResult = controller.try_place_selected_cover(cover_object_id)
+	return _gameplayruntime_finish(
+		runtime,
+		cover_result != null
+		and cover_result.success
+		and participant.has_pending_deployment_cover()
+		and participant.pending_deployment_cover_object_id == cover_object_id
+	)
+
+
+static func _deployhud_cover_confirms_to_live_cover_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	if cover_object_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if controller.try_place_selected_cover(cover_object_id) == null:
+		return _gameplayruntime_finish(runtime, false)
+	var slot_id: String = smg.pending_deployment_cover_slot_id
+	runtime.call("_confirm_current_deployment")
+	if runtime.get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_advance_ticks(battle_state, 8):
+		return _gameplayruntime_finish(runtime, false)
+	return _gameplayruntime_finish(
+		runtime,
+		not smg.has_pending_deployment_cover()
+		and smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_COVER
+		and smg.player_cover_object_id == cover_object_id
+		and smg.player_cover_slot_id == slot_id
+		and smg.occupied_cover_slot_id == slot_id
+		and not _playercover_autonomous_reposition(smg)
+		and smg.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	)
+
+
+static func _deployhud_ground_confirms_without_cover_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if rifle == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if controller.try_place_selected(
+		_interactive_deploy_continuous_point(battle_state.battlefield_geometry)
+	) == null:
+		return _gameplayruntime_finish(runtime, false)
+	runtime.call("_confirm_current_deployment")
+	if runtime.get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return _gameplayruntime_finish(runtime, false)
+	return _gameplayruntime_finish(
+		runtime,
+		not rifle.has_pending_deployment_cover()
+		and rifle.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and not rifle.has_player_cover_intent()
+		and rifle.player_cover_object_id.is_empty()
+	)
+
+
+static func _deployhud_selection_clears_on_start_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	if cover_object_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	controller.try_place_selected_cover(cover_object_id)
+	runtime.call("_confirm_current_deployment")
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == GameFlowController.MODE_TACTICAL_ACTIVE
+		and orders != null
+		and orders.selected_participant_id.is_empty()
+		and (
+			runtime.tactical_deployment_controller == null
+			or runtime.tactical_deployment_controller.selected_participant_id.is_empty()
+		)
+		and smg != null
+		and smg.has_player_cover_intent()
+		and smg.player_cover_object_id == cover_object_id
+	)
+
+
+static func _deployhud_cover_hover_no_pathfind_ok() -> bool:
+	var hover_fn: String = _interactive_deploy_view_func("_draw_cover_object_hover")
+	var legal_fn: String = _interactive_deploy_view_func("_deployment_cover_object_is_legal")
+	var resolve_fn: String = _attacker_commit_extract_func(
+		FileAccess.get_file_as_string("res://gameplay/tactical_deployment_controller.gd"),
+		"resolve_deployment_cover_slot"
+	)
+	return (
+		hover_fn.contains("_deployment_cover_object_is_legal")
+		and not hover_fn.contains("find_path")
+		and not hover_fn.contains("BattleNavigationService")
+		and not legal_fn.contains("find_path")
+		and not legal_fn.contains("BattleNavigationService")
+		and not resolve_fn.contains("find_path")
+		and not resolve_fn.contains("BattleNavigationService")
+	)
+
+
+static func _deployhud_hud_click_no_fallthrough_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_frame_camera")
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	var card_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_ID)
+	if participant == null or card_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	_deployhud_click(runtime, card_rect.get_center())
+	return _gameplayruntime_finish(
+		runtime,
+		controller.selected_participant_id == StarterWorldService.SOLDIER_ID
+		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and not participant.has_battle_position
+		and not view.hit_test_unit_hud(card_rect.get_center()).is_empty()
+	)
+
+
+static func _deployhud_confirm_no_fallthrough_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_frame_camera")
+	view.call("_rebuild_confirm_control_hit")
+	var confirm_rect: Rect2 = view.get("_confirm_control_hit")
+	if confirm_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	_deployhud_click(runtime, confirm_rect.get_center())
+	return _gameplayruntime_finish(
+		runtime,
+		view.hit_test_confirm_control(confirm_rect.get_center())
+		and runtime.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		and participant != null
+		and not battle_state.is_participant_deployed(StarterWorldService.SOLDIER_ID)
+		and not participant.has_battle_position
+	)
+
+
+static func _deployhud_cover_click_no_terrain_fallthrough_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var participant: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if participant == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not controller.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _deployhud_legal_cover_object(
+		controller,
+		battle_state,
+		StarterWorldService.SOLDIER_SMG_ID
+	)
+	var click_local: Vector2 = _deployhud_cover_click_local(view, battle_state, cover_object_id)
+	if cover_object_id.is_empty() or click_local == Vector2.ZERO:
+		return _gameplayruntime_finish(runtime, false)
+	_deployhud_click(runtime, click_local)
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		participant.pending_deployment_cover_slot_id
+	)
+	var click_tactical: Vector2 = click_local / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
+	return _gameplayruntime_finish(
+		runtime,
+		slot != null
+		and participant.has_pending_deployment_cover()
+		and participant.pending_deployment_cover_object_id == cover_object_id
+		and participant.battle_position.is_equal_approx(slot.position)
+		and (
+			click_tactical.distance_to(slot.position) > 0.05
+			or participant.has_pending_deployment_cover()
+		)
+	)
+
+
+static func _deployhud_debug_left_panel_off_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var source: String = _tacticalview_source()
+	if view == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_rebuild_roster_hits")
+	var layout_soldier: Rect2 = _interactive_deploy_roster_rect(
+		view,
+		"participant",
+		StarterWorldService.SOLDIER_ID
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		TacticalBattleView.DEBUG_DRAW_DEVELOPER_OVERLAY == false
+		and source.contains("DEBUG_DRAW_DEVELOPER_OVERLAY := false")
+		and source.contains("func _overlay_rows")
+		and view.hit_test_roster(layout_soldier.get_center()).is_empty()
+		and _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_ID).size.x > 0.0
+	)
+
+
+static func _deployhud_confirm_control_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var controller: TacticalDeploymentController = runtime.tactical_deployment_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or controller == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.call("_frame_camera")
+	view.call("_rebuild_confirm_control_hit")
+	var confirm_rect: Rect2 = view.get("_confirm_control_hit")
+	var deploy_visible: bool = view.hit_test_confirm_control(confirm_rect.get_center())
+	if not controller.select_participant(StarterWorldService.SOLDIER_ID):
+		return _gameplayruntime_finish(runtime, false)
+	controller.try_place_selected(_interactive_deploy_continuous_point(battle_state.battlefield_geometry))
+	runtime.call("_confirm_current_deployment")
+	var live_hidden: bool = not view.hit_test_confirm_control(confirm_rect.get_center())
+	var runtime_src: String = FileAccess.get_file_as_string("res://gameplay/gameplay_runtime.gd")
+	return _gameplayruntime_finish(
+		runtime,
+		deploy_visible
+		and confirm_rect.size.x > 0.0
+		and TacticalBattleView.CONFIRM_CONTROL_LABEL == "START BATTLE"
+		and runtime.get_current_mode() == GameFlowController.MODE_TACTICAL_ACTIVE
+		and live_hidden
+		and runtime_src.contains("func _confirm_current_deployment")
+		and runtime_src.contains("begin_current_battle()")
+		and not view.has_method("start_battle")
+	)
+
+
+static func _deployhud_live_order_regression_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var move_result: TacticalOrderResult = null
+	var offsets: Array[Vector2] = [
+		Vector2(4.0, -2.0),
+		Vector2(-3.5, 1.0),
+		Vector2(2.5, 2.5),
+		Vector2(-2.0, -3.0),
+		Vector2(6.0, 0.0),
+	]
+	for offset: Vector2 in offsets:
+		move_result = orders.issue_move(smg.battle_position + offset)
+		if move_result != null and move_result.success:
+			break
+	var hostile_id: String = _playercover_first_hostile_id(battle_state)
+	var target_result: TacticalOrderResult = orders.issue_target(hostile_id)
+	var cover_result: TacticalOrderResult = null
+	for cover_object_id: String in battle_state.battlefield_geometry.get_sorted_cover_object_ids():
+		cover_result = orders.issue_cover(cover_object_id)
+		if cover_result != null and cover_result.success:
+			break
+	return _gameplayruntime_finish(
+		runtime,
+		move_result != null
+		and move_result.success
+		and target_result != null
+		and target_result.success
+		and cover_result != null
+		and cover_result.success
+		and smg.has_player_cover_intent()
+		and orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+	)
+
+
+static func _deployhud_sticky_cover_regression_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _playercover_issue_any(orders, battle_state)
+	if cover_object_id.is_empty() or not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_advance_ticks(battle_state, 8):
+		return _gameplayruntime_finish(runtime, false)
+	var persisted: bool = (
+		smg.has_player_cover_intent()
+		and smg.player_cover_object_id == cover_object_id
+		and not _playercover_autonomous_reposition(smg)
+	)
+	var released: TacticalOrderResult = orders.release_cover()
+	return _gameplayruntime_finish(
+		runtime,
+		persisted
+		and released != null
+		and released.success
+		and not smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
 	)

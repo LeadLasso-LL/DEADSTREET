@@ -54,6 +54,9 @@ func _process(delta: float) -> void:
 	if game_flow_controller == null:
 		return
 	var mode: String = game_flow_controller.get_current_mode()
+	if mode == GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		_sync_tactical_pointer()
+		return
 	if (
 		mode != GameFlowController.MODE_TACTICAL_ACTIVE
 		and mode != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
@@ -173,16 +176,20 @@ func _sync_tactical_orders_controller(mode: String, tactical_view: TacticalBattl
 		tactical_view.bind_orders_controller(null)
 
 
-func _sync_tactical_orders_pointer() -> void:
-	if get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
-		return
-	if tactical_orders_controller != null:
-		tactical_orders_controller.sync_from_authority()
+func _sync_tactical_pointer() -> void:
 	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
 	if tactical_view == null or tactical_view.get_viewport() == null:
 		return
 	var pointer: Vector2 = tactical_view.get_viewport().get_mouse_position()
 	tactical_view.set_pointer_local_position(tactical_view.viewport_to_local_position(pointer))
+
+
+func _sync_tactical_orders_pointer() -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return
+	if tactical_orders_controller != null:
+		tactical_orders_controller.sync_from_authority()
+	_sync_tactical_pointer()
 
 
 func _route_tactical_pointer_input(event: InputEvent) -> void:
@@ -289,21 +296,70 @@ func _route_tactical_deployment_input(event: InputEvent) -> void:
 	if tactical_view == null:
 		return
 	var local_pos: Vector2 = tactical_view.viewport_to_local_position(mouse.position)
-	var hit: Dictionary = tactical_view.hit_test_roster(local_pos)
-	var kind: String = str(hit.get("kind", ""))
-	var hit_id: String = str(hit.get("id", ""))
-	if kind == "participant":
-		tactical_deployment_controller.select_participant(hit_id)
+	tactical_view.set_pointer_local_position(local_pos)
+	_handle_tactical_deployment_local_click(local_pos, mouse.button_index)
+
+
+func _handle_tactical_deployment_local_click(local_pos: Vector2, button_index: MouseButton) -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_DEPLOYMENT:
 		return
-	if kind == "vehicle":
-		tactical_deployment_controller.notify_vehicle_not_available(hit_id)
+	if tactical_deployment_controller == null:
 		return
+	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
+	if tactical_view == null:
+		return
+	if button_index == MOUSE_BUTTON_RIGHT:
+		tactical_deployment_controller.clear_selection()
+		return
+	if button_index != MOUSE_BUTTON_LEFT:
+		return
+	var hud_hit: Dictionary = tactical_view.hit_test_unit_hud(local_pos)
+	if not hud_hit.is_empty():
+		var hud_id: String = str(hud_hit.get("id", ""))
+		if bool(hud_hit.get("can_select", false)):
+			tactical_deployment_controller.select_participant(hud_id)
+		return
+	if tactical_view.hit_test_confirm_control(local_pos):
+		_confirm_current_deployment()
+		return
+	if tactical_view.DEBUG_DRAW_DEVELOPER_OVERLAY:
+		var roster_hit: Dictionary = tactical_view.hit_test_roster(local_pos)
+		var kind: String = str(roster_hit.get("kind", ""))
+		var hit_id: String = str(roster_hit.get("id", ""))
+		if kind == "participant":
+			tactical_deployment_controller.select_participant(hit_id)
+			return
+		if kind == "vehicle":
+			tactical_deployment_controller.notify_vehicle_not_available(hit_id)
+			return
 	var placed_id: String = tactical_view.hit_test_placed_attacker_soldier(local_pos)
 	if not placed_id.is_empty():
 		tactical_deployment_controller.select_participant(placed_id)
 		return
-	var tactical_pos: Vector2 = tactical_view.screen_to_tactical_position(mouse.position)
+	if tactical_deployment_controller.selected_participant_id.is_empty():
+		return
+	var cover_object_id: String = tactical_view.hit_test_cover_object(local_pos)
+	if not cover_object_id.is_empty():
+		tactical_deployment_controller.try_place_selected_cover(cover_object_id)
+		return
+	var tactical_pos: Vector2 = local_pos / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT
 	tactical_deployment_controller.try_place_selected(tactical_pos)
+
+
+func _confirm_current_deployment() -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		return
+	if tactical_deployment_controller == null:
+		return
+	var session: CampaignBattleSession = get_current_session()
+	if session == null or session.battle_state == null:
+		return
+	var battle_state: BattleState = session.battle_state
+	if not battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
+		var committed = tactical_deployment_controller.try_commit_attacker()
+		if committed == null or not committed.success:
+			return
+	begin_current_battle()
 
 
 func _debug_request_tactical_active() -> void:
@@ -428,6 +484,8 @@ func begin_current_battle() -> GameFlowResult:
 			"null_controller",
 			"GameplayRuntime failed: GameFlowController is missing."
 		)
+	if tactical_deployment_controller != null:
+		tactical_deployment_controller.apply_pending_cover_to_live()
 	var result: GameFlowResult = game_flow_controller.begin_current_battle()
 	_log_mode_if_changed()
 	return result

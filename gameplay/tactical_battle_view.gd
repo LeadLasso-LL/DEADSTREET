@@ -53,6 +53,7 @@ const COVER_SLOT_RADIUS := 3.5
 # Developer visualization only. Default OFF for ordinary gameplay.
 const DEBUG_DRAW_COVER_SLOTS := false
 const DEBUG_DRAW_COMBAT_STATE_LABELS := false
+const DEBUG_DRAW_DEVELOPER_OVERLAY := false
 const UNIT_HUD_CARD_WIDTH := 108.0
 const UNIT_HUD_CARD_HEIGHT := 90.0
 const UNIT_HUD_CARD_GAP := 6.0
@@ -60,6 +61,10 @@ const UNIT_HUD_MIN_CARD_WIDTH := 84.0
 const UNIT_HUD_PAD := 14.0
 const UNIT_HUD_FONT_SIZE := 10
 const UNIT_HUD_TITLE_FONT_SIZE := 11
+const CONFIRM_CONTROL_LABEL := "START BATTLE"
+const CONFIRM_CONTROL_WIDTH := 148.0
+const CONFIRM_CONTROL_HEIGHT := 34.0
+const CONFIRM_CONTROL_FONT_SIZE := 11
 const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
 const ROSTER_FONT_SIZE := 13
@@ -154,6 +159,8 @@ const PROVISIONAL_HUD_BORDER_WOUNDED := Color(0.72, 0.48, 0.28, 0.92)
 const PROVISIONAL_HUD_VITALITY := Color(0.42, 0.72, 0.40, 1.0)
 const PROVISIONAL_HUD_VITALITY_WOUNDED := Color(0.82, 0.56, 0.28, 1.0)
 const PROVISIONAL_HUD_VITALITY_EMPTY := Color(0.16, 0.14, 0.12, 0.90)
+const PROVISIONAL_CONFIRM_FILL := Color(0.14, 0.16, 0.12, 0.94)
+const PROVISIONAL_CONFIRM_BORDER := Color(0.82, 0.78, 0.52, 1.0)
 const PROVISIONAL_LABEL := Color(0.92, 0.92, 0.90, 1.0)
 const PROVISIONAL_LABEL_SHADOW := Color(0.05, 0.05, 0.06, 1.0)
 const PROVISIONAL_OVERLAY := Color(0.88, 0.88, 0.86, 1.0)
@@ -185,6 +192,7 @@ var orders_controller: TacticalOrdersController = null
 var _camera: Camera2D = null
 var _roster_hits: Array[Dictionary] = []
 var _unit_hud_hits: Array[Dictionary] = []
+var _confirm_control_hit: Rect2 = Rect2()
 var _pointer_local: Vector2 = Vector2(-10000.0, -10000.0)
 # Cached static presentation geometry — rebuilt only when battlefield definition changes.
 var _cached_blocker_polys: Array[PackedVector2Array] = []
@@ -254,6 +262,8 @@ func viewport_to_local_position(viewport_position: Vector2) -> Vector2:
 
 
 func hit_test_roster(local_position: Vector2) -> Dictionary:
+	if not DEBUG_DRAW_DEVELOPER_OVERLAY:
+		return {}
 	_rebuild_roster_hits()
 	var hit: Dictionary = {}
 	for row: Dictionary in _roster_hits:
@@ -312,7 +322,7 @@ func hit_test_cover_object(local_position: Vector2) -> String:
 	var battle_state: BattleState = _battle_state()
 	if battle_state == null or battle_state.battlefield_geometry == null:
 		return ""
-	if battle_state.battle_phase != "active":
+	if battle_state.battle_phase != "active" and battle_state.battle_phase != "deployment":
 		return ""
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	var best_id: String = ""
@@ -330,6 +340,13 @@ func hit_test_cover_object(local_position: Vector2) -> String:
 			best_id = cover_object_id
 			best_area = area
 	return best_id
+
+
+func hit_test_confirm_control(local_position: Vector2) -> bool:
+	_rebuild_confirm_control_hit()
+	if _confirm_control_hit.size.x <= 0.0 or _confirm_control_hit.size.y <= 0.0:
+		return false
+	return _confirm_control_hit.has_point(local_position)
 
 
 func _overlay_row_rect(origin: Vector2, row_index: int) -> Rect2:
@@ -1693,6 +1710,8 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 
 func _draw_overlay() -> void:
 	_roster_hits.clear()
+	if not DEBUG_DRAW_DEVELOPER_OVERLAY:
+		return
 	var selected_id: String = _selected_participant_id()
 	for row: Dictionary in _overlay_layout():
 		var text: String = str(row.get("text", ""))
@@ -2384,6 +2403,8 @@ func _draw_overlay_row_label(row_rect: Rect2, text: String, font_size: int, colo
 
 
 func _hud_left_gutter() -> float:
+	if not DEBUG_DRAW_DEVELOPER_OVERLAY:
+		return 0.0
 	return ROSTER_ROW_WIDTH + ROSTER_CAMERA_GUTTER_PAD
 
 
@@ -2512,15 +2533,24 @@ func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) 
 
 
 func _draw_cover_object_hover(battle_state: BattleState) -> void:
-	if battle_state == null or battle_state.battle_phase != "active":
+	if battle_state == null:
 		return
-	if orders_controller == null or orders_controller.selected_participant_id.is_empty():
-		return
-	if not orders_controller.can_control_participant(orders_controller.selected_participant_id):
+	if battle_state.battle_phase == "active":
+		if orders_controller == null or orders_controller.selected_participant_id.is_empty():
+			return
+		if not orders_controller.can_control_participant(orders_controller.selected_participant_id):
+			return
+	elif battle_state.battle_phase == "deployment":
+		if deployment_controller == null or deployment_controller.selected_participant_id.is_empty():
+			return
+	else:
 		return
 	var cover_object_id: String = hit_test_cover_object(_pointer_local)
 	if cover_object_id.is_empty():
 		return
+	if battle_state.battle_phase == "deployment":
+		if not _deployment_cover_object_is_legal(cover_object_id):
+			return
 	var cover_rect: Rect2 = _cover_object_hit_rect(battle_state, cover_object_id)
 	if cover_rect.size.x <= 0.0 or cover_rect.size.y <= 0.0:
 		return
@@ -2528,10 +2558,29 @@ func _draw_cover_object_hover(battle_state: BattleState) -> void:
 	_paint_canvas().draw_rect(cover_rect, PROVISIONAL_COVER_HOVER, false, 2.0)
 
 
+func _deployment_cover_object_is_legal(cover_object_id: String) -> bool:
+	if deployment_controller == null or cover_object_id.is_empty():
+		return false
+	if deployment_controller.selected_participant_id.is_empty():
+		return false
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return false
+	return deployment_controller.resolve_deployment_cover_slot(
+		battle_state,
+		deployment_controller.selected_participant_id,
+		cover_object_id
+	) != null
+
+
 func _unit_hud_visible(battle_state: BattleState) -> bool:
 	if battle_state == null:
 		return false
-	return battle_state.battle_phase == "active" or battle_state.battle_phase == "resolved"
+	return (
+		battle_state.battle_phase == "deployment"
+		or battle_state.battle_phase == "active"
+		or battle_state.battle_phase == "resolved"
+	)
 
 
 func _rebuild_unit_hud_hits() -> void:
@@ -2539,9 +2588,7 @@ func _rebuild_unit_hud_hits() -> void:
 	var battle_state: BattleState = _battle_state()
 	if not _unit_hud_visible(battle_state):
 		return
-	var selected_id: String = ""
-	if orders_controller != null:
-		selected_id = orders_controller.selected_participant_id
+	var selected_id: String = _selected_participant_id()
 	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(battle_state, selected_id)
 	if cards.is_empty():
 		return
@@ -2568,10 +2615,9 @@ func _rebuild_unit_hud_hits() -> void:
 
 func _draw_unit_hud(battle_state: BattleState) -> void:
 	_rebuild_unit_hud_hits()
-	if _unit_hud_hits.is_empty():
-		return
 	for row: Dictionary in _unit_hud_hits:
 		_draw_unit_hud_card(battle_state, row)
+	_draw_confirm_control()
 
 
 func _draw_unit_hud_card(battle_state: BattleState, row: Dictionary) -> void:
@@ -2661,6 +2707,55 @@ func _draw_unit_hud_miniature(
 		_draw_soldier_downed(center, facing, participant.weapon_type)
 		return
 	_draw_soldier_standing(center, facing, battle_state, participant)
+
+
+func _confirm_control_visible() -> bool:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null:
+		return false
+	return battle_state.battle_phase == "deployment"
+
+
+func _confirm_control_size() -> Vector2:
+	_ensure_camera()
+	var zoom: float = 1.0
+	if _camera != null and _camera.zoom.x > 0.0:
+		zoom = _camera.zoom.x
+	return Vector2(CONFIRM_CONTROL_WIDTH / zoom, CONFIRM_CONTROL_HEIGHT / zoom)
+
+
+func _rebuild_confirm_control_hit() -> void:
+	_confirm_control_hit = Rect2()
+	if not _confirm_control_visible():
+		return
+	_rebuild_unit_hud_hits()
+	var origin: Vector2 = _unit_hud_origin()
+	var card_size: Vector2 = _unit_hud_card_size()
+	var gap: Vector2 = _unit_hud_gap()
+	var confirm_size: Vector2 = _confirm_control_size()
+	var x: float = origin.x
+	var y: float = origin.y + maxf(card_size.y - confirm_size.y, 0.0)
+	if not _unit_hud_hits.is_empty():
+		var first_rect: Rect2 = _unit_hud_hits[0].get("rect", Rect2())
+		var first_y: float = first_rect.position.y
+		var max_x: float = first_rect.position.x + first_rect.size.x
+		for row: Dictionary in _unit_hud_hits:
+			var row_rect: Rect2 = row.get("rect", Rect2())
+			if is_equal_approx(row_rect.position.y, first_y):
+				max_x = maxf(max_x, row_rect.position.x + row_rect.size.x)
+		x = max_x + gap.x
+		y = first_y + maxf(card_size.y - confirm_size.y, 0.0)
+	_confirm_control_hit = Rect2(Vector2(x, y), confirm_size)
+
+
+func _draw_confirm_control() -> void:
+	_rebuild_confirm_control_hit()
+	if _confirm_control_hit.size.x <= 0.0 or _confirm_control_hit.size.y <= 0.0:
+		return
+	_paint_canvas().draw_rect(_confirm_control_hit, PROVISIONAL_CONFIRM_FILL, true)
+	_paint_canvas().draw_rect(_confirm_control_hit, PROVISIONAL_CONFIRM_BORDER, false, 1.8)
+	var label_pos: Vector2 = _confirm_control_hit.position + Vector2(10.0, _confirm_control_hit.size.y * 0.62)
+	_draw_label_left(label_pos, CONFIRM_CONTROL_LABEL, CONFIRM_CONTROL_FONT_SIZE, Color(0.96, 0.94, 0.86, 1.0))
 
 
 func _unit_hud_origin() -> Vector2:

@@ -4,6 +4,8 @@ extends RefCounted
 # Read-only friendly unit-card descriptors for the tactical HUD.
 # Derives vitality / wounded / dead from canonical BattleParticipant.
 # Does not store combat state.
+# Player-side cards currently use BattleState.attacker_side_id. There is no
+# separate canonical player-controlled-side field yet.
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
@@ -22,7 +24,7 @@ static func friendly_cards(
 	var cards: Array[Dictionary] = []
 	if battle_state == null:
 		return cards
-	var side_id: String = battle_state.attacker_side_id
+	var side_id: String = player_side_id(battle_state)
 	if side_id.is_empty():
 		return cards
 	var ids: Array[String] = []
@@ -89,6 +91,12 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 	card["can_select"] = can_select
 	card["card_state"] = state
 	return card
+
+
+static func player_side_id(battle_state: BattleState) -> String:
+	if battle_state == null:
+		return ""
+	return battle_state.attacker_side_id
 
 
 static func role_label_for(weapon_type: String) -> String:

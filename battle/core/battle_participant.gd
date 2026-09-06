@@ -66,6 +66,8 @@ var player_priority_target_id: String = ""
 var player_tactical_intent: String = ""
 var player_cover_object_id: String = ""
 var player_cover_slot_id: String = ""
+var pending_deployment_cover_object_id: String = ""
+var pending_deployment_cover_slot_id: String = ""
 
 
 func _init(
@@ -266,6 +268,23 @@ func clear_player_tactical_intent() -> void:
 	player_cover_object_id = ""
 	player_cover_slot_id = ""
 	player_priority_target_id = ""
+
+
+func has_pending_deployment_cover() -> bool:
+	return (
+		not pending_deployment_cover_object_id.is_empty()
+		and not pending_deployment_cover_slot_id.is_empty()
+	)
+
+
+func set_pending_deployment_cover(cover_object_id: String, cover_slot_id: String) -> void:
+	pending_deployment_cover_object_id = cover_object_id
+	pending_deployment_cover_slot_id = cover_slot_id
+
+
+func clear_pending_deployment_cover() -> void:
+	pending_deployment_cover_object_id = ""
+	pending_deployment_cover_slot_id = ""
 
 
 func set_defend_position(enabled: bool) -> void:
