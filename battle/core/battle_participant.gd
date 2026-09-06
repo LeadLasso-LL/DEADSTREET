@@ -3,6 +3,7 @@ extends RefCounted
 
 const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
 const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
+const TacticalIdentitySnapshot := preload("res://battle/identity/tactical_identity_snapshot.gd")
 const NAVIGATION_SOURCE_NONE := ""
 const NAVIGATION_SOURCE_EXTERNAL := "external"
 const NAVIGATION_SOURCE_COMBAT := "combat"
@@ -68,6 +69,7 @@ var player_cover_object_id: String = ""
 var player_cover_slot_id: String = ""
 var pending_deployment_cover_object_id: String = ""
 var pending_deployment_cover_slot_id: String = ""
+var identity: TacticalIdentitySnapshot = null
 
 
 func _init(
@@ -331,3 +333,7 @@ func has_acquire_reaction() -> bool:
 
 func has_sniper_aim() -> bool:
 	return is_finite(sniper_aim_remaining_seconds) and sniper_aim_remaining_seconds > 0.0
+
+
+func has_identity() -> bool:
+	return identity != null and identity.is_valid()

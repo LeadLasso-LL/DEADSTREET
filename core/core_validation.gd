@@ -16640,6 +16640,9 @@ static func run() -> Dictionary:
 	var vispass_m6_fallback_and_geometry_ok: bool = _vispass_m6_fallback_and_geometry_ok()
 	var vispass_m6b_south_projection_ok: bool = _vispass_m6b_south_projection_ok()
 	var vispass_m6b_live_regression_ok: bool = _vispass_m6b_live_regression_ok()
+	var vispass_m7_identity_ok: bool = _vispass_m7_identity_ok()
+	var vispass_m7_live_units_ok: bool = _vispass_m7_live_units_ok()
+	var vispass_m7_safety_ok: bool = _vispass_m7_safety_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18916,6 +18919,9 @@ static func run() -> Dictionary:
 		"vispass_m6_fallback_and_geometry_ok": vispass_m6_fallback_and_geometry_ok,
 		"vispass_m6b_south_projection_ok": vispass_m6b_south_projection_ok,
 		"vispass_m6b_live_regression_ok": vispass_m6b_live_regression_ok,
+		"vispass_m7_identity_ok": vispass_m7_identity_ok,
+		"vispass_m7_live_units_ok": vispass_m7_live_units_ok,
+		"vispass_m7_safety_ok": vispass_m7_safety_ok,
 	}
 
 	var passed := true
@@ -73888,4 +73894,205 @@ static func _vispass_m6b_live_regression_ok() -> bool:
 		and not view_src.contains("Sprite2D")
 		and not view_src.contains("Texture2D")
 		and not view_src.contains("fit_bounds")
+	)
+
+
+static func _vispass_m7_identity_ok() -> bool:
+	if not GangArchetypeCatalog.is_known(GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG):
+		return false
+	if not GangArchetypeCatalog.is_known(GangArchetypeCatalog.ARCHETYPE_RUSSIAN_ORGANIZED_CRIME):
+		return false
+	var local_profile: Dictionary = GangArchetypeCatalog.profile(
+		GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG
+	)
+	var russian_profile: Dictionary = GangArchetypeCatalog.profile(
+		GangArchetypeCatalog.ARCHETYPE_RUSSIAN_ORGANIZED_CRIME
+	)
+	if local_profile.is_empty() or russian_profile.is_empty():
+		return false
+	if str(local_profile.get("id", "")) == str(russian_profile.get("id", "")):
+		return false
+	if str(local_profile.get("clothing_family", "")) == str(russian_profile.get("clothing_family", "")):
+		return false
+	var local_a: TacticalIdentitySnapshot = TacticalIdentityFactory.make(
+		"player_soldier",
+		GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG,
+		"rifle"
+	)
+	var local_b: TacticalIdentitySnapshot = TacticalIdentityFactory.make(
+		"player_soldier",
+		GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG,
+		"rifle"
+	)
+	var russian_a: TacticalIdentitySnapshot = TacticalIdentityFactory.make(
+		"rival_soldier",
+		GangArchetypeCatalog.ARCHETYPE_RUSSIAN_ORGANIZED_CRIME,
+		"pistol"
+	)
+	var local_other: TacticalIdentitySnapshot = TacticalIdentityFactory.make(
+		"player_soldier_smg",
+		GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG,
+		"smg"
+	)
+	if not local_a.is_valid() or not russian_a.is_valid():
+		return false
+	if local_a.appearance_variant_id != local_b.appearance_variant_id:
+		return false
+	if local_a.appearance_seed != local_b.appearance_seed:
+		return false
+	if local_a.appearance_seed == local_other.appearance_seed:
+		return false
+	if local_a.gang_archetype_id == russian_a.gang_archetype_id:
+		return false
+	if local_a.firearm_visual_id != "rifle" or russian_a.firearm_visual_id != "pistol":
+		return false
+	var factory_src: String = FileAccess.get_file_as_string(
+		"res://battle/identity/tactical_identity_factory.gd"
+	)
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/identity/gang_archetype_catalog.gd"
+	)
+	var snapshot_src: String = FileAccess.get_file_as_string(
+		"res://battle/identity/tactical_identity_snapshot.gd"
+	)
+	var visual_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_visual_catalog.gd"
+	)
+	return (
+		not factory_src.contains("display_name")
+		and not catalog_src.contains("first_names")
+		and not catalog_src.contains("last_names")
+		and not snapshot_src.contains("display_name")
+		and not visual_src.contains("ARCHETYPE_UNIT_")
+		and not visual_src.contains("assets/tactical/units/")
+		and not FileAccess.file_exists("res://assets/tactical/units/unit_local_hoodie_01.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/unit_weapon_rifle.png")
+	)
+
+
+static func _vispass_m7_live_units_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var local_count: int = 0
+	var russian_count: int = 0
+	var local_looks: Dictionary = {}
+	var russian_looks: Dictionary = {}
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or not participant.has_identity():
+			return _gameplayruntime_finish(runtime, false)
+		if view.actor_presenter.claims_participant(participant_id):
+			return _gameplayruntime_finish(runtime, false)
+		if view.actor_presenter.unit_node_instance_id(participant_id) != 0:
+			return _gameplayruntime_finish(runtime, false)
+		var card: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
+		if str(card.get("display_name", "")) != "":
+			return _gameplayruntime_finish(runtime, false)
+		if str(card.get("role_label", "")).is_empty():
+			return _gameplayruntime_finish(runtime, false)
+		if participant.side_id == BattleSetupService.SIDE_ATTACKER:
+			if participant.identity.gang_archetype_id != GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG:
+				return _gameplayruntime_finish(runtime, false)
+			local_count += 1
+			local_looks[participant.identity.appearance_variant_id] = true
+		elif participant.side_id == BattleSetupService.SIDE_DEFENDER:
+			if participant.identity.gang_archetype_id != GangArchetypeCatalog.ARCHETYPE_RUSSIAN_ORGANIZED_CRIME:
+				return _gameplayruntime_finish(runtime, false)
+			russian_count += 1
+			russian_looks[participant.identity.appearance_variant_id] = true
+		else:
+			return _gameplayruntime_finish(runtime, false)
+	if local_count != 3 or russian_count != 3:
+		return _gameplayruntime_finish(runtime, false)
+	if local_looks.size() != 3 or russian_looks.size() != 3:
+		return _gameplayruntime_finish(runtime, false)
+	var spawn_before: int = view.actor_presenter.unit_spawn_count
+	var cache_before: int = TacticalVisualCatalog.cache_size()
+	view._process(0.016)
+	view._process(0.016)
+	if view.actor_presenter.unit_spawn_count != spawn_before:
+		return _gameplayruntime_finish(runtime, false)
+	if TacticalVisualCatalog.cache_size() != cache_before:
+		return _gameplayruntime_finish(runtime, false)
+	if view.actor_presenter.unit_spawn_count != 0:
+		return _gameplayruntime_finish(runtime, false)
+	var view_src: String = _tacticalview_source()
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_actor_presenter.gd"
+	)
+	var query_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_unit_hud_query.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		view.dynamic_unit_root != null
+		and view.dynamic_unit_root.get_child_count() == 0
+		and view.dynamic_asset_root.get_child_count() == 1
+		and presenter_src.contains("UNIT_VISUALS_ENABLED := false")
+		and presenter_src.contains("claims_participant")
+		and query_src.contains("card[\"display_name\"] = \"\"")
+		and query_src.contains("return \"RIFLE\"")
+		and view_src.contains("card.get(\"role_label\"")
+		and not view_src.contains("Bishop")
+		and not view_src.contains("Rook")
+		and view_src.contains("_participant_uses_retained_visual")
+		and view_src.contains("_draw_soldier_standing")
+		and view_src.contains("_draw_soldier_ground")
+		and not view_src.contains(".png")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+	)
+
+
+static func _vispass_m7_safety_ok() -> bool:
+	if not _vispass2b_porch_frontage_unchanged_ok():
+		return false
+	if not _vispass_m3_geometry_unchanged_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var sample: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if sample == null or not sample.has_battle_position:
+		return _gameplayruntime_finish(runtime, false)
+	var origin: Vector2 = view._soldier_presentation_origin(battle_state, sample)
+	var hit_id: String = view.hit_test_live_friendly_soldier(origin)
+	var view_src: String = _tacticalview_source()
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_actor_presenter.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		hit_id == StarterWorldService.SOLDIER_SMG_ID
+		and sample.is_alive
+		and not sample.is_wounded
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_SMG_ID)
+		and view_src.contains("SOLDIER_SELECTION_RADIUS")
+		and not view_src.contains("get_rect()")
+		and presenter_src.contains("claims_participant")
+		and presenter_src.contains("UNIT_VISUALS_ENABLED := false")
+		and TacticalProvingGroundCatalog.HQ_BOUNDS.is_equal_approx(Rect2(17.0, 0.6, 36.0, 17.6))
+		and TacticalProvingGroundCatalog.PORCH_WALL_WEST.is_equal_approx(Rect2(18.2, 21.15, 12.2, 1.0))
+		and TacticalProvingGroundCatalog.MAIN_ROAD.is_equal_approx(Rect2(0.0, 26.8, 86.0, 15.2))
 	)

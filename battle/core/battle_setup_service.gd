@@ -12,6 +12,7 @@ const BattleForceCommandService := preload("res://battle/core/battle_force_comma
 const BattleForceCommandCatalog := preload("res://battle/core/battle_force_command_catalog.gd")
 const BattleForceCommandResult := preload("res://battle/core/battle_force_command_result.gd")
 const CampaignMission := preload("res://campaign/missions/campaign_mission.gd")
+const TacticalIdentityFactory := preload("res://battle/identity/tactical_identity_factory.gd")
 
 const SIDE_ATTACKER := "attacker"
 const SIDE_DEFENDER := "defender"
@@ -358,6 +359,7 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			battle_id
 		)
 
+	TacticalIdentityFactory.apply_debug_hq_identities(battle_state)
 	return BattleSetupResult.succeeded(battle_state)
 
 

@@ -247,6 +247,7 @@ var static_composite_root: Node2D = null
 var static_asset_root: Node2D = null
 var static_detail_root: Node2D = null
 var dynamic_asset_root: Node2D = null
+var dynamic_unit_root: Node2D = null
 var environment_presenter: TacticalEnvironmentPresenter = null
 var actor_presenter: TacticalActorPresenter = null
 var static_redraw_requests: int = 0
@@ -553,6 +554,11 @@ func _ensure_layers() -> void:
 		dynamic_asset_root.name = "DynamicAssetRoot"
 		dynamic_asset_root.z_index = 2
 		add_child(dynamic_asset_root)
+	if dynamic_unit_root == null:
+		dynamic_unit_root = Node2D.new()
+		dynamic_unit_root.name = "DynamicUnitRoot"
+		dynamic_unit_root.z_index = 2
+		add_child(dynamic_unit_root)
 	if dynamic_layer == null:
 		dynamic_layer = TacticalDynamicBattlefieldLayer.new()
 		dynamic_layer.name = "DynamicBattlefieldLayer"
@@ -579,6 +585,9 @@ func _ensure_layers() -> void:
 	if actor_presenter == null:
 		actor_presenter = TacticalActorPresenter.new()
 		actor_presenter.bind_root(dynamic_asset_root, TACTICAL_PIXELS_PER_UNIT)
+		actor_presenter.bind_unit_root(dynamic_unit_root)
+	elif actor_presenter.unit_root == null:
+		actor_presenter.bind_unit_root(dynamic_unit_root)
 
 
 func _order_presentation_roots() -> void:
@@ -590,6 +599,7 @@ func _order_presentation_roots() -> void:
 		static_detail_root,
 		static_asset_root,
 		dynamic_asset_root,
+		dynamic_unit_root,
 		dynamic_layer,
 	]
 	var insert_at: int = 0
@@ -669,6 +679,10 @@ func _facade_uses_retained_visual(obstacle_id: String) -> bool:
 
 func _vehicle_uses_retained_visual(vehicle_id: String) -> bool:
 	return actor_presenter != null and actor_presenter.claims_vehicle(vehicle_id)
+
+
+func _participant_uses_retained_visual(participant_id: String) -> bool:
+	return actor_presenter != null and actor_presenter.claims_participant(participant_id)
 
 
 func _ensure_camera() -> void:
@@ -2677,9 +2691,14 @@ func _draw_participants(battle_state: BattleState) -> void:
 func _draw_soldier(battle_state: BattleState, participant: BattleParticipant) -> void:
 	var view_pos: Vector2 = _soldier_presentation_origin(battle_state, participant)
 	var facing: Vector2 = _participant_view_facing(battle_state, participant)
-	_draw_soldier_ground(view_pos, battle_state, participant)
+	var claimed: bool = _participant_uses_retained_visual(participant.participant_id)
+	if not claimed:
+		_draw_soldier_ground(view_pos, battle_state, participant)
 	if _selected_participant_id() == participant.participant_id:
 		_draw_soldier_selection(view_pos)
+	if claimed:
+		_draw_compact_combat_state(battle_state, participant, view_pos)
+		return
 	if not participant.is_alive:
 		_draw_soldier_downed(view_pos, facing, participant.weapon_type)
 		_draw_compact_combat_state(battle_state, participant, view_pos)
