@@ -8,6 +8,7 @@ const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
+const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
 const BattleCoverProtectionService := preload("res://battle/geometry/battle_cover_protection_service.gd")
 const BattleCoverProtectionResult := preload("res://battle/geometry/battle_cover_protection_result.gd")
@@ -32,6 +33,82 @@ static func is_useful_protection_factor(protection_factor: float) -> bool:
 		protection_factor,
 		USEFUL_PROTECTION_FACTOR
 	)
+
+
+static func relevant_cover_threat(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> BattleParticipant:
+	if battle_state == null or participant == null:
+		return null
+	var from_priority: BattleParticipant = _living_hostile_by_id(
+		battle_state,
+		participant,
+		participant.player_priority_target_id
+	)
+	if from_priority != null:
+		return from_priority
+	var from_current: BattleParticipant = _living_hostile_by_id(
+		battle_state,
+		participant,
+		participant.target_participant_id
+	)
+	if from_current != null:
+		return from_current
+	return _nearest_living_hostile(battle_state, participant)
+
+
+static func rank_legal_slots_on_cover_object(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	cover_object_id: String,
+	hostile: BattleParticipant
+) -> Array[BattleCoverSlot]:
+	var ranked_slots: Array[BattleCoverSlot] = []
+	if battle_state == null or participant == null or cover_object_id.is_empty():
+		return ranked_slots
+	if battle_state.battlefield_geometry == null:
+		return ranked_slots
+	if not battle_state.battlefield_geometry.has_cover_object(cover_object_id):
+		return ranked_slots
+	var cover_object: BattleCoverObject = battle_state.battlefield_geometry.get_cover_object(
+		cover_object_id
+	)
+	if cover_object == null:
+		return ranked_slots
+	var slot_ids: Array[String] = []
+	for slot_id: String in cover_object.slot_ids:
+		slot_ids.append(slot_id)
+	slot_ids.sort()
+	var ranked: Array[BattleCombatCoverEvaluation] = []
+	var has_threat: bool = hostile != null and _is_positioned(hostile)
+	for slot_id: String in slot_ids:
+		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+		if slot == null or not slot.is_valid():
+			continue
+		if slot.cover_object_id != cover_object_id:
+			continue
+		if not _slot_is_legal_for_participant(participant, slot):
+			continue
+		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
+			battle_state,
+			participant,
+			slot,
+			hostile,
+			false,
+			false,
+			INF
+		)
+		if evaluation == null or not evaluation.legal:
+			continue
+		_insert_object_cover_ranked(ranked, evaluation, has_threat)
+	for evaluation: BattleCombatCoverEvaluation in ranked:
+		var ranked_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+			evaluation.slot_id
+		)
+		if ranked_slot != null:
+			ranked_slots.append(ranked_slot)
+	return ranked_slots
 
 
 static func occupied_cover_is_suitable(
@@ -611,6 +688,82 @@ static func _staging_rank_less(
 	if not is_equal_approx(left.protection_factor, right.protection_factor):
 		return left.protection_factor > right.protection_factor
 	return left.slot_id < right.slot_id
+
+
+static func _insert_object_cover_ranked(
+	ranked: Array[BattleCombatCoverEvaluation],
+	candidate: BattleCombatCoverEvaluation,
+	has_threat: bool
+) -> void:
+	var index: int = 0
+	while index < ranked.size() and not _object_cover_rank_less(candidate, ranked[index], has_threat):
+		index += 1
+	ranked.insert(index, candidate)
+
+
+static func _object_cover_rank_less(
+	left: BattleCombatCoverEvaluation,
+	right: BattleCombatCoverEvaluation,
+	has_threat: bool
+) -> bool:
+	if has_threat:
+		if left.has_useful_direction != right.has_useful_direction:
+			return left.has_useful_direction and not right.has_useful_direction
+		if not is_equal_approx(left.protection_factor, right.protection_factor):
+			return left.protection_factor > right.protection_factor
+		if left.has_line_of_sight != right.has_line_of_sight:
+			return left.has_line_of_sight and not right.has_line_of_sight
+	if not is_equal_approx(left.move_distance, right.move_distance):
+		return left.move_distance < right.move_distance
+	return left.slot_id < right.slot_id
+
+
+static func _living_hostile_by_id(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	hostile_id: String
+) -> BattleParticipant:
+	if battle_state == null or participant == null or hostile_id.is_empty():
+		return null
+	if not battle_state.has_participant(hostile_id):
+		return null
+	var hostile: BattleParticipant = battle_state.get_participant(hostile_id)
+	if hostile == null or not hostile.is_alive:
+		return null
+	if hostile.side_id == participant.side_id:
+		return null
+	if not _is_positioned(hostile):
+		return null
+	return hostile
+
+
+static func _nearest_living_hostile(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> BattleParticipant:
+	if battle_state == null or participant == null or not _is_positioned(participant):
+		return null
+	var best: BattleParticipant = null
+	var best_distance: float = INF
+	var ids: Array[String] = []
+	for participant_id: String in battle_state.participants:
+		ids.append(participant_id)
+	ids.sort()
+	for participant_id: String in ids:
+		var hostile: BattleParticipant = _living_hostile_by_id(
+			battle_state,
+			participant,
+			participant_id
+		)
+		if hostile == null:
+			continue
+		var distance: float = participant.battle_position.distance_squared_to(hostile.battle_position)
+		if not is_finite(distance):
+			continue
+		if best == null or distance < best_distance:
+			best = hostile
+			best_distance = distance
+	return best
 
 
 static func _slot_is_legal_for_participant(participant: BattleParticipant, slot: BattleCoverSlot) -> bool:

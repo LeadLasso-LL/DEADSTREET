@@ -3263,37 +3263,20 @@ static func _player_cover_resolve_same_object_slot(
 ) -> BattleCoverSlot:
 	if battle_state == null or participant == null or cover_object_id.is_empty():
 		return null
-	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	if geometry == null or not geometry.has_cover_object(cover_object_id):
-		return null
-	var cover_object: BattleCoverObject = geometry.get_cover_object(cover_object_id)
-	if cover_object == null:
-		return null
-	var slot_ids: Array[String] = []
-	for slot_id: String in cover_object.slot_ids:
-		slot_ids.append(slot_id)
-	slot_ids.sort()
-	var best: BattleCoverSlot = null
-	var best_distance: float = INF
-	for slot_id: String in slot_ids:
-		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
-		if slot == null or not slot.is_valid():
-			continue
-		if slot.occupied_by_participant_id == participant.participant_id:
+	var threat: BattleParticipant = BattleCombatCoverEvaluationService.relevant_cover_threat(
+		battle_state,
+		participant
+	)
+	var ranked: Array[BattleCoverSlot] = BattleCombatCoverEvaluationService.rank_legal_slots_on_cover_object(
+		battle_state,
+		participant,
+		cover_object_id,
+		threat
+	)
+	for slot: BattleCoverSlot in ranked:
+		if slot != null and slot.cover_object_id == cover_object_id:
 			return slot
-		if slot.is_occupied():
-			continue
-		if slot.is_reserved() and slot.reserved_by_participant_id != participant.participant_id:
-			continue
-		if BattleCoverService.is_at_slot(participant, slot):
-			return slot
-		var distance: float = participant.battle_position.distance_squared_to(slot.position)
-		if not is_finite(distance):
-			continue
-		if best == null or distance < best_distance:
-			best = slot
-			best_distance = distance
-	return best
+	return null
 
 
 static func _clear_owned_combat_navigation(participant: BattleParticipant) -> void:

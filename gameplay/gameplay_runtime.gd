@@ -247,6 +247,7 @@ func _handle_tactical_orders_local_click(local_pos: Vector2, button_index: Mouse
 		return
 	if tactical_orders_controller.selected_participant_id.is_empty():
 		return
+	var cover_mode_active: bool = tactical_orders_controller.selected_has_player_cover()
 	var hostile_id: String = tactical_view.hit_test_hostile_soldier(local_pos)
 	if not hostile_id.is_empty():
 		tactical_orders_controller.issue_target(hostile_id)
@@ -255,7 +256,7 @@ func _handle_tactical_orders_local_click(local_pos: Vector2, button_index: Mouse
 	if not cover_object_id.is_empty():
 		tactical_orders_controller.issue_cover(cover_object_id)
 		return
-	if tactical_orders_controller.selected_has_player_cover():
+	if cover_mode_active:
 		tactical_orders_controller.release_cover()
 		return
 	tactical_orders_controller.issue_move(local_pos / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT)

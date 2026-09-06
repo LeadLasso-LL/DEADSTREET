@@ -4,18 +4,22 @@ extends RefCounted
 # Canonical live-battle player selection and priority-order issuer.
 # Holds selection only. Combat vitality, occupancy, and AI remain authoritative
 # on BattleParticipant / BattleState. Does not rank cover from HUD hover.
+# COVER click ranks legal slots on the clicked object only, using existing
+# directional protection against the relevant hostile.
 
 const CampaignBattleSession := preload("res://battle/session/campaign_battle_session.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
-const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
 const BattleCoverSlot := preload("res://battle/geometry/battle_cover_slot.gd")
 const BattleCoverService := preload("res://battle/geometry/battle_cover_service.gd")
 const BattleCoverResult := preload("res://battle/geometry/battle_cover_result.gd")
 const BattleNavigationService := preload("res://battle/navigation/battle_navigation_service.gd")
 const BattleNavigationResult := preload("res://battle/navigation/battle_navigation_result.gd")
 const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_behavior_catalog.gd")
+const BattleCombatCoverEvaluationService := preload(
+	"res://battle/combat/battle_combat_cover_evaluation_service.gd"
+)
 const TacticalOrderResult := preload("res://gameplay/tactical_order_result.gd")
 
 const ORDER_MOVE := "move"
@@ -169,7 +173,15 @@ func issue_target(hostile_id: String):
 			ORDER_TARGET,
 			hostile_id
 		)
+	var had_cover: bool = participant.has_player_cover_intent()
+	var occupying_cover: bool = not participant.occupied_cover_slot_id.is_empty()
 	participant.set_player_target_intent(hostile_id)
+	if had_cover:
+		if occupying_cover:
+			participant.clear_navigation_path()
+		else:
+			BattleCoverService.release_all_for_participant(battle_state, participant.participant_id)
+			participant.clear_navigation_path()
 	return TacticalOrderResult.succeeded(participant.participant_id, ORDER_TARGET, hostile_id)
 
 
@@ -370,41 +382,31 @@ func _resolve_cover_object_slot(
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if geometry == null or not geometry.has_cover_object(cover_object_id):
 		return null
-	var cover_object: BattleCoverObject = geometry.get_cover_object(cover_object_id)
-	if cover_object == null:
-		return null
-	var slot_ids: Array[String] = []
-	for slot_id: String in cover_object.slot_ids:
-		slot_ids.append(slot_id)
-	slot_ids.sort()
-	var best: BattleCoverSlot = null
-	var best_distance: float = INF
-	for slot_id: String in slot_ids:
-		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
-		if slot == null or not slot.is_valid():
-			continue
-		if slot.occupied_by_participant_id == participant.participant_id:
-			return slot
-		if slot.is_occupied():
-			continue
-		if slot.is_reserved() and slot.reserved_by_participant_id != participant.participant_id:
+	var threat: BattleParticipant = BattleCombatCoverEvaluationService.relevant_cover_threat(
+		battle_state,
+		participant
+	)
+	var ranked: Array[BattleCoverSlot] = BattleCombatCoverEvaluationService.rank_legal_slots_on_cover_object(
+		battle_state,
+		participant,
+		cover_object_id,
+		threat
+	)
+	for slot: BattleCoverSlot in ranked:
+		if slot == null or slot.cover_object_id != cover_object_id:
 			continue
 		if BattleCoverService.is_at_slot(participant, slot):
+			return slot
+		if slot.occupied_by_participant_id == participant.participant_id:
 			return slot
 		var navigation: BattleNavigationResult = BattleNavigationService.find_path(
 			battle_state,
 			participant.battle_position,
 			slot.position
 		)
-		if navigation == null or not navigation.success:
-			continue
-		var distance: float = participant.battle_position.distance_squared_to(slot.position)
-		if not is_finite(distance):
-			continue
-		if best == null or distance < best_distance:
-			best = slot
-			best_distance = distance
-	return best
+		if navigation != null and navigation.success:
+			return slot
+	return null
 
 
 func _clear_invalid_selection() -> void:
