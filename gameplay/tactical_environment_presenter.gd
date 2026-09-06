@@ -145,11 +145,21 @@ func _rebuild(geometry: BattlefieldGeometry, stamp: String) -> void:
 			_claimed[binding.target_id] = true
 		elif binding.target_kind == BattleVisualBinding.KIND_SURFACE:
 			if _claimed_surfaces.has(binding.target_id):
-				continue
+				var claimed_surface_spec: Dictionary = TacticalVisualCatalog.spec_for(
+					binding.archetype_id,
+					binding.variant_id
+				)
+				if not TacticalVisualCatalog.is_pipeline_test(claimed_surface_spec):
+					continue
 			_spawn_surface_visual(geometry, binding)
 		elif binding.target_kind == BattleVisualBinding.KIND_BUILDING:
 			if _claimed_buildings.has(binding.target_id):
-				continue
+				var claimed_building_spec: Dictionary = TacticalVisualCatalog.spec_for(
+					binding.archetype_id,
+					binding.variant_id
+				)
+				if not TacticalVisualCatalog.is_pipeline_test(claimed_building_spec):
+					continue
 			_spawn_building_visual(geometry, binding)
 		elif binding.target_kind == BattleVisualBinding.KIND_DECAL:
 			if _claimed_markings.has(binding.target_id):

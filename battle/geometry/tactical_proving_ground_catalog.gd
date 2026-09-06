@@ -30,6 +30,10 @@ const HQ_SIDE_ALLEY := Rect2(53.0, 0.6, 5.0, 22.2)
 const REAR_SPACE := Rect2(53.0, 0.6, 33.0, 3.8)
 const PORCH_APRON := Rect2(17.0, 18.2, 36.0, 4.2)
 const STAIRS_BOUNDS := Rect2(32.2, 18.3, 5.6, 4.0)
+# Authored visual anchor: north sidewalk south-edge center (road north curb).
+const NORTH_FRONTAGE_BLOCK_ID := "block_hq_north"
+const NORTH_FRONTAGE_BLOCK_ANCHOR := Vector2(38.5, 26.8)
+const NORTH_FRONTAGE_BLOCK_WIDTH := 77.0
 
 const HQ_BOUNDS := Rect2(17.0, 0.6, 36.0, 17.6)
 const WEST_NEIGHBOR_BOUNDS := Rect2(0.5, 0.6, 14.6, 19.4)
@@ -945,7 +949,7 @@ static func _bind_block(
 	anchor_mode: String = "center",
 	rotation_deg: float = 0.0,
 	scale: float = 1.0
-) -> void:
+) -> BattleVisualBinding:
 	var binding: BattleVisualBinding = BattleVisualBinding.new(
 		BattleVisualBinding.KIND_BLOCK,
 		block_id,
@@ -957,6 +961,7 @@ static func _bind_block(
 	)
 	binding.anchor_mode = anchor_mode
 	definition.visual_bindings.append(binding)
+	return binding
 
 
 static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition) -> void:
@@ -982,4 +987,18 @@ static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition)
 		TacticalVisualCatalog.VARIANT_PIPELINE_TEST,
 		Vector2(35.0, 18.2),
 		"south"
+	)
+	var north_block: BattleVisualBinding = _bind_block(
+		definition,
+		NORTH_FRONTAGE_BLOCK_ID,
+		TacticalVisualCatalog.VARIANT_HQ_NORTH_01,
+		NORTH_FRONTAGE_BLOCK_ANCHOR,
+		"south"
+	)
+	north_block.visual_world_size = Vector2(NORTH_FRONTAGE_BLOCK_WIDTH, 0.0)
+	north_block.suppress_building_ids = PackedStringArray(
+		["building_hq", "building_west_neighbor", "building_east_neighbor"]
+	)
+	north_block.suppress_surface_ids = PackedStringArray(
+		["sidewalk_north", "apron_hq_porch"]
 	)

@@ -49,6 +49,7 @@ const VARIANT_FLAT_01 := "flat_01"
 const VARIANT_PIPELINE_TEST := "pipeline_test"
 const VARIANT_ASPHALT_01 := "asphalt_01"
 const VARIANT_CALIBRATION_01 := "calibration_01"
+const VARIANT_HQ_NORTH_01 := "hq_north_01"
 
 const FALLBACK_CIVILIAN_CAR := "civilian_car"
 const DEFAULT_PPU := 32.0
@@ -379,6 +380,13 @@ static func _ensure_specs() -> void:
 		DEFAULT_PPU,
 		"building",
 		{"pipeline_test": true}
+	)
+	_register(
+		ARCHETYPE_ENVIRONMENT_BLOCK,
+		VARIANT_HQ_NORTH_01,
+		"res://assets/tactical/environment/block_hq_north_01.png",
+		DEFAULT_PPU,
+		"building"
 	)
 	_register(
 		ARCHETYPE_ENVIRONMENT_BLOCK,
