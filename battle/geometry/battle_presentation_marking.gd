@@ -10,6 +10,8 @@ const KIND_SEAM := "seam"
 const KIND_STOP_BAR := "stop_bar"
 const KIND_BOLLARD := "bollard"
 const KIND_UTILITY := "utility"
+const KIND_STAIN := "stain"
+const KIND_PATCH := "patch"
 
 var mark_id: String = ""
 var mark_kind: String = ""

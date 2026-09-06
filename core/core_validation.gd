@@ -62,6 +62,7 @@ const BattlefieldGeometryService := preload("res://battle/geometry/battlefield_g
 const AuthoredBattlefieldService := preload("res://battle/geometry/authored_battlefield_service.gd")
 const TacticalProvingGroundCatalog := preload("res://battle/geometry/tactical_proving_ground_catalog.gd")
 const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_region.gd")
+const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleSpatialResult := preload("res://battle/geometry/battle_spatial_result.gd")
@@ -16562,6 +16563,9 @@ static func run() -> Dictionary:
 	var deployhud_confirm_control_ok: bool = _deployhud_confirm_control_ok()
 	var deployhud_live_order_regression_ok: bool = _deployhud_live_order_regression_ok()
 	var deployhud_sticky_cover_regression_ok: bool = _deployhud_sticky_cover_regression_ok()
+	var envdepth_geometry_frozen_ok: bool = _envdepth_geometry_frozen_ok()
+	var envdepth_static_presentation_ok: bool = _envdepth_static_presentation_ok()
+	var envdepth_tactical_load_ok: bool = _envdepth_tactical_load_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18765,6 +18769,9 @@ static func run() -> Dictionary:
 		"deployhud_confirm_control_ok": deployhud_confirm_control_ok,
 		"deployhud_live_order_regression_ok": deployhud_live_order_regression_ok,
 		"deployhud_sticky_cover_regression_ok": deployhud_sticky_cover_regression_ok,
+		"envdepth_geometry_frozen_ok": envdepth_geometry_frozen_ok,
+		"envdepth_static_presentation_ok": envdepth_static_presentation_ok,
+		"envdepth_tactical_load_ok": envdepth_tactical_load_ok,
 	}
 
 	var passed := true
@@ -70469,4 +70476,189 @@ static func _deployhud_sticky_cover_regression_ok() -> bool:
 		and released.success
 		and not smg.has_player_cover_intent()
 		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+	)
+
+
+static func _envdepth_geometry_frozen_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if not is_equal_approx(geometry.width, 86.0) or not is_equal_approx(geometry.height, 58.0):
+		return false
+	if not is_equal_approx(TacticalProvingGroundCatalog.COVER_SLOT_OFFSET, 0.8):
+		return false
+	if not is_equal_approx(TacticalBattleView.TACTICAL_PIXELS_PER_UNIT, 8.0):
+		return false
+	var buildings: Dictionary = {
+		"building_hq": TacticalProvingGroundCatalog.HQ_BOUNDS,
+		"building_west_neighbor": TacticalProvingGroundCatalog.WEST_NEIGHBOR_BOUNDS,
+		"building_east_neighbor": TacticalProvingGroundCatalog.EAST_NEIGHBOR_BOUNDS,
+		"building_sw_framing": TacticalProvingGroundCatalog.SW_FRAMING_BOUNDS,
+		"building_south_mid_framing": TacticalProvingGroundCatalog.SOUTH_MID_FRAMING_BOUNDS,
+		"building_se_framing": TacticalProvingGroundCatalog.SE_FRAMING_BOUNDS,
+	}
+	for building_id: Variant in buildings:
+		var obstacle: BattleObstacle = geometry.get_obstacle(str(building_id))
+		if obstacle == null:
+			return false
+		if not obstacle.blocks_movement or not obstacle.blocks_line_of_sight:
+			return false
+		if obstacle.presentation_kind != "building":
+			return false
+		if not obstacle.bounds.is_equal_approx(buildings[building_id]):
+			return false
+	var parked_ids: Array[String] = [
+		"parked_car_attack_west",
+		"parked_car_attack_mid",
+		"parked_car_attack_east",
+		"parked_car_attack_alley",
+		"parked_car_north_west",
+		"parked_car_north_offset",
+	]
+	var parked_bounds: Dictionary = {
+		"parked_car_attack_west": Rect2(31.6, 39.4, 4.3, 1.8),
+		"parked_car_attack_mid": Rect2(40.4, 38.6, 4.1, 1.75),
+		"parked_car_attack_east": Rect2(58.8, 37.2, 4.3, 1.8),
+		"parked_car_attack_alley": Rect2(71.8, 33.8, 4.2, 1.85),
+		"parked_car_north_west": Rect2(21.8, 27.6, 4.5, 1.7),
+		"parked_car_north_offset": Rect2(39.9, 28.9, 3.6, 1.85),
+	}
+	for parked_id: String in parked_ids:
+		var parked: BattleObstacle = geometry.get_obstacle(parked_id)
+		if parked == null or not parked.blocks_movement or parked.blocks_line_of_sight:
+			return false
+		if not parked.bounds.is_equal_approx(parked_bounds[parked_id]):
+			return false
+	var west_slot: BattleCoverSlot = geometry.get_cover_slot("cover_parked_car_attack_west_south")
+	var dumpster_slot: BattleCoverSlot = geometry.get_cover_slot("cover_dumpster_frontage_west_north")
+	if west_slot == null or dumpster_slot == null:
+		return false
+	if not west_slot.position.is_equal_approx(Vector2(33.75, 42.0)):
+		return false
+	if not dumpster_slot.position.is_equal_approx(Vector2(21.35, 22.4)):
+		return false
+	var authored_slot_count: int = 0
+	for slot_id: String in geometry.get_sorted_cover_slot_ids():
+		if slot_id.begins_with("vehicle_"):
+			continue
+		authored_slot_count += 1
+	if authored_slot_count != 35:
+		return false
+	var has_east_boundary := false
+	for pocket: BattleDeploymentPocket in geometry.attacker_deployment_area.pockets:
+		if pocket == null:
+			continue
+		for vertex: Vector2 in pocket.polygon:
+			if is_equal_approx(vertex.x, 86.0):
+				has_east_boundary = true
+	if not has_east_boundary:
+		return false
+	if geometry.defender_deployment_area.pockets.size() < 2:
+		return false
+	var curb_n: BattleSurfaceRegion = geometry.get_surface_region("curb_north")
+	var curb_s: BattleSurfaceRegion = geometry.get_surface_region("curb_south")
+	if curb_n == null or not curb_n.bounds.is_equal_approx(Rect2(0.0, 26.6, 86.0, 0.4)):
+		return false
+	if curb_s == null or not curb_s.bounds.is_equal_approx(Rect2(0.0, 41.8, 86.0, 0.4)):
+		return false
+	return true
+
+
+static func _envdepth_static_presentation_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var has_stain := false
+	var has_patch := false
+	var has_utility := false
+	var has_fade_lane := false
+	for marking: BattlePresentationMarking in geometry.presentation_markings:
+		if marking == null:
+			continue
+		if marking.mark_kind == BattlePresentationMarking.KIND_STAIN:
+			has_stain = true
+		elif marking.mark_kind == BattlePresentationMarking.KIND_PATCH:
+			has_patch = true
+		elif marking.mark_kind == BattlePresentationMarking.KIND_UTILITY:
+			has_utility = true
+		if marking.mark_id == "lane_fade_west":
+			has_fade_lane = true
+	var view_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/geometry/tactical_proving_ground_catalog.gd"
+	)
+	var static_idx: int = view_src.find("func paint_static_battlefield")
+	var static_next: int = view_src.find("\nfunc ", static_idx + 1)
+	var dynamic_idx: int = view_src.find("func paint_dynamic_battlefield")
+	var dynamic_next: int = view_src.find("\nfunc ", dynamic_idx + 1)
+	if static_idx < 0 or static_next < 0 or dynamic_idx < 0 or dynamic_next < 0:
+		return false
+	var static_body: String = view_src.substr(static_idx, static_next - static_idx)
+	var dynamic_body: String = view_src.substr(dynamic_idx, dynamic_next - dynamic_idx)
+	var car_label_idx: int = view_src.find(', "CAR", 11)')
+	var car_window: String = ""
+	if car_label_idx >= 0:
+		car_window = view_src.substr(maxi(car_label_idx - 90, 0), 90)
+	return (
+		has_stain
+		and has_patch
+		and has_utility
+		and has_fade_lane
+		and geometry.presentation_markings.size() >= 30
+		and view_src.contains("DEPTH_SHADOW_OFFSET := Vector2(3.2, 3.6)")
+		and view_src.contains("DEPTH_SOUTH_FACE_PX := 7.0")
+		and view_src.contains("DEPTH_HQ_SOUTH_FACE_PX := 9.0")
+		and view_src.contains("DEPTH_SOUTH_OVERHANG_PX := 2.0")
+		and view_src.contains("DEPTH_HQ_SOUTH_OVERHANG_PX := 2.5")
+		and view_src.contains("PROVISIONAL_ATTACKER_ZONE := Color(0.32, 0.50, 0.70, 0.04)")
+		and view_src.contains("PROVISIONAL_ATTACKER_ZONE_LINE := Color(0.55, 0.72, 0.86, 0.32)")
+		and view_src.contains("DEBUG_DRAW_DEVELOPER_OVERLAY := false")
+		and view_src.contains("if first_label and DEBUG_DRAW_DEVELOPER_OVERLAY:")
+		and car_window.contains("DEBUG_DRAW_DEVELOPER_OVERLAY")
+		and view_src.contains("func _draw_building_contact_shadow")
+		and view_src.contains("func _draw_building_side_faces")
+		and view_src.contains("func _draw_building_roof")
+		and view_src.contains("func _draw_building_parapet")
+		and view_src.contains("func _draw_alley_contact")
+		and view_src.contains("func _draw_sidewalk_elevation")
+		and static_body.contains("_draw_obstacles")
+		and static_body.contains("_draw_surfaces")
+		and static_body.contains("_draw_presentation_markings")
+		and not dynamic_body.contains("_draw_building")
+		and not dynamic_body.contains("_draw_building_contact_shadow")
+		and not dynamic_body.contains("_draw_alley_contact")
+		and not dynamic_body.contains("_draw_presentation_markings")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("ShaderMaterial")
+		and not view_src.contains(".gdshader")
+		and not view_src.contains("Texture2D")
+		and catalog_src.contains("_add_street_wear_markings")
+		and catalog_src.contains("HQ_BOUNDS := Rect2(17.0, 0.6, 36.0, 17.6)")
+		and catalog_src.contains("COVER_SLOT_OFFSET := 0.8")
+	)
+
+
+static func _envdepth_tactical_load_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(battle_state, "")
+	return _gameplayruntime_finish(
+		runtime,
+		runtime.get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT
+		and cards.size() >= 3
+		and view._confirm_control_visible()
+		and is_equal_approx(TacticalBattleView.TACTICAL_PIXELS_PER_UNIT, 8.0)
+		and battle_state.battlefield_geometry.get_obstacle("building_hq") != null
+		and battle_state.battlefield_geometry.get_obstacle("building_hq").bounds.is_equal_approx(
+			TacticalProvingGroundCatalog.HQ_BOUNDS
+		)
 	)

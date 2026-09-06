@@ -112,21 +112,21 @@ static func _add_presentation_markings(definition: AuthoredBattlefieldDefinition
 		BattlePresentationMarking.new(
 			"lane_main",
 			BattlePresentationMarking.KIND_LANE,
-			Rect2(2.0, 34.3, 82.0, 0.26)
+			Rect2(2.0, 34.22, 82.0, 0.42)
 		)
 	)
 	definition.presentation_markings.append(
 		BattlePresentationMarking.new(
 			"lane_edge_north",
 			BattlePresentationMarking.KIND_PARKING,
-			Rect2(1.5, 28.2, 83.0, 0.10)
+			Rect2(1.5, 28.08, 83.0, 0.32)
 		)
 	)
 	definition.presentation_markings.append(
 		BattlePresentationMarking.new(
 			"lane_edge_south",
 			BattlePresentationMarking.KIND_PARKING,
-			Rect2(1.5, 40.4, 83.0, 0.10)
+			Rect2(1.5, 40.24, 83.0, 0.32)
 		)
 	)
 	definition.presentation_markings.append(
@@ -253,6 +253,136 @@ static func _add_presentation_markings(definition: AuthoredBattlefieldDefinition
 			"porch_front_edge",
 			BattlePresentationMarking.KIND_SEAM,
 			Rect2(17.1, 22.28, 35.8, 0.14)
+		)
+	)
+	_add_street_wear_markings(definition)
+
+
+static func _add_street_wear_markings(definition: AuthoredBattlefieldDefinition) -> void:
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"lane_fade_west",
+			BattlePresentationMarking.KIND_LANE,
+			Rect2(6.0, 34.38, 13.5, 0.36)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"lane_fade_east",
+			BattlePresentationMarking.KIND_LANE,
+			Rect2(58.5, 33.96, 12.0, 0.34)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"asphalt_patch_west",
+			BattlePresentationMarking.KIND_PATCH,
+			Rect2(4.2, 36.4, 7.8, 2.7)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"asphalt_patch_mid",
+			BattlePresentationMarking.KIND_PATCH,
+			Rect2(16.2, 30.6, 9.4, 3.2)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"asphalt_patch_east",
+			BattlePresentationMarking.KIND_PATCH,
+			Rect2(60.0, 35.6, 8.6, 2.9)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stain_oil_west",
+			BattlePresentationMarking.KIND_STAIN,
+			Rect2(10.8, 37.4, 4.4, 2.3)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stain_oil_center",
+			BattlePresentationMarking.KIND_STAIN,
+			Rect2(27.0, 31.6, 4.6, 2.4)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stain_oil_mid_east",
+			BattlePresentationMarking.KIND_STAIN,
+			Rect2(49.4, 36.0, 5.0, 2.5)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"stain_oil_alley_mouth",
+			BattlePresentationMarking.KIND_STAIN,
+			Rect2(71.8, 29.6, 4.2, 2.3)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"manhole_center",
+			BattlePresentationMarking.KIND_UTILITY,
+			Rect2(44.2, 32.7, 1.85, 1.85)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"manhole_west",
+			BattlePresentationMarking.KIND_UTILITY,
+			Rect2(7.9, 29.1, 1.70, 1.70)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"manhole_east",
+			BattlePresentationMarking.KIND_UTILITY,
+			Rect2(68.4, 34.35, 1.70, 1.70)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"parking_fade_north",
+			BattlePresentationMarking.KIND_PARKING,
+			Rect2(22.0, 28.02, 8.8, 0.28)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"parking_fade_south",
+			BattlePresentationMarking.KIND_PARKING,
+			Rect2(48.4, 40.26, 10.6, 0.28)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"asphalt_repair_seam",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(35.18, 29.2, 0.42, 5.6)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"alley_hq_stain",
+			BattlePresentationMarking.KIND_STAIN,
+			Rect2(53.6, 13.6, 3.6, 2.4)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"alley_east_stain",
+			BattlePresentationMarking.KIND_STAIN,
+			Rect2(79.4, 17.2, 3.8, 2.5)
+		)
+	)
+	definition.presentation_markings.append(
+		BattlePresentationMarking.new(
+			"rear_alley_seam",
+			BattlePresentationMarking.KIND_SEAM,
+			Rect2(59.4, 2.22, 12.6, 0.28)
 		)
 	)
 

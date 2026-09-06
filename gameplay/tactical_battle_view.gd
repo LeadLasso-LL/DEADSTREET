@@ -39,6 +39,28 @@ const CAMERA_EDGE_PADDING := 40.0
 const SURROUND_EXTENT_UNITS := 36.0
 const PROP_VISUAL_GROW := 2.5
 const PROP_SHADOW_OFFSET := Vector2(1.6, 1.6)
+# Implied light from north-west (upper-left). Shadows fall south-east (down-right).
+# Presentation only. Does not affect collision, LOS, cover, or nav.
+# Face heights are chosen to read at TACTICAL_PIXELS_PER_UNIT=8 and default F5 zoom.
+const DEPTH_SHADOW_OFFSET := Vector2(3.2, 3.6)
+const DEPTH_SOUTH_FACE_PX := 7.0
+const DEPTH_EAST_FACE_PX := 5.0
+const DEPTH_HQ_SOUTH_FACE_PX := 9.0
+const DEPTH_HQ_EAST_FACE_PX := 6.5
+const DEPTH_SOUTH_OVERHANG_PX := 2.0
+const DEPTH_HQ_SOUTH_OVERHANG_PX := 2.5
+const DEPTH_EAST_OVERHANG_PX := 1.6
+const DEPTH_HQ_EAST_OVERHANG_PX := 2.0
+const DEPTH_ROOF_NORTH_INSET_PX := 2.2
+const DEPTH_ROOF_WEST_INSET_PX := 2.0
+const DEPTH_PARAPET_INSET_PX := 3.0
+const DEPTH_CONTACT_SHADOW := Color(0.02, 0.015, 0.015, 0.62)
+const DEPTH_EDGE_AO := Color(0.03, 0.02, 0.02, 0.52)
+const DEPTH_CURB_DROP := Color(0.10, 0.08, 0.06, 0.94)
+const DEPTH_CURB_LIGHT := Color(0.90, 0.86, 0.72, 0.78)
+const DEPTH_STAIN := Color(0.04, 0.03, 0.02, 0.72)
+const DEPTH_PATCH := Color(0.30, 0.27, 0.23, 0.90)
+const DEPTH_PATCH_LINE := Color(0.08, 0.07, 0.06, 0.70)
 const PARTICIPANT_RADIUS := 7.0
 const SOLDIER_GROUND_RADIUS := 6.2
 const SOLDIER_SELECTION_RADIUS := 13.0
@@ -84,29 +106,29 @@ const PROVISIONAL_SURROUND_STUB := Color(0.13, 0.13, 0.135, 0.42)
 const PROVISIONAL_FIELD := Color(0.21, 0.18, 0.16, 1.0)
 const PROVISIONAL_ASPHALT := Color(0.10, 0.10, 0.11, 1.0)
 const PROVISIONAL_ASPHALT_INTERSECTION := Color(0.15, 0.15, 0.155, 1.0)
-const PROVISIONAL_SIDEWALK := Color(0.50, 0.47, 0.42, 1.0)
+const PROVISIONAL_SIDEWALK := Color(0.58, 0.55, 0.47, 1.0)
 const PROVISIONAL_LOT := Color(0.28, 0.24, 0.20, 1.0)
-const PROVISIONAL_ALLEY := Color(0.15, 0.135, 0.125, 1.0)
-const PROVISIONAL_CURB := Color(0.62, 0.58, 0.50, 1.0)
-const PROVISIONAL_CURB_EDGE := Color(0.16, 0.14, 0.12, 0.95)
+const PROVISIONAL_ALLEY := Color(0.075, 0.068, 0.062, 1.0)
+const PROVISIONAL_CURB := Color(0.74, 0.70, 0.58, 1.0)
+const PROVISIONAL_CURB_EDGE := Color(0.12, 0.10, 0.08, 1.0)
 const PROVISIONAL_APRON := Color(0.42, 0.37, 0.31, 1.0)
-const PROVISIONAL_LANE := Color(0.78, 0.70, 0.40, 0.58)
-const PROVISIONAL_PARKING := Color(0.84, 0.84, 0.78, 0.28)
+const PROVISIONAL_LANE := Color(0.88, 0.78, 0.38, 0.78)
+const PROVISIONAL_PARKING := Color(0.86, 0.86, 0.80, 0.46)
 const PROVISIONAL_LOADING := Color(0.74, 0.42, 0.16, 0.55)
 const PROVISIONAL_SEAM := Color(0.20, 0.18, 0.16, 0.62)
 const PROVISIONAL_BOLLARD := Color(0.20, 0.18, 0.16, 1.0)
 const PROVISIONAL_UTILITY := Color(0.32, 0.34, 0.32, 1.0)
-const PROVISIONAL_BUILDING := Color(0.27, 0.23, 0.21, 1.0)
-const PROVISIONAL_BUILDING_HQ := Color(0.40, 0.22, 0.20, 1.0)
+const PROVISIONAL_BUILDING := Color(0.24, 0.20, 0.18, 1.0)
+const PROVISIONAL_BUILDING_HQ := Color(0.36, 0.17, 0.15, 1.0)
 const PROVISIONAL_BUILDING_WAREHOUSE := Color(0.25, 0.24, 0.23, 1.0)
-const PROVISIONAL_BUILDING_SHOP_A := Color(0.34, 0.23, 0.20, 1.0)
-const PROVISIONAL_BUILDING_SHOP_B := Color(0.30, 0.22, 0.18, 1.0)
-const PROVISIONAL_BUILDING_ROOF := Color(0.16, 0.145, 0.135, 1.0)
-const PROVISIONAL_BUILDING_ROOF_HQ := Color(0.18, 0.12, 0.12, 1.0)
+const PROVISIONAL_BUILDING_SHOP_A := Color(0.32, 0.20, 0.17, 1.0)
+const PROVISIONAL_BUILDING_SHOP_B := Color(0.28, 0.19, 0.15, 1.0)
+const PROVISIONAL_BUILDING_ROOF := Color(0.54, 0.50, 0.44, 1.0)
+const PROVISIONAL_BUILDING_ROOF_HQ := Color(0.64, 0.44, 0.36, 1.0)
 const PROVISIONAL_BUILDING_LINE := Color(0.07, 0.055, 0.05, 1.0)
 const PROVISIONAL_BUILDING_ACCENT := Color(0.36, 0.13, 0.13, 1.0)
 const PROVISIONAL_AWNING := Color(0.26, 0.16, 0.14, 1.0)
-const PROVISIONAL_WINDOW := Color(0.11, 0.13, 0.15, 0.90)
+const PROVISIONAL_WINDOW := Color(0.42, 0.56, 0.62, 0.95)
 const PROVISIONAL_DOOR := Color(0.14, 0.10, 0.09, 1.0)
 const PROVISIONAL_FENCE := Color(0.38, 0.37, 0.34, 0.92)
 const PROVISIONAL_PARKED_CAR := Color(0.28, 0.36, 0.44, 1.0)
@@ -118,10 +140,10 @@ const PROVISIONAL_BARRIER := Color(0.58, 0.42, 0.28, 1.0)
 const PROVISIONAL_PROP_SHADOW := Color(0.04, 0.03, 0.03, 0.42)
 const PROVISIONAL_PROP_OUTLINE := Color(0.05, 0.04, 0.04, 1.0)
 const PROVISIONAL_BOUNDS := Color(0.50, 0.46, 0.40, 0.88)
-const PROVISIONAL_ATTACKER_ZONE := Color(0.28, 0.48, 0.72, 0.07)
-const PROVISIONAL_ATTACKER_ZONE_LINE := Color(0.52, 0.74, 0.92, 0.55)
-const PROVISIONAL_DEFENDER_ZONE := Color(0.72, 0.42, 0.24, 0.07)
-const PROVISIONAL_DEFENDER_ZONE_LINE := Color(0.90, 0.66, 0.44, 0.55)
+const PROVISIONAL_ATTACKER_ZONE := Color(0.32, 0.50, 0.70, 0.04)
+const PROVISIONAL_ATTACKER_ZONE_LINE := Color(0.55, 0.72, 0.86, 0.32)
+const PROVISIONAL_DEFENDER_ZONE := Color(0.70, 0.44, 0.28, 0.04)
+const PROVISIONAL_DEFENDER_ZONE_LINE := Color(0.86, 0.66, 0.46, 0.32)
 const PROVISIONAL_ATTACKER := Color(0.42, 0.70, 0.92, 1.0)
 const PROVISIONAL_DEFENDER := Color(0.86, 0.64, 0.40, 1.0)
 const PROVISIONAL_DEAD := Color(0.42, 0.42, 0.44, 1.0)
@@ -597,7 +619,9 @@ func _draw_surround_parcels(field_rect: Rect2, pad: float) -> void:
 		var fill: Color = PROVISIONAL_SURROUND_PARCEL
 		if i % 2 == 0:
 			fill = PROVISIONAL_SURROUND_BLOCK
-		_paint_canvas().draw_rect(_rect_to_view(parcel), fill, true)
+		var view_rect: Rect2 = _rect_to_view(parcel)
+		_paint_canvas().draw_rect(view_rect, fill, true)
+		_draw_depth_south_east_edges(view_rect, Color(0.05, 0.04, 0.035, 0.28), 1.8)
 		i += 1
 
 
@@ -652,19 +676,122 @@ func _draw_surfaces(battle_state: BattleState) -> void:
 	for surface: BattleSurfaceRegion in _cached_sorted_surfaces:
 		_paint_canvas().draw_rect(_rect_to_view(surface.bounds), _surface_fill(surface), true)
 	for surface: BattleSurfaceRegion in _cached_sorted_surfaces:
+		_draw_surface_depth(surface)
+	for surface: BattleSurfaceRegion in _cached_sorted_surfaces:
 		if surface.region_kind == BattleSurfaceRegion.KIND_CURB:
 			_draw_curb_edge(surface.bounds)
 
 
+func _draw_surface_depth(surface: BattleSurfaceRegion) -> void:
+	if surface == null:
+		return
+	match surface.region_kind:
+		BattleSurfaceRegion.KIND_SIDEWALK:
+			_draw_sidewalk_elevation(surface.bounds)
+		BattleSurfaceRegion.KIND_ALLEY:
+			_draw_alley_contact(surface.bounds)
+		BattleSurfaceRegion.KIND_APRON:
+			_draw_apron_edge(surface.bounds)
+		BattleSurfaceRegion.KIND_ASPHALT:
+			_draw_asphalt_edge(surface.bounds)
+		_:
+			pass
+
+
+func _draw_sidewalk_elevation(bounds: Rect2) -> void:
+	var view_rect: Rect2 = _rect_to_view(bounds)
+	var north_light: Rect2 = Rect2(view_rect.position, Vector2(view_rect.size.x, minf(3.2, view_rect.size.y)))
+	_paint_canvas().draw_rect(north_light, Color(0.82, 0.78, 0.68, 0.48), true)
+	var band: float = minf(4.6, view_rect.size.y)
+	var road_drop: Rect2
+	if bounds.get_center().y < 35.0:
+		road_drop = Rect2(
+			Vector2(view_rect.position.x, view_rect.end.y - band),
+			Vector2(view_rect.size.x, band)
+		)
+	else:
+		road_drop = Rect2(view_rect.position, Vector2(view_rect.size.x, band))
+	_paint_canvas().draw_rect(road_drop, DEPTH_EDGE_AO, true)
+
+
+func _draw_alley_contact(bounds: Rect2) -> void:
+	var view_rect: Rect2 = _rect_to_view(bounds)
+	var strip: float = minf(8.5, view_rect.size.x * 0.38)
+	var north_strip: float = minf(6.5, view_rect.size.y * 0.32)
+	_paint_canvas().draw_rect(
+		Rect2(view_rect.position, Vector2(strip, view_rect.size.y)),
+		DEPTH_EDGE_AO,
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(view_rect.end.x - strip, view_rect.position.y), Vector2(strip, view_rect.size.y)),
+		DEPTH_EDGE_AO,
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(view_rect.position, Vector2(view_rect.size.x, north_strip)),
+		DEPTH_EDGE_AO,
+		true
+	)
+	var floor_shade: Rect2 = Rect2(
+		view_rect.position + Vector2(strip * 0.35, north_strip * 0.4),
+		Vector2(maxf(view_rect.size.x - strip * 0.7, 2.0), maxf(view_rect.size.y - north_strip * 0.4, 2.0))
+	)
+	_paint_canvas().draw_rect(floor_shade, Color(0.05, 0.04, 0.035, 0.26), true)
+
+
+func _draw_apron_edge(bounds: Rect2) -> void:
+	var view_rect: Rect2 = _rect_to_view(bounds)
+	var south: Rect2 = Rect2(
+		Vector2(view_rect.position.x, view_rect.end.y - 2.8),
+		Vector2(view_rect.size.x, 2.8)
+	)
+	_paint_canvas().draw_rect(south, DEPTH_EDGE_AO, true)
+	var north: Rect2 = Rect2(view_rect.position, Vector2(view_rect.size.x, minf(3.0, view_rect.size.y)))
+	_paint_canvas().draw_rect(north, Color(0.18, 0.12, 0.10, 0.34), true)
+
+
+func _draw_asphalt_edge(bounds: Rect2) -> void:
+	var view_rect: Rect2 = _rect_to_view(bounds)
+	var band: float = minf(5.5, view_rect.size.y * 0.22)
+	_paint_canvas().draw_rect(
+		Rect2(view_rect.position, Vector2(view_rect.size.x, band)),
+		Color(0.04, 0.04, 0.045, 0.32),
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(view_rect.position.x, view_rect.end.y - band), Vector2(view_rect.size.x, band)),
+		Color(0.04, 0.04, 0.045, 0.28),
+		true
+	)
+
+
 func _draw_curb_edge(bounds: Rect2) -> void:
 	var view_rect: Rect2 = _rect_to_view(bounds)
-	_paint_canvas().draw_rect(view_rect, PROVISIONAL_CURB_EDGE, false, 1.6)
-	var highlight: Rect2 = view_rect
-	if view_rect.size.x >= view_rect.size.y:
-		highlight.size.y = minf(1.4, view_rect.size.y)
+	_paint_canvas().draw_rect(view_rect, PROVISIONAL_CURB_EDGE, false, 2.6)
+	var light: Rect2 = Rect2(view_rect.position, Vector2(view_rect.size.x, minf(2.4, view_rect.size.y)))
+	_paint_canvas().draw_rect(light, DEPTH_CURB_LIGHT, true)
+	var drop_h: float = minf(3.6, view_rect.size.y)
+	var drop_on_south: bool = bounds.get_center().y < 35.0
+	if drop_on_south:
+		var drop: Rect2 = Rect2(
+			Vector2(view_rect.position.x, view_rect.end.y - drop_h),
+			Vector2(view_rect.size.x, drop_h)
+		)
+		_paint_canvas().draw_rect(drop, DEPTH_CURB_DROP, true)
+		var contact: Rect2 = Rect2(
+			Vector2(view_rect.position.x + DEPTH_SHADOW_OFFSET.x * 0.2, view_rect.end.y),
+			Vector2(view_rect.size.x, 6.0)
+		)
+		_paint_canvas().draw_rect(contact, DEPTH_CONTACT_SHADOW, true)
 	else:
-		highlight.size.x = minf(1.4, view_rect.size.x)
-	_paint_canvas().draw_rect(highlight, Color(0.72, 0.68, 0.60, 0.55), true)
+		var drop: Rect2 = Rect2(view_rect.position, Vector2(view_rect.size.x, drop_h))
+		_paint_canvas().draw_rect(drop, DEPTH_CURB_DROP, true)
+		var contact: Rect2 = Rect2(
+			Vector2(view_rect.position.x, view_rect.position.y - 6.0),
+			Vector2(view_rect.size.x, 6.0)
+		)
+		_paint_canvas().draw_rect(contact, DEPTH_CONTACT_SHADOW, true)
 
 
 func _surface_draw_less(a: BattleSurfaceRegion, b: BattleSurfaceRegion) -> bool:
@@ -742,10 +869,45 @@ func _draw_presentation_markings(battle_state: BattleState) -> void:
 					true
 				)
 			BattlePresentationMarking.KIND_UTILITY:
-				_paint_canvas().draw_rect(view_rect, PROVISIONAL_UTILITY, true)
-				_paint_canvas().draw_rect(view_rect, Color(0.10, 0.10, 0.10, 1.0), false, 1.0)
+				_draw_utility_cover(view_rect)
+			BattlePresentationMarking.KIND_STAIN:
+				_paint_canvas().draw_rect(view_rect, DEPTH_STAIN, true)
+			BattlePresentationMarking.KIND_PATCH:
+				_paint_canvas().draw_rect(view_rect, DEPTH_PATCH, true)
+				_paint_canvas().draw_rect(view_rect, DEPTH_PATCH_LINE, false, 1.6)
 			_:
 				_paint_canvas().draw_rect(view_rect, PROVISIONAL_SEAM, true)
+
+
+func _draw_utility_cover(view_rect: Rect2) -> void:
+	_paint_canvas().draw_rect(view_rect, PROVISIONAL_UTILITY, true)
+	_paint_canvas().draw_rect(view_rect, Color(0.08, 0.08, 0.08, 1.0), false, 1.6)
+	var radius: float = minf(view_rect.size.x, view_rect.size.y) * 0.42
+	_paint_canvas().draw_circle(view_rect.get_center(), radius, Color(0.22, 0.22, 0.22, 0.95), true)
+	_paint_canvas().draw_circle(view_rect.get_center(), radius, Color(0.08, 0.08, 0.08, 1.0), false, 1.0, true)
+	var mid: Vector2 = view_rect.get_center()
+	_paint_canvas().draw_line(
+		mid + Vector2(-radius * 0.72, 0.0),
+		mid + Vector2(radius * 0.72, 0.0),
+		Color(0.08, 0.08, 0.08, 0.85),
+		1.0,
+		true
+	)
+
+
+func _draw_depth_south_east_edges(view_rect: Rect2, color: Color, thickness: float) -> void:
+	var south_h: float = minf(thickness, view_rect.size.y)
+	var east_w: float = minf(thickness, view_rect.size.x)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(view_rect.position.x, view_rect.end.y - south_h), Vector2(view_rect.size.x, south_h)),
+		color,
+		true
+	)
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(view_rect.end.x - east_w, view_rect.position.y), Vector2(east_w, view_rect.size.y)),
+		color,
+		true
+	)
 
 
 func _draw_dashed_band(view_rect: Rect2, color: Color) -> void:
@@ -907,8 +1069,8 @@ func _draw_deployment_area(
 			_paint_canvas().draw_colored_polygon(piece, fill)
 			var outline: PackedVector2Array = piece.duplicate()
 			outline.append(piece[0])
-			_paint_canvas().draw_polyline(outline, Color(line.r, line.g, line.b, minf(line.a + 0.10, 1.0)), 1.6, true)
-			if first_label:
+			_paint_canvas().draw_polyline(outline, line, 1.1, true)
+			if first_label and DEBUG_DRAW_DEVELOPER_OVERLAY:
 				var centroid: Vector2 = Vector2.ZERO
 				for pt: Vector2 in piece:
 					centroid += pt
@@ -920,8 +1082,9 @@ func _draw_deployment_area(
 		return
 	var view_rect: Rect2 = _rect_to_view(fallback_rect)
 	_paint_canvas().draw_rect(view_rect, fill, true)
-	_paint_canvas().draw_rect(view_rect, line, false, 2.0)
-	_draw_label_left(view_rect.position + Vector2(6.0, 16.0), label + " DEPLOYMENT", 12, line)
+	_paint_canvas().draw_rect(view_rect, line, false, 1.1)
+	if DEBUG_DRAW_DEVELOPER_OVERLAY:
+		_draw_label_left(view_rect.position + Vector2(6.0, 16.0), label + " DEPLOYMENT", 12, line)
 
 
 func _movement_blocking_view_polygons(geometry: BattlefieldGeometry) -> Array[PackedVector2Array]:
@@ -1183,10 +1346,12 @@ func _draw_building(obstacle: BattleObstacle) -> void:
 		fill = PROVISIONAL_BUILDING_SHOP_B
 	elif is_shop:
 		fill = PROVISIONAL_BUILDING_SHOP_A
+	_draw_building_contact_shadow(view_rect, is_hq)
 	_paint_canvas().draw_rect(view_rect, fill, true)
-	var roof: Rect2 = _inset_view_rect(view_rect, 4.0, 3.5)
-	_paint_canvas().draw_rect(roof, roof_fill, true)
-	var outline_w: float = 3.2 if is_hq else 2.4
+	_draw_building_side_faces(view_rect, fill, is_hq)
+	_draw_building_roof(view_rect, roof_fill, is_hq)
+	_draw_building_parapet(view_rect, is_hq)
+	var outline_w: float = 4.0 if is_hq else 2.8
 	_paint_canvas().draw_rect(view_rect, PROVISIONAL_BUILDING_LINE, false, outline_w)
 	if is_hq:
 		_draw_hq_cues(view_rect)
@@ -1198,125 +1363,223 @@ func _draw_building(obstacle: BattleObstacle) -> void:
 		_draw_neighbor_facade(obstacle, view_rect)
 
 
-func _draw_hq_cues(view_rect: Rect2) -> void:
-	var frontage: Rect2 = Rect2(
-		Vector2(view_rect.position.x + 3.0, view_rect.end.y - 10.0),
-		Vector2(maxf(view_rect.size.x - 6.0, 8.0), 10.0)
+func _building_roof_rect(view_rect: Rect2, is_hq: bool) -> Rect2:
+	var south: float = DEPTH_HQ_SOUTH_FACE_PX if is_hq else DEPTH_SOUTH_FACE_PX
+	var east: float = DEPTH_HQ_EAST_FACE_PX if is_hq else DEPTH_EAST_FACE_PX
+	return Rect2(
+		view_rect.position + Vector2(DEPTH_ROOF_WEST_INSET_PX, DEPTH_ROOF_NORTH_INSET_PX),
+		Vector2(
+			maxf(view_rect.size.x - DEPTH_ROOF_WEST_INSET_PX - east, 2.0),
+			maxf(view_rect.size.y - DEPTH_ROOF_NORTH_INSET_PX - south, 2.0)
+		)
 	)
-	_paint_canvas().draw_rect(frontage, Color(0.32, 0.16, 0.15, 0.55), true)
+
+
+func _draw_building_contact_shadow(view_rect: Rect2, is_hq: bool) -> void:
+	var grow: float = 1.4 if is_hq else 0.6
+	var shadow: Rect2 = Rect2(
+		view_rect.position + DEPTH_SHADOW_OFFSET,
+		view_rect.size + Vector2(grow, grow)
+	)
+	_paint_canvas().draw_rect(shadow, DEPTH_CONTACT_SHADOW, true)
+	if is_hq:
+		var frontage_shadow: Rect2 = Rect2(
+			Vector2(view_rect.position.x + 2.0, view_rect.end.y),
+			Vector2(maxf(view_rect.size.x - 2.0, 4.0), 5.0)
+		)
+		_paint_canvas().draw_rect(frontage_shadow, DEPTH_CONTACT_SHADOW, true)
+
+
+func _draw_building_side_faces(view_rect: Rect2, fill: Color, is_hq: bool) -> void:
+	var roof: Rect2 = _building_roof_rect(view_rect, is_hq)
+	var south_overhang: float = DEPTH_HQ_SOUTH_OVERHANG_PX if is_hq else DEPTH_SOUTH_OVERHANG_PX
+	var east_overhang: float = DEPTH_HQ_EAST_OVERHANG_PX if is_hq else DEPTH_EAST_OVERHANG_PX
+	var south: Rect2 = Rect2(
+		Vector2(view_rect.position.x, roof.end.y),
+		Vector2(view_rect.size.x + east_overhang, maxf(view_rect.end.y - roof.end.y, 1.0) + south_overhang)
+	)
+	var east: Rect2 = Rect2(
+		Vector2(roof.end.x, view_rect.position.y),
+		Vector2(maxf(view_rect.end.x - roof.end.x, 1.0) + east_overhang, view_rect.size.y + south_overhang)
+	)
+	_paint_canvas().draw_rect(south, fill.darkened(0.48 if is_hq else 0.40), true)
+	_paint_canvas().draw_rect(east, fill.darkened(0.26 if is_hq else 0.22), true)
+
+
+func _draw_building_roof(view_rect: Rect2, roof_fill: Color, is_hq: bool) -> void:
+	var roof: Rect2 = _building_roof_rect(view_rect, is_hq)
+	_paint_canvas().draw_rect(roof, roof_fill, true)
+	var light: Rect2 = Rect2(roof.position, Vector2(roof.size.x, minf(3.0 if is_hq else 2.2, roof.size.y)))
+	_paint_canvas().draw_rect(light, Color(1.0, 1.0, 1.0, 0.12 if is_hq else 0.08), true)
+
+
+func _draw_building_parapet(view_rect: Rect2, is_hq: bool) -> void:
+	var roof: Rect2 = _building_roof_rect(view_rect, is_hq)
+	var lip: Rect2 = _inset_view_rect(roof, DEPTH_PARAPET_INSET_PX, DEPTH_PARAPET_INSET_PX * 0.85)
+	var width: float = 3.6 if is_hq else 2.6
+	_paint_canvas().draw_rect(lip, Color(0.18, 0.14, 0.12, 0.85 if is_hq else 0.70), false, width)
 	_paint_canvas().draw_rect(
-		Rect2(Vector2(view_rect.position.x, view_rect.end.y - 2.4), Vector2(view_rect.size.x, 2.4)),
-		Color(0.22, 0.12, 0.10, 0.95),
+		Rect2(Vector2(lip.position.x, lip.end.y - (2.4 if is_hq else 1.8)), Vector2(lip.size.x, 2.4 if is_hq else 1.8)),
+		Color(0.10, 0.07, 0.06, 0.70 if is_hq else 0.55),
 		true
 	)
-	var door_w: float = 11.0
-	var door_h: float = 13.0
+
+
+func _draw_hq_cues(view_rect: Rect2) -> void:
+	var wall_h: float = DEPTH_HQ_SOUTH_FACE_PX + DEPTH_HQ_SOUTH_OVERHANG_PX + 8.0
+	var frontage: Rect2 = Rect2(
+		Vector2(view_rect.position.x + 2.0, view_rect.end.y - wall_h),
+		Vector2(maxf(view_rect.size.x - 4.0, 8.0), wall_h)
+	)
+	_paint_canvas().draw_rect(frontage, Color(0.28, 0.12, 0.11, 0.70), true)
+	var pilaster_w: float = 5.0
+	var px: float = view_rect.position.x + 10.0
+	var pilaster_count: int = 0
+	while px + pilaster_w < view_rect.end.x - 10.0 and pilaster_count < 5:
+		var pilaster: Rect2 = Rect2(
+			Vector2(px, view_rect.end.y - wall_h),
+			Vector2(pilaster_w, wall_h)
+		)
+		_paint_canvas().draw_rect(pilaster, Color(0.22, 0.10, 0.09, 0.85), true)
+		px += (view_rect.size.x - 20.0) / 4.0
+		pilaster_count += 1
+	_paint_canvas().draw_rect(
+		Rect2(Vector2(view_rect.position.x, view_rect.end.y - 4.0), Vector2(view_rect.size.x, 4.0)),
+		Color(0.14, 0.08, 0.07, 1.0),
+		true
+	)
+	var door_w: float = 18.0
+	var door_h: float = 22.0
 	var door: Rect2 = Rect2(
 		Vector2(view_rect.get_center().x - door_w * 0.5, view_rect.end.y - door_h),
 		Vector2(door_w, door_h)
 	)
-	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
-	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.4)
-	var jamb: Rect2 = Rect2(
-		Vector2(door.position.x + 1.6, door.position.y + 1.4),
-		Vector2(maxf(door.size.x - 3.2, 2.0), maxf(door.size.y - 2.2, 2.0))
+	var frame: Rect2 = Rect2(
+		door.position - Vector2(3.4, 3.6),
+		door.size + Vector2(6.8, 3.6)
 	)
-	_paint_canvas().draw_rect(jamb, Color(0.20, 0.13, 0.11, 1.0), true)
-	var window_w: float = 9.0
-	var window_h: float = 8.0
-	var window_y: float = view_rect.end.y - 18.0
+	_paint_canvas().draw_rect(frame, Color(0.18, 0.10, 0.08, 1.0), true)
+	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
+	_paint_canvas().draw_rect(door, Color(0.06, 0.04, 0.03, 1.0), false, 2.0)
+	var jamb: Rect2 = Rect2(
+		Vector2(door.position.x + 2.2, door.position.y + 2.0),
+		Vector2(maxf(door.size.x - 4.4, 2.0), maxf(door.size.y - 5.0, 2.0))
+	)
+	_paint_canvas().draw_rect(jamb, Color(0.10, 0.07, 0.06, 1.0), true)
+	var threshold: Rect2 = Rect2(
+		Vector2(door.position.x - 2.0, view_rect.end.y - 3.4),
+		Vector2(door.size.x + 4.0, 3.4)
+	)
+	_paint_canvas().draw_rect(threshold, Color(0.10, 0.07, 0.06, 1.0), true)
+	var window_w: float = 16.0
+	var window_h: float = 12.0
+	var window_y: float = view_rect.end.y - wall_h + 3.0
 	var left_window: Rect2 = Rect2(
-		Vector2(view_rect.position.x + 18.0, window_y),
+		Vector2(view_rect.position.x + 22.0, window_y),
 		Vector2(window_w, window_h)
 	)
 	var right_window: Rect2 = Rect2(
-		Vector2(view_rect.end.x - 18.0 - window_w, window_y),
+		Vector2(view_rect.end.x - 22.0 - window_w, window_y),
 		Vector2(window_w, window_h)
 	)
-	_paint_canvas().draw_rect(left_window, PROVISIONAL_WINDOW, true)
-	_paint_canvas().draw_rect(right_window, PROVISIONAL_WINDOW, true)
-	_paint_canvas().draw_rect(left_window, Color(0.06, 0.05, 0.05, 1.0), false, 1.0)
-	_paint_canvas().draw_rect(right_window, Color(0.06, 0.05, 0.05, 1.0), false, 1.0)
+	_draw_window_pane(left_window)
+	_draw_window_pane(right_window)
 	var lintel: Rect2 = Rect2(
-		Vector2(door.position.x - 2.0, door.position.y - 2.2),
-		Vector2(door.size.x + 4.0, 2.2)
+		Vector2(frame.position.x, door.position.y - 4.0),
+		Vector2(frame.size.x, 4.0)
 	)
 	_paint_canvas().draw_rect(lintel, PROVISIONAL_BUILDING_ACCENT, true)
 
 
+func _draw_window_pane(window: Rect2) -> void:
+	_paint_canvas().draw_rect(window, PROVISIONAL_WINDOW, true)
+	_paint_canvas().draw_rect(window, Color(0.06, 0.05, 0.05, 1.0), false, 1.6)
+	var mid_x: float = window.position.x + window.size.x * 0.5
+	var mid_y: float = window.position.y + window.size.y * 0.5
+	_paint_canvas().draw_line(
+		Vector2(mid_x, window.position.y + 1.0),
+		Vector2(mid_x, window.end.y - 1.0),
+		Color(0.06, 0.05, 0.05, 0.90),
+		1.2,
+		true
+	)
+	_paint_canvas().draw_line(
+		Vector2(window.position.x + 1.0, mid_y),
+		Vector2(window.end.x - 1.0, mid_y),
+		Color(0.06, 0.05, 0.05, 0.90),
+		1.2,
+		true
+	)
+
+
 func _draw_neighbor_facade(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	var street_south: bool = obstacle.obstacle_id.find("framing") >= 0
-	var window_h: float = minf(11.0, view_rect.size.y * 0.28)
-	var window_w: float = 8.0
+	var window_h: float = minf(16.0, view_rect.size.y * 0.34)
+	var window_w: float = 14.0
 	var window_y: float = view_rect.position.y + 8.0
 	if street_south:
-		window_y = view_rect.position.y + 5.0
+		window_y = view_rect.position.y + 6.0
 	else:
-		window_y = view_rect.end.y - window_h - 8.0
-	var x: float = view_rect.position.x + 8.0
+		window_y = view_rect.end.y - window_h - 10.0
+	var x: float = view_rect.position.x + 10.0
 	var count: int = 0
-	while x + window_w < view_rect.end.x - 8.0 and count < 4:
-		var window: Rect2 = Rect2(Vector2(x, window_y), Vector2(window_w, window_h))
-		_paint_canvas().draw_rect(window, PROVISIONAL_WINDOW, true)
-		_paint_canvas().draw_rect(window, Color(0.06, 0.06, 0.07, 1.0), false, 1.0)
-		x += window_w + 7.0
+	while x + window_w < view_rect.end.x - 10.0 and count < 4:
+		_draw_window_pane(Rect2(Vector2(x, window_y), Vector2(window_w, window_h)))
+		x += window_w + 8.0
 		count += 1
-	var door_w: float = 6.5
-	var door_h: float = 8.5
+	var door_w: float = 10.0
+	var door_h: float = 14.0
 	var door_x: float = view_rect.position.x + view_rect.size.x * 0.42
 	var door_y: float = view_rect.end.y - door_h
 	if street_south:
 		door_y = view_rect.position.y
 	var door: Rect2 = Rect2(Vector2(door_x, door_y), Vector2(door_w, door_h))
 	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
-	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.0)
+	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.6)
 
 
 func _draw_warehouse_cues(view_rect: Rect2) -> void:
-	var parapet: Rect2 = _inset_view_rect(view_rect, 2.0, 2.0)
-	_paint_canvas().draw_rect(parapet, Color(0.28, 0.26, 0.24, 0.70), false, 2.2)
-	var bay_y: float = view_rect.end.y - 11.0
-	var bay_h: float = 8.5
-	var bay_w: float = 22.0
-	var gap: float = 8.0
-	var x: float = view_rect.position.x + 18.0
+	var bay_y: float = view_rect.end.y - 18.0
+	var bay_h: float = 14.0
+	var bay_w: float = 28.0
+	var gap: float = 10.0
+	var x: float = view_rect.position.x + 16.0
 	var count: int = 0
 	while x + bay_w < view_rect.end.x - 12.0 and count < 3:
 		var bay: Rect2 = Rect2(Vector2(x, bay_y), Vector2(bay_w, bay_h))
-		_paint_canvas().draw_rect(bay, Color(0.10, 0.10, 0.11, 0.95), true)
-		_paint_canvas().draw_rect(bay, Color(0.32, 0.30, 0.26, 1.0), false, 1.4)
+		_paint_canvas().draw_rect(bay, Color(0.09, 0.09, 0.10, 0.96), true)
+		_paint_canvas().draw_rect(bay, Color(0.36, 0.34, 0.28, 1.0), false, 2.0)
 		x += bay_w + gap
 		count += 1
 	var door: Rect2 = Rect2(
-		Vector2(view_rect.position.x + 8.0, view_rect.end.y - 9.0),
-		Vector2(7.0, 7.0)
+		Vector2(view_rect.position.x + 8.0, view_rect.end.y - 14.0),
+		Vector2(11.0, 12.0)
 	)
 	_paint_canvas().draw_rect(door, Color(0.18, 0.16, 0.14, 1.0), true)
+	_paint_canvas().draw_rect(door, Color(0.08, 0.07, 0.06, 1.0), false, 1.6)
 
 
 func _draw_storefront_cues(obstacle: BattleObstacle, view_rect: Rect2) -> void:
-	var awning_h: float = 5.0
+	var awning_h: float = 8.0
 	var awning: Rect2 = Rect2(
-		Vector2(view_rect.position.x + 2.0, view_rect.position.y - 2.5),
+		Vector2(view_rect.position.x + 2.0, view_rect.position.y - 3.5),
 		Vector2(maxf(view_rect.size.x - 4.0, 4.0), awning_h)
 	)
 	_paint_canvas().draw_rect(awning, PROVISIONAL_AWNING, true)
-	_paint_canvas().draw_rect(awning, Color(0.10, 0.06, 0.05, 1.0), false, 1.4)
-	var window_y: float = view_rect.position.y + 8.0
-	var window_h: float = minf(14.0, view_rect.size.y * 0.28)
-	var window_w: float = 10.0
-	var x: float = view_rect.position.x + 6.0
+	_paint_canvas().draw_rect(awning, Color(0.10, 0.06, 0.05, 1.0), false, 1.8)
+	var window_y: float = view_rect.position.y + 10.0
+	var window_h: float = minf(20.0, view_rect.size.y * 0.36)
+	var window_w: float = 16.0
+	var x: float = view_rect.position.x + 8.0
 	var count: int = 0
-	while x + window_w < view_rect.end.x - 6.0 and count < 4:
-		var window: Rect2 = Rect2(Vector2(x, window_y), Vector2(window_w, window_h))
-		_paint_canvas().draw_rect(window, PROVISIONAL_WINDOW, true)
-		_paint_canvas().draw_rect(window, Color(0.06, 0.06, 0.07, 1.0), false, 1.0)
-		x += window_w + 5.0
+	while x + window_w < view_rect.end.x - 8.0 and count < 3:
+		_draw_window_pane(Rect2(Vector2(x, window_y), Vector2(window_w, window_h)))
+		x += window_w + 7.0
 		count += 1
-	var sign_w: float = minf(18.0, view_rect.size.x * 0.28)
+	var sign_w: float = minf(28.0, view_rect.size.x * 0.36)
 	var sign: Rect2 = Rect2(
-		Vector2(view_rect.end.x - sign_w - 5.0, view_rect.position.y + 4.0),
-		Vector2(sign_w, 4.5)
+		Vector2(view_rect.end.x - sign_w - 6.0, view_rect.position.y + 4.0),
+		Vector2(sign_w, 7.0)
 	)
 	var accent: Color = PROVISIONAL_BUILDING_ACCENT
 	if obstacle.obstacle_id.find("east_shop") >= 0:
@@ -1704,8 +1967,9 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 				[nose, nose - facing * 5.0 + side, nose - facing * 5.0 - side]
 			)
 			_paint_canvas().draw_colored_polygon(chevron, PROVISIONAL_VEHICLE_FACING)
-		_draw_label(Vector2(view_pos.x, min_y - 12.0), "CAR", 11)
-		_draw_label(Vector2(view_pos.x, max_y + 12.0), vehicle.battle_vehicle_id, 10)
+		if DEBUG_DRAW_DEVELOPER_OVERLAY:
+			_draw_label(Vector2(view_pos.x, min_y - 12.0), "CAR", 11)
+			_draw_label(Vector2(view_pos.x, max_y + 12.0), vehicle.battle_vehicle_id, 10)
 
 
 func _draw_overlay() -> void:
