@@ -709,25 +709,164 @@ static func _add_defender_pockets(definition: AuthoredBattlefieldDefinition) -> 
 
 static func _add_visual_bindings(definition: AuthoredBattlefieldDefinition) -> void:
 	# Presentation-only. Obstacle/vehicle gameplay footprints stay authoritative.
+	# Attack-curb cars face hood-east; north-curb cars face hood-west.
+	_bind_obstacle(
+		definition,
+		"parked_car_attack_west",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
+		TacticalVisualCatalog.VARIANT_BLUE_01,
+		0.0,
+		1.0
+	)
+	_bind_obstacle(
+		definition,
+		"parked_car_attack_mid",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
+		TacticalVisualCatalog.VARIANT_BLUE_01,
+		0.0,
+		0.96
+	)
+	_bind_obstacle(
+		definition,
+		"parked_car_attack_east",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SUV,
+		TacticalVisualCatalog.VARIANT_GREEN_01,
+		0.0,
+		0.95
+	)
+	_bind_obstacle(
+		definition,
+		"parked_car_attack_alley",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_VAN,
+		TacticalVisualCatalog.VARIANT_GRAY_01,
+		0.0,
+		0.95
+	)
+	_bind_obstacle(
+		definition,
+		"parked_car_north_west",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_PICKUP,
+		TacticalVisualCatalog.VARIANT_MAROON_01,
+		180.0,
+		1.08
+	)
+	_bind_obstacle(
+		definition,
+		"parked_car_north_offset",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_COMPACT,
+		TacticalVisualCatalog.VARIANT_CREAM_01,
+		180.0,
+		1.0
+	)
+	_bind_obstacle(
+		definition,
+		"dumpster_frontage_west",
+		TacticalVisualCatalog.ARCHETYPE_DUMPSTER,
+		TacticalVisualCatalog.VARIANT_GREEN_01,
+		0.0,
+		1.02
+	)
+	_bind_obstacle(
+		definition,
+		"dumpster_alley",
+		TacticalVisualCatalog.ARCHETYPE_DUMPSTER,
+		TacticalVisualCatalog.VARIANT_BLUE_01,
+		90.0,
+		1.06
+	)
+	_bind_obstacle(
+		definition,
+		"dumpster_hq_alley_front",
+		TacticalVisualCatalog.ARCHETYPE_DUMPSTER,
+		TacticalVisualCatalog.VARIANT_GREEN_01,
+		90.0,
+		0.84
+	)
+	_bind_obstacle(
+		definition,
+		"table_frontage_west",
+		TacticalVisualCatalog.ARCHETYPE_TABLE_UTILITY,
+		TacticalVisualCatalog.VARIANT_WOOD_01,
+		0.0,
+		1.0
+	)
+	_bind_obstacle(
+		definition,
+		"trash_frontage_east",
+		TacticalVisualCatalog.ARCHETYPE_TRASH_PILE,
+		TacticalVisualCatalog.VARIANT_GRAY_01,
+		0.0,
+		1.06
+	)
+	_bind_obstacle(
+		definition,
+		"trash_street_approach",
+		TacticalVisualCatalog.ARCHETYPE_TRASH_BIN,
+		TacticalVisualCatalog.VARIANT_GREEN_01,
+		0.0,
+		1.10
+	)
+	_bind_obstacle(
+		definition,
+		"crates_frontage_east",
+		TacticalVisualCatalog.ARCHETYPE_CRATES_STACKED,
+		TacticalVisualCatalog.VARIANT_PAIR_01,
+		0.0,
+		1.01
+	)
+	_bind_obstacle(
+		definition,
+		"crates_hq_alley_rear",
+		TacticalVisualCatalog.ARCHETYPE_CRATES_STACKED,
+		TacticalVisualCatalog.VARIANT_OFFSET_01,
+		0.0,
+		1.32
+	)
+	_bind_vehicle(
+		definition,
+		"player_vehicle",
+		TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
+		TacticalVisualCatalog.VARIANT_BLUE_01,
+		1.0
+	)
+
+
+static func _bind_obstacle(
+	definition: AuthoredBattlefieldDefinition,
+	obstacle_id: String,
+	archetype_id: String,
+	variant_id: String,
+	rotation_deg: float,
+	scale: float
+) -> void:
 	definition.visual_bindings.append(
 		BattleVisualBinding.new(
 			BattleVisualBinding.KIND_OBSTACLE,
-			"parked_car_attack_west",
-			TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
-			TacticalVisualCatalog.VARIANT_TEST_01,
-			0.0,
+			obstacle_id,
+			archetype_id,
+			variant_id,
+			rotation_deg,
 			Vector2.ZERO,
-			1.0
+			scale
 		)
 	)
+
+
+static func _bind_vehicle(
+	definition: AuthoredBattlefieldDefinition,
+	vehicle_id: String,
+	archetype_id: String,
+	variant_id: String,
+	scale: float
+) -> void:
 	definition.visual_bindings.append(
 		BattleVisualBinding.new(
 			BattleVisualBinding.KIND_VEHICLE,
-			"player_vehicle",
-			TacticalVisualCatalog.ARCHETYPE_CIVILIAN_SEDAN,
-			TacticalVisualCatalog.VARIANT_TEST_01,
+			vehicle_id,
+			archetype_id,
+			variant_id,
 			0.0,
 			Vector2.ZERO,
-			1.0
+			scale
 		)
 	)

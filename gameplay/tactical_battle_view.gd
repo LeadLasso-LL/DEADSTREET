@@ -1406,6 +1406,8 @@ func _draw_obstacles(battle_state: BattleState) -> void:
 
 
 func _draw_soft_cover_prop(obstacle: BattleObstacle, view_rect: Rect2) -> void:
+	if _obstacle_uses_retained_visual(obstacle.obstacle_id):
+		return
 	match obstacle.presentation_kind:
 		"parked_car":
 			_draw_parked_car(obstacle, view_rect)
@@ -2883,8 +2885,8 @@ func _draw_vehicles(battle_state: BattleState) -> void:
 		var paint: Color = Color(0.20, 0.22, 0.23, 1.0)
 		if not _vehicle_uses_retained_visual(vehicle.battle_vehicle_id):
 			_draw_civilian_car(visual, spec, paint, false)
-		if vehicle.has_valid_orientation() and facing.length_squared() > 0.0001:
-			_draw_arrival_open_doors(visual)
+			if vehicle.has_valid_orientation() and facing.length_squared() > 0.0001:
+				_draw_arrival_open_doors(visual)
 		if DEBUG_DRAW_DEVELOPER_OVERLAY:
 			_draw_label(Vector2(view_pos.x, min_y - 12.0), "CAR", 11)
 			_draw_label(Vector2(view_pos.x, max_y + 12.0), vehicle.battle_vehicle_id, 10)
