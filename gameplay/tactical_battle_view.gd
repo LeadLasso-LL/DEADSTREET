@@ -241,7 +241,10 @@ var _deployment_cache_valid: bool = false
 var _surface_cache_valid: bool = false
 var static_layer: TacticalStaticBattlefieldLayer = null
 var dynamic_layer: TacticalDynamicBattlefieldLayer = null
+var static_surface_root: Node2D = null
+var static_building_root: Node2D = null
 var static_asset_root: Node2D = null
+var static_detail_root: Node2D = null
 var dynamic_asset_root: Node2D = null
 var environment_presenter: TacticalEnvironmentPresenter = null
 var actor_presenter: TacticalActorPresenter = null
@@ -513,12 +516,27 @@ func _paint_canvas() -> CanvasItem:
 
 
 func _ensure_layers() -> void:
+	if static_surface_root == null:
+		static_surface_root = Node2D.new()
+		static_surface_root.name = "StaticSurfaceRoot"
+		static_surface_root.z_index = 0
+		add_child(static_surface_root)
 	if static_layer == null:
 		static_layer = TacticalStaticBattlefieldLayer.new()
 		static_layer.name = "StaticBattlefieldLayer"
 		static_layer.host = self
 		static_layer.z_index = 0
 		add_child(static_layer)
+	if static_building_root == null:
+		static_building_root = Node2D.new()
+		static_building_root.name = "StaticBuildingRoot"
+		static_building_root.z_index = 0
+		add_child(static_building_root)
+	if static_detail_root == null:
+		static_detail_root = Node2D.new()
+		static_detail_root.name = "StaticDetailRoot"
+		static_detail_root.z_index = 0
+		add_child(static_detail_root)
 	if static_asset_root == null:
 		static_asset_root = Node2D.new()
 		static_asset_root.name = "StaticAssetRoot"
@@ -535,12 +553,42 @@ func _ensure_layers() -> void:
 		dynamic_layer.host = self
 		dynamic_layer.z_index = 3
 		add_child(dynamic_layer)
+	_order_presentation_roots()
 	if environment_presenter == null:
 		environment_presenter = TacticalEnvironmentPresenter.new()
 		environment_presenter.bind_root(static_asset_root, TACTICAL_PIXELS_PER_UNIT)
+		environment_presenter.bind_surface_root(static_surface_root)
+		environment_presenter.bind_building_root(static_building_root)
+		environment_presenter.bind_detail_root(static_detail_root)
+	else:
+		if environment_presenter.surface_root == null:
+			environment_presenter.bind_surface_root(static_surface_root)
+		if environment_presenter.building_root == null:
+			environment_presenter.bind_building_root(static_building_root)
+		if environment_presenter.detail_root == null:
+			environment_presenter.bind_detail_root(static_detail_root)
 	if actor_presenter == null:
 		actor_presenter = TacticalActorPresenter.new()
 		actor_presenter.bind_root(dynamic_asset_root, TACTICAL_PIXELS_PER_UNIT)
+
+
+func _order_presentation_roots() -> void:
+	var ordered: Array[Node] = [
+		static_surface_root,
+		static_layer,
+		static_building_root,
+		static_detail_root,
+		static_asset_root,
+		dynamic_asset_root,
+		dynamic_layer,
+	]
+	var insert_at: int = 0
+	for node: Node in ordered:
+		if node == null:
+			continue
+		if node.get_index() != insert_at:
+			move_child(node, insert_at)
+		insert_at += 1
 
 
 func _static_geometry_stamp() -> String:
@@ -587,6 +635,26 @@ func _sync_actor_presenter() -> void:
 
 func _obstacle_uses_retained_visual(obstacle_id: String) -> bool:
 	return environment_presenter != null and environment_presenter.claims_obstacle(obstacle_id)
+
+
+func _building_uses_retained_visual(obstacle_id: String) -> bool:
+	return environment_presenter != null and environment_presenter.claims_building(obstacle_id)
+
+
+func _surface_uses_retained_visual(region_id: String) -> bool:
+	return environment_presenter != null and environment_presenter.claims_surface(region_id)
+
+
+func _marking_uses_retained_visual(mark_id: String) -> bool:
+	return environment_presenter != null and environment_presenter.claims_marking(mark_id)
+
+
+func _roof_uses_retained_props(obstacle_id: String) -> bool:
+	return environment_presenter != null and environment_presenter.claims_roof_props(obstacle_id)
+
+
+func _facade_uses_retained_visual(obstacle_id: String) -> bool:
+	return environment_presenter != null and environment_presenter.claims_facade(obstacle_id)
 
 
 func _vehicle_uses_retained_visual(vehicle_id: String) -> bool:
@@ -738,12 +806,19 @@ func _draw_surfaces(battle_state: BattleState) -> void:
 		return
 	_ensure_surface_cache(geometry)
 	for surface: BattleSurfaceRegion in _cached_sorted_surfaces:
+		if _surface_uses_retained_visual(surface.region_id):
+			continue
 		_paint_canvas().draw_rect(_rect_to_view(surface.bounds), _surface_fill(surface), true)
 	for surface: BattleSurfaceRegion in _cached_sorted_surfaces:
+		if _surface_uses_retained_visual(surface.region_id):
+			continue
 		_draw_surface_depth(surface)
 	for surface: BattleSurfaceRegion in _cached_sorted_surfaces:
-		if surface.region_kind == BattleSurfaceRegion.KIND_CURB:
-			_draw_curb_edge(surface.bounds)
+		if surface.region_kind != BattleSurfaceRegion.KIND_CURB:
+			continue
+		if _surface_uses_retained_visual(surface.region_id):
+			continue
+		_draw_curb_edge(surface.bounds)
 
 
 func _draw_surface_depth(surface: BattleSurfaceRegion) -> void:
@@ -1051,6 +1126,8 @@ func _draw_presentation_markings(battle_state: BattleState) -> void:
 			continue
 		# Stair chrome is drawn as real treads in _draw_hq_porch_and_stairs.
 		if marking.mark_id.begins_with("stairs_"):
+			continue
+		if _marking_uses_retained_visual(marking.mark_id):
 			continue
 		var view_rect: Rect2 = _rect_to_view(marking.bounds)
 		match marking.mark_kind:
@@ -2111,6 +2188,8 @@ func _draw_fence(view_rect: Rect2) -> void:
 
 
 func _draw_building(obstacle: BattleObstacle) -> void:
+	if _building_uses_retained_visual(obstacle.obstacle_id):
+		return
 	var view_rect: Rect2 = _rect_to_view(obstacle.bounds)
 	var fill: Color = PROVISIONAL_BUILDING
 	var is_hq: bool = obstacle.obstacle_id == "building_hq"
@@ -2228,6 +2307,8 @@ func _draw_roof_dressing(roof: Rect2, is_hq: bool, roof_id: String) -> void:
 			true
 		)
 		y += step_y
+	if _roof_uses_retained_props(roof_id):
+		return
 	var seed: int = _deterministic_index(roof_id + ":roof", 4)
 	var hvac_w: float = 14.0 if is_hq else 11.0
 	var hvac_h: float = 10.0 if is_hq else 8.0
@@ -2364,16 +2445,28 @@ func _draw_hq_cues(view_rect: Rect2) -> void:
 		Vector2(frame.size.x, 4.0)
 	)
 	_paint_canvas().draw_rect(lintel, PROVISIONAL_BUILDING_ACCENT, true)
-	var awning: Rect2 = Rect2(
-		Vector2(frame.position.x - 6.0, door.position.y - 8.0),
-		Vector2(frame.size.x + 12.0, 6.0)
-	)
-	_paint_canvas().draw_rect(awning, Color(0.18, 0.10, 0.08, 1.0), true)
-	_paint_canvas().draw_rect(
-		Rect2(Vector2(awning.position.x, awning.end.y - 1.6), Vector2(awning.size.x, 1.6)),
-		Color(0.10, 0.06, 0.05, 1.0),
-		true
-	)
+	if not _facade_uses_retained_visual("building_hq"):
+		var awning: Rect2 = Rect2(
+			Vector2(frame.position.x - 6.0, door.position.y - 8.0),
+			Vector2(frame.size.x + 12.0, 6.0)
+		)
+		_paint_canvas().draw_rect(awning, Color(0.18, 0.10, 0.08, 1.0), true)
+		_paint_canvas().draw_rect(
+			Rect2(Vector2(awning.position.x, awning.end.y - 1.6), Vector2(awning.size.x, 1.6)),
+			Color(0.10, 0.06, 0.05, 1.0),
+			true
+		)
+		var plate: Rect2 = Rect2(
+			Vector2(view_rect.get_center().x - 22.0, awning.position.y - 9.5),
+			Vector2(44.0, 7.4)
+		)
+		_paint_canvas().draw_rect(plate, Color(0.10, 0.07, 0.06, 1.0), true)
+		_paint_canvas().draw_rect(plate, Color(0.62, 0.52, 0.34, 1.0), false, 1.6)
+		_paint_canvas().draw_rect(
+			_inset_view_rect(plate, 3.0, 1.8),
+			Color(0.72, 0.62, 0.42, 0.85),
+			true
+		)
 	var cornice: Rect2 = Rect2(
 		Vector2(view_rect.position.x, view_rect.end.y - wall_h - 3.4),
 		Vector2(view_rect.size.x, 3.4)
@@ -2382,17 +2475,6 @@ func _draw_hq_cues(view_rect: Rect2) -> void:
 	_paint_canvas().draw_rect(
 		Rect2(Vector2(cornice.position.x, cornice.end.y - 1.2), Vector2(cornice.size.x, 1.2)),
 		Color(0.22, 0.10, 0.08, 1.0),
-		true
-	)
-	var plate: Rect2 = Rect2(
-		Vector2(view_rect.get_center().x - 22.0, awning.position.y - 9.5),
-		Vector2(44.0, 7.4)
-	)
-	_paint_canvas().draw_rect(plate, Color(0.10, 0.07, 0.06, 1.0), true)
-	_paint_canvas().draw_rect(plate, Color(0.62, 0.52, 0.34, 1.0), false, 1.6)
-	_paint_canvas().draw_rect(
-		_inset_view_rect(plate, 3.0, 1.8),
-		Color(0.72, 0.62, 0.42, 0.85),
 		true
 	)
 	var transom: Rect2 = Rect2(
@@ -2462,13 +2544,14 @@ func _draw_neighbor_facade(obstacle: BattleObstacle, view_rect: Rect2) -> void:
 	_paint_canvas().draw_rect(door.grow(1.6), Color(0.16, 0.10, 0.08, 1.0), true)
 	_paint_canvas().draw_rect(door, PROVISIONAL_DOOR, true)
 	_paint_canvas().draw_rect(door, Color(0.08, 0.05, 0.04, 1.0), false, 1.6)
-	var sign: Rect2 = Rect2(
-		Vector2(view_rect.position.x + 8.0, window_y - 8.0),
-		Vector2(minf(22.0, view_rect.size.x * 0.28), 6.0)
-	)
-	if view_rect.encloses(sign) or view_rect.intersects(sign):
-		_paint_canvas().draw_rect(sign, Color(0.18, 0.16, 0.14, 1.0), true)
-		_paint_canvas().draw_rect(sign, Color(0.50, 0.42, 0.28, 1.0), false, 1.2)
+	if not _facade_uses_retained_visual(obstacle.obstacle_id):
+		var sign: Rect2 = Rect2(
+			Vector2(view_rect.position.x + 8.0, window_y - 8.0),
+			Vector2(minf(22.0, view_rect.size.x * 0.28), 6.0)
+		)
+		if view_rect.encloses(sign) or view_rect.intersects(sign):
+			_paint_canvas().draw_rect(sign, Color(0.18, 0.16, 0.14, 1.0), true)
+			_paint_canvas().draw_rect(sign, Color(0.50, 0.42, 0.28, 1.0), false, 1.2)
 
 
 func _draw_warehouse_cues(view_rect: Rect2) -> void:
@@ -2493,13 +2576,14 @@ func _draw_warehouse_cues(view_rect: Rect2) -> void:
 
 
 func _draw_storefront_cues(obstacle: BattleObstacle, view_rect: Rect2) -> void:
-	var awning_h: float = 8.0
-	var awning: Rect2 = Rect2(
-		Vector2(view_rect.position.x + 2.0, view_rect.position.y - 3.5),
-		Vector2(maxf(view_rect.size.x - 4.0, 4.0), awning_h)
-	)
-	_paint_canvas().draw_rect(awning, PROVISIONAL_AWNING, true)
-	_paint_canvas().draw_rect(awning, Color(0.10, 0.06, 0.05, 1.0), false, 1.8)
+	if not _facade_uses_retained_visual(obstacle.obstacle_id):
+		var awning_h: float = 8.0
+		var awning: Rect2 = Rect2(
+			Vector2(view_rect.position.x + 2.0, view_rect.position.y - 3.5),
+			Vector2(maxf(view_rect.size.x - 4.0, 4.0), awning_h)
+		)
+		_paint_canvas().draw_rect(awning, PROVISIONAL_AWNING, true)
+		_paint_canvas().draw_rect(awning, Color(0.10, 0.06, 0.05, 1.0), false, 1.8)
 	var window_y: float = view_rect.position.y + 10.0
 	var window_h: float = minf(20.0, view_rect.size.y * 0.36)
 	var window_w: float = 16.0

@@ -829,6 +829,7 @@ static func _add_visual_bindings(definition: AuthoredBattlefieldDefinition) -> v
 		TacticalVisualCatalog.VARIANT_BLUE_01,
 		1.0
 	)
+	_add_environment_bindings(definition)
 
 
 static func _bind_obstacle(
@@ -870,3 +871,84 @@ static func _bind_vehicle(
 			scale
 		)
 	)
+
+
+static func _bind_decal(
+	definition: AuthoredBattlefieldDefinition,
+	decal_id: String,
+	archetype_id: String,
+	variant_id: String,
+	world_pos: Vector2,
+	rotation_deg: float,
+	scale: float
+) -> void:
+	definition.visual_bindings.append(
+		BattleVisualBinding.new(
+			BattleVisualBinding.KIND_DECAL,
+			decal_id,
+			archetype_id,
+			variant_id,
+			rotation_deg,
+			world_pos,
+			scale
+		)
+	)
+
+
+static func _bind_building(
+	definition: AuthoredBattlefieldDefinition,
+	building_id: String,
+	variant_id: String,
+	offset: Vector2 = Vector2.ZERO,
+	rotation_deg: float = 0.0,
+	scale: float = 1.0
+) -> void:
+	definition.visual_bindings.append(
+		BattleVisualBinding.new(
+			BattleVisualBinding.KIND_BUILDING,
+			building_id,
+			TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+			variant_id,
+			rotation_deg,
+			offset,
+			scale
+		)
+	)
+
+
+static func _bind_surface(
+	definition: AuthoredBattlefieldDefinition,
+	region_id: String,
+	variant_id: String,
+	offset: Vector2 = Vector2.ZERO,
+	rotation_deg: float = 0.0,
+	scale: float = 1.0
+) -> void:
+	definition.visual_bindings.append(
+		BattleVisualBinding.new(
+			BattleVisualBinding.KIND_SURFACE,
+			region_id,
+			TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+			variant_id,
+			rotation_deg,
+			offset,
+			scale
+		)
+	)
+
+
+static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition) -> void:
+	# First-class building/surface identities. Pipeline-test variants prove bind/retain
+	# without suppressing procedural canvas or appearing in F5.
+	_bind_building(definition, "building_hq", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_building(definition, "building_west_neighbor", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_building(definition, "building_east_neighbor", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_building(definition, "building_sw_framing", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_building(definition, "building_south_mid_framing", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_building(definition, "building_se_framing", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_surface(definition, "road_main", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_surface(definition, "sidewalk_north", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_surface(definition, "sidewalk_south", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_surface(definition, "alley_hq_east", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_surface(definition, "alley_hq_side", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)
+	_bind_surface(definition, "apron_hq_porch", TacticalVisualCatalog.VARIANT_PIPELINE_TEST)

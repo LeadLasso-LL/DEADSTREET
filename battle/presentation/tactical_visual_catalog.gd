@@ -15,6 +15,21 @@ const ARCHETYPE_TRASH_PILE := "trash_pile"
 const ARCHETYPE_CRATE_WOOD := "crate_wood"
 const ARCHETYPE_CRATES_STACKED := "crates_stacked"
 const ARCHETYPE_TABLE_UTILITY := "table_utility"
+const ARCHETYPE_ROOF_HVAC := "roof_hvac"
+const ARCHETYPE_ROOF_VENT := "roof_vent"
+const ARCHETYPE_ROOF_HATCH := "roof_hatch"
+const ARCHETYPE_ROOF_EXHAUST := "roof_exhaust"
+const ARCHETYPE_ROOF_PATCH := "roof_patch"
+const ARCHETYPE_UTILITY_BOX := "utility_box"
+const ARCHETYPE_AWNING := "awning"
+const ARCHETYPE_SIGN_PLAQUE := "sign_plaque"
+const ARCHETYPE_MANHOLE := "manhole"
+const ARCHETYPE_ASPHALT_PATCH := "asphalt_patch"
+const ARCHETYPE_OIL_STAIN := "oil_stain"
+const ARCHETYPE_SIDEWALK_CRACK := "sidewalk_crack"
+const ARCHETYPE_GRIME_STRIP := "grime_strip"
+const ARCHETYPE_BUILDING_TACTICAL := "building_tactical"
+const ARCHETYPE_SURFACE_TACTICAL := "surface_tactical"
 
 const VARIANT_TEST_01 := "test_01"
 const VARIANT_CREAM_01 := "cream_01"
@@ -25,6 +40,13 @@ const VARIANT_MAROON_01 := "maroon_01"
 const VARIANT_WOOD_01 := "wood_01"
 const VARIANT_OFFSET_01 := "offset_01"
 const VARIANT_PAIR_01 := "pair_01"
+const VARIANT_LARGE_01 := "large_01"
+const VARIANT_SMALL_01 := "small_01"
+const VARIANT_HQ_01 := "hq_01"
+const VARIANT_SHOP_01 := "shop_01"
+const VARIANT_FLAT_01 := "flat_01"
+const VARIANT_PIPELINE_TEST := "pipeline_test"
+const VARIANT_ASPHALT_01 := "asphalt_01"
 
 const FALLBACK_CIVILIAN_CAR := "civilian_car"
 const DEFAULT_PPU := 32.0
@@ -68,6 +90,16 @@ static func texture_for(spec: Dictionary) -> Texture2D:
 
 static func cache_size() -> int:
 	return _texture_cache.size()
+
+
+static func is_pipeline_test(spec: Dictionary) -> bool:
+	return bool(spec.get("pipeline_test", false))
+
+
+static func should_claim_canvas(spec: Dictionary) -> bool:
+	if spec.is_empty() or is_pipeline_test(spec):
+		return false
+	return texture_for(spec) != null
 
 
 static func _load_texture(path: String) -> Texture2D:
@@ -188,6 +220,156 @@ static func _ensure_specs() -> void:
 		DEFAULT_PPU,
 		"table"
 	)
+	_register(
+		ARCHETYPE_ROOF_HVAC,
+		VARIANT_LARGE_01,
+		"res://assets/tactical/environment/hvac_large_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_ROOF_HVAC,
+		VARIANT_SMALL_01,
+		"res://assets/tactical/environment/hvac_small_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_ROOF_VENT,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/roof_vent_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_ROOF_HATCH,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/roof_hatch_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_ROOF_EXHAUST,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/roof_exhaust_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_ROOF_PATCH,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/roof_patch_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_UTILITY_BOX,
+		VARIANT_GREEN_01,
+		"res://assets/tactical/environment/utility_box_01.png",
+		DEFAULT_PPU,
+		"roof_dressing",
+		{"suppress_canvas": "roof_props"}
+	)
+	_register(
+		ARCHETYPE_AWNING,
+		VARIANT_HQ_01,
+		"res://assets/tactical/environment/awning_hq_01.png",
+		DEFAULT_PPU,
+		"hq_cues",
+		{"suppress_canvas": "facade"}
+	)
+	_register(
+		ARCHETYPE_AWNING,
+		VARIANT_SHOP_01,
+		"res://assets/tactical/environment/awning_shop_01.png",
+		DEFAULT_PPU,
+		"storefront",
+		{"suppress_canvas": "facade"}
+	)
+	_register(
+		ARCHETYPE_SIGN_PLAQUE,
+		VARIANT_FLAT_01,
+		"res://assets/tactical/environment/sign_plaque_01.png",
+		DEFAULT_PPU,
+		"hq_cues",
+		{"suppress_canvas": "facade"}
+	)
+	_register(
+		ARCHETYPE_MANHOLE,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/manhole_01.png",
+		DEFAULT_PPU,
+		"utility",
+		{"suppress_canvas": "marking"}
+	)
+	_register(
+		ARCHETYPE_ASPHALT_PATCH,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/asphalt_patch_01.png",
+		DEFAULT_PPU,
+		"patch",
+		{"suppress_canvas": "marking"}
+	)
+	_register(
+		ARCHETYPE_OIL_STAIN,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/oil_stain_01.png",
+		DEFAULT_PPU,
+		"stain",
+		{"suppress_canvas": "marking"}
+	)
+	_register(
+		ARCHETYPE_SIDEWALK_CRACK,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/sidewalk_crack_01.png",
+		DEFAULT_PPU,
+		"seam",
+		{"suppress_canvas": "marking"}
+	)
+	_register(
+		ARCHETYPE_GRIME_STRIP,
+		VARIANT_GRAY_01,
+		"res://assets/tactical/environment/grime_strip_01.png",
+		DEFAULT_PPU,
+		"stain",
+		{"suppress_canvas": "marking"}
+	)
+	_register(
+		ARCHETYPE_BUILDING_TACTICAL,
+		VARIANT_PIPELINE_TEST,
+		"res://assets/tactical/environment/building_pipeline_test.png",
+		DEFAULT_PPU,
+		"building",
+		{"pipeline_test": true}
+	)
+	_register(
+		ARCHETYPE_BUILDING_TACTICAL,
+		VARIANT_HQ_01,
+		"res://assets/tactical/environment/building_hq_01.png",
+		DEFAULT_PPU,
+		"building"
+	)
+	_register(
+		ARCHETYPE_SURFACE_TACTICAL,
+		VARIANT_PIPELINE_TEST,
+		"res://assets/tactical/environment/surface_pipeline_test.png",
+		DEFAULT_PPU,
+		"surface",
+		{"pipeline_test": true}
+	)
+	_register(
+		ARCHETYPE_SURFACE_TACTICAL,
+		VARIANT_ASPHALT_01,
+		"res://assets/tactical/environment/surface_road_01.png",
+		DEFAULT_PPU,
+		"surface"
+	)
 
 
 static func _register(
@@ -195,9 +377,10 @@ static func _register(
 	variant_id: String,
 	resource_path: String,
 	art_pixels_per_unit: float,
-	fallback_drawer_id: String
+	fallback_drawer_id: String,
+	extra: Dictionary = {}
 ) -> void:
-	_spec_table[_spec_key(archetype_id, variant_id)] = {
+	var spec: Dictionary = {
 		"archetype_id": archetype_id,
 		"variant_id": variant_id,
 		"resource_path": resource_path,
@@ -205,3 +388,6 @@ static func _register(
 		"centered": true,
 		"fallback_drawer_id": fallback_drawer_id,
 	}
+	for key: Variant in extra:
+		spec[str(key)] = extra[key]
+	_spec_table[_spec_key(archetype_id, variant_id)] = spec

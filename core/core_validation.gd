@@ -16615,6 +16615,12 @@ static func run() -> Dictionary:
 	var vispass_m2_hit_test_still_physical_ok: bool = _vispass_m2_hit_test_still_physical_ok()
 	var vispass_m2_view_has_no_asset_path_ok: bool = _vispass_m2_view_has_no_asset_path_ok()
 	var vispass_m2_fallback_and_determinism_ok: bool = _vispass_m2_fallback_and_determinism_ok()
+	var vispass_m3_bindings_resolve_ok: bool = _vispass_m3_bindings_resolve_ok()
+	var vispass_m3_geometry_unchanged_ok: bool = _vispass_m3_geometry_unchanged_ok()
+	var vispass_m3_static_rebuild_gated_ok: bool = _vispass_m3_static_rebuild_gated_ok()
+	var vispass_m3_view_has_no_asset_path_ok: bool = _vispass_m3_view_has_no_asset_path_ok()
+	var vispass_m3_decals_do_not_affect_hit_ok: bool = _vispass_m3_decals_do_not_affect_hit_ok()
+	var vispass_m3_fallback_and_determinism_ok: bool = _vispass_m3_fallback_and_determinism_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18868,6 +18874,12 @@ static func run() -> Dictionary:
 		"vispass_m2_hit_test_still_physical_ok": vispass_m2_hit_test_still_physical_ok,
 		"vispass_m2_view_has_no_asset_path_ok": vispass_m2_view_has_no_asset_path_ok,
 		"vispass_m2_fallback_and_determinism_ok": vispass_m2_fallback_and_determinism_ok,
+		"vispass_m3_bindings_resolve_ok": vispass_m3_bindings_resolve_ok,
+		"vispass_m3_geometry_unchanged_ok": vispass_m3_geometry_unchanged_ok,
+		"vispass_m3_static_rebuild_gated_ok": vispass_m3_static_rebuild_gated_ok,
+		"vispass_m3_view_has_no_asset_path_ok": vispass_m3_view_has_no_asset_path_ok,
+		"vispass_m3_decals_do_not_affect_hit_ok": vispass_m3_decals_do_not_affect_hit_ok,
+		"vispass_m3_fallback_and_determinism_ok": vispass_m3_fallback_and_determinism_ok,
 	}
 
 	var passed := true
@@ -72295,4 +72307,342 @@ static func _vispass_m2_fallback_and_determinism_ok() -> bool:
 		and vehicles_body.contains("_vehicle_uses_retained_visual")
 		and vehicles_body.contains("_draw_arrival_open_doors")
 		and FileAccess.file_exists("res://assets/tactical/props/crate_wood_01.png")
+	)
+
+
+static func _vispass_m3_building_ids() -> PackedStringArray:
+	return PackedStringArray(
+		[
+			"building_hq",
+			"building_west_neighbor",
+			"building_east_neighbor",
+			"building_sw_framing",
+			"building_south_mid_framing",
+			"building_se_framing",
+		]
+	)
+
+
+static func _vispass_m3_surface_ids() -> PackedStringArray:
+	return PackedStringArray(
+		[
+			"road_main",
+			"sidewalk_north",
+			"sidewalk_south",
+			"alley_hq_east",
+			"alley_hq_side",
+			"apron_hq_porch",
+		]
+	)
+
+
+static func _vispass_m3_detail_asset_paths() -> PackedStringArray:
+	return PackedStringArray(
+		[
+			"res://assets/tactical/environment/hvac_large_01.png",
+			"res://assets/tactical/environment/awning_hq_01.png",
+			"res://assets/tactical/environment/manhole_01.png",
+			"res://assets/tactical/environment/building_pipeline_test.png",
+			"res://assets/tactical/environment/surface_pipeline_test.png",
+		]
+	)
+
+
+static func _vispass_m3_bindings_resolve_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var cache_before: int = TacticalVisualCatalog.cache_size()
+	for building_id: String in _vispass_m3_building_ids():
+		var binding: BattleVisualBinding = geometry.get_visual_binding(
+			BattleVisualBinding.KIND_BUILDING,
+			building_id
+		)
+		if binding == null or binding.archetype_id != TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL:
+			return false
+		if binding.variant_id != TacticalVisualCatalog.VARIANT_PIPELINE_TEST:
+			return false
+		if _vispass_m2_binding_loads(binding) == null:
+			return false
+	for region_id: String in _vispass_m3_surface_ids():
+		var binding: BattleVisualBinding = geometry.get_visual_binding(
+			BattleVisualBinding.KIND_SURFACE,
+			region_id
+		)
+		if binding == null or binding.archetype_id != TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL:
+			return false
+		if binding.variant_id != TacticalVisualCatalog.VARIANT_PIPELINE_TEST:
+			return false
+		if _vispass_m2_binding_loads(binding) == null:
+			return false
+	var building_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_PIPELINE_TEST
+	)
+	var missing_building: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_HQ_01
+	)
+	var surface_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_PIPELINE_TEST
+	)
+	var missing_surface: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_SURFACE_TACTICAL,
+		TacticalVisualCatalog.VARIANT_ASPHALT_01
+	)
+	var detail_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ROOF_HVAC,
+		TacticalVisualCatalog.VARIANT_LARGE_01
+	)
+	if building_spec.is_empty() or surface_spec.is_empty() or missing_building.is_empty():
+		return false
+	if missing_surface.is_empty() or detail_spec.is_empty():
+		return false
+	if not TacticalVisualCatalog.is_pipeline_test(building_spec):
+		return false
+	if TacticalVisualCatalog.should_claim_canvas(building_spec):
+		return false
+	if TacticalVisualCatalog.texture_for(missing_building) != null:
+		return false
+	if TacticalVisualCatalog.texture_for(missing_surface) != null:
+		return false
+	if TacticalVisualCatalog.texture_for(detail_spec) == null:
+		return false
+	if geometry.get_visual_binding(BattleVisualBinding.KIND_DECAL, "roof:building_hq:hvac_a") != null:
+		return false
+	for path: String in _vispass_m3_detail_asset_paths():
+		if not FileAccess.file_exists(path):
+			return false
+	return TacticalVisualCatalog.cache_size() > cache_before or TacticalVisualCatalog.cache_size() >= 8
+
+
+static func _vispass_m3_geometry_unchanged_ok() -> bool:
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	if hq == null or not hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS):
+		return false
+	if not hq.blocks_movement or not hq.blocks_line_of_sight:
+		return false
+	if geometry.get_sorted_obstacle_ids().size() != 24:
+		return false
+	var authored_slot_count: int = 0
+	for slot_id: String in geometry.get_sorted_cover_slot_ids():
+		if slot_id.begins_with("vehicle_"):
+			continue
+		authored_slot_count += 1
+	return (
+		authored_slot_count == 39
+		and _envdepth_geometry_frozen_ok()
+		and _vispass2_parked_car_geometry_frozen_ok()
+		and _vispass2_prop_geometry_frozen_ok()
+		and _vispass2b_porch_frontage_unchanged_ok()
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_WIDTH, 1.9)
+		and is_equal_approx(TacticalBattleView.TACTICAL_PIXELS_PER_UNIT, 8.0)
+	)
+
+
+static func _vispass_m3_static_rebuild_gated_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.environment_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	if not view.environment_presenter.claims_obstacle("parked_car_attack_west"):
+		return _gameplayruntime_finish(runtime, false)
+	if view.environment_presenter.claims_building("building_hq"):
+		return _gameplayruntime_finish(runtime, false)
+	if view.environment_presenter.claims_surface("road_main"):
+		return _gameplayruntime_finish(runtime, false)
+	if view.environment_presenter.claims_marking("manhole_center"):
+		return _gameplayruntime_finish(runtime, false)
+	if view.environment_presenter.claims_roof_props("building_hq"):
+		return _gameplayruntime_finish(runtime, false)
+	if view.environment_presenter.claims_facade("building_hq"):
+		return _gameplayruntime_finish(runtime, false)
+	var rebuild_before: int = view.environment_presenter.rebuild_count
+	var building_before: int = view.environment_presenter.building_child_count()
+	var surface_before: int = view.environment_presenter.surface_child_count()
+	if building_before != _vispass_m3_building_ids().size():
+		return _gameplayruntime_finish(runtime, false)
+	if surface_before != _vispass_m3_surface_ids().size():
+		return _gameplayruntime_finish(runtime, false)
+	if view.environment_presenter.detail_child_count() != 0:
+		return _gameplayruntime_finish(runtime, false)
+	view._process(0.016)
+	view._process(0.016)
+	view._process(0.016)
+	return _gameplayruntime_finish(
+		runtime,
+		rebuild_before >= 1
+		and view.environment_presenter.rebuild_count == rebuild_before
+		and view.environment_presenter.building_child_count() == building_before
+		and view.environment_presenter.surface_child_count() == surface_before
+		and view.environment_presenter.detail_child_count() == 0
+		and view.static_surface_root != null
+		and view.static_surface_root.z_index == 0
+		and view.static_building_root != null
+		and view.static_building_root.z_index == 0
+		and view.static_detail_root != null
+		and view.static_detail_root.z_index == 0
+		and view.static_asset_root != null
+		and view.static_asset_root.z_index == 1
+		and view.static_asset_root.get_child_count() == (
+			_vispass_m2_vehicle_obstacle_ids().size() + _vispass_m2_prop_obstacle_ids().size()
+		)
+		and view.dynamic_layer != null
+		and view.dynamic_layer.z_index == 3
+	)
+
+
+static func _vispass_m3_view_has_no_asset_path_ok() -> bool:
+	var view_src: String = _tacticalview_source()
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/geometry/tactical_proving_ground_catalog.gd"
+	)
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_environment_presenter.gd"
+	)
+	return (
+		not view_src.contains(".png")
+		and not view_src.contains("assets/tactical")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and not catalog_src.contains(".png")
+		and not catalog_src.contains("Sprite2D")
+		and not catalog_src.contains("Texture2D")
+		and catalog_src.contains("KIND_BUILDING")
+		and catalog_src.contains("KIND_SURFACE")
+		and catalog_src.contains("KIND_DECAL")
+		and catalog_src.contains("_add_environment_bindings")
+		and catalog_src.contains("_bind_building")
+		and catalog_src.contains("_bind_surface")
+		and catalog_src.contains("_bind_decal")
+		and presenter_src.contains("KIND_BUILDING")
+		and presenter_src.contains("KIND_SURFACE")
+		and presenter_src.contains("KIND_DECAL")
+		and presenter_src.contains("building_root")
+		and presenter_src.contains("surface_root")
+		and view_src.contains("static_surface_root")
+		and view_src.contains("static_building_root")
+		and view_src.contains("static_detail_root")
+		and view_src.contains("StaticSurfaceRoot")
+		and view_src.contains("StaticBuildingRoot")
+		and view_src.contains("_building_uses_retained_visual")
+		and view_src.contains("_surface_uses_retained_visual")
+		and FileAccess.file_exists("res://assets/tactical/environment/building_pipeline_test.png")
+		and FileAccess.file_exists("res://assets/tactical/environment/surface_pipeline_test.png")
+		and not FileAccess.file_exists("res://assets/tactical/environment/building_hq_01.png")
+		and not FileAccess.file_exists("res://assets/tactical/environment/surface_road_01.png")
+	)
+
+
+static func _vispass_m3_decals_do_not_affect_hit_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var dumpster: BattleObstacle = geometry.get_obstacle("dumpster_frontage_west")
+	var hq: BattleObstacle = geometry.get_obstacle("building_hq")
+	if dumpster == null or hq == null:
+		return _gameplayruntime_finish(runtime, false)
+	var manhole_view: Vector2 = view._rect_to_view(Rect2(39.15, 33.35, 2.1, 2.1)).get_center()
+	var dumpster_hit: String = view.hit_test_cover_object(
+		view._rect_to_view(dumpster.bounds).grow(4.8).get_center()
+	)
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		dumpster_hit == "cover_dumpster_frontage_west"
+		and view.hit_test_cover_object(manhole_view).is_empty()
+		and geometry.get_movement_blocking_obstacle_id_at(Vector2(40.2, 34.4)).is_empty()
+		and hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS)
+		and dumpster.bounds.is_equal_approx(Rect2(20.2, 23.2, 2.3, 1.7))
+		and geometry.get_sorted_obstacle_ids().size() == 24
+		and not view.environment_presenter.claims_building("building_hq")
+		and not view.environment_presenter.claims_surface("road_main")
+		and not view_src.contains("get_rect()")
+	)
+
+
+static func _vispass_m3_fallback_and_determinism_ok() -> bool:
+	if not TacticalVisualCatalog.spec_for("missing_env", "missing_variant").is_empty():
+		return false
+	if TacticalVisualCatalog.texture_for({}) != null:
+		return false
+	var missing_building: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_BUILDING_TACTICAL,
+		TacticalVisualCatalog.VARIANT_HQ_01
+	)
+	if missing_building.is_empty() or TacticalVisualCatalog.texture_for(missing_building) != null:
+		return false
+	if TacticalVisualCatalog.should_claim_canvas(missing_building):
+		return false
+	var first: AuthoredBattlefieldDefinition = TacticalProvingGroundCatalog.hq_frontage_assault_v1()
+	var second: AuthoredBattlefieldDefinition = TacticalProvingGroundCatalog.hq_frontage_assault_v1()
+	if first == null or second == null:
+		return false
+	if first.visual_bindings.size() != second.visual_bindings.size():
+		return false
+	if first.visual_bindings.size() < 27:
+		return false
+	var building_count: int = 0
+	var surface_count: int = 0
+	var decal_count: int = 0
+	for i: int in range(first.visual_bindings.size()):
+		var a: BattleVisualBinding = first.visual_bindings[i]
+		var b: BattleVisualBinding = second.visual_bindings[i]
+		if a == null or b == null:
+			return false
+		if a.target_kind != b.target_kind or a.target_id != b.target_id:
+			return false
+		if a.archetype_id != b.archetype_id or a.variant_id != b.variant_id:
+			return false
+		if not is_equal_approx(a.rotation_deg, b.rotation_deg):
+			return false
+		if not is_equal_approx(a.scale, b.scale):
+			return false
+		if not a.offset.is_equal_approx(b.offset):
+			return false
+		if a.target_kind == BattleVisualBinding.KIND_BUILDING:
+			building_count += 1
+		elif a.target_kind == BattleVisualBinding.KIND_SURFACE:
+			surface_count += 1
+		elif a.target_kind == BattleVisualBinding.KIND_DECAL:
+			decal_count += 1
+	var view_src: String = _tacticalview_source()
+	var building_body: String = _vispass2_func_body(view_src, "_draw_building")
+	var surfaces_body: String = _vispass2_func_body(view_src, "_draw_surfaces")
+	return (
+		building_count == _vispass_m3_building_ids().size()
+		and surface_count == _vispass_m3_surface_ids().size()
+		and decal_count == 0
+		and building_body.contains("_building_uses_retained_visual")
+		and surfaces_body.contains("_surface_uses_retained_visual")
+		and view_src.contains("func _draw_roof_dressing")
+		and view_src.contains("func _draw_hq_cues")
+		and view_src.contains("func _draw_utility_cover")
+		and view_src.contains("func _draw_pavement_stain")
+		and view_src.contains("func _draw_pavement_patch")
+		and view_src.contains("_roof_uses_retained_props")
+		and view_src.contains("_facade_uses_retained_visual")
+		and view_src.contains("_marking_uses_retained_visual")
+		and FileAccess.file_exists("res://assets/tactical/environment/hvac_large_01.png")
 	)

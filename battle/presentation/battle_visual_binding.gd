@@ -6,6 +6,9 @@ extends RefCounted
 
 const KIND_OBSTACLE := "obstacle"
 const KIND_VEHICLE := "vehicle"
+const KIND_BUILDING := "building"
+const KIND_SURFACE := "surface"
+const KIND_DECAL := "decal"
 
 var target_kind: String = ""
 var target_id: String = ""
