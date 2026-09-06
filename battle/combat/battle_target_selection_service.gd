@@ -41,15 +41,24 @@ static func advance(battle_state: BattleState) -> BattleTargetSelectionResult:
 		var previous_target_id: String = participant.target_participant_id
 		if not _is_eligible_source(battle_state, participant):
 			participant.clear_target_participant()
+			participant.clear_player_priority_target()
 		else:
-			var hostile_ids: Array[String] = _sorted_eligible_hostile_ids(battle_state, participant)
-			if hostile_ids.is_empty():
-				participant.clear_target_participant()
-			else:
+			var locked_id: String = _honored_player_priority_target_id(battle_state, participant)
+			if not locked_id.is_empty():
 				participants_with_hostiles += 1
-				var selected_id: String = _select_best_hostile_id(battle_state, participant, hostile_ids)
-				if selected_id.is_empty() or not participant.set_target_participant(selected_id):
+				if not participant.set_target_participant(locked_id):
 					participant.clear_target_participant()
+					participant.clear_player_priority_target()
+			else:
+				participant.clear_player_priority_target()
+				var hostile_ids: Array[String] = _sorted_eligible_hostile_ids(battle_state, participant)
+				if hostile_ids.is_empty():
+					participant.clear_target_participant()
+				else:
+					participants_with_hostiles += 1
+					var selected_id: String = _select_best_hostile_id(battle_state, participant, hostile_ids)
+					if selected_id.is_empty() or not participant.set_target_participant(selected_id):
+						participant.clear_target_participant()
 		if participant.has_target_participant:
 			participants_with_targets += 1
 		if (
@@ -71,6 +80,18 @@ static func _sorted_participant_ids(battle_state: BattleState) -> Array[String]:
 		ids.append(participant_id)
 	ids.sort()
 	return ids
+
+
+static func _honored_player_priority_target_id(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> String:
+	if participant == null or not participant.has_player_priority_target():
+		return ""
+	var locked: BattleParticipant = battle_state.get_participant(participant.player_priority_target_id)
+	if not _is_eligible_hostile_candidate(battle_state, participant, locked):
+		return ""
+	return locked.participant_id
 
 
 static func _is_eligible_source(battle_state: BattleState, participant: BattleParticipant) -> bool:

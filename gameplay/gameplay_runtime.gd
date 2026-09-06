@@ -12,12 +12,14 @@ const CampaignBattleSession := preload("res://battle/session/campaign_battle_ses
 const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
+const TacticalOrdersController := preload("res://gameplay/tactical_orders_controller.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
 
 var game_state: GameState = null
 var game_flow_controller: GameFlowController = null
 var tactical_deployment_controller: TacticalDeploymentController = null
+var tactical_orders_controller: TacticalOrdersController = null
 # Process-local debug playtest serial. Not campaign state. Resets on runtime boot.
 var manual_playtest_serial: int = 0
 
@@ -58,6 +60,7 @@ func _process(delta: float) -> void:
 	):
 		return
 	game_flow_controller.advance_tactical(delta)
+	_sync_tactical_orders_pointer()
 	_log_mode_if_changed()
 
 
@@ -86,9 +89,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_debug_request_tactical_active()
 			return
 		if key_event.keycode == KEY_ESCAPE:
-			_route_tactical_deployment_escape()
+			_route_tactical_escape()
 			return
-	_route_tactical_deployment_input(event)
+	_route_tactical_pointer_input(event)
 
 
 func _bind_campaign_map_view() -> void:
@@ -118,6 +121,7 @@ func _sync_presentation_views() -> void:
 			tactical_view.bind_session(null)
 		tactical_view.set_presentation_camera_enabled(show_tactical)
 	_sync_tactical_deployment_controller(mode, tactical_view)
+	_sync_tactical_orders_controller(mode, tactical_view)
 
 
 func _sync_tactical_deployment_controller(mode: String, tactical_view: TacticalBattleView) -> void:
@@ -137,6 +141,117 @@ func _sync_tactical_deployment_controller(mode: String, tactical_view: TacticalB
 		tactical_deployment_controller.bind_session(null)
 	if tactical_view != null:
 		tactical_view.bind_deployment_controller(null)
+
+
+func _route_tactical_escape() -> void:
+	if get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		_route_tactical_deployment_escape()
+		return
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return
+	if tactical_orders_controller == null:
+		return
+	tactical_orders_controller.clear_selection()
+
+
+func _sync_tactical_orders_controller(mode: String, tactical_view: TacticalBattleView) -> void:
+	var in_active: bool = mode == GameFlowController.MODE_TACTICAL_ACTIVE
+	if in_active:
+		if tactical_orders_controller == null:
+			tactical_orders_controller = TacticalOrdersController.new()
+		if tactical_orders_controller.session != get_current_session():
+			tactical_orders_controller.bind_session(get_current_session())
+		else:
+			tactical_orders_controller.sync_from_authority()
+		if tactical_view != null:
+			tactical_view.bind_orders_controller(tactical_orders_controller)
+		return
+	if tactical_orders_controller != null:
+		tactical_orders_controller.clear_selection()
+		tactical_orders_controller.bind_session(null)
+	if tactical_view != null:
+		tactical_view.bind_orders_controller(null)
+
+
+func _sync_tactical_orders_pointer() -> void:
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return
+	if tactical_orders_controller != null:
+		tactical_orders_controller.sync_from_authority()
+	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
+	if tactical_view == null or tactical_view.get_viewport() == null:
+		return
+	var pointer: Vector2 = tactical_view.get_viewport().get_mouse_position()
+	tactical_view.set_pointer_local_position(tactical_view.viewport_to_local_position(pointer))
+
+
+func _route_tactical_pointer_input(event: InputEvent) -> void:
+	if get_current_mode() == GameFlowController.MODE_TACTICAL_DEPLOYMENT:
+		_route_tactical_deployment_input(event)
+		return
+	if get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return
+	_route_tactical_orders_input(event)
+
+
+func _route_tactical_orders_input(event: InputEvent) -> void:
+	if tactical_orders_controller == null:
+		return
+	if not (event is InputEventMouseButton):
+		return
+	var mouse: InputEventMouseButton = event as InputEventMouseButton
+	if not mouse.pressed:
+		return
+	if mouse.button_index == MOUSE_BUTTON_RIGHT:
+		tactical_orders_controller.clear_selection()
+		return
+	if mouse.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
+	if tactical_view == null:
+		return
+	var local_pos: Vector2 = tactical_view.viewport_to_local_position(mouse.position)
+	tactical_view.set_pointer_local_position(local_pos)
+	_handle_tactical_orders_local_click(local_pos, mouse.button_index)
+
+
+func _handle_tactical_orders_local_click(local_pos: Vector2, button_index: MouseButton) -> void:
+	if tactical_orders_controller == null:
+		return
+	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
+	if tactical_view == null:
+		return
+	if button_index == MOUSE_BUTTON_RIGHT:
+		tactical_orders_controller.clear_selection()
+		return
+	if button_index != MOUSE_BUTTON_LEFT:
+		return
+	var hud_hit: Dictionary = tactical_view.hit_test_unit_hud(local_pos)
+	if not hud_hit.is_empty():
+		var hud_id: String = str(hud_hit.get("id", ""))
+		if bool(hud_hit.get("can_select", false)):
+			tactical_orders_controller.select_participant(hud_id)
+		return
+	var friendly_id: String = tactical_view.hit_test_live_friendly_soldier(local_pos)
+	if not friendly_id.is_empty():
+		tactical_orders_controller.select_participant(friendly_id)
+		return
+	if not tactical_view.hit_test_inactive_friendly_soldier(local_pos).is_empty():
+		return
+	if tactical_orders_controller.selected_participant_id.is_empty():
+		return
+	var hostile_id: String = tactical_view.hit_test_hostile_soldier(local_pos)
+	if not hostile_id.is_empty():
+		tactical_orders_controller.issue_target(hostile_id)
+		return
+	var cover_object_id: String = tactical_view.hit_test_cover_object(local_pos)
+	if not cover_object_id.is_empty():
+		tactical_orders_controller.issue_cover(cover_object_id)
+		return
+	if tactical_orders_controller.selected_has_player_cover():
+		tactical_orders_controller.release_cover()
+		return
+	tactical_orders_controller.issue_move(local_pos / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT)
 
 
 func _route_tactical_deployment_escape() -> void:
@@ -404,6 +519,9 @@ func _restore_debug_proving_ground_world() -> bool:
 	if tactical_deployment_controller != null:
 		tactical_deployment_controller.clear_selection()
 		tactical_deployment_controller.bind_session(null)
+	if tactical_orders_controller != null:
+		tactical_orders_controller.clear_selection()
+		tactical_orders_controller.bind_session(null)
 	if game_flow_controller != null:
 		game_flow_controller.current_session = null
 	var restored: GameState = StarterWorldService.create()

@@ -75,6 +75,7 @@ static func apply_trauma(
 		target.sniper_aim_remaining_seconds = 0.0
 		target.sniper_aim_target_id = ""
 		target.sniper_aim_engagement_active = false
+		_cancel_player_intent(battle_state, target)
 		BattleCoverService.release_all_for_participant(battle_state, target.participant_id)
 		return BattleCombatConsequenceResult.applied(
 			applied_trauma,
@@ -96,6 +97,7 @@ static func apply_trauma(
 		)
 		target.acquire_reaction_remaining_seconds = 0.0
 		target.sniper_aim_remaining_seconds = 0.0
+		_cancel_player_intent(battle_state, target)
 	return BattleCombatConsequenceResult.applied(
 		applied_trauma,
 		vitality_before,
@@ -107,3 +109,11 @@ static func apply_trauma(
 		wound_transitioned,
 		false
 	)
+
+
+static func _cancel_player_intent(_battle_state: BattleState, target: BattleParticipant) -> void:
+	if target == null:
+		return
+	target.clear_player_tactical_intent()
+	if target.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL:
+		target.clear_navigation_path()

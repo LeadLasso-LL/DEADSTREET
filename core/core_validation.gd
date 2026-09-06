@@ -130,6 +130,9 @@ const CampaignMapView := preload("res://gameplay/campaign_map_view.gd")
 const TacticalBattleView := preload("res://gameplay/tactical_battle_view.gd")
 const TacticalShotPresentation := preload("res://gameplay/tactical_shot_presentation.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
+const TacticalOrdersController := preload("res://gameplay/tactical_orders_controller.gd")
+const TacticalOrderResult := preload("res://gameplay/tactical_order_result.gd")
+const TacticalUnitHudQuery := preload("res://gameplay/tactical_unit_hud_query.gd")
 const BattleDeploymentPlacementService := preload("res://battle/core/battle_deployment_placement_service.gd")
 const BattleDeploymentPlacementResult := preload("res://battle/core/battle_deployment_placement_result.gd")
 const BattleDeploymentCommitService := preload("res://battle/core/battle_deployment_commit_service.gd")
@@ -16510,6 +16513,35 @@ static func run() -> Dictionary:
 	var debug_3v3_fixture_ok: bool = _debug_3v3_fixture_ok()
 	var tacticalclock_static_no_per_frame_ok: bool = _tacticalclock_static_no_per_frame_ok()
 	var tacticalclock_dynamic_redraw_ok: bool = _tacticalclock_dynamic_redraw_ok()
+	var tacticalhud_roster_ok: bool = _tacticalhud_roster_ok()
+	var tacticalhud_healthy_select_ok: bool = _tacticalhud_healthy_select_ok()
+	var tacticalhud_world_parity_ok: bool = _tacticalhud_world_parity_ok()
+	var tacticalhud_live_vitality_ok: bool = _tacticalhud_live_vitality_ok()
+	var tacticalhud_wounded_ok: bool = _tacticalhud_wounded_ok()
+	var tacticalhud_dead_ok: bool = _tacticalhud_dead_ok()
+	var tacticalhud_click_no_fallthrough_ok: bool = _tacticalhud_click_no_fallthrough_ok()
+	var tacticalhud_cover_order_ok: bool = _tacticalhud_cover_order_ok()
+	var tacticalhud_move_order_ok: bool = _tacticalhud_move_order_ok()
+	var tacticalhud_target_order_ok: bool = _tacticalhud_target_order_ok()
+	var tacticalhud_cover_slots_hidden_ok: bool = _tacticalhud_cover_slots_hidden_ok()
+	var tacticalhud_state_labels_off_ok: bool = _tacticalhud_state_labels_off_ok()
+	var tacticalhud_soldier_scale_ok: bool = _tacticalhud_soldier_scale_ok()
+	var tacticalhud_canonical_ok: bool = _tacticalhud_canonical_ok()
+	var player_cover_persists_after_arrival_ok: bool = _player_cover_persists_after_arrival_ok()
+	var player_cover_open_terrain_releases_ok: bool = _player_cover_open_terrain_releases_ok()
+	var released_cover_resumes_force_behavior_ok: bool = _released_cover_resumes_force_behavior_ok()
+	var player_cover_to_target_ok: bool = _player_cover_to_target_ok()
+	var player_cover_to_cover_ok: bool = _player_cover_to_cover_ok()
+	var player_cover_wounded_override_ok: bool = _player_cover_wounded_override_ok()
+	var player_cover_death_cleanup_ok: bool = _player_cover_death_cleanup_ok()
+	var player_cover_invalid_object_ok: bool = _player_cover_invalid_object_ok()
+	var player_cover_allows_combat_ok: bool = _player_cover_allows_combat_ok()
+	var player_cover_no_autonomous_reposition_ok: bool = _player_cover_no_autonomous_reposition_ok()
+	var terrain_click_without_cover_is_move_ok: bool = _terrain_click_without_cover_is_move_ok()
+	var hud_role_labels_ok: bool = _hud_role_labels_ok()
+	var hud_selection_still_canonical_ok: bool = _hud_selection_still_canonical_ok()
+	var target_from_cover_no_click_fallthrough_ok: bool = _target_from_cover_no_click_fallthrough_ok()
+	var cover_replacement_no_click_fallthrough_ok: bool = _cover_replacement_no_click_fallthrough_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18664,6 +18696,35 @@ static func run() -> Dictionary:
 		"debug_3v3_fixture_ok": debug_3v3_fixture_ok,
 		"tacticalclock_static_no_per_frame_ok": tacticalclock_static_no_per_frame_ok,
 		"tacticalclock_dynamic_redraw_ok": tacticalclock_dynamic_redraw_ok,
+		"tacticalhud_roster_ok": tacticalhud_roster_ok,
+		"tacticalhud_healthy_select_ok": tacticalhud_healthy_select_ok,
+		"tacticalhud_world_parity_ok": tacticalhud_world_parity_ok,
+		"tacticalhud_live_vitality_ok": tacticalhud_live_vitality_ok,
+		"tacticalhud_wounded_ok": tacticalhud_wounded_ok,
+		"tacticalhud_dead_ok": tacticalhud_dead_ok,
+		"tacticalhud_click_no_fallthrough_ok": tacticalhud_click_no_fallthrough_ok,
+		"tacticalhud_cover_order_ok": tacticalhud_cover_order_ok,
+		"tacticalhud_move_order_ok": tacticalhud_move_order_ok,
+		"tacticalhud_target_order_ok": tacticalhud_target_order_ok,
+		"tacticalhud_cover_slots_hidden_ok": tacticalhud_cover_slots_hidden_ok,
+		"tacticalhud_state_labels_off_ok": tacticalhud_state_labels_off_ok,
+		"tacticalhud_soldier_scale_ok": tacticalhud_soldier_scale_ok,
+		"tacticalhud_canonical_ok": tacticalhud_canonical_ok,
+		"player_cover_persists_after_arrival_ok": player_cover_persists_after_arrival_ok,
+		"player_cover_open_terrain_releases_ok": player_cover_open_terrain_releases_ok,
+		"released_cover_resumes_force_behavior_ok": released_cover_resumes_force_behavior_ok,
+		"player_cover_to_target_ok": player_cover_to_target_ok,
+		"player_cover_to_cover_ok": player_cover_to_cover_ok,
+		"player_cover_wounded_override_ok": player_cover_wounded_override_ok,
+		"player_cover_death_cleanup_ok": player_cover_death_cleanup_ok,
+		"player_cover_invalid_object_ok": player_cover_invalid_object_ok,
+		"player_cover_allows_combat_ok": player_cover_allows_combat_ok,
+		"player_cover_no_autonomous_reposition_ok": player_cover_no_autonomous_reposition_ok,
+		"terrain_click_without_cover_is_move_ok": terrain_click_without_cover_is_move_ok,
+		"hud_role_labels_ok": hud_role_labels_ok,
+		"hud_selection_still_canonical_ok": hud_selection_still_canonical_ok,
+		"target_from_cover_no_click_fallthrough_ok": target_from_cover_no_click_fallthrough_ok,
+		"cover_replacement_no_click_fallthrough_ok": cover_replacement_no_click_fallthrough_ok,
 	}
 
 	var passed := true
@@ -68509,4 +68570,1112 @@ static func _playtest_variety_campaign_untouched_ok() -> bool:
 		and not resolver_src.contains("StarterWorldService.create")
 		and not resolver_src.contains("_restore_debug_proving_ground")
 		and not resolver_src.contains("manual_playtest")
+	)
+
+
+static func _tacticalhud_enter_active(runtime: GameplayRuntime) -> bool:
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return false
+	var session: CampaignBattleSession = runtime.get_current_session()
+	if session == null or session.battle_state == null:
+		return false
+	if not _debug_3v3_place_authored(session.battle_state):
+		return false
+	var deploy: TacticalDeploymentController = runtime.tactical_deployment_controller
+	if deploy == null:
+		return false
+	var committed: BattleDeploymentCommitResult = deploy.try_commit_attacker()
+	if committed == null or not committed.success:
+		return false
+	var begin_result: GameFlowResult = runtime.begin_current_battle()
+	if begin_result == null or not begin_result.success:
+		return false
+	if runtime.get_current_mode() != GameFlowController.MODE_TACTICAL_ACTIVE:
+		return false
+	if runtime.tactical_orders_controller == null:
+		return false
+	runtime.tactical_orders_controller.sync_from_authority()
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view != null:
+		view.bind_session(runtime.get_current_session())
+		view.bind_orders_controller(runtime.tactical_orders_controller)
+		view.call("_frame_camera")
+		view._process(0.0)
+	return true
+
+
+static func _tacticalhud_roster_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(battle_state, "")
+	var friendly_ids: Array[String] = []
+	var enemy_seen: bool = false
+	for card: Dictionary in cards:
+		var card_id: String = str(card.get("participant_id", ""))
+		var participant: BattleParticipant = battle_state.get_participant(card_id)
+		if participant == null:
+			return _gameplayruntime_finish(runtime, false)
+		if participant.side_id != battle_state.attacker_side_id:
+			enemy_seen = true
+		friendly_ids.append(card_id)
+	var expected: int = 0
+	for participant_id: String in battle_state.participants:
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant != null and participant.side_id == battle_state.attacker_side_id:
+			expected += 1
+	return _gameplayruntime_finish(
+		runtime,
+		cards.size() == expected
+		and expected >= 3
+		and friendly_ids.size() == expected
+		and not enemy_seen
+	)
+
+
+static func _tacticalhud_card_rect(view: TacticalBattleView, participant_id: String) -> Rect2:
+	if view == null or participant_id.is_empty():
+		return Rect2()
+	view.hit_test_unit_hud(Vector2(-10000.0, -10000.0))
+	var hits: Variant = view.get("_unit_hud_hits")
+	if not (hits is Array):
+		return Rect2()
+	for row: Variant in hits:
+		if not (row is Dictionary):
+			continue
+		var data: Dictionary = row as Dictionary
+		if str(data.get("id", "")) == participant_id:
+			return data.get("rect", Rect2())
+	return Rect2()
+
+
+static func _tacticalhud_local_click(
+	runtime: GameplayRuntime,
+	local_pos: Vector2,
+	button: MouseButton = MOUSE_BUTTON_LEFT
+) -> void:
+	if runtime == null:
+		return
+	runtime.call("_handle_tactical_orders_local_click", local_pos, button)
+
+
+static func _tacticalhud_healthy_select_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	if view == null or orders == null:
+		return _gameplayruntime_finish(runtime, false)
+	var card_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_SMG_ID)
+	if card_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, card_rect.get_center())
+	return _gameplayruntime_finish(
+		runtime,
+		orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+		and orders.can_control_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _tacticalhud_world_parity_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if view == null or orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	var hud_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_SMG_ID)
+	if hud_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, hud_rect.get_center())
+	var hud_id: String = orders.selected_participant_id
+	orders.clear_selection()
+	var world_local: Vector2 = view.call("_soldier_presentation_origin", battle_state, smg)
+	_tacticalhud_local_click(runtime, world_local)
+	return _gameplayruntime_finish(
+		runtime,
+		hud_id == StarterWorldService.SOLDIER_SMG_ID
+		and orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+		and hud_id == orders.selected_participant_id
+		and view.hit_test_live_friendly_soldier(world_local) == StarterWorldService.SOLDIER_SMG_ID
+	)
+
+
+static func _tacticalhud_live_vitality_ok() -> bool:
+	var participant: BattleParticipant = BattleParticipant.new(
+		"hud_vit",
+		"",
+		"f",
+		"attacker",
+		"smg"
+	)
+	participant.vitality = BattleCombatConsequenceService.BASELINE_VITALITY
+	var before: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
+	participant.vitality = BattleCombatConsequenceService.BASELINE_VITALITY * 0.5
+	var after: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
+	participant.vitality = 0.2
+	var later: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
+	return (
+		int(before.get("vitality_percent", -1)) == 100
+		and is_equal_approx(float(before.get("vitality", -1.0)), 1.5)
+		and int(after.get("vitality_percent", -1)) == 50
+		and is_equal_approx(float(after.get("vitality", -1.0)), 0.75)
+		and int(later.get("vitality_percent", -1)) == 13
+		and is_equal_approx(float(later.get("vitality", 0.0)), 0.2)
+		and int(after.get("vitality_percent", -1)) != int(before.get("vitality_percent", -1))
+	)
+
+
+static func _tacticalhud_wounded_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	var selected: bool = orders.select_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var trauma: BattleCombatConsequenceResult = BattleCombatConsequenceService.apply_trauma(
+		battle_state,
+		smg,
+		1.0
+	)
+	orders.sync_from_authority()
+	var card: Dictionary = TacticalUnitHudQuery.card_for(smg, orders.selected_participant_id)
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(
+		battle_state,
+		orders.selected_participant_id
+	)
+	var still_represented: bool = false
+	for row: Dictionary in cards:
+		if str(row.get("participant_id", "")) == StarterWorldService.SOLDIER_SMG_ID:
+			still_represented = true
+			break
+	return _gameplayruntime_finish(
+		runtime,
+		selected
+		and trauma != null
+		and trauma.success
+		and smg.is_wounded
+		and smg.is_alive
+		and still_represented
+		and str(card.get("card_state", "")) == TacticalUnitHudQuery.CARD_STATE_WOUNDED
+		and not bool(card.get("can_select", true))
+		and not bool(card.get("is_selected", true))
+		and orders.selected_participant_id.is_empty()
+		and not orders.can_control_participant(StarterWorldService.SOLDIER_SMG_ID)
+		and not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _tacticalhud_dead_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	orders.select_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var trauma: BattleCombatConsequenceResult = BattleCombatConsequenceService.apply_trauma(
+		battle_state,
+		smg,
+		2.0
+	)
+	orders.sync_from_authority()
+	var card: Dictionary = TacticalUnitHudQuery.card_for(smg, orders.selected_participant_id)
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(
+		battle_state,
+		orders.selected_participant_id
+	)
+	var still_represented: bool = false
+	for row: Dictionary in cards:
+		if str(row.get("participant_id", "")) == StarterWorldService.SOLDIER_SMG_ID:
+			still_represented = true
+			break
+	return _gameplayruntime_finish(
+		runtime,
+		trauma != null
+		and trauma.success
+		and not smg.is_alive
+		and still_represented
+		and str(card.get("card_state", "")) == TacticalUnitHudQuery.CARD_STATE_DEAD
+		and int(card.get("vitality_percent", -1)) == 0
+		and is_equal_approx(float(card.get("vitality_ratio", -1.0)), 0.0)
+		and not bool(card.get("can_select", true))
+		and orders.selected_participant_id.is_empty()
+		and not orders.can_control_participant(StarterWorldService.SOLDIER_SMG_ID)
+		and not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _tacticalhud_click_no_fallthrough_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if view == null or orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	var before_source: String = smg.navigation_source
+	var before_has_nav: bool = smg.has_active_navigation_path()
+	var card_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_SMG_ID)
+	if card_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, card_rect.get_center())
+	return _gameplayruntime_finish(
+		runtime,
+		orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+		and smg.navigation_source == before_source
+		and smg.has_active_navigation_path() == before_has_nav
+		and smg.player_priority_target_id.is_empty()
+		and not view.hit_test_unit_hud(card_rect.get_center()).is_empty()
+	)
+
+
+static func _tacticalhud_cover_order_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var result: TacticalOrderResult = null
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	for cover_object_id: String in geometry.get_sorted_cover_object_ids():
+		result = orders.issue_cover(cover_object_id)
+		if result != null and result.success:
+			break
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+		and smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_COVER
+		and not smg.player_cover_object_id.is_empty()
+		and (
+			smg.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+			or not smg.occupied_cover_slot_id.is_empty()
+			or not smg.reserved_cover_slot_id.is_empty()
+		)
+		and BattleCoverService.COVER_OCCUPANCY_EPSILON == 0.5
+	)
+
+
+static func _tacticalhud_move_order_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var result: TacticalOrderResult = null
+	var offsets: Array[Vector2] = [
+		Vector2(4.0, -2.0),
+		Vector2(-3.5, 1.0),
+		Vector2(2.5, 2.5),
+		Vector2(-2.0, -3.0),
+		Vector2(6.0, 0.0),
+	]
+	for offset: Vector2 in offsets:
+		var destination: Vector2 = smg.battle_position + offset
+		result = orders.issue_move(destination)
+		if result != null and result.success:
+			break
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and smg.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+		and smg.has_active_navigation_path()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_MOVE
+		and not smg.has_player_cover_intent()
+		and orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+	)
+
+
+static func _tacticalhud_target_order_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	var hostile_id: String = ""
+	for defender_id: String in StarterWorldService.debug_defender_soldier_ids():
+		var hostile: BattleParticipant = battle_state.get_participant(defender_id)
+		if hostile != null and hostile.is_alive:
+			hostile_id = defender_id
+			break
+	if hostile_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var result: TacticalOrderResult = orders.issue_target(hostile_id)
+	var after_ai: BattleTargetSelectionResult = BattleTargetSelectionService.advance(battle_state)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and smg.player_priority_target_id == hostile_id
+		and smg.target_participant_id == hostile_id
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_TARGET
+		and not smg.has_player_cover_intent()
+		and after_ai != null
+		and after_ai.success
+		and smg.target_participant_id == hostile_id
+		and orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+	)
+
+
+static func _tacticalhud_cover_slots_hidden_ok() -> bool:
+	var source: String = _tacticalview_source()
+	return (
+		source.contains("DEBUG_DRAW_COVER_SLOTS := false")
+		and source.contains("if not DEBUG_DRAW_COVER_SLOTS")
+		and source.contains("get_sorted_cover_slot_ids()")
+		and source.contains("slot.position")
+		and BattleCoverService.COVER_OCCUPANCY_EPSILON == 0.5
+	)
+
+
+static func _tacticalhud_state_labels_off_ok() -> bool:
+	var source: String = _tacticalview_source()
+	return (
+		source.contains("DEBUG_DRAW_COMBAT_STATE_LABELS := false")
+		and source.contains("if not DEBUG_DRAW_COMBAT_STATE_LABELS")
+		and source.contains("compact_state")
+		and source.contains("BattleCombatPresentationQuery")
+	)
+
+
+static func _tacticalhud_soldier_scale_ok() -> bool:
+	var source: String = _tacticalview_source()
+	var cover_src: String = FileAccess.get_file_as_string("res://battle/geometry/battle_cover_service.gd")
+	return (
+		source.contains("SOLDIER_VISUAL_SCALE := 1.40")
+		and not source.contains("SOLDIER_VISUAL_SCALE := 1.12")
+		and cover_src.contains("COVER_OCCUPANCY_EPSILON := 0.5")
+		and source.contains("COVER_OCCUPY_VISUAL_NUDGE_PIXELS")
+		and source.contains("Presentation-only body scale")
+	)
+
+
+static func _tacticalhud_canonical_ok() -> bool:
+	var query_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_unit_hud_query.gd")
+	var hud_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_orders_controller.gd")
+	var participant: BattleParticipant = BattleParticipant.new(
+		"hud_can",
+		"",
+		"f",
+		"attacker",
+		"rifle"
+	)
+	participant.vitality = 1.1
+	var card: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
+	participant.vitality = 0.8
+	var card_two: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
+	return (
+		is_equal_approx(float(card.get("vitality", 0.0)), 1.1)
+		and is_equal_approx(float(card_two.get("vitality", 0.0)), 0.8)
+		and str(card.get("role_label", "")) == "RIFLE"
+		and query_src.contains("Does not store combat state")
+		and query_src.contains("role_label")
+		and not query_src.contains("var vitality")
+		and hud_src.contains("selected_participant_id")
+		and not hud_src.contains("var vitality")
+	)
+
+
+static func _playercover_issue_any(orders: TacticalOrdersController, battle_state: BattleState) -> String:
+	if orders == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return ""
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	for cover_object_id: String in geometry.get_sorted_cover_object_ids():
+		var result: TacticalOrderResult = orders.issue_cover(cover_object_id)
+		if result != null and result.success:
+			return cover_object_id
+	return ""
+
+
+static func _playercover_issue_other(
+	orders: TacticalOrdersController,
+	battle_state: BattleState,
+	except_object_id: String
+) -> String:
+	if orders == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return ""
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	for cover_object_id: String in geometry.get_sorted_cover_object_ids():
+		if cover_object_id == except_object_id:
+			continue
+		var result: TacticalOrderResult = orders.issue_cover(cover_object_id)
+		if result != null and result.success:
+			return cover_object_id
+	return ""
+
+
+static func _playercover_occupy_here(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> bool:
+	if battle_state == null or participant == null or battle_state.battlefield_geometry == null:
+		return false
+	var slot_id: String = participant.reserved_cover_slot_id
+	if slot_id.is_empty():
+		slot_id = participant.occupied_cover_slot_id
+	if slot_id.is_empty():
+		slot_id = participant.player_cover_slot_id
+	if slot_id.is_empty():
+		return false
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+	if slot == null:
+		return false
+	participant.battle_position = slot.position
+	participant.has_battle_position = true
+	var occupied: BattleCoverResult = BattleCoverService.occupy_slot(
+		battle_state,
+		participant.participant_id,
+		slot.cover_slot_id
+	)
+	if occupied == null or not occupied.success:
+		return false
+	participant.clear_navigation_path()
+	if participant.has_player_cover_intent():
+		participant.set_player_cover_intent(participant.player_cover_object_id, slot.cover_slot_id)
+	return BattleCoverService.occupancy_is_valid(battle_state, participant)
+
+
+static func _playercover_advance_ticks(battle_state: BattleState, ticks: int) -> bool:
+	if battle_state == null:
+		return false
+	for _i in range(ticks):
+		var behavior: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(battle_state, 0.1)
+		if behavior == null or not behavior.success:
+			return false
+	return true
+
+
+static func _playercover_autonomous_reposition(participant: BattleParticipant) -> bool:
+	if participant == null:
+		return true
+	if participant.navigation_source == BattleParticipant.NAVIGATION_SOURCE_COMBAT:
+		return true
+	match participant.combat_move_mode:
+		"approach", "defend_reposition", "seek_role_cover", "close", "fall_back":
+			return true
+		_:
+			return false
+
+
+static func _playercover_occupied_object_id(
+	battle_state: BattleState,
+	participant: BattleParticipant
+) -> String:
+	if battle_state == null or participant == null or battle_state.battlefield_geometry == null:
+		return ""
+	if participant.occupied_cover_slot_id.is_empty():
+		return ""
+	var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+		participant.occupied_cover_slot_id
+	)
+	if slot == null:
+		return ""
+	return slot.cover_object_id
+
+
+static func _playercover_open_terrain_local(
+	view: TacticalBattleView,
+	battle_state: BattleState
+) -> Vector2:
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return Vector2.ZERO
+	var bounds: Rect2 = battle_state.battlefield_geometry.bounds()
+	var candidates: Array[Vector2] = [
+		bounds.get_center(),
+		bounds.get_center() + Vector2(3.0, 3.0),
+		bounds.get_center() + Vector2(-4.0, 2.0),
+		bounds.position + Vector2(8.0, 8.0),
+		bounds.end - Vector2(8.0, 8.0),
+	]
+	for tactical: Vector2 in candidates:
+		var local_pos: Vector2 = view.call("_to_view", tactical)
+		if not view.hit_test_unit_hud(local_pos).is_empty():
+			continue
+		if not view.hit_test_live_friendly_soldier(local_pos).is_empty():
+			continue
+		if not view.hit_test_inactive_friendly_soldier(local_pos).is_empty():
+			continue
+		if not view.hit_test_hostile_soldier(local_pos).is_empty():
+			continue
+		if not view.hit_test_cover_object(local_pos).is_empty():
+			continue
+		return local_pos
+	return Vector2.ZERO
+
+
+static func _playercover_first_hostile_id(battle_state: BattleState) -> String:
+	if battle_state == null:
+		return ""
+	for defender_id: String in StarterWorldService.debug_defender_soldier_ids():
+		var hostile: BattleParticipant = battle_state.get_participant(defender_id)
+		if hostile != null and hostile.is_alive and hostile.has_battle_position:
+			return defender_id
+	return ""
+
+
+static func _player_cover_persists_after_arrival_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _playercover_issue_any(orders, battle_state)
+	if cover_object_id.is_empty() or not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_advance_ticks(battle_state, 8):
+		return _gameplayruntime_finish(runtime, false)
+	return _gameplayruntime_finish(
+		runtime,
+		smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_COVER
+		and smg.player_cover_object_id == cover_object_id
+		and _playercover_occupied_object_id(battle_state, smg) == cover_object_id
+		and not _playercover_autonomous_reposition(smg)
+		and smg.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	)
+
+
+static func _player_cover_open_terrain_releases_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if view == null or orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var terrain_local: Vector2 = _playercover_open_terrain_local(view, battle_state)
+	if terrain_local == Vector2.ZERO:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, terrain_local)
+	return _gameplayruntime_finish(
+		runtime,
+		not smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and smg.navigation_source != BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+		and not smg.has_active_navigation_path()
+		and orders.can_control_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _released_cover_resumes_force_behavior_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null or smg.tactical_force_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var set_force: BattleForceCommandResult = BattleForceCommandService.set_command(
+		battle_state,
+		smg.tactical_force_id,
+		BattleForceCommandCatalog.COMMAND_FALL_BACK
+	)
+	if set_force == null or not set_force.success:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_advance_ticks(battle_state, 4):
+		return _gameplayruntime_finish(runtime, false)
+	var during_cover: String = BattleForceCommandService.get_command_for_participant(
+		battle_state,
+		smg.participant_id
+	)
+	var during_mode: String = smg.combat_move_mode
+	var released: TacticalOrderResult = orders.release_cover()
+	if not _playercover_advance_ticks(battle_state, 2):
+		return _gameplayruntime_finish(runtime, false)
+	var after_release: String = BattleForceCommandService.get_command_for_participant(
+		battle_state,
+		smg.participant_id
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		during_cover == BattleForceCommandCatalog.COMMAND_FALL_BACK
+		and during_mode != "fall_back"
+		and smg.has_player_cover_intent() == false
+		and released != null
+		and released.success
+		and after_release == BattleForceCommandCatalog.COMMAND_FALL_BACK
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+	)
+
+
+static func _player_cover_to_target_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var hostile_id: String = _playercover_first_hostile_id(battle_state)
+	if orders == null or smg == null or hostile_id.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var occupied_before: String = smg.occupied_cover_slot_id
+	var result: TacticalOrderResult = orders.issue_target(hostile_id)
+	return _gameplayruntime_finish(
+		runtime,
+		result != null
+		and result.success
+		and not smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_TARGET
+		and smg.player_priority_target_id == hostile_id
+		and smg.target_participant_id == hostile_id
+		and smg.occupied_cover_slot_id == occupied_before
+	)
+
+
+static func _player_cover_to_cover_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var object_a: String = _playercover_issue_any(orders, battle_state)
+	if object_a.is_empty() or not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var old_slot_id: String = smg.occupied_cover_slot_id
+	var object_b: String = _playercover_issue_other(orders, battle_state, object_a)
+	if object_b.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	var old_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(old_slot_id)
+	var old_still_owned: bool = false
+	if old_slot != null:
+		old_still_owned = (
+			old_slot.occupied_by_participant_id == smg.participant_id
+			or old_slot.reserved_by_participant_id == smg.participant_id
+		)
+	var reserved_on_b: bool = false
+	if not smg.reserved_cover_slot_id.is_empty():
+		var reserved_slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(
+			smg.reserved_cover_slot_id
+		)
+		reserved_on_b = reserved_slot != null and reserved_slot.cover_object_id == object_b
+	return _gameplayruntime_finish(
+		runtime,
+		smg.has_player_cover_intent()
+		and smg.player_cover_object_id == object_b
+		and object_b != object_a
+		and not old_still_owned
+		and (smg.reserved_cover_slot_id.is_empty() or reserved_on_b)
+	)
+
+
+static func _player_cover_wounded_override_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var trauma: BattleCombatConsequenceResult = BattleCombatConsequenceService.apply_trauma(
+		battle_state,
+		smg,
+		1.0
+	)
+	orders.sync_from_authority()
+	return _gameplayruntime_finish(
+		runtime,
+		trauma != null
+		and trauma.success
+		and smg.is_wounded
+		and smg.is_alive
+		and not smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and orders.selected_participant_id.is_empty()
+		and not orders.can_control_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _player_cover_death_cleanup_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var trauma: BattleCombatConsequenceResult = BattleCombatConsequenceService.apply_trauma(
+		battle_state,
+		smg,
+		2.0
+	)
+	orders.sync_from_authority()
+	return _gameplayruntime_finish(
+		runtime,
+		trauma != null
+		and trauma.success
+		and not smg.is_alive
+		and not smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and smg.occupied_cover_slot_id.is_empty()
+		and smg.reserved_cover_slot_id.is_empty()
+		and orders.selected_participant_id.is_empty()
+	)
+
+
+static func _player_cover_invalid_object_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var cover_object_id: String = _playercover_issue_any(orders, battle_state)
+	if cover_object_id.is_empty() or not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	smg.player_cover_object_id = "missing_cover_object"
+	if not _playercover_advance_ticks(battle_state, 2):
+		return _gameplayruntime_finish(runtime, false)
+	return _gameplayruntime_finish(
+		runtime,
+		not smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_NONE
+		and smg.is_alive
+		and not smg.is_wounded
+		and orders.can_control_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _player_cover_allows_combat_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_advance_ticks(battle_state, 6):
+		return _gameplayruntime_finish(runtime, false)
+	var behavior_src: String = FileAccess.get_file_as_string(
+		"res://battle/combat/battle_combat_behavior_service.gd"
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		smg.has_player_cover_intent()
+		and BattleCoverService.occupancy_is_valid(battle_state, smg)
+		and (smg.is_cover_tucked() or smg.is_cover_exposed())
+		and behavior_src.contains("elif participant.has_player_cover_intent():")
+		and behavior_src.contains("var player_cover_shot: BattleAttackEvent = _try_execute_shot")
+		and not behavior_src.contains("player_cover_suppress_combat")
+	)
+
+
+static func _player_cover_no_autonomous_reposition_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_advance_ticks(battle_state, 8):
+		return _gameplayruntime_finish(runtime, false)
+	return _gameplayruntime_finish(
+		runtime,
+		smg.has_player_cover_intent()
+		and not _playercover_autonomous_reposition(smg)
+		and smg.combat_move_mode != "approach"
+		and smg.combat_move_mode != "defend_reposition"
+		and smg.combat_move_mode != "seek_role_cover"
+		and smg.combat_move_mode != "close"
+		and smg.combat_move_mode != "fall_back"
+		and smg.navigation_source != BattleParticipant.NAVIGATION_SOURCE_COMBAT
+	)
+
+
+static func _terrain_click_without_cover_is_move_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if view == null or orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if smg.has_player_cover_intent():
+		return _gameplayruntime_finish(runtime, false)
+	var terrain_local: Vector2 = _playercover_open_terrain_local(view, battle_state)
+	if terrain_local == Vector2.ZERO:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, terrain_local)
+	return _gameplayruntime_finish(
+		runtime,
+		smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_MOVE
+		and smg.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+		and smg.has_active_navigation_path()
+		and not smg.has_player_cover_intent()
+	)
+
+
+static func _hud_role_labels_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(battle_state, "")
+	var labels: Dictionary = {}
+	var enemy_seen: bool = false
+	for card: Dictionary in cards:
+		var card_id: String = str(card.get("participant_id", ""))
+		var participant: BattleParticipant = battle_state.get_participant(card_id)
+		if participant == null:
+			return _gameplayruntime_finish(runtime, false)
+		if participant.side_id != battle_state.attacker_side_id:
+			enemy_seen = true
+		var expected: String = TacticalUnitHudQuery.role_label_for(participant.weapon_type)
+		if str(card.get("role_label", "")) != expected or expected.is_empty():
+			return _gameplayruntime_finish(runtime, false)
+		labels[expected] = true
+	return _gameplayruntime_finish(
+		runtime,
+		not enemy_seen
+		and bool(labels.get("RIFLE", false))
+		and bool(labels.get("SMG", false))
+		and bool(labels.get("SHOTGUN", false))
+		and FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd").contains("role_label")
+	)
+
+
+static func _hud_selection_still_canonical_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	if view == null or orders == null:
+		return _gameplayruntime_finish(runtime, false)
+	var card_rect: Rect2 = _tacticalhud_card_rect(view, StarterWorldService.SOLDIER_SMG_ID)
+	if card_rect.size.x <= 0.0:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, card_rect.get_center())
+	var card: Dictionary = TacticalUnitHudQuery.card_for(
+		runtime.get_current_session().battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID),
+		orders.selected_participant_id
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		orders.selected_participant_id == StarterWorldService.SOLDIER_SMG_ID
+		and str(card.get("role_label", "")) == "SMG"
+		and bool(card.get("is_selected", false))
+		and view.call("_selected_participant_id") == StarterWorldService.SOLDIER_SMG_ID
+	)
+
+
+static func _target_from_cover_no_click_fallthrough_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	var hostile_id: String = _playercover_first_hostile_id(battle_state)
+	var hostile: BattleParticipant = battle_state.get_participant(hostile_id)
+	if view == null or orders == null or smg == null or hostile == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	if _playercover_issue_any(orders, battle_state).is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	if not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var hostile_local: Vector2 = view.call("_soldier_presentation_origin", battle_state, hostile)
+	if view.hit_test_hostile_soldier(hostile_local) != hostile_id:
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, hostile_local)
+	return _gameplayruntime_finish(
+		runtime,
+		smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_TARGET
+		and not smg.has_player_cover_intent()
+		and smg.player_priority_target_id == hostile_id
+		and smg.navigation_source != BattleParticipant.NAVIGATION_SOURCE_EXTERNAL
+	)
+
+
+static func _cover_replacement_no_click_fallthrough_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	var orders: TacticalOrdersController = runtime.tactical_orders_controller
+	var smg: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_SMG_ID)
+	if view == null or orders == null or smg == null:
+		return _gameplayruntime_finish(runtime, false)
+	if not orders.select_participant(StarterWorldService.SOLDIER_SMG_ID):
+		return _gameplayruntime_finish(runtime, false)
+	var object_a: String = _playercover_issue_any(orders, battle_state)
+	if object_a.is_empty() or not _playercover_occupy_here(battle_state, smg):
+		return _gameplayruntime_finish(runtime, false)
+	var object_b: String = ""
+	var click_local: Vector2 = Vector2.ZERO
+	for cover_object_id: String in battle_state.battlefield_geometry.get_sorted_cover_object_ids():
+		if cover_object_id == object_a:
+			continue
+		var cover_rect: Rect2 = view.call("_cover_object_hit_rect", battle_state, cover_object_id)
+		if cover_rect.size.x <= 0.0 or cover_rect.size.y <= 0.0:
+			continue
+		var candidate: Vector2 = cover_rect.get_center()
+		if view.hit_test_cover_object(candidate) != cover_object_id:
+			continue
+		if not view.hit_test_unit_hud(candidate).is_empty():
+			continue
+		object_b = cover_object_id
+		click_local = candidate
+		break
+	if object_b.is_empty():
+		return _gameplayruntime_finish(runtime, false)
+	_tacticalhud_local_click(runtime, click_local)
+	return _gameplayruntime_finish(
+		runtime,
+		smg.has_player_cover_intent()
+		and smg.current_player_intent() == BattleParticipant.PLAYER_INTENT_COVER
+		and smg.player_cover_object_id == object_b
+		and smg.player_cover_object_id != object_a
 	)

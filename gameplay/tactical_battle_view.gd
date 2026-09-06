@@ -20,6 +20,9 @@ const BattlePresentationMarking := preload("res://battle/geometry/battle_present
 const BattleDeploymentArea := preload("res://battle/geometry/battle_deployment_area.gd")
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
 const TacticalDeploymentController := preload("res://gameplay/tactical_deployment_controller.gd")
+const TacticalOrdersController := preload("res://gameplay/tactical_orders_controller.gd")
+const TacticalUnitHudQuery := preload("res://gameplay/tactical_unit_hud_query.gd")
+const BattleVehicleCoverService := preload("res://battle/vehicles/battle_vehicle_cover_service.gd")
 const BattleVehicleBodyService := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 const BattleAttackEvent := preload("res://battle/combat/battle_attack_event.gd")
 const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
@@ -42,8 +45,21 @@ const SOLDIER_SELECTION_RADIUS := 13.0
 const SOLDIER_HEAD_RADIUS := 2.7
 const SOLDIER_HAND_FORWARD := 3.6
 # Presentation-only body scale. Does not change collision, nav, or hit model.
-const SOLDIER_VISUAL_SCALE := 1.12
+const SOLDIER_VISUAL_SCALE := 1.40
+# Presentation-only: shift occupied-cover drawing along facing so a larger
+# silhouette still reads as using the object, not sitting inside it.
+const COVER_OCCUPY_VISUAL_NUDGE_PIXELS := 3.2
 const COVER_SLOT_RADIUS := 3.5
+# Developer visualization only. Default OFF for ordinary gameplay.
+const DEBUG_DRAW_COVER_SLOTS := false
+const DEBUG_DRAW_COMBAT_STATE_LABELS := false
+const UNIT_HUD_CARD_WIDTH := 108.0
+const UNIT_HUD_CARD_HEIGHT := 90.0
+const UNIT_HUD_CARD_GAP := 6.0
+const UNIT_HUD_MIN_CARD_WIDTH := 84.0
+const UNIT_HUD_PAD := 14.0
+const UNIT_HUD_FONT_SIZE := 10
+const UNIT_HUD_TITLE_FONT_SIZE := 11
 const ROSTER_ROW_HEIGHT := 16.0
 const ROSTER_ROW_WIDTH := 520.0
 const ROSTER_FONT_SIZE := 13
@@ -127,6 +143,17 @@ const PROVISIONAL_OBSTACLE_BOTH := Color(0.28, 0.28, 0.30, 0.95)
 const PROVISIONAL_LOS_LINE := Color(0.55, 0.78, 0.82, 1.0)
 const PROVISIONAL_MOVE_LINE := Color(0.62, 0.46, 0.40, 1.0)
 const PROVISIONAL_COVER := Color(0.72, 0.86, 0.58, 1.0)
+const PROVISIONAL_COVER_HOVER := Color(0.94, 0.86, 0.58, 0.90)
+const PROVISIONAL_HUD_CARD := Color(0.10, 0.10, 0.09, 0.88)
+const PROVISIONAL_HUD_CARD_SELECTED := Color(0.16, 0.18, 0.16, 0.94)
+const PROVISIONAL_HUD_CARD_WOUNDED := Color(0.12, 0.09, 0.07, 0.82)
+const PROVISIONAL_HUD_CARD_DEAD := Color(0.07, 0.07, 0.07, 0.78)
+const PROVISIONAL_HUD_BORDER := Color(0.42, 0.40, 0.36, 0.90)
+const PROVISIONAL_HUD_BORDER_SELECTED := Color(0.86, 0.82, 0.58, 1.0)
+const PROVISIONAL_HUD_BORDER_WOUNDED := Color(0.72, 0.48, 0.28, 0.92)
+const PROVISIONAL_HUD_VITALITY := Color(0.42, 0.72, 0.40, 1.0)
+const PROVISIONAL_HUD_VITALITY_WOUNDED := Color(0.82, 0.56, 0.28, 1.0)
+const PROVISIONAL_HUD_VITALITY_EMPTY := Color(0.16, 0.14, 0.12, 0.90)
 const PROVISIONAL_LABEL := Color(0.92, 0.92, 0.90, 1.0)
 const PROVISIONAL_LABEL_SHADOW := Color(0.05, 0.05, 0.06, 1.0)
 const PROVISIONAL_OVERLAY := Color(0.88, 0.88, 0.86, 1.0)
@@ -153,9 +180,12 @@ const PROVISIONAL_RESULT := Color(0.98, 0.92, 0.42, 1.0)
 # Reference only. This view never stores an independent BattleState.
 var session: CampaignBattleSession = null
 var deployment_controller: TacticalDeploymentController = null
+var orders_controller: TacticalOrdersController = null
 
 var _camera: Camera2D = null
 var _roster_hits: Array[Dictionary] = []
+var _unit_hud_hits: Array[Dictionary] = []
+var _pointer_local: Vector2 = Vector2(-10000.0, -10000.0)
 # Cached static presentation geometry — rebuilt only when battlefield definition changes.
 var _cached_blocker_polys: Array[PackedVector2Array] = []
 var _cached_attacker_clipped: Array[PackedVector2Array] = []
@@ -200,6 +230,17 @@ func bind_deployment_controller(p_controller: TacticalDeploymentController) -> v
 		request_dynamic_redraw()
 
 
+func bind_orders_controller(p_controller: TacticalOrdersController) -> void:
+	var controller_changed: bool = orders_controller != p_controller
+	orders_controller = p_controller
+	if controller_changed:
+		request_dynamic_redraw()
+
+
+func set_pointer_local_position(local_position: Vector2) -> void:
+	_pointer_local = local_position
+
+
 func screen_to_tactical_position(viewport_position: Vector2) -> Vector2:
 	return viewport_to_local_position(viewport_position) / TACTICAL_PIXELS_PER_UNIT
 
@@ -230,30 +271,64 @@ func hit_test_placed_attacker_soldier(local_position: Vector2) -> String:
 		return ""
 	if battle_state.is_side_deployment_committed(battle_state.attacker_side_id):
 		return ""
-	var pick_radius: float = SOLDIER_SELECTION_RADIUS * SOLDIER_VISUAL_SCALE
+	return _hit_test_side_soldier(local_position, battle_state.attacker_side_id, true, true, true)
+
+
+func hit_test_unit_hud(local_position: Vector2) -> Dictionary:
+	_rebuild_unit_hud_hits()
+	var hit: Dictionary = {}
+	for row: Dictionary in _unit_hud_hits:
+		var rect: Rect2 = row.get("rect", Rect2())
+		if rect.has_point(local_position):
+			hit["id"] = str(row.get("id", ""))
+			hit["can_select"] = bool(row.get("can_select", false))
+			hit["card_state"] = str(row.get("card_state", ""))
+			return hit
+	return hit
+
+
+func hit_test_live_friendly_soldier(local_position: Vector2) -> String:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null or battle_state.battle_phase != "active":
+		return ""
+	return _hit_test_side_soldier(local_position, battle_state.attacker_side_id, true, true, false)
+
+
+func hit_test_inactive_friendly_soldier(local_position: Vector2) -> String:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null or battle_state.battle_phase != "active":
+		return ""
+	return _hit_test_side_soldier(local_position, battle_state.attacker_side_id, false, false, false)
+
+
+func hit_test_hostile_soldier(local_position: Vector2) -> String:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null or battle_state.battle_phase != "active":
+		return ""
+	return _hit_test_side_soldier(local_position, battle_state.defender_side_id, true, true, false)
+
+
+func hit_test_cover_object(local_position: Vector2) -> String:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return ""
+	if battle_state.battle_phase != "active":
+		return ""
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	var best_id: String = ""
-	var best_distance: float = INF
-	for participant_id: String in _sorted_keys(battle_state.participants):
-		var participant: BattleParticipant = battle_state.get_participant(participant_id)
-		if participant == null:
+	var best_area: float = INF
+	for cover_object_id: String in geometry.get_sorted_cover_object_ids():
+		var cover_rect: Rect2 = _cover_object_hit_rect(battle_state, cover_object_id)
+		if cover_rect.size.x <= 0.0 or cover_rect.size.y <= 0.0:
 			continue
-		if participant.side_id != battle_state.attacker_side_id:
+		if not cover_rect.has_point(local_position):
 			continue
-		if not participant.is_alive or not participant.has_battle_position:
-			continue
-		if not battle_state.is_participant_deployed(participant_id):
-			continue
-		var view_pos: Vector2 = _to_view(participant.battle_position)
-		var distance: float = view_pos.distance_to(local_position)
-		if not is_finite(distance):
-			continue
-		if distance > pick_radius and not is_equal_approx(distance, pick_radius):
-			continue
-		if best_id.is_empty() or distance < best_distance or (
-			is_equal_approx(distance, best_distance) and participant_id < best_id
+		var area: float = cover_rect.size.x * cover_rect.size.y
+		if best_id.is_empty() or area < best_area or (
+			is_equal_approx(area, best_area) and cover_object_id < best_id
 		):
-			best_id = participant_id
-			best_distance = distance
+			best_id = cover_object_id
+			best_area = area
 	return best_id
 
 
@@ -340,13 +415,15 @@ func paint_dynamic_battlefield(canvas: CanvasItem) -> void:
 		_draw_overlay()
 		_paint = null
 		return
-	# Dynamic order: cover → vehicles → soldiers/weapons → muzzle/projectile/impact → overlay.
+	# Dynamic order: cover → vehicles → soldiers/weapons → muzzle/projectile/impact → overlay → unit HUD.
 	_draw_deployment_zones(battle_state)
 	_draw_cover(battle_state)
+	_draw_cover_object_hover(battle_state)
 	_draw_vehicles(battle_state)
 	_draw_participants(battle_state)
 	_draw_combat_feedback(battle_state)
 	_draw_overlay()
+	_draw_unit_hud(battle_state)
 	_paint = null
 
 
@@ -433,14 +510,20 @@ func _frame_camera() -> void:
 	view_rect.size.x += hud_gutter + CAMERA_EDGE_PADDING
 	view_rect.position.y -= CAMERA_EDGE_PADDING
 	view_rect.size.y += CAMERA_EDGE_PADDING * 2.0
-	_camera.position = view_rect.get_center()
 	var viewport_size: Vector2 = get_viewport_rect().size
 	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
 		viewport_size = Vector2(1152.0, 648.0)
-	var zoom_x: float = viewport_size.x / maxf(view_rect.size.x, 1.0)
-	var zoom_y: float = viewport_size.y / maxf(view_rect.size.y, 1.0)
+	var hud_screen: float = 0.0
+	if _unit_hud_visible(_battle_state()):
+		hud_screen = UNIT_HUD_CARD_HEIGHT + UNIT_HUD_PAD * 2.0
+	var usable: Vector2 = Vector2(viewport_size.x, maxf(viewport_size.y - hud_screen, 1.0))
+	_camera.position = view_rect.get_center()
+	var zoom_x: float = usable.x / maxf(view_rect.size.x, 1.0)
+	var zoom_y: float = usable.y / maxf(view_rect.size.y, 1.0)
 	var zoom: float = clampf(minf(zoom_x, zoom_y), 0.2, 2.5)
 	_camera.zoom = Vector2(zoom, zoom)
+	if hud_screen > 0.0 and zoom > 0.0:
+		_camera.position.y += (hud_screen * 0.5) / zoom
 
 
 func _draw_background() -> void:
@@ -1237,6 +1320,8 @@ func _inset_view_rect(view_rect: Rect2, inset_x: float, inset_y: float) -> Rect2
 
 
 func _draw_cover(battle_state: BattleState) -> void:
+	if not DEBUG_DRAW_COVER_SLOTS:
+		return
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if geometry == null:
 		return
@@ -1269,7 +1354,7 @@ func _draw_participants(battle_state: BattleState) -> void:
 
 
 func _draw_soldier(battle_state: BattleState, participant: BattleParticipant) -> void:
-	var view_pos: Vector2 = _to_view(participant.battle_position)
+	var view_pos: Vector2 = _soldier_presentation_origin(battle_state, participant)
 	var facing: Vector2 = _participant_view_facing(battle_state, participant)
 	_draw_soldier_ground(view_pos, battle_state, participant)
 	if _selected_participant_id() == participant.participant_id:
@@ -1503,6 +1588,8 @@ func _draw_compact_combat_state(
 	participant: BattleParticipant,
 	view_pos: Vector2
 ) -> void:
+	if not DEBUG_DRAW_COMBAT_STATE_LABELS:
+		return
 	if battle_state == null or participant == null:
 		return
 	if battle_state.battle_phase != "active" and battle_state.battle_phase != "resolved":
@@ -1732,53 +1819,54 @@ func _overlay_rows() -> Array[Dictionary]:
 					% [placed.participant_id, placed.battle_position.x, placed.battle_position.y]
 				)
 			)
-	rows.append(_overlay_row("ROSTER"))
-	for participant_id: String in _sorted_keys(battle_state.participants):
-		var participant: BattleParticipant = battle_state.get_participant(participant_id)
-		if participant == null:
-			continue
-		var selectable: bool = _is_roster_selectable(battle_state, participant)
-		var prefix: String = "  P"
-		if selectable:
-			prefix = "> P"
-		rows.append(
-			{
-				"text": "%s %s  %s  %s  %s%s" % [
-					prefix,
-					participant.participant_id,
-					_side_label(battle_state, participant.side_id),
-					participant.weapon_type,
-					_deployed_label(battle_state.is_participant_deployed(participant_id)),
-					_participant_condition_suffix(participant),
-				],
-				"kind": "participant",
-				"id": participant.participant_id,
-				"selectable": selectable,
-			}
-		)
-	for vehicle_id: String in _sorted_keys(battle_state.vehicles):
-		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
-		if vehicle == null:
-			continue
-		var parked: String = "placement unavailable"
-		if battle_state.is_vehicle_fully_deployed(vehicle.battle_vehicle_id):
-			parked = "parked"
-		rows.append(
-			{
-				"text": "  V %s  %s  %s  %s  (%s)" % [
-					vehicle.battle_vehicle_id,
-					_side_label(battle_state, vehicle.side_id),
-					vehicle.vehicle_type_id,
-					_deployed_label(battle_state.is_vehicle_deployed(vehicle_id)),
-					parked,
-				],
-				"kind": "vehicle",
-				"id": vehicle.battle_vehicle_id,
-				"selectable": false,
-			}
-		)
-	if battle_state.participants.is_empty() and battle_state.vehicles.is_empty():
-		rows.append(_overlay_row("  (none)"))
+	if battle_state.battle_phase == "deployment":
+		rows.append(_overlay_row("ROSTER"))
+		for participant_id: String in _sorted_keys(battle_state.participants):
+			var participant: BattleParticipant = battle_state.get_participant(participant_id)
+			if participant == null:
+				continue
+			var selectable: bool = _is_roster_selectable(battle_state, participant)
+			var prefix: String = "  P"
+			if selectable:
+				prefix = "> P"
+			rows.append(
+				{
+					"text": "%s %s  %s  %s  %s%s" % [
+						prefix,
+						participant.participant_id,
+						_side_label(battle_state, participant.side_id),
+						participant.weapon_type,
+						_deployed_label(battle_state.is_participant_deployed(participant_id)),
+						_participant_condition_suffix(participant),
+					],
+					"kind": "participant",
+					"id": participant.participant_id,
+					"selectable": selectable,
+				}
+			)
+		for vehicle_id: String in _sorted_keys(battle_state.vehicles):
+			var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+			if vehicle == null:
+				continue
+			var parked: String = "placement unavailable"
+			if battle_state.is_vehicle_fully_deployed(vehicle.battle_vehicle_id):
+				parked = "parked"
+			rows.append(
+				{
+					"text": "  V %s  %s  %s  %s  (%s)" % [
+						vehicle.battle_vehicle_id,
+						_side_label(battle_state, vehicle.side_id),
+						vehicle.vehicle_type_id,
+						_deployed_label(battle_state.is_vehicle_deployed(vehicle_id)),
+						parked,
+					],
+					"kind": "vehicle",
+					"id": vehicle.battle_vehicle_id,
+					"selectable": false,
+				}
+			)
+		if battle_state.participants.is_empty() and battle_state.vehicles.is_empty():
+			rows.append(_overlay_row("  (none)"))
 	var status: String = _status_text()
 	if not status.is_empty():
 		rows.append(
@@ -2152,6 +2240,8 @@ func _participant_condition_suffix(participant: BattleParticipant) -> String:
 
 
 func _selected_participant_id() -> String:
+	if orders_controller != null and not orders_controller.selected_participant_id.is_empty():
+		return orders_controller.selected_participant_id
 	if deployment_controller == null:
 		return ""
 	return deployment_controller.selected_participant_id
@@ -2314,3 +2404,306 @@ func _sorted_keys(collection: Dictionary) -> Array[String]:
 		ids.append(str(key))
 	ids.sort()
 	return ids
+
+
+func _soldier_presentation_origin(battle_state: BattleState, participant: BattleParticipant) -> Vector2:
+	if participant == null or not participant.has_battle_position:
+		return Vector2.ZERO
+	var view_pos: Vector2 = _to_view(participant.battle_position)
+	if not participant.has_occupied_cover_slot():
+		return view_pos
+	var facing: Vector2 = _participant_view_facing(battle_state, participant)
+	if not _view_facing_usable(facing):
+		return view_pos
+	return view_pos + facing.normalized() * COVER_OCCUPY_VISUAL_NUDGE_PIXELS
+
+
+func _hit_test_side_soldier(
+	local_position: Vector2,
+	side_id: String,
+	require_healthy: bool,
+	require_alive_only: bool,
+	require_deployed: bool
+) -> String:
+	var battle_state: BattleState = _battle_state()
+	if battle_state == null or side_id.is_empty():
+		return ""
+	var pick_radius: float = SOLDIER_SELECTION_RADIUS * SOLDIER_VISUAL_SCALE
+	var best_id: String = ""
+	var best_distance: float = INF
+	for participant_id: String in _sorted_keys(battle_state.participants):
+		var participant: BattleParticipant = battle_state.get_participant(participant_id)
+		if participant == null or participant.side_id != side_id:
+			continue
+		if not participant.has_battle_position:
+			continue
+		if require_deployed and not battle_state.is_participant_deployed(participant_id):
+			continue
+		if require_alive_only and not participant.is_alive:
+			continue
+		if require_healthy:
+			if not participant.is_alive or participant.is_wounded:
+				continue
+		elif participant.is_alive and not participant.is_wounded:
+			continue
+		var view_pos: Vector2 = _soldier_presentation_origin(battle_state, participant)
+		var distance: float = view_pos.distance_to(local_position)
+		if not is_finite(distance):
+			continue
+		if distance > pick_radius and not is_equal_approx(distance, pick_radius):
+			continue
+		if best_id.is_empty() or distance < best_distance or (
+			is_equal_approx(distance, best_distance) and participant_id < best_id
+		):
+			best_id = participant_id
+			best_distance = distance
+	return best_id
+
+
+func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) -> Rect2:
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return Rect2()
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var cover_object: BattleCoverObject = geometry.get_cover_object(cover_object_id)
+	if cover_object == null:
+		return Rect2()
+	if not cover_object.associated_obstacle_id.is_empty():
+		var obstacle: BattleObstacle = geometry.get_obstacle(cover_object.associated_obstacle_id)
+		if obstacle != null and obstacle.bounds_are_usable():
+			return _rect_to_view(obstacle.bounds).grow(4.0)
+	for vehicle_id: String in _sorted_keys(battle_state.vehicles):
+		if BattleVehicleCoverService.body_cover_object_id(vehicle_id) != cover_object_id:
+			continue
+		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+		if vehicle == null:
+			continue
+		var corners: PackedVector2Array = BattleVehicleBodyService.world_corners(vehicle)
+		if corners.size() < 2:
+			continue
+		var min_pos: Vector2 = _to_view(corners[0])
+		var max_pos: Vector2 = min_pos
+		for corner: Vector2 in corners:
+			var view_corner: Vector2 = _to_view(corner)
+			min_pos.x = minf(min_pos.x, view_corner.x)
+			min_pos.y = minf(min_pos.y, view_corner.y)
+			max_pos.x = maxf(max_pos.x, view_corner.x)
+			max_pos.y = maxf(max_pos.y, view_corner.y)
+		return Rect2(min_pos, max_pos - min_pos).grow(4.0)
+	var min_slot: Vector2 = Vector2.ZERO
+	var max_slot: Vector2 = Vector2.ZERO
+	var has_slot: bool = false
+	for slot_id: String in cover_object.slot_ids:
+		var slot: BattleCoverSlot = geometry.get_cover_slot(slot_id)
+		if slot == null:
+			continue
+		var slot_view: Vector2 = _to_view(slot.position)
+		if not has_slot:
+			min_slot = slot_view
+			max_slot = slot_view
+			has_slot = true
+		else:
+			min_slot.x = minf(min_slot.x, slot_view.x)
+			min_slot.y = minf(min_slot.y, slot_view.y)
+			max_slot.x = maxf(max_slot.x, slot_view.x)
+			max_slot.y = maxf(max_slot.y, slot_view.y)
+	if not has_slot:
+		return Rect2()
+	return Rect2(min_slot, max_slot - min_slot).grow(10.0)
+
+
+func _draw_cover_object_hover(battle_state: BattleState) -> void:
+	if battle_state == null or battle_state.battle_phase != "active":
+		return
+	if orders_controller == null or orders_controller.selected_participant_id.is_empty():
+		return
+	if not orders_controller.can_control_participant(orders_controller.selected_participant_id):
+		return
+	var cover_object_id: String = hit_test_cover_object(_pointer_local)
+	if cover_object_id.is_empty():
+		return
+	var cover_rect: Rect2 = _cover_object_hit_rect(battle_state, cover_object_id)
+	if cover_rect.size.x <= 0.0 or cover_rect.size.y <= 0.0:
+		return
+	_paint_canvas().draw_rect(cover_rect, Color(0.94, 0.86, 0.58, 0.12), true)
+	_paint_canvas().draw_rect(cover_rect, PROVISIONAL_COVER_HOVER, false, 2.0)
+
+
+func _unit_hud_visible(battle_state: BattleState) -> bool:
+	if battle_state == null:
+		return false
+	return battle_state.battle_phase == "active" or battle_state.battle_phase == "resolved"
+
+
+func _rebuild_unit_hud_hits() -> void:
+	_unit_hud_hits.clear()
+	var battle_state: BattleState = _battle_state()
+	if not _unit_hud_visible(battle_state):
+		return
+	var selected_id: String = ""
+	if orders_controller != null:
+		selected_id = orders_controller.selected_participant_id
+	var cards: Array[Dictionary] = TacticalUnitHudQuery.friendly_cards(battle_state, selected_id)
+	if cards.is_empty():
+		return
+	var origin: Vector2 = _unit_hud_origin()
+	var card_size: Vector2 = _unit_hud_card_size()
+	var gap: Vector2 = _unit_hud_gap()
+	var max_width: float = _unit_hud_max_row_width()
+	var x: float = origin.x
+	var y: float = origin.y
+	var row_start_x: float = origin.x
+	for card: Dictionary in cards:
+		if x > row_start_x and (x - row_start_x) + card_size.x > max_width:
+			x = row_start_x
+			y += card_size.y + gap.y
+		_unit_hud_hits.append({
+			"id": str(card.get("participant_id", "")),
+			"can_select": bool(card.get("can_select", false)),
+			"card_state": str(card.get("card_state", "")),
+			"rect": Rect2(Vector2(x, y), card_size),
+			"card": card,
+		})
+		x += card_size.x + gap.x
+
+
+func _draw_unit_hud(battle_state: BattleState) -> void:
+	_rebuild_unit_hud_hits()
+	if _unit_hud_hits.is_empty():
+		return
+	for row: Dictionary in _unit_hud_hits:
+		_draw_unit_hud_card(battle_state, row)
+
+
+func _draw_unit_hud_card(battle_state: BattleState, row: Dictionary) -> void:
+	var card: Dictionary = row.get("card", {})
+	var rect: Rect2 = row.get("rect", Rect2())
+	var state: String = str(card.get("card_state", ""))
+	var selected: bool = bool(card.get("is_selected", false))
+	var fill: Color = PROVISIONAL_HUD_CARD
+	var border: Color = PROVISIONAL_HUD_BORDER
+	var vitality_fill: Color = PROVISIONAL_HUD_VITALITY
+	if state == TacticalUnitHudQuery.CARD_STATE_DEAD:
+		fill = PROVISIONAL_HUD_CARD_DEAD
+		border = Color(0.22, 0.22, 0.22, 0.80)
+		vitality_fill = Color(0.28, 0.26, 0.24, 1.0)
+	elif state == TacticalUnitHudQuery.CARD_STATE_WOUNDED:
+		fill = PROVISIONAL_HUD_CARD_WOUNDED
+		border = PROVISIONAL_HUD_BORDER_WOUNDED
+		vitality_fill = PROVISIONAL_HUD_VITALITY_WOUNDED
+	if selected:
+		fill = PROVISIONAL_HUD_CARD_SELECTED
+		border = PROVISIONAL_HUD_BORDER_SELECTED
+	_paint_canvas().draw_rect(rect, fill, true)
+	var border_width: float = 1.4
+	if selected:
+		border_width = 2.2
+	_paint_canvas().draw_rect(rect, border, false, border_width)
+	var title: String = str(card.get("role_label", ""))
+	if title.is_empty():
+		title = str(card.get("weapon_type", "")).to_upper()
+	var title_color: Color = Color(0.92, 0.90, 0.82, 0.96)
+	if state == TacticalUnitHudQuery.CARD_STATE_DEAD:
+		title_color = Color(0.62, 0.60, 0.58, 0.90)
+	elif state == TacticalUnitHudQuery.CARD_STATE_WOUNDED:
+		title_color = Color(0.86, 0.72, 0.42, 0.95)
+	if selected:
+		title_color = Color(0.98, 0.96, 0.88, 1.0)
+	_draw_label_left(
+		rect.position + Vector2(6.0, 14.0),
+		title,
+		UNIT_HUD_TITLE_FONT_SIZE,
+		title_color
+	)
+	var portrait_center: Vector2 = rect.position + Vector2(rect.size.x * 0.38, rect.size.y * 0.50)
+	var participant: BattleParticipant = battle_state.get_participant(str(card.get("participant_id", "")))
+	if participant != null:
+		_draw_unit_hud_miniature(battle_state, participant, portrait_center, state)
+	var bar_rect: Rect2 = Rect2(
+		rect.position + Vector2(8.0, rect.size.y - 16.0),
+		Vector2(rect.size.x - 16.0, 6.0)
+	)
+	_paint_canvas().draw_rect(bar_rect, PROVISIONAL_HUD_VITALITY_EMPTY, true)
+	var ratio: float = float(card.get("vitality_ratio", 0.0))
+	if ratio > 0.0:
+		var filled: Rect2 = Rect2(bar_rect.position, Vector2(bar_rect.size.x * ratio, bar_rect.size.y))
+		_paint_canvas().draw_rect(filled, vitality_fill, true)
+	var percent: int = int(card.get("vitality_percent", 0))
+	_draw_label_left(
+		Vector2(bar_rect.position.x, bar_rect.position.y - 2.0),
+		"%s%%" % percent,
+		UNIT_HUD_FONT_SIZE,
+		Color(0.86, 0.84, 0.78, 0.92)
+	)
+	if state == TacticalUnitHudQuery.CARD_STATE_WOUNDED:
+		_draw_label_left(
+			rect.position + Vector2(rect.size.x - 52.0, 14.0),
+			"WND",
+			UNIT_HUD_FONT_SIZE,
+			PROVISIONAL_HUD_BORDER_WOUNDED
+		)
+	elif state == TacticalUnitHudQuery.CARD_STATE_DEAD:
+		_draw_label_left(
+			rect.position + Vector2(rect.size.x - 52.0, 14.0),
+			"DEAD",
+			UNIT_HUD_FONT_SIZE,
+			Color(0.62, 0.60, 0.58, 0.90)
+		)
+
+
+func _draw_unit_hud_miniature(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	center: Vector2,
+	state: String
+) -> void:
+	var facing: Vector2 = Vector2.RIGHT
+	if state == TacticalUnitHudQuery.CARD_STATE_DEAD:
+		_draw_soldier_downed(center, facing, participant.weapon_type)
+		return
+	_draw_soldier_standing(center, facing, battle_state, participant)
+
+
+func _unit_hud_origin() -> Vector2:
+	_ensure_camera()
+	var viewport_size: Vector2 = get_viewport_rect().size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = Vector2(1152.0, 648.0)
+	var zoom: float = 1.0
+	if _camera != null and _camera.zoom.x > 0.0:
+		zoom = _camera.zoom.x
+	var half: Vector2 = (viewport_size / zoom) * 0.5
+	var cam_pos: Vector2 = Vector2.ZERO
+	if _camera != null:
+		cam_pos = _camera.position
+	return cam_pos - half + Vector2(
+		UNIT_HUD_PAD / zoom,
+		(viewport_size.y / zoom) - (UNIT_HUD_PAD / zoom) - (UNIT_HUD_CARD_HEIGHT / zoom)
+	)
+
+
+func _unit_hud_card_size() -> Vector2:
+	_ensure_camera()
+	var zoom: float = 1.0
+	if _camera != null and _camera.zoom.x > 0.0:
+		zoom = _camera.zoom.x
+	return Vector2(UNIT_HUD_CARD_WIDTH / zoom, UNIT_HUD_CARD_HEIGHT / zoom)
+
+
+func _unit_hud_gap() -> Vector2:
+	_ensure_camera()
+	var zoom: float = 1.0
+	if _camera != null and _camera.zoom.x > 0.0:
+		zoom = _camera.zoom.x
+	return Vector2(UNIT_HUD_CARD_GAP / zoom, UNIT_HUD_CARD_GAP / zoom)
+
+
+func _unit_hud_max_row_width() -> float:
+	var viewport_size: Vector2 = get_viewport_rect().size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = Vector2(1152.0, 648.0)
+	_ensure_camera()
+	var zoom: float = 1.0
+	if _camera != null and _camera.zoom.x > 0.0:
+		zoom = _camera.zoom.x
+	return (viewport_size.x - UNIT_HUD_PAD * 2.0) / zoom
+

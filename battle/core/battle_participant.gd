@@ -6,6 +6,10 @@ const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
 const NAVIGATION_SOURCE_NONE := ""
 const NAVIGATION_SOURCE_EXTERNAL := "external"
 const NAVIGATION_SOURCE_COMBAT := "combat"
+const PLAYER_INTENT_NONE := ""
+const PLAYER_INTENT_MOVE := "move"
+const PLAYER_INTENT_COVER := "cover"
+const PLAYER_INTENT_TARGET := "target"
 
 var participant_id: String = ""
 var campaign_soldier_id: String = ""
@@ -58,6 +62,10 @@ var acquire_reaction_target_id: String = ""
 var sniper_aim_remaining_seconds: float = 0.0
 var sniper_aim_target_id: String = ""
 var sniper_aim_engagement_active: bool = false
+var player_priority_target_id: String = ""
+var player_tactical_intent: String = ""
+var player_cover_object_id: String = ""
+var player_cover_slot_id: String = ""
 
 
 func _init(
@@ -202,6 +210,62 @@ func set_target_participant(participant_id: String) -> bool:
 func clear_target_participant() -> void:
 	target_participant_id = ""
 	has_target_participant = false
+
+
+func clear_player_priority_target() -> void:
+	player_priority_target_id = ""
+	if player_tactical_intent == PLAYER_INTENT_TARGET:
+		player_tactical_intent = PLAYER_INTENT_NONE
+
+
+func has_player_priority_target() -> bool:
+	return not player_priority_target_id.is_empty()
+
+
+func current_player_intent() -> String:
+	return player_tactical_intent
+
+
+func has_player_cover_intent() -> bool:
+	return (
+		player_tactical_intent == PLAYER_INTENT_COVER
+		and not player_cover_object_id.is_empty()
+	)
+
+
+func set_player_cover_intent(cover_object_id: String, cover_slot_id: String = "") -> void:
+	player_tactical_intent = PLAYER_INTENT_COVER
+	player_cover_object_id = cover_object_id
+	player_cover_slot_id = cover_slot_id
+	player_priority_target_id = ""
+
+
+func set_player_move_intent() -> void:
+	player_tactical_intent = PLAYER_INTENT_MOVE
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	player_priority_target_id = ""
+
+
+func set_player_target_intent(hostile_id: String) -> void:
+	player_tactical_intent = PLAYER_INTENT_TARGET
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	player_priority_target_id = hostile_id
+
+
+func clear_player_cover_intent() -> void:
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	if player_tactical_intent == PLAYER_INTENT_COVER:
+		player_tactical_intent = PLAYER_INTENT_NONE
+
+
+func clear_player_tactical_intent() -> void:
+	player_tactical_intent = PLAYER_INTENT_NONE
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	player_priority_target_id = ""
 
 
 func set_defend_position(enabled: bool) -> void:
