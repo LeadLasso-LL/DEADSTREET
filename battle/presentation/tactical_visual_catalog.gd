@@ -50,6 +50,11 @@ const VARIANT_PIPELINE_TEST := "pipeline_test"
 const VARIANT_ASPHALT_01 := "asphalt_01"
 const VARIANT_CALIBRATION_01 := "calibration_01"
 const VARIANT_HQ_NORTH_01 := "hq_north_01"
+const VARIANT_ROAD_MAIN_01 := "road_main_01"
+const VARIANT_HQ_SOUTH_01 := "hq_south_01"
+const VARIANT_ALLEY_EAST_01 := "alley_east_01"
+
+const TACTICAL_PROJECTION_DEPTH_SOUTH := "depth_south"
 
 const FALLBACK_CIVILIAN_CAR := "civilian_car"
 const DEFAULT_PPU := 32.0
@@ -103,6 +108,10 @@ static func should_claim_canvas(spec: Dictionary) -> bool:
 	if spec.is_empty() or is_pipeline_test(spec):
 		return false
 	return texture_for(spec) != null
+
+
+static func tactical_projection(spec: Dictionary) -> String:
+	return str(spec.get("tactical_projection", ""))
 
 
 static func _load_texture(path: String) -> Texture2D:
@@ -386,7 +395,32 @@ static func _ensure_specs() -> void:
 		VARIANT_HQ_NORTH_01,
 		"res://assets/tactical/environment/block_hq_north_01.png",
 		DEFAULT_PPU,
-		"building"
+		"building",
+		{"tactical_projection": TACTICAL_PROJECTION_DEPTH_SOUTH}
+	)
+	_register(
+		ARCHETYPE_ENVIRONMENT_BLOCK,
+		VARIANT_ROAD_MAIN_01,
+		"res://assets/tactical/environment/surface_road_main_01.png",
+		DEFAULT_PPU,
+		"surface",
+		{"tactical_projection": TACTICAL_PROJECTION_DEPTH_SOUTH}
+	)
+	_register(
+		ARCHETYPE_ENVIRONMENT_BLOCK,
+		VARIANT_HQ_SOUTH_01,
+		"res://assets/tactical/environment/block_hq_south_01.png",
+		DEFAULT_PPU,
+		"building",
+		{"tactical_projection": TACTICAL_PROJECTION_DEPTH_SOUTH}
+	)
+	_register(
+		ARCHETYPE_ENVIRONMENT_BLOCK,
+		VARIANT_ALLEY_EAST_01,
+		"res://assets/tactical/environment/block_alley_east_01.png",
+		DEFAULT_PPU,
+		"building",
+		{"tactical_projection": TACTICAL_PROJECTION_DEPTH_SOUTH}
 	)
 	_register(
 		ARCHETYPE_ENVIRONMENT_BLOCK,

@@ -3,8 +3,17 @@ extends RefCounted
 
 # Native-proportion environment placement. Presentation only.
 # A gameplay Rect2 is an anchor frame, not an art stretch target.
+#
+# Tactical projection contract:
+# One fixed top-down camera with restrained faux-depth toward world-south
+# (screen-bottom). North-row art may expose south-facing street frontage.
+# South-row art MUST use the same depth direction and must not mirror
+# storefronts toward the camera. All future authored environment assets
+# obey this convention.
 
 const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
+
+const DEPTH_DIRECTION_SOUTH := "south"
 
 const ANCHOR_CENTER := "center"
 const ANCHOR_NORTH := "north"

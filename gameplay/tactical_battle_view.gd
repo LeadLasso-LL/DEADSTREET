@@ -922,6 +922,8 @@ func _draw_hq_porch_and_stairs(battle_state: BattleState) -> void:
 	# Presentation only. Uses existing apron/stairs surface bounds. No obstacles or LOS.
 	if battle_state == null or battle_state.battlefield_geometry == null:
 		return
+	if _surface_uses_retained_visual("apron_hq_porch"):
+		return
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	var apron: BattleSurfaceRegion = geometry.get_surface_region("apron_hq_porch")
 	if apron == null or not apron.is_valid():

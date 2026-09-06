@@ -16633,6 +16633,13 @@ static func run() -> Dictionary:
 	var vispass_m5_native_placement_ok: bool = _vispass_m5_native_placement_ok()
 	var vispass_m5_live_suppress_and_layer_ok: bool = _vispass_m5_live_suppress_and_layer_ok()
 	var vispass_m5_fallback_and_geometry_ok: bool = _vispass_m5_fallback_and_geometry_ok()
+	var vispass_m6_bindings_resolve_ok: bool = _vispass_m6_bindings_resolve_ok()
+	var vispass_m6_native_placement_ok: bool = _vispass_m6_native_placement_ok()
+	var vispass_m6_porch_cover_hit_ok: bool = _vispass_m6_porch_cover_hit_ok()
+	var vispass_m6_live_suppress_and_layer_ok: bool = _vispass_m6_live_suppress_and_layer_ok()
+	var vispass_m6_fallback_and_geometry_ok: bool = _vispass_m6_fallback_and_geometry_ok()
+	var vispass_m6b_south_projection_ok: bool = _vispass_m6b_south_projection_ok()
+	var vispass_m6b_live_regression_ok: bool = _vispass_m6b_live_regression_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18902,6 +18909,13 @@ static func run() -> Dictionary:
 		"vispass_m5_native_placement_ok": vispass_m5_native_placement_ok,
 		"vispass_m5_live_suppress_and_layer_ok": vispass_m5_live_suppress_and_layer_ok,
 		"vispass_m5_fallback_and_geometry_ok": vispass_m5_fallback_and_geometry_ok,
+		"vispass_m6_bindings_resolve_ok": vispass_m6_bindings_resolve_ok,
+		"vispass_m6_native_placement_ok": vispass_m6_native_placement_ok,
+		"vispass_m6_porch_cover_hit_ok": vispass_m6_porch_cover_hit_ok,
+		"vispass_m6_live_suppress_and_layer_ok": vispass_m6_live_suppress_and_layer_ok,
+		"vispass_m6_fallback_and_geometry_ok": vispass_m6_fallback_and_geometry_ok,
+		"vispass_m6b_south_projection_ok": vispass_m6b_south_projection_ok,
+		"vispass_m6b_live_regression_ok": vispass_m6b_live_regression_ok,
 	}
 
 	var passed := true
@@ -72483,11 +72497,7 @@ static func _vispass_m3_static_rebuild_gated_ok() -> bool:
 	view._process(0.016)
 	if not view.environment_presenter.claims_obstacle("parked_car_attack_west"):
 		return _gameplayruntime_finish(runtime, false)
-	if view.environment_presenter.claims_surface("road_main"):
-		return _gameplayruntime_finish(runtime, false)
-	if view.environment_presenter.claims_building("building_se_framing"):
-		return _gameplayruntime_finish(runtime, false)
-	if view.environment_presenter.claims_marking("manhole_center"):
+	if view.environment_presenter.claims_marking("porch_seam_west"):
 		return _gameplayruntime_finish(runtime, false)
 	if view.environment_presenter.claims_roof_props("building_hq"):
 		return _gameplayruntime_finish(runtime, false)
@@ -72598,7 +72608,7 @@ static func _vispass_m3_decals_do_not_affect_hit_ok() -> bool:
 		and hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS)
 		and dumpster.bounds.is_equal_approx(Rect2(20.2, 23.2, 2.3, 1.7))
 		and geometry.get_sorted_obstacle_ids().size() == 24
-		and not view.environment_presenter.claims_surface("road_main")
+		and not view.environment_presenter.claims_marking("porch_seam_west")
 		and not view_src.contains("get_rect()")
 	)
 
@@ -73101,7 +73111,7 @@ static func _vispass_m4b_static_rebuild_gated_ok() -> bool:
 		and view.environment_presenter.rebuild_count == live_rebuild
 		and view.environment_presenter.claims_obstacle("parked_car_attack_west")
 		and view.environment_presenter.claims_obstacle("dumpster_frontage_west")
-		and not view.environment_presenter.claims_surface("road_main")
+		and not view.environment_presenter.claims_marking("porch_seam_west")
 		and view.environment_presenter.building_child_count() == _vispass_m3_building_ids().size()
 		and view.environment_presenter.surface_child_count() == _vispass_m3_surface_ids().size()
 		and view.environment_presenter.composite_child_count() >= 1
@@ -73323,16 +73333,11 @@ static func _vispass_m5_live_suppress_and_layer_ok() -> bool:
 		and view.environment_presenter.claims_building("building_east_neighbor")
 		and view.environment_presenter.claims_surface("sidewalk_north")
 		and view.environment_presenter.claims_surface("apron_hq_porch")
-		and not view.environment_presenter.claims_surface("road_main")
-		and not view.environment_presenter.claims_surface("sidewalk_south")
-		and not view.environment_presenter.claims_building("building_se_framing")
-		and not view.environment_presenter.claims_building("building_sw_framing")
-		and not view.environment_presenter.claims_building("building_south_mid_framing")
 		and view.environment_presenter.claims_obstacle("parked_car_attack_west")
 		and view.environment_presenter.claims_obstacle("dumpster_frontage_west")
 		and view.environment_presenter.building_child_count() == _vispass_m3_building_ids().size()
 		and view.environment_presenter.surface_child_count() == _vispass_m3_surface_ids().size()
-		and view.environment_presenter.composite_child_count() == 2
+		and view.environment_presenter.composite_child_count() >= 2
 		and view.environment_presenter.rebuild_count == rebuild_before
 		and view.static_composite_root.get_child(0).get_instance_id() == composite_id
 		and view.static_composite_root.z_index == 0
@@ -73423,4 +73428,464 @@ static func _vispass_m5_fallback_and_geometry_ok() -> bool:
 		) == ""
 		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
 		and is_equal_approx(TacticalBattleView.TACTICAL_PIXELS_PER_UNIT, 8.0)
+	)
+
+
+static func _vispass_m6_live_block(block_id: String) -> BattleVisualBinding:
+	var definition: AuthoredBattlefieldDefinition = TacticalProvingGroundCatalog.hq_frontage_assault_v1()
+	if definition == null:
+		return null
+	for i: int in range(definition.visual_bindings.size()):
+		var binding: BattleVisualBinding = definition.visual_bindings[i]
+		if binding == null:
+			continue
+		if binding.target_kind == BattleVisualBinding.KIND_BLOCK and binding.target_id == block_id:
+			return binding
+	return null
+
+
+static func _vispass_m6_native_block_ok(
+	block_id: String,
+	variant_id: String,
+	expected_width: float,
+	anchor_mode: String,
+	anchor: Vector2
+) -> bool:
+	var spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		variant_id
+	)
+	var texture: Texture2D = TacticalVisualCatalog.texture_for(spec)
+	if spec.is_empty() or texture == null:
+		return false
+	if TacticalVisualCatalog.is_pipeline_test(spec):
+		return false
+	if texture.get_width() <= 0 or texture.get_height() <= 0:
+		return false
+	var tex_aspect: float = float(texture.get_width()) / float(texture.get_height())
+	var harness: Dictionary = _vispass_m4b_harness()
+	var presenter: TacticalEnvironmentPresenter = harness["presenter"]
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = TacticalProvingGroundCatalog.WIDTH
+	geometry.height = TacticalProvingGroundCatalog.HEIGHT
+	var binding: BattleVisualBinding = _vispass_m6_live_block(block_id)
+	if binding == null:
+		return false
+	if binding.variant_id != variant_id:
+		return false
+	if binding.anchor_mode != anchor_mode:
+		return false
+	if not binding.offset.is_equal_approx(anchor):
+		return false
+	if binding.placement_mode != TacticalVisualPlacement.MODE_NATIVE:
+		return false
+	if not is_equal_approx(binding.visual_world_size.x, expected_width):
+		return false
+	if not geometry.add_visual_binding(binding):
+		return false
+	presenter.sync_static(geometry, "m6_%s_a" % block_id)
+	var xf: Dictionary = presenter.visual_transform_for(BattleVisualBinding.KIND_BLOCK, block_id)
+	if xf.is_empty():
+		return false
+	var world_size: Vector2 = xf["world_size"]
+	var world_rect: Rect2 = xf["world_rect"]
+	var expected_height: float = expected_width * float(texture.get_height()) / float(texture.get_width())
+	var edge: float = 0.0
+	if anchor_mode == TacticalVisualPlacement.ANCHOR_SOUTH:
+		edge = world_rect.position.y + world_rect.size.y
+	else:
+		edge = world_rect.position.y
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_environment_presenter.gd"
+	)
+	var placement_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_visual_placement.gd"
+	)
+	if presenter.composite_root.get_child_count() < 1:
+		return false
+	var sprite: Sprite2D = presenter.composite_root.get_child(0) as Sprite2D
+	if sprite == null:
+		return false
+	var sprite_scale: Vector2 = sprite.scale
+	presenter.sync_static(geometry, "m6_%s_b" % block_id)
+	var xf2: Dictionary = presenter.visual_transform_for(BattleVisualBinding.KIND_BLOCK, block_id)
+	if xf2.is_empty():
+		return false
+	return (
+		bool(xf["uniform"])
+		and is_equal_approx(world_size.x, expected_width)
+		and is_equal_approx(world_size.y, expected_height)
+		and is_equal_approx(world_size.x / world_size.y, tex_aspect)
+		and is_equal_approx(edge, anchor.y)
+		and is_equal_approx(xf["world_center"].x, anchor.x)
+		and is_equal_approx(sprite_scale.x, sprite_scale.y)
+		and not bool(xf.get("region_enabled", false))
+		and not presenter_src.contains("fit_bounds")
+		and not placement_src.contains("fit_bounds")
+		and _vispass_m4b_approx_vec(xf["world_center"], xf2["world_center"])
+		and _vispass_m4b_approx_vec(xf["world_size"], xf2["world_size"])
+		and is_equal_approx(float(xf["view_scale"]), float(xf2["view_scale"]))
+	)
+
+
+static func _vispass_m6_bindings_resolve_ok() -> bool:
+	var north: BattleVisualBinding = _vispass_m6_live_block(
+		TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_ID
+	)
+	var road: BattleVisualBinding = _vispass_m6_live_block(TacticalProvingGroundCatalog.ROAD_BLOCK_ID)
+	var south: BattleVisualBinding = _vispass_m6_live_block(TacticalProvingGroundCatalog.SOUTH_BLOCK_ID)
+	var alley: BattleVisualBinding = _vispass_m6_live_block(
+		TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_ID
+	)
+	if north == null or road == null or south == null or alley == null:
+		return false
+	if not FileAccess.file_exists("res://assets/tactical/environment/block_hq_north_01.png"):
+		return false
+	if not FileAccess.file_exists("res://assets/tactical/environment/surface_road_main_01.png"):
+		return false
+	if not FileAccess.file_exists("res://assets/tactical/environment/block_hq_south_01.png"):
+		return false
+	if not FileAccess.file_exists("res://assets/tactical/environment/block_alley_east_01.png"):
+		return false
+	return (
+		north.suppress_building_ids.has("building_hq")
+		and north.suppress_surface_ids.has("sidewalk_north")
+		and north.suppress_surface_ids.has("apron_hq_porch")
+		and not north.suppress_surface_ids.has("road_main")
+		and road.suppress_surface_ids.has("road_main")
+		and road.suppress_marking_ids.has("lane_main")
+		and not road.suppress_building_ids.has("building_hq")
+		and south.suppress_building_ids.has("building_sw_framing")
+		and south.suppress_building_ids.has("building_south_mid_framing")
+		and south.suppress_building_ids.has("building_se_framing")
+		and south.suppress_surface_ids.has("sidewalk_south")
+		and not south.suppress_surface_ids.has("road_main")
+		and alley.suppress_surface_ids.has("alley_hq_east")
+		and alley.suppress_surface_ids.has("alley_right_rear")
+		and not alley.suppress_surface_ids.has("alley_hq_side")
+		and not alley.suppress_building_ids.has("building_east_neighbor")
+	)
+
+
+static func _vispass_m6_native_placement_ok() -> bool:
+	return (
+		_vispass_m6_native_block_ok(
+			TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_ID,
+			TacticalVisualCatalog.VARIANT_HQ_NORTH_01,
+			TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_WIDTH,
+			TacticalVisualPlacement.ANCHOR_SOUTH,
+			TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_ANCHOR
+		)
+		and _vispass_m6_native_block_ok(
+			TacticalProvingGroundCatalog.ROAD_BLOCK_ID,
+			TacticalVisualCatalog.VARIANT_ROAD_MAIN_01,
+			TacticalProvingGroundCatalog.ROAD_BLOCK_WIDTH,
+			TacticalVisualPlacement.ANCHOR_NORTH,
+			TacticalProvingGroundCatalog.ROAD_BLOCK_ANCHOR
+		)
+		and _vispass_m6_native_block_ok(
+			TacticalProvingGroundCatalog.SOUTH_BLOCK_ID,
+			TacticalVisualCatalog.VARIANT_HQ_SOUTH_01,
+			TacticalProvingGroundCatalog.SOUTH_BLOCK_WIDTH,
+			TacticalVisualPlacement.ANCHOR_NORTH,
+			TacticalProvingGroundCatalog.SOUTH_BLOCK_ANCHOR
+		)
+		and _vispass_m6_native_block_ok(
+			TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_ID,
+			TacticalVisualCatalog.VARIANT_ALLEY_EAST_01,
+			TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_WIDTH,
+			TacticalVisualPlacement.ANCHOR_SOUTH,
+			TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_ANCHOR
+		)
+	)
+
+
+static func _vispass_m6_porch_cover_hit_ok() -> bool:
+	if not _vispass2b_porch_frontage_unchanged_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	var west_wall: BattleObstacle = geometry.get_obstacle("porch_wall_west")
+	var east_wall: BattleObstacle = geometry.get_obstacle("porch_wall_east")
+	if west_wall == null or east_wall == null:
+		return _gameplayruntime_finish(runtime, false)
+	var west_hit: String = view.hit_test_cover_object(view._to_view(west_wall.bounds.get_center()))
+	var east_hit: String = view.hit_test_cover_object(view._to_view(east_wall.bounds.get_center()))
+	var stair_hit: String = view.hit_test_cover_object(
+		view._to_view(TacticalProvingGroundCatalog.STAIRS_BOUNDS.get_center())
+	)
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		west_hit == "cover_porch_wall_west"
+		and east_hit == "cover_porch_wall_east"
+		and west_hit != east_hit
+		and stair_hit != "cover_porch_wall_west"
+		and stair_hit != "cover_porch_wall_east"
+		and west_wall.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_WALL_WEST)
+		and east_wall.bounds.is_equal_approx(TacticalProvingGroundCatalog.PORCH_WALL_EAST)
+		and TacticalProvingGroundCatalog.STAIRS_BOUNDS.is_equal_approx(Rect2(32.2, 18.3, 5.6, 4.0))
+		and geometry.get_obstacle("stairs_hq_center") == null
+		and not view_src.contains("get_rect()")
+	)
+
+
+static func _vispass_m6_live_suppress_and_layer_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.environment_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var rebuild_before: int = view.environment_presenter.rebuild_count
+	var composite_id: int = 0
+	if view.environment_presenter.composite_child_count() >= 1:
+		composite_id = view.static_composite_root.get_child(0).get_instance_id()
+	view._process(0.016)
+	view._process(0.016)
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		view.environment_presenter.claims_building("building_hq")
+		and view.environment_presenter.claims_building("building_west_neighbor")
+		and view.environment_presenter.claims_building("building_east_neighbor")
+		and view.environment_presenter.claims_building("building_sw_framing")
+		and view.environment_presenter.claims_building("building_south_mid_framing")
+		and view.environment_presenter.claims_building("building_se_framing")
+		and view.environment_presenter.claims_surface("sidewalk_north")
+		and view.environment_presenter.claims_surface("apron_hq_porch")
+		and view.environment_presenter.claims_surface("road_main")
+		and view.environment_presenter.claims_surface("sidewalk_south")
+		and view.environment_presenter.claims_surface("alley_hq_east")
+		and view.environment_presenter.claims_marking("lane_main")
+		and not view.environment_presenter.claims_surface("alley_hq_side")
+		and view.environment_presenter.claims_obstacle("parked_car_attack_west")
+		and view.environment_presenter.claims_obstacle("dumpster_frontage_west")
+		and view.environment_presenter.claims_obstacle("dumpster_alley")
+		and view.environment_presenter.building_child_count() == _vispass_m3_building_ids().size()
+		and view.environment_presenter.surface_child_count() == _vispass_m3_surface_ids().size()
+		and view.environment_presenter.composite_child_count() == 5
+		and view.environment_presenter.rebuild_count == rebuild_before
+		and view.static_composite_root.get_child(0).get_instance_id() == composite_id
+		and view.static_composite_root.z_index == 0
+		and view.static_asset_root.z_index == 1
+		and view.dynamic_layer.z_index == 3
+		and view.static_composite_root.get_index() > view.static_layer.get_index()
+		and view.static_composite_root.get_index() < view.static_building_root.get_index()
+		and view.static_asset_root.get_index() > view.static_composite_root.get_index()
+		and view.static_asset_root.get_child_count() == (
+			_vispass_m2_vehicle_obstacle_ids().size() + _vispass_m2_prop_obstacle_ids().size()
+		)
+		and not view_src.contains(".png")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and not view_src.contains("fit_bounds")
+	)
+
+
+static func _vispass_m6_fallback_and_geometry_ok() -> bool:
+	if not _vispass_m3_geometry_unchanged_ok():
+		return false
+	if not _vispass2b_porch_frontage_unchanged_ok():
+		return false
+	var missing_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		"missing_m6_block"
+	)
+	if not missing_spec.is_empty():
+		return false
+	var harness: Dictionary = _vispass_m4b_harness()
+	var presenter: TacticalEnvironmentPresenter = harness["presenter"]
+	var geometry: BattlefieldGeometry = BattlefieldGeometry.new()
+	geometry.width = TacticalProvingGroundCatalog.WIDTH
+	geometry.height = TacticalProvingGroundCatalog.HEIGHT
+	var missing_block: BattleVisualBinding = BattleVisualBinding.new(
+		BattleVisualBinding.KIND_BLOCK,
+		"block_road_main",
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		"missing_m6_block",
+		0.0,
+		TacticalProvingGroundCatalog.ROAD_BLOCK_ANCHOR
+	)
+	missing_block.anchor_mode = TacticalVisualPlacement.ANCHOR_NORTH
+	missing_block.suppress_surface_ids = PackedStringArray(["road_main"])
+	if not geometry.add_visual_binding(missing_block):
+		return false
+	presenter.sync_static(geometry, "m6_missing")
+	var battle_state: BattleState = _provingground_make_state()
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return false
+	var live: BattlefieldGeometry = battle_state.battlefield_geometry
+	var hq: BattleObstacle = live.get_obstacle("building_hq")
+	var sw: BattleObstacle = live.get_obstacle("building_sw_framing")
+	var mid: BattleObstacle = live.get_obstacle("building_south_mid_framing")
+	var se: BattleObstacle = live.get_obstacle("building_se_framing")
+	if hq == null or sw == null or mid == null or se == null:
+		return false
+	return (
+		not presenter.claims_surface("road_main")
+		and presenter.composite_child_count() == 0
+		and hq.bounds.is_equal_approx(TacticalProvingGroundCatalog.HQ_BOUNDS)
+		and sw.bounds.is_equal_approx(TacticalProvingGroundCatalog.SW_FRAMING_BOUNDS)
+		and mid.bounds.is_equal_approx(TacticalProvingGroundCatalog.SOUTH_MID_FRAMING_BOUNDS)
+		and se.bounds.is_equal_approx(TacticalProvingGroundCatalog.SE_FRAMING_BOUNDS)
+		and live.get_sorted_obstacle_ids().size() == 24
+		and live.get_surface_region("road_main").bounds.is_equal_approx(TacticalProvingGroundCatalog.MAIN_ROAD)
+		and live.get_surface_region("sidewalk_south").bounds.is_equal_approx(
+			TacticalProvingGroundCatalog.SOUTH_SIDEWALK
+		)
+		and live.get_surface_region("alley_hq_east").bounds.is_equal_approx(
+			TacticalProvingGroundCatalog.ALLEY_SURFACE
+		)
+		and live.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.ALLEY_MOUTH_POINT) == ""
+		and live.get_movement_blocking_obstacle_id_at(TacticalProvingGroundCatalog.ALLEY_DEEP_POINT) == ""
+		and live.get_movement_blocking_obstacle_id_at(
+			TacticalProvingGroundCatalog.FAR_RIGHT_ALLEY_NORTH_POINT
+		) == ""
+		and live.get_movement_blocking_obstacle_id_at(
+			TacticalProvingGroundCatalog.HQ_SIDE_ALLEY_MID_POINT
+		) == ""
+		and live.get_movement_blocking_obstacle_id_at(
+			TacticalProvingGroundCatalog.ATTACKER_ALLEY_APPROACH_POINT
+		) == ""
+		and is_equal_approx(BattleVehiclePhysicalCatalog.CAR_LENGTH, 4.5)
+		and is_equal_approx(TacticalBattleView.TACTICAL_PIXELS_PER_UNIT, 8.0)
+	)
+
+
+static func _vispass_m6b_south_projection_ok() -> bool:
+	if not _vispass_m6_native_block_ok(
+		TacticalProvingGroundCatalog.SOUTH_BLOCK_ID,
+		TacticalVisualCatalog.VARIANT_HQ_SOUTH_01,
+		TacticalProvingGroundCatalog.SOUTH_BLOCK_WIDTH,
+		TacticalVisualPlacement.ANCHOR_NORTH,
+		TacticalProvingGroundCatalog.SOUTH_BLOCK_ANCHOR
+	):
+		return false
+	var south_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_HQ_SOUTH_01
+	)
+	var north_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_HQ_NORTH_01
+	)
+	var road_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_ROAD_MAIN_01
+	)
+	var alley_spec: Dictionary = TacticalVisualCatalog.spec_for(
+		TacticalVisualCatalog.ARCHETYPE_ENVIRONMENT_BLOCK,
+		TacticalVisualCatalog.VARIANT_ALLEY_EAST_01
+	)
+	var placement_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_visual_placement.gd"
+	)
+	var south: BattleVisualBinding = _vispass_m6_live_block(TacticalProvingGroundCatalog.SOUTH_BLOCK_ID)
+	var north: BattleVisualBinding = _vispass_m6_live_block(
+		TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_ID
+	)
+	var road: BattleVisualBinding = _vispass_m6_live_block(TacticalProvingGroundCatalog.ROAD_BLOCK_ID)
+	var alley: BattleVisualBinding = _vispass_m6_live_block(
+		TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_ID
+	)
+	if south == null or north == null or road == null or alley == null:
+		return false
+	return (
+		TacticalVisualCatalog.tactical_projection(south_spec)
+		== TacticalVisualCatalog.TACTICAL_PROJECTION_DEPTH_SOUTH
+		and TacticalVisualCatalog.tactical_projection(north_spec)
+		== TacticalVisualCatalog.TACTICAL_PROJECTION_DEPTH_SOUTH
+		and TacticalVisualCatalog.tactical_projection(road_spec)
+		== TacticalVisualCatalog.TACTICAL_PROJECTION_DEPTH_SOUTH
+		and TacticalVisualCatalog.tactical_projection(alley_spec)
+		== TacticalVisualCatalog.TACTICAL_PROJECTION_DEPTH_SOUTH
+		and TacticalVisualPlacement.DEPTH_DIRECTION_SOUTH == "south"
+		and placement_src.contains("Tactical projection contract")
+		and placement_src.contains("must not mirror")
+		and north.variant_id == TacticalVisualCatalog.VARIANT_HQ_NORTH_01
+		and north.anchor_mode == TacticalVisualPlacement.ANCHOR_SOUTH
+		and north.offset.is_equal_approx(TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_ANCHOR)
+		and is_equal_approx(north.visual_world_size.x, TacticalProvingGroundCatalog.NORTH_FRONTAGE_BLOCK_WIDTH)
+		and road.variant_id == TacticalVisualCatalog.VARIANT_ROAD_MAIN_01
+		and road.anchor_mode == TacticalVisualPlacement.ANCHOR_NORTH
+		and road.offset.is_equal_approx(TacticalProvingGroundCatalog.ROAD_BLOCK_ANCHOR)
+		and is_equal_approx(road.visual_world_size.x, TacticalProvingGroundCatalog.ROAD_BLOCK_WIDTH)
+		and alley.variant_id == TacticalVisualCatalog.VARIANT_ALLEY_EAST_01
+		and alley.anchor_mode == TacticalVisualPlacement.ANCHOR_SOUTH
+		and alley.offset.is_equal_approx(TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_ANCHOR)
+		and is_equal_approx(alley.visual_world_size.x, TacticalProvingGroundCatalog.ALLEY_EAST_BLOCK_WIDTH)
+		and south.placement_mode == TacticalVisualPlacement.MODE_NATIVE
+		and not placement_src.contains("fit_bounds")
+	)
+
+
+static func _vispass_m6b_live_regression_ok() -> bool:
+	if not _vispass2b_porch_frontage_unchanged_ok():
+		return false
+	if not _vispass_m3_geometry_unchanged_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalview_enter(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.environment_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var rebuild_before: int = view.environment_presenter.rebuild_count
+	var composite_id: int = 0
+	if view.environment_presenter.composite_child_count() >= 1:
+		composite_id = view.static_composite_root.get_child(0).get_instance_id()
+	view._process(0.016)
+	view._process(0.016)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null or battle_state.battlefield_geometry == null:
+		return _gameplayruntime_finish(runtime, false)
+	var live: BattlefieldGeometry = battle_state.battlefield_geometry
+	var sw: BattleObstacle = live.get_obstacle("building_sw_framing")
+	var mid: BattleObstacle = live.get_obstacle("building_south_mid_framing")
+	var se: BattleObstacle = live.get_obstacle("building_se_framing")
+	if sw == null or mid == null or se == null:
+		return _gameplayruntime_finish(runtime, false)
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		view.environment_presenter.claims_building("building_hq")
+		and view.environment_presenter.claims_building("building_se_framing")
+		and view.environment_presenter.claims_surface("road_main")
+		and view.environment_presenter.claims_surface("alley_hq_east")
+		and view.environment_presenter.claims_obstacle("parked_car_attack_west")
+		and view.environment_presenter.claims_obstacle("dumpster_frontage_west")
+		and view.environment_presenter.composite_child_count() == 5
+		and view.environment_presenter.rebuild_count == rebuild_before
+		and view.static_composite_root.get_child(0).get_instance_id() == composite_id
+		and view.static_asset_root.z_index == 1
+		and view.static_asset_root.get_child_count() == (
+			_vispass_m2_vehicle_obstacle_ids().size() + _vispass_m2_prop_obstacle_ids().size()
+		)
+		and sw.bounds.is_equal_approx(TacticalProvingGroundCatalog.SW_FRAMING_BOUNDS)
+		and mid.bounds.is_equal_approx(TacticalProvingGroundCatalog.SOUTH_MID_FRAMING_BOUNDS)
+		and se.bounds.is_equal_approx(TacticalProvingGroundCatalog.SE_FRAMING_BOUNDS)
+		and live.get_sorted_obstacle_ids().size() == 24
+		and not view_src.contains(".png")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and not view_src.contains("fit_bounds")
 	)

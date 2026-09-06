@@ -34,6 +34,15 @@ const STAIRS_BOUNDS := Rect2(32.2, 18.3, 5.6, 4.0)
 const NORTH_FRONTAGE_BLOCK_ID := "block_hq_north"
 const NORTH_FRONTAGE_BLOCK_ANCHOR := Vector2(38.5, 26.8)
 const NORTH_FRONTAGE_BLOCK_WIDTH := 77.0
+const ROAD_BLOCK_ID := "block_road_main"
+const ROAD_BLOCK_ANCHOR := Vector2(43.0, 26.8)
+const ROAD_BLOCK_WIDTH := 86.0
+const SOUTH_BLOCK_ID := "block_hq_south"
+const SOUTH_BLOCK_ANCHOR := Vector2(43.0, 42.0)
+const SOUTH_BLOCK_WIDTH := 86.0
+const ALLEY_EAST_BLOCK_ID := "block_alley_east"
+const ALLEY_EAST_BLOCK_ANCHOR := Vector2(81.5, 26.8)
+const ALLEY_EAST_BLOCK_WIDTH := 9.0
 
 const HQ_BOUNDS := Rect2(17.0, 0.6, 36.0, 17.6)
 const WEST_NEIGHBOR_BOUNDS := Rect2(0.5, 0.6, 14.6, 19.4)
@@ -988,6 +997,47 @@ static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition)
 		Vector2(35.0, 18.2),
 		"south"
 	)
+	var road_block: BattleVisualBinding = _bind_block(
+		definition,
+		ROAD_BLOCK_ID,
+		TacticalVisualCatalog.VARIANT_ROAD_MAIN_01,
+		ROAD_BLOCK_ANCHOR,
+		"north"
+	)
+	road_block.visual_world_size = Vector2(ROAD_BLOCK_WIDTH, 0.0)
+	road_block.suppress_surface_ids = PackedStringArray(
+		["road_main", "curb_north"]
+	)
+	road_block.suppress_marking_ids = PackedStringArray(
+		[
+			"lane_main",
+			"lane_edge_north",
+			"lane_edge_south",
+			"asphalt_patch_west",
+			"asphalt_patch_mid",
+			"stain_oil_west",
+			"stain_oil_center",
+			"manhole_center",
+			"manhole_west"
+		]
+	)
+	var south_block: BattleVisualBinding = _bind_block(
+		definition,
+		SOUTH_BLOCK_ID,
+		TacticalVisualCatalog.VARIANT_HQ_SOUTH_01,
+		SOUTH_BLOCK_ANCHOR,
+		"north"
+	)
+	south_block.visual_world_size = Vector2(SOUTH_BLOCK_WIDTH, 0.0)
+	south_block.suppress_building_ids = PackedStringArray(
+		["building_sw_framing", "building_south_mid_framing", "building_se_framing"]
+	)
+	south_block.suppress_surface_ids = PackedStringArray(
+		["sidewalk_south", "curb_south"]
+	)
+	south_block.suppress_marking_ids = PackedStringArray(
+		["sidewalk_joint_south"]
+	)
 	var north_block: BattleVisualBinding = _bind_block(
 		definition,
 		NORTH_FRONTAGE_BLOCK_ID,
@@ -1001,4 +1051,18 @@ static func _add_environment_bindings(definition: AuthoredBattlefieldDefinition)
 	)
 	north_block.suppress_surface_ids = PackedStringArray(
 		["sidewalk_north", "apron_hq_porch"]
+	)
+	var alley_block: BattleVisualBinding = _bind_block(
+		definition,
+		ALLEY_EAST_BLOCK_ID,
+		TacticalVisualCatalog.VARIANT_ALLEY_EAST_01,
+		ALLEY_EAST_BLOCK_ANCHOR,
+		"south"
+	)
+	alley_block.visual_world_size = Vector2(ALLEY_EAST_BLOCK_WIDTH, 0.0)
+	alley_block.suppress_surface_ids = PackedStringArray(
+		["alley_hq_east", "alley_right_rear"]
+	)
+	alley_block.suppress_marking_ids = PackedStringArray(
+		["stop_bar_alley", "alley_edge_west", "alley_edge_east", "bollard_alley_west", "bollard_alley_east"]
 	)
