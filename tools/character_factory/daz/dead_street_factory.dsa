@@ -1,10 +1,10 @@
 // DAZ Studio filetype DAZ Script
-// Dead Street Character Factory V0 — unattended handshake + Genesis 9 smoke.
+// Dead Street Character Factory V1 — unattended handshake, V0 smoke, paid-asset rifleman proof.
 // Generated art is NOT runtime-authoritative and is NOT product-accepted.
 
 (function () {
 
-	var FACTORY_VERSION = "0.1.0";
+	var FACTORY_VERSION = "0.2.0";
 	var gExitCode = 1;
 	var gResultPath = "";
 	var gLogPath = "";
@@ -27,8 +27,13 @@
 		"missing_assets": [],
 		"figure": {},
 		"clothing": [],
+		"footwear": [],
+		"hair": {},
+		"weapon": {},
 		"pose": {},
+		"weapon_validation": {},
 		"camera_profile": "PROVISIONAL_SMOKE_ONLY",
+		"post_process": {},
 		"render_files": [],
 		"started_at": "",
 		"finished_at": "",
@@ -131,11 +136,16 @@
 		}
 	}
 
+	function isBlockedCode(code) {
+		return code === "WRONG_DAZ_RELEASE" ||
+			code === "STARTER_CONTENT_MISSING" ||
+			code === "DAZ_NOT_FOUND" ||
+			code === "FOOTWEAR_MISSING" ||
+			code === "PAID_CONTENT_MISSING";
+	}
+
 	function fail(stage, code, reason) {
-		gState.status = (code === "WRONG_DAZ_RELEASE" || code === "STARTER_CONTENT_MISSING" || code === "DAZ_NOT_FOUND") ? "BLOCKED" : "FAIL";
-		if (code === "WRONG_DAZ_RELEASE" || code === "STARTER_CONTENT_MISSING") {
-			gState.status = "BLOCKED";
-		}
+		gState.status = isBlockedCode(code) ? "BLOCKED" : "FAIL";
 		gState.stage = stage;
 		gState.error_code = code;
 		gState.reason = String(reason);
@@ -380,6 +390,9 @@
 			}
 			var label = (String(node.getLabel()) + " " + String(node.getName())).toLowerCase();
 			for (var h = 0; h < hints.length; h += 1) {
+				if (!hints[h]) {
+					continue;
+				}
 				if (label.indexOf(String(hints[h]).toLowerCase()) >= 0) {
 					return node;
 				}
@@ -443,6 +456,7 @@
 		for (var i = 0; i < elems.length; i += 1) {
 			setProp(elems[i], ["Draw Dome", "Draw Dome "], false);
 			setProp(elems[i], ["Draw Ground"], false);
+			setProp(elems[i], ["Ground Shadow Visible", "Draw Ground Shadows"], false);
 			setEnumContains(elems[i], ["Environment Mode"], "scene only");
 			setProp(elems[i], ["Max Samples"], 48);
 			setProp(elems[i], ["Max Time"], 20);
@@ -480,6 +494,47 @@
 		return grown ? box : null;
 	}
 
+	function unionDirectionBounds(figure, dirs, yawMap, offset) {
+		var box = new DzBox3();
+		var grown = false;
+		var orig = 0;
+		try { orig = figure.getYRotControl().getValue(); } catch (e0) {}
+		var i;
+		for (i = 0; i < dirs.length; i += 1) {
+			var yaw = Number(yawMap[dirs[i]] || 0) + Number(offset || 0);
+			setFigureYaw(figure, yaw);
+			var b = figureBounds(figure);
+			if (b) {
+				try {
+					box.include(b.min);
+					box.include(b.max);
+					grown = true;
+				} catch (e1) {}
+			}
+		}
+		setFigureYaw(figure, orig);
+		if (grown) {
+			appendLog("union bounds min=" + box.min.x + "," + box.min.y + "," + box.min.z + " max=" + box.max.x + "," + box.max.y + "," + box.max.z);
+			return box;
+		}
+		return figureBounds(figure);
+	}
+
+	function inflateBox(box, factor) {
+		if (!box) {
+			return null;
+		}
+		var min = box.min;
+		var max = box.max;
+		var dx = (max.x - min.x) * factor;
+		var dy = (max.y - min.y) * factor;
+		var dz = (max.z - min.z) * factor;
+		var out = new DzBox3();
+		out.include(new DzVec3(min.x - dx, min.y - dy * 0.35, min.z - dz));
+		out.include(new DzVec3(max.x + dx, max.y + dy, max.z + dz));
+		return out;
+	}
+
 	function assignCameraToViewports(cam) {
 		try { cam.setIsDefaultSceneCamera(true); } catch (e1) {}
 		try {
@@ -493,31 +548,36 @@
 		} catch (e3) {}
 	}
 
-	function buildCamera(figure, profile) {
+	function buildCamera(figure, profile, framedBox) {
 		var cam = new DzBasicCamera();
-		cam.setName("PROVISIONAL_SMOKE_ONLY");
-		try { cam.setLabel("PROVISIONAL_SMOKE_ONLY"); } catch (e1) {}
+		var camName = String(profile.id || "PROVISIONAL_SMOKE_ONLY");
+		cam.setName(camName);
+		try { cam.setLabel(camName); } catch (e1) {}
 		// Iray in this DS6 install produced empty frames with ORTHO_CAMERA.
 		// Use a long-lens perspective camera as a PROVISIONAL elevated tactical stand-in.
 		try { cam.setType(DzCamera.PERSPECTIVE_CAMERA); } catch (e2) {}
 		Scene.addNode(cam);
+		setEnumContains(cam, ["Headlamp Mode", "HeadlampMode"], "off");
 		try {
 			var hm = cam.findProperty("Headlamp Mode") || cam.findProperty("HeadlampMode");
-			if (hm) { hm.setValue(1); }
+			if (hm && typeof profile.headlamp_intensity !== "undefined" && Number(profile.headlamp_intensity) <= 0) {
+				try { hm.setValue(2); } catch (eH) {}
+			}
 		} catch (e4) {}
 		try {
 			var hi = cam.findProperty("Headlamp Intensity");
-			if (hi) { hi.setValue(1.0); }
+			if (hi) { hi.setValue(Number(profile.headlamp_intensity != null ? profile.headlamp_intensity : 1.0)); }
 		} catch (e4b) {}
 		try {
 			var fl = cam.findProperty("Focal Length (mm)") || cam.getFocalLengthControl();
-			if (fl) { fl.setValue(160); }
+			if (fl) { fl.setValue(Number(profile.focal_length_mm || 160)); }
 		} catch (e4c) {}
-		var box = figureBounds(figure);
+		var box = framedBox || figureBounds(figure);
 		if (!box) {
 			return null;
 		}
 		var pad = Number(profile.fit_padding || 1.22);
+		box = inflateBox(box, Math.max(0, pad - 1.0) * 0.55 + 0.08);
 		try {
 			var min = box.min;
 			var max = box.max;
@@ -527,7 +587,7 @@
 			var dy = Math.max(max.y - min.y, 0.5);
 			var elevDeg = Number(profile.elevation_deg || 48.0);
 			var elev = elevDeg * Math.PI / 180.0;
-			var dist = dy * 3.6 * pad;
+			var dist = dy * 3.6;
 			cam.getXPosControl().setValue(cx);
 			cam.getYPosControl().setValue(cy + dist * Math.sin(elev));
 			cam.getZPosControl().setValue(cz + dist * Math.cos(elev));
@@ -536,7 +596,7 @@
 			cam.getZRotControl().setValue(0);
 			try { cam.aimAt(box.getCenter()); } catch (e5) {}
 			try { cam.frame(box, 1.0); } catch (e6) {}
-			appendLog("camera at " + cam.getXPosControl().getValue() + "," + cam.getYPosControl().getValue() + "," + cam.getZPosControl().getValue() + " elev=" + elevDeg);
+			appendLog("camera at " + cam.getXPosControl().getValue() + "," + cam.getYPosControl().getValue() + "," + cam.getZPosControl().getValue() + " elev=" + elevDeg + " pad=" + pad);
 		} catch (e7) {
 			appendLog("camera placement exception: " + e7);
 			return null;
@@ -554,7 +614,7 @@
 			var photo = light.getPhotometricModeControl();
 			if (photo) { photo.setValue(false); }
 		} catch (e0) {}
-		try { light.getIntensityControl().setValue(100); } catch (e1) {}
+		try { light.getIntensityControl().setValue(Number(profile.key_intensity != null ? profile.key_intensity : 100)); } catch (e1) {}
 		try { light.getDiffuseColorControl().setValue(new Color(255, 255, 245)); } catch (e1b) {}
 		try { light.getYRotControl().setValue(Number(profile.light_yaw_deg || -32.0)); } catch (e2) {}
 		try { light.getXRotControl().setValue(-Number(profile.light_pitch_deg || 52.0)); } catch (e3) {}
@@ -565,7 +625,7 @@
 			var photo2 = fill.getPhotometricModeControl();
 			if (photo2) { photo2.setValue(false); }
 		} catch (e4) {}
-		try { fill.getIntensityControl().setValue(35); } catch (e5) {}
+		try { fill.getIntensityControl().setValue(Number(profile.fill_intensity != null ? profile.fill_intensity : 35)); } catch (e5) {}
 		try { fill.getYRotControl().setValue(140); } catch (e6) {}
 		try { fill.getXRotControl().setValue(-20); } catch (e7) {}
 		processEvents();
@@ -620,6 +680,353 @@
 		return ok !== false;
 	}
 
+	function findBone(figure, name) {
+		if (!figure || !name) {
+			return null;
+		}
+		var want = String(name);
+		try {
+			var b = figure.findBone(want);
+			if (b) {
+				return b;
+			}
+		} catch (e1) {}
+		try {
+			var kids = figure.getNodeChildren(true);
+			for (var i = 0; i < kids.length; i += 1) {
+				var n = kids[i];
+				if (!n) {
+					continue;
+				}
+				if (String(n.getName()) === want || String(n.getLabel()) === want) {
+					return n;
+				}
+			}
+		} catch (e2) {}
+		return null;
+	}
+
+	function getNodeWS(node) {
+		if (!node) {
+			return null;
+		}
+		try {
+			var p = node.getWSPos();
+			if (p) {
+				return p;
+			}
+		} catch (e1) {}
+		try {
+			var xf = node.getWSTransform();
+			if (xf && xf.origin) {
+				return xf.origin;
+			}
+		} catch (e2) {}
+		try {
+			var box = node.getWSBoundingBox();
+			if (box) {
+				return box.getCenter();
+			}
+		} catch (e3) {}
+		return null;
+	}
+
+	function vecDist(a, b) {
+		if (!a || !b) {
+			return 99999;
+		}
+		var dx = a.x - b.x;
+		var dy = a.y - b.y;
+		var dz = a.z - b.z;
+		return Math.sqrt(dx * dx + dy * dy + dz * dz);
+	}
+
+	function closestPointOnBox(pt, box) {
+		if (!pt || !box) {
+			return pt;
+		}
+		var x = Math.max(box.min.x, Math.min(pt.x, box.max.x));
+		var y = Math.max(box.min.y, Math.min(pt.y, box.max.y));
+		var z = Math.max(box.min.z, Math.min(pt.z, box.max.z));
+		return new DzVec3(x, y, z);
+	}
+
+	function distToBox(pt, box) {
+		if (!pt || !box) {
+			return 99999;
+		}
+		return vecDist(pt, closestPointOnBox(pt, box));
+	}
+
+	function disableDForceOnNode(node) {
+		if (!node) {
+			return;
+		}
+		setProp(node, ["Visible in Simulation", "Visible In Simulation"], false);
+		setProp(node, ["Dynamics Strength"], 0);
+		setProp(node, ["Enable Simulation"], false);
+		try {
+			var obj = node.getObject();
+			if (obj) {
+				var nMod = 0;
+				try { nMod = obj.getNumModifiers(); } catch (e1) { nMod = 0; }
+				for (var i = 0; i < nMod; i += 1) {
+					var mod = obj.getModifier(i);
+					setProp(mod, ["Visible in Simulation", "Visible In Simulation"], false);
+					setProp(mod, ["Dynamics Strength"], 0);
+					setProp(mod, ["Enable Simulation"], false);
+				}
+			}
+		} catch (e2) {}
+	}
+
+	function disableDForceTree(figure) {
+		disableDForceOnNode(figure);
+		try {
+			var kids = figure.getNodeChildren(true);
+			for (var i = 0; i < kids.length; i += 1) {
+				disableDForceOnNode(kids[i]);
+			}
+		} catch (e1) {}
+	}
+
+	function setBoneXYZ(bone, x, y, z) {
+		if (!bone) {
+			return false;
+		}
+		try { bone.getXRotControl().setValue(Number(x)); } catch (e1) {}
+		try { bone.getYRotControl().setValue(Number(y)); } catch (e2) {}
+		try { bone.getZRotControl().setValue(Number(z)); } catch (e3) {}
+		return true;
+	}
+
+	function applyBoneAdjustments(figure, adjustments) {
+		if (!adjustments || !adjustments.length) {
+			return;
+		}
+		for (var i = 0; i < adjustments.length; i += 1) {
+			var adj = adjustments[i];
+			var bone = findBone(figure, adj.bone);
+			if (!bone) {
+				appendLog("bone not found: " + adj.bone);
+				continue;
+			}
+			try { bone.getXRotControl().setValue(bone.getXRotControl().getValue() + Number(adj.x || 0)); } catch (e1) {}
+			try { bone.getYRotControl().setValue(bone.getYRotControl().getValue() + Number(adj.y || 0)); } catch (e2) {}
+			try { bone.getZRotControl().setValue(bone.getZRotControl().getValue() + Number(adj.z || 0)); } catch (e3) {}
+			appendLog("bone add " + adj.bone + " " + adj.x + "," + adj.y + "," + adj.z);
+		}
+		processEventsABit();
+	}
+
+	function rotCtrl(bone, axis) {
+		if (axis === 0) {
+			return bone.getXRotControl();
+		}
+		if (axis === 1) {
+			return bone.getYRotControl();
+		}
+		return bone.getZRotControl();
+	}
+
+	function refineArmReach(figure, side, target, steps) {
+		if (!target) {
+			return 99999;
+		}
+		var prefix = String(side);
+		var names = [prefix + "_shoulder", prefix + "_upperarm", prefix + "_forearm"];
+		var hand = findBone(figure, prefix + "_hand");
+		if (!hand) {
+			return 99999;
+		}
+		var deltas = [-10, -5, 5, 10];
+		var s;
+		var b;
+		var a;
+		var d;
+		for (s = 0; s < steps; s += 1) {
+			for (b = 0; b < names.length; b += 1) {
+				var bone = findBone(figure, names[b]);
+				if (!bone) {
+					continue;
+				}
+				for (a = 0; a < 3; a += 1) {
+					var ctrl = rotCtrl(bone, a);
+					if (!ctrl) {
+						continue;
+					}
+					var bestVal = ctrl.getValue();
+					var bestDist = vecDist(getNodeWS(hand), target);
+					for (d = 0; d < deltas.length; d += 1) {
+						var trial = bestVal + deltas[d];
+						if (trial < -120 || trial > 120) {
+							continue;
+						}
+						ctrl.setValue(trial);
+						var dist = vecDist(getNodeWS(hand), target);
+						if (dist < bestDist) {
+							bestDist = dist;
+							bestVal = trial;
+						}
+					}
+					ctrl.setValue(bestVal);
+				}
+			}
+		}
+		processEventsABit();
+		return vecDist(getNodeWS(hand), target);
+	}
+
+	function parentChainContains(node, figure) {
+		var n = node;
+		var guard = 0;
+		while (n && guard < 40) {
+			if (n === figure) {
+				return true;
+			}
+			try { n = n.getNodeParent(); } catch (e1) { return false; }
+			guard += 1;
+		}
+		return false;
+	}
+
+	function parentIsHand(node, handName) {
+		var n = node;
+		var guard = 0;
+		var want = String(handName).toLowerCase();
+		while (n && guard < 40) {
+			var label = (String(n.getName()) + " " + String(n.getLabel())).toLowerCase();
+			if (label.indexOf(want) >= 0) {
+				return true;
+			}
+			try { n = n.getNodeParent(); } catch (e1) { return false; }
+			guard += 1;
+		}
+		return false;
+	}
+
+	function weaponReachTarget(weapon, along) {
+		try {
+			var box = weapon.getWSBoundingBox();
+			if (!box) {
+				return getNodeWS(weapon);
+			}
+			var min = box.min;
+			var max = box.max;
+			var dx = max.x - min.x;
+			var dy = max.y - min.y;
+			var dz = max.z - min.z;
+			var t = Number(along);
+			if (dx >= dy && dx >= dz) {
+				return new DzVec3(min.x + dx * t, (min.y + max.y) * 0.5, (min.z + max.z) * 0.5);
+			}
+			if (dz >= dy) {
+				return new DzVec3((min.x + max.x) * 0.5, (min.y + max.y) * 0.5, min.z + dz * t);
+			}
+			return new DzVec3((min.x + max.x) * 0.5, min.y + dy * t, (min.z + max.z) * 0.5);
+		} catch (e1) {
+			return getNodeWS(weapon);
+		}
+	}
+
+	function validateWeaponPose(figure, weapon) {
+		var report = {
+			"ok": false,
+			"parented_to_figure": false,
+			"parented_to_r_hand": false,
+			"right_hand_dist": 99999,
+			"left_hand_dist": 99999,
+			"weapon_center_y": 0,
+			"reasons": []
+		};
+		if (!weapon) {
+			report.reasons.push("weapon node missing");
+			gState.weapon_validation = report;
+			return report;
+		}
+		report.parented_to_figure = parentChainContains(weapon, figure);
+		report.parented_to_r_hand = parentIsHand(weapon, "r_hand");
+		var rHand = findBone(figure, "r_hand");
+		var lHand = findBone(figure, "l_hand");
+		var wbox = null;
+		try { wbox = weapon.getWSBoundingBox(); } catch (e1) { wbox = null; }
+		var wpos = getNodeWS(weapon);
+		if (rHand && wbox) {
+			report.right_hand_dist = distToBox(getNodeWS(rHand), wbox);
+		} else if (rHand && wpos) {
+			report.right_hand_dist = vecDist(getNodeWS(rHand), wpos);
+		}
+		if (lHand && wbox) {
+			report.left_hand_dist = distToBox(getNodeWS(lHand), wbox);
+		} else if (lHand && wpos) {
+			report.left_hand_dist = vecDist(getNodeWS(lHand), wpos);
+		}
+		if (wpos) {
+			report.weapon_center_y = wpos.y;
+		}
+		if (!report.parented_to_figure) {
+			report.reasons.push("weapon is not parented under the figure");
+		}
+		if (!report.parented_to_r_hand) {
+			report.reasons.push("weapon is not parented to r_hand");
+		}
+		if (report.right_hand_dist > 14) {
+			report.reasons.push("right hand is far from weapon (" + report.right_hand_dist + ")");
+		}
+		if (report.left_hand_dist > 16) {
+			report.reasons.push("left hand is far from weapon (" + report.left_hand_dist + ")");
+		}
+		if (report.weapon_center_y < 35) {
+			report.reasons.push("weapon center is too low (possible float/drop)");
+		}
+		report.ok = report.reasons.length === 0;
+		gState.weapon_validation = report;
+		appendLog("weapon validation ok=" + report.ok + " r=" + report.right_hand_dist + " l=" + report.left_hand_dist + " y=" + report.weapon_center_y);
+		return report;
+	}
+
+	function loadWearable(figure, wearPath, matPath, hints, failStage, failCode, failPrefix) {
+		selectNode(figure);
+		if (!openContent(wearPath, true)) {
+			fail(failStage, failCode, failPrefix + " load failed: " + wearPath);
+			return null;
+		}
+		var wearNode = findChildByHints(hints);
+		if (!wearNode) {
+			fail(failStage, failCode, failPrefix + " node was not present after load");
+			return null;
+		}
+		if (matPath) {
+			selectNode(wearNode);
+			if (!openContent(matPath, true)) {
+				fail(failStage, failCode, failPrefix + " material failed: " + matPath);
+				return null;
+			}
+		}
+		selectNode(figure);
+		return wearNode;
+	}
+
+	function classifyMissing(recipe, missing) {
+		var i;
+		for (i = 0; i < missing.length; i += 1) {
+			var m = String(missing[i]).toLowerCase();
+			if (m.indexOf("boot") >= 0 || m.indexOf("shoe") >= 0 || m.indexOf("footwear") >= 0) {
+				return "FOOTWEAR_MISSING";
+			}
+		}
+		if (recipe.require_footwear && (!recipe.footwear || !recipe.footwear.length)) {
+			return "FOOTWEAR_MISSING";
+		}
+		for (i = 0; i < missing.length; i += 1) {
+			var p = String(missing[i]).toLowerCase();
+			if (p.indexOf("classic tank") >= 0 || p.indexOf("multi-caliber") >= 0 || p.indexOf("pmws") >= 0 || p.indexOf("porsimo") >= 0) {
+				return "PAID_CONTENT_MISSING";
+			}
+		}
+		return "STARTER_CONTENT_MISSING";
+	}
+
 	function resolveRecipeAssets(recipe) {
 		var missing = [];
 		var resolved = {};
@@ -638,9 +1045,26 @@
 		need("character", recipe.character && recipe.character.asset);
 		need("pose", recipe.pose && recipe.pose.asset);
 		var clothes = recipe.clothing || [];
-		for (var i = 0; i < clothes.length; i += 1) {
+		var i;
+		for (i = 0; i < clothes.length; i += 1) {
 			need("clothing_" + clothes[i].slot, clothes[i].asset);
 			need("material_" + clothes[i].slot, clothes[i].material);
+		}
+		var feet = recipe.footwear || [];
+		for (i = 0; i < feet.length; i += 1) {
+			need("footwear_" + feet[i].slot, feet[i].asset);
+			need("footwear_material_" + feet[i].slot, feet[i].material);
+			need("footwear_pose_" + feet[i].slot, feet[i].pose);
+		}
+		if (recipe.hair && recipe.hair.asset) {
+			need("hair", recipe.hair.asset);
+			need("hair_material", recipe.hair.material);
+		}
+		if (recipe.weapon && recipe.weapon.asset) {
+			need("weapon", recipe.weapon.asset);
+			need("weapon_material", recipe.weapon.material);
+			need("weapon_hand_left", recipe.weapon.hand_pose_left);
+			need("weapon_hand_right", recipe.weapon.hand_pose_right);
 		}
 		gState.resolved_assets = resolved;
 		gState.missing_assets = missing;
@@ -676,6 +1100,76 @@
 			"source": rel.character || rel.base_figure
 		};
 		writeResult();
+		var clothes = recipe.clothing || [];
+		var i;
+		for (i = 0; i < clothes.length; i += 1) {
+			var slot = clothes[i].slot;
+			var wearNode = loadWearable(
+				figure,
+				rel["clothing_" + slot],
+				rel["material_" + slot],
+				[clothes[i].label, slot],
+				"wearable",
+				"WEARABLE_LOAD_FAILED",
+				slot
+			);
+			if (!wearNode) {
+				return null;
+			}
+			gState.clothing.push({
+				"slot": slot,
+				"node": String(wearNode.getLabel()),
+				"asset": rel["clothing_" + slot],
+				"material": rel["material_" + slot]
+			});
+			writeResult();
+		}
+		var feet = recipe.footwear || [];
+		if (recipe.require_footwear && (!feet.length || !rel["footwear_" + feet[0].slot])) {
+			fail("footwear", "FOOTWEAR_MISSING", "Recipe requires footwear but none resolved");
+			return null;
+		}
+		for (i = 0; i < feet.length; i += 1) {
+			var fslot = feet[i].slot;
+			var bootNode = loadWearable(
+				figure,
+				rel["footwear_" + fslot],
+				rel["footwear_material_" + fslot],
+				[feet[i].label, fslot, "Boots"],
+				"footwear",
+				"FOOTWEAR_MISSING",
+				fslot
+			);
+			if (!bootNode) {
+				return null;
+			}
+			gState.footwear.push({
+				"slot": fslot,
+				"node": String(bootNode.getLabel()),
+				"asset": rel["footwear_" + fslot],
+				"material": rel["footwear_material_" + fslot]
+			});
+			writeResult();
+		}
+		if (rel.hair) {
+			var hairNode = loadWearable(
+				figure,
+				rel.hair,
+				rel.hair_material,
+				[recipe.hair && recipe.hair.label, "Mavick Hair"],
+				"hair",
+				"WEARABLE_LOAD_FAILED",
+				"hair"
+			);
+			if (!hairNode) {
+				return null;
+			}
+			gState.hair = {
+				"node": String(hairNode.getLabel()),
+				"asset": rel.hair,
+				"material": rel.hair_material
+			};
+		}
 		if (rel.pose) {
 			selectNode(figure);
 			if (!openContent(rel.pose, true)) {
@@ -684,34 +1178,79 @@
 			}
 			gState.pose = { "applied": true, "path": rel.pose };
 		}
-		var clothes = recipe.clothing || [];
-		for (var i = 0; i < clothes.length; i += 1) {
-			var slot = clothes[i].slot;
+		for (i = 0; i < feet.length; i += 1) {
+			var posePath = rel["footwear_pose_" + feet[i].slot];
+			if (posePath) {
+				selectNode(figure);
+				if (!openContent(posePath, true)) {
+					fail("footwear", "FOOTWEAR_MISSING", "Footwear pose failed: " + posePath);
+					return null;
+				}
+			}
+		}
+		if (recipe.dforce_simulate === false) {
+			disableDForceTree(figure);
+		}
+		if (rel.weapon) {
 			selectNode(figure);
-			var wearPath = rel["clothing_" + slot];
-			if (!openContent(wearPath, true)) {
-				fail("wearable", "WEARABLE_LOAD_FAILED", "Could not load " + slot + " from " + wearPath);
+			if (!openContent(rel.weapon, true)) {
+				fail("weapon", "WEAPON_LOAD_FAILED", "Could not load weapon wearable: " + rel.weapon);
 				return null;
 			}
-			var hints = [clothes[i].label, slot];
-			var wearNode = findChildByHints(hints);
-			if (!wearNode) {
-				fail("wearable", "WEARABLE_LOAD_FAILED", "Clothing node for " + slot + " was not present after load");
+			var wHints = (recipe.weapon && recipe.weapon.node_hints) ? recipe.weapon.node_hints : ["Carbine", "PMWS"];
+			var weaponNode = findChildByHints(wHints);
+			if (!weaponNode) {
+				fail("weapon", "WEAPON_LOAD_FAILED", "Weapon node was not present after load");
 				return null;
 			}
-			selectNode(wearNode);
-			var matPath = rel["material_" + slot];
-			if (matPath && !openContent(matPath, true)) {
-				fail("wearable", "WEARABLE_LOAD_FAILED", "Could not apply material for " + slot + ": " + matPath);
-				return null;
+			if (rel.weapon_material) {
+				selectNode(weaponNode);
+				if (!openContent(rel.weapon_material, true)) {
+					fail("weapon", "WEAPON_LOAD_FAILED", "Weapon material failed: " + rel.weapon_material);
+					return null;
+				}
 			}
-			gState.clothing.push({
-				"slot": slot,
-				"node": String(wearNode.getLabel()),
-				"asset": wearPath,
-				"material": matPath
-			});
+			gState.weapon = {
+				"node": String(weaponNode.getLabel()),
+				"asset": rel.weapon,
+				"material": rel.weapon_material
+			};
 			selectNode(figure);
+			if (rel.weapon_hand_left) {
+				if (!openContent(rel.weapon_hand_left, true)) {
+					fail("pose", "WEAPON_POSE_FAILED", "Left carbine hand pose failed");
+					return null;
+				}
+			}
+			selectNode(figure);
+			if (rel.weapon_hand_right) {
+				if (!openContent(rel.weapon_hand_right, true)) {
+					fail("pose", "WEAPON_POSE_FAILED", "Right carbine hand pose failed");
+					return null;
+				}
+			}
+			if (recipe.pose && recipe.pose.bone_adjustments) {
+				applyBoneAdjustments(figure, recipe.pose.bone_adjustments);
+			}
+			if (recipe.pose && recipe.pose.refine_reach) {
+				var rTarget = weaponReachTarget(weaponNode, 0.22);
+				refineArmReach(figure, "r", rTarget, 7);
+				selectNode(figure);
+				if (rel.weapon_hand_right) {
+					openContent(rel.weapon_hand_right, true);
+				}
+				var lTarget = weaponReachTarget(weaponNode, 0.72);
+				refineArmReach(figure, "l", lTarget, 8);
+			}
+			selectNode(figure);
+			if (rel.weapon_hand_right) {
+				openContent(rel.weapon_hand_right, true);
+			}
+			var check = validateWeaponPose(figure, weaponNode);
+			if (!check.ok) {
+				fail("pose", "WEAPON_POSE_FAILED", "Weapon pose invalid: " + check.reasons.join("; "));
+				return null;
+			}
 			writeResult();
 		}
 		selectNode(figure);
@@ -723,22 +1262,29 @@
 		gState.variant_id = recipe.variant_id;
 		gState.clip_id = (recipe.output_profile && recipe.output_profile.clip_id) ? recipe.output_profile.clip_id : "idle";
 		gState.source_dir = cfg.source_dir;
+		gState.post_process = recipe.post_process || {};
+		if (recipe.render_profile && recipe.render_profile.id) {
+			gState.camera_profile = String(recipe.render_profile.id);
+		}
 		var figure = assemble(recipe);
 		if (!figure) {
 			return;
 		}
 		var profile = recipe.render_profile || {};
+		gState.camera_profile = String(profile.id || gState.camera_profile);
+		gState.post_process = recipe.post_process || {};
 		gState.stage = "camera";
-		var cam = buildCamera(figure, profile);
+		var dirs = recipe.directions || ["e", "se", "s", "sw", "w", "nw", "n", "ne"];
+		var yawMap = recipe.direction_yaw_deg || {};
+		var offset = Number(profile.facing_yaw_offset_deg || 0);
+		var unionBox = unionDirectionBounds(figure, dirs, yawMap, offset);
+		var cam = buildCamera(figure, profile, unionBox);
 		if (!cam) {
 			fail("camera", "CAMERA_BUILD_FAILED", "Could not build provisional orthographic camera");
 			return;
 		}
 		buildLight(profile);
 		var renderer = configureIray();
-		var dirs = recipe.directions || ["e", "se", "s", "sw", "w", "nw", "n", "ne"];
-		var yawMap = recipe.direction_yaw_deg || {};
-		var offset = Number(profile.facing_yaw_offset_deg || 0);
 		var sizePx = Number((recipe.output_profile && recipe.output_profile.source_size) || 512);
 		var files = [];
 		assignCameraToViewports(cam);
@@ -761,7 +1307,7 @@
 			files.push(outPath);
 		}
 		gState.render_files = files;
-		pass("render", "handshake + unattended eight-direction smoke renders complete");
+		pass("render", "unattended eight-direction factory renders complete");
 	}
 
 	function main() {
@@ -802,7 +1348,7 @@
 			return;
 		}
 		if (missing.length) {
-			fail("content", "STARTER_CONTENT_MISSING", "Missing logical assets: " + missing.join("; "));
+			fail("content", classifyMissing(recipe, missing), "Missing logical assets: " + missing.join("; "));
 			return;
 		}
 		runSmoke(cfg, recipe);

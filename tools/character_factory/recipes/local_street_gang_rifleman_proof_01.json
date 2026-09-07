@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "variant_id": "local_street_gang_rifleman_proof_01",
+  "archetype": "local_street_gang",
+  "role": "rifleman",
+  "notes": "FIRST unpaid visual proof only. NOT runtime art. NOT product-accepted. NOT bound into TacticalUnitAnimationCatalog. Classic Tank Top Outfit includes no footwear; Worker Uniform Boots are the already-installed G9 closed footwear used instead of a barefoot compromise.",
+  "require_footwear": true,
+  "dforce_simulate": false,
+  "character": {
+    "base_figure": "People/Genesis 9/Genesis 9.duf",
+    "asset": "People/Genesis 9/Characters/Matt for Genesis 9.duf",
+    "label": "Matt for Genesis 9",
+    "body": null,
+    "face": null,
+    "age": null,
+    "skin": null
+  },
+  "clothing": [
+    {
+      "slot": "tank_top",
+      "asset": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Tank Top for Genesis 9.duf",
+      "material": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Top Materials/Tank Top Black.duf",
+      "label": "Classic Tank Top"
+    },
+    {
+      "slot": "trousers",
+      "asset": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Trousers for Genesis 9.duf",
+      "material": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Trouser Materials/Trousers Dark Green.duf",
+      "label": "Classic Trousers"
+    }
+  ],
+  "headwear": [],
+  "masks": [],
+  "footwear": [
+    {
+      "slot": "boots",
+      "asset": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Worker Uniform Boots.duf",
+      "material": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Materials/Boots/Worker Uniform Boots Black.duf",
+      "pose": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Worker Uniform Boots Pose.duf",
+      "label": "Worker Uniform Boots"
+    }
+  ],
+  "hair": {
+    "asset": "People/Genesis 9/Hair/Daz Originals/Mavick Hair and Beard/Mavick Hair.duf",
+    "material": "People/Genesis 9/Hair/Daz Originals/Mavick Hair and Beard/Iray Dual Lobe/Mavick Hair Black.duf",
+    "label": "Mavick Hair"
+  },
+  "facial_hair": null,
+  "armor": [],
+  "accessories": [],
+  "weapon": {
+    "id": "pmws_carbine_rh_g9m",
+    "asset": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/PMWS Carbine RH.duf",
+    "material": "Props/Porsimo/Multi-caliber Weapon System/Materials/PMWS MAT Gun Carbine Black Iray.duf",
+    "label": "MWS Carbine G9MR",
+    "hand_pose_left": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/Hand Poses/PMWS Carbine Left.duf",
+    "hand_pose_right": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/Hand Poses/PMWS Carbine Right.duf",
+    "node_hints": ["MWS Carbine", "PMWS_Carbine", "Carbine G9MR"]
+  },
+  "faction_palette": null,
+  "pose": {
+    "asset": "People/Genesis 9/Poses/Daz Originals/Base Poses/Base Masculine/G9 Base Pose 12 Standing G9M.duf",
+    "label": "G9 Base Pose 12 Standing G9M + PMWS carbine hand poses + scripted low-ready arms",
+    "refine_reach": true,
+    "bone_adjustments": [
+      { "bone": "hip", "x": 0, "y": 8, "z": 0 },
+      { "bone": "r_shoulder", "x": 6, "y": 10, "z": 16 },
+      { "bone": "r_upperarm", "x": 48, "y": -22, "z": -36 },
+      { "bone": "r_forearm", "x": 68, "y": 8, "z": 18 },
+      { "bone": "r_hand", "x": 12, "y": -16, "z": -8 },
+      { "bone": "l_shoulder", "x": 8, "y": -10, "z": -20 },
+      { "bone": "l_upperarm", "x": 44, "y": 18, "z": 32 },
+      { "bone": "l_forearm", "x": 58, "y": -6, "z": -16 },
+      { "bone": "l_hand", "x": 8, "y": 12, "z": 10 }
+    ]
+  },
+  "animation": null,
+  "animation_bank": null,
+  "render_profile": {
+    "id": "PROVISIONAL_TACTICAL_PROOF_160MM",
+    "not_canon": true,
+    "camera_kind": "perspective_telephoto",
+    "elevation_deg": 48.0,
+    "focal_length_mm": 160,
+    "ortho_scale": 2.05,
+    "light_yaw_deg": -32.0,
+    "light_pitch_deg": 52.0,
+    "key_intensity": 72,
+    "fill_intensity": 44,
+    "headlamp_intensity": 0.25,
+    "facing_yaw_offset_deg": 0.0,
+    "canvas_px": 512,
+    "fit_padding": 1.48,
+    "notes": "Starts from the V0 160mm elevated long-lens setup. PROVISIONAL. NOT CANON. Camera.frame() is pulled back by fit_padding so the person and carbine stay inside the 512 canvas."
+  },
+  "directions": ["e", "se", "s", "sw", "w", "nw", "n", "ne"],
+  "direction_yaw_deg": {
+    "s": 0.0,
+    "se": 45.0,
+    "e": 90.0,
+    "ne": 135.0,
+    "n": 180.0,
+    "nw": 225.0,
+    "w": 270.0,
+    "sw": 315.0
+  },
+  "output_profile": {
+    "clip_id": "idle",
+    "source_size": 512,
+    "runtime_size": 128,
+    "format": "png",
+    "alpha": true,
+    "filename_pattern": "{variant_id}_{clip_id}_{direction}.png"
+  },
+  "post_process": {
+    "not_canon": true,
+    "profiles": ["clean_downsample", "grounded_grit", "digitized_grit"],
+    "scale_preview_heights_px": [96, 80, 64],
+    "comparison_direction": "se",
+    "boards": {
+      "clean_downsample": "A_clean_downsample_board.png",
+      "grounded_grit": "B_grounded_grit_board.png",
+      "digitized_grit": "C_digitized_grit_board.png",
+      "comparison": "dead_street_rifleman_comparison_board.png"
+    }
+  }
+}

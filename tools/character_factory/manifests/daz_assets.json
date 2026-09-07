@@ -1,7 +1,42 @@
 {
-  "schema_version": 1,
-  "package": "Genesis 9 Starter Essentials",
-  "notes": "Logical DAZ content paths. Resolve against mapped native libraries at runtime. Do not assume C:\\Users\\Public\\Documents\\My DAZ 3D Library.",
+  "schema_version": 2,
+  "notes": "Logical DAZ content paths. Resolve against mapped native libraries at runtime. Do not assume a single machine content root. Do not copy proprietary DUF/DSF/textures into this repository.",
+  "packages": [
+    {
+      "id": "genesis9_starter_essentials",
+      "label": "Genesis 9 Starter Essentials",
+      "role": "free_base"
+    },
+    {
+      "id": "dforce_classic_tank_top_outfit_g9",
+      "label": "dForce Classic Tank Top Outfit for Genesis 9",
+      "vendor": "Romeo",
+      "sku": "102224-1",
+      "role": "paid_clothing",
+      "includes_footwear": false
+    },
+    {
+      "id": "multi_caliber_weapon_system",
+      "label": "Multi-Caliber Weapon System",
+      "vendor": "Porsimo",
+      "sku": "103057-1",
+      "role": "paid_weapon"
+    },
+    {
+      "id": "worker_uniform_g9",
+      "label": "Worker Uniform for Genesis 9",
+      "vendor": "Daz Originals",
+      "role": "already_installed_footwear",
+      "notes": "Tank-top outfit contains no footwear. Worker Uniform Boots are the only already-installed suitable Genesis 9 closed footwear (not Viking armor boots)."
+    },
+    {
+      "id": "mavick_hair_g9",
+      "label": "Mavick Hair and Beard for Genesis 9",
+      "vendor": "Daz Originals",
+      "role": "already_installed_hair",
+      "notes": "Simple masculine hair. Not the paid fade product."
+    }
+  ],
   "assets": {
     "genesis9_figure": "People/Genesis 9/Genesis 9.duf",
     "matt_for_genesis9": "People/Genesis 9/Characters/Matt for Genesis 9.duf",
@@ -9,6 +44,31 @@
     "g9_base_shorts": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/G9 Base Shorts.duf",
     "g9_base_shirt_black": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/Materials/G9 Base Shirt Black.duf",
     "g9_base_shorts_olive": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/Materials/G9 Base Shorts Olive.duf",
-    "g9_base_pose_12_standing_g9m": "People/Genesis 9/Poses/Daz Originals/Base Poses/Base Masculine/G9 Base Pose 12 Standing G9M.duf"
+    "g9_base_pose_12_standing_g9m": "People/Genesis 9/Poses/Daz Originals/Base Poses/Base Masculine/G9 Base Pose 12 Standing G9M.duf",
+    "classic_tank_top_g9": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Tank Top for Genesis 9.duf",
+    "classic_trousers_g9": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Trousers for Genesis 9.duf",
+    "classic_outfit_g9": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Outfit for Genesis 9.duf",
+    "classic_tank_top_black": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Top Materials/Tank Top Black.duf",
+    "classic_tank_top_gray": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Top Materials/Tank Top Gray.duf",
+    "classic_tank_top_navy": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Top Materials/Tank Top Navy.duf",
+    "classic_trousers_black": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Trouser Materials/Trousers Black.duf",
+    "classic_trousers_dark_green": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Trouser Materials/Trousers Dark Green.duf",
+    "classic_trousers_gray": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Trouser Materials/Trousers Gray.duf",
+    "pmws_gun_carbine": "Props/Porsimo/Multi-caliber Weapon System/PMWS !Gun Carbine.duf",
+    "pmws_gun_rifle": "Props/Porsimo/Multi-caliber Weapon System/PMWS !Gun Rifle.duf",
+    "pmws_gun_marksman_rifle": "Props/Porsimo/Multi-caliber Weapon System/PMWS !Gun Marksman Rifle.duf",
+    "pmws_gun_smg": "Props/Porsimo/Multi-caliber Weapon System/PMWS !Gun SMG.duf",
+    "pmws_carbine_rh_g9m": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/PMWS Carbine RH.duf",
+    "pmws_carbine_lh_g9m": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/PMWS Carbine LH.duf",
+    "pmws_rifle_rh_g9m": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/PMWS Rifle RH.duf",
+    "pmws_carbine_hand_right_g9m": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/Hand Poses/PMWS Carbine Right.duf",
+    "pmws_carbine_hand_left_g9m": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/Hand Poses/PMWS Carbine Left.duf",
+    "pmws_carbine_black_iray": "Props/Porsimo/Multi-caliber Weapon System/Materials/PMWS MAT Gun Carbine Black Iray.duf",
+    "worker_uniform_boots_g9": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Worker Uniform Boots.duf",
+    "worker_uniform_boots_pose_g9": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Worker Uniform Boots Pose.duf",
+    "worker_uniform_boots_black": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Materials/Boots/Worker Uniform Boots Black.duf",
+    "worker_uniform_boots_charcoal": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Materials/Boots/Worker Uniform Boots Charcoal.duf",
+    "mavick_hair_g9": "People/Genesis 9/Hair/Daz Originals/Mavick Hair and Beard/Mavick Hair.duf",
+    "mavick_hair_black_iray": "People/Genesis 9/Hair/Daz Originals/Mavick Hair and Beard/Iray Dual Lobe/Mavick Hair Black.duf"
   }
 }

@@ -1,10 +1,10 @@
-# Dead Street Character Factory V0 launcher.
-# Discovers DAZ Studio, runs unattended handshake/smoke, validates PNGs with Godot.
+# Dead Street Character Factory launcher.
+# Discovers DAZ Studio, runs unattended handshake/smoke/proof, validates PNGs with Godot.
 # Generated art is NOT bound into the game.
 
 [CmdletBinding()]
 param(
-    [ValidateSet("handshake", "smoke")]
+    [ValidateSet("handshake", "smoke", "proof")]
     [string]$Mode = "smoke",
     [string]$RecipePath = "",
     [int]$TimeoutSeconds = 0,
@@ -134,7 +134,11 @@ $repo = Get-RepoRoot -Hint $RepoRoot
 $factoryRoot = Join-Path $repo "tools\character_factory"
 $dsaPath = Join-Path $factoryRoot "daz\dead_street_factory.dsa"
 if (-not $RecipePath) {
-    $RecipePath = Join-Path $factoryRoot "recipes\smoke_genesis9.json"
+    if ($Mode -eq "proof") {
+        $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_proof_01.json"
+    } else {
+        $RecipePath = Join-Path $factoryRoot "recipes\smoke_genesis9.json"
+    }
 }
 if (-not (Test-Path -LiteralPath $dsaPath)) {
     throw "Missing factory script: $dsaPath"
@@ -169,7 +173,7 @@ $baseResult = [ordered]@{
     stage             = "launcher"
     error_code        = "FAIL"
     reason            = "launcher did not complete"
-    factory_version   = "0.1.0"
+    factory_version   = "0.2.0"
     mode              = $Mode
     run_dir           = $runDir
     repo_root         = $repo
@@ -181,6 +185,7 @@ $baseResult = [ordered]@{
     resolved_assets   = @{}
     render_files      = @()
     preview_board     = $null
+    preview_boards    = @{}
     log_path          = $logPath
     durations_sec     = [ordered]@{ launcher = 0; daz = 0; godot = 0 }
     started_at        = (Get-Date).ToString("o")
@@ -211,7 +216,7 @@ if (-not $dazExe) {
 Add-Content -LiteralPath $logPath -Value "daz_exe=$dazExe"
 
 $config = [ordered]@{
-    factory_version   = "0.1.0"
+    factory_version   = "0.2.0"
     mode              = $Mode
     run_dir           = $runDir
     result_path       = $dazResultPath
@@ -307,7 +312,15 @@ if ($godotProc.ExitCode -ne 0 -or -not $imageResult -or -not $imageResult.ok) {
 }
 
 $baseResult.preview_board = $imageResult.preview_board
+if ($imageResult.PSObject.Properties['preview_boards'] -and $imageResult.preview_boards) {
+    $baseResult.preview_boards = $imageResult.preview_boards
+}
 $swAll.Stop()
 $baseResult.durations_sec.launcher = [math]::Round($swAll.Elapsed.TotalSeconds, 2)
-Complete-Run "PASS" "image_validation" "" "Unattended DAZ smoke and Godot PNG validation complete. Art is not product-accepted."
+$doneReason = if ($Mode -eq "proof") {
+    "Unattended DAZ rifleman proof and Godot style boards complete. Art is not product-accepted and is not bound."
+} else {
+    "Unattended DAZ smoke and Godot PNG validation complete. Art is not product-accepted."
+}
+Complete-Run "PASS" "image_validation" "" $doneReason
 exit 0
