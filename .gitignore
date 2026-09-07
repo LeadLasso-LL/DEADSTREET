@@ -1,3 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Local character-pipeline caches (reproducible; do not commit)
+tools/character_pipeline/source/mpfb_packs/
+tools/character_pipeline/look_calib_01.blend
+tools/character_pipeline/calib/

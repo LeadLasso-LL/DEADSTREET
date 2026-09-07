@@ -65,6 +65,7 @@ const BattleSurfaceRegion := preload("res://battle/geometry/battle_surface_regio
 const BattlePresentationMarking := preload("res://battle/geometry/battle_presentation_marking.gd")
 const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
 const TacticalVisualCatalog := preload("res://battle/presentation/tactical_visual_catalog.gd")
+const TacticalUnitAnimationCatalog := preload("res://battle/presentation/tactical_unit_animation_catalog.gd")
 const TacticalVisualPlacement := preload("res://battle/presentation/tactical_visual_placement.gd")
 const TacticalEnvironmentPresenter := preload("res://gameplay/tactical_environment_presenter.gd")
 const BattleDeploymentPocket := preload("res://battle/geometry/battle_deployment_pocket.gd")
@@ -16643,6 +16644,21 @@ static func run() -> Dictionary:
 	var vispass_m7_identity_ok: bool = _vispass_m7_identity_ok()
 	var vispass_m7_live_units_ok: bool = _vispass_m7_live_units_ok()
 	var vispass_m7_safety_ok: bool = _vispass_m7_safety_ok()
+	var vispass_m7b_schema_ok: bool = _vispass_m7b_schema_ok()
+	var vispass_m7b_live_ok: bool = _vispass_m7b_live_ok()
+	var vispass_m7b_safety_ok: bool = _vispass_m7b_safety_ok()
+	var vispass_m7c_schema_ok: bool = _vispass_m7c_schema_ok()
+	var vispass_m7c_live_ok: bool = _vispass_m7c_live_ok()
+	var vispass_m7c_safety_ok: bool = _vispass_m7c_safety_ok()
+	var vispass_m7d_schema_ok: bool = _vispass_m7d_schema_ok()
+	var vispass_m7d_live_ok: bool = _vispass_m7d_live_ok()
+	var vispass_m7d_safety_ok: bool = _vispass_m7d_safety_ok()
+	var vispass_m7e_schema_ok: bool = _vispass_m7e_schema_ok()
+	var vispass_m7e_live_ok: bool = _vispass_m7e_live_ok()
+	var vispass_m7e_safety_ok: bool = _vispass_m7e_safety_ok()
+	var vispass_m7f_schema_ok: bool = _vispass_m7f_schema_ok()
+	var vispass_m7f_live_ok: bool = _vispass_m7f_live_ok()
+	var vispass_m7f_safety_ok: bool = _vispass_m7f_safety_ok()
 
 	var checks := {
 		"turn_matches": restored.current_turn == original.current_turn,
@@ -18922,6 +18938,21 @@ static func run() -> Dictionary:
 		"vispass_m7_identity_ok": vispass_m7_identity_ok,
 		"vispass_m7_live_units_ok": vispass_m7_live_units_ok,
 		"vispass_m7_safety_ok": vispass_m7_safety_ok,
+		"vispass_m7b_schema_ok": vispass_m7b_schema_ok,
+		"vispass_m7b_live_ok": vispass_m7b_live_ok,
+		"vispass_m7b_safety_ok": vispass_m7b_safety_ok,
+		"vispass_m7c_schema_ok": vispass_m7c_schema_ok,
+		"vispass_m7c_live_ok": vispass_m7c_live_ok,
+		"vispass_m7c_safety_ok": vispass_m7c_safety_ok,
+		"vispass_m7d_schema_ok": vispass_m7d_schema_ok,
+		"vispass_m7d_live_ok": vispass_m7d_live_ok,
+		"vispass_m7d_safety_ok": vispass_m7d_safety_ok,
+		"vispass_m7e_schema_ok": vispass_m7e_schema_ok,
+		"vispass_m7e_live_ok": vispass_m7e_live_ok,
+		"vispass_m7e_safety_ok": vispass_m7e_safety_ok,
+		"vispass_m7f_schema_ok": vispass_m7f_schema_ok,
+		"vispass_m7f_live_ok": vispass_m7f_live_ok,
+		"vispass_m7f_safety_ok": vispass_m7f_safety_ok,
 	}
 
 	var passed := true
@@ -73993,10 +74024,6 @@ static func _vispass_m7_live_units_ok() -> bool:
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
 		if participant == null or not participant.has_identity():
 			return _gameplayruntime_finish(runtime, false)
-		if view.actor_presenter.claims_participant(participant_id):
-			return _gameplayruntime_finish(runtime, false)
-		if view.actor_presenter.unit_node_instance_id(participant_id) != 0:
-			return _gameplayruntime_finish(runtime, false)
 		var card: Dictionary = TacticalUnitHudQuery.card_for(participant, "")
 		if str(card.get("display_name", "")) != "":
 			return _gameplayruntime_finish(runtime, false)
@@ -74022,11 +74049,7 @@ static func _vispass_m7_live_units_ok() -> bool:
 	var cache_before: int = TacticalVisualCatalog.cache_size()
 	view._process(0.016)
 	view._process(0.016)
-	if view.actor_presenter.unit_spawn_count != spawn_before:
-		return _gameplayruntime_finish(runtime, false)
 	if TacticalVisualCatalog.cache_size() != cache_before:
-		return _gameplayruntime_finish(runtime, false)
-	if view.actor_presenter.unit_spawn_count != 0:
 		return _gameplayruntime_finish(runtime, false)
 	var view_src: String = _tacticalview_source()
 	var presenter_src: String = FileAccess.get_file_as_string(
@@ -74038,9 +74061,6 @@ static func _vispass_m7_live_units_ok() -> bool:
 	return _gameplayruntime_finish(
 		runtime,
 		view.dynamic_unit_root != null
-		and view.dynamic_unit_root.get_child_count() == 0
-		and view.dynamic_asset_root.get_child_count() == 1
-		and presenter_src.contains("UNIT_VISUALS_ENABLED := false")
 		and presenter_src.contains("claims_participant")
 		and query_src.contains("card[\"display_name\"] = \"\"")
 		and query_src.contains("return \"RIFLE\"")
@@ -74053,6 +74073,7 @@ static func _vispass_m7_live_units_ok() -> bool:
 		and not view_src.contains(".png")
 		and not view_src.contains("Sprite2D")
 		and not view_src.contains("Texture2D")
+		and view.actor_presenter.unit_spawn_count == spawn_before
 	)
 
 
@@ -74091,8 +74112,587 @@ static func _vispass_m7_safety_ok() -> bool:
 		and view_src.contains("SOLDIER_SELECTION_RADIUS")
 		and not view_src.contains("get_rect()")
 		and presenter_src.contains("claims_participant")
-		and presenter_src.contains("UNIT_VISUALS_ENABLED := false")
 		and TacticalProvingGroundCatalog.HQ_BOUNDS.is_equal_approx(Rect2(17.0, 0.6, 36.0, 17.6))
 		and TacticalProvingGroundCatalog.PORCH_WALL_WEST.is_equal_approx(Rect2(18.2, 21.15, 12.2, 1.0))
 		and TacticalProvingGroundCatalog.MAIN_ROAD.is_equal_approx(Rect2(0.0, 26.8, 86.0, 15.2))
 	)
+
+
+static func _vispass_m7b_schema_ok() -> bool:
+	if TacticalParticipantVisual.eight_direction_id(Vector2.RIGHT) != TacticalParticipantVisual.DIR_E:
+		return false
+	if TacticalParticipantVisual.eight_direction_id(Vector2.DOWN) != TacticalParticipantVisual.DIR_S:
+		return false
+	if TacticalParticipantVisual.eight_direction_id(Vector2.LEFT) != TacticalParticipantVisual.DIR_W:
+		return false
+	if TacticalParticipantVisual.eight_direction_id(Vector2.UP) != TacticalParticipantVisual.DIR_N:
+		return false
+	if TacticalParticipantVisual.eight_direction_id(Vector2(1.0, 1.0)) != TacticalParticipantVisual.DIR_SE:
+		return false
+	if TacticalParticipantVisual.DIRECTION_IDS_8.size() != 8:
+		return false
+	if TacticalParticipantVisual.IMPLEMENTED_DIRECTION_IDS.size() != 8:
+		return false
+	if TacticalParticipantVisual.implemented_direction_id(Vector2(0.18, -1.0), "n") != "n":
+		return false
+	if TacticalParticipantVisual.implemented_direction_id(Vector2(1.0, 0.0), "n") != "e":
+		return false
+	if TacticalParticipantVisual.implemented_direction_id(Vector2(1.0, 1.0), "") != "se":
+		return false
+	var probe: BattleParticipant = BattleParticipant.new("probe", "", "", "attacker", "rifle")
+	probe.velocity = Vector2(0.05, 0.0)
+	if TacticalParticipantVisual.is_locomoting(probe):
+		return false
+	probe.velocity = Vector2(3.6, 0.0)
+	if not TacticalParticipantVisual.is_locomoting(probe):
+		return false
+	if TacticalUnitAnimationCatalog.frames_for("missing_variant") != null:
+		return false
+	if TacticalUnitAnimationCatalog.frames_for("look_calib_01") != null:
+		return false
+	if TacticalUnitAnimationCatalog.has_bound_frames(
+		StarterWorldService.SOLDIER_ID,
+		GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG,
+		"rifle"
+	):
+		return false
+	if not TacticalUnitAnimationCatalog.bound_variant_ids().is_empty():
+		return false
+	if not TacticalUnitAnimationCatalog.bound_clip_ids().is_empty():
+		return false
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_animation_catalog.gd"
+	)
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_actor_presenter.gd"
+	)
+	var spec_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_pipeline_spec.gd"
+	)
+	return (
+		catalog_src.contains("DIRECTION_IDS_8")
+		and catalog_src.contains("CLIP_AIM")
+		and catalog_src.contains("CLIP_FIRE")
+		and catalog_src.contains("CLIP_RELOAD")
+		and catalog_src.contains("CLIP_COVER_TUCKED")
+		and catalog_src.contains("CLIP_DEATH")
+		and catalog_src.contains("has_bound_frames")
+		and not catalog_src.contains("look_calib_01")
+		and not catalog_src.contains("CALIBRATION_ART_BOUND")
+		and presenter_src.contains("AnimatedSprite2D")
+		and presenter_src.contains("UNIT_VISUALS_ENABLED := true")
+		and presenter_src.contains("has_bound_frames")
+		and not presenter_src.contains("m7f_look_board")
+		and not presenter_src.contains("look_calib_01")
+		and not presenter_src.contains("node.rotation = face")
+		and spec_src.contains("PROVISIONAL_NOT_CANON")
+		and spec_src.contains("CAMERA_KIND := \"orthographic\"")
+		and spec_src.contains("CANVAS_PX := 256")
+		and spec_src.contains("ART_PIXELS_PER_UNIT := 50.0")
+		and FileAccess.file_exists("res://tools/character_pipeline/render_tactical_sprites.py")
+		and not FileAccess.file_exists("res://tools/character_pipeline/build_look_calibration.py")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_street_gang/look_calib_01/idle/s/00.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_street_gang/look_calib_01/idle/se/00.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_street_gang/look_calib_01/idle/e/00.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/unit_local_hoodie_01.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_rifle_01/idle_s.png")
+	)
+
+
+static func _vispass_m7b_live_ok() -> bool:
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	for participant_id: String in battle_state.participants:
+		if view.actor_presenter.claims_participant(participant_id):
+			return _gameplayruntime_finish(runtime, false)
+	var spawn_before: int = view.actor_presenter.unit_spawn_count
+	var frame_cache_before: int = TacticalUnitAnimationCatalog.frames_cache_size()
+	var tex_cache_before: int = TacticalUnitAnimationCatalog.texture_cache_size()
+	view._process(0.016)
+	view._process(0.016)
+	if view.actor_presenter.unit_spawn_count != spawn_before:
+		return _gameplayruntime_finish(runtime, false)
+	if TacticalUnitAnimationCatalog.frames_cache_size() != frame_cache_before:
+		return _gameplayruntime_finish(runtime, false)
+	if TacticalUnitAnimationCatalog.texture_cache_size() != tex_cache_before:
+		return _gameplayruntime_finish(runtime, false)
+	var card: Dictionary = TacticalUnitHudQuery.card_for(
+		battle_state.get_participant(StarterWorldService.SOLDIER_ID),
+		""
+	)
+	return _gameplayruntime_finish(
+		runtime,
+		spawn_before == 0
+		and view.dynamic_unit_root != null
+		and view.dynamic_unit_root.get_child_count() == 0
+		and view.dynamic_unit_root.get_node_or_null("m7f_look_board") == null
+		and view.dynamic_asset_root.get_child_count() == 1
+		and str(card.get("display_name", "")) == ""
+		and str(card.get("role_label", "")) == "RIFLE"
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_SMG_ID)
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_SHOTGUN_ID)
+		and not view._participant_uses_retained_visual(StarterWorldService.SOLDIER_ID)
+	)
+
+
+static func _vispass_m7b_safety_ok() -> bool:
+	if not _vispass_m7_safety_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if rifle == null or not rifle.has_battle_position:
+		return _gameplayruntime_finish(runtime, false)
+	var origin: Vector2 = view._soldier_presentation_origin(battle_state, rifle)
+	var hit_id: String = view.hit_test_live_friendly_soldier(origin)
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		hit_id == StarterWorldService.SOLDIER_ID
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and view_src.contains("SOLDIER_SELECTION_RADIUS")
+		and not view_src.contains("get_rect()")
+		and rifle.is_alive
+		and not rifle.is_wounded
+	)
+
+
+static func _vispass_m7c_schema_ok() -> bool:
+	if not _vispass_m7b_schema_ok():
+		return false
+	if TacticalUnitAnimationCatalog.frames_for("look_calib_01") != null:
+		return false
+	var implemented: Array[String] = TacticalUnitAnimationCatalog.implemented_clip_ids()
+	if implemented.has(TacticalUnitAnimationCatalog.CLIP_HIT):
+		return false
+	if implemented.has(TacticalUnitAnimationCatalog.CLIP_WOUNDED_WALK):
+		return false
+	for clip_id: String in implemented:
+		var min_frames: int = TacticalUnitAnimationCatalog.clip_frame_count(clip_id)
+		if clip_id == TacticalUnitAnimationCatalog.CLIP_WALK and min_frames < 6:
+			return false
+		if clip_id == TacticalUnitAnimationCatalog.CLIP_IDLE and min_frames < 2:
+			return false
+		if clip_id == TacticalUnitAnimationCatalog.CLIP_FIRE and min_frames < 3:
+			return false
+	var probe: BattleParticipant = BattleParticipant.new("probe", "", "", "attacker", "rifle")
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_IDLE:
+		return false
+	probe.velocity = Vector2(3.6, 0.0)
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_WALK:
+		return false
+	var walk_scale: float = TacticalParticipantVisual.walk_speed_scale(probe)
+	if walk_scale < 0.71 or walk_scale > 1.29:
+		return false
+	probe.velocity = Vector2.ZERO
+	probe.is_alive = false
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_DEATH:
+		return false
+	probe.is_alive = true
+	probe.is_wounded = true
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_WOUNDED_IDLE:
+		return false
+	probe.is_wounded = false
+	probe.weapon_state.is_reloading = true
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_RELOAD:
+		return false
+	probe.weapon_state.is_reloading = false
+	probe.occupied_cover_slot_id = "cover_slot"
+	probe.cover_posture = "tucked"
+	probe.cover_posture_phase = ""
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_COVER_TUCKED_IDLE:
+		return false
+	probe.cover_posture_phase = "exposing"
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_COVER_POPOUT:
+		return false
+	probe.cover_posture = "exposed"
+	probe.cover_posture_phase = "holding"
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_COVER_EXPOSED_IDLE:
+		return false
+	probe.weapon_state.cooldown_remaining_seconds = 0.5
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_COVER_FIRE:
+		return false
+	probe.occupied_cover_slot_id = ""
+	probe.cover_posture = "none"
+	probe.cover_posture_phase = ""
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_FIRE:
+		return false
+	probe.weapon_state.cooldown_remaining_seconds = 0.0
+	probe.has_target_participant = true
+	probe.target_participant_id = "enemy"
+	if TacticalParticipantVisual.animation_clip_id(null, probe) != TacticalUnitAnimationCatalog.CLIP_AIM:
+		return false
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_animation_catalog.gd"
+	)
+	var visual_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_participant_visual.gd"
+	)
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_actor_presenter.gd"
+	)
+	return (
+		catalog_src.contains("CLIP_COVER_POPOUT")
+		and catalog_src.contains("CLIP_COVER_FIRE")
+		and catalog_src.contains("CLIP_WOUNDED_IDLE")
+		and catalog_src.contains("CLIP_COVER_EXPOSED_IDLE")
+		and catalog_src.contains("CLIP_WOUNDED_WALK")
+		and catalog_src.contains("CLIP_HIT")
+		and catalog_src.contains("bound_clip_ids")
+		and catalog_src.contains("has_bound_frames")
+		and not catalog_src.contains("look_calib_01")
+		and visual_src.contains("animation_clip_id")
+		and visual_src.contains("walk_speed_scale")
+		and presenter_src.contains("speed_scale")
+		and presenter_src.contains("animation_clip_id")
+		and presenter_src.contains("playback_clip_id")
+		and TacticalUnitAnimationCatalog.bound_clip_ids().is_empty()
+		and not TacticalUnitAnimationCatalog.bound_clip_ids().has(TacticalUnitAnimationCatalog.CLIP_WALK)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_IDLE)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_WALK)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_AIM)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_FIRE)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_RELOAD)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_COVER_EXPOSED_IDLE)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_COVER_TUCKED_IDLE)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_COVER_POPOUT)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_COVER_FIRE)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_WOUNDED_IDLE)
+		and implemented.has(TacticalUnitAnimationCatalog.CLIP_DEATH)
+		and TacticalUnitAnimationCatalog.clip_loops(TacticalUnitAnimationCatalog.CLIP_WALK)
+		and not TacticalUnitAnimationCatalog.clip_loops(TacticalUnitAnimationCatalog.CLIP_DEATH)
+		and not TacticalUnitAnimationCatalog.clip_loops(TacticalUnitAnimationCatalog.CLIP_FIRE)
+	)
+
+
+static func _vispass_m7c_live_ok() -> bool:
+	if not _vispass_m7b_live_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if rifle == null:
+		return _gameplayruntime_finish(runtime, false)
+	var resolved_clip: String = TacticalParticipantVisual.animation_clip_id(battle_state, rifle)
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		TacticalUnitAnimationCatalog.implemented_clip_ids().has(resolved_clip)
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and view.actor_presenter.unit_clip_id(StarterWorldService.SOLDIER_ID) == ""
+		and view.actor_presenter.unit_animation_name(StarterWorldService.SOLDIER_ID) == ""
+		and not view._participant_uses_retained_visual(StarterWorldService.SOLDIER_ID)
+		and not view_src.contains("calibration_rifle_01")
+		and not view_src.contains("rig_proto_01")
+		and not view_src.contains("look_calib_01")
+		and not view_src.contains(".png")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and view_src.contains("_draw_soldier_standing")
+		and view_src.contains("_participant_uses_retained_visual")
+	)
+
+
+static func _vispass_m7c_safety_ok() -> bool:
+	return _vispass_m7b_safety_ok()
+
+
+static func _vispass_m7d_schema_ok() -> bool:
+	if not _vispass_m7c_schema_ok():
+		return false
+	if TacticalUnitPipelineSpec.WORLD_HUMAN_HEIGHT_UNITS != 1.8:
+		return false
+	if TacticalUnitPipelineSpec.ART_PIXELS_PER_UNIT != 50.0:
+		return false
+	if TacticalUnitPipelineSpec.VIEW_PIXELS_PER_UNIT != 8.0:
+		return false
+	if TacticalUnitPipelineSpec.CANVAS_PX != 256:
+		return false
+	if TacticalUnitPipelineSpec.FIGURE_FIT_PX != 200:
+		return false
+	if TacticalUnitPipelineSpec.FOOT_PAD_PX != 16:
+		return false
+	if TacticalUnitPipelineSpec.CAMERA_KIND != "orthographic":
+		return false
+	if TacticalUnitPipelineSpec.DIRECTION_YAW_DEG.size() != 8:
+		return false
+	if not TacticalUnitPipelineSpec.DIRECTION_YAW_DEG.has("n"):
+		return false
+	if not TacticalUnitPipelineSpec.DIRECTION_YAW_DEG.has("ne"):
+		return false
+	var spec_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_pipeline_spec.gd"
+	)
+	if not spec_src.contains("PROVISIONAL_NOT_CANON"):
+		return false
+	var render_path: String = "res://tools/character_pipeline/render_tactical_sprites.py"
+	if not FileAccess.file_exists(render_path):
+		return false
+	var render_src: String = FileAccess.get_file_as_string(render_path)
+	var view_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_actor_presenter.gd"
+	)
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_animation_catalog.gd"
+	)
+	return (
+		TacticalUnitAnimationCatalog.bound_variant_ids().is_empty()
+		and TacticalUnitAnimationCatalog.frames_for("look_calib_01") == null
+		and not TacticalUnitAnimationCatalog.has_bound_frames(
+			StarterWorldService.SOLDIER_ID,
+			GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG,
+			"rifle"
+		)
+		and render_src.contains("import bpy")
+		and render_src.contains("ORTHO")
+		and render_src.contains("film_transparent")
+		and render_src.contains("DIRECTION_YAW_DEG")
+		and render_src.contains("Does not run inside Godot")
+		and catalog_src.contains("has_bound_frames")
+		and catalog_src.contains("bound_variant_ids")
+		and not catalog_src.contains("look_calib_01")
+		and presenter_src.contains("AnimatedSprite2D")
+		and presenter_src.contains("has_bound_frames")
+		and not presenter_src.contains("m7f_look_board")
+		and not presenter_src.contains("blender")
+		and not view_src.contains("blender")
+		and not view_src.contains(".png")
+		and not view_src.contains("Sprite2D")
+		and not view_src.contains("Texture2D")
+		and not view_src.contains("calibration_rifle_01")
+		and not view_src.contains("look_calib_01")
+		and not view_src.contains("rig_proto_01")
+		and view_src.contains("_draw_soldier_standing")
+		and view_src.contains("_draw_soldier_ground")
+		and TacticalUnitPipelineSpec.frame_path(
+			"local_street_gang",
+			"example_variant",
+			"idle",
+			"s",
+			0
+		) == "res://assets/tactical/units/local_street_gang/example_variant/idle/s/00.png"
+	)
+
+
+static func _vispass_m7d_live_ok() -> bool:
+	if not _vispass_m7c_live_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	var rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if rifle == null or not rifle.has_identity():
+		return _gameplayruntime_finish(runtime, false)
+	var card: Dictionary = TacticalUnitHudQuery.card_for(rifle, "")
+	var resolved_clip: String = TacticalParticipantVisual.animation_clip_id(battle_state, rifle)
+	return _gameplayruntime_finish(
+		runtime,
+		rifle.identity.gang_archetype_id == GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG
+		and rifle.identity.firearm_visual_id == "rifle"
+		and str(card.get("display_name", "")) == ""
+		and str(card.get("role_label", "")) == "RIFLE"
+		and TacticalUnitAnimationCatalog.implemented_clip_ids().has(resolved_clip)
+		and TacticalUnitAnimationCatalog.frames_cache_size() == 0
+		and TacticalUnitAnimationCatalog.texture_cache_size() == 0
+		and view.actor_presenter.unit_spawn_count == 0
+		and view.dynamic_unit_root.get_child_count() == 0
+		and view.dynamic_unit_root.get_node_or_null("m7f_look_board") == null
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and not view._participant_uses_retained_visual(StarterWorldService.SOLDIER_ID)
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_SMG_ID)
+	)
+
+
+static func _vispass_m7d_safety_ok() -> bool:
+	if not _vispass_m7c_safety_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	var battle_state: BattleState = runtime.get_current_session().battle_state
+	if view == null or battle_state == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var rifle: BattleParticipant = battle_state.get_participant(StarterWorldService.SOLDIER_ID)
+	if rifle == null or not rifle.has_battle_position:
+		return _gameplayruntime_finish(runtime, false)
+	var origin: Vector2 = view._soldier_presentation_origin(battle_state, rifle)
+	var hit_id: String = view.hit_test_live_friendly_soldier(origin)
+	var miss_id: String = view.hit_test_live_friendly_soldier(origin + Vector2(400.0, 400.0))
+	var view_src: String = _tacticalview_source()
+	return _gameplayruntime_finish(
+		runtime,
+		hit_id == StarterWorldService.SOLDIER_ID
+		and miss_id == ""
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and view_src.contains("SOLDIER_SELECTION_RADIUS")
+		and not view_src.contains("get_rect()")
+		and rifle.is_alive
+		and not rifle.is_wounded
+	)
+
+
+static func _vispass_m7e_schema_ok() -> bool:
+	if not _vispass_m7d_schema_ok():
+		return false
+	if TacticalUnitAnimationCatalog.playback_clip_id(TacticalUnitAnimationCatalog.CLIP_AIM) != TacticalUnitAnimationCatalog.CLIP_AIM:
+		return false
+	if TacticalUnitAnimationCatalog.playback_clip_id(TacticalUnitAnimationCatalog.CLIP_WALK) != TacticalUnitAnimationCatalog.CLIP_WALK:
+		return false
+	if TacticalUnitAnimationCatalog.frames_for("look_calib_01") != null:
+		return false
+	var catalog_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_animation_catalog.gd"
+	)
+	return (
+		catalog_src.contains("has_bound_frames")
+		and catalog_src.contains("No painted character is bound")
+		and not catalog_src.contains("look_calib_01")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_street_gang/look_calib_01/idle/s/00.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_street_gang/look_calib_01/idle/se/00.png")
+		and not FileAccess.file_exists("res://assets/tactical/units/local_street_gang/look_calib_01/idle/e/00.png")
+	)
+
+
+static func _vispass_m7e_live_ok() -> bool:
+	if not _vispass_m7d_live_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var dir_id: String = view.actor_presenter.unit_direction_id(StarterWorldService.SOLDIER_ID)
+	var clip_id: String = view.actor_presenter.unit_clip_id(StarterWorldService.SOLDIER_ID)
+	var anim_name: String = view.actor_presenter.unit_animation_name(StarterWorldService.SOLDIER_ID)
+	var cache_before: int = TacticalUnitAnimationCatalog.frames_cache_size()
+	var instance_before: int = view.actor_presenter.unit_node_instance_id(StarterWorldService.SOLDIER_ID)
+	view._process(0.016)
+	view._process(0.016)
+	return _gameplayruntime_finish(
+		runtime,
+		dir_id == ""
+		and clip_id == ""
+		and anim_name == ""
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_SMG_ID)
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_SHOTGUN_ID)
+		and TacticalUnitAnimationCatalog.frames_cache_size() == cache_before
+		and view.actor_presenter.unit_node_instance_id(StarterWorldService.SOLDIER_ID) == instance_before
+		and instance_before == 0
+	)
+
+
+static func _vispass_m7e_safety_ok() -> bool:
+	return _vispass_m7d_safety_ok()
+
+
+static func _vispass_m7f_schema_ok() -> bool:
+	if not _vispass_m7e_schema_ok():
+		return false
+	var spec_src: String = FileAccess.get_file_as_string(
+		"res://battle/presentation/tactical_unit_pipeline_spec.gd"
+	)
+	var presenter_src: String = FileAccess.get_file_as_string(
+		"res://gameplay/tactical_actor_presenter.gd"
+	)
+	var view_src: String = FileAccess.get_file_as_string("res://gameplay/tactical_battle_view.gd")
+	return (
+		spec_src.contains("PROVISIONAL_NOT_CANON")
+		and not FileAccess.file_exists("res://tools/character_pipeline/build_look_calibration.py")
+		and not presenter_src.contains("m7f_look_board")
+		and not presenter_src.contains("look_calibration_claims_clip")
+		and not presenter_src.contains("LOOK_CALIBRATION_DIRECTION_IDS")
+		and not view_src.contains("look_calib_01")
+		and not view_src.contains("m7f_look_board")
+		and not view_src.contains(".png")
+	)
+
+
+static func _vispass_m7f_live_ok() -> bool:
+	if not _vispass_m7e_live_ok():
+		return false
+	var runtime: GameplayRuntime = _gameplayruntime_boot()
+	if runtime == null:
+		return false
+	if not _tacticalhud_enter_active(runtime):
+		return _gameplayruntime_finish(runtime, false)
+	var view: TacticalBattleView = _tacticalview_view(runtime)
+	if view == null or view.actor_presenter == null or view.dynamic_unit_root == null:
+		return _gameplayruntime_finish(runtime, false)
+	view.visible = true
+	view._ensure_layers()
+	view._process(0.016)
+	var board: Node2D = view.dynamic_unit_root.get_node_or_null("m7f_look_board") as Node2D
+	var probe: BattleParticipant = BattleParticipant.new("probe", "", "", "attacker", "rifle")
+	probe.velocity = Vector2(3.6, 0.0)
+	return _gameplayruntime_finish(
+		runtime,
+		board == null
+		and view.dynamic_unit_root.get_child_count() == 0
+		and not view.actor_presenter.claims_participant(StarterWorldService.SOLDIER_ID)
+		and TacticalParticipantVisual.animation_clip_id(null, probe) == TacticalUnitAnimationCatalog.CLIP_WALK
+		and not view._participant_uses_retained_visual(StarterWorldService.SOLDIER_ID)
+	)
+
+
+static func _vispass_m7f_safety_ok() -> bool:
+	return _vispass_m7e_safety_ok()
