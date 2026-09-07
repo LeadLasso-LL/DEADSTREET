@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "package": "Genesis 9 Starter Essentials",
+  "notes": "Logical DAZ content paths. Resolve against mapped native libraries at runtime. Do not assume C:\\Users\\Public\\Documents\\My DAZ 3D Library.",
+  "assets": {
+    "genesis9_figure": "People/Genesis 9/Genesis 9.duf",
+    "matt_for_genesis9": "People/Genesis 9/Characters/Matt for Genesis 9.duf",
+    "g9_base_shirt": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/G9 Base Shirt.duf",
+    "g9_base_shorts": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/G9 Base Shorts.duf",
+    "g9_base_shirt_black": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/Materials/G9 Base Shirt Black.duf",
+    "g9_base_shorts_olive": "People/Genesis 9/Clothing/Daz Originals/Base Clothing/Materials/G9 Base Shorts Olive.duf",
+    "g9_base_pose_12_standing_g9m": "People/Genesis 9/Poses/Daz Originals/Base Poses/Base Masculine/G9 Base Pose 12 Standing G9M.duf"
+  }
+}

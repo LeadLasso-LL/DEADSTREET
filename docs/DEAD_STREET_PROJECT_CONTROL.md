@@ -2,9 +2,9 @@
 
 **Canonical living development tracker.**  
 Last audit: **2026-09-07**.  
-Last product-state correction: **2026-09-07** — M7F `look_calib_01` visually rejected; source experiment pivoted to Human Generator.  
-Last implementation milestone: **2026-09-07** — surgical M7F rejection cleanup (candidate retired; generic architecture retained).  
-Cleanup checkpoint: **product owner accepted without an additional manual F5 baseline test.** That is **not** visual acceptance of any new character art.
+Last product-state correction: **2026-09-07** — Human Generator trial insufficient; DAZ Studio / Genesis 9 is the capability-vetted source pipeline.  
+Last implementation milestone: **2026-09-07** — Character Factory V0 automated DAZ handshake + free Genesis 9 smoke.  
+Cleanup checkpoint: **product owner accepted M7F cleanup without an additional manual F5 baseline test.** That is **not** visual acceptance of any new character art.
 
 This file is not a game design document, not a player encyclopedia, and not a vision rewrite.
 
@@ -83,25 +83,25 @@ Rules:
 
 ## 3. Current project snapshot
 
-| Field | State (2026-09-07, M7F cleanup checkpoint) |
+| Field | State (2026-09-07, Character Factory V0 smoke) |
 |---|---|
 | Engine / project | Godot 4.7, Forward Plus, Jolt; main scene `res://gameplay/gameplay_runtime.tscn` |
 | Branch | `main` tracking `origin/main` |
-| HEAD | This commit — *Retire rejected M7F character calibration* |
-| Working tree | Checkpoint of retired `look_calib_01` + retained generic 3D→2D architecture |
+| HEAD | `530dbed` — *Retire rejected M7F character calibration* (working tree dirty with Character Factory V0 tools; **not committed**) |
+| Working tree | Dirty: `tools/character_factory/` + `.gitignore`. Generated renders are **outside** the repo (`%LOCALAPPDATA%\DeadStreetCharacterFactory\`). |
 | Tags | none |
-| CORE VALIDATION | **PASS** (2026-09-07 after cleanup, ~73s headless) — technical only; not re-run for this checkpoint |
-| Last clearly accepted checkpoint | This commit — product owner accepted the cleanup **without an additional manual F5 baseline test**. Not visual acceptance of new character art. |
+| CORE VALIDATION | **PASS** (2026-09-07 after Character Factory V0, ~63s headless) — technical only |
+| Last clearly accepted checkpoint | `530dbed` — M7F cleanup accepted **without an additional manual F5 baseline test**. Not visual acceptance of new character art. |
 | Current active initiative | 🔵 Tactical **character visual language / source pipeline** |
-| Current experiment | 🔵 **Blender + Human Generator** — external; not in repo; **acceptance not yet earned** |
-| Superseded experiment | ❌ MPFB `look_calib_01` — TECHNICAL: PASS / PRODUCT-VISUAL: REJECTED / **physically retired from active tree** |
-| Immediate next validation gate | Verify Human Generator availability in Blender, then one-character vertical slice |
-| Current known blockers | No accepted character source yet; HG not in repo |
-| Current ❓ decisions | Permanent character source pipeline; Human Generator vertical-slice viability; camera/pitch/render must be recalibrated on the next accepted source (do **not** inherit M7F 48°/2.05 blindly); casualty persistence; HQ garrison fate; vitality HUD vs “hidden” trauma |
-| Next recommended milestone | **HUMAN GENERATOR VERTICAL SLICE — SOURCE CHARACTER PROOF** |
-| Do not start yet | Full animation libraries, multiple characters, politics, police, city-map polish, extra factions, Russian units |
+| Current experiment | 🔵 **DAZ Studio / Genesis 9 Character Factory** — capability-vetted source pipeline; **visual look not accepted** |
+| Superseded experiments | ❌ MPFB `look_calib_01` (retired) · ❌ Human Generator trial (insufficient; no longer active) |
+| Immediate next validation gate | Dead Street source-character proof using approved street clothing + weapon assets |
+| Current known blockers | No accepted character look; smoke Matt is Starter Essentials only, unbound |
+| Current ❓ decisions | Permanent character source pipeline; camera/pitch/render must be recalibrated on the next accepted source (do **not** inherit M7F 48°/2.05 or smoke 160mm); casualty persistence; HQ garrison fate; vitality HUD vs “hidden” trauma |
+| Next recommended milestone | **DAZ GENESIS 9 SOURCE-CHARACTER PROOF — STREET CLOTHING + WEAPON** |
+| Do not start yet | Full animation libraries, multiple characters, politics, police, city-map polish, extra factions, Russian units, binding factory PNGs |
 
-**One-line status:** Persistent proving-ground campaign + real-time HQ assault is playable. Rejected M7F character is gone. Procedural fallback is the current unit baseline. Generic 3D→2D presenter/catalog/identity architecture is retained. Next experiment is Human Generator, unproven.
+**One-line status:** Persistent proving-ground campaign + real-time HQ assault is playable. Rejected M7F character is gone. Procedural fallback remains the runtime unit baseline. Character Factory V0 can drive DAZ unattended (free Genesis 9 smoke only). DAZ look is **not** accepted. Human Generator is no longer the active experiment.
 
 ---
 
@@ -131,16 +131,17 @@ These are reusable / accepted unless later repo evidence says otherwise. Product
 - Offline rigged-3D-source → rendered-2D-runtime concept
 - `AnimatedSprite2D` / retained presenter approach where applicable
 - `TacticalBattleView` must not own `.png` / `Sprite2D` / `Texture2D`
-- Blender can render transparent directional RGBA stills from a rigged character
+- Character Factory V0 can launch installed DAZ Studio unattended, assemble free Genesis 9 Starter Essentials (Matt + base shirt/shorts + standing pose), write eight directional PNGs outside the repo, and downsample/validate them with Godot
 - CORE VALIDATION can stay green while art is experimental
 
 ### WHAT HAS NOT BEEN PROVEN
 
 - Any character source that **belongs** in Dead Street beside the canonical tactical look
-- Human Generator as a viable or permanent production pipeline
-- A locked canonical camera/pitch/scale for the next source (M7F 48° / ortho 2.05 is **not** inherited)
+- DAZ / Genesis 9 as a **visually accepted** Dead Street unit
+- Human Generator as a viable or permanent production pipeline (trial insufficient; **no longer the active experiment**)
+- A locked canonical camera/pitch/scale (M7F 48° / ortho 2.05 is **not** inherited; factory smoke 160mm perspective is **PROVISIONAL_SMOKE_ONLY**)
 - Walk / cover / fire / reload / death as one continuous accepted person
-- Binding the full proving-ground roster to painted art
+- Binding factory smoke renders — or any generated art — into `TacticalUnitAnimationCatalog`
 
 ### SUPERSEDED EXPERIMENT (retired from active tree)
 
@@ -157,19 +158,22 @@ These are reusable / accepted unless later repo evidence says otherwise. Product
 
 ### CURRENT EXPERIMENT
 
-🔵 **Blender + Human Generator**
+🔵 **DAZ Studio / Genesis 9 Character Factory**
 
 | Field | State |
 |---|---|
-| Classification | CURRENT EXTERNAL ART-PIPELINE EXPERIMENT |
-| Status | Installation / availability verification + first-character vertical slice |
-| Acceptance | **NOT YET EARNED** |
-| In repo | **None** — expected. No HumGen implementation, assets, or scripts in git. |
-| Local Blender 4.5 (2026-09-07 machine audit) | MPFB extension present; Human Generator **not observed** in that Blender 4.5 add-on tree. Availability must be re-verified as the next external step. |
-| Proven? | No |
-| Permanent production pipeline? | No — ❓ until a one-character vertical slice passes product F5 |
+| Classification | CURRENT CAPABILITY-VETTED SOURCE PIPELINE |
+| Status | V0 automated handshake + free Starter Essentials smoke **completed 2026-09-07** |
+| Acceptance | **NOT EARNED.** Smoke Matt is not a Dead Street gang member. Renders are unbound. |
+| In repo | Factory launcher/script/recipe/Godot image tool only. No DAZ DUF/textures/renders. |
+| DAZ | Studio 6.25.2026.14722 General Release Pro; discovered at runtime, not hardcoded |
+| Smoke recipe | `smoke_matt_01` / `pipeline_smoke_only` — Matt, G9 Base Shirt Black, G9 Base Shorts Olive, standing pose |
+| Runtime | Procedural fallback still active; catalog still unbound |
+| Camera / light | `PROVISIONAL_SMOKE_ONLY` — Iray ortho produced empty frames; smoke used framed 160mm elevated perspective. **Not canon.** |
+| Blender | **Not required** for the core source pipeline. Reserve only for future custom asset work if necessary. |
+| Permanent production pipeline? | No — ❓ until a street-clothing + weapon source-character proof passes product F5 |
 
-### SUCCESS CRITERIA (one-character vertical slice)
+### SUCCESS CRITERIA (next: street clothing + weapon source-character proof)
 
 At normal F5 tactical view, without zooming:
 
@@ -195,9 +199,9 @@ If it would not sit in the same game as canonical Dead Street tactical art: **re
 ### NEXT ACTION
 
 1. Documentation correction — **done**
-2. Surgical M7F rejection cleanup — **done 2026-09-07** (CORE VALIDATION PASS; candidate gone; fallback restored)
-3. **Next:** Verify Human Generator availability in Blender
-4. One gang-member character source → camera/scale vs reference → minimal idle/look directional renders → product F5
+2. Surgical M7F rejection cleanup — **done 2026-09-07**
+3. Character Factory V0 DAZ handshake + free Genesis 9 smoke — **done 2026-09-07** (unattended; CORE VALIDATION PASS; **not** visual acceptance)
+4. **Next:** DAZ Genesis 9 source-character proof using approved street clothing + weapon assets
 
 ### WHAT MUST NOT BE BUILT YET
 
@@ -313,10 +317,10 @@ Implementation state describes the **repository**. Acceptance is separate.
 | Visual catalog / bindings | Data-driven textures | 🟢 `TacticalVisualCatalog`, `BattleVisualBinding` | 🟢 | 🟡 Some pipeline-test building IDs; `building_hq_01.png` / `surface_road_01.png` **missing on disk** while block composites exist | Assets | Clean dangling catalog entries | Soon |
 | Environment presenter | Retained static sprites | 🟢 `TacticalEnvironmentPresenter` | 🟢 | 🟡 | Catalog | — | Protect |
 | Actor presenter | Retained vehicles + units | 🟢 `TacticalActorPresenter` — **kept**; no painted unit claimed | 🟢 vispasses | 🟢 architecture accepted | Catalog, animation catalog | Bind a future accepted set | 🔵 |
-| Unit art | Gang members / criminals / survivors | ❌ `look_calib_01` retired; HEAD/runtime procedural fallback | 🟢 technical | ❌ M7F product rejected | Pipeline | HG one-character slice | 🔵 |
+| Unit art | Gang members / criminals / survivors | ❌ `look_calib_01` retired; HEAD/runtime procedural fallback; factory smoke unbound | 🟢 technical | ❌ no accepted look | Pipeline | Street clothing + weapon source-character proof | 🔵 |
 | Animation catalog / facing | Directional clips into runtime 2D | 🟢 `TacticalUnitAnimationCatalog` generic contract; `bound_variant_ids()` empty | 🟢 schema | 🟢 architecture; no bound art | Identity, presenter | Register accepted variant later | Protect |
-| Animation libraries | Coherent skeletal clips on an accepted body | 🟡 Spec lists clips; no accepted frames | 🟢 schema | ❌ No accepted body | Look lock on **new** source | After HG (or other) F5 accept | After look |
-| Character production pipeline | Reuse skeleton/camera/lights; vary people | 🟢 Offline 3D→2D concept + `render_tactical_sprites.py` **kept**; MPFB builder **removed**; HG not in repo | 🟢 | ❓ permanent source; HG viability unresolved | Blender | Verify HG; one-character slice; recalibrate camera | 🔵 |
+| Animation libraries | Coherent skeletal clips on an accepted body | 🟡 Spec lists clips; no accepted frames | 🟢 schema | ❌ No accepted body | Look lock on **new** source | After source-character F5 accept | After look |
+| Character production pipeline | Reuse skeleton/camera/lights; vary people | 🟢 Character Factory V0 (DAZ handshake/smoke) + retained generic 2D presenter | 🟢 factory smoke technical | ❌ look unaccepted; smoke camera not canon | DAZ G9 | Street clothing + weapon proof; recalibrate camera | 🔵 |
 | Campaign map presentation | Large readable city, not mobile-strategy gloss | 🟡 `CampaignMapView` — **developer visualization**, provisional tints, hardcoded keep/HQ labels | 🟢 | ❌ Not Dead Street art direction (file says so) | GameState | After character + loop, not before | Later |
 
 ### 5.8 Strategic systems (beyond the proving loop)
@@ -395,8 +399,8 @@ Do not casually reintroduce these.
 
 | Issue | Type | Severity | Area | User-visible effect | Root cause | Blocks | Handling | When |
 |---|---|---|---|---|---|---|---|---|
-| Character look not product-accepted | PRESENTATION | High | Units | Fight still reads as prototype | No accepted body; `look_calib_01` rejected and retired | Animation library, city polish | Verify HG → one-character slice → F5 | Now |
-| Generic architecture checkpointed without an accepted body | TECH DEBT | Low | Git | Presenter/catalog/spec are in tree but unbound | Cleanup preserved reusable M7 machinery | Future HG bind | Bind only after a product-accepted source | Next milestone |
+| Character look not product-accepted | PRESENTATION | High | Units | Fight still reads as prototype | No accepted body; factory smoke unbound | Animation library, city polish | Street clothing + weapon source-character proof → F5 | Now |
+| Generic architecture checkpointed without an accepted body | TECH DEBT | Low | Git | Presenter/catalog/spec are in tree but unbound | Cleanup preserved reusable M7 machinery | Future accepted-source bind | Bind only after a product-accepted source | Next milestone |
 | `TacticalBattleView` is monolithic (~4245 lines) | TECH DEBT | Medium | Presentation | Hard to change HUD/camera/draw without collisions | View accumulated duties | Future presentation work | Split only with a dedicated milestone | Later |
 | `core_validation.gd` is enormous (~75k lines) | TECH DEBT | Medium | Validation | Slow (~72s), brittle, hard to navigate | In-process vispasses boot live scenes | Future velocity | Do not add huge suites for look quality | Ongoing |
 | Economy skipped in live turns | DESIGN / WIRING | Medium | Campaign | No income/upkeep while playing F5 | `advance_campaign_turn` passes no catalog; starter has 0 businesses | Strategic layer | Wire after loop completeness | Next loop |
@@ -421,8 +425,8 @@ Technical lead: **DO NOT CHOOSE**. Record the verdict here when the product owne
 
 | Decision | Why it matters | Blocks | Technical options (informational) | Rule |
 |---|---|---|---|---|
-| Permanent character-production source pipeline | Every future person depends on this | Animation library, gang roster, portraits | Human Generator is the **current external experiment**, not an accepted lock. MPFB is superseded as current path, not permanently forbidden. Other licensed skinned humanoids remain possible if HG fails. | ❓ DO NOT CHOOSE |
-| Human Generator vertical-slice viability | Whether HG can produce one convincing Dead Street gang member through the existing 2D presenter | All character production | Verify install → one character → minimal directional stills → product F5. Not proven. Not in repo. | ❓ unresolved |
+| Permanent character-production source pipeline | Every future person depends on this | Animation library, gang roster, portraits | DAZ Studio / Genesis 9 is the **capability-vetted current source pipeline**, not a visually accepted lock. MPFB and Human Generator trials are superseded as current path. | ❓ DO NOT CHOOSE |
+| DAZ Genesis 9 street-character visual viability | Whether a Dead Street gang member (street clothing + weapon) can pass product F5 through the existing 2D presenter | All character production | Factory V0 smoke is technical only. Next: approved street clothing + weapon source-character proof → F5. | ❓ unresolved |
 | Exact camera / pitch / render calibration | Locks future character frames | All character renders | **Must be recalibrated against the next accepted source.** Do **not** inherit M7F 48° / ortho 2.05 blindly. | ❓ unresolved |
 | Vitality HUD: bars/% vs status-only (healthy/wounded/dead) | “Hidden trauma” vs readable combat | HUD rewrite | Keep bars as provisional; or replace with state chips | ❓ |
 | Campaign casualty persistence | Whether dead people stay dead on the campaign | Outcome bridge, recruitment, fear | Write deaths; wound recovery clock; jail vs death — all unchosen | ❓ |
@@ -508,10 +512,10 @@ Completed work is marked complete. We do not schedule it again.
 **Objective:** The proving-ground street and its people look like Dead Street.  
 **Delivered (keep):** Asset-backed environment blocks, vehicles/props, identity foundation, `TacticalActorPresenter`, catalog/facing contract, sim/presentation split, procedural fallback, simulation-authoritative hit-testing.  
 **Rejected as current character result:** MPFB `look_calib_01` — technical PASS, product-visual REJECTED, **retired from the active tree 2026-09-07**. Generic presenter/catalog/identity/fallback **kept**.  
-**Current source experiment:** Blender + Human Generator — external, unproven, not in repo, acceptance not earned.  
+**Current source experiment:** DAZ Studio / Genesis 9 Character Factory — capability-vetted; V0 smoke complete; **look not accepted**. Human Generator trial is no longer active.  
 **Runtime baseline:** procedural soldier fallback (temporary safe state, not the final visual strategy).  
 **Success:** One convincing gang-member vertical slice through the **existing** 2D architecture + product-accepted look + camera recalibrated on that source.  
-**Explicitly deferred:** Full animation set, extra characters, campaign map art, treating HG as locked production canon.
+**Explicitly deferred:** Full animation set, extra characters, campaign map art, binding factory PNGs, treating smoke camera as canon. Blender is not required for the core source pipeline.
 
 ### PHASE F — Complete campaign ↔ tactical loop — 🟡 NEXT AFTER LOOK
 
@@ -567,15 +571,15 @@ Completed work is marked complete. We do not schedule it again.
 
 The next meaningful milestones. Unrelated exciting features do not jump the queue.
 
-**A (docs correction) and B (surgical M7F cleanup) are complete.** Immediate next implementation is **C**.
+**A (docs correction) and B (surgical M7F cleanup) are complete.** Character Factory V0 (C) is complete as a **technical** handshake/smoke. Immediate next implementation is **D**.
 
 | Order | Milestone | Why now | Prerequisites | Definition of Done | Automated validation | Manual validation | Explicitly DO NOT add |
 |---|---|---|---|---|---|---|---|
-| A | **Documentation correction** | Product F5 of M7F already happened; tracker was stale | Product-owner rejection + HG pivot | This file records M7F as visually rejected; HG as current unproven experiment | n/a | Product-state review | Implementation, file deletion, commit |
-| B | **Surgical M7F rejection cleanup** | Rejected candidate must leave the active path | A | `look_calib_01` gone; look board gone; `player_soldier` procedural; generic architecture kept | **PASS 2026-09-07** | Product owner accepted this cleanup checkpoint **without an additional F5 baseline test**. Not visual acceptance of new art. | Deleting generic architecture; committing rejected art; starting HG in this same milestone |
-| C | **Verify Human Generator in Blender** | Current source experiment is external | B preferred so rejected art is not confused with HG | HG available or exact install/license blocker documented | n/a | Blender open, one human creatable | Repo mass-import of vendor caches; treating install as visual accept |
-| D | **ONE Dead Street gang-member character source** | Need a real person, not another technical dummy | C | One rigged, clothed, street-gang identity in HG (or documented HG failure → ❓ next source) | n/a | Source quality vs environment, not in-engine yet | Extra characters, Russian units, full wardrobe library |
-| E | **Camera / projection / scale vs accepted tactical reference** | M7F camera is not canon | D | Elevation/ortho/scale chosen from **this** character against the street reference | Pipeline spec updated only after it reads right | Compare to sedan/sidewalk/door/cover | Blindly copying 48° / 2.05 |
+| A | **Documentation correction** | Product F5 of M7F already happened; tracker was stale | Product-owner rejection + HG pivot | This file records M7F as visually rejected | n/a | Product-state review | Implementation, file deletion, commit |
+| B | **Surgical M7F rejection cleanup** | Rejected candidate must leave the active path | A | `look_calib_01` gone; look board gone; `player_soldier` procedural; generic architecture kept | **PASS 2026-09-07** | Product owner accepted this cleanup checkpoint **without an additional F5 baseline test**. Not visual acceptance of new art. | Deleting generic architecture; committing rejected art |
+| C | **Character Factory V0 — DAZ handshake + free smoke** | Prove Cursor can drive installed DAZ / Genesis 9 unattended | B | Handshake + `smoke_matt_01` eight directions + Godot 128px + preview board; no runtime bind | Factory PASS + CORE VALIDATION PASS 2026-09-07 | Technical inspection of preview board only — **not** product look accept | Binding PNGs; street wardrobe; treating smoke camera as canon |
+| D | **DAZ Genesis 9 source-character proof — street clothing + weapon** | Smoke Matt is not Dead Street | C | One gang-member identity with approved street clothing + weapon through the factory into existing 2D presenter | Factory run + focused bind tests only if product wants in-engine stills | Source vs street reference; then F5 if bound | Extra characters; animation libraries; HG resurrection |
+| E | **Camera / projection / scale vs accepted tactical reference** | Smoke camera is not canon | D | Elevation/projection/scale chosen from **this** character against the street reference | Pipeline spec updated only after it reads right | Compare to sedan/sidewalk/door/cover | Blindly copying 48° / 2.05 or smoke 160mm |
 | F | **Minimal idle / look directional renders** | Prove projection + identity before animation | E | Same person, same rig/camera/light; few representative directions; into existing catalog/presenter | Focused bind tests; no sprite-bound hit-tests | Stills are the same individual | 176+ production frames; fake walk |
 | G | **Manual product-owner visual review** | Only F5 can accept look | F | Accept / reject recorded here | CORE VALIDATION PASS ≠ accept | F5 at normal tactical view | Animation library on a rejected body |
 | H | **Walk / identity continuity** | Movement must be the same person | G **accepted** | Real walk (or current-speed locomotion) on the accepted body | Clip schema; fallback for unbound clips | F5 walk does not break identity | Cover/fire/death libraries |
@@ -593,13 +597,13 @@ An idea entering this list does **not** gain priority. It waits until the near-t
 
 ### NOW
 
-- Verify Human Generator availability in Blender
+- DAZ Genesis 9 source-character proof with approved street clothing + weapon
 - Keep CORE VALIDATION green without expanding it for taste
 - Do not resurrect `look_calib_01`
+- Do not bind factory smoke PNGs
 
 ### NEXT
 
-- One HG (or documented-fallback) gang-member source
 - Camera/scale recalibration on that source
 - Minimal idle/look directional renders
 - Product-owner F5 of the **new** candidate
@@ -658,7 +662,7 @@ godot --headless --path <repo> --quit-after 2 res://validation/core_validation_r
 Must **not** replace the main scene (`gameplay_runtime.tscn`).  
 Optional: `--dump-checks` or `DUMP_ALL_CHECKS` in `validation/core_validation_runner.gd`.
 
-**Last run:** 2026-09-07 — `DEAD STREET CORE VALIDATION: PASS` on the dirty tree (~72 seconds). Headless prints expected `!is_inside_tree()` camera noise during nested vispasses; the suite still reports PASS.
+**Last run:** 2026-09-07 — `DEAD STREET CORE VALIDATION: PASS` after Character Factory V0 (~63 seconds). Headless prints expected `!is_inside_tree()` camera noise during nested vispasses; the suite still reports PASS.
 
 ### Non-equivalence
 
@@ -689,7 +693,8 @@ Examples:
 - Sticky player COVER is **validated** and treated as **current accepted intent**.
 - Generic character-presentation architecture (presenter, catalog, identity, facing, fallback, sim hit-test, 3D→2D concept) is **retained / accepted as architecture**.
 - `look_calib_01` was **technically complete** and **validated**, then **product-visually REJECTED**, and is now **retired from the active tree**.
-- Human Generator is **current experiment**, not technically complete in-repo, not validated as a pipeline, not product accepted.
+- Character Factory V0 is **technically complete** as an unattended DAZ handshake/smoke. It is **not** product-accepted art.
+- Human Generator trial is **insufficient** and is **no longer the active experiment**.
 - EconomyService is **technically complete** and **validated**, not **production-ready** in live play.
 
 ---
@@ -728,7 +733,9 @@ Append-only. Seeded with verifiable decisions only.
 | 2026-09-07 | This project-control document created | ARCHITECTURE | One living tracker | `docs/` | Process |
 | 2026-09-07 | M7F MPFB `look_calib_01` **manually rejected** | PRODUCT / PIVOT / REJECTION | Technically coherent, visually failed Dead Street unit target. Validation ≠ acceptance. | Units, tools, camera spec | Source experiment pivoted to Human Generator (unproven). Generic 3D→2D architecture retained. |
 | 2026-09-07 | Surgical M7F rejection cleanup | MILESTONE | Retire rejected candidate without deleting generic architecture | Units, presenter, catalog, validation, tools | `look_calib_01` / look board / MPFB builder removed. Procedural fallback restored. Next = Human Generator vertical slice. |
-| 2026-09-07 | Product owner accepted M7F cleanup checkpoint | PRODUCT / MILESTONE | Accepted without an additional manual F5 baseline test | Git, docs | Checkpoint/push allowed. **Not** visual acceptance of new character art. Next = HUMAN GENERATOR VERTICAL SLICE — SOURCE CHARACTER PROOF |
+| 2026-09-07 | Product owner accepted M7F cleanup checkpoint | PRODUCT / MILESTONE | Accepted without an additional manual F5 baseline test | Git, docs | Checkpoint/push allowed. **Not** visual acceptance of new character art. |
+| 2026-09-07 | Human Generator trial insufficient | PRODUCT / PIVOT | HG is no longer the active source experiment | Character pipeline | Source pipeline is DAZ Studio / Genesis 9 |
+| 2026-09-07 | Character Factory V0 automated DAZ handshake + free Genesis 9 smoke | MILESTONE | Prove unattended DAZ control with Starter Essentials only | `tools/character_factory/` | Technical PASS. **Not** visual acceptance. Renders unbound, outside repo. Next = DAZ GENESIS 9 SOURCE-CHARACTER PROOF — STREET CLOTHING + WEAPON |
 
 ---
 
@@ -737,7 +744,9 @@ Append-only. Seeded with verifiable decisions only.
 | Risk | Likelihood | Impact | Mitigation | Owner |
 |---|---|---|---|---|
 | Character pipeline never reaches the visual target | Medium | High — slice stays a prototype | F5 early; stop; change source; do not mass-produce frames | Product (verdict) + technical (source options) |
-| Human Generator treated as locked production canon before a vertical slice | High | Wasted pipeline / wrong source | HG is current **external experiment** only; not in repo; acceptance not earned | Technical |
+| Human Generator treated as locked production canon | Low | Wasted pipeline / wrong source | HG trial is **no longer active**. Do not resurrect it as default. | Technical |
+| Binding Character Factory smoke PNGs into runtime | Medium | Canonizes Starter Essentials Matt as Dead Street | Catalog stays unbound; renders stay in `%LOCALAPPDATA%` | Technical |
+| Treating smoke 160mm camera as canon | Medium | Wrong projection on the next body | Recalibrate from the next accepted street-character source | Technical |
 | Throwing away presenter/catalog/identity because M7F look failed | Medium | Rebuild cost; lose validated contracts | Cleanup is surgical: calib candidate out, architecture stays | Technical |
 | Inheriting rejected M7F camera as canon | Medium | Wrong projection on the next body | Recalibrate from the new source vs street reference | Technical |
 | `TacticalBattleView` keeps absorbing duties | Medium | High maintenance / coupling | Presenters already exist; forbid sprites in the view; split only as a named milestone | Technical |
@@ -768,7 +777,7 @@ Append-only. Seeded with verifiable decisions only.
 - Generic prerendered-3D-to-2D architecture stays; rejected **results** do not delete the **pipeline**.
 - Units are gang members, criminals, survivors — **not generic soldiers**.
 - Do not silently resurrect rejected designs (`look_calib_01`, mannequin body, AI frames, tactical turns).
-- Do not implement unresolved ❓ choices (including locking HG or locking camera).
+- Do not implement unresolved ❓ choices (including locking camera or treating factory smoke as canon).
 - New ideas go to the **backlog** before they change build order.
 
 ---

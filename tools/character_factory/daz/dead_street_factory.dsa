@@ -1,0 +1,823 @@
+// DAZ Studio filetype DAZ Script
+// Dead Street Character Factory V0 — unattended handshake + Genesis 9 smoke.
+// Generated art is NOT runtime-authoritative and is NOT product-accepted.
+
+(function () {
+
+	var FACTORY_VERSION = "0.1.0";
+	var gExitCode = 1;
+	var gResultPath = "";
+	var gLogPath = "";
+	var gWroteResult = false;
+	var gState = {
+		"status": "FAIL",
+		"stage": "boot",
+		"error_code": "FAIL",
+		"reason": "factory script did not complete",
+		"factory_version": FACTORY_VERSION,
+		"daz_version": "",
+		"release_cycle": "",
+		"release_edition": "",
+		"architecture": "",
+		"graphics_mode": "",
+		"executable_hint": "",
+		"script_arguments": [],
+		"content_roots": [],
+		"resolved_assets": {},
+		"missing_assets": [],
+		"figure": {},
+		"clothing": [],
+		"pose": {},
+		"camera_profile": "PROVISIONAL_SMOKE_ONLY",
+		"render_files": [],
+		"started_at": "",
+		"finished_at": "",
+		"log_path": ""
+	};
+
+	function nowIso() {
+		try {
+			var d = new Date();
+			return d.toISOString();
+		} catch (e) {
+			return String(new Date());
+		}
+	}
+
+	function jsonEscape(s) {
+		return String(s)
+			.replace(/\\/g, "\\\\")
+			.replace(/"/g, "\\\"")
+			.replace(/\r/g, "\\r")
+			.replace(/\n/g, "\\n")
+			.replace(/\t/g, "\\t");
+	}
+
+	function toJson(value) {
+		if (typeof JSON !== "undefined" && JSON.stringify) {
+			return JSON.stringify(value, null, 2);
+		}
+		if (value === null || typeof value === "undefined") {
+			return "null";
+		}
+		var t = typeof value;
+		if (t === "number" || t === "boolean") {
+			return String(value);
+		}
+		if (t === "string") {
+			return "\"" + jsonEscape(value) + "\"";
+		}
+		if (value instanceof Array) {
+			var a = [];
+			for (var i = 0; i < value.length; i += 1) {
+				a.push(toJson(value[i]));
+			}
+			return "[" + a.join(",") + "]";
+		}
+		var keys = [];
+		for (var k in value) {
+			if (value.hasOwnProperty(k)) {
+				keys.push("\"" + jsonEscape(k) + "\":" + toJson(value[k]));
+			}
+		}
+		return "{" + keys.join(",") + "}";
+	}
+
+	function writeTextFile(path, text) {
+		if (!path) {
+			return false;
+		}
+		var f = new DzFile(path);
+		if (!f.open(DzFile.WriteOnly)) {
+			print("[DeadStreetFactory] cannot write " + path);
+			return false;
+		}
+		f.write(String(text));
+		f.close();
+		return true;
+	}
+
+	function readTextFile(path) {
+		var f = new DzFile(path);
+		if (!f.open(DzFile.ReadOnly)) {
+			return "";
+		}
+		var s = f.read();
+		f.close();
+		return String(s);
+	}
+
+	function appendLog(msg) {
+		var line = nowIso() + " " + String(msg);
+		print("[DeadStreetFactory] " + msg);
+		if (!gLogPath) {
+			return;
+		}
+		var existing = "";
+		var fRead = new DzFile(gLogPath);
+		if (fRead.open(DzFile.ReadOnly)) {
+			existing = fRead.read();
+			fRead.close();
+		}
+		writeTextFile(gLogPath, existing + line + "\n");
+	}
+
+	function writeResult() {
+		gState.finished_at = nowIso();
+		gState.log_path = gLogPath;
+		if (gResultPath) {
+			writeTextFile(gResultPath, toJson(gState));
+			gWroteResult = true;
+		}
+	}
+
+	function fail(stage, code, reason) {
+		gState.status = (code === "WRONG_DAZ_RELEASE" || code === "STARTER_CONTENT_MISSING" || code === "DAZ_NOT_FOUND") ? "BLOCKED" : "FAIL";
+		if (code === "WRONG_DAZ_RELEASE" || code === "STARTER_CONTENT_MISSING") {
+			gState.status = "BLOCKED";
+		}
+		gState.stage = stage;
+		gState.error_code = code;
+		gState.reason = String(reason);
+		appendLog("FAIL " + code + " @ " + stage + " — " + reason);
+		writeResult();
+		gExitCode = 1;
+	}
+
+	function pass(stage, reason) {
+		gState.status = "PASS";
+		gState.stage = stage;
+		gState.error_code = "";
+		gState.reason = String(reason);
+		appendLog("PASS @ " + stage + " — " + reason);
+		writeResult();
+		gExitCode = 0;
+	}
+
+	function collectArgs() {
+		var a = [];
+		try {
+			if (App.scriptArgs && App.scriptArgs.length) {
+				for (var i = 0; i < App.scriptArgs.length; i += 1) {
+					a.push(String(App.scriptArgs[i]));
+				}
+			}
+		} catch (e1) {}
+		try {
+			var ga = getArguments();
+			if (ga && ga.length) {
+				for (var j = 0; j < ga.length; j += 1) {
+					a.push(String(ga[j]));
+				}
+			}
+		} catch (e2) {}
+		return a;
+	}
+
+	function parseConfig(args) {
+		var path = "";
+		for (var i = 0; i < args.length; i += 1) {
+			var s = String(args[i]);
+			if (s.toLowerCase().indexOf(".json") >= 0) {
+				path = s.replace(/^config=/i, "");
+			}
+		}
+		if (!path && args.length > 0) {
+			path = String(args[0]);
+		}
+		if (!path) {
+			return null;
+		}
+		var raw = readTextFile(path);
+		if (!raw) {
+			return null;
+		}
+		if (typeof JSON !== "undefined" && JSON.parse) {
+			return JSON.parse(raw);
+		}
+		return null;
+	}
+
+	function mappedContentRoots() {
+		var roots = [];
+		var cm = App.getContentMgr();
+		var i;
+		if (cm && typeof cm.getNumContentDirectories === "function") {
+			for (i = 0; i < cm.getNumContentDirectories(); i += 1) {
+				try {
+					roots.push(String(cm.getContentDirectoryPath(i)));
+				} catch (e1) {}
+			}
+		} else if (cm) {
+			for (i = 0; i < 32; i += 1) {
+				try {
+					var p = String(cm.getContentDirectoryPath(i));
+					if (!p || p === "undefined") {
+						break;
+					}
+					roots.push(p);
+				} catch (e2) {
+					break;
+				}
+			}
+		}
+		return roots;
+	}
+
+	function resolveLogical(rel) {
+		if (!rel) {
+			return "";
+		}
+		var cm = App.getContentMgr();
+		var found = "";
+		try {
+			found = String(cm.findFile(rel, DzContentMgr.AllDirs) || "");
+		} catch (e1) {
+			try {
+				found = String(cm.findFile(rel) || "");
+			} catch (e2) {
+				found = "";
+			}
+		}
+		if (found && found !== "undefined") {
+			return found;
+		}
+		var roots = gState.content_roots;
+		for (var i = 0; i < roots.length; i += 1) {
+			var candidate = String(roots[i]).replace(/[\\\/]+$/, "") + "/" + String(rel).replace(/^\//, "");
+			candidate = candidate.replace(/\//g, "\\");
+			var f = new DzFile(candidate);
+			if (f.exists()) {
+				return candidate;
+			}
+		}
+		return "";
+	}
+
+	function captureEnvironment(args) {
+		gState.daz_version = String(App.longVersionString || App.versionString || "");
+		try { gState.release_cycle = String(App.releaseCycleString()); } catch (e1) { gState.release_cycle = ""; }
+		try { gState.release_edition = String(App.releaseEditionString()); } catch (e2) { gState.release_edition = ""; }
+		try { gState.architecture = String(App.bitArchitectureString()); } catch (e3) { gState.architecture = ""; }
+		try { gState.graphics_mode = String(App.getGraphicsMode()); } catch (e4) { gState.graphics_mode = ""; }
+		try { gState.executable_hint = String(App.appName || ""); } catch (e5) {}
+		gState.script_arguments = args;
+		gState.content_roots = mappedContentRoots();
+		gState.started_at = nowIso();
+		appendLog("DAZ " + gState.daz_version + " cycle=" + gState.release_cycle + " edition=" + gState.release_edition);
+		appendLog("graphics=" + gState.graphics_mode + " arch=" + gState.architecture);
+		appendLog("content roots: " + gState.content_roots.join(" | "));
+	}
+
+	function releaseIsGeneral() {
+		var cycle = String(gState.release_cycle || "").toLowerCase();
+		var instance = "";
+		try { instance = String(App.releaseCycleInstanceString()).toLowerCase(); } catch (e1) {}
+		var blob = cycle + " " + instance;
+		if (blob.indexOf("public") >= 0 || blob.indexOf("beta") >= 0 || blob.indexOf("alpha") >= 0 || blob.indexOf("private") >= 0 || blob.indexOf("dev") >= 0 || blob.indexOf("publishing") >= 0) {
+			return false;
+		}
+		try {
+			if (typeof App.GeneralRelease !== "undefined" && App.releaseCycle() !== App.GeneralRelease) {
+				if (cycle.indexOf("general") < 0) {
+					return false;
+				}
+			}
+		} catch (e2) {}
+		if (cycle && cycle.indexOf("general") < 0 && cycle.indexOf("release") < 0) {
+			// Empty cycle string is tolerated if enum compared above; otherwise require General.
+			if (cycle.indexOf("stable") < 0) {
+				return cycle.length === 0;
+			}
+		}
+		return true;
+	}
+
+	function processEventsABit() {
+		for (var i = 0; i < 8; i += 1) {
+			processEvents();
+		}
+	}
+
+	function clearSceneQuiet() {
+		try {
+			if (typeof Scene.clear === "function") {
+				Scene.clear();
+				processEventsABit();
+				return;
+			}
+		} catch (e1) {}
+		try {
+			var am = MainWindow.getActionMgr();
+			var act = am.findAction("DzNewSceneAction");
+			if (!act) {
+				act = am.findAction("DzClearSceneAction");
+			}
+			if (act) {
+				act.trigger();
+				processEventsABit();
+			}
+		} catch (e2) {}
+	}
+
+	function openContent(path, merge) {
+		if (typeof merge === "undefined") {
+			merge = true;
+		}
+		var cm = App.getContentMgr();
+		appendLog("openFile merge=" + merge + " " + path);
+		writeResult();
+		var ok = false;
+		try {
+			ok = cm.openFile(path, merge);
+		} catch (e1) {
+			ok = false;
+			appendLog("openFile exception: " + e1);
+		}
+		processEventsABit();
+		for (var w = 0; w < 40; w += 1) {
+			processEvents();
+		}
+		return ok !== false;
+	}
+
+	function findGenesisFigure() {
+		var i;
+		var nSkel = 0;
+		try { nSkel = Scene.getNumSkeletons(); } catch (e1) { nSkel = 0; }
+		for (i = 0; i < nSkel; i += 1) {
+			var sk = Scene.getSkeleton(i);
+			var label = String(sk.getLabel()) + " " + String(sk.getName());
+			if (label.indexOf("Genesis 9") >= 0 || label.indexOf("Genesis9") >= 0) {
+				return sk;
+			}
+		}
+		if (nSkel > 0) {
+			return Scene.getSkeleton(0);
+		}
+		return null;
+	}
+
+	function selectNode(node) {
+		if (!node) {
+			return;
+		}
+		try { Scene.selectAllNodes(false); } catch (e1) {}
+		try { node.select(true); } catch (e2) {}
+		try { Scene.setPrimarySelection(node); } catch (e3) {}
+		processEvents();
+	}
+
+	function findChildByHints(hints) {
+		var n = Scene.getNumNodes();
+		for (var i = 0; i < n; i += 1) {
+			var node = Scene.getNode(i);
+			if (!node) {
+				continue;
+			}
+			if (node.inherits("DzCamera") || node.inherits("DzLight")) {
+				continue;
+			}
+			var label = (String(node.getLabel()) + " " + String(node.getName())).toLowerCase();
+			for (var h = 0; h < hints.length; h += 1) {
+				if (label.indexOf(String(hints[h]).toLowerCase()) >= 0) {
+					return node;
+				}
+			}
+		}
+		return null;
+	}
+
+	function setProp(elem, names, value) {
+		if (!elem) {
+			return false;
+		}
+		for (var i = 0; i < names.length; i += 1) {
+			var p = null;
+			try { p = elem.findProperty(names[i]); } catch (e1) { p = null; }
+			if (!p) {
+				try { p = elem.findPropertyByLabel(names[i]); } catch (e2) { p = null; }
+			}
+			if (p) {
+				try {
+					p.setValue(value);
+					return true;
+				} catch (e3) {}
+			}
+		}
+		return false;
+	}
+
+	function setEnumContains(elem, names, needle) {
+		if (!elem) {
+			return false;
+		}
+		for (var i = 0; i < names.length; i += 1) {
+			var p = null;
+			try { p = elem.findProperty(names[i]); } catch (e1) { p = null; }
+			if (!p) {
+				try { p = elem.findPropertyByLabel(names[i]); } catch (e2) { p = null; }
+			}
+			if (p && typeof p.getNumItems === "function") {
+				for (var k = 0; k < p.getNumItems(); k += 1) {
+					var item = String(p.getItem(k)).toLowerCase();
+					if (item.indexOf(String(needle).toLowerCase()) >= 0) {
+						try { p.setValue(k); return true; } catch (e3) {}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	function configureIray() {
+		var rm = App.getRenderMgr();
+		var renderer = rm.findRenderer("DzIrayRenderer");
+		if (!renderer) {
+			appendLog("DzIrayRenderer not found; leaving active renderer in place");
+			return rm.getActiveRenderer();
+		}
+		rm.setActiveRenderer(renderer);
+		var elems = [];
+		try { elems = rm.getRenderElementObjects(); } catch (e1) { elems = []; }
+		for (var i = 0; i < elems.length; i += 1) {
+			setProp(elems[i], ["Draw Dome", "Draw Dome "], false);
+			setProp(elems[i], ["Draw Ground"], false);
+			setEnumContains(elems[i], ["Environment Mode"], "scene only");
+			setProp(elems[i], ["Max Samples"], 48);
+			setProp(elems[i], ["Max Time"], 20);
+			setProp(elems[i], ["Rendering Quality"], 0.5);
+		}
+		return renderer;
+	}
+
+	function figureBounds(figure) {
+		var box = new DzBox3();
+		var grown = false;
+		function includeNode(n) {
+			if (!n || n.inherits("DzCamera") || n.inherits("DzLight")) {
+				return;
+			}
+			try {
+				var b = n.getWSBoundingBox();
+				if (b) {
+					box.include(b.min);
+					box.include(b.max);
+					grown = true;
+				}
+			} catch (e1) {}
+		}
+		includeNode(figure);
+		try {
+			var kids = figure.getNodeChildren(true);
+			for (var i = 0; i < kids.length; i += 1) {
+				includeNode(kids[i]);
+			}
+		} catch (e2) {}
+		if (grown) {
+			appendLog("bounds min=" + box.min.x + "," + box.min.y + "," + box.min.z + " max=" + box.max.x + "," + box.max.y + "," + box.max.z);
+		}
+		return grown ? box : null;
+	}
+
+	function assignCameraToViewports(cam) {
+		try { cam.setIsDefaultSceneCamera(true); } catch (e1) {}
+		try {
+			var vm = MainWindow.getViewportMgr();
+			if (vm && typeof vm.getNumViewports === "function") {
+				for (var i = 0; i < vm.getNumViewports(); i += 1) {
+					try { vm.getViewport(i).get3DViewport().setCamera(cam); } catch (e2) {}
+				}
+			}
+			vm.getActiveViewport().get3DViewport().setCamera(cam);
+		} catch (e3) {}
+	}
+
+	function buildCamera(figure, profile) {
+		var cam = new DzBasicCamera();
+		cam.setName("PROVISIONAL_SMOKE_ONLY");
+		try { cam.setLabel("PROVISIONAL_SMOKE_ONLY"); } catch (e1) {}
+		// Iray in this DS6 install produced empty frames with ORTHO_CAMERA.
+		// Use a long-lens perspective camera as a PROVISIONAL elevated tactical stand-in.
+		try { cam.setType(DzCamera.PERSPECTIVE_CAMERA); } catch (e2) {}
+		Scene.addNode(cam);
+		try {
+			var hm = cam.findProperty("Headlamp Mode") || cam.findProperty("HeadlampMode");
+			if (hm) { hm.setValue(1); }
+		} catch (e4) {}
+		try {
+			var hi = cam.findProperty("Headlamp Intensity");
+			if (hi) { hi.setValue(1.0); }
+		} catch (e4b) {}
+		try {
+			var fl = cam.findProperty("Focal Length (mm)") || cam.getFocalLengthControl();
+			if (fl) { fl.setValue(160); }
+		} catch (e4c) {}
+		var box = figureBounds(figure);
+		if (!box) {
+			return null;
+		}
+		var pad = Number(profile.fit_padding || 1.22);
+		try {
+			var min = box.min;
+			var max = box.max;
+			var cx = (min.x + max.x) * 0.5;
+			var cy = (min.y + max.y) * 0.5;
+			var cz = (min.z + max.z) * 0.5;
+			var dy = Math.max(max.y - min.y, 0.5);
+			var elevDeg = Number(profile.elevation_deg || 48.0);
+			var elev = elevDeg * Math.PI / 180.0;
+			var dist = dy * 3.6 * pad;
+			cam.getXPosControl().setValue(cx);
+			cam.getYPosControl().setValue(cy + dist * Math.sin(elev));
+			cam.getZPosControl().setValue(cz + dist * Math.cos(elev));
+			cam.getXRotControl().setValue(elevDeg);
+			cam.getYRotControl().setValue(0);
+			cam.getZRotControl().setValue(0);
+			try { cam.aimAt(box.getCenter()); } catch (e5) {}
+			try { cam.frame(box, 1.0); } catch (e6) {}
+			appendLog("camera at " + cam.getXPosControl().getValue() + "," + cam.getYPosControl().getValue() + "," + cam.getZPosControl().getValue() + " elev=" + elevDeg);
+		} catch (e7) {
+			appendLog("camera placement exception: " + e7);
+			return null;
+		}
+		assignCameraToViewports(cam);
+		processEventsABit();
+		return cam;
+	}
+
+	function buildLight(profile) {
+		var light = new DzDistantLight();
+		light.setName("SmokeKey");
+		Scene.addNode(light);
+		try {
+			var photo = light.getPhotometricModeControl();
+			if (photo) { photo.setValue(false); }
+		} catch (e0) {}
+		try { light.getIntensityControl().setValue(100); } catch (e1) {}
+		try { light.getDiffuseColorControl().setValue(new Color(255, 255, 245)); } catch (e1b) {}
+		try { light.getYRotControl().setValue(Number(profile.light_yaw_deg || -32.0)); } catch (e2) {}
+		try { light.getXRotControl().setValue(-Number(profile.light_pitch_deg || 52.0)); } catch (e3) {}
+		var fill = new DzDistantLight();
+		fill.setName("SmokeFill");
+		Scene.addNode(fill);
+		try {
+			var photo2 = fill.getPhotometricModeControl();
+			if (photo2) { photo2.setValue(false); }
+		} catch (e4) {}
+		try { fill.getIntensityControl().setValue(35); } catch (e5) {}
+		try { fill.getYRotControl().setValue(140); } catch (e6) {}
+		try { fill.getXRotControl().setValue(-20); } catch (e7) {}
+		processEvents();
+		return light;
+	}
+
+	function setFigureYaw(figure, deg) {
+		try {
+			figure.getYRotControl().setValue(Number(deg));
+			processEvents();
+			return true;
+		} catch (e1) {
+			return false;
+		}
+	}
+
+	function renderOne(cam, renderer, outPath, sizePx) {
+		var rm = App.getRenderMgr();
+		var opts = rm.getRenderOptions();
+		opts.renderType = DzRenderOptions.Software;
+		opts.renderImgToId = DzRenderOptions.DirectToFile;
+		opts.renderViewport = false;
+		opts.showPreview = false;
+		opts.renderCurrentFrame = true;
+		opts.isAspectConstrained = true;
+		opts.setAspectRatio(1, 1);
+		opts.imageSize = new Size(sizePx, sizePx);
+		opts.renderImgFilename = outPath;
+		try { opts.applyChanges(); } catch (e1) {}
+		var handler = new DzImageRenderHandler(new Size(sizePx, sizePx), Scene.getTime(), outPath);
+		if (handler && typeof handler.setBackColor === "function") {
+			try { handler.setBackColor(new Color(0, 0, 0, 0)); } catch (e2) {}
+		}
+		assignCameraToViewports(cam);
+		var ok = false;
+		try {
+			ok = rm.doRender(opts);
+		} catch (e3) {
+			appendLog("doRender exception: " + e3);
+			ok = false;
+		}
+		if (!ok && renderer && typeof renderer.render === "function" && handler) {
+			try { ok = renderer.render(handler, cam, opts); } catch (e4) {
+				appendLog("renderer.render exception: " + e4);
+			}
+		}
+		processEventsABit();
+		var f = new DzFile(outPath);
+		if (!f.exists()) {
+			return false;
+		}
+		return ok !== false;
+	}
+
+	function resolveRecipeAssets(recipe) {
+		var missing = [];
+		var resolved = {};
+		function need(key, rel) {
+			if (!rel) {
+				resolved[key] = "";
+				return;
+			}
+			var path = resolveLogical(rel);
+			resolved[key] = path;
+			if (!path) {
+				missing.push(rel);
+			}
+		}
+		need("base_figure", recipe.character && recipe.character.base_figure);
+		need("character", recipe.character && recipe.character.asset);
+		need("pose", recipe.pose && recipe.pose.asset);
+		var clothes = recipe.clothing || [];
+		for (var i = 0; i < clothes.length; i += 1) {
+			need("clothing_" + clothes[i].slot, clothes[i].asset);
+			need("material_" + clothes[i].slot, clothes[i].material);
+		}
+		gState.resolved_assets = resolved;
+		gState.missing_assets = missing;
+		return missing;
+	}
+
+	function assemble(recipe) {
+		clearSceneQuiet();
+		var rel = gState.resolved_assets;
+		if (rel.character) {
+			if (!openContent(rel.character, false)) {
+				fail("genesis_load", "GENESIS_LOAD_FAILED", "Could not load character preset: " + rel.character);
+				return null;
+			}
+		} else if (rel.base_figure) {
+			if (!openContent(rel.base_figure, false)) {
+				fail("genesis_load", "GENESIS_LOAD_FAILED", "Could not load Genesis 9 figure: " + rel.base_figure);
+				return null;
+			}
+		} else {
+			fail("genesis_load", "GENESIS_LOAD_FAILED", "Recipe has no character or base figure asset");
+			return null;
+		}
+		var figure = findGenesisFigure();
+		if (!figure) {
+			fail("genesis_load", "GENESIS_LOAD_FAILED", "No Genesis figure node after character load");
+			return null;
+		}
+		selectNode(figure);
+		gState.figure = {
+			"name": String(figure.getName()),
+			"label": String(figure.getLabel()),
+			"source": rel.character || rel.base_figure
+		};
+		writeResult();
+		if (rel.pose) {
+			selectNode(figure);
+			if (!openContent(rel.pose, true)) {
+				fail("pose", "WEARABLE_LOAD_FAILED", "Pose application failed: " + rel.pose);
+				return null;
+			}
+			gState.pose = { "applied": true, "path": rel.pose };
+		}
+		var clothes = recipe.clothing || [];
+		for (var i = 0; i < clothes.length; i += 1) {
+			var slot = clothes[i].slot;
+			selectNode(figure);
+			var wearPath = rel["clothing_" + slot];
+			if (!openContent(wearPath, true)) {
+				fail("wearable", "WEARABLE_LOAD_FAILED", "Could not load " + slot + " from " + wearPath);
+				return null;
+			}
+			var hints = [clothes[i].label, slot];
+			var wearNode = findChildByHints(hints);
+			if (!wearNode) {
+				fail("wearable", "WEARABLE_LOAD_FAILED", "Clothing node for " + slot + " was not present after load");
+				return null;
+			}
+			selectNode(wearNode);
+			var matPath = rel["material_" + slot];
+			if (matPath && !openContent(matPath, true)) {
+				fail("wearable", "WEARABLE_LOAD_FAILED", "Could not apply material for " + slot + ": " + matPath);
+				return null;
+			}
+			gState.clothing.push({
+				"slot": slot,
+				"node": String(wearNode.getLabel()),
+				"asset": wearPath,
+				"material": matPath
+			});
+			selectNode(figure);
+			writeResult();
+		}
+		selectNode(figure);
+		return figure;
+	}
+
+	function runSmoke(cfg, recipe) {
+		gState.stage = "assemble";
+		gState.variant_id = recipe.variant_id;
+		gState.clip_id = (recipe.output_profile && recipe.output_profile.clip_id) ? recipe.output_profile.clip_id : "idle";
+		gState.source_dir = cfg.source_dir;
+		var figure = assemble(recipe);
+		if (!figure) {
+			return;
+		}
+		var profile = recipe.render_profile || {};
+		gState.stage = "camera";
+		var cam = buildCamera(figure, profile);
+		if (!cam) {
+			fail("camera", "CAMERA_BUILD_FAILED", "Could not build provisional orthographic camera");
+			return;
+		}
+		buildLight(profile);
+		var renderer = configureIray();
+		var dirs = recipe.directions || ["e", "se", "s", "sw", "w", "nw", "n", "ne"];
+		var yawMap = recipe.direction_yaw_deg || {};
+		var offset = Number(profile.facing_yaw_offset_deg || 0);
+		var sizePx = Number((recipe.output_profile && recipe.output_profile.source_size) || 512);
+		var files = [];
+		assignCameraToViewports(cam);
+		processEventsABit();
+		gState.stage = "render";
+		for (var i = 0; i < dirs.length; i += 1) {
+			var dir = dirs[i];
+			var yaw = Number(yawMap[dir] || 0) + offset;
+			if (!setFigureYaw(figure, yaw)) {
+				fail("render", "RENDER_FAILED", "Could not rotate figure for direction " + dir);
+				return;
+			}
+			var fileName = recipe.variant_id + "_" + gState.clip_id + "_" + dir + ".png";
+			var outPath = String(cfg.source_dir).replace(/[\\\/]+$/, "") + "\\" + fileName;
+			appendLog("render " + dir + " yaw=" + yaw + " -> " + outPath);
+			if (!renderOne(cam, renderer, outPath, sizePx)) {
+				fail("render", "RENDER_FAILED", "Render failed for direction " + dir);
+				return;
+			}
+			files.push(outPath);
+		}
+		gState.render_files = files;
+		pass("render", "handshake + unattended eight-direction smoke renders complete");
+	}
+
+	function main() {
+		var args = collectArgs();
+		var cfg = parseConfig(args);
+		if (!cfg) {
+			gResultPath = "";
+			fail("boot", "FAIL", "Missing or unreadable factory_config.json from -scriptArg");
+			return;
+		}
+		gResultPath = cfg.result_path || cfg.daz_result_path || "";
+		gLogPath = cfg.log_path || "";
+		gState.log_path = gLogPath;
+		captureEnvironment(args);
+		writeTextFile(cfg.env_report_path || (String(cfg.run_dir) + "\\environment.json"), toJson({
+			"long_version": gState.daz_version,
+			"release_cycle": gState.release_cycle,
+			"release_edition": gState.release_edition,
+			"architecture": gState.architecture,
+			"graphics_mode": gState.graphics_mode,
+			"content_roots": gState.content_roots,
+			"script_arguments": args,
+			"factory_version": FACTORY_VERSION,
+			"timestamp": nowIso()
+		}));
+		if (!releaseIsGeneral()) {
+			fail("handshake", "WRONG_DAZ_RELEASE", "Installed DAZ release is not General Release: " + gState.release_cycle);
+			return;
+		}
+		var recipe = cfg.recipe || {};
+		var missing = resolveRecipeAssets(recipe);
+		if (String(cfg.mode) === "handshake") {
+			if (missing.length) {
+				fail("content", "STARTER_CONTENT_MISSING", "Missing logical assets: " + missing.join("; "));
+				return;
+			}
+			pass("handshake", "DAZ General Release handshake complete; Starter Essentials paths resolved");
+			return;
+		}
+		if (missing.length) {
+			fail("content", "STARTER_CONTENT_MISSING", "Missing logical assets: " + missing.join("; "));
+			return;
+		}
+		runSmoke(cfg, recipe);
+	}
+
+	try {
+		main();
+	} catch (e) {
+		if (!gWroteResult) {
+			fail("boot", "FAIL", "Unhandled factory exception: " + e);
+		}
+	}
+
+	try { App.delayedExit(gExitCode); } catch (eExit) {
+		try { App.delayedExit(); } catch (eExit2) {}
+	}
+
+})();

@@ -6,3 +6,7 @@
 tools/character_pipeline/source/mpfb_packs/
 tools/character_pipeline/look_calib_01.blend
 tools/character_pipeline/calib/
+
+# Character Factory generated dumps must never enter git.
+# Canonical outputs live under %LOCALAPPDATA%\DeadStreetCharacterFactory\
+tools/character_factory/.local/
