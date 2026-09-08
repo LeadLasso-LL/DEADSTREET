@@ -1,5 +1,5 @@
 // DAZ Studio filetype DAZ Script
-// Dead Street Character Factory V1 — unattended handshake, V0 smoke, paid-asset rifleman proof.
+// Dead Street Character Factory V1/V1.1 — unattended handshake, smoke, rifleman proof, camera/pose calibration.
 // Generated art is NOT runtime-authoritative and is NOT product-accepted.
 
 (function () {
@@ -34,6 +34,7 @@
 		"weapon_validation": {},
 		"camera_profile": "PROVISIONAL_SMOKE_ONLY",
 		"post_process": {},
+		"calibration_cells": [],
 		"render_files": [],
 		"started_at": "",
 		"finished_at": "",
@@ -1229,32 +1230,206 @@
 					return null;
 				}
 			}
-			if (recipe.pose && recipe.pose.bone_adjustments) {
-				applyBoneAdjustments(figure, recipe.pose.bone_adjustments);
-			}
-			if (recipe.pose && recipe.pose.refine_reach) {
-				var rTarget = weaponReachTarget(weaponNode, 0.22);
-				refineArmReach(figure, "r", rTarget, 7);
+			if (!recipe.calibration) {
+				if (recipe.pose && recipe.pose.bone_adjustments) {
+					applyBoneAdjustments(figure, recipe.pose.bone_adjustments);
+				}
+				if (recipe.pose && recipe.pose.refine_reach) {
+					var rTarget = weaponReachTarget(weaponNode, 0.22);
+					refineArmReach(figure, "r", rTarget, 7);
+					selectNode(figure);
+					if (rel.weapon_hand_right) {
+						openContent(rel.weapon_hand_right, true);
+					}
+					var lTarget = weaponReachTarget(weaponNode, 0.72);
+					refineArmReach(figure, "l", lTarget, 8);
+				}
 				selectNode(figure);
 				if (rel.weapon_hand_right) {
 					openContent(rel.weapon_hand_right, true);
 				}
-				var lTarget = weaponReachTarget(weaponNode, 0.72);
-				refineArmReach(figure, "l", lTarget, 8);
-			}
-			selectNode(figure);
-			if (rel.weapon_hand_right) {
-				openContent(rel.weapon_hand_right, true);
-			}
-			var check = validateWeaponPose(figure, weaponNode);
-			if (!check.ok) {
-				fail("pose", "WEAPON_POSE_FAILED", "Weapon pose invalid: " + check.reasons.join("; "));
-				return null;
+				var check = validateWeaponPose(figure, weaponNode);
+				if (!check.ok) {
+					fail("pose", "WEAPON_POSE_FAILED", "Weapon pose invalid: " + check.reasons.join("; "));
+					return null;
+				}
 			}
 			writeResult();
 		}
 		selectNode(figure);
 		return figure;
+	}
+
+	function removeCalibCameras() {
+		var i;
+		for (i = Scene.getNumNodes() - 1; i >= 0; i -= 1) {
+			var node = Scene.getNode(i);
+			if (!node || !node.inherits("DzCamera")) {
+				continue;
+			}
+			var name = String(node.getName());
+			if (name.indexOf("CAM_") === 0 || name.indexOf("PROVISIONAL_") === 0) {
+				try { Scene.removeNode(node); } catch (e1) {}
+			}
+		}
+		processEventsABit();
+	}
+
+	function copyRenderProfile(src, elevationDeg, id) {
+		var p = {};
+		var k;
+		if (src) {
+			for (k in src) {
+				if (src.hasOwnProperty(k)) {
+					p[k] = src[k];
+				}
+			}
+		}
+		p.elevation_deg = Number(elevationDeg);
+		p.id = String(id);
+		return p;
+	}
+
+	function applyArmedPose(figure, recipe, poseSpec, weaponNode) {
+		var rel = gState.resolved_assets;
+		selectNode(figure);
+		if (rel.pose) {
+			if (!openContent(rel.pose, true)) {
+				fail("pose", "WEAPON_POSE_FAILED", "Could not reset standing pose for " + poseSpec.id);
+				return false;
+			}
+		}
+		var feet = recipe.footwear || [];
+		var i;
+		for (i = 0; i < feet.length; i += 1) {
+			var posePath = rel["footwear_pose_" + feet[i].slot];
+			if (posePath) {
+				selectNode(figure);
+				if (!openContent(posePath, true)) {
+					fail("footwear", "FOOTWEAR_MISSING", "Footwear pose failed during calibration: " + posePath);
+					return false;
+				}
+			}
+		}
+		selectNode(figure);
+		if (rel.weapon_hand_left) {
+			if (!openContent(rel.weapon_hand_left, true)) {
+				fail("pose", "WEAPON_POSE_FAILED", "Left hand pose failed for " + poseSpec.id);
+				return false;
+			}
+		}
+		selectNode(figure);
+		if (rel.weapon_hand_right) {
+			if (!openContent(rel.weapon_hand_right, true)) {
+				fail("pose", "WEAPON_POSE_FAILED", "Right hand pose failed for " + poseSpec.id);
+				return false;
+			}
+		}
+		if (poseSpec.bone_adjustments) {
+			applyBoneAdjustments(figure, poseSpec.bone_adjustments);
+		}
+		if (poseSpec.refine_reach_left && weaponNode) {
+			var leftSteps = 5;
+			if (typeof poseSpec.refine_reach_left_steps !== "undefined") {
+				leftSteps = Number(poseSpec.refine_reach_left_steps);
+			}
+			if (leftSteps < 1) {
+				leftSteps = 5;
+			}
+			var lTarget = weaponReachTarget(weaponNode, 0.72);
+			refineArmReach(figure, "l", lTarget, leftSteps);
+			selectNode(figure);
+			if (rel.weapon_hand_left) {
+				openContent(rel.weapon_hand_left, true);
+			}
+			selectNode(figure);
+			if (rel.weapon_hand_right) {
+				openContent(rel.weapon_hand_right, true);
+			}
+		}
+		var check = validateWeaponPose(figure, weaponNode);
+		if (!check.ok) {
+			fail("pose", "WEAPON_POSE_FAILED", poseSpec.id + " invalid: " + check.reasons.join("; "));
+			return false;
+		}
+		return true;
+	}
+
+	function runCalibration(cfg, recipe, figure) {
+		var calib = recipe.calibration;
+		var cameras = calib.cameras || [];
+		var poses = calib.poses || [];
+		var dir = String(calib.direction || "se");
+		var yawMap = recipe.direction_yaw_deg || {};
+		var profile = recipe.render_profile || {};
+		var offset = Number(profile.facing_yaw_offset_deg || 0);
+		var yaw = Number(yawMap[dir] || 0) + offset;
+		var sizePx = Number((recipe.output_profile && recipe.output_profile.source_size) || 512);
+		var wHints = (recipe.weapon && recipe.weapon.node_hints) ? recipe.weapon.node_hints : ["Carbine", "PMWS"];
+		var weaponNode = findChildByHints(wHints);
+		if (!weaponNode) {
+			fail("weapon", "WEAPON_LOAD_FAILED", "Weapon node missing before calibration matrix");
+			return;
+		}
+		if (!setFigureYaw(figure, yaw)) {
+			fail("render", "RENDER_FAILED", "Could not rotate figure for calibration direction " + dir);
+			return;
+		}
+		buildLight(profile);
+		var renderer = configureIray();
+		var files = [];
+		var cells = [];
+		var p;
+		var c;
+		gState.stage = "render";
+		gState.clip_id = (recipe.output_profile && recipe.output_profile.clip_id) ? recipe.output_profile.clip_id : "idle";
+		for (p = 0; p < poses.length; p += 1) {
+			var poseSpec = poses[p];
+			appendLog("calibration pose " + poseSpec.id + " " + poseSpec.label);
+			if (!applyArmedPose(figure, recipe, poseSpec, weaponNode)) {
+				return;
+			}
+			if (!setFigureYaw(figure, yaw)) {
+				fail("render", "RENDER_FAILED", "Could not restore SE yaw after pose " + poseSpec.id);
+				return;
+			}
+			for (c = 0; c < cameras.length; c += 1) {
+				var camSpec = cameras[c];
+				removeCalibCameras();
+				var camProfile = copyRenderProfile(profile, camSpec.elevation_deg, camSpec.id);
+				var box = figureBounds(figure);
+				var cam = buildCamera(figure, camProfile, box);
+				if (!cam) {
+					fail("camera", "CAMERA_BUILD_FAILED", "Could not build " + camSpec.id + " for " + poseSpec.id);
+					return;
+				}
+				assignCameraToViewports(cam);
+				processEventsABit();
+				var fileName = recipe.variant_id + "_" + camSpec.id + "_" + poseSpec.id + "_" + dir + ".png";
+				var outPath = String(cfg.source_dir).replace(/[\\\/]+$/, "") + "\\" + fileName;
+				appendLog("render " + camSpec.id + " " + poseSpec.id + " elev=" + camSpec.elevation_deg + " -> " + outPath);
+				if (!renderOne(cam, renderer, outPath, sizePx)) {
+					fail("render", "RENDER_FAILED", "Render failed for " + camSpec.id + " " + poseSpec.id);
+					return;
+				}
+				files.push(outPath);
+				cells.push({
+					"camera_id": camSpec.id,
+					"pose_id": poseSpec.id,
+					"pose_label": poseSpec.label || poseSpec.id,
+					"elevation_deg": Number(camSpec.elevation_deg),
+					"direction": dir,
+					"path": outPath,
+					"weapon_validation": gState.weapon_validation
+				});
+				gState.calibration_cells = cells;
+				gState.render_files = files;
+				writeResult();
+			}
+		}
+		gState.calibration_cells = cells;
+		gState.render_files = files;
+		pass("render", "unattended " + cells.length + "-cell calibration renders complete");
 	}
 
 	function runSmoke(cfg, recipe) {
@@ -1268,6 +1443,10 @@
 		}
 		var figure = assemble(recipe);
 		if (!figure) {
+			return;
+		}
+		if (recipe.calibration) {
+			runCalibration(cfg, recipe, figure);
 			return;
 		}
 		var profile = recipe.render_profile || {};

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "not_canon": true,
+  "not_accepted": true,
+  "not_runtime_bound": true,
+  "purpose": "Controlled static source baseline for the next Dead Street style-conversion calibration only. Not canonical camera. Not accepted pose. Not accepted art.",
+  "character": {
+    "variant_id": "local_street_gang_rifleman_proof_01",
+    "recipe": "recipes/local_street_gang_rifleman_proof_01.json",
+    "identity": "Matt for Genesis 9, Classic Tank Top Black, Classic Trousers Dark Green, Worker Uniform Boots Black, Mavick Hair Black, PMWS Carbine RH Black Iray"
+  },
+  "camera": {
+    "id": "PROVISIONAL_TACTICAL_56",
+    "elevation_deg": 56.0,
+    "focal_length_mm": 160,
+    "camera_kind": "perspective_telephoto",
+    "notes": "V1.1 CAM_B continuation lock. Not canon. Do not copy into TacticalUnitPipelineSpec."
+  },
+  "pose": {
+    "id": "HYBRID_B",
+    "label": "STRONG_SEPARATION",
+    "source_recipe": "recipes/local_street_gang_rifleman_silhouette_v12.json",
+    "notes": "Best balance of POSE_2 stance and rifle separation among V1.2 hybrids. Not final pose acceptance."
+  },
+  "style": {
+    "accepted_profile": null,
+    "comparison_only": ["grounded_grit"]
+  },
+  "history": {
+    "v11_camera_pose_recipe": "recipes/local_street_gang_rifleman_calib_v11.json",
+    "v12_silhouette_recipe": "recipes/local_street_gang_rifleman_silhouette_v12.json",
+    "retain_alternates": true
+  },
+  "next_milestone": "DEAD STREET STYLE CONVERSION V1.3",
+  "deferred_until_style_selected_and_8dir_proven": [
+    "animation/walk-cycle proof",
+    "Godot movement integration"
+  ]
+}

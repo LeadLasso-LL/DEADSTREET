@@ -82,6 +82,11 @@ func _process_run(run_dir: String) -> Dictionary:
 	var source_dir: String = str(daz.get("source_dir", run_dir.path_join("source")))
 	var post: Dictionary = daz.get("post_process", {}) if typeof(daz.get("post_process", {})) == TYPE_DICTIONARY else {}
 	var profiles: Array = post.get("profiles", []) if typeof(post.get("profiles", [])) == TYPE_ARRAY else []
+	if str(post.get("kind", "")) == "camera_pose_calibration":
+		return _process_calibration(run_dir, daz, post)
+	if str(post.get("kind", "")) == "rifle_silhouette_calibration":
+		return _process_silhouette(run_dir, daz, post)
+
 	var check_clip := not profiles.is_empty()
 	var reports: Array = []
 	var sources: Array[Image] = []
@@ -109,6 +114,250 @@ func _process_run(run_dir: String) -> Dictionary:
 		return _process_smoke(run_dir, variant_id, clip_id, sources, reports)
 
 	return _process_proof(run_dir, variant_id, clip_id, post, sources, reports)
+
+
+func _process_calibration(run_dir: String, daz: Dictionary, post: Dictionary) -> Dictionary:
+	var cells_raw: Variant = daz.get("calibration_cells", [])
+	if typeof(cells_raw) != TYPE_ARRAY or cells_raw.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": "calibration_cells missing from daz_result.json"
+		}
+	var reports: Array = []
+	var matrix: Array = []
+	for cell_value in cells_raw:
+		if typeof(cell_value) != TYPE_DICTIONARY:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "calibration cell is not an object"
+			}
+		var cell: Dictionary = cell_value
+		var src_path: String = str(cell.get("path", ""))
+		var check: Dictionary = _validate_source(src_path, true)
+		check["camera_id"] = str(cell.get("camera_id", ""))
+		check["pose_id"] = str(cell.get("pose_id", ""))
+		check["path"] = src_path
+		if not bool(check.get("ok", false)):
+			check.erase("image")
+			reports.append(check)
+			return {
+				"ok": false,
+				"error_code": str(check.get("error_code", "PNG_ALPHA_FAILED")),
+				"reason": str(check.get("reason", "calibration source failed")),
+				"images": reports
+			}
+		var src: Image = check["image"]
+		check.erase("image")
+		var grit: Image = _profile_grounded_grit(src)
+		var dest_dir: String = run_dir.path_join("profiles").path_join("grounded_grit")
+		DirAccess.make_dir_recursive_absolute(dest_dir)
+		var dest: String = dest_dir.path_join("%s_%s_%s_se.png" % [
+			str(daz.get("variant_id", "local_street_gang_rifleman_proof_01")),
+			str(cell.get("camera_id", "")),
+			str(cell.get("pose_id", ""))
+		])
+		if grit.save_png(dest) != OK:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "failed to save %s" % dest,
+				"images": reports
+			}
+		var dest128_dir: String = run_dir.path_join("128").path_join("grounded_grit")
+		DirAccess.make_dir_recursive_absolute(dest128_dir)
+		var img128: Image = grit.duplicate()
+		img128.resize(128, 128, Image.INTERPOLATE_LANCZOS)
+		var dest128: String = dest128_dir.path_join("%s_%s_se.png" % [str(cell.get("camera_id", "")), str(cell.get("pose_id", ""))])
+		if img128.save_png(dest128) != OK:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "failed to save %s" % dest128,
+				"images": reports
+			}
+		for h_value in [96, 80, 64]:
+			var scaled: Image = _presentation_at_height(grit, int(h_value))
+			var scale_dir: String = run_dir.path_join("scale").path_join("grounded_grit").path_join(str(int(h_value)))
+			DirAccess.make_dir_recursive_absolute(scale_dir)
+			var scale_path: String = scale_dir.path_join("%s_%s_se.png" % [str(cell.get("camera_id", "")), str(cell.get("pose_id", ""))])
+			if scaled.save_png(scale_path) != OK:
+				return {
+					"ok": false,
+					"error_code": "GODOT_IMAGE_TOOL_FAILED",
+					"reason": "failed to save %s" % scale_path,
+					"images": reports
+				}
+		reports.append(check)
+		matrix.append({
+			"camera_id": str(cell.get("camera_id", "")),
+			"pose_id": str(cell.get("pose_id", "")),
+			"pose_label": str(cell.get("pose_label", cell.get("pose_id", ""))),
+			"elevation_deg": cell.get("elevation_deg", 0),
+			"grit": grit
+		})
+	if matrix.size() != 9:
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": "expected 9 calibration cells, got %d" % matrix.size(),
+			"images": reports
+		}
+	var boards_spec: Dictionary = post.get("boards", {}) if typeof(post.get("boards", {})) == TYPE_DICTIONARY else {}
+	var matrix_path: String = run_dir.path_join(str(boards_spec.get("matrix", "camera_pose_calibration_board.png")))
+	var actual_path: String = run_dir.path_join(str(boards_spec.get("actual_scale", "camera_pose_calibration_actual_scale.png")))
+	var matrix_err: String = _write_calibration_matrix_board(matrix, matrix_path)
+	if not matrix_err.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": matrix_err,
+			"images": reports
+		}
+	var actual_err: String = _write_calibration_actual_scale_board(matrix, actual_path)
+	if not actual_err.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": actual_err,
+			"images": reports
+		}
+	return {
+		"ok": true,
+		"error_code": "",
+		"reason": "nine calibration sources validated with grounded_grit only. No camera or pose is accepted.",
+		"preview_board": matrix_path,
+		"preview_boards": {
+			"matrix": matrix_path,
+			"actual_scale": actual_path
+		},
+		"accepted_camera": "",
+		"accepted_pose": "",
+		"images": reports
+	}
+
+
+func _process_silhouette(run_dir: String, daz: Dictionary, post: Dictionary) -> Dictionary:
+	var cells_raw: Variant = daz.get("calibration_cells", [])
+	if typeof(cells_raw) != TYPE_ARRAY or cells_raw.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": "calibration_cells missing from daz_result.json"
+		}
+	var reports: Array = []
+	var matrix: Array = []
+	for cell_value in cells_raw:
+		if typeof(cell_value) != TYPE_DICTIONARY:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "calibration cell is not an object"
+			}
+		var cell: Dictionary = cell_value
+		var src_path: String = str(cell.get("path", ""))
+		var check: Dictionary = _validate_source(src_path, true)
+		check["camera_id"] = str(cell.get("camera_id", ""))
+		check["pose_id"] = str(cell.get("pose_id", ""))
+		check["path"] = src_path
+		if not bool(check.get("ok", false)):
+			check.erase("image")
+			reports.append(check)
+			return {
+				"ok": false,
+				"error_code": str(check.get("error_code", "PNG_ALPHA_FAILED")),
+				"reason": str(check.get("reason", "silhouette source failed")),
+				"images": reports
+			}
+		var src: Image = check["image"]
+		check.erase("image")
+		var grit: Image = _profile_grounded_grit(src)
+		var dest_dir: String = run_dir.path_join("profiles").path_join("grounded_grit")
+		DirAccess.make_dir_recursive_absolute(dest_dir)
+		var dest: String = dest_dir.path_join("%s_%s_%s_se.png" % [
+			str(daz.get("variant_id", "local_street_gang_rifleman_proof_01")),
+			str(cell.get("camera_id", "")),
+			str(cell.get("pose_id", ""))
+		])
+		if grit.save_png(dest) != OK:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "failed to save %s" % dest,
+				"images": reports
+			}
+		var dest128_dir: String = run_dir.path_join("128").path_join("grounded_grit")
+		DirAccess.make_dir_recursive_absolute(dest128_dir)
+		var img128: Image = grit.duplicate()
+		img128.resize(128, 128, Image.INTERPOLATE_LANCZOS)
+		var dest128: String = dest128_dir.path_join("%s_se.png" % str(cell.get("pose_id", "")))
+		if img128.save_png(dest128) != OK:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "failed to save %s" % dest128,
+				"images": reports
+			}
+		for h_value in [96, 80, 64]:
+			var scaled: Image = _presentation_at_height(grit, int(h_value))
+			var scale_dir: String = run_dir.path_join("scale").path_join("grounded_grit").path_join(str(int(h_value)))
+			DirAccess.make_dir_recursive_absolute(scale_dir)
+			var scale_path: String = scale_dir.path_join("%s_se.png" % str(cell.get("pose_id", "")))
+			if scaled.save_png(scale_path) != OK:
+				return {
+					"ok": false,
+					"error_code": "GODOT_IMAGE_TOOL_FAILED",
+					"reason": "failed to save %s" % scale_path,
+					"images": reports
+				}
+		reports.append(check)
+		matrix.append({
+			"camera_id": str(cell.get("camera_id", "")),
+			"pose_id": str(cell.get("pose_id", "")),
+			"pose_label": str(cell.get("pose_label", cell.get("pose_id", ""))),
+			"elevation_deg": cell.get("elevation_deg", 0),
+			"grit": grit
+		})
+	if matrix.size() != 3:
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": "expected 3 hybrid silhouette cells, got %d" % matrix.size(),
+			"images": reports
+		}
+	var boards_spec: Dictionary = post.get("boards", {}) if typeof(post.get("boards", {})) == TYPE_DICTIONARY else {}
+	var matrix_path: String = run_dir.path_join(str(boards_spec.get("matrix", "rifle_silhouette_calibration_board.png")))
+	var actual_path: String = run_dir.path_join(str(boards_spec.get("actual_scale", "rifle_silhouette_actual_scale.png")))
+	var matrix_err: String = _write_silhouette_board(matrix, matrix_path)
+	if not matrix_err.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": matrix_err,
+			"images": reports
+		}
+	var actual_err: String = _write_silhouette_actual_scale_board(matrix, actual_path)
+	if not actual_err.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": actual_err,
+			"images": reports
+		}
+	return {
+		"ok": true,
+		"error_code": "",
+		"reason": "three hybrid silhouette sources validated with grounded_grit only. Camera 56 is provisional. No pose is accepted.",
+		"preview_board": matrix_path,
+		"preview_boards": {
+			"matrix": matrix_path,
+			"actual_scale": actual_path
+		},
+		"accepted_camera": "",
+		"accepted_pose": "",
+		"images": reports
+	}
 
 
 func _process_smoke(run_dir: String, variant_id: String, clip_id: String, sources: Array[Image], reports: Array) -> Dictionary:
@@ -509,6 +758,268 @@ func _nearest_scale(src: Image, factor: int) -> Image:
 	return out
 
 
+func _write_calibration_matrix_board(matrix: Array, dest: String) -> String:
+	var cam_order := ["CAM_A", "CAM_B", "CAM_C"]
+	var pose_order := ["POSE_1", "POSE_2", "POSE_3"]
+	var lookup := {}
+	for item_value in matrix:
+		var item: Dictionary = item_value
+		lookup["%s|%s" % [str(item.get("camera_id", "")), str(item.get("pose_id", ""))]] = item
+	var inspect := 256
+	var gap := 16
+	var margin := 24
+	var label_h := 22
+	var cells: Array = []
+	var max_p96_w := 96
+	var max_p80_w := 80
+	var max_p64_w := 64
+	var max_scale_h := inspect
+	for r in 3:
+		for c in 3:
+			var key: String = "%s|%s" % [cam_order[r], pose_order[c]]
+			if not lookup.has(key):
+				return "missing calibration cell %s" % key
+			var item: Dictionary = lookup[key]
+			var grit: Image = item["grit"]
+			var inspect_copy: Image = grit.duplicate()
+			inspect_copy.resize(inspect, inspect, Image.INTERPOLATE_NEAREST)
+			var p96: Image = _presentation_at_height(grit, 96)
+			var p80: Image = _presentation_at_height(grit, 80)
+			var p64: Image = _presentation_at_height(grit, 64)
+			max_p96_w = maxi(max_p96_w, p96.get_width())
+			max_p80_w = maxi(max_p80_w, p80.get_width())
+			max_p64_w = maxi(max_p64_w, p64.get_width())
+			max_scale_h = maxi(max_scale_h, 10 + maxi(p96.get_height(), maxi(p80.get_height(), p64.get_height())))
+			cells.append({
+				"item": item,
+				"inspect": inspect_copy,
+				"p96": p96,
+				"p80": p80,
+				"p64": p64
+			})
+	var cell_w: int = inspect + gap + max_p96_w + gap + max_p80_w + gap + max_p64_w
+	var cell_h: int = label_h + maxi(inspect, max_scale_h)
+	var w: int = margin * 2 + 3 * cell_w + 2 * 28
+	var h: int = margin * 2 + 28 + 3 * cell_h + 2 * 24
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.12, 0.12, 0.14, 1.0))
+	_draw_text(board, margin, margin, "CAMERA POSE CALIBRATION  GROUNDED GRIT  SE  NON-CANON  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in cells.size():
+		var col: int = i % 3
+		var row: int = int(i / 3)
+		var packed: Dictionary = cells[i]
+		var cell_item: Dictionary = packed["item"]
+		var ox: int = margin + col * (cell_w + 28)
+		var oy: int = margin + 22 + row * (cell_h + 24)
+		var label: String = "%s %s %s  %d DEG" % [
+			str(cell_item.get("camera_id", "")),
+			str(cell_item.get("pose_id", "")),
+			str(cell_item.get("pose_label", "")).replace("_", " "),
+			int(cell_item.get("elevation_deg", 0))
+		]
+		_draw_text(board, ox, oy, label, Color(0.78, 0.78, 0.74, 1.0))
+		var iy: int = oy + label_h
+		var inspect_img: Image = packed["inspect"]
+		_draw_checker(board, ox, iy, inspect, inspect)
+		_blend_sprite(board, inspect_img, ox, iy)
+		var s96: Image = packed["p96"]
+		var s80: Image = packed["p80"]
+		var s64: Image = packed["p64"]
+		var sx: int = ox + inspect + gap
+		_draw_text(board, sx, iy, "96", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s96.get_width(), s96.get_height())
+		_blend_sprite(board, s96, sx, iy + 10)
+		sx += max_p96_w + gap
+		_draw_text(board, sx, iy, "80", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s80.get_width(), s80.get_height())
+		_blend_sprite(board, s80, sx, iy + 10)
+		sx += max_p80_w + gap
+		_draw_text(board, sx, iy, "64", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s64.get_width(), s64.get_height())
+		_blend_sprite(board, s64, sx, iy + 10)
+	var err: Error = board.save_png(dest)
+	if err != OK:
+		return "failed to save calibration matrix board"
+	return ""
+
+
+func _write_calibration_actual_scale_board(matrix: Array, dest: String) -> String:
+	var cam_order := ["CAM_A", "CAM_B", "CAM_C"]
+	var pose_order := ["POSE_1", "POSE_2", "POSE_3"]
+	var lookup := {}
+	for item_value in matrix:
+		var item: Dictionary = item_value
+		lookup["%s|%s" % [str(item.get("camera_id", "")), str(item.get("pose_id", ""))]] = item
+	var gap := 48
+	var margin := 32
+	var label_h := 18
+	var samples: Array = []
+	var max_w := 80
+	var max_h := 80
+	for r in 3:
+		for c in 3:
+			var key: String = "%s|%s" % [cam_order[r], pose_order[c]]
+			if not lookup.has(key):
+				return "missing calibration cell %s" % key
+			var item: Dictionary = lookup[key]
+			var grit: Image = item["grit"]
+			var p80: Image = _presentation_at_height(grit, 80)
+			samples.append({
+				"img": p80,
+				"label": "%s %s" % [cam_order[r], pose_order[c]]
+			})
+			max_w = maxi(max_w, p80.get_width())
+			max_h = maxi(max_h, p80.get_height())
+	var w: int = margin * 2 + 3 * max_w + 2 * gap
+	var h: int = margin * 2 + 24 + 3 * (label_h + max_h) + 2 * gap
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.11, 0.11, 0.13, 1.0))
+	_draw_text(board, margin, margin, "ACTUAL SCALE 80 PX  ALL 9  GROUNDED GRIT  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in samples.size():
+		var col: int = i % 3
+		var row: int = int(i / 3)
+		var ox: int = margin + col * (max_w + gap)
+		var oy: int = margin + 22 + row * (label_h + max_h + gap)
+		var sample: Dictionary = samples[i]
+		_draw_text(board, ox, oy, str(sample["label"]), Color(0.74, 0.74, 0.70, 1.0))
+		var img: Image = sample["img"]
+		_draw_checker(board, ox, oy + label_h, img.get_width(), img.get_height())
+		_blend_sprite(board, img, ox, oy + label_h)
+	var err: Error = board.save_png(dest)
+	if err != OK:
+		return "failed to save actual-scale calibration board"
+	return ""
+
+
+func _write_silhouette_board(matrix: Array, dest: String) -> String:
+	var pose_order := ["HYBRID_A", "HYBRID_B", "HYBRID_C"]
+	var lookup := {}
+	for item_value in matrix:
+		var item: Dictionary = item_value
+		lookup[str(item.get("pose_id", ""))] = item
+	var inspect := 256
+	var gap := 16
+	var margin := 24
+	var label_h := 22
+	var cells: Array = []
+	var max_p96_w := 96
+	var max_p80_w := 80
+	var max_p64_w := 64
+	var max_scale_h := inspect
+	for pose_id in pose_order:
+		if not lookup.has(pose_id):
+			return "missing silhouette cell %s" % pose_id
+		var item: Dictionary = lookup[pose_id]
+		var grit: Image = item["grit"]
+		var inspect_copy: Image = grit.duplicate()
+		inspect_copy.resize(inspect, inspect, Image.INTERPOLATE_NEAREST)
+		var p96: Image = _presentation_at_height(grit, 96)
+		var p80: Image = _presentation_at_height(grit, 80)
+		var p64: Image = _presentation_at_height(grit, 64)
+		max_p96_w = maxi(max_p96_w, p96.get_width())
+		max_p80_w = maxi(max_p80_w, p80.get_width())
+		max_p64_w = maxi(max_p64_w, p64.get_width())
+		max_scale_h = maxi(max_scale_h, 10 + maxi(p96.get_height(), maxi(p80.get_height(), p64.get_height())))
+		cells.append({
+			"item": item,
+			"inspect": inspect_copy,
+			"p96": p96,
+			"p80": p80,
+			"p64": p64
+		})
+	var cell_w: int = inspect + gap + max_p96_w + gap + max_p80_w + gap + max_p64_w
+	var cell_h: int = label_h + maxi(inspect, max_scale_h)
+	var w: int = margin * 2 + 3 * cell_w + 2 * 28
+	var h: int = margin * 2 + 28 + cell_h
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.12, 0.12, 0.14, 1.0))
+	_draw_text(board, margin, margin, "RIFLE SILHOUETTE  GROUNDED GRIT  SE  56 DEG  NON-CANON  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in cells.size():
+		var packed: Dictionary = cells[i]
+		var cell_item: Dictionary = packed["item"]
+		var ox: int = margin + i * (cell_w + 28)
+		var oy: int = margin + 22
+		var label: String = "%s %s" % [
+			str(cell_item.get("pose_id", "")),
+			str(cell_item.get("pose_label", "")).replace("_", " ")
+		]
+		_draw_text(board, ox, oy, label, Color(0.78, 0.78, 0.74, 1.0))
+		var iy: int = oy + label_h
+		_draw_checker(board, ox, iy, inspect, inspect)
+		_blend_sprite(board, packed["inspect"], ox, iy)
+		var s96: Image = packed["p96"]
+		var s80: Image = packed["p80"]
+		var s64: Image = packed["p64"]
+		var sx: int = ox + inspect + gap
+		_draw_text(board, sx, iy, "96", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s96.get_width(), s96.get_height())
+		_blend_sprite(board, s96, sx, iy + 10)
+		sx += max_p96_w + gap
+		_draw_text(board, sx, iy, "80", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s80.get_width(), s80.get_height())
+		_blend_sprite(board, s80, sx, iy + 10)
+		sx += max_p80_w + gap
+		_draw_text(board, sx, iy, "64", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s64.get_width(), s64.get_height())
+		_blend_sprite(board, s64, sx, iy + 10)
+	var save_err: Error = board.save_png(dest)
+	if save_err != OK:
+		return "failed to save rifle silhouette board"
+	return ""
+
+
+func _write_silhouette_actual_scale_board(matrix: Array, dest: String) -> String:
+	var pose_order := ["HYBRID_A", "HYBRID_B", "HYBRID_C"]
+	var lookup := {}
+	for item_value in matrix:
+		var item: Dictionary = item_value
+		lookup[str(item.get("pose_id", ""))] = item
+	var gap := 56
+	var margin := 36
+	var label_h := 18
+	var samples: Array = []
+	var max_w := 80
+	var max_h80 := 80
+	var max_h64 := 64
+	for pose_id in pose_order:
+		if not lookup.has(pose_id):
+			return "missing silhouette cell %s" % pose_id
+		var item: Dictionary = lookup[pose_id]
+		var grit: Image = item["grit"]
+		var p80: Image = _presentation_at_height(grit, 80)
+		var p64: Image = _presentation_at_height(grit, 64)
+		samples.append({
+			"pose_id": pose_id,
+			"p80": p80,
+			"p64": p64
+		})
+		max_w = maxi(max_w, maxi(p80.get_width(), p64.get_width()))
+		max_h80 = maxi(max_h80, p80.get_height())
+		max_h64 = maxi(max_h64, p64.get_height())
+	var w: int = margin * 2 + 3 * max_w + 2 * gap
+	var h: int = margin * 2 + 24 + (label_h + max_h80) + gap + (label_h + max_h64)
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.11, 0.11, 0.13, 1.0))
+	_draw_text(board, margin, margin, "ACTUAL SCALE  80 AND 64 PX  HYBRID A B C  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in samples.size():
+		var sample: Dictionary = samples[i]
+		var ox: int = margin + i * (max_w + gap)
+		var oy80: int = margin + 22
+		_draw_text(board, ox, oy80, "%s 80" % str(sample["pose_id"]), Color(0.74, 0.74, 0.70, 1.0))
+		var img80: Image = sample["p80"]
+		_draw_checker(board, ox, oy80 + label_h, img80.get_width(), img80.get_height())
+		_blend_sprite(board, img80, ox, oy80 + label_h)
+		var oy64: int = oy80 + label_h + max_h80 + gap
+		_draw_text(board, ox, oy64, "%s 64" % str(sample["pose_id"]), Color(0.74, 0.74, 0.70, 1.0))
+		var img64: Image = sample["p64"]
+		_draw_checker(board, ox, oy64 + label_h, img64.get_width(), img64.get_height())
+		_blend_sprite(board, img64, ox, oy64 + label_h)
+	var save_err: Error = board.save_png(dest)
+	if save_err != OK:
+		return "failed to save rifle silhouette actual-scale board"
+	return ""
+
+
 func _write_simple_board(sprites: Array[Image], dest: String) -> String:
 	var cell := 128
 	var gap := 24
@@ -654,8 +1165,12 @@ func _draw_checker(board: Image, ox: int, oy: int, w: int, h: int) -> void:
 	var size := 8
 	for y in h:
 		for x in w:
+			var px: int = ox + x
+			var py: int = oy + y
+			if px < 0 or py < 0 or px >= board.get_width() or py >= board.get_height():
+				continue
 			var use_a: bool = ((int(x / size) + int(y / size)) % 2) == 0
-			board.set_pixel(ox + x, oy + y, a if use_a else b)
+			board.set_pixel(px, py, a if use_a else b)
 
 
 func _blend_sprite(board: Image, sprite: Image, ox: int, oy: int) -> void:
@@ -737,7 +1252,8 @@ func _glyph(ch: String) -> PackedStringArray:
 		"8": ["01110", "10001", "10001", "01110", "10001", "10001", "01110"],
 		"9": ["01110", "10001", "10001", "01111", "00001", "00001", "01110"],
 		"-": ["00000", "00000", "00000", "11111", "00000", "00000", "00000"],
-		"+": ["00000", "00100", "00100", "11111", "00100", "00100", "00000"]
+		"+": ["00000", "00100", "00100", "11111", "00100", "00100", "00000"],
+		"_": ["00000", "00000", "00000", "00000", "00000", "00000", "11111"]
 	}
 	if g.has(key):
 		return PackedStringArray(g[key])

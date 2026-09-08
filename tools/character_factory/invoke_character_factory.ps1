@@ -4,7 +4,7 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet("handshake", "smoke", "proof")]
+    [ValidateSet("handshake", "smoke", "proof", "calibrate", "silhouette")]
     [string]$Mode = "smoke",
     [string]$RecipePath = "",
     [int]$TimeoutSeconds = 0,
@@ -136,6 +136,10 @@ $dsaPath = Join-Path $factoryRoot "daz\dead_street_factory.dsa"
 if (-not $RecipePath) {
     if ($Mode -eq "proof") {
         $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_proof_01.json"
+    } elseif ($Mode -eq "calibrate") {
+        $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_calib_v11.json"
+    } elseif ($Mode -eq "silhouette") {
+        $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_silhouette_v12.json"
     } else {
         $RecipePath = Join-Path $factoryRoot "recipes\smoke_genesis9.json"
     }
@@ -267,6 +271,9 @@ if ($dazResult) {
     $baseResult.content_roots = @($dazResult.content_roots)
     $baseResult.resolved_assets = $dazResult.resolved_assets
     $baseResult.render_files = @($dazResult.render_files)
+    if ($dazResult.PSObject.Properties['calibration_cells'] -and $dazResult.calibration_cells) {
+        $baseResult.calibration_cells = $dazResult.calibration_cells
+    }
 }
 
 if (-not $dazResult) {
@@ -319,6 +326,10 @@ $swAll.Stop()
 $baseResult.durations_sec.launcher = [math]::Round($swAll.Elapsed.TotalSeconds, 2)
 $doneReason = if ($Mode -eq "proof") {
     "Unattended DAZ rifleman proof and Godot style boards complete. Art is not product-accepted and is not bound."
+} elseif ($Mode -eq "calibrate") {
+    "Unattended DAZ camera/pose calibration complete. No camera or pose is accepted. Art is not bound."
+} elseif ($Mode -eq "silhouette") {
+    "Unattended DAZ hybrid rifle silhouette complete. Camera 56 is provisional, not canon. No pose is accepted. Art is not bound."
 } else {
     "Unattended DAZ smoke and Godot PNG validation complete. Art is not product-accepted."
 }

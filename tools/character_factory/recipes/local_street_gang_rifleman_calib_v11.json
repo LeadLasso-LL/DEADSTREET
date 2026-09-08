@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "variant_id": "local_street_gang_rifleman_proof_01",
+  "archetype": "local_street_gang",
+  "role": "rifleman",
+  "notes": "V1.1 camera+pose calibration history. SAME character/assets as V1 proof. CAM_A=48 CAM_B=56 CAM_C=64. After product-owner review, CAM_B/56 is the PROVISIONAL continuation baseline only (see provisional_baseline.json). NOT canon. NOT runtime art. Alternate cameras/poses retained.",
+  "require_footwear": true,
+  "dforce_simulate": false,
+  "character": {
+    "base_figure": "People/Genesis 9/Genesis 9.duf",
+    "asset": "People/Genesis 9/Characters/Matt for Genesis 9.duf",
+    "label": "Matt for Genesis 9",
+    "body": null,
+    "face": null,
+    "age": null,
+    "skin": null
+  },
+  "clothing": [
+    {
+      "slot": "tank_top",
+      "asset": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Tank Top for Genesis 9.duf",
+      "material": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Top Materials/Tank Top Black.duf",
+      "label": "Classic Tank Top"
+    },
+    {
+      "slot": "trousers",
+      "asset": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/dForce Classic Trousers for Genesis 9.duf",
+      "material": "People/Genesis 9/Clothing/dForce Classic Tank Top Outfit/Trouser Materials/Trousers Dark Green.duf",
+      "label": "Classic Trousers"
+    }
+  ],
+  "headwear": [],
+  "masks": [],
+  "footwear": [
+    {
+      "slot": "boots",
+      "asset": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Worker Uniform Boots.duf",
+      "material": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Materials/Boots/Worker Uniform Boots Black.duf",
+      "pose": "People/Genesis 9/Clothing/Daz Originals/Worker Uniform/Worker Uniform Boots Pose.duf",
+      "label": "Worker Uniform Boots"
+    }
+  ],
+  "hair": {
+    "asset": "People/Genesis 9/Hair/Daz Originals/Mavick Hair and Beard/Mavick Hair.duf",
+    "material": "People/Genesis 9/Hair/Daz Originals/Mavick Hair and Beard/Iray Dual Lobe/Mavick Hair Black.duf",
+    "label": "Mavick Hair"
+  },
+  "facial_hair": null,
+  "armor": [],
+  "accessories": [],
+  "weapon": {
+    "id": "pmws_carbine_rh_g9m",
+    "asset": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/PMWS Carbine RH.duf",
+    "material": "Props/Porsimo/Multi-caliber Weapon System/Materials/PMWS MAT Gun Carbine Black Iray.duf",
+    "label": "MWS Carbine G9MR",
+    "hand_pose_left": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/Hand Poses/PMWS Carbine Left.duf",
+    "hand_pose_right": "People/Genesis 9 Masculine/Porsimo/Multi-caliber Weapon System/Hand Poses/PMWS Carbine Right.duf",
+    "node_hints": ["MWS Carbine", "PMWS_Carbine", "Carbine G9MR"]
+  },
+  "faction_palette": null,
+  "pose": {
+    "asset": "People/Genesis 9/Poses/Daz Originals/Base Poses/Base Masculine/G9 Base Pose 12 Standing G9M.duf",
+    "label": "G9 Base Pose 12 Standing G9M (reset between calibration poses)",
+    "refine_reach": false,
+    "bone_adjustments": []
+  },
+  "animation": null,
+  "animation_bank": null,
+  "render_profile": {
+    "id": "PROVISIONAL_TACTICAL_PROOF_160MM",
+    "not_canon": true,
+    "camera_kind": "perspective_telephoto",
+    "elevation_deg": 48.0,
+    "focal_length_mm": 160,
+    "ortho_scale": 2.05,
+    "light_yaw_deg": -32.0,
+    "light_pitch_deg": 52.0,
+    "key_intensity": 72,
+    "fill_intensity": 44,
+    "headlamp_intensity": 0.25,
+    "facing_yaw_offset_deg": 0.0,
+    "canvas_px": 512,
+    "fit_padding": 1.48,
+    "notes": "PROVISIONAL. NOT CANON. Calibration varies elevation_deg only. Long-lens perspective kept. No ortho."
+  },
+  "directions": ["se"],
+  "direction_yaw_deg": {
+    "s": 0.0,
+    "se": 45.0,
+    "e": 90.0,
+    "ne": 135.0,
+    "n": 180.0,
+    "nw": 225.0,
+    "w": 270.0,
+    "sw": 315.0
+  },
+  "output_profile": {
+    "clip_id": "idle",
+    "source_size": 512,
+    "runtime_size": 128,
+    "format": "png",
+    "alpha": true,
+    "filename_pattern": "{variant_id}_{camera_id}_{pose_id}_{direction}.png"
+  },
+  "post_process": {
+    "kind": "camera_pose_calibration",
+    "not_canon": true,
+    "profiles": ["grounded_grit"],
+    "scale_preview_heights_px": [96, 80, 64],
+    "comparison_direction": "se",
+    "boards": {
+      "matrix": "camera_pose_calibration_board.png",
+      "actual_scale": "camera_pose_calibration_actual_scale.png"
+    }
+  },
+  "calibration": {
+    "direction": "se",
+    "cameras": [
+      { "id": "CAM_A", "elevation_deg": 48.0, "label": "V1 elevation" },
+      { "id": "CAM_B", "elevation_deg": 56.0, "label": "V1 plus 8 deg toward top-down; later chosen as PROVISIONAL continuation only, not canon" },
+      { "id": "CAM_C", "elevation_deg": 64.0, "label": "V1 plus 16 deg toward top-down" }
+    ],
+    "poses": [
+      {
+        "id": "POSE_1",
+        "label": "REVISED_LOW_READY",
+        "refine_reach_left": true,
+        "bone_adjustments": [
+          { "bone": "hip", "x": 0, "y": 4, "z": 0 },
+          { "bone": "r_shoulder", "x": 12, "y": 6, "z": 28 },
+          { "bone": "r_upperarm", "x": 36, "y": -14, "z": -52 },
+          { "bone": "r_forearm", "x": 50, "y": 4, "z": 28 },
+          { "bone": "r_hand", "x": 6, "y": -10, "z": 0 },
+          { "bone": "l_shoulder", "x": 14, "y": -6, "z": -32 },
+          { "bone": "l_upperarm", "x": 32, "y": 10, "z": 50 },
+          { "bone": "l_forearm", "x": 42, "y": -2, "z": -28 },
+          { "bone": "l_hand", "x": 4, "y": 8, "z": 4 }
+        ]
+      },
+      {
+        "id": "POSE_2",
+        "label": "COMPACT_READY",
+        "refine_reach_left": true,
+        "bone_adjustments": [
+          { "bone": "hip", "x": 6, "y": 4, "z": 0 },
+          { "bone": "r_thigh", "x": 10, "y": 0, "z": -2 },
+          { "bone": "l_thigh", "x": 8, "y": 0, "z": 2 },
+          { "bone": "r_shoulder", "x": 20, "y": 14, "z": 18 },
+          { "bone": "r_upperarm", "x": 58, "y": -10, "z": -30 },
+          { "bone": "r_forearm", "x": 74, "y": 8, "z": 10 },
+          { "bone": "r_hand", "x": 18, "y": -8, "z": -14 },
+          { "bone": "l_shoulder", "x": 18, "y": -12, "z": -22 },
+          { "bone": "l_upperarm", "x": 54, "y": 14, "z": 26 },
+          { "bone": "l_forearm", "x": 66, "y": -6, "z": -10 },
+          { "bone": "l_hand", "x": 10, "y": 8, "z": 6 }
+        ]
+      },
+      {
+        "id": "POSE_3",
+        "label": "SHOULDER_READY",
+        "refine_reach_left": true,
+        "bone_adjustments": [
+          { "bone": "hip", "x": 8, "y": 2, "z": 0 },
+          { "bone": "r_thigh", "x": 14, "y": 0, "z": -2 },
+          { "bone": "l_thigh", "x": 12, "y": 0, "z": 2 },
+          { "bone": "r_shoulder", "x": 26, "y": 20, "z": 12 },
+          { "bone": "r_upperarm", "x": 70, "y": -6, "z": -16 },
+          { "bone": "r_forearm", "x": 86, "y": 4, "z": 6 },
+          { "bone": "r_hand", "x": 22, "y": -6, "z": -18 },
+          { "bone": "l_shoulder", "x": 22, "y": -16, "z": -14 },
+          { "bone": "l_upperarm", "x": 64, "y": 10, "z": 18 },
+          { "bone": "l_forearm", "x": 80, "y": -4, "z": -6 },
+          { "bone": "l_hand", "x": 14, "y": 4, "z": 4 }
+        ]
+      }
+    ]
+  }
+}

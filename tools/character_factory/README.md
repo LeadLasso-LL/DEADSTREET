@@ -21,6 +21,8 @@ From the repo root:
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode handshake
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode smoke
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode proof
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode calibrate
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode silhouette
 ```
 
 DAZ may open visibly. Do not click it. The factory script must close DAZ itself.
@@ -31,6 +33,16 @@ Outputs are written to:
 
 Never copy DAZ proprietary DUF/DSF/textures into this repository.
 Never copy generated PNGs into `assets/` or bind them at runtime.
+
+## Provisional continuation baseline (NOT canon, NOT accepted)
+
+`provisional_baseline.json` is the machine-readable lock for the next style-conversion pass:
+
+- Camera: `PROVISIONAL_TACTICAL_56` / `elevation_deg` 56.0
+- Pose: `HYBRID_B`
+- Character/assets: same as `local_street_gang_rifleman_proof_01`
+
+V1.1 (`recipes/local_street_gang_rifleman_calib_v11.json`) and V1.2 (`recipes/local_street_gang_rifleman_silhouette_v12.json`) stay as calibration history. Alternate cameras and hybrids are not deleted. Nothing is bound into `TacticalUnitAnimationCatalog`. Do not copy these numbers into `TacticalUnitPipelineSpec`.
 
 ## Proof recipe
 
