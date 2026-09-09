@@ -95,8 +95,8 @@ static func create_for_mission(
 
 	# Authored proving-ground geometry is required for the standard HQ assault
 	# spatial path. Legacy/raw rectangular fields still use initialize_default_geometry.
-	var geometry_result: BattlefieldGeometryResult = AuthoredBattlefieldService.initialize_proving_ground(
-		battle_state
+	var geometry_result: BattlefieldGeometryResult = AuthoredBattlefieldService.apply_definition(
+		battle_state, preload("res://battle/geometry/dusk_street_catalog.gd").build()
 	)
 	if geometry_result == null or not geometry_result.success:
 		var geometry_error_code: String = "invalid_geometry"

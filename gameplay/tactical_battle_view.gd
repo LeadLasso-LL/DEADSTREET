@@ -300,7 +300,7 @@ func set_pointer_local_position(local_position: Vector2) -> void:
 
 
 func screen_to_tactical_position(viewport_position: Vector2) -> Vector2:
-	return viewport_to_local_position(viewport_position) / TACTICAL_PIXELS_PER_UNIT
+	return viewport_to_local_position(viewport_position) / (Vector2.ONE * TACTICAL_PIXELS_PER_UNIT * _street_projection())
 
 
 func viewport_to_local_position(viewport_position: Vector2) -> Vector2:
@@ -464,6 +464,8 @@ func _draw() -> void:
 
 
 func paint_static_battlefield(canvas: CanvasItem) -> void:
+	if _is_dusk_street():
+		return
 	_paint = canvas
 	_draw_background()
 	var battle_state: BattleState = _battle_state()
@@ -632,11 +634,11 @@ func _geometry() -> BattlefieldGeometry:
 
 
 func _to_view(tactical_pos: Vector2) -> Vector2:
-	return tactical_pos * TACTICAL_PIXELS_PER_UNIT
+	return tactical_pos * TACTICAL_PIXELS_PER_UNIT * _street_projection()
 
 
 func _rect_to_view(tactical_rect: Rect2) -> Rect2:
-	return Rect2(_to_view(tactical_rect.position), tactical_rect.size * TACTICAL_PIXELS_PER_UNIT)
+	return Rect2(_to_view(tactical_rect.position), tactical_rect.size * TACTICAL_PIXELS_PER_UNIT * _street_projection())
 
 
 func _sync_environment_presenter() -> void:
@@ -644,6 +646,7 @@ func _sync_environment_presenter() -> void:
 	if environment_presenter == null:
 		return
 	environment_presenter.sync_static(_geometry(), _static_geometry_stamp())
+	_sync_dusk_art()
 
 
 func _sync_actor_presenter() -> void:
@@ -651,6 +654,7 @@ func _sync_actor_presenter() -> void:
 	if actor_presenter == null:
 		return
 	actor_presenter.sync_dynamic(_battle_state())
+	_sync_dusk_vehicles()
 
 
 func _obstacle_uses_retained_visual(obstacle_id: String) -> bool:
@@ -716,9 +720,13 @@ func _frame_camera() -> void:
 	var zoom_x: float = usable.x / maxf(view_rect.size.x, 1.0)
 	var zoom_y: float = usable.y / maxf(view_rect.size.y, 1.0)
 	var zoom: float = clampf(minf(zoom_x, zoom_y), 0.2, 2.5)
+	if _is_dusk_street():
+		zoom *= _dusk_zoom
 	_camera.zoom = Vector2(zoom, zoom)
 	if hud_screen > 0.0 and zoom > 0.0:
 		_camera.position.y += (hud_screen * 0.5) / zoom
+	if _is_dusk_street():
+		_camera.position += _dusk_pan
 
 
 func _draw_background() -> void:
@@ -2697,7 +2705,6 @@ func _draw_soldier(battle_state: BattleState, participant: BattleParticipant) ->
 	if _selected_participant_id() == participant.participant_id:
 		_draw_soldier_selection(view_pos)
 	if claimed:
-		_draw_compact_combat_state(battle_state, participant, view_pos)
 		return
 	if not participant.is_alive:
 		_draw_soldier_downed(view_pos, facing, participant.weapon_type)
@@ -2976,6 +2983,7 @@ func _participant_has_visible_shot(battle_state: BattleState, participant: Battl
 
 
 func _draw_vehicles(battle_state: BattleState) -> void:
+	if _is_dusk_street(): return
 	for vehicle_id: String in _sorted_keys(battle_state.vehicles):
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if vehicle == null or not vehicle.has_battle_position:
@@ -3510,8 +3518,9 @@ func _draw_shot_impact(
 		BattleAttackProfile.OUTCOME_WOUNDED:
 			_draw_label(endpoint + Vector2(14.0, -8.0), "WND", 11)
 		BattleAttackProfile.OUTCOME_KILLED:
-			_draw_dead_mark(endpoint, PROVISIONAL_KILL_MARK)
-			_draw_label(endpoint + Vector2(16.0, -8.0), "DEAD", 12)
+			if not _is_dusk_street():
+				_draw_dead_mark(endpoint, PROVISIONAL_KILL_MARK)
+				_draw_label(endpoint + Vector2(16.0, -8.0), "DEAD", 12)
 		_:
 			pass
 
@@ -4251,3 +4260,85 @@ func _unit_hud_max_row_width() -> float:
 		zoom = _camera.zoom.x
 	return (viewport_size.x - UNIT_HUD_PAD * 2.0) / zoom
 
+
+var _dusk_nodes: Array[Node] = []
+func _is_dusk_street() -> bool:
+	var g = _geometry()
+	return g != null and g.authored_layout_id == "dead_street_dusk_v1"
+func _street_projection() -> Vector2:
+	return Vector2(1,0.75) if _is_dusk_street() else Vector2.ONE
+func _sync_dusk_art() -> void:
+	if not _is_dusk_street():
+		for n in _dusk_nodes:
+			if is_instance_valid(n): n.queue_free()
+		_dusk_nodes.clear()
+		return
+	if not _dusk_nodes.is_empty(): return
+	var art = preload("res://gameplay/dusk_street_art.gd")
+	var ground = art.new()
+	static_surface_root.add_child(ground)
+	_dusk_nodes.append(ground)
+	dynamic_unit_root.y_sort_enabled = true
+	for row in preload("res://battle/geometry/dusk_street_catalog.gd").props():
+		var item = art.new()
+		item.prop = row
+		var bounds: Rect2 = row[1]
+		item.position = Vector2(bounds.get_center().x*8,bounds.end.y*6)
+		dynamic_unit_root.add_child(item)
+		_dusk_nodes.append(item)
+
+	for spot in [Vector2(11,23),Vector2(38,23)]:
+		var lamp = art.new()
+		lamp.prop = ["lamp",Rect2(),"lamp"]
+		lamp.position = Vector2(spot.x*8,spot.y*6)
+		dynamic_unit_root.add_child(lamp)
+		_dusk_nodes.append(lamp)
+
+# Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
+
+var _dusk_vehicle_nodes: Dictionary = {}
+func _sync_dusk_vehicles() -> void:
+	var state = _battle_state()
+	if not _is_dusk_street() or state == null:
+		for n in _dusk_vehicle_nodes.values():
+			if is_instance_valid(n): n.queue_free()
+		_dusk_vehicle_nodes.clear()
+		return
+	for id in state.vehicles:
+		var vehicle = state.get_vehicle(id)
+		if vehicle == null or not vehicle.has_battle_position: continue
+		var corners = BattleVehicleBodyService.world_corners(vehicle)
+		if corners.size() != 4: continue
+		var bounds := Rect2(corners[0],Vector2.ZERO)
+		for corner in corners: bounds = bounds.expand(corner)
+		var node = _dusk_vehicle_nodes.get(id)
+		if node == null:
+			node = preload("res://gameplay/dusk_street_art.gd").new()
+			dynamic_unit_root.add_child(node)
+			_dusk_vehicle_nodes[id] = node
+		var next_position := Vector2(bounds.get_center().x*8,bounds.end.y*6)
+		var changed: bool = node.prop.is_empty() or node.position != next_position
+		node.prop = ["arrival_car",bounds,"car",""]
+		node.position = next_position
+		if changed: node.queue_redraw()
+
+var _dusk_zoom: float = 1.2
+var _dusk_pan: Vector2 = Vector2.ZERO
+func _unhandled_input(event: InputEvent) -> void:
+	if not _is_dusk_street() or not visible or _camera == null:
+		return
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			var factor: float = 1.15 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.15
+			_dusk_zoom = clampf(_dusk_zoom*factor,0.8,2.5)
+			_frame_camera()
+			get_viewport().set_input_as_handled()
+	if event is InputEventMouseMotion and event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
+		_dusk_pan -= event.relative / _camera.zoom
+		_frame_camera()
+		get_viewport().set_input_as_handled()
+	if event is InputEventKey and event.pressed and event.keycode == KEY_HOME:
+		_dusk_zoom = 1.0
+		_dusk_pan = Vector2.ZERO
+		_frame_camera()
+		get_viewport().set_input_as_handled()

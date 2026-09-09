@@ -30,12 +30,12 @@ const HQ_MAP_POSITION := Vector2(12.0, 0.0)
 const SEGMENT_DISTANCE := 12.0
 const VEHICLE_MOVEMENT_PER_TURN := 5.0
 # Debug 3v3 starts. Legal south-attack / north-HQ pocket points, not cover slots.
-const ATTACKER_RIFLE_START := Vector2(40.2, 43.6)
-const ATTACKER_SMG_START := Vector2(48.8, 39.0)
-const ATTACKER_SHOTGUN_START := Vector2(83.2, 27.4)
-const DEFENDER_PISTOL_START := Vector2(16.2, 17.4)
-const DEFENDER_RIFLE_START := Vector2(28.4, 25.8)
-const DEFENDER_SHOTGUN_START := Vector2(49.8, 25.6)
+const ATTACKER_RIFLE_START := Vector2(32,42)
+const ATTACKER_SMG_START := Vector2(35,42)
+const ATTACKER_SHOTGUN_START := Vector2(38,42)
+const DEFENDER_PISTOL_START := Vector2(35,16.5)
+const DEFENDER_RIFLE_START := Vector2(27,16.5)
+const DEFENDER_SHOTGUN_START := Vector2(41,20)
 const DEBUG_CAR_PASSENGER_CAPACITY := 4
 
 
@@ -102,10 +102,10 @@ static func create() -> GameState:
 
 	_add_keep_soldier(state, SOLDIER_ID, "rifle", 1.90, 35.0)
 	_add_keep_soldier(state, SOLDIER_SMG_ID, "smg", 1.55, 30.0)
-	_add_keep_soldier(state, SOLDIER_SHOTGUN_ID, "shotgun", 1.25, 25.0)
+	_add_keep_soldier(state, SOLDIER_SHOTGUN_ID, "pistol", 1.25, 25.0)
 	_add_hq_soldier(state, RIVAL_SOLDIER_ID, "pistol", 1.00, 20.0)
 	_add_hq_soldier(state, RIVAL_RIFLE_ID, "rifle", 1.90, 35.0)
-	_add_hq_soldier(state, RIVAL_SHOTGUN_ID, "shotgun", 1.25, 25.0)
+	_add_hq_soldier(state, RIVAL_SHOTGUN_ID, "smg", 1.25, 25.0)
 
 	DiplomacyService.declare_war(state, PLAYER_FACTION_ID, RIVAL_FACTION_ID)
 	return state
