@@ -151,8 +151,8 @@ func capture(second: int) -> void:
 	if second == 2:
 		comparing = true
 		var view = runtime.get_node("TacticalBattleView")
-		view._dusk_zoom = 1.75
-		view._dusk_pan = Vector2(30,0)
+		view._dusk_zoom = 2.5
+		view._dusk_pan = Vector2(0,35)
 		view._frame_camera()
 		for pass_id in [0,1]:
 			view.actor_presenter.set_outline_width(0.0 if pass_id == 0 else 2.5)

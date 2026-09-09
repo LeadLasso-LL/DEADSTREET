@@ -52,3 +52,9 @@ Actual six-unit combat: 57.21 FPS mean active, 21.21ms p95, 45 shots;
 all 68 cover slots reachable. Walk, wounded walk, aim, fire, cover and death seen.
 Known remaining art issue: some arm/gun overlaps need source pose-specific
 separation; this finish does not claim to repair their anatomy.
+
+## Fine-grid correction
+User rejected the doubled source-pixel grid as scrambled/chunky, but liked
+the gun shading. Restore native one-pixel sampling, retaining approved
+outline, hue-preserving brightness steps and equipment edge contrast.
+Review capture now uses 2.5 zoom with framing around the attacking units.

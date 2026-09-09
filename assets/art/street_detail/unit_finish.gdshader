@@ -1,7 +1,7 @@
 shader_type canvas_item;
 // Approved B silhouette, with a sprite-local grid stable across atlas frames.
 uniform float outline_width = 2.5;
-uniform float pixel_step = 2.0;
+uniform float pixel_step = 1.0;
 varying vec4 tint;
 void vertex(){ tint=COLOR; }
 void fragment(){
