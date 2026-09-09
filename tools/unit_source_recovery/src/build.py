@@ -8,6 +8,10 @@ R=Path(__file__).parent
 N=B.NS
 def group(parent,**attrs): return E.SubElement(parent,N+'g',attrs)
 def p(g,d,c,s='#14191a',w=.8): B.path(g,d,c,s,w)
+def outline_arm(parent,start):
+ for el in list(parent)[start:]:
+  if el.get("stroke") not in [None,"none"] and el.get("fill")!="none":
+   el.set("stroke","#090f12");el.set("stroke-width","1.25")
 def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0):
  weapon_id=weapon_id or equipment.DEFAULTS[kind]
  weapon=equipment.DEFINITIONS[weapon_id]
@@ -41,6 +45,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  if wounded:grips[1]=rot.T@(np.array([43.,49.+.8*math.sin(2*math.pi*q)])-origin)
  grips=[g*(1-fall)+rot.T@(np.array(target)-origin)*fall for g,target in zip(grips,[[30,50],[50,53]])]
  def arm(parent,a,b,c):
+  outline_start=len(parent)
   a,b,c=map(lambda v:np.array(v,float),(a,b,c))
   # A continuous shoulder cap reaches inward under the neckline and
   # overlaps the upper arm. No flat transverse cut at the arm root.
@@ -55,6 +60,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
   B.limb(parent,b,c,3.2,2.3,skin if kind==0 else cloth)
   list(parent)[-1].set('fill',hi if kind==0 else shine)
   E.SubElement(parent,N+'circle',{'cx':str(b[0]),'cy':str(b[1]),'r':'3.1','fill':skin if kind==0 else cloth})
+  outline_arm(parent,outline_start)
  far=group(up);arm(far,[51.8,32.5],[56+2*aim,48-6*aim],origin+rot@grips[1])
  torso=group(up)
  p(torso,'M31 28 L38 26 48 27 53 31 52 43 55 55 Q43 61 30 56 L28 43Z',cloth)
@@ -99,8 +105,10 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  support_end=origin+rot@grips[1]
  support_elbow=np.array([56+2*aim,48-6*aim],float)
  sleeve_start=support_elbow*.55+support_end*.45
+ outline_start=len(up)
  B.limb(up,sleeve_start,support_end,2.8,2.3,skin if kind==0 else cloth)
  list(up)[-1].set('fill',hi if kind==0 else shine)
+ outline_arm(up,outline_start)
  gun=group(up,transform=f'translate({origin[0]} {origin[1]}) rotate({angle})')
  grip_parent=gun
  gun=group(grip_parent,transform=f'scale({weapon_scale})')
@@ -114,7 +122,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
    p(gun,'M10 8 Q11.7 7 13 7.6 L15 8.1 14.6 9.2 12.1 9.2Z',hi,'#65503c',.4)
    p(gun,'M9.5 10 L12 10.8 M9.5 11.4 L11.6 12','none','#65503c',.5)
    continue
-  p(gun,f'M{x-2} {y-2} Q{x} {y-3} {x+2} {y-1} L{x+2} {y+2} Q{x} {y+3} {x-2} {y+1}Z',skin,'#382b25',.6)
+  p(gun,f'M{x-2} {y-2} Q{x} {y-3} {x+2} {y-1} L{x+2} {y+2} Q{x} {y+3} {x-2} {y+1}Z',skin,'#090f12',.95)
   p(gun,f'M{x-1} {y-1} L{x+1} {y}','none',hi,.65)
  if weapon_id!='pistol' and not wounded:
   x,y=grips[1];p(gun,f'M{x-3} {y-3} L{x+3} {y-3}','none','#111819',1)

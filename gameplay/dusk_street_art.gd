@@ -140,6 +140,16 @@ func cabinet(q: Vector2,sz: Vector2) -> void:
 	for y in range(5,13,2):line(top+Vector2(2,y),top+Vector2(sz.x-2,y),Color("#293632"),.5)
 	rect(Rect2(top+Vector2(3,15),Vector2(3,4)),Color("#b6a578"))
 	line(top+Vector2(sz.x-3,15),top+Vector2(sz.x-3,20),INK,.6)
+	# Separate steel doors, plinth and electrical warning identify street cabinets.
+	line(top+Vector2(sz.x*.5,3),top+Vector2(sz.x*.5,sz.y+10),INK,.8)
+	rect(Rect2(top+Vector2(1,sz.y+9),Vector2(sz.x-2,3)),Color("#303a38"))
+	line(top+Vector2(sz.x*.5-2,16),top+Vector2(sz.x*.5-2,20),Color("#bac0ae"),.8)
+	var warning=top+Vector2(3.8,16)
+	line(warning,warning+Vector2(-.7,1.2),INK,.55)
+	line(warning+Vector2(-.7,1.2),warning+Vector2(.5,1.2),INK,.55)
+	line(warning+Vector2(.5,1.2),warning+Vector2(-.3,2.5),INK,.55)
+	for y in [sz.y+4,sz.y+6]:
+		line(top+Vector2(2,y),top+Vector2(sz.x*.5-2,y),INK,.65)
 func pallets(q: Vector2,sz: Vector2) -> void:
 	# Full shipping crates on a pallet; slatted faces and diagonal braces.
 	var h=12.0

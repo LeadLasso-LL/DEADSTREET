@@ -66,6 +66,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  en[1]+=2.0;ef[1]+=2.0
  en+=(wr_near-en)*(.10*aim);ef+=(wr_far-ef)*(.10*aim)
  def arm(parent,a,b,c):
+  outline_start=len(parent)
   fill=skin if k==0 else cloth;light=hi if k==0 else lit
   v=(b-a)/np.linalg.norm(b-a);n=np.array([-v[1],v[0]])
   cap=a-v*2.5;end=b+v*.5
@@ -74,6 +75,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   if k==1:p(parent,f'M{xy(a+n*1.8)} L{xy(b-v*2+n*1.6)}','none','#d6d5c9',.65)
   lower_body.limb(parent,b,c,3.15,2.15,fill);list(parent)[-1].set('fill',light)
   E.SubElement(parent,N+'circle',{'cx':str(b[0]),'cy':str(b[1]),'r':'3.0','fill':fill})
+  build.outline_arm(parent,outline_start)
  def gun(parent):
   aa,bb=mat[0];cc,dd=mat[1]
   gg=group(parent,transform=f'matrix({aa} {cc} {bb} {dd} {origin[0]} {origin[1]})')
@@ -83,7 +85,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
    p(gg,f"M{x} {y} L{x+3} {y-2} {x+9} {y} {x+3} {y+2}Z","#eeeee2","#d2b15d",.6)
   # Hands stay full-sized in pose space rather than shrinking with the weapon.
   for hand in [right,left]:
-   p(parent,f'M{xy(hand+[-1.7,-1.1])} Q{xy(hand+[0,-2])} {xy(hand+[1.8,-.3])} L{xy(hand+[1.5,2])} Q{xy(hand+[-.5,2.4])} {xy(hand+[-1.8,1])}Z',skin,'#382b25',.5)
+   p(parent,f'M{xy(hand+[-1.7,-1.1])} Q{xy(hand+[0,-2])} {xy(hand+[1.8,-.3])} L{xy(hand+[1.5,2])} Q{xy(hand+[-.5,2.4])} {xy(hand+[-1.8,1])}Z',skin,'#090f12',.95)
    p(parent,f'M{xy(hand+[-.7,-.4])} L{xy(hand+[.8,.3])}','none',hi,.65)
   # Expose dark fore-end immediately above the support palm.
   if w!='pistol' and not wounded:
@@ -105,7 +107,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   p(torso,'M7 -28 L8 -18 6 -5 2 -3 4 -16Z',shade,'none')
  # Neck, collar and costume-specific details.
  cx=5 if side else (3 if diag or d=='SW' else 0)
- p(torso,f'M{cx-3} -37 L{cx+3} -37 L{cx+4} -30 Q{cx} -28 {cx-3} -31Z',skin,'#382b25',.5)
+ p(torso,f'M{cx-3} -37 L{cx+3} -37 L{cx+4} -30 Q{cx} -28 {cx-3} -31Z',skin,'#090f12',.95)
  if k==0:
   if side:
    p(torso,'M-2 -34 L1 -34 Q2 -27 7 -28 L7 -25 Q0 -24 -2 -34Z',lit,'none')
@@ -154,7 +156,9 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  if not back:
   if (side or d=='SW') and not wounded:
    # Far upper arm remains behind torso; only its forearm crosses in front.
+   outline_start=len(g)
    lower_body.limb(g,ef,wr_far,3.15,2.15,skin if k==0 else cloth)
+   build.outline_arm(g,outline_start)
   else:
    g.remove(far);g.append(far)
   near=group(g);arm(near,sh_near,en,wr_near);gun(g)
