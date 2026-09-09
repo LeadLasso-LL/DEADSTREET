@@ -114,8 +114,7 @@ func object_art() -> void:
 			asset("burgundy_sedan",end+Vector2(0,1),sz.x,tint)
 		"van": van(q,sz)
 		"dumpster": asset("dumpster_0",end,sz.x,Color("#b8c4ba"))
-		"wall":
-			draw_texture_rect(textures["barrier_0"],Rect2(end-Vector2(sz.x/2,9),Vector2(sz.x,9)),false,Color("#bebcaf"))
+		"wall": planter(q,sz)
 		"utility": cabinet(q,sz)
 		"crate": pallets(q,sz)
 func rear_building(q: Vector2,sz: Vector2) -> void:
@@ -142,26 +141,58 @@ func cabinet(q: Vector2,sz: Vector2) -> void:
 	rect(Rect2(top+Vector2(3,15),Vector2(3,4)),Color("#b6a578"))
 	line(top+Vector2(sz.x-3,15),top+Vector2(sz.x-3,20),INK,.6)
 func pallets(q: Vector2,sz: Vector2) -> void:
-	for n in range(3):
-		var y=q.y+sz.y-1-n*2.1
-		rect(Rect2(q.x,y-2,sz.x,1.4),Color("#77694f"))
-		line(Vector2(q.x,y-2),Vector2(q.x+sz.x,y-2),Color("#a08e6b"),.4)
-		for x in [1.0,sz.x-4]:rect(Rect2(q.x+x,y-.6,2.5,1),Color("#302f29"))
-	for x in range(0,int(sz.x),3):line(q+Vector2(x,sz.y-7),q+Vector2(x+1,sz.y-4),Color("#403f33"),.35)
+	# Full shipping crates on a pallet; slatted faces and diagonal braces.
+	var h=12.0
+	var t=q-Vector2(0,h)
+	rect(Rect2(q+Vector2(1,sz.y-1),Vector2(sz.x-2,2)),Color("#34332a"))
+	for x in [2.0,sz.x-5]:rect(Rect2(q+Vector2(x,sz.y),Vector2(3,2)),INK)
+	rect(Rect2(t,sz+Vector2(0,h-1)),Color("#695841"))
+	rect(Rect2(t+Vector2(1,1),sz-Vector2(2,2)),Color("#9b8660"))
+	var face=t+Vector2(0,sz.y)
+	rect(Rect2(face,Vector2(sz.x,h-1)),Color("#7b674b"))
+	for x in range(1,int(sz.x),4):
+		line(face+Vector2(x,0),face+Vector2(x,h-1),Color("#413c30"),.5)
+		line(t+Vector2(x,1),t+Vector2(x,sz.y-1),Color("#534e39"),.4)
+	for y in [1.0,h-3]:
+		rect(Rect2(face+Vector2(0,y),Vector2(sz.x,1.7)),Color("#ab9166"))
+	line(face+Vector2(2,h-2),face+Vector2(sz.x-2,1),Color("#b59b73"),1.6)
+	for x in [1.5,sz.x-2]:
+		for y in [2.0,h-2]:rect(Rect2(face+Vector2(x,y),Vector2(.5,.5)),INK)
+	rect(Rect2(face+Vector2(sz.x*.65,3),Vector2(4,4)),Color("#bfb18c"))
+	line(face+Vector2(sz.x*.65+1,4),face+Vector2(sz.x*.65+3,4),INK,.3)
+func planter(q: Vector2,sz: Vector2) -> void:
+	var h=7.0
+	var top=q-Vector2(0,h)
+	rect(Rect2(top,sz+Vector2(0,h)),Color("#332f2a"))
+	rect(Rect2(q+Vector2(0,sz.y-h),Vector2(sz.x,h)),Color("#725a49"))
+	for y in range(0,7,2):
+		line(q+Vector2(0,sz.y-h+y),q+Vector2(sz.x,sz.y-h+y),Color("#3b3830"),.4)
+		for x in range(y%4,int(sz.x),6):line(q+Vector2(x,sz.y-h+y),q+Vector2(x,sz.y-h+y+2),Color("#a18768"),.4)
+	rect(Rect2(top-Vector2(.5,.5),Vector2(sz.x+1,1.5)),Color("#aaa08b"))
+	rect(Rect2(top+Vector2(1,1),sz-Vector2(2,1)),Color("#353a2b"))
+	for x in range(2,int(sz.x)-1,3):
+		rect(Rect2(top+Vector2(x,-1-(x%3)),Vector2(3,4)),Color("#495644"))
+		rect(Rect2(top+Vector2(x+1,-2),Vector2(1,2)),Color("#758068"))
 func van(q: Vector2,sz: Vector2) -> void:
-	# Delivery van with cabin glass, tires, sliding cargo door and bumper.
 	var t=q-Vector2(0,7)
-	for x in [5.0,sz.x-10]:
-		draw_circle(q+Vector2(x,sz.y-1),3.1,INK)
-		draw_circle(q+Vector2(x,sz.y-1),1.6,Color("#737c7b"))
-	rect(Rect2(t+Vector2(2,2),sz+Vector2(-4,3)),Color("#8b8c80"))
-	rect(Rect2(t+Vector2(12,-5),Vector2(sz.x-14,sz.y+4)),Color("#b3b1a0"))
-	rect(Rect2(t+Vector2(14,-4),Vector2(sz.x-18,sz.y-3)),Color("#c0beac"))
-	rect(Rect2(t+Vector2(3,3),Vector2(8,sz.y-6)),Color("#344649"))
-	line(t+Vector2(4,4),t+Vector2(9,4),Color("#8a9c95"),.6)
-	rect(Rect2(t+Vector2(14,sz.y-1),Vector2(sz.x-18,5)),Color("#72796e"))
-	line(t+Vector2(26,sz.y-1),t+Vector2(26,sz.y+4),Color("#404d47"),.4)
-	line(t+Vector2(15,sz.y+1),t+Vector2(sz.x-4,sz.y+1),Color("#3b514b"),1)
-	rect(Rect2(t+Vector2(28,sz.y),Vector2(2,.7)),Color("#c3c1aa"))
-	line(t+Vector2(0,4),t+Vector2(0,sz.y-2),Color("#adb3a7"),1)
-	rect(Rect2(t+Vector2(0,5),Vector2(1,2)),Color("#e0ce9c"))
+	for x in [5.0,sz.x-9]:
+		draw_circle(q+Vector2(x,sz.y-1),3.2,INK)
+		draw_circle(q+Vector2(x,sz.y-1),1.7,Color("#939b97"))
+		draw_circle(q+Vector2(x,sz.y-1),.8,Color("#465457"))
+	# Box body and a lower separate cab with sloped windshield.
+	rect(Rect2(t+Vector2(12,-6),Vector2(sz.x-13,sz.y+8)),Color("#637675"))
+	rect(Rect2(t+Vector2(13,-5),Vector2(sz.x-15,sz.y-3)),Color("#9aa7a0"))
+	rect(Rect2(t+Vector2(13,sz.y-7),Vector2(sz.x-15,8)),Color("#798d87"))
+	line(t+Vector2(13,sz.y-7),t+Vector2(sz.x-2,sz.y-7),Color("#c2c7b4"),.6)
+	draw_colored_polygon(PackedVector2Array([t+Vector2(0,6),t+Vector2(4,1),t+Vector2(12,1),t+Vector2(12,sz.y+2),t+Vector2(0,sz.y+2)]),Color("#89998e"))
+	draw_colored_polygon(PackedVector2Array([t+Vector2(2,6),t+Vector2(5,2),t+Vector2(11,2),t+Vector2(11,sz.y-5),t+Vector2(2,sz.y-5)]),Color("#233b42"))
+	line(t+Vector2(5,3),t+Vector2(10,3),Color("#829fa3"),.6)
+	line(t+Vector2(12,sz.y-6),t+Vector2(12,sz.y+2),Color("#344847"),.5)
+	rect(Rect2(t+Vector2(8,sz.y-3),Vector2(2,.6)),Color("#d0c9b3"))
+	rect(Rect2(t+Vector2(13,sz.y+1),Vector2(sz.x-14,2)),Color("#364d4c"))
+	# Rolling cargo shutter with frame, rails and latch.
+	rect(Rect2(t+Vector2(21,sz.y-7),Vector2(sz.x-25,8)),Color("#556c69"))
+	for y in range(1,7):line(t+Vector2(22,sz.y-7+y),t+Vector2(sz.x-5,sz.y-7+y),Color("#9baca1"),.35)
+	rect(Rect2(t+Vector2(25,sz.y-1),Vector2(3,.6)),Color("#d0cab2"))
+	rect(Rect2(t+Vector2(0,sz.y-4),Vector2(1,2)),Color("#e5d7a7"))
+	line(t+Vector2(0,sz.y+1),t+Vector2(3,sz.y+1),Color("#b4bbaa"),1)

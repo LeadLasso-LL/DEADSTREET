@@ -217,6 +217,10 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	body.centered = true
 	body.offset = TacticalUnitAnimationCatalog.sprite_foot_offset()
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	if battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
+		var finish := ShaderMaterial.new()
+		finish.shader = load("res://assets/art/street_detail/unit_finish.gdshader")
+		body.material = finish
 	var view_scale: float = pixels_per_unit / art_ppu
 	body.scale = Vector2(view_scale, view_scale)
 	var shadow := Polygon2D.new()
@@ -372,3 +376,8 @@ func _clear_all() -> void:
 	_prune_unwanted_units({})
 	_claimed.clear()
 	_claimed_participants.clear()
+func set_outline_width(width: float) -> void:
+	for node in _unit_nodes.values():
+		var body = node.get_node("body")
+		if body.material is ShaderMaterial:
+			body.material.set_shader_parameter("outline_width",width)

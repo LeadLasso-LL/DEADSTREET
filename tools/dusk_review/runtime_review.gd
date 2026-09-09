@@ -9,6 +9,7 @@ var clips: Dictionary = {}
 var shots: Dictionary = {}
 var captured: Dictionary = {}
 var active := false
+var comparing := false
 var out_dir := "res://tools/dusk_review/results"
 
 func _initialize() -> void:
@@ -101,7 +102,7 @@ func start() -> void:
 	print("PIXEL_REVIEW_ACTIVE participants=", battle.participants.size())
 
 func _process(delta: float) -> bool:
-	if not active:
+	if not active or comparing:
 		return false
 	elapsed += delta
 	frames += 1
@@ -148,16 +149,22 @@ func capture(second: int) -> void:
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png(out_dir + "/battle_%02d.png" % second)
 	if second == 2:
+		comparing = true
 		var view = runtime.get_node("TacticalBattleView")
 		view._dusk_zoom = 1.75
 		view._dusk_pan = Vector2(30,0)
 		view._frame_camera()
-		await process_frame
-		await RenderingServer.frame_post_draw
-		root.get_texture().get_image().get_region(Rect2i(0,0,1152,540)).save_png(out_dir + "/battle_close.png")
+		for pass_id in [0,1]:
+			view.actor_presenter.set_outline_width(0.0 if pass_id == 0 else 2.5)
+			await process_frame
+			await process_frame
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().get_region(Rect2i(0,0,1152,540)).save_png(out_dir + "/unit_finish_%s.png" % pass_id)
+		view.actor_presenter.set_outline_width(0.0)
 		view._dusk_zoom = 1.2
 		view._dusk_pan = Vector2.ZERO
 		view._frame_camera()
+		comparing = false
 
 func fail(reason: String) -> void:
 	push_error("PIXEL_REVIEW_FAILED " + reason)
