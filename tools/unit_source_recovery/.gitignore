@@ -1,0 +1,15 @@
+svg_export/
+review_atlases/
+rendered/
+__pycache__/
+**/__pycache__/
+*.log
+jobs.json
+*.before_readability
+patch_readability.py
+atlases/
+*.gif
+frames.json
+*.png
+*.uid
+*.import
