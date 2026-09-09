@@ -11,9 +11,9 @@ const SIZE = Vector2(64,46)
 # The same footprint data drives collision, cover and the painted scene.
 static func props() -> Array:
 	return [
-		["pawn",Rect2(1,4,15,11),"building","PAWN & LOAN"],
-		["club",Rect2(22,4,18,10),"building","THE SOCIAL CLUB"],
-		["laundry",Rect2(48,4,15,11),"building","LAUNDROMAT"],
+		["pawn",Rect2(1,8.5,15,6.5),"building","PAWN & LOAN"],
+		["club",Rect2(22,7,18,7),"building","THE SOCIAL CLUB"],
+		["laundry",Rect2(48,8.5,15,6.5),"building","LAUNDROMAT"],
 		["south_shop",Rect2(1,41,15,5),"building","AUTO REPAIR"],
 		["south_shop2",Rect2(49,41,14,5),"building","NO VACANCY"],
 		["club_wall_w",Rect2(23,17.6,6,0.7),"wall",""],

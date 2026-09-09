@@ -147,6 +147,17 @@ func _process(delta: float) -> bool:
 func capture(second: int) -> void:
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png(out_dir + "/battle_%02d.png" % second)
+	if second == 2:
+		var view = runtime.get_node("TacticalBattleView")
+		view._dusk_zoom = 1.75
+		view._dusk_pan = Vector2(30,0)
+		view._frame_camera()
+		await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().get_region(Rect2i(0,0,1152,540)).save_png(out_dir + "/battle_close.png")
+		view._dusk_zoom = 1.2
+		view._dusk_pan = Vector2.ZERO
+		view._frame_camera()
 
 func fail(reason: String) -> void:
 	push_error("PIXEL_REVIEW_FAILED " + reason)

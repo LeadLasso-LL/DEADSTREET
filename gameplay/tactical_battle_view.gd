@@ -4121,7 +4121,12 @@ func _draw_unit_hud_card(battle_state: BattleState, row: Dictionary) -> void:
 	var portrait_center: Vector2 = rect.position + Vector2(rect.size.x * 0.38, rect.size.y * 0.50)
 	var participant: BattleParticipant = battle_state.get_participant(str(card.get("participant_id", "")))
 	if participant != null:
-		_draw_unit_hud_miniature(battle_state, participant, portrait_center, state)
+		if _is_dusk_street() and actor_presenter != null and actor_presenter._unit_nodes.has(participant.participant_id):
+			var body = actor_presenter._unit_nodes[participant.participant_id].get_node("body")
+			var tex: Texture2D = body.sprite_frames.get_frame_texture(body.animation,body.frame)
+			_paint_canvas().draw_texture_rect(tex,Rect2(portrait_center-Vector2(10,16),Vector2(32,32)),false)
+		else:
+			_draw_unit_hud_miniature(battle_state, participant, portrait_center, state)
 	var bar_rect: Rect2 = Rect2(
 		rect.position + Vector2(8.0, rect.size.y - 16.0),
 		Vector2(rect.size.x - 16.0, 6.0)
@@ -4314,6 +4319,7 @@ func _sync_dusk_vehicles() -> void:
 		var node = _dusk_vehicle_nodes.get(id)
 		if node == null:
 			node = preload("res://gameplay/dusk_street_art.gd").new()
+			node.prop = ["arrival_car",bounds,"car",""]
 			dynamic_unit_root.add_child(node)
 			_dusk_vehicle_nodes[id] = node
 		var next_position := Vector2(bounds.get_center().x*8,bounds.end.y*6)
