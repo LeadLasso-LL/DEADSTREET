@@ -28,7 +28,7 @@ def make_lower(q,stop=None,settle=0,crouch=0,fall=0,wounded=0):
    xx=x-toe_pivot
    return foot+F*(toe_pivot+xx*math.cos(ang)-y*math.sin(ang))+np.array([0,xx*math.sin(ang)+y*math.cos(ang),0])
   ank=boot_world(0,5.5);hp=RIGHT*side*6.2+np.array([0,h,0]);v=ank-hp;dist=np.linalg.norm(v);direction=v/dist;hint=F-direction*np.dot(F,direction);hint/=np.linalg.norm(hint)
-  k=(26.5**2-29.5**2+dist**2)/(2*dist);knee=hp+direction*k+hint*math.sqrt(max(0,26.5**2-k*k));knee=knee*(1-fall)+np.array([-19.,3.,side*8.])*fall;a,b,c=map(proj,[hp,knee,ank]);thighs.append((a,b))
+  k=(26.5**2-29.5**2+dist**2)/(2*dist);knee=hp+direction*k+hint*math.sqrt(max(0,26.5**2-k*k));knee=(hp+(ank-hp)*.473+(knee-(hp+(ank-hp)*.473))*.18) if wounded and side==1 else knee;knee=knee*(1-fall)+np.array([-19.,3.,side*8.])*fall;a,b,c=map(proj,[hp,knee,ank]);thighs.append((a,b))
   limb(g,a,b,5.5,4.0,'#252c2e');limb(g,b,c,4.2,2.85,'#252c2e')
   u=(b-a)/np.linalg.norm(b-a);v2=(c-b)/np.linalg.norm(c-b);nu=np.array([-u[1],u[0]]);nv=np.array([-v2[1],v2[0]]);n=nu+nv;n/=np.linalg.norm(n)
   def xy(p):return f'{p[0]:.3f} {p[1]:.3f}'

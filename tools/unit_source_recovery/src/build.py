@@ -93,6 +93,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
   else:
    p(head,'M34 16 L36 22 35 27 38 29 36 18Z','#171d20','none')
    p(head,'M38 21 L40 21 M45 22 L47 22 M41 27 L45 27','none','#49382e',.65)
+ if wounded:up.remove(far);up.append(far)
  near=group(up);arm(near,[27,32.5],[25+5*aim,49-5*aim],origin+rot@grips[0])
  # Bring the distal support forearm over the shirt edge into the palm.
  support_end=origin+rot@grips[1]

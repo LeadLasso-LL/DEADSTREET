@@ -27,10 +27,10 @@ def limping_foot(p):
  return along*.62,lift*(.28 if sore else .48),pitch*.35,pivot*.3
 
 def wounded_foot(p,side):
- sore=side==1;stance=.52 if sore else .68
- reach=8 if sore else 10
+ sore=side==1;stance=.40 if sore else .72
+ reach=7 if sore else 11
  if p<stance:
   t=p/stance;roll=smooth((t-.8)/.2)
   return reach-2*reach*t,0,-7*roll,3*roll
  t=(p-stance)/(1-stance)
- return -reach+2*reach*smooth(t),(3 if sore else 6)*math.sin(math.pi*t),-7*(1-t),0
+ return -reach+2*reach*smooth(t),(1.2 if sore else 7)*math.sin(math.pi*t),-7*(1-t),0

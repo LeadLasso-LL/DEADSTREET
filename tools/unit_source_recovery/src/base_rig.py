@@ -34,7 +34,7 @@ def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0,wounded=0):
   foot=RIGHT*side*7.3+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+np.array([-40.,0.,side*4.])*fall;ank=foot+np.array([0,3,0]);hp=RIGHT*side*6.5+np.array([sway,h,0]);v=ank-hp;dist=np.linalg.norm(v);direction=v/dist;hint=F-direction*np.dot(F,direction);hint/=np.linalg.norm(hint)
   thigh_length,calf_length=26.5,29.5
   knee_distance=(thigh_length**2-calf_length**2+dist**2)/(2*dist)
-  knee=hp+direction*knee_distance+hint*math.sqrt(max(0,thigh_length**2-knee_distance**2));knee=knee*(1-fall)+(np.array([-19.,3.,side*8.]))*fall;a,b,c=map(proj,[hp,knee,ank])
+  knee=hp+direction*knee_distance+hint*math.sqrt(max(0,thigh_length**2-knee_distance**2));knee=(hp+(ank-hp)*.473+(knee-(hp+(ank-hp)*.473))*.18) if wounded and side==1 else knee;knee=knee*(1-fall)+(np.array([-19.,3.,side*8.]))*fall;a,b,c=map(proj,[hp,knee,ank])
   thighs[side]=(a.copy(),b.copy())
   limb(g,a,b,5.8,4.5,'#252c2e');limb(g,b,c,4.65,3.1,'#252c2e')
   # Blend calf and thigh contours through a curved fabric-covered knee.

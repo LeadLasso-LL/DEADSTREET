@@ -152,7 +152,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
    else:p(head,'M-5 -41 L-3 -38 -3 -35 -5 -36Z',hair,'none')
  # Rear torso occludes only the proximal arm; outer elbows remain visible.
  if not back:
-  if side or d=='SW':
+  if (side or d=='SW') and not wounded:
    # Far upper arm remains behind torso; only its forearm crosses in front.
    lower_body.limb(g,ef,wr_far,3.15,2.15,skin if k==0 else cloth)
   else:
