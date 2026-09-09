@@ -110,6 +110,7 @@ static func variant_for(gang: String, weapon: String) -> String:
 	var gun: String = ""
 	match weapon:
 		"rifle": gun = "ak_rifle"
+		"shotgun": gun = "pump_shotgun"
 		"smg": gun = "uzi_smg"
 		"pistol": gun = "pistol"
 	if outfit.is_empty() or gun.is_empty():

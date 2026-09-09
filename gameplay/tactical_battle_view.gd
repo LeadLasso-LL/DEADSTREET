@@ -3397,8 +3397,6 @@ func _draw_shot_muzzle_flash(
 	if resolved_hold or event == null:
 		return
 	var age: float = _combat_event_age(battle_state, event)
-	if _participant_uses_retained_visual(event.source_participant_id):
-		return # The accepted sprite contains the muzzle flash.
 	var flash_alpha: float = TacticalShotPresentation.muzzle_flash_alpha(age)
 	if flash_alpha <= 0.0:
 		return
@@ -3413,19 +3411,11 @@ func _draw_shot_muzzle_flash(
 	fill.a = flash_alpha
 	var core: Color = PROVISIONAL_MUZZLE_CORE
 	core.a = flash_alpha
-	if weapon_type == "sniper":
-		var bloom: Color = core
-		bloom.a = flash_alpha * 0.45
-		_paint_canvas().draw_circle(muzzle, radius * 1.18, bloom, true)
-	_paint_canvas().draw_circle(muzzle, radius, fill, true)
-	_paint_canvas().draw_circle(muzzle, radius * 0.42, core, true)
-	if weapon_type == "shotgun" and _view_facing_usable(along):
-		var dir: Vector2 = along.normalized()
-		var side: Vector2 = Vector2(-dir.y, dir.x)
-		var lobe: Color = fill
-		lobe.a = flash_alpha * 0.72
-		_paint_canvas().draw_circle(muzzle + dir * radius * 0.35 + side * radius * 0.62, radius * 0.38, lobe, true)
-		_paint_canvas().draw_circle(muzzle + dir * radius * 0.35 - side * radius * 0.62, radius * 0.38, lobe, true)
+	var dir: Vector2 = along.normalized() if _view_facing_usable(along) else Vector2.RIGHT
+	var side: Vector2 = Vector2(-dir.y, dir.x)
+	var flame := PackedVector2Array([muzzle-dir*radius*.3, muzzle+side*radius*.65, muzzle+dir*radius*.7+side*radius*.35, muzzle+dir*radius*2.0, muzzle+dir*radius*.7-side*radius*.35, muzzle-side*radius*.65])
+	_paint_canvas().draw_colored_polygon(flame, fill)
+	_paint_canvas().draw_colored_polygon(PackedVector2Array([muzzle-side*radius*.25,muzzle+dir*radius*1.1,muzzle+side*radius*.25]),core)
 
 
 func _draw_shot_projectile(

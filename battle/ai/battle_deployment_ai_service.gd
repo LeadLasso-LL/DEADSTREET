@@ -77,6 +77,17 @@ static func apply_and_commit_side(
 				opposing_side_id,
 				plan
 			)
+	# Transfer exact authored cover positions to exclusive live occupancy.
+	var cover_service = load("res://battle/geometry/battle_cover_service.gd")
+	for assignment: BattleDeploymentPlanAssignment in plan.assignments:
+		var participant = battle_state.get_participant(assignment.participant_id)
+		for slot_id in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+			var slot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+			if participant.battle_position.distance_to(slot.position) > 0.05:
+				continue
+			var occupied = cover_service.occupy_slot(battle_state, participant.participant_id, slot_id)
+			if occupied != null and occupied.success:
+				break
 	var committed: BattleDeploymentCommitResult = BattleDeploymentCommitService.commit_side_deployment(
 		battle_state,
 		side_id

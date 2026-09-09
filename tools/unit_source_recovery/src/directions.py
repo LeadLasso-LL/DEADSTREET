@@ -17,7 +17,7 @@ def recolor(g,k):
  for el in g.iter():
   for key in ['fill','stroke']:
    if el.get(key) in colors:el.set(key,colors[el.get(key)])
-def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0):
+def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0):
  back=d in ['N','NE','NW'];side=d in ['E','W'];diag=d in ['NE','NW']
  flip=d in ['W','NW','SW'];s=math.sin(2*math.pi*(q-.12));bob=.6*math.sin(4*math.pi*(q-.08))
  s*=1-settle;bob*=1-settle
@@ -34,6 +34,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  origin=np.array([-3.,-27.+bob]) if side else np.array([-4.,-27.+bob])
  if back:origin=np.array([-3.,(-20 if diag else -17)+bob])
  if w=='pistol':origin+=np.array([13 if side else 3,1])
+ theta+=25*wounded
  theta+=.7*s+18*math.sin(math.pi*reload)
  theta+=( (-9 if side else (-8 if diag else 0)) *aim)-kick*1.8
  origin+=np.array([3*aim-1.3*kick,-(5 if back else 8)*aim-.5*kick])
@@ -46,6 +47,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  mat=rot@np.diag([length,.85])*weapon['scale']
  right=origin+mat@weapon['right_grip'];left=origin+mat@weapon['left_grip']
  left=equipment.support_target(reload,left,origin,mat,w,[6,-3])
+ if wounded:left=np.array([5. if side else 0.,-7.+.8*math.sin(2*math.pi*q)])
  right=right*(1-fall)+np.array([-8.,-12.])*fall;left=left*(1-fall)+np.array([12.,-8.])*fall
  # Anatomical right/left are retained even when the completed view is mirrored.
  if side:
@@ -84,7 +86,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
    p(parent,f'M{xy(hand+[-1.7,-1.1])} Q{xy(hand+[0,-2])} {xy(hand+[1.8,-.3])} L{xy(hand+[1.5,2])} Q{xy(hand+[-.5,2.4])} {xy(hand+[-1.8,1])}Z',skin,'#382b25',.5)
    p(parent,f'M{xy(hand+[-.7,-.4])} L{xy(hand+[.8,.3])}','none',hi,.65)
   # Expose dark fore-end immediately above the support palm.
-  if w!='pistol':
+  if w!='pistol' and not wounded:
    tangent=rot@np.array([1.,0.]);normal=rot@np.array([0.,-1.])
    p(parent,f'M{xy(left-tangent*2+normal*1.6)} L{xy(left+tangent*2+normal*1.6)}','none','#111819',.8)
  far=group(g);arm(far,sh_far,ef,wr_far)
@@ -156,19 +158,22 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   else:
    g.remove(far);g.append(far)
   near=group(g);arm(near,sh_near,en,wr_near);gun(g)
+ if wounded and back:
+  g.remove(reararm);g.append(reararm)
+  p(g,f'M{xy(left+[-2,-1])} Q{xy(left+[0,-3])} {xy(left+[2,0])} L{xy(left+[1,2])} {xy(left+[-2,1])}Z',skin)
  if flip:out.set('transform','scale(-1 1)')
  return out
 
-def make(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0):
+def make(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0):
  # User-approved handedness swap: these views are true reflections.
  if d in ['SW','W']:
-  root=make(k,q,'SE' if d=='SW' else 'E',w,settle,aim,kick,flash,crouch,fall,lean,reload)
+  root=make(k,q,'SE' if d=='SW' else 'E',w,settle,aim,kick,flash,crouch,fall,lean,reload,wounded)
   reflected=E.Element(N+'g',{'transform':'translate(128 0) scale(-1 1)'})
   for child in list(root):root.remove(child);reflected.append(child)
   root.append(reflected)
   return root
  if d in ['SE','SW']:
-  root=build.make(k,q,w,settle,aim,kick,flash,crouch,fall,lean,reload)
+  root=build.make(k,q,w,settle,aim,kick,flash,crouch,fall,lean,reload,wounded)
   if d=='SW':
    # Swap arm endpoints before reflecting; preserve right-hand trigger ownership.
    up=root.find(".//*[@id='upper_pose']")
@@ -176,15 +181,15 @@ def make(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload
    low=list(root)[0];low.remove(up)
    hip=build.B.proj(np.array([math.sin(2*math.pi*q)*(1-settle),(gait.height(q,51))*(1-settle)+51.8*settle-30*crouch-12*fall,0]))
    wrap=group(root,transform=f'translate({hip[0]} {hip[1]}) scale(1.05 .92)')
-   wrap.append(upper(k,q,'SW',w,settle,aim,kick,flash,crouch,fall,lean,reload))
+   wrap.append(upper(k,q,'SW',w,settle,aim,kick,flash,crouch,fall,lean,reload,wounded))
    low.set('transform','translate(128 0) scale(-1 1)')
   return root
  if d in ['E','W']:
-  low,_,hip=lower_body.make_lower(q,settle=settle,crouch=crouch,fall=fall)
+  low,_,hip=lower_body.make_lower(q,settle=settle,crouch=crouch,fall=fall,wounded=wounded)
   if d=='W':low.set('transform','translate(128 0) scale(-1 1)')
  else:
-  yaw=math.radians({'S':90,'N':270,'NE':293.578,'NW':246.422}[d]);low,hip=views.lower(q,yaw,settle=settle,crouch=crouch,fall=fall)
+  yaw=math.radians({'S':90,'N':270,'NE':293.578,'NW':246.422}[d]);low,hip=views.lower(q,yaw,settle=settle,crouch=crouch,fall=fall,wounded=wounded)
  recolor(low,k)
  root=E.Element(N+'svg',{'width':'128','height':'128','viewBox':'0 0 128 128'});root.append(low)
  wrap=group(root,transform=f'translate({hip[0]} {hip[1]}) scale({.88 if d in ["E","W"] else 1.12} {.8 if d in ["E","W"] else .92})')
- wrap.append(upper(k,q,d,w,settle,aim,kick,flash,crouch,fall,lean,reload));return root
+ wrap.append(upper(k,q,d,w,settle,aim,kick,flash,crouch,fall,lean,reload,wounded));return root

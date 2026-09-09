@@ -29,7 +29,7 @@ def draw(parent,weapon_id,reload=0):
    for part in child:
     if part.get('d','').startswith('M12.5 7'):part.set('d',part.get('d').replace('17 19 13 19','17.5 11 12.5 11'))
   parent.append(child)
- if 0<reload<1 and not .4<reload<.55:
+ if weapon_id!='pump_shotgun' and 0<reload<1 and not .4<reload<.55:
   y=mag_offset(reload)
   shape={'ak_rifle':'M18 7 L22 7 Q22.8 12 26.2 16 L22.8 17 Q19 13 18 7Z','uzi_smg':'M12.4 11 L17.6 11 17 19 13 19Z','pistol':'M1.5 10 L4.8 11 4.2 15 1.3 14Z'}[weapon_id]
   E.SubElement(parent,ns+'path',{'d':shape,'transform':f'translate(0 {y})','fill':'#202527','stroke':'#111819','stroke-width':'.6'})
@@ -43,7 +43,7 @@ def mag_offset(t):
 
 def support_target(t,normal,origin,mat,w,belt):
  import numpy as np
- if not 0<t<1:return normal
+ if w=='pump_shotgun' or not 0<t<1:return normal
  grip={'ak_rifle':[22,16],'uzi_smg':[15,18],'pistol':[3,13]}[w]
  target=origin+mat@np.array([grip[0],grip[1]+mag_offset(t)])
  def mix(a,b,u):u=max(0,min(1,u));u=u*u*(3-2*u);return a*(1-u)+b*u

@@ -1,7 +1,7 @@
 {
   "uzi_smg": {
     "art": "uzi_smg.svg",
-    "scale": 0.7,
+    "scale": 0.784,
     "right_grip": [
       13,
       8
@@ -24,7 +24,7 @@
   },
   "ak_rifle": {
     "art": "ak_rifle.svg",
-    "scale": 1,
+    "scale": 1.12,
     "right_grip": [
       11,
       10
@@ -47,7 +47,7 @@
   },
   "pistol": {
     "art": "pistol.svg",
-    "scale": 0.68,
+    "scale": 0.7616000000000002,
     "right_grip": [
       2,
       7
@@ -67,5 +67,27 @@
     "carry_angle": 17,
     "grip_style": "two_hand_pistol",
     "direction_status": "Eight-direction running preview; view projections and hand ordering in directions.py"
+  },
+  "pump_shotgun": {
+    "art": "pump_shotgun.svg",
+    "scale": 1.08,
+    "right_grip": [
+      11,
+      9
+    ],
+    "left_grip": [
+      33,
+      6
+    ],
+    "muzzle": [
+      55,
+      1.5
+    ],
+    "carry_origin": [
+      27,
+      36
+    ],
+    "carry_angle": 25,
+    "grip_style": "two_hand_pump"
   }
 }

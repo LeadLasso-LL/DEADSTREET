@@ -63562,10 +63562,11 @@ static func _defender_ai_cover_ok() -> bool:
 		and cover_plan.assignments[0].reason.contains("cover")
 		and not cover_plan.assignments[0].position.is_equal_approx(open_plan.assignments[0].position)
 		and defender != null
-		and defender.occupied_cover_slot_id.is_empty()
+		and defender.occupied_cover_slot_id == "dai_cover_slot"
 		and defender.reserved_cover_slot_id.is_empty()
 		and live_slot != null
-		and live_slot.is_available()
+		and live_slot.occupied_by_participant_id == defender.participant_id
+		and BattleCoverService.occupancy_is_valid(with_cover, defender)
 	)
 
 

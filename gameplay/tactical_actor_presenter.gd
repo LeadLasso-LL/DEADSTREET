@@ -246,7 +246,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1" else 1.0)
 	unit_root.y_sort_enabled = true
 	if participant.is_wounded and participant.is_alive:
-		node.modulate = UNIT_WOUNDED_MODULATE
+		node.modulate = Color.WHITE
 	else:
 		node.modulate = Color.WHITE
 	var id: String = participant.participant_id
@@ -278,6 +278,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		clip = "hit"
 	elif TacticalParticipantVisual.is_locomoting(participant):
 		clip = "wounded_walk" if participant.is_wounded else "walk"
+	elif participant.is_wounded:
+		clip = "wounded_idle"
 	elif participant.weapon_state != null and participant.weapon_state.is_reloading:
 		clip = "reload"
 	elif participant.has_occupied_cover_slot():
@@ -310,7 +312,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		var cursor: float = age * TacticalUnitAnimationCatalog.clip_fps(clip)
 		if clip == "walk" or clip == "wounded_walk":
 			# Match the authored contact travel to distance; wounded gait stays shorter.
-			cursor = float(state["distance"]) / (3.7 if clip == "walk" else 2.8) * count
+			cursor = float(state["distance"]) / (2.7 if clip == "walk" else 2.5) * count
 		elif clip == "fire" or clip == "cover_fire":
 			cursor = shot_age * 20.0
 		elif clip == "reload":
@@ -325,6 +327,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 			_muzzles = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/muzzles.json"))
 		var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type)
 		var pose: String = "cover" if clip.begins_with("cover") else "open"
+		if clip.begins_with("wounded"):
+			pose = clip + "/" + str(body.frame)
 		var point: Array = _muzzles.get(variant + "/" + dir_id + "/" + pose, [64.0, 64.0])
 		state["shot_muzzle"] = node.position + (Vector2(float(point[0]), float(point[1])) - Vector2(64,110)) * (pixels_per_unit / TacticalUnitAnimationCatalog.art_pixels_per_unit()) * node.scale.x
 		state["muzzle_sequence"] = state["sequence"]

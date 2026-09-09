@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys,json,re,math
 import numpy as np
-R=Path(__file__).parent;sys.path.insert(0,str(R/'src'))
+R=Path(__file__).parent;sys.path.insert(0,str(R/'src'));sys.path.insert(0,str(R))
 import directions,equipment
 old=equipment.draw
 def mark(parent,w,reload=0):
@@ -27,7 +27,14 @@ def find(node,parent):
   if result is not None:return result
 p=R.parent.parent/'assets/art/units/pixel_v1/muzzles.json';data=json.loads(p.read_text())
 for k in range(3):
- for w in equipment.DEFAULTS:
-  for pose,crouch in [('open',0),('cover',.15)]:
-   data[f'{k}_{w}/sw/{pose}']=find(directions.make(k,1.25,'SW',w,settle=1,aim=1,crouch=crouch),np.eye(3))
+ for w in equipment.DEFINITIONS:
+  for d in directions.NAMES:
+   for pose,crouch in [('open',0),('cover',.15)]:
+    data[f'{k}_{w}/{d.lower()}/{pose}']=find(directions.make(k,1.25,d,w,settle=1,aim=1,crouch=crouch,kick=.8*({'pump_shotgun':4.5,'ak_rifle':1.8,'uzi_smg':.7,'pistol':1.3}[w])),np.eye(3))
+   import render
+   for clip in ['wounded_walk','wounded_idle']:
+    for i in range(24):
+     st=render.state('injured_run',i,w)
+     if clip=='wounded_idle':st['settle']=1
+     data[f'{k}_{w}/{d.lower()}/{clip}/{i}']=find(directions.make(k,st.pop('q'),d,w,**st),np.eye(3))
 p.write_text(json.dumps(data,indent=2))

@@ -8,7 +8,7 @@ R=Path(__file__).parent
 EL=math.radians(50)
 def project(v):return np.array([64+v[0],110+v[2]*math.sin(EL)-v[1]*math.cos(EL)])
 def xy(p):return f'{p[0]:.3f} {p[1]:.3f}'
-def lower(q,yaw,still=False,settle=0,crouch=0,fall=0):
+def lower(q,yaw,still=False,settle=0,crouch=0,fall=0,wounded=0):
  f=np.array([math.cos(yaw),0,math.sin(yaw)]);rt=np.array([f[2],0,-f[0]])
  h=52.5 if still else gait.height(q,52.5);hip=project([0,h,0]);g=E.Element(NS+'g');joins=[];legs=[]
  front=abs(yaw-math.pi/2)<.01
@@ -20,7 +20,7 @@ def lower(q,yaw,still=False,settle=0,crouch=0,fall=0):
  for side in [-1,1]:
   p=(q+(0 if side==-1 else .5))%1
   if still:along=3 if side==-1 else -4;lift=0;pitch=0
-  else:along,lift,pitch,_=gait.foot(p)
+  else:along,lift,pitch,_=(gait.foot(p) if not wounded else gait.wounded_foot(p,side))
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle
   foot=rt*side*6.7+f*along+[0,lift,0];fall_sign=-1 if f[0]<-.1 else 1;foot=foot*(1-fall)+np.array([-40.*fall_sign,0.,side*4.])*fall;a3=rt*side*6.2+[sway,h,0];ank=foot+[0,6.5,0]
   v=ank-a3;dist=np.linalg.norm(v);u=v/dist;bend=f-u*np.dot(f,u);bend/=np.linalg.norm(bend)

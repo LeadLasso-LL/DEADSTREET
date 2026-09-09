@@ -8,10 +8,10 @@ R=Path(__file__).parent
 N=B.NS
 def group(parent,**attrs): return E.SubElement(parent,N+'g',attrs)
 def p(g,d,c,s='#14191a',w=.8): B.path(g,d,c,s,w)
-def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0):
+def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0):
  weapon_id=weapon_id or equipment.DEFAULTS[kind]
  weapon=equipment.DEFINITIONS[weapon_id]
- root,_=B.make(q,aim=aim,kick=kick,settle=settle,crouch=crouch,fall=fall)
+ root,_=B.make(q,aim=aim,kick=kick,settle=settle,crouch=crouch,fall=fall,wounded=wounded)
  up=root.find(".//*[@id='upper_pose']")
  up.set('transform',up.get('transform')+f' rotate({lean} 43 55)')
  headtf=up.find(".//*[@id='head']").get('transform')
@@ -27,6 +27,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  # Outfit and equipment are independent; hands use equipment-local anchors.
  angle=weapon['carry_angle']+(1.2*math.sin(4*math.pi*q) if weapon_id!='pistol' else 0)
  origin=np.array(weapon['carry_origin'],float)+[0,.7*math.sin(4*math.pi*q)]
+ angle+=22*wounded
  angle+=18*__import__('math').sin(__import__('math').pi*reload)
  angle=angle*(1-aim)+(15 if weapon_id!='pistol' else 8)*aim-kick*2
  origin+=np.array([4*aim-1.4*kick,-10*aim-.6*kick])
@@ -37,6 +38,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  grips=[np.array(weapon[key])*weapon_scale for key in ['right_grip','left_grip']]
  left_world=equipment.support_target(reload,origin+rot@grips[1],origin,rot*weapon_scale,weapon_id,[47,53])
  grips[1]=rot.T@(left_world-origin)
+ if wounded:grips[1]=rot.T@(np.array([43.,49.+.8*math.sin(2*math.pi*q)])-origin)
  grips=[g*(1-fall)+rot.T@(np.array(target)-origin)*fall for g,target in zip(grips,[[30,50],[50,53]])]
  def arm(parent,a,b,c):
   a,b,c=map(lambda v:np.array(v,float),(a,b,c))
@@ -104,7 +106,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  if fall<.45:equipment.draw(gun,weapon_id,reload)
  gun=grip_parent
  for hand_index,(x,y) in enumerate(grips):
-  if weapon_id=='ak_rifle' and hand_index==0 and fall==0:
+  if False: # generic grip follows scaled weapon anchors for every weapon
    # Palm encloses the angled pistol grip below the receiver; index
    # finger reaches forward into the trigger area, away from magazine.
    p(gun,'M8.5 7.2 Q10 6.8 11.5 8 L13 9 Q14 10 12.9 12.3 L11.4 13 Q9.5 12.4 8.4 11Z',skin,'#382b25',.55)
@@ -113,7 +115,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
    continue
   p(gun,f'M{x-2} {y-2} Q{x} {y-3} {x+2} {y-1} L{x+2} {y+2} Q{x} {y+3} {x-2} {y+1}Z',skin,'#382b25',.6)
   p(gun,f'M{x-1} {y-1} L{x+1} {y}','none',hi,.65)
- if weapon_id!='pistol':
+ if weapon_id!='pistol' and not wounded:
   x,y=grips[1];p(gun,f'M{x-3} {y-3} L{x+3} {y-3}','none','#111819',1)
  if flash:
   x,y=np.array(weapon["muzzle"])*weapon_scale

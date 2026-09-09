@@ -13,7 +13,7 @@ def limb(g,a,b,wa,wb,fill):
  poly(g,[a+n*wa,m+n*(wa*.75+wb*.25),b+n*wb,b-n*wb,m-n*(wa*.35+wb*.65),a-n*wa],fill)
  poly(g,[a+n*wa*.50,m+n*wa*.5,b+n*wb*.3,b-n*wb*.25,m-n*wb*.35], '#42494a','none')
 def smooth(t):return t*t*(3-2*t)
-def make_lower(q,stop=None,settle=0,crouch=0,fall=0):
+def make_lower(q,stop=None,settle=0,crouch=0,fall=0,wounded=0):
  phase=(q*2)%1
  h=gait.height(q,54);hip=proj(np.array([0,h,0]));g=E.Element(NS+'g');states=[];thighs=[]
  if stop is not None:h=58.5;hip=proj(np.array([0,h,0]))
@@ -21,7 +21,7 @@ def make_lower(q,stop=None,settle=0,crouch=0,fall=0):
  for side in [1,-1]:
   p=(q+(0 if side==-1 else .5))%1
   if stop is not None:along=3 if side==-1 else -4;lift=0;pitch=0;toe_pivot=0
-  else:along,lift,pitch,toe_pivot=gait.foot(p)
+  else:along,lift,pitch,toe_pivot=(gait.foot(p) if not wounded else gait.wounded_foot(p,side))
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle;toe_pivot*=1-settle
   foot=RIGHT*side*6.7+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+np.array([-40.,0.,side*4.])*fall;ang=math.radians(pitch)
   def boot_world(x,y):

@@ -18,7 +18,7 @@ def state(clip,i,w):
   peek=smooth(t/.3)*(1-smooth((t-.65)/.25));st.update(crouch=.55,lean=-20*peek,aim=peek,flash=i in [14,18]);st['kick']=.6 if st['flash'] else 0
  elif clip=='hit':
   impact=math.sin(math.pi*min(1,t/.65))*math.exp(-t*1.4);st.update(lean=-14*impact,crouch=.2*impact,aim=.8-.4*impact,kick=impact*2)
- elif clip=='injured_run':st.update(q=i/24,settle=.35,crouch=.18+.04*math.sin(2*math.pi*t),lean=5,aim=.15)
+ elif clip=='injured_run':st.update(q=i/24,settle=.25,crouch=.12+.025*math.sin(2*math.pi*t),lean=7+1.2*math.sin(2*math.pi*t),aim=.1,wounded=1)
  elif clip=='death':
   drop=max(0,min(1,(t-.10)/.45));fall=drop*drop
   settle_t=max(0,(t-.55)/.45)

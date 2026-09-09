@@ -476,6 +476,10 @@ static func _update_defend_position_behavior(
 		_release_owned_reservation(battle_state, participant)
 		return DEFEND_HOLD
 	var target: BattleParticipant = _healthy_current_target(battle_state, participant)
+	_try_occupy_arrived_defend_cover(battle_state, participant)
+	if _defend_keep_current_path(battle_state, participant, target):
+		_ensure_combat_movement_speed(participant)
+		return DEFEND_REPOSITION
 	if _defend_can_fire(battle_state, participant, target):
 		_try_occupy_arrived_defend_cover(battle_state, participant)
 		_clear_owned_combat_navigation(participant)
@@ -506,6 +510,13 @@ static func _update_defend_position_behavior(
 		)
 		if not cover_action.is_empty():
 			return cover_action
+	# Range alone never sends a defender out into the open.
+	# If no protected local firing slot exists, preserve the defensive position.
+	if target != null:
+		var eligibility = BattleFireControlService.evaluate_participant_target_eligibility(battle_state, participant.participant_id, target.participant_id)
+		if eligibility != null and eligibility.rejection_code == "out_of_range":
+			_clear_owned_combat_navigation(participant)
+			return DEFEND_HOLD
 	var sample: Vector2 = BattleDefendPositionService.select_best_local_los_point(
 		battle_state,
 		participant,
@@ -552,7 +563,7 @@ static func _defend_los_blocks_fire(
 		eligibility != null
 		and eligibility.success
 		and not eligibility.can_fire
-		and eligibility.rejection_code == "line_of_sight_blocked"
+		and eligibility.rejection_code in ["line_of_sight_blocked", "out_of_range"]
 	)
 
 
@@ -799,6 +810,14 @@ static func _update_healthy_role_cover_behavior(
 		return HEALTHY_NONE
 	var weapon_type_id: String = _participant_weapon_type_id(participant)
 	var target: BattleParticipant = _healthy_current_target(battle_state, participant)
+	# A useful approach survives the closing-to-firing-range threshold.
+	# Revalidate safety and ownership, not the transient behavior label.
+	if participant.combat_move_mode == MOVE_CLOSE and target != null:
+		var committed_slot = _reserved_cover_slot(battle_state, participant)
+		var same_command: bool = participant.combat_decision_key.ends_with("|" + _participant_force_command_id(battle_state, participant))
+		if same_command and _combat_decision_matches(battle_state, participant, target.participant_id) and committed_slot != null and _cheap_closing_slot_still_valid(battle_state, participant, committed_slot, target, weapon_type_id):
+			_bind_combat_decision(battle_state, participant, target.participant_id)
+			return _pursue_closing_cover(battle_state, participant, committed_slot, search_counts)
 	if _has_valid_occupancy(battle_state, participant):
 		if _healthy_occupied_cover_should_persist(
 			battle_state,

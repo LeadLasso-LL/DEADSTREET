@@ -72,6 +72,11 @@ static func select_best_local_cover_slot(
 			origin,
 			BattleCombatBehaviorCatalog.DEFEND_POSITION_RADIUS
 		)
+	if hostile != null:
+		var weapon = BattleWeaponCatalog.get_definition(participant.weapon_type)
+		var current_range: float = participant.battle_position.distance_to(hostile.battle_position)
+		if weapon != null and current_range > weapon.max_range:
+			ranked = ranked.filter(func(e): return battle_state.battlefield_geometry.get_cover_slot(e.slot_id).position.distance_to(hostile.battle_position) <= weapon.max_range)
 	return BattleCombatCoverEvaluationService.first_reachable_ranked_slot(
 		battle_state,
 		participant,

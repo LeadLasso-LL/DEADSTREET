@@ -13,7 +13,7 @@ def limb(g,a,b,wa,wb,fill):
  poly(g,[a+n*wa,m+n*(wa*.75+wb*.25),b+n*wb,b-n*wb,m-n*(wa*.35+wb*.65),a-n*wa],fill)
  poly(g,[a+n*wa*.50,m+n*wa*.5,b+n*wb*.3,b-n*wb*.25,m-n*wb*.35], '#42494a','none')
 def smooth(t):return t*t*(3-2*t)
-def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0):
+def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0,wounded=0):
  # Contact, compression, toe-off, recovery, forward swing. Ground stance is linear.
  beat=(q*2)%1;h=gait.height(q,51);sway=1.0*math.sin(2*math.pi*q)
  if stop is not None:h=(51-2.4*math.cos(2*math.pi*(-.12)))*(1-smooth(stop))+52*smooth(stop)-1.4*math.sin(math.pi*stop);sway=0
@@ -22,7 +22,7 @@ def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0):
  hip=proj(np.array([sway,h,0]));g=E.Element(NS+'g');states=[];thighs={}
  for side in [1,-1]:
   p=(q+(0 if side==-1 else .5))%1
-  along,lift,pitch,_=gait.foot(p)
+  along,lift,pitch,_=(gait.foot(p) if not wounded else gait.wounded_foot(p,side))
   if stop is not None:
    root=40*(stop-.5*stop*stop)
    if side==-1:along=12-root;lift=0;pitch=0

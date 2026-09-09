@@ -78,24 +78,24 @@
     },
     "wounded_idle": {
       "start": 107,
-      "count": 1,
-      "fps": 1,
+      "count": 24,
+      "fps": 12,
       "loop": true
     },
     "wounded_walk": {
-      "start": 108,
+      "start": 131,
       "count": 24,
       "fps": 16,
       "loop": true
     },
     "death": {
-      "start": 132,
+      "start": 155,
       "count": 24,
       "fps": 16,
       "loop": false
     },
     "cover_edge": {
-      "start": 156,
+      "start": 179,
       "count": 9,
       "fps": 16,
       "loop": false
@@ -110,7 +110,10 @@
     "1_pistol",
     "2_uzi_smg",
     "2_ak_rifle",
-    "2_pistol"
+    "2_pistol",
+    "0_pump_shotgun",
+    "1_pump_shotgun",
+    "2_pump_shotgun"
   ],
   "rows_per_direction": 6
 }
