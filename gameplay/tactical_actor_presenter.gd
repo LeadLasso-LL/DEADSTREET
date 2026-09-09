@@ -35,6 +35,12 @@ var _unit_dirs: Dictionary = {}
 var _unit_anims: Dictionary = {}
 var _unit_clips: Dictionary = {}
 var _unit_cooldowns: Dictionary = {}
+var _motion: Dictionary = {}
+var _muzzles: Dictionary = {}
+
+func shot_muzzle_position(id: String) -> Vector2:
+	return _motion.get(id, {}).get("shot_muzzle", Vector2.INF)
+
 
 
 func bind_root(p_root: Node2D, p_pixels_per_unit: float) -> void:
@@ -177,22 +183,28 @@ func _apply_vehicle_transform(vehicle: BattleVehicle, binding: BattleVisualBindi
 
 
 func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant) -> bool:
+	if OS.get_cmdline_user_args().has("--baseline-visuals"):
+		return false
 	if participant == null or not participant.has_identity():
 		return false
 	if not TacticalUnitAnimationCatalog.has_bound_frames(
 		participant.participant_id,
 		participant.identity.gang_archetype_id,
-		participant.identity.firearm_visual_id
+		participant.weapon_type
 	):
 		return false
 	var frames: SpriteFrames = TacticalUnitAnimationCatalog.frames_for(
-		participant.identity.appearance_variant_id
+		TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type)
 	)
 	if frames == null:
 		return false
 	if _unit_nodes.has(participant.participant_id):
 		var existing: Node2D = _unit_nodes[participant.participant_id] as Node2D
 		if existing != null and is_instance_valid(existing):
+			var current := existing.get_node("body") as AnimatedSprite2D
+			if current.sprite_frames != frames:
+				current.sprite_frames = frames
+				_motion.erase(participant.participant_id)
 			return true
 	var art_ppu: float = TacticalUnitAnimationCatalog.art_pixels_per_unit()
 	if art_ppu <= 0.0 or pixels_per_unit <= 0.0:
@@ -204,7 +216,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	body.sprite_frames = frames
 	body.centered = true
 	body.offset = TacticalUnitAnimationCatalog.sprite_foot_offset()
-	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var view_scale: float = pixels_per_unit / art_ppu
 	body.scale = Vector2(view_scale, view_scale)
 	node.add_child(body)
@@ -227,40 +239,88 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		node.modulate = UNIT_WOUNDED_MODULATE
 	else:
 		node.modulate = Color.WHITE
+	var id: String = participant.participant_id
+	var now: float = battle_state.elapsed_time_seconds
+	var state: Dictionary = _motion.get(id, {"clip":"", "start":now, "time":now, "distance":0.0, "shot":-100.0, "sequence":0, "position":participant.battle_position})
+	var dt: float = maxf(0.0, now - float(state["time"]))
+	if not participant.is_alive and battle_state.battle_phase != "active":
+		dt = node.get_process_delta_time()
+	state["time"] = now
+	state["distance"] = float(state["distance"]) + participant.battle_position.distance_to(state["position"])
+	state["position"] = participant.battle_position
+	for event in battle_state.combat_feedback_events:
+		if event.source_participant_id == id and event.sequence_id > int(state["sequence"]):
+			state["sequence"] = event.sequence_id
+			state["shot"] = event.elapsed_time_seconds
+	var shot_age: float = now - float(state["shot"])
+	if battle_state.battle_phase != "active":
+		shot_age = 100.0
 	var face: Vector2 = TacticalParticipantVisual.presentation_facing(battle_state, participant)
-	var previous_dir: String = str(_unit_dirs.get(participant.participant_id, ""))
+	var previous_dir: String = str(_unit_dirs.get(id, ""))
 	var dir_id: String = TacticalParticipantVisual.implemented_direction_id(face, previous_dir)
-	_unit_dirs[participant.participant_id] = dir_id
-	var clip_id: String = TacticalParticipantVisual.animation_clip_id(battle_state, participant)
-	_unit_clips[participant.participant_id] = clip_id
-	var play_clip: String = TacticalUnitAnimationCatalog.playback_clip_id(clip_id)
-	var anim_name: String = TacticalUnitAnimationCatalog.animation_name(play_clip, dir_id)
-	_unit_anims[participant.participant_id] = anim_name
-	var cooldown_now: float = 0.0
-	if participant.weapon_state != null and is_finite(participant.weapon_state.cooldown_remaining_seconds):
-		cooldown_now = participant.weapon_state.cooldown_remaining_seconds
-	var cooldown_before: float = float(_unit_cooldowns.get(participant.participant_id, 0.0))
-	_unit_cooldowns[participant.participant_id] = cooldown_now
-	var new_shot: bool = cooldown_now > cooldown_before + 0.05
-	var body: AnimatedSprite2D = node.get_node_or_null("body") as AnimatedSprite2D
-	if body == null or body.sprite_frames == null:
-		return
-	if not body.sprite_frames.has_animation(anim_name):
-		return
-	if clip_id == TacticalUnitAnimationCatalog.CLIP_WALK:
-		body.speed_scale = TacticalParticipantVisual.walk_speed_scale(participant)
-	else:
-		body.speed_scale = 1.0
-	var restart_oneshot: bool = new_shot and (
-		play_clip == TacticalUnitAnimationCatalog.CLIP_FIRE
-		or play_clip == TacticalUnitAnimationCatalog.CLIP_COVER_FIRE
-	)
-	if body.animation != anim_name:
-		body.play(anim_name)
-	elif restart_oneshot:
-		body.play(anim_name)
-	elif (not body.is_playing()) and TacticalUnitAnimationCatalog.clip_loops(play_clip):
-		body.play(anim_name)
+	if not participant.is_alive and not previous_dir.is_empty():
+		dir_id = previous_dir
+	_unit_dirs[id] = dir_id
+	var clip: String = "idle"
+	if not participant.is_alive:
+		clip = "death"
+	elif participant.has_wound_reaction():
+		clip = "hit"
+	elif TacticalParticipantVisual.is_locomoting(participant):
+		clip = "wounded_walk" if participant.is_wounded else "walk"
+	elif participant.weapon_state != null and participant.weapon_state.is_reloading:
+		clip = "reload"
+	elif participant.has_occupied_cover_slot():
+		if participant.cover_posture_phase == "exposing":
+			clip = "cover_popout"
+		elif participant.cover_posture_phase == "tucking":
+			clip = "cover_tuck"
+		elif participant.is_cover_exposed():
+			clip = "cover_fire" if shot_age >= 0.0 and shot_age < 0.15 else "cover_exposed_idle"
+		else:
+			clip = "cover_tucked_idle"
+	elif shot_age >= 0.0 and shot_age < 0.15:
+		clip = "fire"
+	elif participant.has_target_participant:
+		clip = "aim"
+	elif participant.is_wounded:
+		clip = "wounded_idle"
+	if state["clip"] != clip:
+		state["clip"] = clip
+		state["start"] = now
+		state["age"] = 0.0
+	state["age"] = float(state.get("age", 0.0)) + dt
+	var age: float = float(state["age"])
+	var body := node.get_node("body") as AnimatedSprite2D
+	var anim: String = TacticalUnitAnimationCatalog.animation_name(clip, dir_id)
+	if body.sprite_frames.has_animation(anim):
+		body.animation = anim
+		body.pause()
+		var count: int = body.sprite_frames.get_frame_count(anim)
+		var cursor: float = age * TacticalUnitAnimationCatalog.clip_fps(clip)
+		if clip == "walk" or clip == "wounded_walk":
+			# Full left/right stride is ~1.6 world units; shared across outfits.
+			cursor = float(state["distance"]) / 1.6 * count
+		elif clip == "fire" or clip == "cover_fire":
+			cursor = shot_age * 20.0
+		elif clip == "reload":
+			var definition = load("res://battle/combat/battle_weapon_catalog.gd").get_definition(participant.weapon_type)
+			if definition != null and definition.reload_seconds > 0.0:
+				cursor = (1.0 - participant.weapon_state.reload_remaining_seconds / definition.reload_seconds) * (count - 1)
+		if TacticalUnitAnimationCatalog.clip_loops(clip):
+			cursor = fposmod(cursor, float(count))
+		body.set_frame_and_progress(clampi(int(cursor), 0, count - 1), 0.0)
+	if int(state.get("muzzle_sequence", -1)) != int(state["sequence"]):
+		if _muzzles.is_empty():
+			_muzzles = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/muzzles.json"))
+		var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type)
+		var pose: String = "cover" if clip.begins_with("cover") else "open"
+		var point: Array = _muzzles.get(variant + "/" + dir_id + "/" + pose, [64.0, 64.0])
+		state["shot_muzzle"] = node.position + (Vector2(float(point[0]), float(point[1])) - Vector2(64,110)) * (pixels_per_unit / TacticalUnitAnimationCatalog.art_pixels_per_unit())
+		state["muzzle_sequence"] = state["sequence"]
+	_motion[id] = state
+	_unit_clips[id] = clip
+	_unit_anims[id] = anim
 
 
 func _prune_unwanted(wanted: Dictionary) -> void:
@@ -294,6 +354,7 @@ func _prune_unwanted_units(wanted: Dictionary) -> void:
 		_unit_anims.erase(id_str)
 		_unit_clips.erase(id_str)
 		_unit_cooldowns.erase(id_str)
+		_motion.erase(id_str)
 		if node != null and is_instance_valid(node):
 			if node.get_parent() != null:
 				node.get_parent().remove_child(node)

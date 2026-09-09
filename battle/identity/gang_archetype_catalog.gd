@@ -7,6 +7,8 @@ extends RefCounted
 const ARCHETYPE_LOCAL_STREET_GANG := "local_street_gang"
 const ARCHETYPE_RUSSIAN_ORGANIZED_CRIME := "russian_organized_crime"
 
+const ARCHETYPE_ITALIAN_MOB := "italian_mob"
+
 const CLOTHING_FAMILY_LOCAL := "neighborhood_street_criminal"
 const CLOTHING_FAMILY_RUSSIAN := "organized_crime_crew"
 
@@ -22,10 +24,13 @@ static func is_known(archetype_id: String) -> bool:
 	return (
 		archetype_id == ARCHETYPE_LOCAL_STREET_GANG
 		or archetype_id == ARCHETYPE_RUSSIAN_ORGANIZED_CRIME
+		or archetype_id == ARCHETYPE_ITALIAN_MOB
 	)
 
 
 static func profile(archetype_id: String) -> Dictionary:
+	if archetype_id == ARCHETYPE_ITALIAN_MOB:
+		return {"id":archetype_id,"clothing_family":"italian_suit","appearance_variants":LOCAL_APPEARANCE_VARIANTS,"unit_catalog_archetype":"unit_italian_mob"}
 	if archetype_id == ARCHETYPE_LOCAL_STREET_GANG:
 		return {
 			"id": ARCHETYPE_LOCAL_STREET_GANG,
@@ -44,6 +49,8 @@ static func profile(archetype_id: String) -> Dictionary:
 
 
 static func appearance_variants(archetype_id: String) -> Array[String]:
+	if archetype_id == ARCHETYPE_ITALIAN_MOB:
+		return LOCAL_APPEARANCE_VARIANTS.duplicate()
 	if archetype_id == ARCHETYPE_LOCAL_STREET_GANG:
 		return LOCAL_APPEARANCE_VARIANTS.duplicate()
 	if archetype_id == ARCHETYPE_RUSSIAN_ORGANIZED_CRIME:

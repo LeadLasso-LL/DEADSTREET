@@ -3389,6 +3389,8 @@ func _draw_shot_muzzle_flash(
 	if resolved_hold or event == null:
 		return
 	var age: float = _combat_event_age(battle_state, event)
+	if _participant_uses_retained_visual(event.source_participant_id):
+		return # The accepted sprite contains the muzzle flash.
 	var flash_alpha: float = TacticalShotPresentation.muzzle_flash_alpha(age)
 	if flash_alpha <= 0.0:
 		return
@@ -3522,6 +3524,12 @@ func _shot_draw_segment(battle_state: BattleState, event: BattleAttackEvent) -> 
 	var offset: Vector2 = _combat_feedback_offset(source_pos, target_pos)
 	var muzzle: Vector2 = _presentation_weapon_tip(battle_state, event, source_pos, target_pos) + offset
 	var endpoint: Vector2 = target_pos + offset
+	if _participant_uses_retained_visual(event.source_participant_id):
+		var anchored: Vector2 = actor_presenter.shot_muzzle_position(event.source_participant_id)
+		if anchored != Vector2.INF:
+			muzzle = anchored
+	if _participant_uses_retained_visual(event.target_participant_id):
+		endpoint = target_pos - Vector2(0.0, 10.0)
 	return {
 		"ok": true,
 		"muzzle": muzzle,

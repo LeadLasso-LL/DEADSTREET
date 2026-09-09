@@ -1,0 +1,27 @@
+{
+  "active_combat_mean_fps": 21.7085427135678,
+  "active_combat_p95_ms": 133.276090909091,
+  "alive": 2,
+  "clips_observed": {
+    "": 4692,
+    "aim": 247,
+    "cover_exposed_idle": 2177,
+    "cover_fire": 3,
+    "cover_popout": 11,
+    "cover_tuck": 9,
+    "cover_tucked_idle": 6,
+    "death": 6665,
+    "fire": 29,
+    "hit": 29,
+    "idle": 4,
+    "walk": 204
+  },
+  "elapsed_real_seconds": 45.0136873333326,
+  "mean_fps": 52.1174811258527,
+  "observed_shots": 24,
+  "p95_frame_ms": 22.2222222222222,
+  "participants": 6,
+  "phase": "resolved",
+  "simulation_seconds": 8.84444444444446,
+  "wounded": 3
+}

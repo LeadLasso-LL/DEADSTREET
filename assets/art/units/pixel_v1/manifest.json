@@ -1,0 +1,116 @@
+{
+  "directions": [
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw",
+    "n",
+    "ne"
+  ],
+  "clips": {
+    "walk": {
+      "start": 0,
+      "count": 24,
+      "fps": 30,
+      "loop": true
+    },
+    "idle": {
+      "start": 24,
+      "count": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "aim": {
+      "start": 25,
+      "count": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "fire": {
+      "start": 26,
+      "count": 3,
+      "fps": 20,
+      "loop": false
+    },
+    "reload": {
+      "start": 29,
+      "count": 40,
+      "fps": 16,
+      "loop": false
+    },
+    "cover_popout": {
+      "start": 69,
+      "count": 8,
+      "fps": 16,
+      "loop": false
+    },
+    "cover_tucked_idle": {
+      "start": 77,
+      "count": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "cover_exposed_idle": {
+      "start": 78,
+      "count": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "cover_fire": {
+      "start": 79,
+      "count": 3,
+      "fps": 20,
+      "loop": false
+    },
+    "cover_tuck": {
+      "start": 82,
+      "count": 9,
+      "fps": 16,
+      "loop": false
+    },
+    "hit": {
+      "start": 91,
+      "count": 16,
+      "fps": 16,
+      "loop": false
+    },
+    "wounded_idle": {
+      "start": 107,
+      "count": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "wounded_walk": {
+      "start": 108,
+      "count": 24,
+      "fps": 16,
+      "loop": true
+    },
+    "death": {
+      "start": 132,
+      "count": 24,
+      "fps": 16,
+      "loop": false
+    },
+    "cover_edge": {
+      "start": 156,
+      "count": 9,
+      "fps": 16,
+      "loop": false
+    }
+  },
+  "variants": [
+    "0_uzi_smg",
+    "0_ak_rifle",
+    "0_pistol",
+    "1_uzi_smg",
+    "1_ak_rifle",
+    "1_pistol",
+    "2_uzi_smg",
+    "2_ak_rifle",
+    "2_pistol"
+  ],
+  "rows_per_direction": 6
+}

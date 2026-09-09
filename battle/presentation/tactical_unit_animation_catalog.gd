@@ -3,8 +3,7 @@ extends RefCounted
 
 # Cached SpriteFrames for tactical people.
 # Canonical 8-direction clip schema for a future accepted character set.
-# No painted character is bound. Runtime uses procedural fallback until a
-# product-accepted variant is registered here.
+# Approved pixel outfits with equipment-independent cached atlases.
 # Does not own combat or TacticalBattleView.
 
 const DIR_N := "n"
@@ -62,8 +61,8 @@ const COVER_FIRE_FPS := 12.0
 const WOUNDED_FPS := 3.0
 const DEATH_FPS := 8.0
 
-const DEFAULT_ART_PPU := 50.0
-const DEFAULT_FOOT_OFFSET_Y := 0.0
+const DEFAULT_ART_PPU := 38.0
+const DEFAULT_FOOT_OFFSET_Y := -46.0
 
 static var _texture_cache: Dictionary = {}
 static var _frames_cache: Dictionary = {}
@@ -74,12 +73,7 @@ static func animation_name(clip_id: String, direction_id: String) -> String:
 
 
 static func clip_loops(clip_id: String) -> bool:
-	return not (
-		clip_id == CLIP_FIRE
-		or clip_id == CLIP_COVER_FIRE
-		or clip_id == CLIP_COVER_POPOUT
-		or clip_id == CLIP_DEATH
-	)
+	return bool(manifest().get("clips", {}).get(clip_id, {}).get("loop", false))
 
 
 static func implemented_clip_ids() -> Array[String]:
@@ -98,92 +92,79 @@ static func implemented_clip_ids() -> Array[String]:
 	]
 
 
-static func bound_variant_ids() -> Array[String]:
-	return []
+static var _manifest: Dictionary = {}
 
+static func manifest() -> Dictionary:
+	if _manifest.is_empty():
+		var value: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/manifest.json"))
+		if value is Dictionary:
+			_manifest = value
+	return _manifest
+
+static func variant_for(gang: String, weapon: String) -> String:
+	var outfit: String = ""
+	match gang:
+		"local_street_gang": outfit = "0"
+		"russian_organized_crime": outfit = "1"
+		"italian_mob": outfit = "2"
+	var gun: String = ""
+	match weapon:
+		"rifle": gun = "ak_rifle"
+		"smg": gun = "uzi_smg"
+		"pistol": gun = "pistol"
+	if outfit.is_empty() or gun.is_empty():
+		return ""
+	return outfit + "_" + gun
+
+static func bound_variant_ids() -> Array[String]:
+	var result: Array[String] = []
+	result.assign(manifest().get("variants", []))
+	return result
 
 static func bound_clip_ids() -> Array[String]:
-	return []
+	var result: Array[String] = []
+	result.assign(manifest().get("clips", {}).keys())
+	return result
 
-
-static func has_bound_frames(
-	_participant_id: String,
-	_gang_archetype_id: String,
-	_firearm_visual_id: String
-) -> bool:
-	return false
-
+static func has_bound_frames(_participant_id: String, gang: String, weapon: String) -> bool:
+	return bound_variant_ids().has(variant_for(gang, weapon))
 
 static func playback_clip_id(clip_id: String) -> String:
-	if bound_clip_ids().is_empty():
-		return clip_id
-	if bound_clip_ids().has(clip_id):
-		return clip_id
-	return CLIP_IDLE
-
+	return clip_id if bound_clip_ids().has(clip_id) else CLIP_IDLE
 
 static func clip_frame_count(clip_id: String) -> int:
-	match clip_id:
-		CLIP_IDLE:
-			return IDLE_FRAME_COUNT
-		CLIP_WALK:
-			return WALK_FRAME_COUNT
-		CLIP_AIM:
-			return AIM_FRAME_COUNT
-		CLIP_FIRE:
-			return FIRE_FRAME_COUNT
-		CLIP_RELOAD:
-			return RELOAD_FRAME_COUNT
-		CLIP_COVER_EXPOSED_IDLE, CLIP_COVER_TUCKED_IDLE:
-			return COVER_IDLE_FRAME_COUNT
-		CLIP_COVER_POPOUT:
-			return COVER_POPOUT_FRAME_COUNT
-		CLIP_COVER_FIRE:
-			return COVER_FIRE_FRAME_COUNT
-		CLIP_WOUNDED_IDLE:
-			return WOUNDED_FRAME_COUNT
-		CLIP_DEATH:
-			return DEATH_FRAME_COUNT
-		_:
-			return 0
-
+	return int(manifest().get("clips", {}).get(clip_id, {}).get("count", 0))
 
 static func clip_fps(clip_id: String) -> float:
-	match clip_id:
-		CLIP_IDLE:
-			return IDLE_FPS
-		CLIP_WALK:
-			return WALK_FPS
-		CLIP_AIM:
-			return AIM_FPS
-		CLIP_FIRE:
-			return FIRE_FPS
-		CLIP_RELOAD:
-			return RELOAD_FPS
-		CLIP_COVER_EXPOSED_IDLE, CLIP_COVER_TUCKED_IDLE:
-			return COVER_IDLE_FPS
-		CLIP_COVER_POPOUT:
-			return COVER_POPOUT_FPS
-		CLIP_COVER_FIRE:
-			return COVER_FIRE_FPS
-		CLIP_WOUNDED_IDLE:
-			return WOUNDED_FPS
-		CLIP_DEATH:
-			return DEATH_FPS
-		_:
-			return 1.0
-
+	return float(manifest().get("clips", {}).get(clip_id, {}).get("fps", 1.0))
 
 static func frames_for(variant_id: String) -> SpriteFrames:
-	if variant_id.is_empty():
-		return null
 	if not bound_variant_ids().has(variant_id):
 		return null
 	if _frames_cache.has(variant_id):
-		var cached: Variant = _frames_cache[variant_id]
-		if cached is SpriteFrames:
-			return cached as SpriteFrames
-	return null
+		return _frames_cache[variant_id] as SpriteFrames
+	var atlas: Texture2D = _texture("res://assets/art/units/pixel_v1/" + variant_id + ".png")
+	if atlas == null:
+		return null
+	var frames := SpriteFrames.new()
+	frames.remove_animation("default")
+	var directions: Array = manifest()["directions"]
+	var rows: int = int(manifest()["rows_per_direction"])
+	for clip: String in bound_clip_ids():
+		var spec: Dictionary = manifest()["clips"][clip]
+		for d in range(directions.size()):
+			var anim: String = animation_name(clip, str(directions[d]))
+			frames.add_animation(anim)
+			frames.set_animation_speed(anim, float(spec["fps"]))
+			frames.set_animation_loop(anim, bool(spec["loop"]))
+			for i in range(int(spec["count"])):
+				var cell: int = int(spec["start"]) + i
+				var tex := AtlasTexture.new()
+				tex.atlas = atlas
+				tex.region = Rect2((cell % 32) * 128, (d * rows + cell / 32) * 128, 128, 128)
+				frames.add_frame(anim, tex)
+	_frames_cache[variant_id] = frames
+	return frames
 
 
 static func texture_cache_size() -> int:
