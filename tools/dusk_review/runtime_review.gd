@@ -160,7 +160,7 @@ func capture(second: int) -> void:
 			await process_frame
 			await RenderingServer.frame_post_draw
 			root.get_texture().get_image().get_region(Rect2i(0,0,1152,540)).save_png(out_dir + "/unit_finish_%s.png" % pass_id)
-		view.actor_presenter.set_outline_width(0.0)
+		view.actor_presenter.set_outline_width(2.5)
 		view._dusk_zoom = 1.2
 		view._dusk_pan = Vector2.ZERO
 		view._frame_camera()

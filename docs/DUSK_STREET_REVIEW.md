@@ -41,3 +41,14 @@ Recovered the original street_detail_v2 assets once the workspace became availab
 
 ## Cover readability and optional unit outline
 Replaced stretched barriers with brick planters, thin pallet graphics with full braced shipping crates, and the vague pale van with a distinct cab, cargo shutter, trim and wheels. Crates moved into southern delivery areas; van moved fully onto the curbside roadway. All 68 cover slots remain reachable in the real navigation audit. Unit finish gently reduces white brightness and harmonizes shadow color with the street; original animation sheets remain unchanged. A dark silhouette outline is implemented as an optional shader parameter, default OFF. The review script freezes combat for identical-camera/pose A/B captures unit_finish_0.png and unit_finish_1.png, then restores the default. Latest six-unit run averaged about 56.8 FPS during active combat; this is not a balance or locked-framerate guarantee. The A/B choice is pending user review.
+
+## Approved outline and stronger pixel finish
+User approved B's dark outline. It is now the default (2.5 source pixels).
+Unit finish samples a stable 2-pixel atlas grid and quantizes brightness into
+firmer steps while preserving skin/wood/fabric hues. Small directional edge
+accents help dark equipment. Original sprites and animation geometry preserved.
+Runtime review restores the approved outline after its comparison capture.
+Actual six-unit combat: 57.21 FPS mean active, 21.21ms p95, 45 shots;
+all 68 cover slots reachable. Walk, wounded walk, aim, fire, cover and death seen.
+Known remaining art issue: some arm/gun overlaps need source pose-specific
+separation; this finish does not claim to repair their anatomy.
