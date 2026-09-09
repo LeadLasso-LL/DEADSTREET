@@ -33,3 +33,9 @@ User requested a larger wounded clothing stain, modestly more blood around corps
 Wounded-only weapon offsets move the carried weapon away from the abdomen; its holding wrist follows the equipment anchor. The abdomen hand, connected arm and approved leg motion are preserved. W/SW remain exact reflected counterparts.
 Clothing stain radii increased from 4.2/3.3 to 5.4/4.2 source pixels; lower lobe from 2.1/2.5 to 2.6/3.1. Clothing visibility masks are regenerated from the revised poses. Death marks use six small patches at size 3.1 instead of four at 2.4; trail density and hit splashes are unchanged.
 Rebuilt twelve outfit/weapon atlases, clothing masks and wounded muzzle anchors. Reviewed frames 0, 8 and 16 across eight directions/four weapons. Existing blood behavior checks pass. Visual changes remain subject to product review.
+
+
+## Defender exposed-side report — 2026-09-09
+Cover behavior remains under review. User saw a defender on the enemy-facing exposed side; requested a focused fix if small, otherwise defer for map work.
+Reproduced a specific hold-decision bug: a defender with occupied cover facing away from its current target held because it could shoot, despite a nearby protective slot. The hold shortcut now checks occupied protection and searches protected local cover when exposed. If none is reachable, it does not move into an arbitrary open firing position.
+This addresses protection against the current target only. Multi-enemy threat weighting, deployment side selection, and route exposure are not certified complete. Map detail remains the next visual priority.

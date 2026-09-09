@@ -480,11 +480,13 @@ static func _update_defend_position_behavior(
 	if _defend_keep_current_path(battle_state, participant, target):
 		_ensure_combat_movement_speed(participant)
 		return DEFEND_REPOSITION
-	if _defend_can_fire(battle_state, participant, target):
+	# Being able to fire does not make the occupied side protective.
+	var exposed_cover: bool = target != null and _has_valid_occupancy(battle_state, participant) and not BattleCombatCoverEvaluationService.occupied_cover_still_protects(battle_state, participant, target)
+	if not exposed_cover and _defend_can_fire(battle_state, participant, target):
 		_try_occupy_arrived_defend_cover(battle_state, participant)
 		_clear_owned_combat_navigation(participant)
 		return DEFEND_HOLD
-	if not _defend_los_blocks_fire(battle_state, participant, target):
+	if not exposed_cover and not _defend_los_blocks_fire(battle_state, participant, target):
 		_clear_owned_combat_navigation(participant)
 		return DEFEND_HOLD
 	if _defend_keep_current_path(battle_state, participant, target):
@@ -510,6 +512,10 @@ static func _update_defend_position_behavior(
 		)
 		if not cover_action.is_empty():
 			return cover_action
+	# A bad cover side triggers a protected move, never a blind open-ground shuffle.
+	if exposed_cover:
+		_clear_owned_combat_navigation(participant)
+		return DEFEND_HOLD
 	# Range alone never sends a defender out into the open.
 	# If no protected local firing slot exists, preserve the defensive position.
 	if target != null:
