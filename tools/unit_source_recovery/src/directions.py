@@ -30,7 +30,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  theta=(-4 if side else (-24 if diag else -77)) if back or side else 62
  length=(.83 if side else (.64 if diag else .48))
  if d=='S':length=.56
- if d=='SW':theta=30;length=.80
+ if d=='SW':theta=55;length=.80
  origin=np.array([-3.,-27.+bob]) if side else np.array([-4.,-27.+bob])
  if back:origin=np.array([-3.,(-20 if diag else -17)+bob])
  if w=='pistol':origin+=np.array([13 if side else 3,1])
@@ -40,6 +40,8 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  if side and w!='ak_rifle':origin[0]+=(6 if w=='uzi_smg' else 5)*aim
  if diag and w!='ak_rifle':origin[0]+=4*aim
  if side or d=='SW':origin+=np.array([7.,5.])*(1-aim)*(1-fall)
+ carry=1.5*math.sin(2*math.pi*(q-.12))*(1-settle)*(1-aim)*(1-fall)
+ origin+=np.array([carry,.25*carry])
  a=math.radians(theta);rot=np.array([[math.cos(a),-math.sin(a)],[math.sin(a),math.cos(a)]])
  mat=rot@np.diag([length,.85])*weapon['scale']
  right=origin+mat@weapon['right_grip'];left=origin+mat@weapon['left_grip']
@@ -56,7 +58,9 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   wr_near,wr_far=(left,right) if back else (right,left)
   if flip:wr_near,wr_far=wr_far,wr_near
   en=np.array([-12+s*.4,-13+s*.4]);ef=np.array([12+s*.4,-13+s*.4])
- if d=='SW':en=np.array([-6.+s*.4,-10.]);ef=np.array([10.+s*.4,-12.])
+ if d=='W':en=np.array([3.+s*.45,-12.]);ef=np.array([7.+s*.3,-16.])
+ if d=='SW':en=np.array([-7.+s*.4,-6.]);ef=np.array([10.+s*.4,-16.])
+ en[0]+=.45*carry;ef[0]+=.45*carry
  en[1]+=2.0;ef[1]+=2.0
  en+=(wr_near-en)*(.10*aim);ef+=(wr_far-ef)*(.10*aim)
  def arm(parent,a,b,c):

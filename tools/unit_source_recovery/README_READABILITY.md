@@ -41,3 +41,4 @@ Generated intermediate SVGs and review atlases are reproducible and not committe
 - Six-unit live test: 54.93 active FPS, 26.39ms p95; all cover reachable.
 - Pre-pass sprites retained outside repo in before_motion_pass.
 Carry correction: E/W/SW far upper arms are occluded by the torso, with only forearms rendered in front. Running weapon carry shifts forward/down without changing aim anchors. Side shoe height increased without length increase.
+W/SW follow-up: tuck far W elbow, lower SW support elbow, rotate SW weapon to follow the facing/hand pose. Small stride-phased weapon translation drives both wrists and elbows. Recomputed SW muzzle anchors from the SVG transform hierarchy.

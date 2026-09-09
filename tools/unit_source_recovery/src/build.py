@@ -30,6 +30,8 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  angle+=18*__import__('math').sin(__import__('math').pi*reload)
  angle=angle*(1-aim)+(15 if weapon_id!='pistol' else 8)*aim-kick*2
  origin+=np.array([4*aim-1.4*kick,-10*aim-.6*kick])
+ carry=1.5*math.sin(2*math.pi*(q-.12))*(1-settle)*(1-aim)*(1-fall)
+ origin+=np.array([carry,.25*carry])
  rot=np.array([[math.cos(math.radians(angle)),-math.sin(math.radians(angle))],[math.sin(math.radians(angle)),math.cos(math.radians(angle))]])
  weapon_scale=weapon['scale']
  grips=[np.array(weapon[key])*weapon_scale for key in ['right_grip','left_grip']]
