@@ -85,7 +85,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
    p(gg,f"M{x} {y} L{x+3} {y-2} {x+9} {y} {x+3} {y+2}Z","#eeeee2","#d2b15d",.6)
   # Hands stay full-sized in pose space rather than shrinking with the weapon.
   for hand in [right,left]:
-   p(parent,f'M{xy(hand+[-1.7,-1.1])} Q{xy(hand+[0,-2])} {xy(hand+[1.8,-.3])} L{xy(hand+[1.5,2])} Q{xy(hand+[-.5,2.4])} {xy(hand+[-1.8,1])}Z',skin,'#090f12',.95)
+   p(parent,f'M{xy(hand+[-1.7,-1.1])} Q{xy(hand+[0,-2])} {xy(hand+[1.8,-.3])} L{xy(hand+[1.5,2])} Q{xy(hand+[-.5,2.4])} {xy(hand+[-1.8,1])}Z',skin,'#090f12',1.2)
    p(parent,f'M{xy(hand+[-.7,-.4])} L{xy(hand+[.8,.3])}','none',hi,.65)
   # Expose dark fore-end immediately above the support palm.
   if w!='pistol' and not wounded:
@@ -107,7 +107,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   p(torso,'M7 -28 L8 -18 6 -5 2 -3 4 -16Z',shade,'none')
  # Neck, collar and costume-specific details.
  cx=5 if side else (3 if diag or d=='SW' else 0)
- p(torso,f'M{cx-3} -37 L{cx+3} -37 L{cx+4} -30 Q{cx} -28 {cx-3} -31Z',skin,'#090f12',.95)
+ p(torso,f'M{cx-3} -37 L{cx+3} -37 L{cx+4} -30 Q{cx} -28 {cx-3} -31Z',skin,'#090f12',1.2)
  if k==0:
   if side:
    p(torso,'M-2 -34 L1 -34 Q2 -27 7 -28 L7 -25 Q0 -24 -2 -34Z',lit,'none')
@@ -120,12 +120,12 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   else:p(torso,'M-4 -31 L0 -27 4 -31 M0 -27 L0 -4','none','#d6d5c9',.8)
  elif side:
   p(torso,'M2 -32 L6 -30 5 -18 -1 -27 1 -28Z',lit)
-  p(torso,'M4 -30 L6 -30 5 -22Z','#d6d5c9','none')
+  p(torso,'M3 -31 L6 -30 6 -13 4 1 0 1 2 -16Z','#d6d5c9','none')
  elif back:
   p(torso,'M-4 -31 Q0 -33 4 -31 M0 -26 L0 -7 -1 -3','none','#111819',.65)
  else:
-  p(torso,'M-4 -31 L0 -27 4 -31 1 -17Z','#d6d5c9')
-  p(torso,'M-6 -31 L-1 -20 -6 -24 -4 -27Z M5 -31 L1 -20 6 -24 4 -27Z',lit)
+  p(torso,'M-4 -31 L0 -27 4 -31 5 -5 Q0 -2 -5 -5Z','#d6d5c9')
+  p(torso,'M-7 -31 L-4 -31 -2 -22 -4 -15 -5 -4 -9 -5Z M5 -31 L8 -28 9 -5 5 -4 3 -18 2 -23Z',lit)
  p(torso,'M-6 -9 L-3 -8 M3 -8 L5 -10','none',shade,.6)
  # Heads are individually drawn for profile/rear; eyes never appear on the back.
  head=group(g,transform=f'translate({cx} {1-.2*s}) translate(0 -34) scale(.88) translate(0 34)')
@@ -165,6 +165,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  if wounded and back:
   g.remove(reararm);g.append(reararm)
   p(g,f'M{xy(left+[-2,-1])} Q{xy(left+[0,-3])} {xy(left+[2,0])} L{xy(left+[1,2])} {xy(left+[-2,1])}Z',skin)
+ if wounded:E.SubElement(g,N+'circle',{'id':'abdomen_anchor','cx':str(left[0]),'cy':str(left[1]+3),'r':'0'})
  if flip:out.set('transform','scale(-1 1)')
  return out
 

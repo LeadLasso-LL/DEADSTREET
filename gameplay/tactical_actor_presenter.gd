@@ -37,6 +37,10 @@ var _unit_clips: Dictionary = {}
 var _unit_cooldowns: Dictionary = {}
 var _motion: Dictionary = {}
 var _muzzles: Dictionary = {}
+var _abdomen: Dictionary = {}
+var blood_enabled := true
+var blood_layer: Node2D
+
 
 func shot_muzzle_position(id: String) -> Vector2:
 	return _motion.get(id, {}).get("shot_muzzle", Vector2.INF)
@@ -100,6 +104,14 @@ func unit_clip_id(participant_id: String) -> String:
 
 
 func sync_dynamic(battle_state: BattleState) -> void:
+	if unit_root != null and blood_layer == null:
+		blood_layer=load("res://gameplay/tactical_blood_layer.gd").new()
+		blood_layer.name="BloodPresentation"
+		blood_layer.z_index=1
+		unit_root.get_parent().add_child(blood_layer)
+	if blood_layer != null:
+		blood_layer.enabled=blood_enabled
+		blood_layer.sync(battle_state)
 	_claimed.clear()
 	_claimed_participants.clear()
 	if root == null or battle_state == null or battle_state.battlefield_geometry == null:
@@ -332,6 +344,14 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		var point: Array = _muzzles.get(variant + "/" + dir_id + "/" + pose, [64.0, 64.0])
 		state["shot_muzzle"] = node.position + (Vector2(float(point[0]), float(point[1])) - Vector2(64,110)) * (pixels_per_unit / TacticalUnitAnimationCatalog.art_pixels_per_unit()) * node.scale.x
 		state["muzzle_sequence"] = state["sequence"]
+	if body.material is ShaderMaterial:
+		body.material.set_shader_parameter("blood_enabled",blood_enabled)
+		body.material.set_shader_parameter("wounded_stain",participant.is_wounded and participant.is_alive and clip.begins_with("wounded"))
+		if participant.is_wounded and clip.begins_with("wounded"):
+			if _abdomen.is_empty(): _abdomen=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
+			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type)
+			var point: Array=_abdomen.get(stain_variant+"/"+dir_id+"/"+clip+"/"+str(body.frame),[64.0,64.0])
+			body.material.set_shader_parameter("stain_center",Vector2(float(point[0]),float(point[1])))
 	_motion[id] = state
 	_unit_clips[id] = clip
 	_unit_anims[id] = anim

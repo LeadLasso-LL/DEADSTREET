@@ -11,7 +11,7 @@ def p(g,d,c,s='#14191a',w=.8): B.path(g,d,c,s,w)
 def outline_arm(parent,start):
  for el in list(parent)[start:]:
   if el.get("stroke") not in [None,"none"] and el.get("fill")!="none":
-   el.set("stroke","#090f12");el.set("stroke-width","1.25")
+   el.set("stroke","#090f12");el.set("stroke-width","1.8")
 def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0):
  weapon_id=weapon_id or equipment.DEFAULTS[kind]
  weapon=equipment.DEFINITIONS[weapon_id]
@@ -77,11 +77,11 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
   p(torso,'M31 29 L34 31 32 42 M49 29 L51 32 50 39','none','#d6d5c9',1.2)
   p(torso,'M33 48 L38 47 M47 48 L50 46','none','#363e3c',.8)
  else:
-  p(torso,'M37 28 L43 33 47 28 45 46Z','#d6d5c9')
-  p(torso,'M33 28 L37 28 42 43 36 38 37 34Z','#484e50')
-  p(torso,'M48 28 L50 30 46 37 47 40 42 46Z','#484e50')
+  p(torso,'M36 28 L43 32 48 28 49 55 Q43 58 36 55Z','#d6d5c9')
+  p(torso,'M32 28 L36 28 39 40 36 48 34 57 29 55 31 39Z','#484e50')
+  p(torso,'M48 28 L51 31 53 55 49 57 46 43 45 37Z','#484e50')
   p(torso,'M42 34 L44 35 44 44 42 47 41 43Z','#252a2c','none')
-  p(torso,'M42 47 L42 57 M31 51 L37 51','none','#111819',.8)
+  p(torso,'M31 51 L34 51','none','#111819',.8)
  head=group(up,transform=headtf)
  p(head,'M36 14 Q42 10 49 15 L50 23 47 29 41 30 36 26 34 21Z',skin)
  p(head,'M37 18 L41 17 44 21 42 26 38 24Z',hi,'none')
@@ -99,7 +99,9 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
   else:
    p(head,'M34 16 L36 22 35 27 38 29 36 18Z','#171d20','none')
    p(head,'M38 21 L40 21 M45 22 L47 22 M41 27 L45 27','none','#49382e',.65)
- if wounded:up.remove(far);up.append(far)
+ if wounded:
+  E.SubElement(up,N+'circle',{'id':'abdomen_anchor','cx':str((origin+rot@grips[1])[0]),'cy':str((origin+rot@grips[1])[1]+3),'r':'0'})
+  up.remove(far);up.append(far)
  near=group(up);arm(near,[27,32.5],[25+5*aim,49-5*aim],origin+rot@grips[0])
  # Bring the distal support forearm over the shirt edge into the palm.
  support_end=origin+rot@grips[1]
@@ -122,7 +124,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
    p(gun,'M10 8 Q11.7 7 13 7.6 L15 8.1 14.6 9.2 12.1 9.2Z',hi,'#65503c',.4)
    p(gun,'M9.5 10 L12 10.8 M9.5 11.4 L11.6 12','none','#65503c',.5)
    continue
-  p(gun,f'M{x-2} {y-2} Q{x} {y-3} {x+2} {y-1} L{x+2} {y+2} Q{x} {y+3} {x-2} {y+1}Z',skin,'#090f12',.95)
+  p(gun,f'M{x-2} {y-2} Q{x} {y-3} {x+2} {y-1} L{x+2} {y+2} Q{x} {y+3} {x-2} {y+1}Z',skin,'#090f12',1.2)
   p(gun,f'M{x-1} {y-1} L{x+1} {y}','none',hi,.65)
  if weapon_id!='pistol' and not wounded:
   x,y=grips[1];p(gun,f'M{x-3} {y-3} L{x+3} {y-3}','none','#111819',1)
