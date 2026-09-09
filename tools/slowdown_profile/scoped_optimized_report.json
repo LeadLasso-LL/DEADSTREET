@@ -1,0 +1,21 @@
+{
+  "active_combat_mean_fps": 58.7291589494096,
+  "active_combat_p95_ms": 16.6666666666667,
+  "alive": 2,
+  "clips_observed": {
+    "": 5352,
+    "aim": 5244,
+    "death": 4782,
+    "fire": 106,
+    "idle": 4,
+    "walk": 568
+  },
+  "elapsed_real_seconds": 45.0055350000011,
+  "mean_fps": 59.4593531662257,
+  "observed_shots": 27,
+  "p95_frame_ms": 16.6666666666667,
+  "participants": 6,
+  "phase": "resolved",
+  "simulation_seconds": 8.97339600000003,
+  "wounded": 2
+}

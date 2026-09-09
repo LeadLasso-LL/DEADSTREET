@@ -1,0 +1,174 @@
+{
+  "phase": "resolved",
+  "shots": {
+    "1": {
+      "source": "player_soldier",
+      "target": "rival_soldier_shotgun"
+    },
+    "2": {
+      "source": "player_soldier",
+      "target": "rival_soldier_shotgun"
+    },
+    "3": {
+      "source": "player_soldier",
+      "target": "rival_soldier_shotgun"
+    },
+    "4": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_smg"
+    },
+    "5": {
+      "source": "player_soldier",
+      "target": "rival_soldier_shotgun"
+    },
+    "6": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_smg"
+    },
+    "7": {
+      "source": "player_soldier",
+      "target": "rival_soldier_shotgun"
+    },
+    "8": {
+      "source": "player_soldier_smg",
+      "target": "rival_soldier_shotgun"
+    },
+    "9": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_smg"
+    },
+    "10": {
+      "source": "player_soldier_smg",
+      "target": "rival_soldier_shotgun"
+    },
+    "11": {
+      "source": "player_soldier_smg",
+      "target": "rival_soldier_shotgun"
+    },
+    "12": {
+      "source": "player_soldier",
+      "target": "rival_soldier_shotgun"
+    },
+    "13": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_smg"
+    },
+    "14": {
+      "source": "player_soldier",
+      "target": "rival_soldier"
+    },
+    "15": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier"
+    },
+    "16": {
+      "source": "player_soldier",
+      "target": "rival_soldier"
+    },
+    "17": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier"
+    },
+    "18": {
+      "source": "player_soldier",
+      "target": "rival_soldier"
+    },
+    "19": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier"
+    },
+    "20": {
+      "source": "player_soldier",
+      "target": "rival_soldier_rifle"
+    },
+    "21": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier"
+    },
+    "22": {
+      "source": "player_soldier",
+      "target": "rival_soldier_rifle"
+    },
+    "23": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier"
+    },
+    "24": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier"
+    },
+    "25": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_shotgun"
+    },
+    "26": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_shotgun"
+    },
+    "27": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_shotgun"
+    },
+    "28": {
+      "source": "rival_soldier_rifle",
+      "target": "player_soldier_shotgun"
+    }
+  },
+  "ticks": 604,
+  "units": {
+    "player_soldier": {
+      "alive": false,
+      "position": [
+        56.4208068847656,
+        22.4725761413574
+      ],
+      "target": "",
+      "wounded": true
+    },
+    "player_soldier_shotgun": {
+      "alive": false,
+      "position": [
+        56.053337097168,
+        36.9670066833496
+      ],
+      "target": "rival_soldier_rifle",
+      "wounded": true
+    },
+    "player_soldier_smg": {
+      "alive": false,
+      "position": [
+        63.7807464599609,
+        24.4767532348633
+      ],
+      "target": "",
+      "wounded": false
+    },
+    "rival_soldier": {
+      "alive": false,
+      "position": [
+        37.2000007629395,
+        20.4000015258789
+      ],
+      "target": "",
+      "wounded": true
+    },
+    "rival_soldier_rifle": {
+      "alive": true,
+      "position": [
+        31.6000022888184,
+        28.1300010681152
+      ],
+      "target": "player_soldier_shotgun",
+      "wounded": false
+    },
+    "rival_soldier_shotgun": {
+      "alive": false,
+      "position": [
+        47.6000022888184,
+        24.1499996185303
+      ],
+      "target": "",
+      "wounded": true
+    }
+  }
+}

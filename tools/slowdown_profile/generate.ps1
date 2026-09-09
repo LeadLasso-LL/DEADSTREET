@@ -1,8 +1,10 @@
+param([string]$BaselineRef = "")
 $root='C:\Users\brand\OneDrive\Documents\dead-street'
 Set-Location $root
 $dest='tools/slowdown_profile'
 foreach($pair in @(@('battle/runtime/battle_runtime_service.gd','runtime'),@('battle/combat/battle_combat_behavior_service.gd','combat'),@('battle/combat/battle_combat_cover_evaluation_service.gd','cover_eval'),@('battle/combat/battle_line_of_sight_service.gd','los'))) {
  $s=[IO.File]::ReadAllText((Join-Path $root $pair[0])) -replace 'class_name \w+\r?\n',''
+ if($BaselineRef) { $s=((git show ($BaselineRef+':'+$pair[0])) -join [char]10) -replace 'class_name \w+\r?\n','' }
  $s=$s.Replace('res://battle/combat/battle_combat_behavior_service.gd','res://tools/slowdown_profile/combat.gd')
  $matches=[regex]::Matches($s,'(?ms)^static func (\w+)\((.*?)\)\s*->\s*([^:\r\n]+):')
  $wrappers=''

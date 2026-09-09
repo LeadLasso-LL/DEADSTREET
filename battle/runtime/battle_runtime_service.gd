@@ -21,6 +21,15 @@ const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRuntimeResult:
 	if battle_state == null:
+		return _advance_validated(battle_state, delta_seconds)
+	battle_state.begin_geometry_validation_scope()
+	var result: BattleRuntimeResult = _advance_validated(battle_state, delta_seconds)
+	battle_state.end_geometry_validation_scope()
+	return result
+
+
+static func _advance_validated(battle_state: BattleState, delta_seconds: float) -> BattleRuntimeResult:
+	if battle_state == null:
 		return BattleRuntimeResult.failed(
 			"null_battle_state",
 			"Battle runtime failed: battle_state is null.",

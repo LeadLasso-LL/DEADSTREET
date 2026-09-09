@@ -104,7 +104,7 @@ static func _validate_geometry(
 			source_participant_id,
 			target_participant_id
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleLineOfSightResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle line of sight failed: battlefield geometry is invalid.",

@@ -325,7 +325,7 @@ static func _require_geometry(battle_state: BattleState) -> Dictionary:
 			"Battle cover failed: battlefield geometry is missing."
 		)
 		return prepared
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		prepared["failure"] = BattleCoverQueryResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle cover failed: battlefield geometry is invalid."

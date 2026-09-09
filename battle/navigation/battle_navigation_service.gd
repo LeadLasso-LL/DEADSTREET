@@ -172,7 +172,7 @@ static func find_path(
 static func _ensure_static_graph(battle_state: BattleState) -> BattleNavigationGraph:
 	if battle_state == null or battle_state.battlefield_geometry == null:
 		return null
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return null
 	var stamp: String = battle_state.navigation_topology_stamp()
 	var graph: BattleNavigationGraph = battle_state.get_static_nav_graph()

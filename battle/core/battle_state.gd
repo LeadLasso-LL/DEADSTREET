@@ -841,3 +841,35 @@ func _zone_is_spatially_ready(
 		else:
 			return false
 	return true
+
+# Validity is shared only during one synchronous runtime update. No validity
+# survives a tick: direct authored edits between updates are always rechecked.
+var _geometry_validation_scope: bool = false
+var _validated_geometry: BattlefieldGeometry = null
+var _validated_content_revision: int = -1
+var _validated_cover_revision: int = -1
+var _geometry_valid: bool = false
+
+func begin_geometry_validation_scope() -> void:
+	_geometry_validation_scope = true
+	_validated_geometry = null
+
+func end_geometry_validation_scope() -> void:
+	_geometry_validation_scope = false
+	_validated_geometry = null
+
+func has_valid_geometry() -> bool:
+	if battlefield_geometry == null:
+		return false
+	if not _geometry_validation_scope:
+		return battlefield_geometry.is_valid()
+	if (
+		_validated_geometry != battlefield_geometry
+		or _validated_content_revision != battlefield_geometry.content_revision
+		or _validated_cover_revision != battlefield_geometry.cover_slot_revision
+	):
+		_validated_geometry = battlefield_geometry
+		_validated_content_revision = battlefield_geometry.content_revision
+		_validated_cover_revision = battlefield_geometry.cover_slot_revision
+		_geometry_valid = battlefield_geometry.is_valid()
+	return _geometry_valid

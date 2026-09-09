@@ -99,7 +99,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			"missing_battlefield_geometry",
 			"Battle combat behavior failed: battlefield geometry is missing."
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleCombatBehaviorResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle combat behavior failed: battlefield geometry is invalid."

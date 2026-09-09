@@ -42,7 +42,7 @@ static func resolve_attack(
 			"missing_battlefield_geometry",
 			"Battle attack resolution failed: battlefield geometry is missing."
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleAttackResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle attack resolution failed: battlefield geometry is invalid."

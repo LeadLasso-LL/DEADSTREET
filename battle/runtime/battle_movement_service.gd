@@ -33,7 +33,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleMo
 			"Battle movement failed: battlefield geometry is missing.",
 			delta_seconds
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleMovementResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle movement failed: battlefield geometry is invalid.",

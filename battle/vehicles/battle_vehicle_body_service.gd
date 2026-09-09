@@ -255,7 +255,7 @@ static func get_placement_error(
 	var profile: BattleVehiclePhysicalProfile = profile_for_vehicle(vehicle)
 	if profile == null:
 		return "missing_profile"
-	if battle_state.battlefield_geometry == null or not battle_state.battlefield_geometry.is_valid():
+	if battle_state.battlefield_geometry == null or not battle_state.has_valid_geometry():
 		return "missing_battlefield_geometry"
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if not pose_contained_in_rect(position, facing, profile, geometry.bounds()):

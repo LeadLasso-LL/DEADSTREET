@@ -46,7 +46,7 @@ static func advance_weapon_state(
 			"missing_battlefield_geometry",
 			"Battle fire control failed: battlefield geometry is missing."
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleFireControlResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle fire control failed: battlefield geometry is invalid."
@@ -82,7 +82,7 @@ static func evaluate_fire_eligibility(battle_state: BattleState) -> BattleFireCo
 			"missing_battlefield_geometry",
 			"Battle fire control failed: battlefield geometry is missing."
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleFireControlResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle fire control failed: battlefield geometry is invalid."
@@ -152,7 +152,7 @@ static func evaluate_participant_target_eligibility(
 			"missing_battlefield_geometry",
 			"Battle fire control failed: battlefield geometry is missing."
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleFireControlResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle fire control failed: battlefield geometry is invalid."

@@ -22,7 +22,7 @@ static func advance(battle_state: BattleState) -> BattleTargetSelectionResult:
 			"missing_battlefield_geometry",
 			"Battle target selection failed: battlefield geometry is missing."
 		)
-	if not battle_state.battlefield_geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleTargetSelectionResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle target selection failed: battlefield geometry is invalid."
