@@ -35,7 +35,7 @@ def make_lower(q,stop=None,settle=0,crouch=0,fall=0):
   path(g,f'M{xy(b-u*4+nu*3.7)} Q{xy(b+n*4)} {xy(b+v2*4+nv*3.4)} L{xy(b+v2*4-nv*3.4)} Q{xy(b-n*4)} {xy(b-u*4-nu*3.7)}Z','#252c2e','none')
   path(g,f'M{xy(b-n*2)} Q{xy(b+v2)} {xy(b+n*2)}','none','#42494a',.6)
   # Side-specific boot: ankle shaft, heel, instep and a low rounded toe.
-  def bp(x,y):return xy(proj(boot_world(x*1.34,y*1.24)))
+  def bp(x,y):return xy(proj(boot_world(x*1.34,y*1.60)))
   path(g,f'M{bp(-2,7)} L{bp(2,7)} L{bp(2.8,4.5)} Q{bp(5.5,3.8)} {bp(7.5,2.9)} Q{bp(8.9,1.5)} {bp(8.4,0)} L{bp(-3,0)} Q{bp(-4,.4)} {bp(-3.4,2.2)} L{bp(-3,5)}Z','#50513c','#171e1e',.75)
   path(g,f'M{bp(-3,.6)} L{bp(8.4,.6)}','none','#111819',.9)
   path(g,f'M{bp(-1,5.8)} L{bp(1.2,5.5)} M{bp(3,3.9)} Q{bp(5.7,3.3)} {bp(7,2.6)}','none','#666453',.6)

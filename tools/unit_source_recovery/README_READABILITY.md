@@ -40,3 +40,4 @@ Generated intermediate SVGs and review atlases are reproducible and not committe
 - Motion previews use 42ms jog frames and 62ms death frames.
 - Six-unit live test: 54.93 active FPS, 26.39ms p95; all cover reachable.
 - Pre-pass sprites retained outside repo in before_motion_pass.
+Carry correction: E/W/SW far upper arms are occluded by the torso, with only forearms rendered in front. Running weapon carry shifts forward/down without changing aim anchors. Side shoe height increased without length increase.

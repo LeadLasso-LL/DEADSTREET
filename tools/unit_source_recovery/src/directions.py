@@ -39,6 +39,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  origin+=np.array([3*aim-1.3*kick,-(5 if back else 8)*aim-.5*kick])
  if side and w!='ak_rifle':origin[0]+=(6 if w=='uzi_smg' else 5)*aim
  if diag and w!='ak_rifle':origin[0]+=4*aim
+ if side or d=='SW':origin+=np.array([7.,5.])*(1-aim)*(1-fall)
  a=math.radians(theta);rot=np.array([[math.cos(a),-math.sin(a)],[math.sin(a),math.cos(a)]])
  mat=rot@np.diag([length,.85])*weapon['scale']
  right=origin+mat@weapon['right_grip'];left=origin+mat@weapon['left_grip']
@@ -55,6 +56,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
   wr_near,wr_far=(left,right) if back else (right,left)
   if flip:wr_near,wr_far=wr_far,wr_near
   en=np.array([-12+s*.4,-13+s*.4]);ef=np.array([12+s*.4,-13+s*.4])
+ if d=='SW':en=np.array([-6.+s*.4,-10.]);ef=np.array([10.+s*.4,-12.])
  en[1]+=2.0;ef[1]+=2.0
  en+=(wr_near-en)*(.10*aim);ef+=(wr_far-ef)*(.10*aim)
  def arm(parent,a,b,c):
@@ -144,7 +146,11 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
    else:p(head,'M-5 -41 L-3 -38 -3 -35 -5 -36Z',hair,'none')
  # Rear torso occludes only the proximal arm; outer elbows remain visible.
  if not back:
-  g.remove(far);g.append(far)
+  if side or d=='SW':
+   # Far upper arm remains behind torso; only its forearm crosses in front.
+   lower_body.limb(g,ef,wr_far,3.15,2.15,skin if k==0 else cloth)
+  else:
+   g.remove(far);g.append(far)
   near=group(g);arm(near,sh_near,en,wr_near);gun(g)
  if flip:out.set('transform','scale(-1 1)')
  return out
