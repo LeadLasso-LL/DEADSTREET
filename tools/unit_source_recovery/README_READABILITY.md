@@ -29,3 +29,14 @@ Muzzle flashes are handled at runtime.
 Previous sprite files are backed up outside the repository in
 dead-street-before-pixel-integration/before_arm_readability.
 Generated intermediate SVGs and review atlases are reproducible and not committed.
+
+## Jog, feet and death revision
+- Shared gait.py supplies 36% contact per leg and a brief flight phase.
+- Higher heel recovery, 34 source-unit stance travel and landing compression.
+- Side hips lowered for knee flexion; SW torso follows the revised pelvis.
+- Foot silhouettes enlarged about 12%, preserving ankle attachment.
+- Death buckles, accelerates to impact around 0.8 seconds, then settles.
+- Runtime healthy stride uses 3.7 world units per cycle; wounded stride stays 2.8.
+- Motion previews use 42ms jog frames and 62ms death frames.
+- Six-unit live test: 54.93 active FPS, 26.39ms p95; all cover reachable.
+- Pre-pass sprites retained outside repo in before_motion_pass.

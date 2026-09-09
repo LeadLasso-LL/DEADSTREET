@@ -1,3 +1,4 @@
+import gait
 from pathlib import Path
 import math,copy,subprocess,xml.etree.ElementTree as E,json
 import numpy as np
@@ -14,16 +15,14 @@ def limb(g,a,b,wa,wb,fill):
 def smooth(t):return t*t*(3-2*t)
 def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0):
  # Contact, compression, toe-off, recovery, forward swing. Ground stance is linear.
- beat=(q*2)%1;h=51-2.4*math.cos(2*math.pi*(beat-.12));sway=1.0*math.sin(2*math.pi*q)
+ beat=(q*2)%1;h=gait.height(q,51);sway=1.0*math.sin(2*math.pi*q)
  if stop is not None:h=(51-2.4*math.cos(2*math.pi*(-.12)))*(1-smooth(stop))+52*smooth(stop)-1.4*math.sin(math.pi*stop);sway=0
  h=h*(1-settle)+51.8*settle;sway*=1-settle
  h-=30*crouch+12*fall
  hip=proj(np.array([sway,h,0]));g=E.Element(NS+'g');states=[];thighs={}
  for side in [1,-1]:
   p=(q+(0 if side==-1 else .5))%1
-  if p<.42:along=12-24*p/.42;lift=0;pitch=-8+18*(p/.42)**3
-  else:
-   u=(p-.42)/.58;along=-12+24*smooth(u);lift=17*math.sin(math.pi*u)**1.3;pitch=35*math.sin(math.pi*u)-10*u
+  along,lift,pitch,_=gait.foot(p)
   if stop is not None:
    root=40*(stop-.5*stop*stop)
    if side==-1:along=12-root;lift=0;pitch=0
@@ -50,7 +49,7 @@ def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0):
   # Rounded heel and toe, narrower waist and raised instep, projected with the foot.
   pivot=proj(foot);angle=math.radians(pitch);mat=np.array([[math.cos(angle),-math.sin(angle)],[math.sin(angle),math.cos(angle)]])
   def shoe_point(lateral,along,height=0):
-   return pivot+mat@(proj(foot+RIGHT*lateral+F*along+np.array([0,height,0]))-pivot)
+   return pivot+mat@(proj(foot+RIGHT*(lateral*1.12)+F*(along*1.12)+np.array([0,height,0]))-pivot)
   contour=[('M',(-1.7,-2.8)),('Q',(0,-3.4),(1.8,-2.8)),('Q',(2.9,-1.8),(2.8,.5)),('L',(3,3.8)),('Q',(2.8,6.4),(.8,6.7)),('Q',(-1,7),(-2.1,5.8)),('Q',(-3,4.7),(-2.8,2.5)),('L',(-2.4,-1.5)),('Q',(-2.4,-2.5),(-1.7,-2.8))]
   def outline(raised=False,offset=0):
    return ' '.join(cmd+' '.join(xy(shoe_point(lat,lng,max(1.1,3.6-.38*lng) if raised else 0)+[0,offset]) for lat,lng in pts) for cmd,*pts in contour)+' Z'

@@ -1,3 +1,4 @@
+import gait
 """Direction-authored outfit silhouettes over the accepted world-space run rig."""
 import sys,math,copy,xml.etree.ElementTree as E
 from pathlib import Path
@@ -156,7 +157,7 @@ def make(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload
    up=root.find(".//*[@id='upper_pose']")
    # Use authored front view for SW with the oblique weapon projection.
    low=list(root)[0];low.remove(up)
-   hip=build.B.proj(np.array([math.sin(2*math.pi*q)*(1-settle),(51-2.4*math.cos(2*math.pi*((q*2)%1-.12)))*(1-settle)+51.8*settle-30*crouch-12*fall,0]))
+   hip=build.B.proj(np.array([math.sin(2*math.pi*q)*(1-settle),(gait.height(q,51))*(1-settle)+51.8*settle-30*crouch-12*fall,0]))
    wrap=group(root,transform=f'translate({hip[0]} {hip[1]}) scale(1.05 .92)')
    wrap.append(upper(k,q,'SW',w,settle,aim,kick,flash,crouch,fall,lean,reload))
    low.set('transform','translate(128 0) scale(-1 1)')

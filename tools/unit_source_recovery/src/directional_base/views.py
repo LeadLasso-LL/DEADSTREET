@@ -1,3 +1,4 @@
+import gait
 from pathlib import Path
 import math, copy, xml.etree.ElementTree as E
 import numpy as np
@@ -9,21 +10,17 @@ def project(v):return np.array([64+v[0],110+v[2]*math.sin(EL)-v[1]*math.cos(EL)]
 def xy(p):return f'{p[0]:.3f} {p[1]:.3f}'
 def lower(q,yaw,still=False,settle=0,crouch=0,fall=0):
  f=np.array([math.cos(yaw),0,math.sin(yaw)]);rt=np.array([f[2],0,-f[0]])
- h=52.5-(0 if still else 1.1*math.cos(4*math.pi*(q-.065)));hip=project([0,h,0]);g=E.Element(NS+'g');joins=[];legs=[]
+ h=52.5 if still else gait.height(q,52.5);hip=project([0,h,0]);g=E.Element(NS+'g');joins=[];legs=[]
  front=abs(yaw-math.pi/2)<.01
  sway=0 if still or not front else .65*math.sin(2*math.pi*q)
  if front:
-  h=51.5-(0 if still else 1.8*math.cos(4*math.pi*(q-.065)))
+  h=51.5 if still else gait.height(q,51.5)
   hip=project([sway,h,0])
  h=h*(1-settle)+(51.5 if front else 52)*settle-30*crouch-12*fall;sway*=1-settle;hip=project([sway,h,0])
  for side in [-1,1]:
   p=(q+(0 if side==-1 else .5))%1
   if still:along=3 if side==-1 else -4;lift=0;pitch=0
-  elif p<.48:
-   along=10-22*p/.48;lift=0;t=max(0,(p-.39)/.09);pitch=-24*t*t*(3-2*t)
-  else:
-   t=(p-.48)/.52;along=(1-t)**3*-12+3*(1-t)**2*t*-20+3*(1-t)*t*t*18+t**3*10
-   lift=3*(1-t)**2*t*17+3*(1-t)*t*t*8;pitch=-24*(1-t)+9*math.sin(math.pi*t)
+  else:along,lift,pitch,_=gait.foot(p)
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle
   foot=rt*side*6.7+f*along+[0,lift,0];fall_sign=-1 if f[0]<-.1 else 1;foot=foot*(1-fall)+np.array([-40.*fall_sign,0.,side*4.])*fall;a3=rt*side*6.2+[sway,h,0];ank=foot+[0,6.5,0]
   v=ank-a3;dist=np.linalg.norm(v);u=v/dist;bend=f-u*np.dot(f,u);bend/=np.linalg.norm(bend)
@@ -36,6 +33,7 @@ def lower(q,yaw,still=False,settle=0,crouch=0,fall=0):
   # Rounded footprint and raised instep; toe direction follows travel, never screen rotation.
   angle=math.radians(pitch)
   def bp(lat,lng,ht):
+   lat*=1.12;lng*=1.12
    if front:lng*=.8
    return xy(project(foot+rt*lat+f*(lng*math.cos(angle)-ht*math.sin(angle))+[0,lng*math.sin(angle)+ht*math.cos(angle),0]))
   contour=[('M',(-2.7,-3.6)),('Q',(0,-4.5),(2.7,-3.6)),('L',(3.2,4)),('Q',(3.5,8.8),(1,10)),('Q',(-2.6,10.8),(-3.2,7)),('L',(-2.7,-3.6))]

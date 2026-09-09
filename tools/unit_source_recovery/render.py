@@ -19,7 +19,12 @@ def state(clip,i,w):
  elif clip=='hit':
   impact=math.sin(math.pi*min(1,t/.65))*math.exp(-t*1.4);st.update(lean=-14*impact,crouch=.2*impact,aim=.8-.4*impact,kick=impact*2)
  elif clip=='injured_run':st.update(q=i/24,settle=.35,crouch=.18+.04*math.sin(2*math.pi*t),lean=5,aim=.15)
- elif clip=='death':st.update(crouch=.9*smooth(t/.5),fall=smooth((t-.3)/.6),lean=-7*math.sin(math.pi*min(t/.3,1)),aim=.2)
+ elif clip=='death':
+  drop=max(0,min(1,(t-.10)/.45));fall=drop*drop
+  settle_t=max(0,(t-.55)/.45)
+  bounce=math.sin(min(1,settle_t)*math.pi*2)*math.exp(-settle_t*5) if t>.55 else 0
+  buckle=.22*math.sin(math.pi*min(1,t/.32))*(1-fall)
+  st.update(crouch=.9*fall+buckle-.06*max(0,bounce),fall=fall-.025*max(0,bounce),lean=-10*math.sin(math.pi*min(1,t/.28))*(1-fall),aim=.2,q=1.15)
  elif clip=='reload':st.update(aim=.1,reload=t,lean=2*math.sin(math.pi*t))
  return st
 

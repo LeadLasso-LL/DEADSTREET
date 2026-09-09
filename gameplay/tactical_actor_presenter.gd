@@ -309,8 +309,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		var count: int = body.sprite_frames.get_frame_count(anim)
 		var cursor: float = age * TacticalUnitAnimationCatalog.clip_fps(clip)
 		if clip == "walk" or clip == "wounded_walk":
-			# Full left/right stride is ~1.6 world units; shared across outfits.
-			cursor = float(state["distance"]) / 2.8 * count
+			# Match the authored contact travel to distance; wounded gait stays shorter.
+			cursor = float(state["distance"]) / (3.7 if clip == "walk" else 2.8) * count
 		elif clip == "fire" or clip == "cover_fire":
 			cursor = shot_age * 20.0
 		elif clip == "reload":

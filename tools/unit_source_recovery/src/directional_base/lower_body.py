@@ -1,3 +1,4 @@
+import gait
 from pathlib import Path
 import math,copy,subprocess,xml.etree.ElementTree as E,json
 import numpy as np
@@ -14,20 +15,13 @@ def limb(g,a,b,wa,wb,fill):
 def smooth(t):return t*t*(3-2*t)
 def make_lower(q,stop=None,settle=0,crouch=0,fall=0):
  phase=(q*2)%1
- h=58.5-1.1*math.cos(2*math.pi*(phase-.13));hip=proj(np.array([0,h,0]));g=E.Element(NS+'g');states=[];thighs=[]
+ h=gait.height(q,54);hip=proj(np.array([0,h,0]));g=E.Element(NS+'g');states=[];thighs=[]
  if stop is not None:h=58.5;hip=proj(np.array([0,h,0]))
  h=h*(1-settle)+57.5*settle-30*crouch-12*fall;hip=proj(np.array([0,h,0]))
  for side in [1,-1]:
   p=(q+(0 if side==-1 else .5))%1
   if stop is not None:along=3 if side==-1 else -4;lift=0;pitch=0;toe_pivot=0
-  elif p<.48:
-   along=10-22*p/.48;lift=0;roll=max(0,(p-.39)/.09);pitch=-24*smooth(roll);toe_pivot=8*roll
-  else:
-   t=(p-.48)/.52
-   # Heel recovery happens behind the body, followed by a low forward swing.
-   along=(1-t)**3*(-12)+3*(1-t)**2*t*(-20)+3*(1-t)*t*t*18+t**3*10
-   lift=3*(1-t)**2*t*17+3*(1-t)*t*t*8
-   pitch=-24*(1-t)+9*math.sin(math.pi*t);toe_pivot=0
+  else:along,lift,pitch,toe_pivot=gait.foot(p)
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle;toe_pivot*=1-settle
   foot=RIGHT*side*6.7+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+np.array([-40.,0.,side*4.])*fall;ang=math.radians(pitch)
   def boot_world(x,y):
@@ -41,7 +35,7 @@ def make_lower(q,stop=None,settle=0,crouch=0,fall=0):
   path(g,f'M{xy(b-u*4+nu*3.7)} Q{xy(b+n*4)} {xy(b+v2*4+nv*3.4)} L{xy(b+v2*4-nv*3.4)} Q{xy(b-n*4)} {xy(b-u*4-nu*3.7)}Z','#252c2e','none')
   path(g,f'M{xy(b-n*2)} Q{xy(b+v2)} {xy(b+n*2)}','none','#42494a',.6)
   # Side-specific boot: ankle shaft, heel, instep and a low rounded toe.
-  def bp(x,y):return xy(proj(boot_world(x*1.2,y*1.18)))
+  def bp(x,y):return xy(proj(boot_world(x*1.34,y*1.24)))
   path(g,f'M{bp(-2,7)} L{bp(2,7)} L{bp(2.8,4.5)} Q{bp(5.5,3.8)} {bp(7.5,2.9)} Q{bp(8.9,1.5)} {bp(8.4,0)} L{bp(-3,0)} Q{bp(-4,.4)} {bp(-3.4,2.2)} L{bp(-3,5)}Z','#50513c','#171e1e',.75)
   path(g,f'M{bp(-3,.6)} L{bp(8.4,.6)}','none','#111819',.9)
   path(g,f'M{bp(-1,5.8)} L{bp(1.2,5.5)} M{bp(3,3.9)} Q{bp(5.7,3.3)} {bp(7,2.6)}','none','#666453',.6)
