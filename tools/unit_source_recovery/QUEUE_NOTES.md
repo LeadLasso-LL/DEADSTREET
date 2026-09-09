@@ -26,3 +26,10 @@ Nine focused regression checks passed. Full suite comparison found 68 pre-existi
 The first live trace confirmed all three defenders started in cover, the SMG reached threshold cover, and the defender with the legacy shotgun ID (actual SMG loadout) moved into cover. Final runtime trace is saved separately.
 
 Final runtime: 59.8 average active FPS, 32 shot events, four living units at 15 seconds. Actual shotgun loadouts have a separate shotgun_showcase.gd fixture because legacy participant IDs are not authoritative weapon IDs. Nine focused regression checks pass.
+
+
+## Wounded weapon clearance and blood visibility — 2026-09-09
+User requested a larger wounded clothing stain, modestly more blood around corpses, and no abdomen-hand overlap with the gun.
+Wounded-only weapon offsets move the carried weapon away from the abdomen; its holding wrist follows the equipment anchor. The abdomen hand, connected arm and approved leg motion are preserved. W/SW remain exact reflected counterparts.
+Clothing stain radii increased from 4.2/3.3 to 5.4/4.2 source pixels; lower lobe from 2.1/2.5 to 2.6/3.1. Clothing visibility masks are regenerated from the revised poses. Death marks use six small patches at size 3.1 instead of four at 2.4; trail density and hit splashes are unchanged.
+Rebuilt twelve outfit/weapon atlases, clothing masks and wounded muzzle anchors. Reviewed frames 0, 8 and 16 across eight directions/four weapons. Existing blood behavior checks pass. Visual changes remain subject to product review.

@@ -32,6 +32,8 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  angle=weapon['carry_angle']+(1.2*math.sin(4*math.pi*q) if weapon_id!='pistol' else 0)
  origin=np.array(weapon['carry_origin'],float)+[0,.7*math.sin(4*math.pi*q)]
  angle+=22*wounded
+ # Carry the weapon outside the abdomen hand; wrists follow its anchors.
+ origin+=np.array([12.,-3.])*wounded
  angle+=18*__import__('math').sin(__import__('math').pi*reload)
  angle=angle*(1-aim)+(15 if weapon_id!='pistol' else 8)*aim-kick*2
  origin+=np.array([4*aim-1.4*kick,-10*aim-.6*kick])

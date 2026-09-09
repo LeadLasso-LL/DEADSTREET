@@ -35,6 +35,8 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  if back:origin=np.array([-3.,(-20 if diag else -17)+bob])
  if w=='pistol':origin+=np.array([13 if side else 3,1])
  theta+=25*wounded
+ # Clear the free hand without moving it away from the abdomen.
+ origin+=np.array([11. if side else -12.,-3.])*wounded
  theta+=.7*s+18*math.sin(math.pi*reload)
  theta+=( (-9 if side else (-8 if diag else 0)) *aim)-kick*1.8
  origin+=np.array([3*aim-1.3*kick,-(5 if back else 8)*aim-.5*kick])

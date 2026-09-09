@@ -36,7 +36,7 @@ func sync(battle) -> void:
 		if not unit.is_alive:
 			if not dead.has(id):
 				dead[id]=true
-				marks.append({"p":pos,"size":2.4,"seed":int(id.hash())})
+				marks.append({"p":pos,"size":3.1,"seed":int(id.hash())})
 		elif unit.is_wounded:
 			if not walkers.has(id): walkers[id]={"p":pos,"t":clock}
 			var last: Dictionary=walkers[id]
@@ -51,7 +51,7 @@ func _draw() -> void:
 	for mark in marks:
 		var pos: Vector2=mark.p
 		var size: float=mark.size
-		for i in range(4 if size>1.0 else 2):
+		for i in range(6 if size>1.0 else 2):
 			var offset=Vector2(sin(float(mark.seed+i)*2.7),cos(float(mark.seed+i)*1.9))*size*1.5
 			draw_rect(Rect2((pos+offset).round(),Vector2(size, maxf(.6,size*.55))),Color("#66272b"))
 	for hit in hits:

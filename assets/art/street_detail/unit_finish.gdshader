@@ -16,7 +16,7 @@ void fragment(){
  float a=max(max(texture(TEXTURE,uv+vec2(d.x,0)).a,texture(TEXTURE,uv-vec2(d.x,0)).a),max(texture(TEXTURE,uv+vec2(0,d.y)).a,texture(TEXTURE,uv-vec2(0,d.y)).a));
  vec2 local_pixel=mod(floor(uv/TEXTURE_PIXEL_SIZE),128.0);
  vec2 stain_delta=local_pixel-stain_center;
- float stain=max(step(length(stain_delta/vec2(4.2,3.3)),1.0),step(length((stain_delta-vec2(1.0,3.0))/vec2(2.1,2.5)),1.0));
+ float stain=max(step(length(stain_delta/vec2(5.4,4.2)),1.0),step(length((stain_delta-vec2(1.0,3.0))/vec2(2.6,3.1)),1.0));
  float fabric=step(0.98,texture(clothing_mask,uv).r);
  if(blood_enabled && wounded_stain && c.a>.5 && stain>.5 && fabric>.5) c.rgb=mix(vec3(.28,.06,.08),vec3(.49,.10,.12),step(0.0,stain_delta.x));
  vec3 toned=c.rgb*vec3(0.89,0.92,0.87);
