@@ -1,0 +1,444 @@
+{
+  "active_combat_mean_fps": 20.4699646548045,
+  "active_combat_p95_ms": 136.258666666667,
+  "alive": 2,
+  "clips_observed": {
+    "": 772,
+    "aim": 243,
+    "cover_exposed_idle": 225,
+    "cover_fire": 1,
+    "cover_popout": 8,
+    "cover_tuck": 7,
+    "cover_tucked_idle": 2,
+    "death": 793,
+    "fire": 24,
+    "hit": 22,
+    "idle": 4,
+    "walk": 215
+  },
+  "elapsed_real_seconds": 12.0069316666668,
+  "mean_fps": 32.1480966758225,
+  "observed_shots": 24,
+  "p95_frame_ms": 100.0,
+  "participants": 6,
+  "phase": "resolved",
+  "simulation_seconds": 8.54911100000001,
+  "timings": {
+    "combat._active_hostile": {
+      "calls": 32,
+      "max_us": 197,
+      "total_us": 1544
+    },
+    "combat._anchor_and_halt_occupied_cover": {
+      "calls": 66,
+      "max_us": 71,
+      "total_us": 1112
+    },
+    "combat._anchor_to_occupied_slot": {
+      "calls": 66,
+      "max_us": 21,
+      "total_us": 262
+    },
+    "combat._approach_movement_status": {
+      "calls": 60,
+      "max_us": 5,
+      "total_us": 61
+    },
+    "combat._best_closing_cover_slot": {
+      "calls": 29,
+      "max_us": 63721,
+      "total_us": 1416104
+    },
+    "combat._best_healthy_role_cover_slot": {
+      "calls": 46,
+      "max_us": 70449,
+      "total_us": 2170332
+    },
+    "combat._bind_closing_staging_hold": {
+      "calls": 1,
+      "max_us": 42,
+      "total_us": 42
+    },
+    "combat._bind_combat_decision": {
+      "calls": 635,
+      "max_us": 147,
+      "total_us": 6233
+    },
+    "combat._bind_no_role_cover_decision": {
+      "calls": 43,
+      "max_us": 2210,
+      "total_us": 50731
+    },
+    "combat._cheap_closing_slot_still_valid": {
+      "calls": 185,
+      "max_us": 2424,
+      "total_us": 218004
+    },
+    "combat._cheap_cover_decision_still_valid": {
+      "calls": 99,
+      "max_us": 1933,
+      "total_us": 115452
+    },
+    "combat._clear_acquire_reaction": {
+      "calls": 421,
+      "max_us": 10,
+      "total_us": 486
+    },
+    "combat._clear_closing_pursuit": {
+      "calls": 58,
+      "max_us": 996,
+      "total_us": 3062
+    },
+    "combat._clear_no_role_cover_decision": {
+      "calls": 324,
+      "max_us": 15,
+      "total_us": 541
+    },
+    "combat._clear_owned_combat_navigation": {
+      "calls": 441,
+      "max_us": 22,
+      "total_us": 849
+    },
+    "combat._closing_command_permits": {
+      "calls": 249,
+      "max_us": 81,
+      "total_us": 1790
+    },
+    "combat._closing_staging_key": {
+      "calls": 1,
+      "max_us": 35,
+      "total_us": 35
+    },
+    "combat._combat_context_id": {
+      "calls": 291,
+      "max_us": 10,
+      "total_us": 280
+    },
+    "combat._combat_decision_key_for": {
+      "calls": 975,
+      "max_us": 105,
+      "total_us": 7081
+    },
+    "combat._combat_decision_matches": {
+      "calls": 340,
+      "max_us": 78,
+      "total_us": 4246
+    },
+    "combat._complete_successful_cover_occupation": {
+      "calls": 1,
+      "max_us": 76,
+      "total_us": 76
+    },
+    "combat._cover_availability_stamp": {
+      "calls": 189,
+      "max_us": 15,
+      "total_us": 621
+    },
+    "combat._defend_can_fire": {
+      "calls": 333,
+      "max_us": 2832,
+      "total_us": 367803
+    },
+    "combat._defend_los_blocks_fire": {
+      "calls": 318,
+      "max_us": 2159,
+      "total_us": 330832
+    },
+    "combat._desired_move_mode": {
+      "calls": 91,
+      "max_us": 2083,
+      "total_us": 103673
+    },
+    "combat._ensure_combat_movement_speed": {
+      "calls": 351,
+      "max_us": 12,
+      "total_us": 586
+    },
+    "combat._ensure_cover_reservation": {
+      "calls": 8,
+      "max_us": 1613,
+      "total_us": 6806
+    },
+    "combat._fall_back_applies": {
+      "calls": 63,
+      "max_us": 27,
+      "total_us": 426
+    },
+    "combat._find_combat_navigation_path": {
+      "calls": 12,
+      "max_us": 13462,
+      "total_us": 80862
+    },
+    "combat._first_reservable_ranked_slot": {
+      "calls": 75,
+      "max_us": 9242,
+      "total_us": 43803
+    },
+    "combat._halt_stand_motion": {
+      "calls": 66,
+      "max_us": 14,
+      "total_us": 117
+    },
+    "combat._has_external_navigation": {
+      "calls": 1138,
+      "max_us": 15,
+      "total_us": 1200
+    },
+    "combat._has_valid_occupancy": {
+      "calls": 1162,
+      "max_us": 22,
+      "total_us": 2123
+    },
+    "combat._has_valid_reservation": {
+      "calls": 996,
+      "max_us": 21,
+      "total_us": 2413
+    },
+    "combat._healthy_current_target": {
+      "calls": 1538,
+      "max_us": 78,
+      "total_us": 9955
+    },
+    "combat._healthy_keep_closing_cover_decision": {
+      "calls": 241,
+      "max_us": 2624,
+      "total_us": 226555
+    },
+    "combat._healthy_keep_current_cover_decision": {
+      "calls": 198,
+      "max_us": 2143,
+      "total_us": 123521
+    },
+    "combat._healthy_keep_no_role_cover_decision": {
+      "calls": 155,
+      "max_us": 2253,
+      "total_us": 169021
+    },
+    "combat._healthy_no_role_cover_key": {
+      "calls": 188,
+      "max_us": 2247,
+      "total_us": 218542
+    },
+    "combat._healthy_occupied_cover_should_persist": {
+      "calls": 32,
+      "max_us": 2293,
+      "total_us": 46411
+    },
+    "combat._healthy_role_requires_weapon_range": {
+      "calls": 99,
+      "max_us": 55,
+      "total_us": 1090
+    },
+    "combat._hold_suppresses_target_approach": {
+      "calls": 92,
+      "max_us": 90,
+      "total_us": 1044
+    },
+    "combat._increment_search": {
+      "calls": 87,
+      "max_us": 15,
+      "total_us": 235
+    },
+    "combat._is_defender_side": {
+      "calls": 281,
+      "max_us": 22,
+      "total_us": 448
+    },
+    "combat._is_eligible_threat": {
+      "calls": 192,
+      "max_us": 45,
+      "total_us": 578
+    },
+    "combat._is_finite_vector": {
+      "calls": 2516,
+      "max_us": 10,
+      "total_us": 1207
+    },
+    "combat._is_positioned": {
+      "calls": 2444,
+      "max_us": 40,
+      "total_us": 8184
+    },
+    "combat._is_valid_navigation_destination": {
+      "calls": 302,
+      "max_us": 105,
+      "total_us": 12039
+    },
+    "combat._navigate_to_cover": {
+      "calls": 291,
+      "max_us": 13668,
+      "total_us": 48877
+    },
+    "combat._occupied_cover_is_unsafe_from_close_threat": {
+      "calls": 32,
+      "max_us": 243,
+      "total_us": 1773
+    },
+    "combat._participant_force_command_id": {
+      "calls": 1747,
+      "max_us": 62,
+      "total_us": 6479
+    },
+    "combat._participant_weapon_type_id": {
+      "calls": 1277,
+      "max_us": 19,
+      "total_us": 1919
+    },
+    "combat._preferred_band_stand_off": {
+      "calls": 6,
+      "max_us": 52,
+      "total_us": 286
+    },
+    "combat._pursue_closing_cover": {
+      "calls": 190,
+      "max_us": 13739,
+      "total_us": 47967
+    },
+    "combat._pursue_healthy_role_cover": {
+      "calls": 102,
+      "max_us": 2262,
+      "total_us": 8028
+    },
+    "combat._push_applies": {
+      "calls": 179,
+      "max_us": 23,
+      "total_us": 965
+    },
+    "combat._push_approach_destination": {
+      "calls": 60,
+      "max_us": 69,
+      "total_us": 990
+    },
+    "combat._push_uses_controlled_advance": {
+      "calls": 60,
+      "max_us": 8,
+      "total_us": 81
+    },
+    "combat._reconcile_cover_state": {
+      "calls": 756,
+      "max_us": 56,
+      "total_us": 2125
+    },
+    "combat._release_owned_reservation": {
+      "calls": 70,
+      "max_us": 982,
+      "total_us": 3096
+    },
+    "combat._reserved_cover_slot": {
+      "calls": 755,
+      "max_us": 45,
+      "total_us": 4325
+    },
+    "combat._short_range_closing_applies": {
+      "calls": 249,
+      "max_us": 244,
+      "total_us": 9360
+    },
+    "combat._short_range_exposed_threat_urgency": {
+      "calls": 188,
+      "max_us": 1220,
+      "total_us": 7666
+    },
+    "combat._short_range_still_needs_to_close": {
+      "calls": 281,
+      "max_us": 81,
+      "total_us": 4869
+    },
+    "combat._should_continue_closing_after_shot": {
+      "calls": 5,
+      "max_us": 57,
+      "total_us": 116
+    },
+    "combat._should_keep_combat_path": {
+      "calls": 60,
+      "max_us": 71,
+      "total_us": 1109
+    },
+    "combat._should_keep_cover_path": {
+      "calls": 577,
+      "max_us": 20,
+      "total_us": 1304
+    },
+    "combat._should_suppress_autonomous_aggressive_approach": {
+      "calls": 60,
+      "max_us": 17,
+      "total_us": 90
+    },
+    "combat._should_withhold_out_of_band_shot": {
+      "calls": 34,
+      "max_us": 17,
+      "total_us": 207
+    },
+    "combat._sorted_participant_ids": {
+      "calls": 207,
+      "max_us": 32,
+      "total_us": 1062
+    },
+    "combat._sync_player_tactical_intent": {
+      "calls": 756,
+      "max_us": 19,
+      "total_us": 1435
+    },
+    "combat._try_execute_shot": {
+      "calls": 756,
+      "max_us": 8000,
+      "total_us": 932474
+    },
+    "combat._try_occupy_arrived_defend_cover": {
+      "calls": 15,
+      "max_us": 8,
+      "total_us": 33
+    },
+    "combat._update_acquire_reaction": {
+      "calls": 756,
+      "max_us": 2355,
+      "total_us": 401994
+    },
+    "combat._update_combat_movement": {
+      "calls": 94,
+      "max_us": 10592,
+      "total_us": 151350
+    },
+    "combat._update_defend_position_behavior": {
+      "calls": 333,
+      "max_us": 3709,
+      "total_us": 709464
+    },
+    "combat._update_healthy_role_cover_behavior": {
+      "calls": 423,
+      "max_us": 124575,
+      "total_us": 4308439
+    },
+    "combat._update_occupied_cover_posture": {
+      "calls": 756,
+      "max_us": 2873,
+      "total_us": 10007
+    },
+    "combat._update_short_range_closing_behavior": {
+      "calls": 241,
+      "max_us": 72788,
+      "total_us": 1765867
+    },
+    "combat._update_sniper_aim": {
+      "calls": 756,
+      "max_us": 50,
+      "total_us": 4505
+    },
+    "combat.advance": {
+      "calls": 175,
+      "max_us": 295405,
+      "total_us": 7024523
+    },
+    "runtime._finish_runtime": {
+      "calls": 175,
+      "max_us": 46,
+      "total_us": 1411
+    },
+    "runtime.advance": {
+      "calls": 175,
+      "max_us": 305438,
+      "total_us": 8352592
+    }
+  },
+  "wounded": 3
+}
