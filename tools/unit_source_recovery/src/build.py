@@ -92,6 +92,12 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
    p(head,'M34 16 L36 22 35 27 38 29 36 18Z','#171d20','none')
    p(head,'M38 21 L40 21 M45 22 L47 22 M41 27 L45 27','none','#49382e',.65)
  near=group(up);arm(near,[27,32.5],[25+5*aim,49-5*aim],origin+rot@grips[0])
+ # Bring the distal support forearm over the shirt edge into the palm.
+ support_end=origin+rot@grips[1]
+ support_elbow=np.array([56+2*aim,48-6*aim],float)
+ sleeve_start=support_elbow*.55+support_end*.45
+ B.limb(up,sleeve_start,support_end,2.8,2.3,skin if kind==0 else cloth)
+ list(up)[-1].set('fill',hi if kind==0 else shine)
  gun=group(up,transform=f'translate({origin[0]} {origin[1]}) rotate({angle})')
  grip_parent=gun
  gun=group(grip_parent,transform=f'scale({weapon_scale})')

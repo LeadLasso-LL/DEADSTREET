@@ -160,6 +160,13 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  return out
 
 def make(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0):
+ # User-approved handedness swap: these views are true reflections.
+ if d in ['SW','W']:
+  root=make(k,q,'SE' if d=='SW' else 'E',w,settle,aim,kick,flash,crouch,fall,lean,reload)
+  reflected=E.Element(N+'g',{'transform':'translate(128 0) scale(-1 1)'})
+  for child in list(root):root.remove(child);reflected.append(child)
+  root.append(reflected)
+  return root
  if d in ['SE','SW']:
   root=build.make(k,q,w,settle,aim,kick,flash,crouch,fall,lean,reload)
   if d=='SW':
