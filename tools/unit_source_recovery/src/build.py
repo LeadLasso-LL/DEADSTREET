@@ -62,7 +62,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
   E.SubElement(parent,N+'circle',{'cx':str(b[0]),'cy':str(b[1]),'r':'3.1','fill':skin if kind==0 else cloth})
   outline_arm(parent,outline_start)
  far=group(up);arm(far,[51.8,32.5],[56+2*aim,48-6*aim],origin+rot@grips[1])
- torso=group(up)
+ torso=group(up,id="stain_surface")
  p(torso,'M31 28 L38 26 48 27 53 31 52 43 55 55 Q43 61 30 56 L28 43Z',cloth)
  p(torso,'M32 34 L36 33 35 47 39 55 32 54Z',shine,'none')
  p(torso,'M48 34 L50 42 49 52 45 57 53 55 51 42Z',('#a7ada4','#515956','#181e21')[kind],'none')

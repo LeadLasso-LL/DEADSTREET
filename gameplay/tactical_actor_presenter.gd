@@ -38,6 +38,7 @@ var _unit_cooldowns: Dictionary = {}
 var _motion: Dictionary = {}
 var _muzzles: Dictionary = {}
 var _abdomen: Dictionary = {}
+var _blood_masks: Dictionary = {}
 var blood_enabled := true
 var blood_layer: Node2D
 
@@ -350,6 +351,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		if participant.is_wounded and clip.begins_with("wounded"):
 			if _abdomen.is_empty(): _abdomen=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
 			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type)
+			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=load("res://assets/art/units/pixel_v1/blood_masks/"+stain_variant+".png")
+			body.material.set_shader_parameter("clothing_mask",_blood_masks[stain_variant])
 			var point: Array=_abdomen.get(stain_variant+"/"+dir_id+"/"+clip+"/"+str(body.frame),[64.0,64.0])
 			body.material.set_shader_parameter("stain_center",Vector2(float(point[0]),float(point[1])))
 	_motion[id] = state

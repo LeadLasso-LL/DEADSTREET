@@ -16,7 +16,7 @@ func showcase():
 		sprite.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 		var atlas=AtlasTexture.new();atlas.atlas=load("res://assets/art/units/pixel_v1/"+spec[0]+".png");sprite.texture=atlas
 		var mat=ShaderMaterial.new();mat.shader=load("res://assets/art/street_detail/unit_finish.gdshader")
-		mat.set_shader_parameter("blood_enabled",i!=2);mat.set_shader_parameter("wounded_stain",i>0);sprite.material=mat;stage.add_child(sprite);sprites.append(sprite)
+		mat.set_shader_parameter("clothing_mask",load("res://assets/art/units/pixel_v1/blood_masks/"+spec[0]+".png"));mat.set_shader_parameter("blood_enabled",i!=2);mat.set_shader_parameter("wounded_stain",i>0);sprite.material=mat;stage.add_child(sprite);sprites.append(sprite)
 		var label=Label.new();label.text=spec[3];label.position=Vector2(i*256+6,12);label.add_theme_font_size_override("font_size",13);stage.add_child(label)
 	for frame in range(24):
 		for i in range(4):

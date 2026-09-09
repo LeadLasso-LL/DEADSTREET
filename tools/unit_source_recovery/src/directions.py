@@ -95,7 +95,7 @@ def upper(k,q,d,w,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reloa
  if back:
   reararm=group(g);arm(reararm,sh_near,en,wr_near);gun(g)
  # Authored torso silhouettes distinguish side, rear quarter, and front.
- torso=group(g)
+ torso=group(g,id="stain_surface")
  if side:shape='M-3 -35 Q3 -35 7 -31 Q10 -26 9 -20 L6 -9 L6 2 Q0 5 -9 2 L-9 -10 Q-11 -22 -9 -28 Q-7 -33 -3 -35Z'
  else:shape='M-4 -33 Q-10 -32 -11 -27 L-10 -18 L-8 -4 Q0 0 8 -4 L10 -18 L11 -27 Q8 -32 4 -33Z'
  p(torso,shape,cloth)
