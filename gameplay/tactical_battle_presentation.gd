@@ -192,7 +192,7 @@ func update_markers():
   if not markers.has(id):
    var badge=TextureRect.new();surface.add_child(badge);badge.mouse_filter=Control.MOUSE_FILTER_IGNORE;badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
    badge.texture=Factions.for_side(battle,p.side_id).emblem;markers[id]=badge
-  var badge=markers[id];badge.visible=identifiers_enabled and node.visible and stage!="deployment" and not results_visible()
+  var badge=markers[id];badge.visible=identifiers_enabled and p.is_alive and node.visible and stage!="deployment" and not results_visible()
   var lift=-29. if p.is_alive else -8.
   if p.is_alive and (p.has_occupied_cover_slot() or p.is_wounded):lift=-21.
   var at=node.get_global_transform_with_canvas()*Vector2(0,lift)
