@@ -257,6 +257,12 @@ var _paint: CanvasItem = null
 
 
 func _ready() -> void:
+	var hud_layer=CanvasLayer.new()
+	hud_layer.layer=30
+	add_child(hud_layer)
+	var command_hud=preload("res://gameplay/tactical_command_hud.gd").new()
+	hud_layer.add_child(command_hud)
+	command_hud.setup(self)
 	_ensure_layers()
 	_ensure_camera()
 	if _camera != null:
@@ -335,6 +341,8 @@ func hit_test_placed_attacker_soldier(local_position: Vector2) -> String:
 
 
 func hit_test_unit_hud(local_position: Vector2) -> Dictionary:
+	var state=_battle_state()
+	if _is_dusk_street() and state!=null and state.battle_phase in ["active","resolved"]:return {}
 	_rebuild_unit_hud_hits()
 	var hit: Dictionary = {}
 	for row: Dictionary in _unit_hud_hits:
@@ -715,6 +723,7 @@ func _frame_camera() -> void:
 	var hud_screen: float = 0.0
 	if _unit_hud_visible(_battle_state()):
 		hud_screen = UNIT_HUD_CARD_HEIGHT + UNIT_HUD_PAD * 2.0
+		if _is_dusk_street() and _battle_state().battle_phase in ["active","resolved"]:hud_screen=180.0*viewport_size.x/1152.0
 	var usable: Vector2 = Vector2(viewport_size.x, maxf(viewport_size.y - hud_screen, 1.0))
 	_camera.position = view_rect.get_center()
 	var zoom_x: float = usable.x / maxf(view_rect.size.x, 1.0)
@@ -4068,6 +4077,9 @@ func _rebuild_unit_hud_hits() -> void:
 
 
 func _draw_unit_hud(battle_state: BattleState) -> void:
+	if _is_dusk_street() and battle_state.battle_phase in ["active","resolved"]:
+		_unit_hud_hits.clear()
+		return
 	_rebuild_unit_hud_hits()
 	for row: Dictionary in _unit_hud_hits:
 		_draw_unit_hud_card(battle_state, row)

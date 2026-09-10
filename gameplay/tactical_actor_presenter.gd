@@ -287,6 +287,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	var clip: String = "idle"
 	if not participant.is_alive:
 		clip = "death"
+		var sprite: AnimatedSprite2D=node.get_node("body")
+		if absi(id.hash())%2==0 and sprite.sprite_frames.has_animation("death_back_"+dir_id):clip="death_back"
 	elif participant.has_wound_reaction():
 		clip = "hit"
 	elif TacticalParticipantVisual.is_locomoting(participant):

@@ -13,3 +13,10 @@ frames.json
 *.png
 *.uid
 *.import
+
+# Reproducible showcase intermediates
+showcase_svg/
+showcase_samples/
+showcase_atlases/
+showcase_jobs.json
+showcase_manifest.json

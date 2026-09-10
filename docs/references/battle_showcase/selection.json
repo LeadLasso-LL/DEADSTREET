@@ -1,0 +1,74 @@
+[
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 2
+    },
+    "cover_ticks": 1235,
+    "duration": 12.1333333333333,
+    "phase": "resolved",
+    "seed": 2001,
+    "shots": 52,
+    "wound_death_events": 12
+  },
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 1
+    },
+    "cover_ticks": 1233,
+    "duration": 15.3333333333333,
+    "phase": "resolved",
+    "seed": 2002,
+    "shots": 58,
+    "wound_death_events": 14
+  },
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 2
+    },
+    "cover_ticks": 1306,
+    "duration": 12.9666666666666,
+    "phase": "resolved",
+    "seed": 2003,
+    "shots": 55,
+    "wound_death_events": 12
+  },
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 3
+    },
+    "cover_ticks": 1202,
+    "duration": 12.0666666666666,
+    "phase": "resolved",
+    "seed": 2004,
+    "shots": 55,
+    "wound_death_events": 11
+  },
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 2
+    },
+    "cover_ticks": 2279,
+    "duration": 21.4666666666669,
+    "phase": "resolved",
+    "seed": 2005,
+    "shots": 79,
+    "wound_death_events": 12
+  },
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 2
+    },
+    "cover_ticks": 1820,
+    "duration": 19.1000000000001,
+    "phase": "resolved",
+    "seed": 2006,
+    "shots": 69,
+    "wound_death_events": 12
+  }
+]

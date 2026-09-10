@@ -33,6 +33,7 @@ const CLIP_COVER_POPOUT := "cover_popout"
 const CLIP_COVER_FIRE := "cover_fire"
 const CLIP_WOUNDED_IDLE := "wounded_idle"
 const CLIP_DEATH := "death"
+const CLIP_DEATH_BACK := "death_back"
 const CLIP_COVER_TUCKED := CLIP_COVER_TUCKED_IDLE
 const CLIP_COVER_EXPOSED := CLIP_COVER_EXPOSED_IDLE
 const CLIP_WOUNDED := CLIP_WOUNDED_IDLE
@@ -88,7 +89,8 @@ static func implemented_clip_ids() -> Array[String]:
 		CLIP_COVER_POPOUT,
 		CLIP_COVER_FIRE,
 		CLIP_WOUNDED_IDLE,
-		CLIP_DEATH
+		CLIP_DEATH,
+		CLIP_DEATH_BACK
 	]
 
 
@@ -153,6 +155,11 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 	var rows: int = int(manifest()["rows_per_direction"])
 	for clip: String in bound_clip_ids():
 		var spec: Dictionary = manifest()["clips"][clip]
+		var clip_atlas: Texture2D=atlas
+		if spec.get("atlas", "")=="death_back":
+			var extra_path="res://assets/art/units/pixel_v1/death_back/"+variant_id+".png"
+			if not FileAccess.file_exists(extra_path):continue
+			clip_atlas=_texture(extra_path)
 		for d in range(directions.size()):
 			var anim: String = animation_name(clip, str(directions[d]))
 			frames.add_animation(anim)
@@ -161,8 +168,9 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 			for i in range(int(spec["count"])):
 				var cell: int = int(spec["start"]) + i
 				var tex := AtlasTexture.new()
-				tex.atlas = atlas
+				tex.atlas = clip_atlas
 				tex.region = Rect2((cell % 32) * 128, (d * rows + cell / 32) * 128, 128, 128)
+				if spec.get("atlas", "")=="death_back":tex.region=Rect2(i*128,d*128,128,128)
 				frames.add_frame(anim, tex)
 	_frames_cache[variant_id] = frames
 	return frames

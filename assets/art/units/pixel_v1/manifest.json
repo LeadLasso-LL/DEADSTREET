@@ -99,6 +99,13 @@
       "count": 9,
       "fps": 16,
       "loop": false
+    },
+    "death_back": {
+      "start": 0,
+      "count": 32,
+      "fps": 24,
+      "loop": false,
+      "atlas": "death_back"
     }
   },
   "variants": [

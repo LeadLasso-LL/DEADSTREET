@@ -13,7 +13,7 @@ def limb(g,a,b,wa,wb,fill):
  poly(g,[a+n*wa,m+n*(wa*.75+wb*.25),b+n*wb,b-n*wb,m-n*(wa*.35+wb*.65),a-n*wa],fill)
  poly(g,[a+n*wa*.50,m+n*wa*.5,b+n*wb*.3,b-n*wb*.25,m-n*wb*.35], '#42494a','none')
 def smooth(t):return t*t*(3-2*t)
-def make_lower(q,stop=None,settle=0,crouch=0,fall=0,wounded=0):
+def make_lower(q,stop=None,settle=0,crouch=0,fall=0,wounded=0,backward=0):
  phase=(q*2)%1
  h=gait.height(q,54);hip=proj(np.array([0,h,0]));g=E.Element(NS+'g');states=[];thighs=[]
  if stop is not None:h=58.5;hip=proj(np.array([0,h,0]))
@@ -23,12 +23,12 @@ def make_lower(q,stop=None,settle=0,crouch=0,fall=0,wounded=0):
   if stop is not None:along=3 if side==-1 else -4;lift=0;pitch=0;toe_pivot=0
   else:along,lift,pitch,toe_pivot=(gait.foot(p) if not wounded else gait.wounded_foot(p,side))
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle;toe_pivot*=1-settle
-  foot=RIGHT*side*6.7+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+np.array([-40.,0.,side*4.])*fall;ang=math.radians(pitch)
+  foot=RIGHT*side*6.7+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+(F*30+RIGHT*side*7 if backward else np.array([-40.,0.,side*4.]))*fall;ang=math.radians(pitch)
   def boot_world(x,y):
    xx=x-toe_pivot
    return foot+F*(toe_pivot+xx*math.cos(ang)-y*math.sin(ang))+np.array([0,xx*math.sin(ang)+y*math.cos(ang),0])
   ank=boot_world(0,5.5);hp=RIGHT*side*6.2+np.array([0,h,0]);v=ank-hp;dist=np.linalg.norm(v);direction=v/dist;hint=F-direction*np.dot(F,direction);hint/=np.linalg.norm(hint)
-  k=(26.5**2-29.5**2+dist**2)/(2*dist);knee=hp+direction*k+hint*math.sqrt(max(0,26.5**2-k*k));knee=(hp+(ank-hp)*.473+(knee-(hp+(ank-hp)*.473))*.18) if wounded and side==1 else knee;knee=knee*(1-fall)+np.array([-19.,3.,side*8.])*fall;a,b,c=map(proj,[hp,knee,ank]);thighs.append((a,b))
+  k=(26.5**2-29.5**2+dist**2)/(2*dist);knee=hp+direction*k+hint*math.sqrt(max(0,26.5**2-k*k));knee=(hp+(ank-hp)*.473+(knee-(hp+(ank-hp)*.473))*.18) if wounded and side==1 else knee;knee=knee*(1-fall)+(F*17+RIGHT*side*8+np.array([0,3,0]) if backward else np.array([-19.,3.,side*8.]))*fall;a,b,c=map(proj,[hp,knee,ank]);thighs.append((a,b))
   limb(g,a,b,5.5,4.0,'#252c2e');limb(g,b,c,4.2,2.85,'#252c2e')
   u=(b-a)/np.linalg.norm(b-a);v2=(c-b)/np.linalg.norm(c-b);nu=np.array([-u[1],u[0]]);nv=np.array([-v2[1],v2[0]]);n=nu+nv;n/=np.linalg.norm(n)
   def xy(p):return f'{p[0]:.3f} {p[1]:.3f}'

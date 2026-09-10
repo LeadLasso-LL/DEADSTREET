@@ -8,7 +8,7 @@ R=Path(__file__).parent
 EL=math.radians(50)
 def project(v):return np.array([64+v[0],110+v[2]*math.sin(EL)-v[1]*math.cos(EL)])
 def xy(p):return f'{p[0]:.3f} {p[1]:.3f}'
-def lower(q,yaw,still=False,settle=0,crouch=0,fall=0,wounded=0):
+def lower(q,yaw,still=False,settle=0,crouch=0,fall=0,wounded=0,backward=0):
  f=np.array([math.cos(yaw),0,math.sin(yaw)]);rt=np.array([f[2],0,-f[0]])
  h=52.5 if still else gait.height(q,52.5);hip=project([0,h,0]);g=E.Element(NS+'g');joins=[];legs=[]
  front=abs(yaw-math.pi/2)<.01
@@ -22,9 +22,9 @@ def lower(q,yaw,still=False,settle=0,crouch=0,fall=0,wounded=0):
   if still:along=3 if side==-1 else -4;lift=0;pitch=0
   else:along,lift,pitch,_=(gait.foot(p) if not wounded else gait.wounded_foot(p,side))
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle
-  foot=rt*side*6.7+f*along+[0,lift,0];fall_sign=-1 if f[0]<-.1 else 1;foot=foot*(1-fall)+np.array([-40.*fall_sign,0.,side*4.])*fall;a3=rt*side*6.2+[sway,h,0];ank=foot+[0,6.5,0]
+  foot=rt*side*6.7+f*along+[0,lift,0];fall_sign=-1 if f[0]<-.1 else 1;foot=foot*(1-fall)+(f*(14 if f[2]>0 else 28)+rt*side*7 if backward else np.array([-40.*fall_sign,0.,side*4.]))*fall;a3=rt*side*6.2+[sway,h,0];ank=foot+[0,6.5,0]
   v=ank-a3;dist=np.linalg.norm(v);u=v/dist;bend=f-u*np.dot(f,u);bend/=np.linalg.norm(bend)
-  k=(26.5**2-29.5**2+dist**2)/(2*dist);b3=a3+u*k+bend*math.sqrt(max(0,26.5**2-k*k));b3=(a3+(ank-a3)*.473+(b3-(a3+(ank-a3)*.473))*.18) if wounded and side==1 else b3;b3=b3*(1-fall)+np.array([-19.*fall_sign,3.,side*8.])*fall;a,b,c=map(project,[a3,b3,ank]);joins.append((a,b));leg=E.Element(NS+'g')
+  k=(26.5**2-29.5**2+dist**2)/(2*dist);b3=a3+u*k+bend*math.sqrt(max(0,26.5**2-k*k));b3=(a3+(ank-a3)*.473+(b3-(a3+(ank-a3)*.473))*.18) if wounded and side==1 else b3;b3=b3*(1-fall)+(f*12+rt*side*8+np.array([0,3,0]) if backward else np.array([-19.*fall_sign,3.,side*8.]))*fall;a,b,c=map(project,[a3,b3,ank]);joins.append((a,b));leg=E.Element(NS+'g')
   width=1.14 if abs(math.cos(yaw))>.1 else 1.0
   limb(leg,a,b,4.8*width,3.5*width,'#252c2e');limb(leg,b,c,3.65*width,2.6*width,'#252c2e')
   u=(b-a)/np.linalg.norm(b-a);v=(c-b)/np.linalg.norm(c-b);n=np.array([-u[1],u[0]]);nv=np.array([-v[1],v[0]])

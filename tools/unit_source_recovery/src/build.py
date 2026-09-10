@@ -3,7 +3,7 @@ import math, xml.etree.ElementTree as E, subprocess, concurrent.futures, zipfile
 import numpy as np
 from PIL import Image, ImageDraw
 import base_rig as B
-import equipment
+import equipment, outfits
 R=Path(__file__).parent
 N=B.NS
 def group(parent,**attrs): return E.SubElement(parent,N+'g',attrs)
@@ -12,10 +12,11 @@ def outline_arm(parent,start):
  for el in list(parent)[start:]:
   if el.get("stroke") not in [None,"none"] and el.get("fill")!="none":
    el.set("stroke","#090f12");el.set("stroke-width","1.8")
-def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0):
+def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0,lean=0,reload=0,wounded=0,backward=0):
  weapon_id=weapon_id or equipment.DEFAULTS[kind]
  weapon=equipment.DEFINITIONS[weapon_id]
- root,_=B.make(q,aim=aim,kick=kick,settle=settle,crouch=crouch,fall=fall,wounded=wounded)
+ costume=outfits.spec(kind,weapon_id)
+ root,_=B.make(q,aim=aim,kick=kick,settle=settle,crouch=crouch,fall=fall,wounded=wounded,backward=backward)
  up=root.find(".//*[@id='upper_pose']")
  up.set('transform',up.get('transform')+f' rotate({lean} 43 55)')
  headtf=up.find(".//*[@id='head']").get('transform')
@@ -25,6 +26,7 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  shine=('#eeeee2','#959991','#484e50')[kind]
  # Keep all lower-body geometry and contact timing; change only fabric/footwear colors.
  cmap={'#252c2e':('#202527','#686e6b','#292e31')[kind], '#42494a':('#353b3d','#868d87','#42494a')[kind], '#414337':('#202527','#d6d5c9','#202527')[kind], '#666453':('#555c59','#eeeee2','#626765')[kind], '#555849':('#353b3d','#b4b9ac','#42494a')[kind]}
+ if costume:cmap=outfits.lower_colors(costume)
  for el in root.iter():
   for a in ['fill','stroke']:
    if el.get(a) in cmap:el.set(a,cmap[el.get(a)])
@@ -46,7 +48,15 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
  grips[1]=rot.T@(left_world-origin)
  if wounded:grips[1]=rot.T@(np.array([43.,49.+.8*math.sin(2*math.pi*q)])-origin)
  grips=[g*(1-fall)+rot.T@(np.array(target)-origin)*fall for g,target in zip(grips,[[30,50],[50,53]])]
+ far_elbow=np.array([56+2*aim,48-6*aim],float);near_elbow=np.array([25+5*aim,49-5*aim],float)
+ if backward:
+  lift=B.smooth(min(1,backward/.22));relax=B.smooth(max(0,min(1,(backward-.24)/.52)))
+  targets=[np.array([17.,14.])*(1-relax)+np.array([13.,43.])*relax,np.array([65.,13.])*(1-relax)+np.array([70.,41.])*relax]
+  grips=[g*(1-lift)+rot.T@(target-origin)*lift for g,target in zip(grips,targets)]
+  near_elbow=near_elbow*(1-lift)+(np.array([18.,25.])*(1-relax)+np.array([18.,35.])*relax)*lift
+  far_elbow=far_elbow*(1-lift)+(np.array([65.,24.])*(1-relax)+np.array([65.,34.])*relax)*lift
  def arm(parent,a,b,c):
+  if costume:return outfits.arm(parent,a,b,c,costume,skin,hi)
   outline_start=len(parent)
   a,b,c=map(lambda v:np.array(v,float),(a,b,c))
   # A continuous shoulder cap reaches inward under the neckline and
@@ -63,61 +73,71 @@ def make(kind,q,weapon_id=None,settle=0,aim=0,kick=0,flash=False,crouch=0,fall=0
   list(parent)[-1].set('fill',hi if kind==0 else shine)
   E.SubElement(parent,N+'circle',{'cx':str(b[0]),'cy':str(b[1]),'r':'3.1','fill':skin if kind==0 else cloth})
   outline_arm(parent,outline_start)
- far=group(up);arm(far,[51.8,32.5],[56+2*aim,48-6*aim],origin+rot@grips[1])
+ far=group(up);arm(far,[51.8,32.5],far_elbow,origin+rot@grips[1])
  torso=group(up,id="stain_surface")
- p(torso,'M31 28 L38 26 48 27 53 31 52 43 55 55 Q43 61 30 56 L28 43Z',cloth)
- p(torso,'M32 34 L36 33 35 47 39 55 32 54Z',shine,'none')
- p(torso,'M48 34 L50 42 49 52 45 57 53 55 51 42Z',('#a7ada4','#515956','#181e21')[kind],'none')
- # Neck is joined into the collar; no floating head.
- p(torso,'M38 24 L46 24 47 30 43 33 37 29Z',skin)
- if kind==0:
-  p(torso,'M32 28 L37 27 Q37 35 44 35 Q49 34 48 28 L51 30 Q51 39 44 39 Q34 37 32 28Z',shine,'none')
-  p(torso,'M37 29 Q39 40 47 34','none','#a98538',1.1)
-  p(torso,'M38 31 Q40 38 45 35','none','#d2b15d',.65)
- elif kind==1:
-  p(torso,'M38 28 L42 34 45 29 M42 34 L43 56','none','#c5c8bd',.8)
-  p(torso,'M31 29 L34 31 32 42 M49 29 L51 32 50 39','none','#d6d5c9',1.2)
-  p(torso,'M33 48 L38 47 M47 48 L50 46','none','#363e3c',.8)
+ if costume:
+  ct=group(torso,transform='translate(43 56)')
+  outfits.torso(ct,costume,skin,hi,'SE')
+  head=group(up,transform=headtf)
+  hh=group(head,transform='translate(43 56)')
+  outfits.head(hh,costume,skin,hi,'SE')
  else:
-  p(torso,'M36 28 L43 32 48 28 49 55 Q43 58 36 55Z','#d6d5c9')
-  p(torso,'M32 28 L36 28 39 40 36 48 34 57 29 55 31 39Z','#484e50')
-  p(torso,'M48 28 L51 31 53 55 49 57 46 43 45 37Z','#484e50')
-  p(torso,'M42 34 L44 35 44 44 42 47 41 43Z','#252a2c','none')
-  p(torso,'M31 51 L34 51','none','#111819',.8)
- head=group(up,transform=headtf)
- p(head,'M36 14 Q42 10 49 15 L50 23 47 29 41 30 36 26 34 21Z',skin)
- p(head,'M37 18 L41 17 44 21 42 26 38 24Z',hi,'none')
- if kind==0:
-  p(head,'M34 23 L34 14 Q34 7 42 7 Q50 7 51 15 L50 25 46 30 39 29Z','#202527')
-  p(head,'M36 17 Q42 15 48 18 L47 21 36 20Z',skin,'#111819',.6)
-  p(head,'M37 18 L39 18 M44 19 L46 19','none','#111819',.75)
-  p(head,'M36 12 Q40 9 44 10 M36 24 L39 26','none','#42494a',.7)
- else:
-  p(head,'M34 20 L34 13 Q37 5 45 8 Q51 9 51 17 L48 20 47 15 39 15 36 22Z','#3b2c25' if kind==1 else '#171d20')
-  p(head,'M36 13 Q42 10 48 12','none','#65503c' if kind==1 else '#41494a',.8)
-  if kind==1:
-   p(head,'M35 19 L49 20 48 23 43 23 41 21 40 23 36 22Z','#111819')
-   p(head,'M37 20 L39 20 M44 21 L47 21','none','#747f7b',.55)
+  p(torso,'M31 28 L38 26 48 27 53 31 52 43 55 55 Q43 61 30 56 L28 43Z',cloth)
+  p(torso,'M32 34 L36 33 35 47 39 55 32 54Z',shine,'none')
+  p(torso,'M48 34 L50 42 49 52 45 57 53 55 51 42Z',('#a7ada4','#515956','#181e21')[kind],'none')
+  # Neck is joined into the collar; no floating head.
+  p(torso,'M38 24 L46 24 47 30 43 33 37 29Z',skin)
+  if kind==0:
+   p(torso,'M32 28 L37 27 Q37 35 44 35 Q49 34 48 28 L51 30 Q51 39 44 39 Q34 37 32 28Z',shine,'none')
+   p(torso,'M37 29 Q39 40 47 34','none','#a98538',1.1)
+   p(torso,'M38 31 Q40 38 45 35','none','#d2b15d',.65)
+  elif kind==1:
+   p(torso,'M38 28 L42 34 45 29 M42 34 L43 56','none','#c5c8bd',.8)
+   p(torso,'M31 29 L34 31 32 42 M49 29 L51 32 50 39','none','#d6d5c9',1.2)
+   p(torso,'M33 48 L38 47 M47 48 L50 46','none','#363e3c',.8)
   else:
-   p(head,'M34 16 L36 22 35 27 38 29 36 18Z','#171d20','none')
-   p(head,'M38 21 L40 21 M45 22 L47 22 M41 27 L45 27','none','#49382e',.65)
+   p(torso,'M36 28 L43 32 48 28 49 55 Q43 58 36 55Z','#d6d5c9')
+   p(torso,'M32 28 L36 28 39 40 36 48 34 57 29 55 31 39Z','#484e50')
+   p(torso,'M48 28 L51 31 53 55 49 57 46 43 45 37Z','#484e50')
+   p(torso,'M42 34 L44 35 44 44 42 47 41 43Z','#252a2c','none')
+   p(torso,'M31 51 L34 51','none','#111819',.8)
+  head=group(up,transform=headtf)
+  p(head,'M36 14 Q42 10 49 15 L50 23 47 29 41 30 36 26 34 21Z',skin)
+  p(head,'M37 18 L41 17 44 21 42 26 38 24Z',hi,'none')
+  if kind==0:
+   p(head,'M34 23 L34 14 Q34 7 42 7 Q50 7 51 15 L50 25 46 30 39 29Z','#202527')
+   p(head,'M36 17 Q42 15 48 18 L47 21 36 20Z',skin,'#111819',.6)
+   p(head,'M37 18 L39 18 M44 19 L46 19','none','#111819',.75)
+   p(head,'M36 12 Q40 9 44 10 M36 24 L39 26','none','#42494a',.7)
+  else:
+   p(head,'M34 20 L34 13 Q37 5 45 8 Q51 9 51 17 L48 20 47 15 39 15 36 22Z','#3b2c25' if kind==1 else '#171d20')
+   p(head,'M36 13 Q42 10 48 12','none','#65503c' if kind==1 else '#41494a',.8)
+   if kind==1:
+    p(head,'M35 19 L49 20 48 23 43 23 41 21 40 23 36 22Z','#111819')
+    p(head,'M37 20 L39 20 M44 21 L47 21','none','#747f7b',.55)
+   else:
+    p(head,'M34 16 L36 22 35 27 38 29 36 18Z','#171d20','none')
+    p(head,'M38 21 L40 21 M45 22 L47 22 M41 27 L45 27','none','#49382e',.65)
  if wounded:
   E.SubElement(up,N+'circle',{'id':'abdomen_anchor','cx':str((origin+rot@grips[1])[0]),'cy':str((origin+rot@grips[1])[1]+3),'r':'0'})
   up.remove(far);up.append(far)
- near=group(up);arm(near,[27,32.5],[25+5*aim,49-5*aim],origin+rot@grips[0])
+ near=group(up);arm(near,[27,32.5],near_elbow,origin+rot@grips[0])
  # Bring the distal support forearm over the shirt edge into the palm.
  support_end=origin+rot@grips[1]
- support_elbow=np.array([56+2*aim,48-6*aim],float)
+ support_elbow=far_elbow.copy()
  sleeve_start=support_elbow*.55+support_end*.45
  outline_start=len(up)
- B.limb(up,sleeve_start,support_end,2.8,2.3,skin if kind==0 else cloth)
- list(up)[-1].set('fill',hi if kind==0 else shine)
- outline_arm(up,outline_start)
+ if costume:outfits.forearm(up,sleeve_start,support_end,costume,skin,hi,2.8)
+ else:
+  B.limb(up,sleeve_start,support_end,2.8,2.3,skin if kind==0 else cloth)
+  list(up)[-1].set('fill',hi if kind==0 else shine)
+  outline_arm(up,outline_start)
  gun=group(up,transform=f'translate({origin[0]} {origin[1]}) rotate({angle})')
  grip_parent=gun
  gun=group(grip_parent,transform=f'scale({weapon_scale})')
- if fall<.45:equipment.draw(gun,weapon_id,reload)
+ if fall<.45 and backward<.15:equipment.draw(gun,weapon_id,reload)
  gun=grip_parent
+ if costume and costume.get('gloves'):skin,hi='#10181c','#30383b'
  for hand_index,(x,y) in enumerate(grips):
   if False: # generic grip follows scaled weapon anchors for every weapon
    # Palm encloses the angled pistol grip below the receiver; index

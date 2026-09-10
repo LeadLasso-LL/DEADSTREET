@@ -13,7 +13,7 @@ def limb(g,a,b,wa,wb,fill):
  poly(g,[a+n*wa,m+n*(wa*.75+wb*.25),b+n*wb,b-n*wb,m-n*(wa*.35+wb*.65),a-n*wa],fill)
  poly(g,[a+n*wa*.50,m+n*wa*.5,b+n*wb*.3,b-n*wb*.25,m-n*wb*.35], '#42494a','none')
 def smooth(t):return t*t*(3-2*t)
-def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0,wounded=0):
+def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0,wounded=0,backward=0):
  # Contact, compression, toe-off, recovery, forward swing. Ground stance is linear.
  beat=(q*2)%1;h=gait.height(q,51);sway=1.0*math.sin(2*math.pi*q)
  if stop is not None:h=(51-2.4*math.cos(2*math.pi*(-.12)))*(1-smooth(stop))+52*smooth(stop)-1.4*math.sin(math.pi*stop);sway=0
@@ -31,10 +31,10 @@ def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0,wounded=0):
     along=initial+(26-initial)*smooth(u)-root
     lift=17*math.sin(math.pi*p0)**1.3*(1-u)+10*math.sin(math.pi*u);pitch=12*math.sin(math.pi*u)
   along=along*(1-settle)+(5 if side==-1 else -6)*settle;lift*=1-settle;pitch*=1-settle
-  foot=RIGHT*side*7.3+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+np.array([-40.,0.,side*4.])*fall;ank=foot+np.array([0,3,0]);hp=RIGHT*side*6.5+np.array([sway,h,0]);v=ank-hp;dist=np.linalg.norm(v);direction=v/dist;hint=F-direction*np.dot(F,direction);hint/=np.linalg.norm(hint)
+  foot=RIGHT*side*7.3+F*along+np.array([0,lift,0]);foot=foot*(1-fall)+(F*14+RIGHT*side*7 if backward else np.array([-40.,0.,side*4.]))*fall;ank=foot+np.array([0,3,0]);hp=RIGHT*side*6.5+np.array([sway,h,0]);v=ank-hp;dist=np.linalg.norm(v);direction=v/dist;hint=F-direction*np.dot(F,direction);hint/=np.linalg.norm(hint)
   thigh_length,calf_length=26.5,29.5
   knee_distance=(thigh_length**2-calf_length**2+dist**2)/(2*dist)
-  knee=hp+direction*knee_distance+hint*math.sqrt(max(0,thigh_length**2-knee_distance**2));knee=(hp+(ank-hp)*.473+(knee-(hp+(ank-hp)*.473))*.18) if wounded and side==1 else knee;knee=knee*(1-fall)+(np.array([-19.,3.,side*8.]))*fall;a,b,c=map(proj,[hp,knee,ank])
+  knee=hp+direction*knee_distance+hint*math.sqrt(max(0,thigh_length**2-knee_distance**2));knee=(hp+(ank-hp)*.473+(knee-(hp+(ank-hp)*.473))*.18) if wounded and side==1 else knee;knee=knee*(1-fall)+(F*9+RIGHT*side*8+np.array([0,3,0]) if backward else np.array([-19.,3.,side*8.]))*fall;a,b,c=map(proj,[hp,knee,ank])
   thighs[side]=(a.copy(),b.copy())
   limb(g,a,b,5.8,4.5,'#252c2e');limb(g,b,c,4.65,3.1,'#252c2e')
   # Blend calf and thigh contours through a curved fabric-covered knee.
@@ -69,10 +69,10 @@ def make(q,stop=None,aim=0,crouch=0,kick=0,settle=0,fall=0,wounded=0):
  path(g,f'M{pt(wr)} Q{pt(hip+[12,1])} {pt(ro)}','none','#14191a',.8)
  path(g,f'M{pt(hip+[-7,-2])} Q{pt(hip+[-8,2])} {pt(lo+[2,-1])}','none','#404749',1.2)
  path(g,f'M{pt(hip+[1,1])} Q{pt(hip+[0,4])} {pt(hip+[1,7])}','none','#1c2527',.8)
- up=copy.deepcopy(upper);lean=(13+2.0*math.sin(2*math.pi*(q-.1)))*(1-settle)+(8+3*aim-kick*.6)*settle+25*crouch;lean=lean*(1-fall)+90*fall;up.set('transform',f'translate({hip[0]-43} {hip[1]-55}) rotate({lean} 43 55) '+up.get('transform',''))
+ up=copy.deepcopy(upper);lean=(13+2.0*math.sin(2*math.pi*(q-.1)))*(1-settle)+(8+3*aim-kick*.6)*settle+25*crouch;lean=lean*(1-fall)+(-58 if backward else 90)*fall;up.set('transform',f'translate({hip[0]-43} {hip[1]-55}) rotate({lean} 43 55) translate(43 55) scale(1 {1-.38*fall if backward else 1}) translate(-43 -55) '+up.get('transform',''))
  if stop is not None:
-  lean=13+(7-13)*smooth(stop)+6*aim+15*crouch-1.2*kick;up.set('transform',f'translate({hip[0]-43} {hip[1]-55}) rotate({lean} 43 55) '+upper.get('transform',''))
- head=up.find(".//*[@id='head']");head.set('transform',f'translate({3*aim} {3*aim}) rotate({-lean*.6} 43 28) '+head.get('transform',''))
+  lean=13+(7-13)*smooth(stop)+6*aim+15*crouch-1.2*kick;up.set('transform',f'translate({hip[0]-43} {hip[1]-55}) rotate({lean} 43 55) translate(43 55) scale(1 {1-.38*fall if backward else 1}) translate(-43 -55) '+upper.get('transform',''))
+ head=up.find(".//*[@id='head']");head.set('transform',f'translate({3*aim} {3*aim}) rotate({-lean*.6*(1-fall if backward else 1)} 43 28) '+head.get('transform',''))
  # Both hands follow the rifle exactly. Arms articulate from fixed shoulders.
  if stop is not None:q=0
  delta=-9+1.4*math.sin(4*math.pi*(q-.13));lift=-7+.9*math.sin(4*math.pi*(q-.08))
