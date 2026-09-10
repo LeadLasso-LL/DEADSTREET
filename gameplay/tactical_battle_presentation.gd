@@ -66,6 +66,7 @@ func setup(p_view):
  arrival_status=Card.label(deployment_panel,Vector2(14,68),Vector2(344,32),"",10,Color("#a6b1a5"),font)
  sound=preload("res://gameplay/tactical_battle_audio.gd").new();view.add_child(sound);sound.setup(view)
 func reset(b):
+ sound.results_music_mix=0.
  battle=b;current_battle_id=b.get_instance_id();stage="deployment";clock=0.;end_clock=0.;intro_duration=10.;routes={};door_played=false;start_played=false;ready_clock=0.;result_snapshot={};results_acknowledged=false
  attacker=Factions.for_side(b,b.attacker_side_id);defender=Factions.for_side(b,b.defender_side_id)
  for marker in markers.values():marker.queue_free()
@@ -134,6 +135,8 @@ func _process(delta):
   if end_clock>.75:b.combat_feedback_events.clear()
   result_root.modulate.a=smoothstep(outro.duration,outro.duration+1.2,end_clock)
   continue_button.disabled=end_clock<outro.duration+1.2
+ # Match the result card fade; the comrade/entry animation retains the normal mix.
+ sound.results_music_mix=smoothstep(outro.duration,outro.duration+1.2,end_clock) if stage=="ending" else 0.
  var expand=1.-smoothstep(2.6,4.4,clock) if stage=="arrival" else 0.
  context.expansion=expand;context.position=Vector2(18,18).lerp(Vector2(56,150),expand);context.size=Vector2(476,78).lerp(Vector2(1040,210),expand)
  context.visible=stage!="deployment";context.queue_redraw()

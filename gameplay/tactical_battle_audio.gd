@@ -15,7 +15,10 @@ var reloads={}
 var battle_id=0
 var shots_played=0
 var gun_duck=0.
-var apartment_gain_db=-15.
+const APARTMENT_BASE_GAIN_DB=-13.5
+const RESULTS_MUSIC_BOOST_DB=5.0
+var apartment_gain_db=APARTMENT_BASE_GAIN_DB
+var results_music_mix=0.
 func setup(p_view):
  view=p_view
  for name in ["city","apartment_beat","engine","door","reload","impact","start"]:
@@ -29,7 +32,7 @@ func setup(p_view):
  for i in range(28):
   var v=AudioStreamPlayer2D.new();view.add_child(v);v.max_distance=1100;v.attenuation=.4;v.panning_strength=.8;voices.append(v)
 # Reusable world-space sound source for apartments on other maps.
-func set_apartment_emitter(at: Vector2,gain_db: float=-15.,audible_radius: float=700.):
+func set_apartment_emitter(at: Vector2,gain_db: float=APARTMENT_BASE_GAIN_DB,audible_radius: float=700.):
  apartment_gain_db=gain_db
  if music==null:return
  music.position=at*Vector2(8,6);music.max_distance=audible_radius;music.attenuation=.8;music.panning_strength=.9;music.volume_db=apartment_gain_db
@@ -46,7 +49,7 @@ func set_engine(at: Vector2,running: bool,pitch: float=1.):
 func _process(_delta):
  gun_duck=maxf(0.,gun_duck-maxf(_delta,0.)*5.)
  if city!=null:city.volume_db=-6.-gun_duck*2.5
- if music!=null:music.volume_db=apartment_gain_db-gun_duck*3.
+ if music!=null:music.volume_db=apartment_gain_db+RESULTS_MUSIC_BOOST_DB*clampf(results_music_mix,0.,1.)-gun_duck*3.
  if view==null:return
  var b=view._battle_state();var active=enabled and view.visible and view._is_dusk_street() and b!=null
  if not active:

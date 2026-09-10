@@ -46,3 +46,7 @@ The audio receives waveform, loop-boundary, import/playback, and full recording 
 The targeted finish suite passed 115 checks; the existing presentation suite passed 121 and the showcase suite passed 717. The selected recording uses seed 2002: 44.77 seconds of combat, 69 shots, and two surviving defenders. Its 8.58-second aftermath completes with no route errors before the results. Total MP4 duration is 72.13 seconds, 1920×1080 at 30 fps with H.264/AAC. The decoded mix peaks at -10.37 dBFS.
 
 Sample 2003 remained active at the 180-second review cutoff; no artificial result or forced damage was applied.
+
+## Apartment music mix adjustment
+
+Following review of the delivered recording, the apartment emitter now defaults to -13.5 dB (a subtle +1.5 dB lift). The results-card fade adds another 5 dB over the same 1.2 seconds, after the victory actions finish. This boost resets for a new battle. City ambience, weapon audio, heartbeat, positional attenuation, and the wall filter keep their existing settings. The recording above predates this follow-up mix adjustment.
