@@ -27,10 +27,10 @@ static func props() -> Array:
 		["south_west",Rect2(0,41,21,5),"building",""],
 		["south_middle",Rect2(21,41,22,5),"building",""],
 		["south_east",Rect2(43,41,21,5),"building",""],
-		["stoop_west",Rect2(22,15.4,.9,4.1),"stoop_wall",""],
-		["stoop_east",Rect2(27.1,15.4,.9,4.1),"stoop_wall",""],
-		["east_stoop_west",Rect2(48.8,15.4,.8,3.5),"stoop_wall",""],
-		["east_stoop_east",Rect2(53.2,15.4,.8,3.5),"stoop_wall",""],
+		["stoop_west",Rect2(22,15,.9,4.5),"stoop_wall",""],
+		["stoop_east",Rect2(27.1,15,.9,4.5),"stoop_wall",""],
+		["east_stoop_west",Rect2(48.8,15,.8,3.9),"stoop_wall",""],
+		["east_stoop_east",Rect2(53.2,15,.8,3.9),"stoop_wall",""],
 		["alley_dumpster",Rect2(34,10,3.3,1.8),"dumpster",""],
 		["service_cabinet",Rect2(39.3,16,1.5,1.5),"utility",""],
 		["store_delivery",Rect2(1,16.4,2.3,1.7),"crate",""],
@@ -52,12 +52,17 @@ static func build():
 	for row in props():
 		var b: Rect2=row[1]
 		var kind: String=row[2]
-		d.obstacles.append(Obstacle.new(row[0],b,true,kind=="building" or kind=="utility",kind))
+		d.obstacles.append(Obstacle.new(row[0],b,true,kind in ["building","utility","stoop_wall"],kind))
 		if kind in ["building","boundary"]: continue
 		var id: String="cover_"+row[0]
 		d.cover_objects.append(Cover.new(id,row[0]))
 		var center=b.get_center()
 		var points=[[Vector2(center.x,b.position.y-.85),Vector2.DOWN],[Vector2(center.x,b.end.y+.85),Vector2.UP],[Vector2(b.position.x-.85,center.y),Vector2.RIGHT],[Vector2(b.end.x+.85,center.y),Vector2.LEFT]]
+		if kind=="stoop_wall":
+			# Tall wall side cover belongs at its open corners, where a unit can aim around the end.
+			# Mid-wall slots imply the over-top firing available on low cover such as cars.
+			points[2][0].y=b.end.y-.15
+			points[3][0].y=b.end.y-.15
 		for n in range(4):
 			var point: Vector2=points[n][0]
 			var blocked=false

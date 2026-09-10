@@ -3,7 +3,9 @@ extends "res://gameplay/dusk_street_art.gd"
 const H = preload("res://battle/geometry/harold_street_catalog.gd")
 var apartment_font: SystemFont
 var shop_font: SystemFont
-var gang_font: SystemFont
+var bake_source := false
+var frontage_texture: Texture2D
+var frontage_bounds: Rect2
 const BRICK = [Color("#514039"),Color("#654b3f"),Color("#473e38")]
 func _ready() -> void:
 	super._ready()
@@ -12,15 +14,18 @@ func _ready() -> void:
 	shop_font=SystemFont.new()
 	shop_font.font_names=PackedStringArray(["Arial","Liberation Sans"])
 	shop_font.font_weight=700
-	gang_font=SystemFont.new()
-	gang_font.font_names=PackedStringArray(["Old English Text MT"])
 
 	if not prop.is_empty() and prop[2]=="car":
 		var colors=[Color("#777367"),Color("#75443e"),Color("#536258"),Color("#989786"),Color("#424d5e"),Color("#514e46")]
 		var paint=colors[absi(str(prop[0]).hash())%colors.size()]
 		if prop[0]=="arrival_car":paint=Color("#333b3e")
 		material.set_shader_parameter("paint",Vector3(paint.r,paint.g,paint.b))
-	if prop.is_empty():
+	if not bake_source and not prop.is_empty() and prop[0]=="east_apartments":
+		var mark=preload("res://gameplay/weathered_graffiti.gd").new()
+		var bounds: Rect2=prop[1]
+		mark.position=p(bounds.position)+Vector2(43,bounds.size.y*6-7)
+		add_child(mark)
+	if prop.is_empty() and not bake_source:
 		var im=Image.create(128,128,false,Image.FORMAT_RGBA8)
 		for y in range(128):
 			for x in range(128):
@@ -32,6 +37,17 @@ func _ready() -> void:
 			light.texture=tex;light.position=Vector2(spot[0].x*8,spot[0].y*6)
 			light.color=Color("#ffd4a0");light.energy=spot[1];light.texture_scale=1.0
 			add_child(light)
+
+	if not bake_source:
+		var key="ground" if prop.is_empty() else str(prop[0])
+		var cache_path="res://assets/art/harold_frontage/"+key+".png"
+		if ResourceLoader.exists(cache_path):
+			frontage_texture=load(cache_path)
+			if prop.is_empty():frontage_bounds=Rect2(-320,-280,1152,568)
+			else:
+				var bounds: Rect2=prop[1]
+				frontage_bounds=Rect2(bounds.position.x*8-2,bounds.end.y*6-264,bounds.size.x*8+4,270)
+
 func ground() -> void:
 	rng.seed=991
 	rect(Rect2(-1000,-1000,2500,2000),Color("#161c23"))
@@ -98,14 +114,27 @@ func ground() -> void:
 		draw_colored_polygon(PackedVector2Array([q,q+Vector2(b.size.x*8,0),q+Vector2(b.size.x*8+3,b.size.y*6+4),q+Vector2(2,b.size.y*6+4)]),Color(.015,.022,.026,.6))
 func stairs(start: Vector2,w: float,depth: float) -> void:
 	var q=p(start);var width=w*8
-	var step_depth=(depth*6-3)/5.
+	var run=depth*6/5.
+	# Broad horizontal treads, vertical risers and worn nosings share one landing.
 	for n in range(5):
-		var y=q.y+3+n*step_depth
-		var inset=(4-n)*.35
-		rect(Rect2(q.x+inset,y,width-inset*2,step_depth-1.2),Color("#777b73").darkened(n*.018))
-		rect(Rect2(q.x+inset,y+step_depth-1.2,width-inset*2,1.2),Color("#4f574f"))
-		line(Vector2(q.x+inset+.5,y+step_depth-1.3),Vector2(q.x+width-inset-.5,y+step_depth-1.3),Color("#96998b"),.65)
-		if n==3:line(Vector2(q.x+4,y+.8),Vector2(q.x+6,y+1.3),Color("#5c665b"),.4)
+		var y=q.y-1+n*run
+		var tread=Rect2(q.x+.35,y,width-.7,run-1.65)
+		rect(tread,Color("#74776a").darkened(n*.026))
+		grain(tread,22,Color(.1,.13,.11,.16),Color(.75,.75,.65,.13))
+		# Damp/dust-dark corners leave the walked-on centre lighter.
+		rect(Rect2(tread.position,Vector2(2.2,tread.size.y)),Color(.12,.16,.13,.19))
+		rect(Rect2(tread.position+Vector2(width-3.6,0),Vector2(2.5,tread.size.y)),Color(.1,.14,.12,.24))
+		var edge=y+run-1.65
+		rect(Rect2(q.x+.3,edge,width-.6,1.65),Color("#454d45"))
+		line(Vector2(q.x+1,edge),Vector2(q.x+width-1,edge),Color("#999a87"),.62)
+		line(Vector2(q.x+1,edge+1.45),Vector2(q.x+width-1,edge+1.45),Color("#303b35"),.45)
+		for chip in range(4):
+			var cx=q.x+rng.randf_range(2,width-2)
+			line(Vector2(cx,edge),Vector2(cx+rng.randf_range(.4,1.3),edge+.25),Color("#5c6459"),.5)
+		if n in [1,4]:
+			var crack=Vector2(q.x+width*(.28 if n==1 else .74),y+.3)
+			line(crack,crack+Vector2(1,1),Color("#464f47"),.35)
+			line(crack+Vector2(1,1),crack+Vector2(.7,2.1),Color("#464f47"),.35)
 func object_art() -> void:
 	var r: Rect2=prop[1];var q=p(r.position);var sz=Vector2(r.size.x*8,r.size.y*6)
 	match str(prop[2]):
@@ -134,20 +163,46 @@ func bricks(r: Rect2,base: Color) -> void:
 			var width=minf(6.3,r.size.x-xx)
 			if width>0:rect(Rect2(r.position+Vector2(xx,y),Vector2(width,2.5)),base.lightened(rng.randf_range(-.1,.06)))
 func window(q: Vector2,lit: bool,style: int) -> void:
-	rect(Rect2(q-Vector2(2,2),Vector2(18,26)),Color("#282c2a"))
-	rect(Rect2(q-Vector2(1,1),Vector2(16,24)),Color("#827866"))
-	rect(Rect2(q,Vector2(14,22)),Color("#302f29") if lit else Color("#19262b"))
+	# A recessed opening: masonry shadow, inner jamb, glazing, sash and projecting sill.
+	rect(Rect2(q+Vector2(-1.6,-2.1),Vector2(18.2,27.7)),Color(.035,.055,.055,.65))
+	rect(Rect2(q+Vector2(-1,-1.4),Vector2(16.6,25)),Color("#544f43"))
+	rect(Rect2(q,Vector2(14.7,23)),Color("#121e23"))
+	rect(Rect2(q+Vector2(.6,.6),Vector2(1.1,21)),Color("#333b35"))
+	rect(Rect2(q+Vector2(13.2,.7),Vector2(.8,21.5)),Color("#77715d"))
+	var glass=Rect2(q+Vector2(1.8,1.2),Vector2(11.1,20.7))
+	for row in range(21):
+		var t=float(row)/21.
+		var c=Color("#696047").lerp(Color("#b29a65"),t) if lit else Color("#111f27").lerp(Color("#304246"),t*.6)
+		rect(Rect2(glass.position+Vector2(0,row),Vector2(glass.size.x,1)),c)
 	if lit:
-		rect(Rect2(q+Vector2(1,1),Vector2(12,20)),[Color("#bba06e"),Color("#8d8866"),Color("#d2ab73")][style%3])
-		rect(Rect2(q+Vector2(2,1),Vector2(3,20)),Color("#8d7856"))
-		rect(Rect2(q+Vector2(10,1),Vector2(3,20)),Color("#9a8059"))
+		# Uneven hanging curtains with shaded folds and a dark room beyond.
+		for side in [0,1]:
+			var cx=q.x+2 if side==0 else q.x+10
+			var points=PackedVector2Array([Vector2(cx,q.y+1),Vector2(cx+2.8,q.y+1),Vector2(cx+2.2,q.y+19.3),Vector2(cx+.7,q.y+20),Vector2(cx-.3,q.y+18.5)])
+			draw_colored_polygon(points,Color("#8e805c") if side==0 else Color("#9a895f"))
+			line(Vector2(cx+.8,q.y+2),Vector2(cx+.5,q.y+18),Color("#b1a078"),.45)
+			line(Vector2(cx+1.7,q.y+2),Vector2(cx+1.4,q.y+18.5),Color("#695f49"),.5)
+		if style%3==1:rect(Rect2(q+Vector2(5.3,15.6),Vector2(3.8,5)),Color("#4b4c3c"))
 	else:
-		line(q+Vector2(2,2),q+Vector2(11,4),Color("#3f5253"),.8)
-		if style%3==0:rect(Rect2(q+Vector2(1,2),Vector2(12,7)),Color("#484b43"))
-	line(q+Vector2(7,0),q+Vector2(7,22),Color("#5b594e"),.8)
-	line(q+Vector2(0,11),q+Vector2(14,11),Color("#716751"),1)
-	rect(Rect2(q+Vector2(-2,23),Vector2(19,2)),Color("#8c8068"))
-	rect(Rect2(q+Vector2(-1,25),Vector2(18,2)),Color("#252d29"))
+		if style%3==0:
+			rect(Rect2(q+Vector2(1.8,1.2),Vector2(11.1,6.2)),Color("#454b42"))
+			for by in range(2,7):line(q+Vector2(2,by),q+Vector2(12.5,by),Color("#626455"),.28)
+		draw_colored_polygon(PackedVector2Array([q+Vector2(2,9),q+Vector2(12.6,12.6),q+Vector2(12.6,14.2),q+Vector2(2,10.2)]),Color(.35,.48,.48,.16))
+		line(q+Vector2(3,9.5),q+Vector2(3,19),Color(.55,.61,.57,.16),.4)
+	# Narrow, worn timber sash: directional highlights, never a uniform bright outline.
+	rect(Rect2(q+Vector2(1.4,10.5),Vector2(11.7,1.1)),Color("#756e59"))
+	line(q+Vector2(1.5,11.7),q+Vector2(13.3,11.7),Color("#152626"),.65)
+	line(q+Vector2(7.2,1),q+Vector2(7.2,21.8),Color("#4d5146"),.6)
+	line(q+Vector2(7.7,1),q+Vector2(7.7,21.8),Color("#7d7760"),.35)
+	rect(Rect2(q+Vector2(-1.8,-3),Vector2(18.1,1.5)),Color("#776b57"))
+	grain(Rect2(q+Vector2(-1.8,-3),Vector2(18.1,1.5)),10,Color(.1,.13,.1,.25),Color(.7,.66,.53,.13))
+	rect(Rect2(q+Vector2(-1.6,23),Vector2(18,1.7)),Color("#8b7e64"))
+	line(q+Vector2(-1.8,22.9),q+Vector2(16.2,22.9),Color("#a4987b"),.5)
+	rect(Rect2(q+Vector2(-1,24.7),Vector2(17.7,1.4)),Color("#534e40"))
+	line(q+Vector2(.5,26.7),q+Vector2(16.7,26.7),Color(.04,.065,.06,.5),1)
+	for i in range(6):
+		var sx=rng.randf_range(0,15)
+		line(q+Vector2(sx,23.3),q+Vector2(sx+.7,23.6),Color("#605e4d"),.4)
 func facade(q: Vector2,sz: Vector2,id: String) -> void:
 	var seed_id=0 if id=="mercer_market" else 1 if id=="harold_apartments" else 2
 	rng.seed=420+seed_id
@@ -173,36 +228,14 @@ func facade(q: Vector2,sz: Vector2,id: String) -> void:
 	if seed_id==0: shopfront(q.x,base,sz.x)
 	else:
 		var door_x=25.*8-position.x if seed_id==1 else 51.4*8-position.x
-		rect(Rect2(door_x-12,base-45,24,39),Color("#1a2424"))
-		rect(Rect2(door_x-10,base-43,20,35),Color("#75674e"))
-		rect(Rect2(door_x-8,base-40,16,32),Color("#2f3830"))
-		rect(Rect2(door_x-6,base-37,12,15),Color("#b9a270"))
-		line(Vector2(door_x,base-38),Vector2(door_x,base-9),Color("#111d20"),1)
-		rect(Rect2(door_x+4,base-20,1,3),Color("#c4ab75"))
-		rect(Rect2(door_x-15,base-48,30,4),Color("#8a795c"))
-		line(Vector2(door_x-15,base-44),Vector2(door_x+15,base-44),Color("#212c27"),1)
-		if seed_id==1:
-			# Small individual metal letters mounted directly on the masonry.
-			painted_text(Vector2(door_x-43,base-51),"Harold Apartments",86,9,apartment_font,Color("#c9b48c"),true)
-			for x in [door_x-18,door_x+17]:
-				rect(Rect2(x,base-37,2,5),Color("#dfbb78"))
-				rect(Rect2(x-.5,base-38,3,1),INK)
-		# A continuous stone landing reaches the bottom of the door.
-		var landing_width=32.8 if seed_id==1 else 28.8
-		rect(Rect2(door_x-landing_width/2,base-8,landing_width,11),Color("#777b73"))
-		line(Vector2(door_x-landing_width/2,base-8),Vector2(door_x-landing_width/2,base+3),Color("#96998b"),.7)
+		apartment_entry(door_x,base,seed_id==1)
 		for x in [q.x+10,q.x+sz.x-28]:
 			window(Vector2(x,base-32),seed_id==1,seed_id)
-		label(Vector2(q.x+5,base-3),"MH",15,8,Color("#a59d82"))
 	# Torn notices and paint tags gather at reachable street level.
 	for n in range(3):
 		var notice=Vector2(q.x+sz.x-14-n*4,base-15+n)
 		rect(Rect2(notice,Vector2(3,5)),Color("#a39b7e"))
 		line(notice+Vector2(0,2),notice+Vector2(2,2),Color("#575b4c"),.5)
-	if seed_id==2:
-		painted_text(Vector2(q.x+43,base-7),"M",30,33,gang_font,Color("#a13c35"))
-		for drip in [Vector2(52,-9),Vector2(62,-8)]:
-			line(Vector2(q.x,base)+drip,Vector2(q.x,base)+drip+Vector2(.3,3),Color("#82352e"),.65)
 	# Apartment fire escape: small landings and rails, without covering the entrance.
 	if seed_id==1:
 		var x=q.x+sz.x-27
@@ -217,33 +250,85 @@ func facade(q: Vector2,sz: Vector2,id: String) -> void:
 func label(q: Vector2,words: String,width: float,size: int,c: Color) -> void:
 	draw_string(ThemeDB.fallback_font,q,words,HORIZONTAL_ALIGNMENT_CENTER,width,size,c)
 func shopfront(x: float,y: float,w: float) -> void:
-	rect(Rect2(x+4,y-47,w-8,44),Color("#353b32"))
-	rect(Rect2(x+4,y-50,w-8,13),Color("#c2b48f"))
-	line(Vector2(x+5,y-47),Vector2(x+w-5,y-47),Color("#9e9f7b"),.7)
-	painted_text(Vector2(x+7,y-40),H.STORE,w-14,11,shop_font,Color("#453a2f"))
+	rect(Rect2(x+3.6,y-47,w-7.2,44.4),Color("#1a2728"))
+	rect(Rect2(x+5,y-45.5,w-10,42),Color("#3f493d"))
+	# A shallow, weathered enamel fascia bolted to a real frame.
+	var board=Rect2(x+10,y-48.5,w-20,9.3)
+	rect(Rect2(board.position+Vector2(1,1.7),board.size),Color(.035,.05,.045,.7))
+	rect(board,Color("#62664e"))
+	rect(Rect2(board.position+Vector2(.7,.6),board.size-Vector2(1.4,1.2)),Color("#304a3e"))
+	line(board.position,board.position+Vector2(board.size.x,0),Color("#898871"),.65)
+	line(board.position+Vector2(0,board.size.y),board.end,Color("#182b28"),1)
+	painted_text(Vector2(x+w*.18,y-42.5),H.STORE.to_upper(),w*.64,4.4,shop_font,Color("#c7ba8c"))
+	grain(board,80,Color(.045,.08,.06,.18),Color(.77,.75,.6,.085))
+	for bx in [board.position.x+1.5,board.end.x-1.5]:
+		rect(Rect2(bx,board.position.y+1.6,.6,.6),Color("#a4a184"))
+		line(Vector2(bx,board.position.y+3),Vector2(bx-.3,board.position.y+5.4),Color(.29,.2,.13,.45),.5)
 	var dx=x+w*.67
 	for a in [[x+8,dx-x-13],[dx+20,x+w-dx-26]]:
 		var wx: float=a[0];var ww: float=a[1]
-		rect(Rect2(wx,y-34,ww,25),Color("#b3a372"))
-		rect(Rect2(wx+1,y-33,ww-2,23),Color("#555f44"))
+		rect(Rect2(wx-.9,y-35.2,ww+1.8,27.8),Color("#1b2928"))
+		rect(Rect2(wx,y-34,ww,25),Color("#68705b"))
+		var glass=Rect2(wx+1.2,y-32.8,ww-2.4,22.7)
+		rect(glass,Color("#424e3d"))
 		for shelf in range(3):
-			for n in range(int(ww/4)):
-				rect(Rect2(wx+2+n*4,y-30+shelf*7,2.5,4),[Color("#a88f60"),Color("#718476"),Color("#ae9c7b")][(n+shelf)%3])
-			line(Vector2(wx+1,y-25+shelf*7),Vector2(wx+ww-1,y-25+shelf*7),Color("#292f29"),.8)
-		for bx in range(0,int(ww),8):line(Vector2(wx+bx,y-34),Vector2(wx+bx,y-9),Color("#313b30"),.6)
-	rect(Rect2(dx,y-34,16,31),Color("#a29777"))
-	rect(Rect2(dx+2,y-32,12,27),Color("#31473d"))
-	label(Vector2(dx+1,y-22),"OPEN",14,4,Color("#e4af72"))
-	rect(Rect2(dx+11,y-17,1,4),Color("#c2b48c"))
-	label(Vector2(x+7,y-4),"GROCERIES  •  COLD DRINKS",w*.6,4,Color("#a69d82"))
-	# Worn roll-up shutter housing and threshold.
-	rect(Rect2(x+5,y-36,w-10,2),Color("#777665"))
-	line(Vector2(x+4,y-2),Vector2(x+w-4,y-2),Color("#8a846d"),1.3)
+			var sy=y-29.5+shelf*6.8
+			rect(Rect2(wx+1.2,sy-2,ww-2.4,2),Color(.045,.09,.07,.3))
+			for n in range(int((ww-3)/3.5)):
+				var px=wx+2+n*3.5
+				var height=rng.randf_range(2.4,4.6)
+				var color=[Color("#8b7955"),Color("#707d61"),Color("#9d8f68"),Color("#775446"),Color("#526966")][rng.randi_range(0,4)]
+				rect(Rect2(px,sy+3.7-height,rng.randf_range(1.5,2.6),height),color)
+				if n%3==0:rect(Rect2(px+.2,sy+2.1,1.3,.6),Color("#b0a37d"))
+			rect(Rect2(wx+1,sy+3.8,ww-2,.8),Color("#857a5a"))
+			rect(Rect2(wx+1,sy+4.6,ww-2,.8),Color("#1b302b"))
+		draw_colored_polygon(PackedVector2Array([Vector2(wx+1.3,y-29),Vector2(wx+ww-1.3,y-21),Vector2(wx+ww-1.3,y-18),Vector2(wx+1.3,y-26)]),Color(.41,.52,.49,.15))
+		rect(Rect2(wx+1.2,y-13,ww-2.4,3.8),Color(.08,.13,.1,.32))
+		for bx in range(1,int(ww),9):
+			line(Vector2(wx+bx,y-33),Vector2(wx+bx,y-9),Color("#1b302a"),.65)
+			line(Vector2(wx+bx+.5,y-33),Vector2(wx+bx+.5,y-9),Color("#73745a"),.3)
+		line(Vector2(wx,y-34),Vector2(wx+ww,y-34),Color("#989174"),.5)
+		rect(Rect2(wx-.7,y-8.8,ww+1.4,1.1),Color("#88806a"))
+		rect(Rect2(wx,y-7.7,ww+1.4,1.4),Color("#24342e"))
+		grain(Rect2(wx,y-34,ww,26),45,Color(.05,.1,.09,.16),Color(.8,.77,.62,.09))
+	# Recessed aluminum shop door with glass reflections, kickplate and a small hanging OPEN sign.
+	rect(Rect2(dx-.8,y-35,17.6,32.7),Color("#142627"))
+	rect(Rect2(dx,y-34,16,30.5),Color("#797a63"))
+	rect(Rect2(dx+1.3,y-32.7,13.2,28),Color("#293e35"))
+	rect(Rect2(dx+2,y-31.7,11.7,20),Color("#45564a"))
+	draw_colored_polygon(PackedVector2Array([Vector2(dx+2,y-29),Vector2(dx+13.7,y-24),Vector2(dx+13.7,y-22),Vector2(dx+2,y-27)]),Color(.5,.6,.53,.2))
+	rect(Rect2(dx+3.2,y-25.7,7.7,3.4),Color("#273b33"))
+	painted_text(Vector2(dx+3.8,y-23.2),"OPEN",6.5,1.7,shop_font,Color("#be9562"))
+	line(Vector2(dx+11.8,y-19),Vector2(dx+11.8,y-15.8),Color("#c1b99a"),.8)
+	line(Vector2(dx+12.3,y-19),Vector2(dx+12.3,y-15.8),Color("#182d29"),.4)
+	rect(Rect2(dx+1.8,y-9.7,12.4,4.6),Color("#536259"))
+	grain(Rect2(dx+1.8,y-9.7,12.4,4.6),20,Color(.05,.1,.08,.35),Color(.7,.71,.6,.18))
+	painted_text(Vector2(x+10,y-4.2),"GROCERIES   /   COLD DRINKS",w*.5,1.8,shop_font,Color("#938e70"))
+	line(Vector2(x+4,y-2.8),Vector2(x+w-4,y-2.8),Color("#77765f"),.75)
 func stoop_wall(q: Vector2,sz: Vector2) -> void:
-	# Each shallow masonry section has its own depth anchor.
-	var h=3.0
-	bricks(Rect2(q-Vector2(0,h),sz+Vector2(0,h)),Color("#5b5045"))
-	rect(Rect2(q-Vector2(.4,h+.5),Vector2(sz.x+.8,1.2)),Color("#969080"))
+	# A constant-height solid wall from facade to final tread; never a stepped railing.
+	var h=24.
+	var top=Rect2(q-Vector2(0,h),sz)
+	var face=Rect2(q+Vector2(0,sz.y-h),Vector2(sz.x,h))
+	bricks(face,Color("#605348"))
+	# Recessed side arris and the darker toe anchor the end face to the pavement.
+	rect(Rect2(face.position+Vector2(sz.x-1.15,0),Vector2(1.15,h)),Color("#343e37"))
+	rect(Rect2(q+Vector2(0,sz.y-2.4),Vector2(sz.x,2.4)),Color("#394238"))
+	grain(face,55,Color(.065,.09,.065,.24),Color(.67,.6,.47,.12))
+	rect(top,Color("#898776"))
+	# Long coping stones follow the same horizontal plane along the whole run.
+	for joint in range(0,int(sz.y),7):
+		line(top.position+Vector2(0,joint),top.position+Vector2(sz.x,joint),Color("#555e52"),.45)
+		line(top.position+Vector2(.5,joint+.7),top.position+Vector2(sz.x-.6,joint+.7),Color("#a3a08a"),.3)
+	grain(top,65,Color(.12,.17,.12,.22),Color(.83,.81,.68,.12))
+	line(top.position+Vector2(.25,0),top.position+Vector2(.25,sz.y),Color("#b1ac93"),.65)
+	line(top.position+Vector2(sz.x-.35,0),top.end-Vector2(.35,0),Color("#454f43"),.8)
+	rect(Rect2(face.position-Vector2(.3,.5),Vector2(sz.x+.6,1.7)),Color("#8d8a74"))
+	line(face.position+Vector2(.1,-.45),face.position+Vector2(sz.x-.1,-.45),Color("#b2aa8e"),.65)
+	line(face.position+Vector2(.2,1.4),face.position+Vector2(sz.x,1.4),Color("#333e35"),.65)
+	for i in range(8):
+		var t=face.position+Vector2(rng.randf_range(.5,sz.x-1.5),rng.randf_range(2,h-3))
+		line(t,t+Vector2(.3,rng.randf_range(.5,2.4)),Color(.075,.12,.085,.32),.5)
 func cutaway(q: Vector2,sz: Vector2) -> void:
 	# Fixed-camera foreground convention: low wall caps and dark building mass.
 	rect(Rect2(q,sz),Color("#172124"))
@@ -266,6 +351,11 @@ func trash(q: Vector2) -> void:
 		draw_colored_polygon(PackedVector2Array([t+Vector2(-.8,-5.4),t+Vector2(-1.4,-7),t+Vector2(.1,-6.6),t+Vector2(1.3,-7.2),t+Vector2(1,-5.6)]),Color("#384640"))
 		line(t+Vector2(-1,-5.6),t+Vector2(1,-5.7),Color("#60645a"),.5)
 func _draw() -> void:
+
+	if frontage_texture!=null:
+		if prop.is_empty():rect(Rect2(-1000,-1000,2500,2000),Color("#161c23"))
+		draw_texture_rect(frontage_texture,Rect2(frontage_bounds.position-position,frontage_bounds.size),false)
+		return
 	if not prop.is_empty() and prop[2]=="lamp":
 		# Full streetlight pole; the fixture and its base keep their previous footprint.
 		draw_set_transform(Vector2.ZERO,0,Vector2(1.15,2.1))
@@ -287,3 +377,117 @@ func painted_text(q: Vector2,words: String,width: float,height: float,font: Font
 	if raised:draw_string(font,Vector2(1.8,1.8),words,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,Color("#252d29"))
 	draw_string(font,Vector2.ZERO,words,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,c)
 	draw_set_transform(Vector2.ZERO)
+
+func grain(r: Rect2,count: int,dark: Color,light: Color) -> void:
+	for i in range(count):
+		var t=r.position+Vector2(rng.randf_range(0,r.size.x-.5),rng.randf_range(0,r.size.y-.35))
+		rect(Rect2(t,Vector2(rng.randf_range(.25,.8),.3)),dark if i%3 else light)
+
+func apartment_entry(door_x: float,base: float,primary: bool) -> void:
+	var t=Vector2(door_x-12,base-45)
+	rect(Rect2(t+Vector2(.8,.5),Vector2(24.7,39.5)),Color(.025,.04,.04,.8))
+	rect(Rect2(t,Vector2(23.5,38)),Color("#685e4b"))
+	rect(Rect2(t+Vector2(1.1,1),Vector2(21,36.5)),Color("#182929"))
+	rect(Rect2(t+Vector2(2,1.7),Vector2(1.5,34.5)),Color("#3e4337"))
+	rect(Rect2(t+Vector2(21,1.7),Vector2(1,34.5)),Color("#867a5f"))
+	var door=Rect2(t+Vector2(4,3),Vector2(15.4,34))
+	rect(door,Color("#354338"))
+	line(door.position,door.position+Vector2(0,33),Color("#646854"),.55)
+	line(door.position+Vector2(15,0),door.end-Vector2(.4,0),Color("#0f2525"),.75)
+	# Glazed upper door has a dark transom and warm, shaded hall behind it.
+	rect(Rect2(t+Vector2(5.2,4.5),Vector2(12.8,1.8)),Color("#15292b"))
+	for i in range(14):
+		rect(Rect2(t+Vector2(5.3,7+i),Vector2(12.5,1)),Color("#5c634b").lerp(Color("#ae9867"),float(i)/18.))
+	rect(Rect2(t+Vector2(10.9,7),Vector2(.8,14.2)),Color("#334236"))
+	line(t+Vector2(5.2,21.5),t+Vector2(18,21.5),Color("#8a8164"),.55)
+	rect(Rect2(t+Vector2(5.2,22),Vector2(12.8,1)),Color("#1e322e"))
+	draw_colored_polygon(PackedVector2Array([t+Vector2(5.4,8),t+Vector2(10.8,10),t+Vector2(10.8,11.3),t+Vector2(5.4,9.2)]),Color(.61,.66,.52,.17))
+	# Lower raised panels and a worn kickplate give the door thickness.
+	for px in [5.5,12.]:
+		rect(Rect2(t+Vector2(px,25),Vector2(5,7.6)),Color("#1c332c"))
+		rect(Rect2(t+Vector2(px+.6,25.5),Vector2(3.9,6.5)),Color("#3c4c3c"))
+		line(t+Vector2(px+.6,25.5),t+Vector2(px+4.5,25.5),Color("#62705a"),.35)
+	rect(Rect2(t+Vector2(5.2,34),Vector2(12.8,1.4)),Color("#747662"))
+	rect(Rect2(t+Vector2(16,23.6),Vector2(1.5,3.8)),Color("#27352c"))
+	line(t+Vector2(16.4,24),t+Vector2(16.4,26.7),Color("#b3a77d"),.65)
+	grain(door,40,Color(.035,.09,.06,.22),Color(.65,.66,.5,.12))
+	var lintel=Rect2(door_x-14,base-48,28,2.8)
+	rect(lintel,Color("#82725a"))
+	grain(lintel,30,Color(.17,.14,.1,.22),Color(.74,.67,.53,.13))
+	line(Vector2(door_x-14,base-48),Vector2(door_x+14,base-48),Color("#a09173"),.5)
+	line(Vector2(door_x-13.5,base-44.8),Vector2(door_x+14.5,base-44.8),Color("#192b29"),1)
+	if primary:
+		# Deliberately discreet: readable at inspection zoom, located beside the doorway.
+		var plaque=Rect2(door_x-33,base-34,18,7.6)
+		rect(Rect2(plaque.position+Vector2(.6,.8),plaque.size),Color(.045,.045,.035,.65))
+		rect(plaque,Color("#79705a"))
+		rect(Rect2(plaque.position+Vector2(.5,.5),plaque.size-Vector2(1,1)),Color("#3a453b"))
+		painted_text(plaque.position+Vector2(1,3.3),"Harold Apartments",16,2.1,apartment_font,Color("#c1b18a"))
+		painted_text(plaque.position+Vector2(1,5.8),"1455 Mercer Ave.",16,1.65,shop_font,Color("#a49d7f"))
+		for px in [plaque.position.x+.7,plaque.end.x-1]:
+			rect(Rect2(px,plaque.position.y+.8,.35,.35),Color("#beb190"))
+		for lx in [door_x-17.5,door_x+16.5]:
+			rect(Rect2(lx,base-37,2.6,5.8),Color("#222e28"))
+			rect(Rect2(lx+.5,base-36.4,1.5,4.1),Color("#c8a66d"))
+			line(Vector2(lx+.3,base-34),Vector2(lx+2,base-34),Color("#65573e"),.4)
+			rect(Rect2(lx-.3,base-37.6,3.1,1),Color("#4b4e3e"))
+	var landing_width=32.8 if primary else 28.8
+	var landing=Rect2(door_x-landing_width/2,base-8,landing_width,7)
+	rect(landing,Color("#727667"))
+	grain(landing,65,Color(.09,.14,.1,.22),Color(.72,.73,.6,.13))
+	line(landing.position+Vector2(0,6.6),landing.end,Color("#959582"),.6)
+	line(landing.position+Vector2(4,0),landing.position+Vector2(4,6),Color("#4f5a4d"),.4)
+
+func pallets(q: Vector2,sz: Vector2) -> void:
+	# Rough timber shipping crate on runners: lid, shaded end grain and a recessed front.
+	var h=12.
+	var top=q-Vector2(0,h)
+	var side=2.6
+	var fw=sz.x-side
+	rect(Rect2(q+Vector2(.8,sz.y-.5),Vector2(sz.x,2.5)),Color("#26322b"))
+	for px in [2.,sz.x-5]:
+		rect(Rect2(q+Vector2(px,sz.y-.2),Vector2(2.7,2)),Color("#413f2e"))
+	draw_colored_polygon(PackedVector2Array([top+Vector2(.3,0),top+Vector2(fw,-.3),top+Vector2(sz.x,sz.y-.4),top+Vector2(fw,sz.y),top+Vector2(0,sz.y-.3)]),Color("#817557"))
+	var face=Rect2(top+Vector2(0,sz.y),Vector2(fw,h-1))
+	rect(face,Color("#635b43"))
+	draw_colored_polygon(PackedVector2Array([top+Vector2(fw,0),top+Vector2(sz.x,-.2),q+sz-Vector2(0,1),q+Vector2(fw,sz.y-1)]),Color("#3d4536"))
+	for board in range(4):
+		var px=face.position.x+board*fw/4.
+		var tone=[Color("#6b644a"),Color("#7b6f50"),Color("#625f47"),Color("#74694c")][board]
+		rect(Rect2(px+.3,face.position.y+.3,fw/4.-.5,h-1.6),tone)
+		for i in range(6):
+			var t=Vector2(px+rng.randf_range(.5,fw/4.-.5),face.position.y+rng.randf_range(.8,8))
+			line(t,t+Vector2(.15,rng.randf_range(.6,2.6)),Color(.18,.23,.15,.34),.35)
+		line(Vector2(px+.3,top.y+.4),Vector2(px+.3,top.y+sz.y-.5),Color("#494f3c"),.45)
+	for by in [1.2,h-3.1]:
+		rect(Rect2(face.position+Vector2(.1,by),Vector2(fw-.2,1.7)),Color("#8b7c59"))
+		line(face.position+Vector2(.2,by+1.7),face.position+Vector2(fw,by+1.7),Color("#3d4633"),.5)
+		for px in [1.5,fw-2]:
+			rect(Rect2(face.position+Vector2(px,by+.6),Vector2(.5,.5)),Color("#2d382b"))
+	# A dark steel binding follows both visible planes; scuffs and splits break the edges.
+	rect(Rect2(top+Vector2(fw*.7,.3),Vector2(1.1,sz.y-.2)),Color("#404c40"))
+	rect(Rect2(face.position+Vector2(fw*.7,0),Vector2(1.1,h-1)),Color("#354237"))
+	grain(Rect2(top+Vector2(.5,.5),Vector2(fw-1,sz.y-1)),60,Color(.14,.19,.12,.28),Color(.78,.72,.52,.16))
+	grain(face,70,Color(.13,.2,.12,.25),Color(.77,.7,.51,.13))
+	line(face.position+Vector2(fw*.37,3),face.position+Vector2(fw*.34,6.6),Color("#424c35"),.45)
+	rect(Rect2(face.position+Vector2(2.4,3.2),Vector2(3.5,3)),Color("#a29977"))
+	for i in range(3):line(face.position+Vector2(2.8,4+i*.55),face.position+Vector2(5.2,4+i*.55),Color("#60644a"),.3)
+
+func cabinet(q: Vector2,sz: Vector2) -> void:
+	var t=q-Vector2(0,12)
+	rect(Rect2(t,sz+Vector2(0,12)),Color("#25362f"))
+	rect(Rect2(t+Vector2(.6,.7),Vector2(sz.x-2.2,sz.y+10.5)),Color("#536156"))
+	rect(Rect2(t+Vector2(sz.x-1.7,.5),Vector2(1.7,sz.y+11.5)),Color("#35493f"))
+	rect(Rect2(t+Vector2(.5,0),Vector2(sz.x-1,1.3)),Color("#8c9178"))
+	line(t+Vector2(1,2),t+Vector2(sz.x-2,2),Color("#1c342c"),.6)
+	for by in range(5,13,2):
+		line(t+Vector2(2,by),t+Vector2(sz.x-3,by),Color("#233d33"),.6)
+		line(t+Vector2(2,by+.6),t+Vector2(sz.x-3,by+.6),Color("#77826c"),.3)
+	line(t+Vector2(sz.x*.52,3),t+Vector2(sz.x*.52,sz.y+9),Color("#273e33"),.7)
+	rect(Rect2(t+Vector2(2.5,14.7),Vector2(3,3.6)),Color("#958966"))
+	line(t+Vector2(4,15.3),t+Vector2(3.4,16.6),Color("#304135"),.45)
+	line(t+Vector2(3.4,16.6),t+Vector2(4.4,16.4),Color("#304135"),.45)
+	line(t+Vector2(4.4,16.4),t+Vector2(3.8,17.6),Color("#304135"),.45)
+	line(t+Vector2(sz.x-3.4,16),t+Vector2(sz.x-3.4,18.3),Color("#a0a48a"),.6)
+	rect(Rect2(q+Vector2(.5,sz.y-2),Vector2(sz.x-1,2)),Color("#2d4035"))
+	grain(Rect2(t+Vector2(1,2),Vector2(sz.x-3,sz.y+8)),55,Color(.07,.14,.09,.24),Color(.69,.73,.58,.12))

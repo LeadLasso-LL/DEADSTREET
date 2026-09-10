@@ -32,3 +32,9 @@ Left-button hold/drag draws translucent rectangle. Select first eligible friendl
 2. Arrival choices, ghost deployment, defender information advantage, ready-state orders, drag selection.
 3. Vehicle/door/disembark animation, defender reaction/weapon retrieval, optional skip, victory staging.
 Preserve existing orders, cover ownership, pathing, approved unit rig/limp/mirrors, outline, blood toggle. Combat AI remains under review, particularly multi-threat cover decisions.
+
+## Standing map-art correction — September 10 continuation
+All map construction must be inspected for and corrected when it resembles flat South Park paper cutouts. Require believable thickness, recesses, directional shading, material texture, wear and contact shadows; use the accepted trash-bag treatment as a reference for dimensionality. This applies proactively to future blocks as well as doors, windows, delivery crates and stairs here.
+Stair sides are constant-height solid masonry walls from the building through the final step, blocking sight/fire as well as movement. Units must obtain a sightline around the ends; no over-wall shooting. Stairs themselves remain traversable in the existing flat navigation model.
+Signs belong to the street: restrained Mercer Mini-Mart fascia; discreet rectangle left of the apartment entrance reading Harold Apartments with 1455 Mercer Ave. beneath. Address text follows the latest explicit request; it does not rename the campaign street from Harold Ave.
+Retain the red blackletter M identity, with modest fading/chipping that reveals brick rather than a pristine pasted-on mark. Final faction-emblem matching still needs the approved source image. Visual acceptance remains the user's decision.

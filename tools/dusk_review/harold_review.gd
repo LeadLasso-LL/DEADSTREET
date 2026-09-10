@@ -10,7 +10,7 @@ var shots: Dictionary = {}
 var captured: Dictionary = {}
 var active := false
 var comparing := false
-var out_dir := "res://tools/dusk_review/harold_results"
+var out_dir := "res://tools/dusk_review/frontage_results"
 
 func _initialize() -> void:
 	call_deferred("start")
@@ -98,6 +98,37 @@ func start() -> void:
 	var defensive = g.get_cover_slot("cover_stoop_west_2").position
 	var range_distance: float = threshold.distance_to(defensive)
 	if range_distance > 20: problems.append("SMG threshold out of range")
+
+	var los=load("res://battle/combat/battle_line_of_sight_service.gd")
+	var wall_checks=0
+	for row in preload("res://battle/geometry/harold_street_catalog.gd").props():
+		if row[2]!="stoop_wall":continue
+		var b: Rect2=row[1]
+		if not is_equal_approx(b.position.y,15.):problems.append("wall not flush to facade "+str(row[0]))
+		for along in [.12,.5,.88]:
+			var sy=b.position.y+b.size.y*along
+			var left=Vector2(b.position.x-.85,sy)
+			var right=Vector2(b.end.x+.85,sy)
+			for endpoints in [[left,right],[right,left]]:
+				var result=los.check_segment(battle,endpoints[0],endpoints[1])
+				if not result.success or result.has_line_of_sight or result.blocking_obstacle_id!=row[0]:
+					problems.append("sightline through wall "+str(row[0]))
+				wall_checks+=1
+		var left=Vector2(b.position.x-.85,b.end.y+.85)
+		var right=Vector2(b.end.x+.85,b.end.y+.85)
+		if not los.check_segment(battle,left,right).has_line_of_sight:problems.append("wall end sightline "+str(row[0]))
+		var path=nav.find_path(battle,Vector2(left.x,b.get_center().y),Vector2(right.x,b.get_center().y))
+		if not path.success or path.waypoints.size()<2:problems.append("wall bypass path "+str(row[0]))
+		wall_checks+=2
+		for side in [2,3]:
+			var corner=g.get_cover_slot("cover_"+str(row[0])+"_"+str(side))
+			var street_target=corner.position+corner.facing_direction*10+Vector2(0,8)
+			if not los.check_segment(battle,corner.position,street_target).has_line_of_sight:
+				problems.append("no firing angle around corner "+str(row[0]))
+			wall_checks+=1
+	for entrance in [Vector2(25,15.6),Vector2(51.4,15.6)]:
+		if not nav.is_reachable(battle,Vector2(49,30),entrance):problems.append("inaccessible stair entrance")
+	print("STOOP_WALL_CHECKS ",wall_checks," problems=",problems)
 	var audit = {"geometry_valid":g.is_valid(),"cover_slots":g.get_sorted_cover_slot_ids().size(),"smg_threshold_distance":range_distance,"problems":problems}
 	FileAccess.open(out_dir+"/layout_audit.json",FileAccess.WRITE).store_string(JSON.stringify(audit,"  "))
 	print("DUSK_LAYOUT_AUDIT ",JSON.stringify(audit))
@@ -169,6 +200,13 @@ func capture(second: int) -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(out_dir+"/harold_close.png")
+		view._dusk_zoom=2.5
+		view._dusk_pan=Vector2(-114,-62)
+		view._frame_camera()
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png(out_dir+"/frontage_detail.png")
 		view._dusk_zoom=1.1
 		view._dusk_pan=Vector2.ZERO
 		view._frame_camera()
