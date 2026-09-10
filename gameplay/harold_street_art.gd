@@ -6,6 +6,8 @@ var shop_font: SystemFont
 var bake_source := false
 var frontage_texture: Texture2D
 var frontage_bounds: Rect2
+static var sedan_source_image: Image
+var door_colors: Dictionary = {}
 const BRICK = [Color("#514039"),Color("#654b3f"),Color("#473e38")]
 func _ready() -> void:
 	super._ready()
@@ -19,7 +21,8 @@ func _ready() -> void:
 	if not prop.is_empty() and prop[2]=="car":
 		var colors=[Color("#777367"),Color("#75443e"),Color("#536258"),Color("#989786"),Color("#424d5e"),Color("#514e46")]
 		var paint=colors[absi(str(prop[0]).hash())%colors.size()]
-		if prop[0]=="arrival_car":paint=Color("#697064")
+		if prop[0]=="arrival_car":paint=colors[2]
+		if prop[0]=="arrival_car":prepare_door_colors(paint)
 		material.set_shader_parameter("paint",Vector3(paint.r,paint.g,paint.b))
 	if not bake_source and not prop.is_empty() and prop[0]=="east_apartments":
 		var mark=preload("res://gameplay/weathered_graffiti.gd").new()
@@ -119,7 +122,7 @@ func ground() -> void:
 	for row in H.props():
 		if row[2] in ["building","boundary","trash_can","trash_can_fallen"]:continue
 		var b: Rect2=row[1];var q=p(b.position)
-		draw_colored_polygon(PackedVector2Array([q,q+Vector2(b.size.x*8,0),q+Vector2(b.size.x*8+3,b.size.y*6+4),q+Vector2(2,b.size.y*6+4)]),Color(.015,.022,.026,.6))
+		street_prop_shadow(q,Vector2(b.size.x*8,b.size.y*6))
 func stairs(start: Vector2,w: float,depth: float) -> void:
 	var q=p(start);var width=w*8
 	var run=depth*6/5.
@@ -652,41 +655,68 @@ func street_car(q: Vector2,sz: Vector2) -> void:
 	var end=Vector2(q.x+sz.x/2,q.y+sz.y+1)
 	var arrival=prop[0]=="arrival_car"
 	var facing=-1. if str(prop[0]).begins_with("north") or arrival else 1.
-	# Ten percent more vertical body presence, anchored at the same wheel contact.
+	# Parked bodies receive this same footprint shadow in the ground bake.
+	if arrival:street_prop_shadow(q,sz)
 	draw_set_transform(end,0,Vector2(facing,1.10))
 	var height=sz.x*float(textures["burgundy_sedan"].get_height())/float(textures["burgundy_sedan"].get_width())
 	if arrival:arrival_door(sz.x,height,false)
 	asset("burgundy_sedan",Vector2.ZERO,sz.x,Color.WHITE)
 	if arrival:
-		# Recessed empty doorway/footwell connects the open leaf to the cabin.
-		var recess=PackedVector2Array([Vector2(sz.x*.20,-height*.40),Vector2(sz.x*.015,-height*.34),Vector2(sz.x*.015,-height*.13),Vector2(sz.x*.20,-height*.18)])
-		draw_colored_polygon(recess,Color("#142925"))
-		line(Vector2(sz.x*.02,-height*.13),Vector2(sz.x*.20,-height*.18),Color("#697b67"),.5)
+		# A small recessed doorway stays within the front passenger compartment.
+		var hinge=Vector2(sz.x*.205,-height*.17)
+		var opening=PackedVector2Array([hinge+Vector2(0,-height*.245),hinge+Vector2(-sz.x*.16,-height*.19),hinge+Vector2(-sz.x*.16,-.25),hinge])
+		draw_colored_polygon(opening,door_colors["edge"])
+		line(hinge+Vector2(-sz.x*.16,-.25),hinge,door_colors["paint_dark"],.45)
 		arrival_door(sz.x,height,true)
 	draw_set_transform(Vector2.ZERO)
 
+func street_prop_shadow(q: Vector2,sz: Vector2) -> void:
+	# One footprint/contact treatment for authored parked props and live arriving cars.
+	draw_colored_polygon(PackedVector2Array([q,q+Vector2(sz.x,0),q+sz+Vector2(3,4),q+Vector2(2,sz.y+4)]),Color(.015,.022,.026,.6))
+
+func prepare_door_colors(paint: Color) -> void:
+	# Sample the actual sedan, then apply the exact paint transform used by its shader.
+	if sedan_source_image==null:sedan_source_image=textures["burgundy_sedan"].get_image()
+	var points={"paint":Vector2i(50,16),"paint_dark":Vector2i(82,49),"paint_light":Vector2i(50,4),"edge":Vector2i(43,46),"glass":Vector2i(51,39),"glass_light":Vector2i(92,18)}
+	for key in points:
+		var c=sedan_source_image.get_pixelv(points[key])
+		if c.r>c.g*1.25 and c.r>c.b*1.15:
+			var value=maxf(c.r,maxf(c.g,c.b))*1.7
+			c=Color(paint.r*value,paint.g*value,paint.b*value,c.a)
+		door_colors[key]=c
+
 func arrival_door(width: float,height: float,near_side: bool) -> void:
-	# Two open front doors, hinged at the windshield pillars; scenery only for this staging.
-	var hinge=Vector2(width*.20,-height*(.25 if near_side else .64))
-	var end=hinge+Vector2(-width*.19,height*(.30 if near_side else -.25))
-	var sill=Vector2(0,-height*.19)
-	var pane=Vector2(0,-height*.18)
-	var paint=Color("#465c49") if near_side else Color("#677260")
-	var panel=PackedVector2Array([hinge,end,end+sill,hinge+sill])
-	draw_colored_polygon(panel,Color("#263c35"))
-	var inset=PackedVector2Array([hinge+Vector2(-.25,-.4),end+Vector2(.4,-.45),end+sill+Vector2(.4,.35),hinge+sill+Vector2(-.25,.35)])
-	draw_colored_polygon(inset,paint)
-	# Open window frame, dark glass and the visible inner door trim.
-	var glass_top=hinge+sill+pane+Vector2(-width*.025,height*.025)
-	var glass_end=end+sill+pane+Vector2(width*.014,height*.035)
-	var glass=PackedVector2Array([hinge+sill,end+sill,glass_end,glass_top])
-	draw_colored_polygon(glass,Color("#1b3335"))
-	line(glass_top,glass_end,Color("#889780"),.55)
-	line(glass_top,hinge+sill,Color("#677e68"),.65)
-	line(glass_end,end+sill,Color("#4b6653"),.7)
-	line((hinge+sill).lerp(end+sill,.2)+pane*.5,(hinge+sill).lerp(end+sill,.75)+pane*.5,Color(.46,.62,.54,.22),.45)
-	line(hinge+sill,end+sill,Color("#84947b"),.55)
-	line(end,glass_end,Color("#566f59"),1.0)
-	line(hinge,glass_top,Color("#7d9077"),.55)
-	line(hinge.lerp(end,.55)+sill*.4,hinge.lerp(end,.72)+sill*.4,Color("#b4b69f"),.4)
-	line(hinge+sill*.8,end+sill*.8,Color("#3c5545"),.45)
+	# Front door length and outward opening are projected from one hinged leaf.
+	# Short side panels and raked glazing match the elevated view of the sedan.
+	var hinge=Vector2(width*.205,-height*(.17 if near_side else .715))
+	var angle=deg_to_rad(36. if near_side else 48.)
+	var sign_y=1. if near_side else -1.
+	var leaf=Vector2(-cos(angle),sign_y*.75*sin(angle))*width*.175
+	var tip=hinge+leaf
+	var panel_h=height*.10
+	var glass_h=height*.15
+	var belt_hinge=hinge-Vector2(0,panel_h)
+	var belt_tip=tip-Vector2(0,panel_h)
+	var top_hinge=belt_hinge+Vector2(-width*.025,-glass_h*.80)
+	var top_tip=belt_tip+Vector2(width*.008,-glass_h)
+	var outline=PackedVector2Array([hinge,tip+Vector2(.25,-.2),belt_tip,top_tip,top_hinge,belt_hinge])
+	# A dark edge and a narrow return face give the open leaf actual thickness.
+	var back=PackedVector2Array()
+	for point in outline:back.append(point+Vector2(.25,.18))
+	draw_colored_polygon(back,door_colors["edge"])
+	draw_colored_polygon(outline,door_colors["paint_dark"])
+	var panel=PackedVector2Array([hinge+Vector2(-.2,-.25),tip+Vector2(.1,-.35),belt_tip+Vector2(.12,.2),belt_hinge+Vector2(-.18,.2)])
+	draw_colored_polygon(panel,door_colors["paint"])
+	line(hinge+Vector2(-.15,-.3),tip+Vector2(.15,-.35),door_colors["paint_dark"],.5)
+	# Raked A-pillar, thin painted window frame and the same dark glass as the car.
+	var glass=PackedVector2Array([belt_hinge+Vector2(-.3,-.2),belt_tip+Vector2(.2,-.2),top_tip+Vector2(.12,.35),top_hinge+Vector2(-.05,.3)])
+	draw_colored_polygon(glass,door_colors["glass"])
+	line(top_hinge,top_tip,door_colors["paint_light"],.35)
+	line(belt_hinge,belt_tip,door_colors["paint_light"],.35)
+	line(belt_tip,top_tip,door_colors["paint_dark"],.4)
+	line(top_hinge,belt_hinge,door_colors["paint_light"],.35)
+	line(top_hinge.lerp(belt_hinge,.45),top_tip.lerp(belt_tip,.45),door_colors["glass_light"],.3)
+	# Recessed trim and handle are restrained, using body swatches instead of a separate green.
+	var handle=hinge.lerp(tip,.72)-Vector2(0,panel_h*.55)
+	line(handle,handle+leaf.normalized()*.75,door_colors["edge"],.45)
+	line(handle-Vector2(0,.2),handle+leaf.normalized()*.65-Vector2(0,.2),door_colors["paint_light"],.25)

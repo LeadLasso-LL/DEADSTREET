@@ -63,3 +63,14 @@ Latest user-requested visual candidate; technical validation is separate from th
 - Editor import and scenery bake passed. The current review passed 66 can checks covering cover registration, movement blocking, visible-body click selection and front/rear directional protection, plus 40 solid-wall checks. All 100 cover positions and both stair entrances are reachable; deployment, faction identities and location serialization also passed.
 - Final screenshot/combat run: 53.81 mean active FPS, 25.22 ms active p95, 50 observed shots over 15 seconds. A separate run without screenshots averaged 54.94 FPS; combat-step CPU mean 10.98 ms / p95 22.29 ms and 138 draw calls at the sampled frame. This is below the prior approximately 59 FPS review; the remaining frame-time spikes occur within the combat step. No broad AI/service rewrite or older generic-suite cleanup was included.
 - Captures in tools/dusk_review/frontage_results include normal/close frontage, north_bins_detail.png, south_bins_detail.png and arrival_car_detail.png. frontage_preview.gd now opens a paused overview showing both sidewalks. Wheel zoom and middle-drag pan remain available.
+
+
+## Arrival sedan material and door correction
+The user accepted the street pass and requested a final correction to the arrival car's inconsistent finish and oversized, unnatural doors. This follow-up supersedes the earlier olive-gray arrival paint and open-door construction above.
+
+- Runtime inspection confirmed that the arrival car uses the shared sedan texture at the same body scale as parked sedans, with neutral opacity and no duplicate legacy vehicle binding. Its independent paint override, separately colored door polygons and missing broad ground shadow caused the remaining visual mismatch.
+- Arrival body now uses the green parked sedan's palette entry. Door paint, trim and glazing are sampled once from the shared sedan texture and processed with the same paint transform as its shader, avoiding a second unrelated set of green shades.
+- A shared footprint-shadow helper preserves the existing parked-prop ground bake and supplies the missing shadow beneath the dynamic arrival car. The existing cached scenery remains valid.
+- Rebuilt both front doors with shorter panels, foreshortened hinged leaves, raked glazing, thin painted frames, restrained handles and a narrow return face. The far door sits behind the body and the near door connects to a smaller dark doorway. Body dimensions and existing presentation-only door behavior are unchanged.
+- Reviewed fresh normal and arrival-detail captures. Editor import and diff whitespace checks passed; preview validation passed all 66 can checks, 40 wall checks and all 100 cover destinations, with valid geometry. This visual correction does not establish a new combat-performance measurement.
+- Paused frontage_preview.gd remains the interactive inspection entry point. The revised car and doors await the user's visual verdict.
