@@ -10,7 +10,7 @@ const BRICK = [Color("#514039"),Color("#654b3f"),Color("#473e38")]
 func _ready() -> void:
 	super._ready()
 	apartment_font=SystemFont.new()
-	apartment_font.font_names=PackedStringArray(["Georgia","Times New Roman"])
+	apartment_font.font_names=PackedStringArray(["Arial","Liberation Sans"])
 	apartment_font.font_weight=700
 	shop_font=SystemFont.new()
 	shop_font.font_names=PackedStringArray(["Arial","Liberation Sans"])
@@ -19,7 +19,7 @@ func _ready() -> void:
 	if not prop.is_empty() and prop[2]=="car":
 		var colors=[Color("#777367"),Color("#75443e"),Color("#536258"),Color("#989786"),Color("#424d5e"),Color("#514e46")]
 		var paint=colors[absi(str(prop[0]).hash())%colors.size()]
-		if prop[0]=="arrival_car":paint=Color("#333b3e")
+		if prop[0]=="arrival_car":paint=Color("#697064")
 		material.set_shader_parameter("paint",Vector3(paint.r,paint.g,paint.b))
 	if not bake_source and not prop.is_empty() and prop[0]=="east_apartments":
 		var mark=preload("res://gameplay/weathered_graffiti.gd").new()
@@ -33,7 +33,7 @@ func _ready() -> void:
 				var f=maxf(0.,1.-Vector2(x-64,y-64).length()/64.)
 				im.set_pixel(x,y,Color(1,1,1,f*f*.65))
 		var tex=ImageTexture.create_from_image(im)
-		for spot in [[Vector2(6,23),1.1],[Vector2(29,23),1.0],[Vector2(54,23),1.1],[Vector2(17,35),.8],[Vector2(45,35),.8],[Vector2(9,16),.6],[Vector2(25,16),.45]]:
+		for spot in H.STREET_LIGHTS+[[Vector2(9,16),.6],[Vector2(25,16),.45]]:
 			var light=PointLight2D.new()
 			light.texture=tex;light.position=Vector2(spot[0].x*8,spot[0].y*6)
 			light.color=Color("#ffd4a0");light.energy=spot[1];light.texture_scale=1.0
@@ -48,6 +48,7 @@ func _ready() -> void:
 
 static func cache_bounds(key: String,bounds: Rect2=Rect2()) -> Rect2:
 	if key=="ground":return Rect2(-320,-280,1152,568)
+	if "_bin_" in key:return Rect2(bounds.position.x*8-3,bounds.end.y*6-18,bounds.size.x*8+7,24)
 	# Alley return and ironwork extend beyond the front elevation, including its top.
 	var extra=72 if key=="harold_apartments" else 0
 	var side=24 if key=="harold_apartments" else 0
@@ -103,18 +104,20 @@ func ground() -> void:
 	box(Rect2(33,0,6,8),Color(0.025,.04,.055,.5))
 	for x in [33.4,38.6]:line(p(Vector2(x,8)),p(Vector2(x,8.5)),Color("#7d7c66"),.65)
 	# Uncollected rubbish belongs at service walls and beside the alley.
-	for spot in [Vector2(3.8,16.7),Vector2(16,16.6),Vector2(32.4,16.3),Vector2(39.5,19.2),Vector2(57,16.4),Vector2(4,40.4),Vector2(42,40.4)]:
+	for spot in [Vector2(3.8,16.7),Vector2(16,16.6),Vector2(32.4,16.3),Vector2(39.5,19.2),Vector2(57,16.4),Vector2(4,40.4),Vector2(42,40.4),Vector2(10.9,37.8),Vector2(40.6,37.8)]:
 		var t=p(spot)
 		draw_circle(t+Vector2(2,1),5,Color(.03,.055,.045,.5))
 		trash(t)
 	for i in range(28):
 		var t=p(Vector2(rng.randf_range(32.8,39.2),rng.randf_range(12,21)))
 		rect(Rect2(t,Vector2(1.7,.8)),Color("#8c8973"))
+	for row in H.props():
+		if row[2]=="trash_can_fallen":spilled_rubbish(p(row[1].position),Vector2(row[1].size.x*8,row[1].size.y*6))
 	stairs(Vector2(23,15),4.1,4.5)
 	stairs(Vector2(49.6,15),3.6,3.9)
 	# Ground shadows connect solid props to their footprints.
 	for row in H.props():
-		if row[2] in ["building","boundary"]:continue
+		if row[2] in ["building","boundary","trash_can","trash_can_fallen"]:continue
 		var b: Rect2=row[1];var q=p(b.position)
 		draw_colored_polygon(PackedVector2Array([q,q+Vector2(b.size.x*8,0),q+Vector2(b.size.x*8+3,b.size.y*6+4),q+Vector2(2,b.size.y*6+4)]),Color(.015,.022,.026,.6))
 func stairs(start: Vector2,w: float,depth: float) -> void:
@@ -148,13 +151,9 @@ func object_art() -> void:
 			else: facade(q,sz,str(prop[0]))
 		"boundary": pass
 		"stoop_wall": stoop_wall(q,sz)
-		"car":
-			var end=Vector2(q.x+sz.x/2,q.y+sz.y+1)
-			# Source sedan nose points right; north curb faces west, south east.
-			if str(prop[0]).begins_with("north") or prop[0]=="arrival_car":
-				draw_set_transform(Vector2(end.x*2,0),0,Vector2(-1,1))
-			asset("burgundy_sedan",end,sz.x,Color("#afb7b6"))
-			draw_set_transform(Vector2.ZERO)
+		"car": street_car(q,sz)
+		"trash_can": trash_can(q,sz)
+		"trash_can_fallen": fallen_can(q,sz)
 		"dumpster":
 			asset("dumpster_0",q+Vector2(sz.x/2,sz.y),sz.x,Color("#879486"))
 			trash(q+Vector2(sz.x+3,sz.y-1))
@@ -357,8 +356,6 @@ func _draw() -> void:
 		draw_set_transform(Vector2.ZERO,0,Vector2(1.15,2.1))
 		asset("lamp_0",Vector2(2,0),10)
 		draw_set_transform(Vector2.ZERO)
-	elif not prop.is_empty() and prop[2]=="street_sign":
-		street_name_sign()
 	else:super._draw()
 
 func painted_text(q: Vector2,words: String,width: float,height: float,font: Font,c: Color,raised: bool=false) -> void:
@@ -417,7 +414,7 @@ func apartment_entry(door_x: float,base: float,primary: bool) -> void:
 		rect(Rect2(plaque.position+Vector2(.6,.6),plaque.size-Vector2(1.2,1.2)),Color("#303e34"))
 		line(plaque.position+Vector2(.8,.6),plaque.position+Vector2(25.2,.6),Color("#aea082"),.35)
 		painted_text(plaque.position+Vector2(1.5,5),"HAROLD",23,4.2,apartment_font,Color("#e3d2a5"))
-		painted_text(plaque.position+Vector2(1.5,9.4),"APARTMENTS",23,3.7,apartment_font,Color("#e3d2a5"))
+		painted_text(plaque.position+Vector2(1.5,9.4),"Apartments",23,3.7,apartment_font,Color("#e3d2a5"))
 		line(plaque.position+Vector2(3,10.5),plaque.position+Vector2(23,10.5),Color("#827b60"),.3)
 		painted_text(plaque.position+Vector2(1.4,13.5),"1455 Mercer Ave.",23.2,2.25,shop_font,Color("#c8bfa1"))
 		for px in [plaque.position.x+.9,plaque.end.x-1.2]:
@@ -487,23 +484,6 @@ func cabinet(q: Vector2,sz: Vector2) -> void:
 	line(t+Vector2(sz.x-3.4,16),t+Vector2(sz.x-3.4,18.3),Color("#a0a48a"),.6)
 	rect(Rect2(q+Vector2(.5,sz.y-2),Vector2(sz.x-1,2)),Color("#2d4035"))
 	grain(Rect2(t+Vector2(1,2),Vector2(sz.x-3,sz.y+8)),55,Color(.07,.14,.09,.24),Color(.69,.73,.58,.12))
-
-func street_name_sign() -> void:
-	# A thin enamel blade on a galvanized channel post at the curb, scaled to a person.
-	line(Vector2(.5,0),Vector2(3,2),Color(.025,.04,.04,.6),1.2)
-	rect(Rect2(-1,-.5,2,1),Color("#343c36"))
-	rect(Rect2(-.65,-34,1.3,34),Color("#536159"))
-	line(Vector2(-.5,-33.8),Vector2(-.5,-.5),Color("#99a18f"),.32)
-	line(Vector2(.55,-33.8),Vector2(.55,-.5),Color("#2d3f37"),.36)
-	for y in range(-27,-2,3):rect(Rect2(-.15,y,.3,.5),Color("#263c33"))
-	# Slight edge thickness, restrained border and two actual mounting bolts.
-	rect(Rect2(-10.7,-34.8,22,5.2),Color("#152e29"))
-	rect(Rect2(-11,-35.2,22,5.2),Color("#235440"))
-	draw_rect(Rect2(-10.5,-34.7,21,4.2),Color("#a5b8a0"),false,.28)
-	line(Vector2(-10.6,-35.2),Vector2(10.7,-35.2),Color("#749c7d"),.28)
-	painted_text(Vector2(-9.5,-31.4),H.STREET,19,2.8,shop_font,Color("#e0e5ce"))
-	for y in [-34.3,-30.9]:rect(Rect2(-.2,y,.4,.35),Color("#d0d2bc"))
-	line(Vector2(7.8,-30.2),Vector2(9.5,-30.2),Color("#667b5f"),.25)
 
 func alley_point(base: Vector2,depth: float,outward: float,height: float) -> Vector2:
 	# Foreshortened return plane: receding masonry and all ironwork share this basis.
@@ -583,3 +563,130 @@ func alley_fire_escape(base: Vector2) -> void:
 		line(alley_point(base,6,out+.3,61),alley_point(base,6,out+.3,32),edge,.35)
 	for h in range(34,62,3):
 		line(alley_point(base,6,3,h),alley_point(base,6,9,h),edge,.65)
+
+func metal_oval(center: Vector2,radii: Vector2,c: Color) -> void:
+	var points=PackedVector2Array()
+	for n in range(28):
+		var angle=TAU*float(n)/28.
+		points.append(center+Vector2(cos(angle)*radii.x,sin(angle)*radii.y))
+	draw_colored_polygon(points,c)
+
+func trash_can(q: Vector2,sz: Vector2) -> void:
+	# Tapered, dented galvanized body with a rolled lid, ribs and separate loop handles.
+	rng.seed=absi(str(prop[0]).hash())
+	var base=q+Vector2(sz.x*.5,sz.y-.6)
+	var rx=sz.x*.47
+	var h=14.
+	var top=base-Vector2(0,h-1.6)
+	metal_oval(base+Vector2(.35,.45),Vector2(rx+.7,1.3),Color(.025,.04,.035,.42))
+	var shell=PackedVector2Array([top+Vector2(-rx,.2),top+Vector2(rx,.2),base+Vector2(rx*.9,-1.1),base+Vector2(rx*.65,.3),base+Vector2(-rx*.64,.3),base+Vector2(-rx*.9,-.8)])
+	draw_colored_polygon(shell,Color("#35463f"))
+	var tones=[Color("#6f7c69"),Color("#87907a"),Color("#73816c"),Color("#616f5f"),Color("#4d6154"),Color("#394e44"),Color("#2b4038")]
+	for n in range(7):
+		var left=-rx+float(n)*rx*2/7.
+		var right=left+rx*2/7.+.12
+		draw_colored_polygon(PackedVector2Array([top+Vector2(left,.3),top+Vector2(right,.3),base+Vector2(right*.88,-.8),base+Vector2(left*.88,-.8)]),tones[n])
+	for n in range(1,7):
+		var x=-rx+float(n)*rx*2/7.
+		var dent=-.3 if n in [2,5] else .1
+		var points=PackedVector2Array([top+Vector2(x,2),base+Vector2(x*.94+dent,-6),base+Vector2(x*.88,-1.8)])
+		draw_polyline(points,Color("#425745"),.4)
+		line(top+Vector2(x-.28,2),base+Vector2(x*.88-.28,-1.8),Color("#839178"),.24)
+	metal_oval(base-Vector2(0,.35),Vector2(rx*.91,.9),Color("#415a46"))
+	line(base+Vector2(-rx*.7,.15),base+Vector2(rx*.6,.25),Color("#697d63"),.35)
+	# The lid overhangs the body, with an elliptical crown and shaded rolled rim.
+	metal_oval(top+Vector2(0,.3),Vector2(rx+.6,1.8),Color("#253a34"))
+	metal_oval(top-Vector2(0,.5),Vector2(rx+.65,1.65),Color("#9b9e83"))
+	metal_oval(top-Vector2(0,.65),Vector2(rx-.2,1.05),Color("#737f69"))
+	line(top+Vector2(-rx*.55,-1.1),top+Vector2(rx*.4,-1.1),Color("#b2b397"),.45)
+	for side in [-1.,1.]:
+		var t=top+Vector2(side*(rx+.05),3.1)
+		draw_polyline(PackedVector2Array([t,t+Vector2(side*1.0,.3),t+Vector2(side*1.05,2),t+Vector2(0,2.2)]),Color("#223e32"),1)
+		line(t+Vector2(side*.5,.2),t+Vector2(side*.7,1.7),Color("#9aa089"),.4)
+	# Small arched lid handle casts a shadow onto the crown.
+	line(top+Vector2(-1.4,-.7),top+Vector2(1.5,-.7),Color("#263e33"),.8)
+	draw_polyline(PackedVector2Array([top+Vector2(-1.2,-.8),top+Vector2(-.8,-1.9),top+Vector2(.8,-1.9),top+Vector2(1.2,-.8)]),Color("#afb199"),.55)
+	for i in range(7):
+		var t=base+Vector2(rng.randf_range(-rx*.72,rx*.72),rng.randf_range(-10.5,-2))
+		line(t,t+Vector2(.45,.6),Color("#354b3b") if i%3 else Color("#92957a"),.3)
+	line(base+Vector2(-1,-3.8),base+Vector2(1.7,-4.1),Color("#53644e"),.6)
+
+func fallen_can(q: Vector2,sz: Vector2) -> void:
+	# Lying cylinder: closed base at left, deep open mouth at right, lengthwise ribs.
+	var left=q+Vector2(2,sz.y-3.6)
+	var right=q+Vector2(sz.x-2,sz.y-3.1)
+	metal_oval(q+Vector2(sz.x*.5,sz.y+.5),Vector2(sz.x*.58,2.3),Color(.025,.04,.035,.62))
+	draw_colored_polygon(PackedVector2Array([left+Vector2(0,-3.8),right+Vector2(0,-4.2),right+Vector2(0,4),left+Vector2(0,3.4)]),Color("#5f7361"))
+	metal_oval(left,Vector2(2,3.7),Color("#526650"))
+	for band in range(6):
+		var y=-3.+float(band)*1.15
+		line(left+Vector2(.5,y),right+Vector2(-.7,y+.1),[Color("#87947b"),Color("#9aa188"),Color("#788971"),Color("#576e58"),Color("#3d5744"),Color("#304b3c")][band],1)
+		line(left+Vector2(.5,y+.6),right+Vector2(-.7,y+.65),Color("#354d3d"),.35)
+	metal_oval(right,Vector2(2.2,4.3),Color("#a1a58b"))
+	metal_oval(right+Vector2(.15,0),Vector2(1.6,3.5),Color("#182b27"))
+	metal_oval(right+Vector2(-.15,.3),Vector2(.8,2.6),Color("#263e32"))
+	line(left+Vector2(-.6,-2.8),left+Vector2(-.9,2.2),Color("#99a488"),.45)
+	var handle=left.lerp(right,.3)+Vector2(0,-3.8)
+	draw_polyline(PackedVector2Array([handle,handle+Vector2(.2,-1.1),handle+Vector2(2.5,-1.2),handle+Vector2(2.7,0)]),Color("#94a18a"),.6)
+
+func spilled_rubbish(q: Vector2,sz: Vector2) -> void:
+	# Detached lid and crumpled litter sit on the pavement, outside the cover body.
+	rng.seed=int(q.x*71+q.y*19)
+	var mouth=q+Vector2(sz.x,sz.y-1)
+	metal_oval(mouth+Vector2(4.5,3.7),Vector2(4.2,1.65),Color(.025,.04,.035,.5))
+	metal_oval(mouth+Vector2(4.1,3.1),Vector2(4.1,1.6),Color("#556854"))
+	metal_oval(mouth+Vector2(4.1,2.8),Vector2(3.7,1.15),Color("#8b967a"))
+	line(mouth+Vector2(3,2.6),mouth+Vector2(5,2.6),Color("#3b5340"),.7)
+	for i in range(10):
+		var t=mouth+Vector2(rng.randf_range(0,10),rng.randf_range(-3.7,3))
+		var w=rng.randf_range(.9,2.5)
+		var paper=PackedVector2Array([t,t+Vector2(w,-.35),t+Vector2(w+.5,.85),t+Vector2(.4,1.2)])
+		draw_colored_polygon(paper,Color("#a69f7f") if i%3 else Color("#705843"))
+		line(t+Vector2(.5,.2),t+Vector2(w*.7,.7),Color("#c0b697") if i%3 else Color("#9a7657"),.35)
+	var bottle=mouth+Vector2(2,-3)
+	line(bottle,bottle+Vector2(2,1.4),Color("#365941"),1.2)
+	line(bottle+Vector2(2,1.4),bottle+Vector2(2.7,1.8),Color("#7b8d62"),.65)
+	metal_oval(mouth+Vector2(7,-1),Vector2(1.2,.65),Color("#899581"))
+
+func street_car(q: Vector2,sz: Vector2) -> void:
+	var end=Vector2(q.x+sz.x/2,q.y+sz.y+1)
+	var arrival=prop[0]=="arrival_car"
+	var facing=-1. if str(prop[0]).begins_with("north") or arrival else 1.
+	# Ten percent more vertical body presence, anchored at the same wheel contact.
+	draw_set_transform(end,0,Vector2(facing,1.10))
+	var height=sz.x*float(textures["burgundy_sedan"].get_height())/float(textures["burgundy_sedan"].get_width())
+	if arrival:arrival_door(sz.x,height,false)
+	asset("burgundy_sedan",Vector2.ZERO,sz.x,Color.WHITE)
+	if arrival:
+		# Recessed empty doorway/footwell connects the open leaf to the cabin.
+		var recess=PackedVector2Array([Vector2(sz.x*.20,-height*.40),Vector2(sz.x*.015,-height*.34),Vector2(sz.x*.015,-height*.13),Vector2(sz.x*.20,-height*.18)])
+		draw_colored_polygon(recess,Color("#142925"))
+		line(Vector2(sz.x*.02,-height*.13),Vector2(sz.x*.20,-height*.18),Color("#697b67"),.5)
+		arrival_door(sz.x,height,true)
+	draw_set_transform(Vector2.ZERO)
+
+func arrival_door(width: float,height: float,near_side: bool) -> void:
+	# Two open front doors, hinged at the windshield pillars; scenery only for this staging.
+	var hinge=Vector2(width*.20,-height*(.25 if near_side else .64))
+	var end=hinge+Vector2(-width*.19,height*(.30 if near_side else -.25))
+	var sill=Vector2(0,-height*.19)
+	var pane=Vector2(0,-height*.18)
+	var paint=Color("#465c49") if near_side else Color("#677260")
+	var panel=PackedVector2Array([hinge,end,end+sill,hinge+sill])
+	draw_colored_polygon(panel,Color("#263c35"))
+	var inset=PackedVector2Array([hinge+Vector2(-.25,-.4),end+Vector2(.4,-.45),end+sill+Vector2(.4,.35),hinge+sill+Vector2(-.25,.35)])
+	draw_colored_polygon(inset,paint)
+	# Open window frame, dark glass and the visible inner door trim.
+	var glass_top=hinge+sill+pane+Vector2(-width*.025,height*.025)
+	var glass_end=end+sill+pane+Vector2(width*.014,height*.035)
+	var glass=PackedVector2Array([hinge+sill,end+sill,glass_end,glass_top])
+	draw_colored_polygon(glass,Color("#1b3335"))
+	line(glass_top,glass_end,Color("#889780"),.55)
+	line(glass_top,hinge+sill,Color("#677e68"),.65)
+	line(glass_end,end+sill,Color("#4b6653"),.7)
+	line((hinge+sill).lerp(end+sill,.2)+pane*.5,(hinge+sill).lerp(end+sill,.75)+pane*.5,Color(.46,.62,.54,.22),.45)
+	line(hinge+sill,end+sill,Color("#84947b"),.55)
+	line(end,glass_end,Color("#566f59"),1.0)
+	line(hinge,glass_top,Color("#7d9077"),.55)
+	line(hinge.lerp(end,.55)+sill*.4,hinge.lerp(end,.72)+sill*.4,Color("#b4b69f"),.4)
+	line(hinge+sill*.8,end+sill*.8,Color("#3c5545"),.45)

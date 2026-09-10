@@ -3931,6 +3931,12 @@ func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) 
 	if not cover_object.associated_obstacle_id.is_empty():
 		var obstacle: BattleObstacle = geometry.get_obstacle(cover_object.associated_obstacle_id)
 		if obstacle != null and obstacle.bounds_are_usable():
+			if _is_dusk_street() and obstacle.presentation_kind in ["trash_can","trash_can_fallen"]:
+				var visual=_rect_to_view(obstacle.bounds)
+				var height=15.8 if obstacle.presentation_kind=="trash_can" else 8.8
+				visual.position.y=visual.end.y-height
+				visual.size.y=height
+				return visual.grow(1.0)
 			var grow: float = 4.5
 			match obstacle.presentation_kind:
 				"parked_car":
@@ -4283,18 +4289,13 @@ func _sync_dusk_art() -> void:
 		dynamic_unit_root.add_child(item)
 		_dusk_nodes.append(item)
 
-	for spot in [Vector2(6,23),Vector2(29,23),Vector2(54,23),Vector2(17,35),Vector2(45,35)]:
+	for light_spec in preload("res://battle/geometry/harold_street_catalog.gd").STREET_LIGHTS:
+		var spot: Vector2=light_spec[0]
 		var lamp = art.new()
 		lamp.prop = ["lamp",Rect2(),"lamp"]
 		lamp.position = Vector2(spot.x*8,spot.y*6)
 		dynamic_unit_root.add_child(lamp)
 		_dusk_nodes.append(lamp)
-	var street_sign = art.new()
-	street_sign.prop = ["harold_sign",Rect2(),"street_sign"]
-	# At the curb edge, clear of the walking strip and the end of the parked car.
-	street_sign.position = Vector2(61.5*8,22.85*6)
-	dynamic_unit_root.add_child(street_sign)
-	_dusk_nodes.append(street_sign)
 
 # Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
 

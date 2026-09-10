@@ -128,6 +128,37 @@ func start() -> void:
 			wall_checks+=1
 	for entrance in [Vector2(25,15.6),Vector2(51.4,15.6)]:
 		if not nav.is_reachable(battle,Vector2(49,30),entrance):problems.append("inaccessible stair entrance")
+	var bin_checks=0
+	var protection=load("res://battle/geometry/battle_cover_protection_service.gd")
+	var art_view=runtime.get_node("TacticalBattleView")
+	for row in preload("res://battle/geometry/harold_street_catalog.gd").props():
+		if row[2] not in ["trash_can","trash_can_fallen"]:continue
+		var bounds: Rect2=row[1]
+		var object_id="cover_"+str(row[0])
+		var cover=g.get_cover_object(object_id)
+		if cover==null or cover.slot_ids.size()<2:
+			problems.append("can lacks usable cover "+str(row[0]));continue
+		if g.get_movement_blocking_obstacle_id_at(bounds.get_center())!=row[0]:
+			problems.append("can does not block movement "+str(row[0]))
+		var click_point=Vector2(bounds.get_center().x*8,bounds.end.y*6-(7 if row[2]=="trash_can" else 4))
+		if art_view.hit_test_cover_object(click_point)!=object_id:
+			problems.append("can body not clickable "+str(row[0]))
+		bin_checks+=3
+		for slot_id in cover.slot_ids:
+			var slot=g.get_cover_slot(slot_id)
+			var front=protection.query_slot_protection(slot,slot.position+slot.facing_direction*8)
+			var rear=protection.query_slot_protection(slot,slot.position-slot.facing_direction*8)
+			if front.protection_factor<.99 or rear.protection_factor>.01:
+				problems.append("can directional protection "+str(slot_id))
+			bin_checks+=2
+	# Arrival body uses the same range as the authored parked sedans; all its derived slots were checked above.
+	var vehicle_body=load("res://battle/vehicles/battle_vehicle_body_service.gd")
+	for vehicle in battle.vehicles.values():
+		var profile=vehicle_body.profile_for_vehicle(vehicle)
+		if profile.length<5. or profile.length>5.3 or not is_equal_approx(profile.width,2.1):
+			problems.append("arrival body scale")
+		if not vehicle_body.has_usable_pose(vehicle):problems.append("arrival pose")
+	print("SIDEWALK_COVER_CHECKS ",bin_checks," problems=",problems)
 	print("STOOP_WALL_CHECKS ",wall_checks," problems=",problems)
 	var audit = {"geometry_valid":g.is_valid(),"cover_slots":g.get_sorted_cover_slot_ids().size(),"smg_threshold_distance":range_distance,"problems":problems}
 	FileAccess.open(out_dir+"/layout_audit.json",FileAccess.WRITE).store_string(JSON.stringify(audit,"  "))
@@ -207,7 +238,7 @@ func capture(second: int) -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(out_dir+"/frontage_detail.png")
-		for detail in [["alley_detail",1.65,Vector2(-5,-80)],["street_sign_detail",2.5,Vector2(190,-20)]]:
+		for detail in [["alley_detail",1.65,Vector2(-5,-80)],["north_bins_detail",2.5,Vector2(-130,-5)],["south_bins_detail",2.5,Vector2(-165,82)],["arrival_car_detail",2.5,Vector2(100,30)]]:
 			view._dusk_zoom=detail[1]
 			view._dusk_pan=detail[2]
 			view._frame_camera()

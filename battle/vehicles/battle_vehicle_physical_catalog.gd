@@ -5,9 +5,9 @@ const BattleVehiclePhysicalProfile := preload("res://battle/vehicles/battle_vehi
 
 const TYPE_CAR := "car"
 
-# Slightly larger than a curb sedan so the just-arrived car has real mass at F5.
-const CAR_LENGTH := 4.5
-const CAR_WIDTH := 1.9
+# Match the authored curb sedans; the same body drives art, navigation and cover.
+const CAR_LENGTH := 5.15
+const CAR_WIDTH := 2.1
 
 
 static func get_profile(vehicle_type_id: String) -> BattleVehiclePhysicalProfile:

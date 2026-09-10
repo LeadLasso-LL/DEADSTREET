@@ -7,7 +7,7 @@ Dense, poor, grimy, inhabited, older brick neighborhood. Maintained poorly, not 
 Nighttime and dry. Actual street lamps, storefront/entrance lighting, scattered lit apartment windows. Future campaign turn weather must drive tactical rainfall and wet surfaces; keep environmental state separate from base location assets.
 
 ## Geography
-Campaign neighborhood Mercer Heights; street Harold Ave.; objective Harold Apartments; Mercer Mini-Mart immediately left; north alley immediately right. Road continues offscreen left/right, no intersection required. Green, white-lettered pole street sign at far-right arrival end, not a plaque. Tactical street name must use campaign location identity, not an unrelated decorative name.
+Campaign neighborhood Mercer Heights; street Harold Ave.; objective Harold Apartments; Mercer Mini-Mart immediately left; north alley immediately right. Road continues offscreen left/right, no intersection required. No street-name pole sign on this block. Tactical street identity still comes from the campaign location.
 Tall apartments continue beyond top of frame. Foreground buildings use low opaque cutaways; physical footprints remain blocking. Battles outdoors for now, special interior scenarios later. Alley visually continues but only a short entrance with dumpster/bin cover is playable on THIS map. Other maps must support full wrapping alley flanks.
 Stoops have stairs and solid cover-bearing masonry sides. Cars are the main cover, supplemented by contextually placed dumpsters, walls, etc. Cover objects remain clickable: selected unit + hover highlights object; click chooses legal reachable protection relative to enemies. Never deploy opposing sides on same cover object.
 Local street gang defends; Russian mafia attacks.
@@ -44,3 +44,10 @@ Retain the red blackletter M identity, with modest fading/chipping that reveals 
 Keep the green/brass apartment plaque beside the door, but make its words readable at street/inspection zoom. The name may stack within the small rectangle; retain 1455 Mercer Ave. underneath. Do not return to large facade lettering.
 The apartment fire escape belongs on the alley side, with coherent landings, treads, railings, supports and wall attachment. Remove front-elevation fire escapes.
 The green Harold Ave. pole sign must be a small realistic rectangular street-name blade with a curbside ground anchor, clear of the sidewalk's walking strip.
+
+
+## Sidewalk furnishing and vehicle finish — latest follow-up
+This supersedes the earlier request for a green street-name pole sign: remove it entirely. Nudge the streetlight poles and their light pools slightly inward from both curbs.
+Trash cans must receive the same material/depth/contact-shadow scrutiny as the approved bags. Use a few well-spaced locations on both sidewalks; one or two locations can pair an upright can with a fallen can and spilled rubbish. Cans, particularly at the curbs, are real selectable cover objects. Keep walking routes open and avoid repetitive clutter.
+Retain the accepted plaque layout and frame, but replace the hard-to-read decorative lettering with clear type.
+Arrival cars must have the same body scale and visual finish as parked cars, with visibly open doors. Give the cars only a slight increase in vertical presence against standing units. Animated arrival/door opening and door-specific collision/cover remain part of later staging work.

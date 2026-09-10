@@ -9,7 +9,7 @@ func bake() -> void:
 	DirAccess.make_dir_recursive_absolute(OUTPUT)
 	var jobs=[["ground",[],Rect2(-320,-280,1152,568)]]
 	for row in Catalog.props():
-		if row[2]=="building" and not str(row[0]).begins_with("south"):
+		if (row[2]=="building" and not str(row[0]).begins_with("south")) or row[2] in ["trash_can","trash_can_fallen"]:
 			var b: Rect2=row[1]
 			jobs.append([row[0],row,Art.cache_bounds(str(row[0]),b)])
 	for job in jobs:

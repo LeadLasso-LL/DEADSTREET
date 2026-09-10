@@ -17,6 +17,8 @@ const SIZE = Vector2(64,46)
 const OBJECTIVE_ENTRANCE = Vector2(25,15)
 const DEFENDER_ZONE = Rect2(1,15,29,19)
 const ARRIVAL_CENTER = Vector2(49,28)
+# Shared lamp anchors keep the light pool and the post together, just inside each curb.
+const STREET_LIGHTS = [[Vector2(6,22.4),1.1],[Vector2(29,22.4),1.0],[Vector2(54,22.4),1.1],[Vector2(17,35.6),.8],[Vector2(45,35.6),.8]]
 # Authored positions for the following deployment milestone; not selectable yet.
 const ARRIVAL_OPTIONS = {"close":{"center":Vector2(39,28),"radius":5.5},"medium":{"center":Vector2(49,28),"radius":6.5},"far":{"center":Vector2(57,28),"radius":7.0}}
 static func props() -> Array:
@@ -34,6 +36,12 @@ static func props() -> Array:
 		["alley_dumpster",Rect2(34,10,3.3,1.8),"dumpster",""],
 		["service_cabinet",Rect2(39.3,16,1.5,1.5),"utility",""],
 		["store_delivery",Rect2(1,16.4,2.3,1.7),"crate",""],
+		["north_bin_west",Rect2(16.2,21.55,1.15,1.05),"trash_can",""],
+		["north_bin_spilled",Rect2(18.8,21.05,1.65,.95),"trash_can_fallen",""],
+		["north_bin_east",Rect2(40.5,21.55,1.15,1.05),"trash_can",""],
+		["south_bin_west",Rect2(9.5,35.7,1.15,1.05),"trash_can",""],
+		["south_bin_spilled",Rect2(12,36.5,1.65,.95),"trash_can_fallen",""],
+		["south_bin_east",Rect2(38.9,36,1.15,1.05),"trash_can",""],
 		["alley_extent",Rect2(33,0,6,8),"boundary",""]
 	]
 	for i in range(6):
