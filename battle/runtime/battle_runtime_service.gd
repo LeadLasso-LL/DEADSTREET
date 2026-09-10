@@ -1,6 +1,8 @@
 class_name BattleRuntimeService
 extends RefCounted
 
+const Strength = preload("res://battle/ai/battle_relative_strength.gd")
+const Tactics = preload("res://battle/ai/battle_adaptive_tactics.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleRuntimeResult := preload("res://battle/runtime/battle_runtime_result.gd")
 const BattleFireControlService := preload("res://battle/combat/battle_fire_control_service.gd")
@@ -110,6 +112,7 @@ static func _advance_validated(battle_state: BattleState, delta_seconds: float) 
 			delta_seconds,
 			elapsed_before
 		)
+	Tactics.advance(battle_state, delta_seconds)
 	var combat_result: BattleCombatBehaviorResult = BattleCombatBehaviorService.advance(
 		battle_state,
 		delta_seconds
@@ -171,6 +174,7 @@ static func _finish_runtime(
 	victory_result: BattleVictoryResult,
 	resolved_this_pass: bool
 ) -> BattleRuntimeResult:
+	Strength.refresh(battle_state, battle_state.battle_phase == "resolved")
 	var winning_side_id: String = ""
 	if victory_result != null and victory_result.success and victory_result.resolved:
 		winning_side_id = victory_result.winning_side_id

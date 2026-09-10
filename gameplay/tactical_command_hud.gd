@@ -10,6 +10,10 @@ const ROLES = ["smg", "rifle", "pistol", "shotgun"]
 const NAMES = {"smg":"IMI UZI", "rifle":"AK-47", "pistol":"GLOCK 17", "shotgun":"REMINGTON 870"}
 const LABELS = {"push":"PUSH", "hold":"HOLD", "focus_left":"FOCUS LEFT", "focus_right":"FOCUS RIGHT", "fall_back":"FALL BACK"}
 const TIPS = {"push":"Increase forward pressure and willingness to advance.", "hold":"Maintain local ground and avoid unnecessary chasing.", "focus_left":"Bias the force toward its left flank.", "focus_right":"Bias the force toward its right flank.", "fall_back":"Retreat toward the deployment side while remaining engaged."}
+var strength_label: Label
+var strength_fill: ColorRect
+var strength_value=.5
+var strength_battle_id=0
 var view: Node
 var surface: Control
 var cards: Dictionary = {}
@@ -33,6 +37,10 @@ func setup(p_view: Node) -> void:
  var bg=Panel.new();surface.add_child(bg);bg.position=Vector2(12,0);bg.size=Vector2(1128,HEIGHT-8);bg.add_theme_stylebox_override("panel",style(Color("#11191d"),Color("#444e50")))
  bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
  faction_label=label(surface,Vector2(28,10),Vector2(570,18),"ORLOV BRATVA  /  OPERATIVES",12,Color("#c4cbbf"))
+ strength_label=label(surface,Vector2(350,5),Vector2(276,12),"RELATIVE STRENGTH  /  EVEN",9,Color("#bfc8ba"))
+ var strength_bg=ColorRect.new();surface.add_child(strength_bg);strength_bg.position=Vector2(350,22);strength_bg.size=Vector2(272,6);strength_bg.color=Color("#a15e68");strength_bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
+ strength_fill=ColorRect.new();strength_bg.add_child(strength_fill);strength_fill.size=Vector2(136,6);strength_fill.color=Color("#83b899");strength_fill.mouse_filter=Control.MOUSE_FILTER_IGNORE
+ var midpoint=ColorRect.new();strength_bg.add_child(midpoint);midpoint.position=Vector2(135,0);midpoint.size=Vector2(2,6);midpoint.color=Color("#e0dfc9");midpoint.mouse_filter=Control.MOUSE_FILTER_IGNORE
  battle_label=label(surface,Vector2(660,10),Vector2(452,18),"COMMAND CENTER",12,Color("#c4cbbf"))
  for i in range(4):
   cards[i]=Card.build(surface,Vector2(28+i*151,34),font)
@@ -70,6 +78,12 @@ func _process(_delta: float) -> void:
  var viewport_size=get_viewport_rect().size
  var factor=viewport_size.x/1152.0
  surface.scale=Vector2.ONE*factor;surface.position=Vector2(0,viewport_size.y-HEIGHT*factor);surface.size=Vector2(1152,HEIGHT)
+ if strength_battle_id!=battle.get_instance_id():strength_battle_id=battle.get_instance_id();strength_value=.5
+ if not battle.strength_snapshot.is_empty():
+  var share=float(battle.strength_snapshot.shares.get(Query.player_side_id(battle),.5))
+  strength_value=move_toward(strength_value,share,maxf(0.,_delta)*.5)
+  strength_fill.size.x=272*strength_value
+  strength_label.text="RELATIVE STRENGTH  /  "+("ADVANTAGE" if share>.55 else ("DISADVANTAGE" if share<.45 else "EVEN"))
  var selected: String=view._selected_participant_id()
  var units: Array=Query.friendly_cards(battle,selected)
  units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))

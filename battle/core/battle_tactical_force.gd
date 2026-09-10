@@ -5,6 +5,7 @@ const BattleForceCommandCatalog := preload("res://battle/core/battle_force_comma
 
 var tactical_force_id: String = ""
 var side_id: String = ""
+var has_explicit_command: bool = false
 var command_id: String = BattleForceCommandCatalog.DEFAULT_COMMAND
 # Stable battle-local facing toward the opposing deployment / objective.
 # Not a live aim vector and not persisted to campaign objects.

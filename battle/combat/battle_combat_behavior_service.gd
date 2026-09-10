@@ -1,6 +1,7 @@
 class_name BattleCombatBehaviorService
 extends RefCounted
 
+const AdaptiveTactics = preload("res://battle/ai/battle_adaptive_tactics.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattlefieldGeometry := preload("res://battle/geometry/battlefield_geometry.gd")
@@ -912,7 +913,7 @@ static func _short_range_closing_applies(
 ) -> bool:
 	if participant == null or participant.is_wounded:
 		return false
-	if _is_defender_side(battle_state, participant):
+	if _is_defender_side(battle_state, participant) and not AdaptiveTactics.permits_counterattack(battle_state, participant):
 		return false
 	if not _closing_command_permits(battle_state, participant):
 		return false
@@ -1397,7 +1398,7 @@ static func _healthy_occupied_cover_should_persist(
 		return true
 	if _fall_back_applies(battle_state, participant):
 		return true
-	if _is_defender_side(battle_state, participant):
+	if _is_defender_side(battle_state, participant) and not AdaptiveTactics.permits_counterattack(battle_state, participant):
 		return true
 	if target == null:
 		return true
@@ -2844,6 +2845,8 @@ static func _should_suppress_autonomous_aggressive_approach(
 	participant: BattleParticipant,
 	push_pressure: bool
 ) -> bool:
+	if AdaptiveTactics.autonomous_force(battle_state, participant) and not AdaptiveTactics.may_advance(battle_state, participant):
+		return true
 	if push_pressure:
 		return false
 	if _focus_applies(battle_state, participant):

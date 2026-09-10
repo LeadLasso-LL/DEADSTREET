@@ -160,6 +160,7 @@ static func set_command(
 			previous_command_id,
 			command_id
 		)
+	force.has_explicit_command = true
 	if previous_command_id == command_id:
 		return BattleForceCommandResult.succeeded(
 			tactical_force_id,

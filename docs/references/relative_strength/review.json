@@ -1,0 +1,22 @@
+{
+  "ai_decisions": [
+    {
+      "force": "garrison:rival_hq",
+      "order": "push",
+      "reason": "sustained_advantage",
+      "share": 0.670789791744969,
+      "side": "defender",
+      "time": 14.2666666666666
+    }
+  ],
+  "defender_displacement": {
+    "rival_showcase_shotgun": 11.0000019073486,
+    "rival_soldier": 21.7069702148438,
+    "rival_soldier_rifle": 0.0,
+    "rival_soldier_shotgun": 5.4009256362915
+  },
+  "defenders_alive": 4,
+  "phase": "active",
+  "seconds": 55.0333333333328,
+  "shots": 69
+}

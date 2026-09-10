@@ -31,6 +31,10 @@ var participants: Dictionary[String, BattleParticipant] = {}
 var vehicles: Dictionary[String, BattleVehicle] = {}
 var tactical_forces: Dictionary[String, BattleTacticalForce] = {}
 var deployment_zones: Dictionary[String, DeploymentZone] = {}
+# Battle-local strength observations and adaptive decisions; no campaign persistence.
+var strength_snapshot: Dictionary = {}
+var strength_memory: Dictionary = {}
+var strength_events: Array[Dictionary] = []
 var battle_phase: String = "deployment"
 var elapsed_time_seconds: float = 0.0
 var battlefield_geometry: BattlefieldGeometry = null
