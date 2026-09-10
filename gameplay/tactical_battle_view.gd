@@ -4269,7 +4269,7 @@ func _sync_dusk_art() -> void:
 		_dusk_nodes.clear()
 		return
 	if not _dusk_nodes.is_empty(): return
-	var art = preload("res://gameplay/dusk_street_art.gd")
+	var art = preload("res://gameplay/harold_street_art.gd")
 	var ground = art.new()
 	static_surface_root.add_child(ground)
 	_dusk_nodes.append(ground)
@@ -4282,12 +4282,17 @@ func _sync_dusk_art() -> void:
 		dynamic_unit_root.add_child(item)
 		_dusk_nodes.append(item)
 
-	for spot in [Vector2(11,23),Vector2(38,23)]:
+	for spot in [Vector2(6,23),Vector2(29,23),Vector2(54,23),Vector2(17,35),Vector2(45,35)]:
 		var lamp = art.new()
 		lamp.prop = ["lamp",Rect2(),"lamp"]
 		lamp.position = Vector2(spot.x*8,spot.y*6)
 		dynamic_unit_root.add_child(lamp)
 		_dusk_nodes.append(lamp)
+	var street_sign = art.new()
+	street_sign.prop = ["harold_sign",Rect2(),"street_sign"]
+	street_sign.position = Vector2(60*8,22*6)
+	dynamic_unit_root.add_child(street_sign)
+	_dusk_nodes.append(street_sign)
 
 # Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
 
@@ -4308,7 +4313,7 @@ func _sync_dusk_vehicles() -> void:
 		for corner in corners: bounds = bounds.expand(corner)
 		var node = _dusk_vehicle_nodes.get(id)
 		if node == null:
-			node = preload("res://gameplay/dusk_street_art.gd").new()
+			node = preload("res://gameplay/harold_street_art.gd").new()
 			node.prop = ["arrival_car",bounds,"car",""]
 			dynamic_unit_root.add_child(node)
 			_dusk_vehicle_nodes[id] = node

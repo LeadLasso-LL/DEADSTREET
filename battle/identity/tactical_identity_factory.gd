@@ -39,6 +39,10 @@ static func make(
 static func apply_debug_hq_identities(battle_state: BattleState) -> void:
 	if battle_state == null:
 		return
+	if battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
+		_apply_side(battle_state, battle_state.attacker_side_id, GangArchetypeCatalog.ARCHETYPE_RUSSIAN_ORGANIZED_CRIME)
+		_apply_side(battle_state, battle_state.defender_side_id, GangArchetypeCatalog.ARCHETYPE_LOCAL_STREET_GANG)
+		return
 	_apply_side(
 		battle_state,
 		"attacker",

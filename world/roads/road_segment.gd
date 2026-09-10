@@ -2,6 +2,7 @@ class_name RoadSegment
 extends RefCounted
 
 var id: String = ""
+var street_name: String = ""
 var node_a_id: String = ""
 var node_b_id: String = ""
 var distance: float = 0.0:
@@ -27,6 +28,7 @@ func _init(
 func to_dict() -> Dictionary:
 	return {
 		"id": id,
+		"street_name": street_name,
 		"node_a_id": node_a_id,
 		"node_b_id": node_b_id,
 		"distance": distance,
@@ -36,6 +38,7 @@ func to_dict() -> Dictionary:
 
 func from_dict(data: Dictionary) -> void:
 	id = str(data.get("id", ""))
+	street_name = str(data.get("street_name", ""))
 	node_a_id = str(data.get("node_a_id", ""))
 	node_b_id = str(data.get("node_b_id", ""))
 	distance = float(data.get("distance", 0.0))

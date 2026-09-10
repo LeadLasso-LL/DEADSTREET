@@ -25,17 +25,18 @@ const DEBUG_FORCE_ID := "debug_hq_force"
 # Provisional starter travel tuning so the debug HQ assault takes multiple campaign turns.
 # Launch budget is min(debug request 10.0, vehicle movement 5.0) = 5.0.
 # Distance 12.0 => launch 5.0, turn 1 => 10.0, turn 2 arrives. Vehicle movement unchanged.
+const HaroldLocation = preload("res://world/harold_location.gd")
 const KEEP_MAP_POSITION := Vector2(0.0, 0.0)
 const HQ_MAP_POSITION := Vector2(12.0, 0.0)
 const SEGMENT_DISTANCE := 12.0
 const VEHICLE_MOVEMENT_PER_TURN := 5.0
 # Debug 3v3 starts. Legal south-attack / north-HQ pocket points, not cover slots.
-const ATTACKER_RIFLE_START := Vector2(32,42)
-const ATTACKER_SMG_START := Vector2(35,42)
-const ATTACKER_SHOTGUN_START := Vector2(38,42)
-const DEFENDER_PISTOL_START := Vector2(35,16.5)
-const DEFENDER_RIFLE_START := Vector2(27,16.5)
-const DEFENDER_SHOTGUN_START := Vector2(41,20)
+const ATTACKER_RIFLE_START := Vector2(44,30)
+const ATTACKER_SMG_START := Vector2(47,30)
+const ATTACKER_SHOTGUN_START := Vector2(50,30)
+const DEFENDER_PISTOL_START := Vector2(21,20)
+const DEFENDER_RIFLE_START := Vector2(25,20)
+const DEFENDER_SHOTGUN_START := Vector2(14,20)
 const DEBUG_CAR_PASSENGER_CAPACITY := 4
 
 
@@ -45,10 +46,10 @@ static func create() -> GameState:
 	state.current_month = 7
 	state.current_year = 2034
 
-	var player: MajorGang = MajorGang.new(PLAYER_FACTION_ID, "Player Gang", "player")
+	var player: MajorGang = MajorGang.new(PLAYER_FACTION_ID, "Russian Mafia", "player")
 	player.money = 1000.0
 	player.resources.set_amount("Ammo", 4.0)
-	var rival: MajorGang = MajorGang.new(RIVAL_FACTION_ID, "Rival Gang", "ai")
+	var rival: MajorGang = MajorGang.new(RIVAL_FACTION_ID, "Local Street Gang", "ai")
 	rival.money = 1000.0
 	state.add_faction(player)
 	state.add_faction(rival)
@@ -56,7 +57,7 @@ static func create() -> GameState:
 	state.add_stronghold_region(StrongholdRegion.new(REGION_ID, "Starter Region"))
 	state.add_police_region(PoliceRegion.new(DISTRICT_ID, "Starter District"))
 	state.add_neighborhood(
-		Neighborhood.new(HOOD_ID, "Starter Hood", REGION_ID, DISTRICT_ID, RIVAL_FACTION_ID)
+		Neighborhood.new(HOOD_ID, HaroldLocation.NEIGHBORHOOD, REGION_ID, DISTRICT_ID, RIVAL_FACTION_ID)
 	)
 
 	var keep: Stronghold = Stronghold.new(
@@ -74,7 +75,7 @@ static func create() -> GameState:
 
 	var hq: NeighborhoodHQ = NeighborhoodHQ.new(
 		HQ_ID,
-		"Rival HQ",
+		HaroldLocation.OBJECTIVE,
 		HOOD_ID,
 		HQ_MAP_POSITION,
 		RIVAL_FACTION_ID,
@@ -86,7 +87,9 @@ static func create() -> GameState:
 	var graph: RoadGraph = state.road_graph
 	graph.add_node(RoadNode.new(NODE_KEEP_ID, KEEP_MAP_POSITION))
 	graph.add_node(RoadNode.new(NODE_HQ_ID, HQ_MAP_POSITION))
-	graph.add_segment(RoadSegment.new(SEGMENT_ID, NODE_KEEP_ID, NODE_HQ_ID, SEGMENT_DISTANCE))
+	var street_segment = RoadSegment.new(SEGMENT_ID, NODE_KEEP_ID, NODE_HQ_ID, SEGMENT_DISTANCE)
+	street_segment.street_name = HaroldLocation.STREET
+	graph.add_segment(street_segment)
 
 	var vehicle: Vehicle = Vehicle.new(
 		VEHICLE_ID,

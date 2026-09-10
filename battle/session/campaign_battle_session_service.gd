@@ -113,6 +113,9 @@ static func create_for_mission(
 			mission.id
 		)
 
+	# Apply scenario identities after authored geometry is known.
+	preload("res://battle/identity/tactical_identity_factory.gd").apply_debug_hq_identities(battle_state)
+
 	# Caller chooses the deployment protocol. Default false keeps headless/generic fixtures legacy.
 	if p_requires_deployment_commitments:
 		battle_state.requires_deployment_commitments = true
