@@ -2945,28 +2945,8 @@ func _view_facing_usable(direction: Vector2) -> bool:
 	return not direction.is_equal_approx(Vector2.ZERO)
 
 
-func _draw_compact_combat_state(
-	battle_state: BattleState,
-	participant: BattleParticipant,
-	view_pos: Vector2
-) -> void:
-	if not DEBUG_DRAW_COMBAT_STATE_LABELS:
-		return
-	if battle_state == null or participant == null:
-		return
-	if battle_state.battle_phase != "active" and battle_state.battle_phase != "resolved":
-		return
-	if _participant_has_visible_shot(battle_state, participant):
-		return
-	var label: String = BattleCombatPresentationQuery.compact_state(battle_state, participant)
-	if label.is_empty():
-		return
-	_draw_label(
-		view_pos + Vector2(11.0, -10.0),
-		label,
-		COMPACT_STATE_FONT_SIZE,
-		_compact_state_color(label)
-	)
+func _draw_compact_combat_state(_battle_state: BattleState, _participant: BattleParticipant, _view_pos: Vector2) -> void:
+	pass
 
 
 func _compact_state_color(label: String) -> Color:
@@ -3490,45 +3470,9 @@ func _draw_projectile_tail(tip: Vector2, direction: Vector2, tail_len: float, we
 		i += 1
 
 
-func _draw_shot_impact(
-	battle_state: BattleState,
-	event: BattleAttackEvent,
-	resolved_hold: bool
-) -> void:
-	if event == null:
-		return
-	var age: float = _combat_event_age(battle_state, event)
-	var show_spark: bool = TacticalShotPresentation.impact_visible(age, resolved_hold)
-	var show_label: bool = TacticalShotPresentation.outcome_label_visible(age, resolved_hold)
-	if not show_spark and not show_label:
-		return
-	var segment: Dictionary = _shot_draw_segment(battle_state, event)
-	if not bool(segment.get("ok", false)):
-		return
-	var endpoint: Vector2 = segment["endpoint"] as Vector2
-	if show_spark:
-		match event.outcome:
-			BattleAttackProfile.OUTCOME_GRAZE:
-				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS, PROVISIONAL_GRAZE_IMPACT, false, 1.2, true)
-			BattleAttackProfile.OUTCOME_HIT:
-				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS, PROVISIONAL_HIT_IMPACT, false, 1.3, true)
-			BattleAttackProfile.OUTCOME_WOUNDED:
-				_paint_canvas().draw_circle(endpoint, IMPACT_RADIUS + 0.4, PROVISIONAL_WOUND_IMPACT, false, 1.4, true)
-			BattleAttackProfile.OUTCOME_KILLED:
-				pass
-			_:
-				pass
-	if not show_label:
-		return
-	match event.outcome:
-		BattleAttackProfile.OUTCOME_WOUNDED:
-			_draw_label(endpoint + Vector2(14.0, -8.0), "WND", 11)
-		BattleAttackProfile.OUTCOME_KILLED:
-			if not _is_dusk_street():
-				_draw_dead_mark(endpoint, PROVISIONAL_KILL_MARK)
-				_draw_label(endpoint + Vector2(16.0, -8.0), "DEAD", 12)
-		_:
-			pass
+func _draw_shot_impact(_battle_state: BattleState, _event: BattleAttackEvent, _resolved_hold: bool) -> void:
+	# Projectile, blood and HUD health communicate hits without circles or floating text.
+	pass
 
 
 func _shot_draw_segment(battle_state: BattleState, event: BattleAttackEvent) -> Dictionary:

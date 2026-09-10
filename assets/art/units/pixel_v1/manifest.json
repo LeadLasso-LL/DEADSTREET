@@ -106,6 +106,13 @@
       "fps": 24,
       "loop": false,
       "atlas": "death_back"
+    },
+    "check_comrade": {
+      "start": 0,
+      "count": 10,
+      "fps": 10,
+      "loop": false,
+      "atlas": "check_comrade"
     }
   },
   "variants": [

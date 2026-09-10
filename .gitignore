@@ -16,3 +16,10 @@ tools/battle_polish/results/
 tools/battle_polish/transfer/
 tools/battle_polish/*.log
 tools/battle_polish/*.uid
+
+# Local battle-finish capture and pose intermediates
+tools/battle_finish/results/
+tools/battle_finish/transfer/
+tools/battle_finish/pose_svg/
+tools/battle_finish/*.log
+tools/battle_finish/*.uid

@@ -1,66 +1,66 @@
 {
-  "revision": 2,
+  "revision": 3,
   "source": "Original procedural waveforms; no external samples",
   "seed": 20260910,
   "assets": {
     "smg_0.wav": {
-      "peak_dbfs": -1.1103465569966262,
-      "rms_dbfs": -29.452708880579763,
+      "peak_dbfs": -1.1103465569966273,
+      "rms_dbfs": -31.019731178207284,
       "seconds": 0.85
     },
     "smg_1.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.904930810982712,
+      "rms_dbfs": -33.961324108493166,
       "seconds": 0.85
     },
     "smg_2.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -33.12551887128948,
+      "rms_dbfs": -33.64109467074997,
       "seconds": 0.85
     },
     "rifle_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -30.218103748863598,
+      "rms_dbfs": -32.00490947170388,
       "seconds": 0.85
     },
     "rifle_1.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.986676288055914,
+      "rms_dbfs": -31.736826288006817,
       "seconds": 0.85
     },
     "rifle_2.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.9542366427237,
+      "rms_dbfs": -31.981651184552003,
       "seconds": 0.85
     },
     "pistol_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -31.284660669726954,
+      "rms_dbfs": -33.0507941876933,
       "seconds": 0.85
     },
     "pistol_1.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.25547150089433,
+      "rms_dbfs": -33.186240294992835,
       "seconds": 0.85
     },
     "pistol_2.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.062926872805782,
+      "rms_dbfs": -30.982604719293633,
       "seconds": 0.85
     },
     "shotgun_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -26.699910924974972,
+      "rms_dbfs": -29.953426772140705,
       "seconds": 0.85
     },
     "shotgun_1.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.279986218371526,
+      "rms_dbfs": -31.666751072178986,
       "seconds": 0.85
     },
     "shotgun_2.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -26.52829810713117,
+      "rms_dbfs": -28.62898335590616,
       "seconds": 0.85
     }
   }

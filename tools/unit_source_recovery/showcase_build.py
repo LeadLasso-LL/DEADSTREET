@@ -35,6 +35,7 @@ if __name__=='__main__':
   k,w=v.split('_',1);k=int(k)
   for d,dirname in enumerate(m['directions']):
    for clip,info in m['clips'].items():
+    if clip=='check_comrade':continue # Separate aftermath atlas built by tools/battle_finish/build_check_pose.py
     if death_only and clip!='death_back':continue
     if sample and clip not in ['idle','aim','walk','wounded_walk','death_back']:continue
     for i in ([0,5,10,15,22,31] if sample and clip=='death_back' else ([0] if sample else range(info['count']))):

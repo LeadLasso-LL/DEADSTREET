@@ -71,7 +71,7 @@ static func _advance_participant(
 	if not participant.is_alive:
 		participant.velocity = Vector2.ZERO
 		return false
-	var speed: float = participant.movement_speed
+	var speed: float = participant.movement_speed * cover_hustle_multiplier(battle_state, participant)
 	if not is_finite(speed) or speed < 0.0:
 		participant.velocity = Vector2.ZERO
 		return false
@@ -146,3 +146,16 @@ static func _resolved_direction(intent: Vector2) -> Vector2:
 
 static func _is_finite_vector(value: Vector2) -> bool:
 	return is_finite(value.x) and is_finite(value.y)
+
+# A temporary multiplier, so base movement tuning and wounded penalties remain intact.
+static func cover_hustle_multiplier(b, p) -> float:
+	if b==null or p==null or not p.is_alive or not p.has_active_navigation_path():return 1.0
+	if p.has_occupied_cover_slot():return 1.0
+	var slot_id: String=p.reserved_cover_slot_id
+	if slot_id.is_empty() and p.has_player_cover_intent():slot_id=p.player_cover_slot_id
+	if slot_id.is_empty() or b.battlefield_geometry==null:return 1.0
+	var slot=b.battlefield_geometry.get_cover_slot(slot_id)
+	if slot==null or p.navigation_destination.distance_to(slot.position)>1.0:return 1.0
+	# Moving between cover points in exposed walkable space; no boost for ordinary moves.
+	if not b.battlefield_geometry.get_movement_blocking_obstacle_id_at(p.battle_position).is_empty():return 1.0
+	return 1.18

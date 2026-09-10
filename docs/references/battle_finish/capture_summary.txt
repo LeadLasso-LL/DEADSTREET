@@ -1,0 +1,1 @@
+SHOWCASE_RESULT 2002 duration=44.7666666666667 alive={ "attacker": 0, "defender": 2 } shots=69 max_travel=44.7535046823323

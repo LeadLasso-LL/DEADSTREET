@@ -38,6 +38,7 @@ var continue_button: Button
 var deployment_panel: Panel
 var arrival_buttons={}
 var arrival_status: Label
+var outro=preload("res://gameplay/tactical_battle_outro.gd").new()
 func setup(p_view):
  view=p_view;layer=35
  surface=Control.new();add_child(surface);surface.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -75,7 +76,7 @@ func all_committed() -> bool:
  return battle.is_side_deployment_committed(battle.attacker_side_id) and battle.is_side_deployment_committed(battle.defender_side_id)
 func is_arriving() -> bool:return stage=="arrival"
 func can_start() -> bool:return stage=="ready" or stage=="active"
-func results_visible() -> bool:return stage=="ending" and end_clock>1.4
+func results_visible() -> bool:return stage=="ending" and end_clock>=outro.duration
 func skip_to_ready():
  if battle==null and view._battle_state()!=null:reset(view._battle_state())
  stage="ready";clock=intro_duration;routes={};apply_poses()
@@ -121,7 +122,7 @@ func _process(delta):
   stage="active";routes={};sound.set_engine(Vector2.ZERO,false)
   if not start_played:sound.play("start",Vector2(32,28),-19.);start_played=true
  if b.battle_phase=="resolved" and stage!="ending":
-  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results()
+  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)
  if stage=="arrival":
   clock+=delta
   if clock>=5.4 and not door_played:door_played=true;sound.play("door",arrival_center(),-11.)
@@ -131,14 +132,14 @@ func _process(delta):
   end_clock+=delta
   var u=smoothstep(0.,5.,end_clock);view._dusk_zoom=lerpf(original_zoom,original_zoom*.94,u);view._dusk_pan=original_pan.lerp(original_pan+Vector2(0,-5),u);view._frame_camera()
   if end_clock>.75:b.combat_feedback_events.clear()
-  result_root.modulate.a=smoothstep(1.5,2.7,end_clock)
-  continue_button.disabled=end_clock<3.
+  result_root.modulate.a=smoothstep(outro.duration,outro.duration+1.2,end_clock)
+  continue_button.disabled=end_clock<outro.duration+1.2
  var expand=1.-smoothstep(2.6,4.4,clock) if stage=="arrival" else 0.
  context.expansion=expand;context.position=Vector2(18,18).lerp(Vector2(56,150),expand);context.size=Vector2(476,78).lerp(Vector2(1040,210),expand)
  context.visible=stage!="deployment";context.queue_redraw()
- shade.color.a=.20*expand if stage=="arrival" else (.57*smoothstep(1.2,2.8,end_clock) if stage=="ending" else 0.)
+ shade.color.a=.20*expand if stage=="arrival" else (.57*smoothstep(outro.duration,outro.duration+1.2,end_clock) if stage=="ending" else 0.)
  start_button.visible=stage=="ready";start_button.position=Vector2(471,surface.size.y-70)
- if result_root!=null:result_root.position=Vector2(56,118);result_root.visible=stage=="ending"
+ if result_root!=null:result_root.position=Vector2(56,118);result_root.visible=results_visible()
  apply_poses();update_markers()
 func apply_poses():
  if view==null or battle==null:return
@@ -153,6 +154,9 @@ func apply_poses():
    node.position+=offset;node.door_open=smoothstep(5.35,5.9,clock)
    if stage=="arrival":sound.set_engine(v.battle_position+Vector2(offset.x/8,0),clock>2.1 and clock<5.85,lerpf(1.35,.75,progress))
   node.queue_redraw()
+ if stage=="ending":
+  outro.apply(view,end_clock)
+  return
  if stage!="arrival":
   for node in view.actor_presenter._unit_nodes.values():node.visible=true
   return

@@ -15,6 +15,7 @@ var reloads={}
 var battle_id=0
 var shots_played=0
 var gun_duck=0.
+var apartment_gain_db=-15.
 func setup(p_view):
  view=p_view
  for name in ["city","apartment_beat","engine","door","reload","impact","start"]:
@@ -23,10 +24,15 @@ func setup(p_view):
   for i in range(3):streams[kind+str(i)]=load("res://assets/audio/harold/"+kind+"_"+str(i)+".wav")
  for i in range(4):streams["step"+str(i)]=load("res://assets/audio/harold/step_"+str(i)+".wav")
  city=AudioStreamPlayer.new();add_child(city);city.stream=looping("city");city.volume_db=-6
- music=AudioStreamPlayer2D.new();view.add_child(music);music.stream=looping("apartment_beat");music.position=Vector2(25*8,7*6);music.max_distance=850;music.attenuation=.6;music.volume_db=-15
+ music=AudioStreamPlayer2D.new();view.add_child(music);music.stream=looping("apartment_beat");set_apartment_emitter(Vector2(25,7))
  engine=AudioStreamPlayer2D.new();view.add_child(engine);engine.stream=looping("engine");engine.max_distance=1100;engine.volume_db=-13
  for i in range(28):
   var v=AudioStreamPlayer2D.new();view.add_child(v);v.max_distance=1100;v.attenuation=.4;v.panning_strength=.8;voices.append(v)
+# Reusable world-space sound source for apartments on other maps.
+func set_apartment_emitter(at: Vector2,gain_db: float=-15.,audible_radius: float=700.):
+ apartment_gain_db=gain_db
+ if music==null:return
+ music.position=at*Vector2(8,6);music.max_distance=audible_radius;music.attenuation=.8;music.panning_strength=.9;music.volume_db=apartment_gain_db
 func looping(name: String):
  var s=streams[name].duplicate();s.loop_mode=AudioStreamWAV.LOOP_FORWARD;s.loop_begin=0;s.loop_end=s.data.size()/(4 if s.stereo else 2);return s
 func play(name: String,at: Vector2,gain: float=-10.,variation: int=0):
@@ -40,7 +46,7 @@ func set_engine(at: Vector2,running: bool,pitch: float=1.):
 func _process(_delta):
  gun_duck=maxf(0.,gun_duck-maxf(_delta,0.)*5.)
  if city!=null:city.volume_db=-6.-gun_duck*2.5
- if music!=null:music.volume_db=-15.-gun_duck*3.
+ if music!=null:music.volume_db=apartment_gain_db-gun_duck*3.
  if view==null:return
  var b=view._battle_state();var active=enabled and view.visible and view._is_dusk_street() and b!=null
  if not active:

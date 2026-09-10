@@ -156,8 +156,8 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 	for clip: String in bound_clip_ids():
 		var spec: Dictionary = manifest()["clips"][clip]
 		var clip_atlas: Texture2D=atlas
-		if spec.get("atlas", "")=="death_back":
-			var extra_path="res://assets/art/units/pixel_v1/death_back/"+variant_id+".png"
+		if spec.get("atlas", "") in ["death_back","check_comrade"]:
+			var extra_path="res://assets/art/units/pixel_v1/"+str(spec.atlas)+"/"+variant_id+".png"
 			if not FileAccess.file_exists(extra_path):continue
 			clip_atlas=_texture(extra_path)
 		for d in range(directions.size()):
@@ -170,7 +170,7 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 				var tex := AtlasTexture.new()
 				tex.atlas = clip_atlas
 				tex.region = Rect2((cell % 32) * 128, (d * rows + cell / 32) * 128, 128, 128)
-				if spec.get("atlas", "")=="death_back":tex.region=Rect2(i*128,d*128,128,128)
+				if spec.get("atlas", "") in ["death_back","check_comrade"]:tex.region=Rect2(i*128,d*128,128,128)
 				frames.add_frame(anim, tex)
 	_frames_cache[variant_id] = frames
 	return frames

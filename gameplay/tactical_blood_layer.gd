@@ -36,12 +36,12 @@ func sync(battle) -> void:
 		if not unit.is_alive:
 			if not dead.has(id):
 				dead[id]=true
-				marks.append({"p":pos,"size":3.1,"seed":int(id.hash())})
+				marks.append({"p":pos,"size":3.55,"seed":int(id.hash())})
 		elif unit.is_wounded:
 			if not walkers.has(id): walkers[id]={"p":pos,"t":clock}
 			var last: Dictionary=walkers[id]
-			if pos.distance_to(last.p)>13.0 and clock-float(last.t)>.8:
-				marks.append({"p":pos+Vector2(sin(clock*3.0)*1.2,0),"size":.65,"seed":int(clock*10)})
+			if pos.distance_to(last.p)>11.0 and clock-float(last.t)>.7:
+				marks.append({"p":pos+Vector2(sin(clock*3.0)*1.2,0),"size":.78,"seed":int(clock*10)})
 				walkers[id]={"p":pos,"t":clock}
 	while marks.size()>240: marks.pop_front()
 	hits=hits.filter(func(h): return clock-float(h.t)<.18)
@@ -51,11 +51,11 @@ func _draw() -> void:
 	for mark in marks:
 		var pos: Vector2=mark.p
 		var size: float=mark.size
-		for i in range(6 if size>1.0 else 2):
+		for i in range(7 if size>1.0 else 2):
 			var offset=Vector2(sin(float(mark.seed+i)*2.7),cos(float(mark.seed+i)*1.9))*size*1.5
 			draw_rect(Rect2((pos+offset).round(),Vector2(size, maxf(.6,size*.55))),Color("#66272b"))
 	for hit in hits:
 		var age: float=(clock-float(hit.t))/.18
-		for i in range(5):
-			var offset=Vector2(cos(float(i)*2.1),sin(float(i)*2.1))*(1.0+age*3.5)
-			draw_rect(Rect2((Vector2(hit.p)+offset).round(),Vector2(.8,.8)),Color(.58,.12,.14,1.0-age))
+		for i in range(6):
+			var offset=Vector2(cos(float(i)*2.1),sin(float(i)*2.1))*(1.0+age*4.0)
+			draw_rect(Rect2((Vector2(hit.p)+offset).round(),Vector2(.95,.95)),Color(.58,.12,.14,1.0-age))

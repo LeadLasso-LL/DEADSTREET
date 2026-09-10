@@ -2,6 +2,8 @@
   "creator": "Dead Street project / original procedural sound design",
   "seed": 90117,
   "sample_rate": 48000,
-  "music_bpm": 96,
-  "sources": "All waveforms synthesized by tools/battle_audio/build_audio.py. No external music, recordings or purchased assets."
+  "music_bpm": 72,
+  "sources": "All waveforms are original synthesis. build_audio.py rebuilds the base ambience/foley and then applies refine_weapons.py and build_apartment_trap.py. No external recordings or music.",
+  "music_revision": "APARTMENT_TRAP.json",
+  "weapon_revision": "WEAPON_REVISION.json"
 }

@@ -1,0 +1,12 @@
+{
+  "source": "Original synthesis, no external audio",
+  "seed": 104808,
+  "bpm": 72,
+  "grid": "16 steps per bar; hats every 2; snares every 8",
+  "bars": 4,
+  "wall_lowpass_hz": 780,
+  "seconds": 13.333333333333334,
+  "peak_dbfs": -3.6091212891626263,
+  "loop_boundary_delta": 0.0033767152619092536,
+  "sha256": "903ac1ccc96810e07e1878d5eb89adbfeec311101d3c246c6bd960f26bc587de"
+}

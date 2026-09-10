@@ -80,3 +80,11 @@ for bar in range(4):
 mix=filt(mix,650);write('apartment_beat',mix,.58)
 (R/'SOURCE.json').write_text(json.dumps({'creator':'Dead Street project / original procedural sound design','seed':90117,'sample_rate':SR,'music_bpm':96,'sources':'All waveforms synthesized by tools/battle_audio/build_audio.py. No external music, recordings or purchased assets.'},indent=2))
 print('Built',len(list(R.glob('*.wav'))),'original WAV assets')
+
+# Preserve the approved weapon and apartment revisions on a complete rebuild.
+import subprocess,sys
+for script in ['refine_weapons.py','build_apartment_trap.py']:
+ subprocess.run([sys.executable,str(Path(__file__).with_name(script))],check=True)
+metadata=json.loads((R/'SOURCE.json').read_text())
+metadata.update(music_bpm=72,music_revision='APARTMENT_TRAP.json',weapon_revision='WEAPON_REVISION.json',sources='All waveforms are original synthesis. build_audio.py rebuilds the base ambience/foley and then applies refine_weapons.py and build_apartment_trap.py. No external recordings or music.')
+(R/'SOURCE.json').write_text(json.dumps(metadata,indent=2))

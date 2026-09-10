@@ -78,7 +78,7 @@ func run():
  verify(runtime.game_flow_controller.get_current_mode()=="tactical_pending_handoff","result enters pending handoff")
  runtime._process(10.)
  verify(runtime.game_flow_controller.get_current_mode()=="tactical_pending_handoff","result remains until Continue")
- director._process(4.);director.continue_button.pressed.emit();runtime._process(.1)
+ director._process(director.outro.duration+2.);director.continue_button.pressed.emit();runtime._process(.1)
  verify(runtime.game_flow_controller.get_current_mode()=="campaign","Continue returns to campaign")
  print("PRESENTATION_VALIDATION checks=",checks," problems=",problems)
  FileAccess.open("res://tools/battle_showcase/results/presentation_checks.json",FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"problems":problems},"  "))
