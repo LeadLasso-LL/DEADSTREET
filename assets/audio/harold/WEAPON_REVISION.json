@@ -1,67 +1,110 @@
 {
-  "revision": 3,
+  "revision": 4,
   "source": "Original procedural waveforms; no external samples",
-  "seed": 20260910,
+  "seed": 20260911,
+  "identities": {
+    "smg": "Short, midrange mechanical bark; fast cutoff for repeated fire.",
+    "pistol": "Compact, rounded pressure pop with a restrained slide click.",
+    "rifle": "Sharp broadband crack over a rough, forceful low-mid report.",
+    "shotgun": "Wide, weighty blast with a longer low body and dry action detail."
+  },
   "assets": {
     "smg_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -31.019731178207284,
-      "seconds": 0.85
+      "rms_dbfs": -26.96481211520641,
+      "energy_90_ms": 10.145833333333334,
+      "energy_centroid_hz": 2179.3838533595585,
+      "seconds": 0.65,
+      "sha256": "618eb94a8fa5d344228d72a968e7ee82c4d5c1cba3cea3e473cc82e2f892d6e7"
     },
     "smg_1.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -33.961324108493166,
-      "seconds": 0.85
+      "rms_dbfs": -27.255955056064707,
+      "energy_90_ms": 9.208333333333334,
+      "energy_centroid_hz": 2270.0360859926063,
+      "seconds": 0.65,
+      "sha256": "7bb69429ddff4148a2c1740b04254f1d6232892fe03813bb74be63590746fb48"
     },
     "smg_2.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -33.64109467074997,
-      "seconds": 0.85
-    },
-    "rifle_0.wav": {
-      "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -32.00490947170388,
-      "seconds": 0.85
-    },
-    "rifle_1.wav": {
-      "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -31.736826288006817,
-      "seconds": 0.85
-    },
-    "rifle_2.wav": {
-      "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -31.981651184552003,
-      "seconds": 0.85
+      "rms_dbfs": -27.583931908715236,
+      "energy_90_ms": 8.791666666666666,
+      "energy_centroid_hz": 2299.086368630942,
+      "seconds": 0.65,
+      "sha256": "4d34cb70f28cbcd17f9ea5335caa2690e7c88f0d684fb4ac7207d0a9707d6376"
     },
     "pistol_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -33.0507941876933,
-      "seconds": 0.85
+      "rms_dbfs": -26.942170052617854,
+      "energy_90_ms": 15.979166666666666,
+      "energy_centroid_hz": 1128.7057776448523,
+      "seconds": 0.65,
+      "sha256": "7a73456222e66080c287fc1a21af83d4da21846b7b8dfca47c2d9534d2171610"
     },
     "pistol_1.wav": {
-      "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -33.186240294992835,
-      "seconds": 0.85
+      "peak_dbfs": -1.1103465569966284,
+      "rms_dbfs": -27.003286930139154,
+      "energy_90_ms": 16.5625,
+      "energy_centroid_hz": 1380.0735931994375,
+      "seconds": 0.65,
+      "sha256": "5612290d96a4ac84afbb1fd86129d7ef1fe9f6898ec1a2fe21d8fa5370e3ccf7"
     },
     "pistol_2.wav": {
+      "peak_dbfs": -1.1103465569966284,
+      "rms_dbfs": -26.027798672829533,
+      "energy_90_ms": 16.104166666666664,
+      "energy_centroid_hz": 1174.2132653501062,
+      "seconds": 0.65,
+      "sha256": "02fbd449e8e55977c2caf90c76c544018694456bf8b23dd5273e0bc4a7aa30a3"
+    },
+    "rifle_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -30.982604719293633,
-      "seconds": 0.85
+      "rms_dbfs": -22.536628827022298,
+      "energy_90_ms": 31.1875,
+      "energy_centroid_hz": 2806.0964063765227,
+      "seconds": 0.65,
+      "sha256": "def37b5ef53b69ce124ece9f75d8590abe95a058c71fd7f7c638dab378cf9712"
+    },
+    "rifle_1.wav": {
+      "peak_dbfs": -1.1103465569966273,
+      "rms_dbfs": -22.05433105346645,
+      "energy_90_ms": 25.541666666666668,
+      "energy_centroid_hz": 2208.1175637450524,
+      "seconds": 0.65,
+      "sha256": "3ceeef9d9b7d62d06572eb8d182a0d6ccce9162e4c368b60d824b735a416dc3b"
+    },
+    "rifle_2.wav": {
+      "peak_dbfs": -1.1103465569966273,
+      "rms_dbfs": -22.870065763142577,
+      "energy_90_ms": 30.083333333333332,
+      "energy_centroid_hz": 3160.112261585116,
+      "seconds": 0.65,
+      "sha256": "7e895b23897bb7b9f8edbfa1b4bca5801a7b7df2b08e9cc5e095200941f1ff3d"
     },
     "shotgun_0.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -29.953426772140705,
-      "seconds": 0.85
+      "rms_dbfs": -18.105497265199794,
+      "energy_90_ms": 62.14583333333333,
+      "energy_centroid_hz": 815.74428807662,
+      "seconds": 0.65,
+      "sha256": "efe8604e2f55689bcbdf9a652faae7fd7b12969f5c1908d1e36353c3a83bdb64"
     },
     "shotgun_1.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -31.666751072178986,
-      "seconds": 0.85
+      "rms_dbfs": -18.1770761487399,
+      "energy_90_ms": 63.895833333333336,
+      "energy_centroid_hz": 771.6673385836016,
+      "seconds": 0.65,
+      "sha256": "af12b86beaca0e831344ef931f0e7dc09c51d9be31215fc61f078f8669da5ebd"
     },
     "shotgun_2.wav": {
       "peak_dbfs": -1.1103465569966273,
-      "rms_dbfs": -28.62898335590616,
-      "seconds": 0.85
+      "rms_dbfs": -18.417376794817784,
+      "energy_90_ms": 57.020833333333336,
+      "energy_centroid_hz": 834.139001510697,
+      "seconds": 0.65,
+      "sha256": "634192196e99331cdfe5757c7aa038673dc82e0365b5fd61fde04f03c67c3801"
     }
-  }
+  },
+  "preserved_other_wav_files": 11
 }
