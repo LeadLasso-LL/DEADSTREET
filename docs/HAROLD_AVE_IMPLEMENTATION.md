@@ -1,6 +1,6 @@
 # Harold Ave. — first map implementation
 
-2026-09-10. Visual candidate for user review, not final visual acceptance.
+2026-09-10. **VISUALLY ACCEPTED by Brandon through commit `139d10c`.** The complete street pass and corrected arrival sedan are the approved baseline for future maps. See [MAP_BUILDING_STANDARD.md](MAP_BUILDING_STANDARD.md) for consolidated rules, reusable construction workflow and versioned visual references. Earlier candidate/pending-verdict statements below are chronological history and are superseded for this checkpoint; separate feature and performance follow-ups remain open.
 
 Implemented: separate Harold street catalog; reusable brick/window/store/stoop/cutaway renderer derived from first street asset style; 12 curbside parked vehicles facing west on north curb and east on south curb; clear center road with actual arriving campaign vehicle; alley mouth, dumpsters, service props; nighttime lights and lit windows; green street sign; fixed left defender/right attacker deployment for first map review; local street gang defending and Russian mafia attacking.
 

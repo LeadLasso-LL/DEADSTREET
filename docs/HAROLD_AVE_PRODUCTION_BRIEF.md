@@ -1,6 +1,8 @@
 # Harold Ave. / Mercer Heights — accepted product brief
 2026-09-10. These are product decisions, not claims of implemented features.
 
+**Map-art acceptance:** Brandon approved the complete Harold street pass through `139d10c`, including the final arrival-car correction, as the baseline for future maps. [MAP_BUILDING_STANDARD.md](MAP_BUILDING_STANDARD.md) consolidates the accepted visual rules, reuse workflow and reference captures. Deployment/arrival milestones below retain their separate implementation status.
+
 ## Purpose and style
 First repeatable production street, establishing reusable buildings, props, scale, projection, cover/collision, contextual placement and lighting for future city blocks. Match the first detailed gritty pixel street study. Inspect at normal/close battle zoom. Avoid ambiguous shapes, stretched props, excessive pixel chunks, bright pasted-on units, or pristine streets.
 Dense, poor, grimy, inhabited, older brick neighborhood. Maintained poorly, not abandoned. Patched asphalt, dirt, graffiti, rubbish collected at curbs/bins/service areas. Many parked cars on both sides, correctly facing traffic with realistic spacing and unblocked access. Combat width slightly exaggerated from a narrow neighborhood road.
