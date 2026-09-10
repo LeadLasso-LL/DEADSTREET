@@ -250,6 +250,7 @@ var dynamic_asset_root: Node2D = null
 var dynamic_unit_root: Node2D = null
 var environment_presenter: TacticalEnvironmentPresenter = null
 var actor_presenter: TacticalActorPresenter = null
+var battle_presentation: Node = null
 var static_redraw_requests: int = 0
 var dynamic_redraw_requests: int = 0
 var _cached_static_stamp: String = ""
@@ -263,6 +264,9 @@ func _ready() -> void:
 	var command_hud=preload("res://gameplay/tactical_command_hud.gd").new()
 	hud_layer.add_child(command_hud)
 	command_hud.setup(self)
+	battle_presentation=preload("res://gameplay/tactical_battle_presentation.gd").new()
+	add_child(battle_presentation)
+	battle_presentation.setup(self)
 	_ensure_layers()
 	_ensure_camera()
 	if _camera != null:
@@ -723,7 +727,7 @@ func _frame_camera() -> void:
 	var hud_screen: float = 0.0
 	if _unit_hud_visible(_battle_state()):
 		hud_screen = UNIT_HUD_CARD_HEIGHT + UNIT_HUD_PAD * 2.0
-		if _is_dusk_street() and _battle_state().battle_phase in ["active","resolved"]:hud_screen=180.0*viewport_size.x/1152.0
+		if _is_dusk_street():hud_screen=180.0*viewport_size.x/1152.0
 	var usable: Vector2 = Vector2(viewport_size.x, maxf(viewport_size.y - hud_screen, 1.0))
 	_camera.position = view_rect.get_center()
 	var zoom_x: float = usable.x / maxf(view_rect.size.x, 1.0)
@@ -1383,6 +1387,7 @@ func _ensure_surface_cache(geometry: BattlefieldGeometry) -> void:
 
 
 func _draw_deployment_zones(battle_state: BattleState) -> void:
+	if battle_presentation!=null and battle_presentation.stage in ["arrival","ready"]:return
 	if battle_state.battle_phase != "deployment":
 		return
 	var attacker_committed: bool = battle_state.is_side_deployment_committed(battle_state.attacker_side_id)
@@ -2672,6 +2677,7 @@ func _inset_view_rect(view_rect: Rect2, inset_x: float, inset_y: float) -> Rect2
 
 
 func _draw_cover(battle_state: BattleState) -> void:
+	if battle_presentation!=null and battle_presentation.stage in ["arrival","ready"]:return
 	if not DEBUG_DRAW_COVER_SLOTS:
 		return
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
@@ -3159,6 +3165,7 @@ func _draw_arrival_wheels(view_corners: PackedVector2Array) -> void:
 
 
 func _draw_overlay() -> void:
+	if battle_presentation!=null and battle_presentation.stage in ["arrival","ready"]:return
 	_roster_hits.clear()
 	if not DEBUG_DRAW_DEVELOPER_OVERLAY:
 		return
@@ -3996,6 +4003,7 @@ func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) 
 
 
 func _draw_cover_object_hover(battle_state: BattleState) -> void:
+	if battle_presentation!=null and battle_presentation.stage in ["arrival","ready"]:return
 	if battle_state == null:
 		return
 	if battle_state.battle_phase == "active":
@@ -4077,6 +4085,7 @@ func _rebuild_unit_hud_hits() -> void:
 
 
 func _draw_unit_hud(battle_state: BattleState) -> void:
+	if battle_presentation!=null and battle_presentation.stage in ["arrival","ready"]:return
 	if _is_dusk_street() and battle_state.battle_phase in ["active","resolved"]:
 		_unit_hud_hits.clear()
 		return

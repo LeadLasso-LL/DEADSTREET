@@ -1,5 +1,6 @@
 results/
 transfer/
+transfer_audio/
 __pycache__/
 *.uid
 *.log

@@ -22,6 +22,7 @@ var sample_seeds: Array[int]=[]
 var sample_results=[]
 var recording=false
 var prelude=0.
+var battle_started=false
 var title: Label
 var subtitle: Label
 func _initialize():
@@ -30,17 +31,17 @@ func _initialize():
   if arg.begins_with("--seed="):seed_value=int(arg.split("=")[1])
   if arg=="--hold":hold=true
   if arg=="--recording":recording=true
-  if arg=="--sample":fast=true;sample_seeds.assign([2001,2002,2003,2004,2005,2006])
+  if arg=="--sample":fast=true;sample_seeds.assign([2002,2003,2005])
  DirAccess.make_dir_recursive_absolute(out)
  call_deferred("start")
 func start():
  if fast and not sample_seeds.is_empty():seed_value=sample_seeds.pop_front()
  runtime=load("res://gameplay/gameplay_runtime.tscn").instantiate();root.add_child(runtime)
  await process_frame
- var result=Scenario.setup(runtime,seed_value)
+ var result=Scenario.setup(runtime,seed_value,not fast)
  if not result.has("battle"):push_error("SHOWCASE_FAILED "+str(result));quit(1);return
  battle=result.battle
- if recording:make_recording_title()
+
  for p in battle.participants.values():positions[p.participant_id]=p.battle_position;distances[p.participant_id]=0.
  active=true
  print("SHOWCASE_READY seed=",seed_value," roster=",result.roster)
@@ -67,35 +68,28 @@ func step(dt: float):
   last_states[id]=state
 func _process(_delta: float) -> bool:
  if not active:return false
- if recording and prelude<2.:
-  prelude+=1./30.;return false
- if recording:
-  title.text="DEAD STREET"
-  subtitle.text="ORLOV BRATVA  vs  MERCER SAINTS   /   4v4"
-  if battle.battle_phase=="resolved":
-   subtitle.text=("MERCER SAINTS HOLD THE BLOCK" if battle.get_winning_side_id()==battle.defender_side_id else "ORLOV BRATVA TAKE THE BLOCK")
+ if not battle_started:
+  if fast:battle_started=true
+  else:
+   var director=runtime.get_node("TacticalBattleView").battle_presentation
+   for moment in [1.,3.5,5.7,8.5]:
+    var key="intro_"+str(moment)
+    if director.clock>=moment and not captured.has(key):captured[key]=true;capture(key)
+   if director.stage=="ready" and director.ready_clock>.7:
+    var began=runtime.begin_current_battle();battle_started=began!=null and began.success
+   return false
  for i in range(12 if fast else 1):
   step(1./30.)
-  if time>=65. or elapsed_after>=3.5:
+  if not fast and elapsed_after>=5. and not captured.has("results"):captured["results"]=true;capture("results")
+  if time>=65. or elapsed_after>=9.:
    if hold:
     if not captured.has("held"):captured["held"]=true;save_report();capture("final")
     active=false;root.title="Dead Street - 4v4 showcase review (paused)";return false
    finish();return false
  if not fast:
-  for second in [1,5,10,20,30]:
+  for second in [1,5,10,20,30,40]:
    if time>=second and not captured.has(second):captured[second]=true;capture(str(second))
  return false
-func make_recording_title():
- var layer=CanvasLayer.new();layer.layer=40;root.add_child(layer)
- var box=Panel.new();layer.add_child(box);box.position=Vector2(24,18);box.size=Vector2(386,64)
- var theme=StyleBoxFlat.new();theme.bg_color=Color(.05,.08,.09,.88);theme.border_color=Color("#706b54");theme.border_width_bottom=2
- box.add_theme_stylebox_override("panel",theme)
- var font=SystemFont.new();font.font_names=PackedStringArray(["Arial"]);font.font_weight=700
- title=Label.new();box.add_child(title);title.position=Vector2(14,7);title.text="DEAD STREET  /  HAROLD APARTMENTS"
- title.add_theme_font_override("font",font);title.add_theme_font_size_override("font_size",16);title.add_theme_color_override("font_color",Color("#e5dfc8"))
- subtitle=Label.new();box.add_child(subtitle);subtitle.position=Vector2(14,33);subtitle.text="ORLOV BRATVA  vs  MERCER SAINTS   /   4v4"
- subtitle.add_theme_font_override("font",font);subtitle.add_theme_font_size_override("font_size",12);subtitle.add_theme_color_override("font_color",Color("#a3b2aa"))
- box.scale=Vector2.ONE*root.get_visible_rect().size.x/1152.
 func capture(name: String):
  await RenderingServer.frame_post_draw
  root.get_texture().get_image().save_png(out+"/seed_%d_%s.png"%[seed_value,name])
@@ -106,7 +100,7 @@ func save_report() -> Dictionary:
   deaths[p.side_id]=int(deaths.get(p.side_id,0))+(0 if p.is_alive else 1)
   variants[p.participant_id]="backward" if absi(p.participant_id.hash())%2==0 else "original"
   max_distance=maxf(max_distance,float(distances[p.participant_id]))
- var report={"seed":seed_value,"duration":battle.elapsed_time_seconds,"phase":battle.battle_phase,"winner":battle.get_winning_side_id(),"alive":alive,"deaths":deaths,"shots":seen.size(),"transitions":transitions,"distance":distances,"cover_ticks":cover_ticks,"death_variants":variants,"events":events}
+ var report={"seed":seed_value,"duration":battle.elapsed_time_seconds,"phase":battle.battle_phase,"winner":battle.get_winning_side_id(),"alive":alive,"deaths":deaths,"shots":seen.size(),"transitions":transitions,"distance":distances,"cover_ticks":cover_ticks,"death_variants":variants,"events":events,"audio_shots":runtime.get_node("TacticalBattleView").battle_presentation.sound.shots_played,"results":runtime.get_node("TacticalBattleView").battle_presentation.result_snapshot}
  FileAccess.open(out+"/seed_%d.json"%seed_value,FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
  print("SHOWCASE_RESULT ",seed_value," duration=",report.duration," alive=",alive," shots=",seen.size()," max_travel=",max_distance)
  return report
@@ -116,7 +110,8 @@ func finish():
  if fast:
   sample_results.append({"seed":seed_value,"duration":report.duration,"phase":report.phase,"alive":report.alive,"shots":report.shots,"wound_death_events":transitions.size(),"cover_ticks":cover_ticks})
   if not sample_seeds.is_empty():
-   runtime.queue_free();time=0.;elapsed_after=0.;seen={};events=[];transitions=[];last_states={};distances={};positions={};cover_ticks=0;captured={}
+   runtime.queue_free();battle_started=false;time=0.;elapsed_after=0.;seen={};events=[];transitions=[];last_states={};distances={};positions={};cover_ticks=0;captured={}
    call_deferred("start");return
   FileAccess.open(out+"/selection.json",FileAccess.WRITE).store_string(JSON.stringify(sample_results,"  "))
+ runtime.queue_free();await process_frame;await process_frame
  quit()

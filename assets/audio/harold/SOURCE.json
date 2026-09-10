@@ -1,0 +1,7 @@
+{
+  "creator": "Dead Street project / original procedural sound design",
+  "seed": 90117,
+  "sample_rate": 48000,
+  "music_bpm": 96,
+  "sources": "All waveforms synthesized by tools/battle_audio/build_audio.py. No external music, recordings or purchased assets."
+}

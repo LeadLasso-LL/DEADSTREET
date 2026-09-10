@@ -1,0 +1,38 @@
+[
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 2
+    },
+    "cover_ticks": 5098,
+    "duration": 42.6333333333335,
+    "phase": "resolved",
+    "seed": 2002,
+    "shots": 52,
+    "wound_death_events": 11
+  },
+  {
+    "alive": {
+      "attacker": 0,
+      "defender": 3
+    },
+    "cover_ticks": 4774,
+    "duration": 39.166666666667,
+    "phase": "resolved",
+    "seed": 2003,
+    "shots": 50,
+    "wound_death_events": 9
+  },
+  {
+    "alive": {
+      "attacker": 2,
+      "defender": 4
+    },
+    "cover_ticks": 8351,
+    "duration": 65.0333333333322,
+    "phase": "active",
+    "seed": 2005,
+    "shots": 76,
+    "wound_death_events": 7
+  }
+]

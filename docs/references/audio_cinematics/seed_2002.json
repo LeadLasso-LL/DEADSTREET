@@ -1,0 +1,489 @@
+{
+  "alive": {
+    "attacker": 0,
+    "defender": 2
+  },
+  "audio_shots": 52,
+  "cover_ticks": 5098,
+  "death_variants": {
+    "player_showcase_shotgun": "original",
+    "player_soldier": "original",
+    "player_soldier_shotgun": "backward",
+    "player_soldier_smg": "original",
+    "rival_showcase_shotgun": "backward",
+    "rival_soldier": "backward",
+    "rival_soldier_rifle": "original",
+    "rival_soldier_shotgun": "original"
+  },
+  "deaths": {
+    "attacker": 4,
+    "defender": 2
+  },
+  "distance": {
+    "player_showcase_shotgun": 20.2734388466924,
+    "player_soldier": 9.63102688454092,
+    "player_soldier_shotgun": 35.4954886808991,
+    "player_soldier_smg": 19.8275942876935,
+    "rival_showcase_shotgun": 0.0,
+    "rival_soldier": 28.4592391410843,
+    "rival_soldier_rifle": 0.0,
+    "rival_soldier_shotgun": 11.5822913106531
+  },
+  "duration": 42.6333333333335,
+  "events": [
+    {
+      "source": "rival_soldier_rifle",
+      "time": 4.19999999999999,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 5.16666666666666,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 5.73333333333332,
+      "weapon": "smg",
+      "x": 26.25
+    },
+    {
+      "source": "player_soldier",
+      "time": 5.76666666666666,
+      "weapon": "rifle",
+      "x": 43.2351493835449
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 5.93333333333332,
+      "weapon": "smg",
+      "x": 26.25
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 6.13333333333332,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 6.13333333333332,
+      "weapon": "smg",
+      "x": 26.25
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 6.69999999999999,
+      "weapon": "smg",
+      "x": 26.25
+    },
+    {
+      "source": "rival_soldier",
+      "time": 6.73333333333332,
+      "weapon": "pistol",
+      "x": 17.9499988555908
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 7.19999999999998,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 7.26666666666665,
+      "weapon": "pistol",
+      "x": 49.0280876159668
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 7.69999999999998,
+      "weapon": "pistol",
+      "x": 47.475341796875
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 8.13333333333332,
+      "weapon": "pistol",
+      "x": 45.9225959777832
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 8.36666666666665,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 8.53333333333331,
+      "weapon": "smg",
+      "x": 26.1499996185303
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 8.56666666666665,
+      "weapon": "pistol",
+      "x": 44.3698501586914
+    },
+    {
+      "source": "player_soldier_smg",
+      "time": 8.56666666666665,
+      "weapon": "smg",
+      "x": 37.8953018188477
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 8.73333333333331,
+      "weapon": "smg",
+      "x": 26.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 9.16666666666664,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier",
+      "time": 9.23333333333331,
+      "weapon": "pistol",
+      "x": 24.7067985534668
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 10.1333333333333,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 11.1,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 12.0666666666666,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 13.0333333333333,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 14.0,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 14.2,
+      "weapon": "smg",
+      "x": 26.1499996185303
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 14.4,
+      "weapon": "smg",
+      "x": 26.1499996185303
+    },
+    {
+      "source": "rival_soldier_shotgun",
+      "time": 14.6,
+      "weapon": "smg",
+      "x": 26.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 14.9666666666666,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "player_showcase_shotgun",
+      "time": 25.6666666666671,
+      "weapon": "shotgun",
+      "x": 39.8499984741211
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 25.6666666666671,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier",
+      "time": 28.4000000000006,
+      "weapon": "pistol",
+      "x": 39.8730354309082
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 28.4666666666672,
+      "weapon": "pistol",
+      "x": 41.6499977111816
+    },
+    {
+      "source": "rival_soldier",
+      "time": 28.8333333333339,
+      "weapon": "pistol",
+      "x": 40.246280670166
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 28.9000000000006,
+      "weapon": "pistol",
+      "x": 41.6499977111816
+    },
+    {
+      "source": "player_showcase_shotgun",
+      "time": 29.2666666666673,
+      "weapon": "shotgun",
+      "x": 39.8499984741211
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 29.2666666666673,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier",
+      "time": 29.8000000000006,
+      "weapon": "pistol",
+      "x": 41.0750007629395
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 29.833333333334,
+      "weapon": "pistol",
+      "x": 41.6499977111816
+    },
+    {
+      "source": "player_showcase_shotgun",
+      "time": 30.4666666666673,
+      "weapon": "shotgun",
+      "x": 39.8499984741211
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 30.4666666666673,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 34.7666666666673,
+      "weapon": "pistol",
+      "x": 39.2706642150879
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 35.2000000000006,
+      "weapon": "pistol",
+      "x": 37.8504753112793
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 35.6333333333339,
+      "weapon": "pistol",
+      "x": 36.4302864074707
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 36.0333333333339,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 36.0666666666672,
+      "weapon": "pistol",
+      "x": 35.0100975036621
+    },
+    {
+      "source": "player_soldier_shotgun",
+      "time": 36.5000000000005,
+      "weapon": "pistol",
+      "x": 33.5899085998535
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 36.6666666666671,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 37.3000000000004,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 37.9333333333337,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 40.4333333333336,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    },
+    {
+      "source": "rival_soldier_rifle",
+      "time": 42.6333333333335,
+      "weapon": "rifle",
+      "x": 12.1499996185303
+    }
+  ],
+  "phase": "resolved",
+  "results": {
+    "attacker": [
+      {
+        "health_width": 0.0,
+        "id": "player_soldier_smg",
+        "role": "SMG 1",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI  /  T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "player_soldier",
+        "role": "RIFLE 1",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AK-47  /  T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "player_soldier_shotgun",
+        "role": "PISTOL 1",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17  /  T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "player_showcase_shotgun",
+        "role": "SHOTGUN 1",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870  /  T1"
+      }
+    ],
+    "defender": [
+      {
+        "health_width": 0.0,
+        "id": "rival_soldier_shotgun",
+        "role": "SMG 1",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI  /  T1"
+      },
+      {
+        "health_width": 123.0,
+        "id": "rival_soldier_rifle",
+        "role": "RIFLE 1",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AK-47  /  T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "rival_soldier",
+        "role": "PISTOL 1",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17  /  T1"
+      },
+      {
+        "health_width": 68.879997253418,
+        "id": "rival_showcase_shotgun",
+        "role": "SHOTGUN 1",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "REMINGTON 870  /  T1"
+      }
+    ]
+  },
+  "seed": 2002,
+  "shots": 52,
+  "transitions": [
+    {
+      "side": "attacker",
+      "state": "wounded",
+      "time": 6.69999999999999,
+      "unit": "player_soldier"
+    },
+    {
+      "side": "attacker",
+      "state": "dead",
+      "time": 6.73333333333332,
+      "unit": "player_soldier"
+    },
+    {
+      "side": "attacker",
+      "state": "wounded",
+      "time": 14.2,
+      "unit": "player_soldier_smg"
+    },
+    {
+      "side": "attacker",
+      "state": "dead",
+      "time": 14.9666666666666,
+      "unit": "player_soldier_smg"
+    },
+    {
+      "side": "defender",
+      "state": "dead",
+      "time": 25.6666666666671,
+      "unit": "rival_soldier_shotgun"
+    },
+    {
+      "side": "defender",
+      "state": "wounded",
+      "time": 29.2666666666673,
+      "unit": "rival_soldier"
+    },
+    {
+      "side": "attacker",
+      "state": "wounded",
+      "time": 30.4666666666673,
+      "unit": "player_showcase_shotgun"
+    },
+    {
+      "side": "defender",
+      "state": "dead",
+      "time": 30.4666666666673,
+      "unit": "rival_soldier"
+    },
+    {
+      "side": "attacker",
+      "state": "wounded",
+      "time": 36.6666666666671,
+      "unit": "player_soldier_shotgun"
+    },
+    {
+      "side": "attacker",
+      "state": "dead",
+      "time": 37.9333333333337,
+      "unit": "player_soldier_shotgun"
+    },
+    {
+      "side": "attacker",
+      "state": "dead",
+      "time": 42.6333333333335,
+      "unit": "player_showcase_shotgun"
+    }
+  ],
+  "winner": "defender"
+}

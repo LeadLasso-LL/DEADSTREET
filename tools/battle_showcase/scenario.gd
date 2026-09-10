@@ -8,7 +8,7 @@ const AI = preload("res://battle/ai/battle_deployment_ai_service.gd")
 const Force = preload("res://battle/core/battle_force_command_service.gd")
 const HudQuery = preload("res://gameplay/tactical_unit_hud_query.gd")
 
-static func setup(runtime: Node,seed_value: int) -> Dictionary:
+static func setup(runtime: Node,seed_value: int,defer_start: bool=false) -> Dictionary:
  var state=runtime.game_state
  Starter._add_keep_soldier(state,"player_showcase_shotgun","shotgun",1.3,25.)
  Starter._add_hq_soldier(state,"rival_showcase_shotgun","shotgun",1.3,25.)
@@ -28,7 +28,8 @@ static func setup(runtime: Node,seed_value: int) -> Dictionary:
  battle.apply_combat_seed(seed_value)
  var controller=runtime.tactical_deployment_controller
  var occupied: Array[Vector2]=[]
- var preferred={"rifle":Vector2(44,30),"smg":Vector2(47,30),"pistol":Vector2(50,30),"shotgun":Vector2(43,27.5)}
+ var preferred={"rifle":Vector2(49,26),"smg":Vector2(54.15,33.35),"pistol":Vector2(60,26),"shotgun":Vector2(50,33)}
+ var cover_for={"rifle":"cover_north_car_4","smg":"cover_south_car_5","pistol":"cover_north_car_5","shotgun":"cover_south_car_4"}
  var participant_ids=battle.participants.keys()
  participant_ids.sort()
  for id in participant_ids:
@@ -50,7 +51,9 @@ static func setup(runtime: Node,seed_value: int) -> Dictionary:
      placed=controller.try_place_selected(point)
      if placed!=null and placed.success:ok=true;break
    if not ok:return {"error":"placement "+id}
-  occupied.append(point)
+  var cover=controller.try_place_selected_cover(cover_for[p.weapon_type])
+  if cover==null or not cover.success:return {"error":"starting cover "+id}
+  occupied.append(battle.get_participant(id).battle_position)
  var committed=controller.try_commit_attacker()
  if committed==null or not committed.success:return {"error":"attacker commit"}
  for side in [battle.attacker_side_id,battle.defender_side_id]:
@@ -71,10 +74,12 @@ static func setup(runtime: Node,seed_value: int) -> Dictionary:
  var nav=preload("res://battle/navigation/battle_navigation_service.gd")
  for p in battle.participants.values():
   if not nav.is_reachable(battle,p.battle_position,Vector2(40,30)):return {"error":"unreachable start "+p.participant_id}
- var begin=runtime.begin_current_battle()
- if begin==null or not begin.success:return {"error":"begin"}
+ if not defer_start:
+  runtime.skip_battle_cinematics=true
+  var begin=runtime.begin_current_battle()
+  if begin==null or not begin.success:return {"error":"begin"}
  runtime.set_process(false)
- command(battle,battle.attacker_side_id,"push")
+ command(battle,battle.attacker_side_id,"hold")
  var view=runtime.get_node("TacticalBattleView")
  view._dusk_zoom=1.30;view._dusk_pan=Vector2(-5,-30);view._frame_camera()
  return {"battle":battle,"roster":counts,"seed":seed_value}
@@ -90,14 +95,14 @@ static func direct(runtime,battle,t: float,previous: float) -> void:
  if previous<15. and t>=15.:command(battle,battle.attacker_side_id,"push")
  if previous<28. and t>=28.:command(battle,battle.defender_side_id,"push")
 
- # Authored maneuvers for this recording only, issued through the same movement orders as play.
- for timing in [2.,9.,17.,26.]:
+ # Bounding advances use actual cover orders, not a rush across the open road.
+ for timing in [4.,14.,24.]:
   if previous<timing and t>=timing:
-   var points={"rifle":Vector2(35 if timing<10 else 27,30),"smg":Vector2(36 if timing<10 else 26,27.8),"pistol":Vector2(38 if timing<10 else 27,21.5),"shotgun":Vector2(36 if timing<10 else 25,22)}
+   var cover_targets={"rifle":"cover_north_car_3","smg":"cover_south_car_3","pistol":"cover_north_bin_east","shotgun":"cover_south_bin_east"} if timing<10 else {"rifle":"cover_north_car_2","smg":"cover_south_car_2","pistol":"cover_service_cabinet","shotgun":"cover_south_car_3"}
    for p in battle.participants.values():
     if p.side_id!=battle.attacker_side_id or not p.is_alive or p.is_wounded:continue
     if runtime.tactical_orders_controller.select_participant(p.participant_id):
-     runtime.tactical_orders_controller.issue_move(points[p.weapon_type])
+     runtime.tactical_orders_controller.issue_cover(cover_targets[p.weapon_type])
    runtime.tactical_orders_controller.clear_selection()
  # Release the defenders' individual anchors for a late counterattack if the fight continues.
  if previous<24. and t>=24.:
@@ -110,3 +115,13 @@ static func direct(runtime,battle,t: float,previous: float) -> void:
     preload("res://battle/geometry/battle_cover_service.gd").release_all_for_participant(battle,p.participant_id)
     p.set_navigation_path(path.destination,path.waypoints,p.NAVIGATION_SOURCE_EXTERNAL)
     p.set_player_move_intent()
+
+ # A late close-range push breaks a cover stalemate using ordinary move orders.
+ for timing in [34.,42.,50.]:
+  if previous<timing and t>=timing:
+   command(battle,battle.attacker_side_id,"push")
+   for p in battle.participants.values():
+    if p.side_id!=battle.attacker_side_id or not p.is_alive or p.is_wounded:continue
+    if runtime.tactical_orders_controller.select_participant(p.participant_id):
+     runtime.tactical_orders_controller.issue_move(Vector2(32. if timing<40 else 20.,28. if p.weapon_type in ["rifle","smg"] else 21.5))
+   runtime.tactical_orders_controller.clear_selection()

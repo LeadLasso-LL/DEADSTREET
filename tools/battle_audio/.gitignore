@@ -1,0 +1,4 @@
+emblem_transfer/
+__pycache__/
+*.log
+install_emblems.py

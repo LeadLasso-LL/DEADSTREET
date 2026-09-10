@@ -651,6 +651,7 @@ func spilled_rubbish(q: Vector2,sz: Vector2) -> void:
 	line(bottle+Vector2(2,1.4),bottle+Vector2(2.7,1.8),Color("#7b8d62"),.65)
 	metal_oval(mouth+Vector2(7,-1),Vector2(1.2,.65),Color("#899581"))
 
+var door_open: float = 1.0
 func street_car(q: Vector2,sz: Vector2) -> void:
 	var end=Vector2(q.x+sz.x/2,q.y+sz.y+1)
 	var arrival=prop[0]=="arrival_car"
@@ -659,9 +660,9 @@ func street_car(q: Vector2,sz: Vector2) -> void:
 	if arrival:street_prop_shadow(q,sz)
 	draw_set_transform(end,0,Vector2(facing,1.10))
 	var height=sz.x*float(textures["burgundy_sedan"].get_height())/float(textures["burgundy_sedan"].get_width())
-	if arrival:arrival_door(sz.x,height,false)
+	if arrival and door_open>.02:arrival_door(sz.x,height,false)
 	asset("burgundy_sedan",Vector2.ZERO,sz.x,Color.WHITE)
-	if arrival:
+	if arrival and door_open>.02:
 		# A small recessed doorway stays within the front passenger compartment.
 		var hinge=Vector2(sz.x*.205,-height*.17)
 		var opening=PackedVector2Array([hinge+Vector2(0,-height*.245),hinge+Vector2(-sz.x*.16,-height*.19),hinge+Vector2(-sz.x*.16,-.25),hinge])
@@ -689,7 +690,7 @@ func arrival_door(width: float,height: float,near_side: bool) -> void:
 	# Front door length and outward opening are projected from one hinged leaf.
 	# Short side panels and raked glazing match the elevated view of the sedan.
 	var hinge=Vector2(width*.205,-height*(.17 if near_side else .715))
-	var angle=deg_to_rad(36. if near_side else 48.)
+	var angle=deg_to_rad(36. if near_side else 48.)*door_open
 	var sign_y=1. if near_side else -1.
 	var leaf=Vector2(-cos(angle),sign_y*.75*sin(angle))*width*.175
 	var tip=hinge+leaf

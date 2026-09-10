@@ -25,6 +25,7 @@ var manual_playtest_serial: int = 0
 
 var _last_logged_mode: String = ""
 var _pending_manual_playtest_serial: int = 0
+var skip_battle_cinematics: bool = false
 var _pending_combat_seed_override: int = 0
 
 
@@ -62,6 +63,10 @@ func _process(delta: float) -> void:
 		and mode != GameFlowController.MODE_TACTICAL_PENDING_HANDOFF
 	):
 		return
+	var presentation_view=get_node_or_null("TacticalBattleView")
+	if mode==GameFlowController.MODE_TACTICAL_PENDING_HANDOFF and presentation_view!=null and presentation_view._is_dusk_street():
+		var presentation=presentation_view.battle_presentation
+		if presentation!=null and not presentation.results_acknowledged:return
 	game_flow_controller.advance_tactical(delta)
 	_sync_tactical_orders_pointer()
 	_log_mode_if_changed()
@@ -485,6 +490,12 @@ func begin_current_battle() -> GameFlowResult:
 			"null_controller",
 			"GameplayRuntime failed: GameFlowController is missing."
 		)
+	var presentation_view=get_node_or_null("TacticalBattleView")
+	if not skip_battle_cinematics and presentation_view!=null and presentation_view._is_dusk_street():
+		var presentation=presentation_view.battle_presentation
+		if presentation!=null:
+			presentation._process(0.)
+			if not presentation.can_start():return GameFlowResult.failed("arrival_not_ready","Finish deployment and arrival before starting combat.")
 	if tactical_deployment_controller != null:
 		tactical_deployment_controller.apply_pending_cover_to_live()
 	var result: GameFlowResult = game_flow_controller.begin_current_battle()
