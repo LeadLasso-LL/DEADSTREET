@@ -464,6 +464,7 @@ static func _try_execute_shot(
 	if attack_result == null or not attack_result.shot_executed:
 		combat_random.restore_state(previous_state)
 		return null
+	battle_state.cover_recovery[participant.participant_id] = {"time":battle_state.elapsed_time_seconds,"position":participant.battle_position,"check":0.}
 	return attack_result.attack_event
 
 
@@ -815,6 +816,8 @@ static func _update_healthy_role_cover_behavior(
 		_clear_no_role_cover_decision(participant)
 		_release_owned_reservation(battle_state, participant)
 		return HEALTHY_NONE
+	var recovery: String = _recover_stalled_cover(battle_state,participant,search_counts)
+	if not recovery.is_empty():return recovery
 	var weapon_type_id: String = _participant_weapon_type_id(participant)
 	var target: BattleParticipant = _healthy_current_target(battle_state, participant)
 	# A useful approach survives the closing-to-firing-range threshold.
@@ -3358,3 +3361,52 @@ static func _sorted_participant_ids(battle_state: BattleState) -> Array[String]:
 		ids.append(participant_id)
 	ids.sort()
 	return ids
+
+
+static func _recover_stalled_cover(b, p, searches: Dictionary) -> String:
+	var command=_participant_force_command_id(b,p)
+	if p.is_wounded or not p.player_tactical_intent.is_empty() or p.defend_position or command not in ["push","focus_left","focus_right"]:return ""
+	if AdaptiveTactics.autonomous_force(b,p) and not AdaptiveTactics.may_advance(b,p):return ""
+	var target=_healthy_current_target(b,p)
+	if target==null:return ""
+	# Once a safe bound is chosen, complete it before searching again.
+	if p.combat_move_mode=="recover_cover":
+		var slot=_reserved_cover_slot(b,p)
+		if slot!=null:
+			if BattleCoverService.is_at_slot(p,slot):
+				if BattleCoverService.occupy_slot(b,p.participant_id,slot.cover_slot_id).success:
+					_complete_successful_cover_occupation(b,p)
+					b.cover_recovery[p.participant_id]={"time":b.elapsed_time_seconds,"position":p.battle_position,"check":0.}
+					return HEALTHY_HOLD_COVER
+			elif _navigate_to_cover(b,p,slot,"recover_cover",target.participant_id,searches):return HEALTHY_SEEK_COVER
+		_release_owned_reservation(b,p)
+	var now=b.elapsed_time_seconds
+	var m=b.cover_recovery.get(p.participant_id,{"time":now,"position":p.battle_position,"check":0.})
+	if p.battle_position.distance_to(m.position)>.6:m.time=now;m.position=p.battle_position
+	b.cover_recovery[p.participant_id]=m
+	if now-float(m.time)<10. or now-float(m.check)<3.:return ""
+	m.check=now
+	var best=null;var score=INF
+	var distance=p.battle_position.distance_to(target.battle_position)
+	for slot in b.battlefield_geometry.cover_slots.values():
+		if slot.is_occupied() or slot.is_reserved():continue
+		var step=p.battle_position.distance_to(slot.position)
+		if step<2. or step>11.:continue
+		var remaining=slot.position.distance_to(target.battle_position)
+		if remaining>distance-2.:continue
+		if slot.facing_direction.dot((target.battle_position-slot.position).normalized())<.25:continue
+		var value=remaining+step*.4
+		if value>=score:continue
+		var path=BattleNavigationService.find_path(b,p.battle_position,slot.position)
+		if not path.success:continue
+		var length=0.;var previous: Vector2=p.battle_position
+		for point in path.waypoints:length+=previous.distance_to(point);previous=point
+		if length>14.:continue
+		best=slot;score=value
+	if best==null:return ""
+	_vacate_owned_cover(b,p)
+	if not _ensure_cover_reservation(b,p,best):return ""
+	b.strength_events.append({"time":now,"unit":p.participant_id,"order":command,"reason":"stalled_firing_position","cover":best.cover_object_id})
+	if b.strength_events.size()>128:b.strength_events.pop_front()
+	if _navigate_to_cover(b,p,best,"recover_cover",target.participant_id,searches):return HEALTHY_SEEK_COVER
+	return ""

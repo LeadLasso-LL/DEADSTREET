@@ -14,6 +14,7 @@ var foot_distance={}
 var reloads={}
 var battle_id=0
 var shots_played=0
+var gun_duck=0.
 func setup(p_view):
  view=p_view
  for name in ["city","apartment_beat","engine","door","reload","impact","start"]:
@@ -37,6 +38,9 @@ func set_engine(at: Vector2,running: bool,pitch: float=1.):
   if not engine.playing:engine.play()
  else:engine.stop()
 func _process(_delta):
+ gun_duck=maxf(0.,gun_duck-maxf(_delta,0.)*5.)
+ if city!=null:city.volume_db=-6.-gun_duck*2.5
+ if music!=null:music.volume_db=-15.-gun_duck*3.
  if view==null:return
  var b=view._battle_state();var active=enabled and view.visible and view._is_dusk_street() and b!=null
  if not active:
@@ -54,7 +58,7 @@ func _process(_delta):
   var p=b.get_participant(e.source_participant_id)
   if p==null:continue
   play(p.weapon_type+str(e.sequence_id%3),e.source_position if e.has_source_position else p.battle_position,-8. if p.weapon_type!="shotgun" else -6.5,e.sequence_id)
-  shots_played+=1
+  shots_played+=1;gun_duck=1.
   if e.trauma_applied>0:play("impact",e.target_position,-21.,e.sequence_id)
  for p in b.participants.values():
   var id=p.participant_id;var moved=p.battle_position.distance_to(positions.get(id,p.battle_position));positions[id]=p.battle_position

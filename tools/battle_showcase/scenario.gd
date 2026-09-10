@@ -8,7 +8,7 @@ const AI = preload("res://battle/ai/battle_deployment_ai_service.gd")
 const Force = preload("res://battle/core/battle_force_command_service.gd")
 const HudQuery = preload("res://gameplay/tactical_unit_hud_query.gd")
 
-static func setup(runtime: Node,seed_value: int,defer_start: bool=false) -> Dictionary:
+static func setup(runtime: Node,seed_value: int,defer_start: bool=false,arrival_choice: String="") -> Dictionary:
  var state=runtime.game_state
  Starter._add_keep_soldier(state,"player_showcase_shotgun","shotgun",1.3,25.)
  Starter._add_hq_soldier(state,"rival_showcase_shotgun","shotgun",1.3,25.)
@@ -27,12 +27,15 @@ static func setup(runtime: Node,seed_value: int,defer_start: bool=false) -> Dict
  var battle=session.battle_state
  battle.apply_combat_seed(seed_value)
  var controller=runtime.tactical_deployment_controller
+ if not arrival_choice.is_empty():
+  if not controller.choose_arrival(arrival_choice) or not controller.place_unplaced_in_cover():return {"error":"arrival choice "+arrival_choice}
  var occupied: Array[Vector2]=[]
  var preferred={"rifle":Vector2(49,26),"smg":Vector2(54.15,33.35),"pistol":Vector2(60,26),"shotgun":Vector2(50,33)}
  var cover_for={"rifle":"cover_north_car_4","smg":"cover_south_car_5","pistol":"cover_north_car_5","shotgun":"cover_south_car_4"}
  var participant_ids=battle.participants.keys()
  participant_ids.sort()
  for id in participant_ids:
+  if not arrival_choice.is_empty():break
   var p=battle.get_participant(id)
   if p.side_id!=battle.attacker_side_id:continue
   controller.select_participant(id)
@@ -55,7 +58,7 @@ static func setup(runtime: Node,seed_value: int,defer_start: bool=false) -> Dict
   if cover==null or not cover.success:return {"error":"starting cover "+id}
   occupied.append(battle.get_participant(id).battle_position)
  var committed=controller.try_commit_attacker()
- if committed==null or not committed.success:return {"error":"attacker commit"}
+ if committed==null or not committed.success:return {"error":"attacker commit "+str(committed.error_code)}
  for side in [battle.attacker_side_id,battle.defender_side_id]:
   if not battle.is_side_deployment_committed(side):
    var other=battle.defender_side_id if side==battle.attacker_side_id else battle.attacker_side_id

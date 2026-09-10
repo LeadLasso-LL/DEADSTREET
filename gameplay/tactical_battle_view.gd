@@ -4295,6 +4295,12 @@ func _sync_dusk_art() -> void:
 			if is_instance_valid(n): n.queue_free()
 		_dusk_nodes.clear()
 		return
+	# Geometry changes (arrival distance / doors) rebuild the surface presenter.
+	# Recreate authored scenery if its ground node was removed by that rebuild.
+	if not _dusk_nodes.is_empty() and (not is_instance_valid(_dusk_nodes[0]) or _dusk_nodes[0].is_queued_for_deletion()):
+		for n in _dusk_nodes:
+			if is_instance_valid(n) and not n.is_queued_for_deletion():n.queue_free()
+		_dusk_nodes.clear()
 	if not _dusk_nodes.is_empty(): return
 	var art = preload("res://gameplay/harold_street_art.gd")
 	var ground = art.new()

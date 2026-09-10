@@ -400,6 +400,9 @@ func _ensure_attacker_vehicles() -> void:
 		context
 	)
 	if result != null and result.success:
+		if battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
+			for v in battle_state.vehicles.values():
+				if v.side_id == battle_state.attacker_side_id:preload("res://battle/vehicles/battle_arrival_service.gd").ensure_doors(battle_state,v)
 		if result.placed_count > 0:
 			print(
 				"TacticalDeploymentController: auto-placed %s attacker vehicle(s)"
@@ -565,3 +568,31 @@ func _is_attacker_soldier_selectable(battle_state: BattleState, participant_id: 
 	if not participant.is_alive:
 		return false
 	return true
+
+
+func choose_arrival(choice: String) -> bool:
+	var b=_battle_state()
+	if not preload("res://battle/vehicles/battle_arrival_service.gd").choose(b,choice):return false
+	clear_selection()
+	status_text="%s ARRIVAL — PLACE YOUR UNITS" % choice.to_upper()
+	return true
+
+func place_unplaced_in_cover() -> bool:
+	var b=_battle_state()
+	if b==null or b.battle_phase!="deployment" or b.is_side_deployment_committed(b.attacker_side_id):return false
+	var objects=b.battlefield_geometry.cover_objects.keys()
+	objects.sort_custom(func(a,c):
+		var ad="__door_" in a;var cd="__door_" in c
+		return ad if ad!=cd else a<c
+	)
+	var ids=b.participants.keys();ids.sort()
+	for id in ids:
+		var p=b.get_participant(id)
+		if p.side_id!=b.attacker_side_id or not p.is_alive or p.has_battle_position:continue
+		select_participant(id)
+		var placed=false
+		for object in objects:
+			if resolve_deployment_cover_slot(b,id,object)==null:continue
+			if try_place_selected_cover(object).success:placed=true;break
+		if not placed:status_text="No free arrival cover for every unit.";return false
+	clear_selection();return true

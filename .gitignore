@@ -10,3 +10,9 @@ tools/character_pipeline/calib/
 # Character Factory generated dumps must never enter git.
 # Canonical outputs live under %LOCALAPPDATA%\DeadStreetCharacterFactory\
 tools/character_factory/.local/
+
+# Local Harold polish captures and working transfers
+tools/battle_polish/results/
+tools/battle_polish/transfer/
+tools/battle_polish/*.log
+tools/battle_polish/*.uid

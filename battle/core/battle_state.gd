@@ -877,3 +877,7 @@ func has_valid_geometry() -> bool:
 		_validated_cover_revision = battlefield_geometry.cover_slot_revision
 		_geometry_valid = battlefield_geometry.is_valid()
 	return _geometry_valid
+
+var arrival_choice: String = "medium"
+
+var cover_recovery: Dictionary = {}

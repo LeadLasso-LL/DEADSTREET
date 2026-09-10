@@ -35,6 +35,9 @@ var last_path_errors=[]
 var result_snapshot={}
 var results_acknowledged=false
 var continue_button: Button
+var deployment_panel: Panel
+var arrival_buttons={}
+var arrival_status: Label
 func setup(p_view):
  view=p_view;layer=35
  surface=Control.new();add_child(surface);surface.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -45,9 +48,24 @@ func setup(p_view):
  start_button.add_theme_font_override("font",font);start_button.add_theme_font_size_override("font_size",16)
  start_button.add_theme_stylebox_override("normal",Card.style(Color("#314b3d"),Color("#86a98a")))
  start_button.pressed.connect(func():view.get_parent().begin_current_battle())
+ deployment_panel=Panel.new();surface.add_child(deployment_panel);deployment_panel.position=Vector2(18,18);deployment_panel.size=Vector2(372,151)
+ deployment_panel.add_theme_stylebox_override("panel",Card.style(Color("#111b20"),Color("#59695f")))
+ Card.label(deployment_panel,Vector2(14,8),Vector2(340,18),"ARRIVAL DISTANCE",11,Color("#c9d2c4"),font)
+ var index=0
+ for choice in ["close","medium","far"]:
+  var button=Button.new();deployment_panel.add_child(button);button.text=choice.to_upper();button.position=Vector2(14+index*116,31);button.size=Vector2(108,28);button.toggle_mode=true;button.focus_mode=Control.FOCUS_NONE
+  button.pressed.connect(func():view.deployment_controller.choose_arrival(choice))
+  arrival_buttons[choice]=button;index+=1
+ var auto_button=Button.new();deployment_panel.add_child(auto_button);auto_button.text="AUTO COVER";auto_button.position=Vector2(14,108);auto_button.size=Vector2(166,28);auto_button.focus_mode=Control.FOCUS_NONE
+ auto_button.pressed.connect(func():view.deployment_controller.place_unplaced_in_cover())
+ var deploy_button=Button.new();deployment_panel.add_child(deploy_button);deploy_button.text="CONFIRM DEPLOYMENT";deploy_button.position=Vector2(190,108);deploy_button.size=Vector2(168,28);deploy_button.focus_mode=Control.FOCUS_NONE
+ deploy_button.pressed.connect(func():
+  if view.deployment_controller.place_unplaced_in_cover():view.deployment_controller.try_commit_attacker()
+ )
+ arrival_status=Card.label(deployment_panel,Vector2(14,68),Vector2(344,32),"",10,Color("#a6b1a5"),font)
  sound=preload("res://gameplay/tactical_battle_audio.gd").new();view.add_child(sound);sound.setup(view)
 func reset(b):
- battle=b;current_battle_id=b.get_instance_id();stage="deployment";clock=0.;end_clock=0.;routes={};door_played=false;start_played=false;ready_clock=0.;result_snapshot={};results_acknowledged=false
+ battle=b;current_battle_id=b.get_instance_id();stage="deployment";clock=0.;end_clock=0.;intro_duration=10.;routes={};door_played=false;start_played=false;ready_clock=0.;result_snapshot={};results_acknowledged=false
  attacker=Factions.for_side(b,b.attacker_side_id);defender=Factions.for_side(b,b.defender_side_id)
  for marker in markers.values():marker.queue_free()
  markers.clear()
@@ -64,7 +82,7 @@ func skip_to_ready():
 func begin_arrival():
  stage="arrival";clock=0.;routes={};last_path_errors=[];original_zoom=view._dusk_zoom;original_pan=view._dusk_pan
  if view.deployment_controller!=null:view.deployment_controller.apply_pending_cover_to_live()
- var arrival=Vector2(49,28)
+ var arrival=arrival_center()
  for v in battle.vehicles.values():
   if v.side_id==battle.attacker_side_id:arrival=v.battle_position;break
  var counts={battle.attacker_side_id:0,battle.defender_side_id:0}
@@ -72,7 +90,7 @@ func begin_arrival():
  for id in ids:
   var p=battle.get_participant(id);var n=int(counts[p.side_id]);counts[p.side_id]=n+1
   var attacking=p.side_id==battle.attacker_side_id
-  var origin=arrival+Vector2(-1.2,1.65 if n%2==0 else -1.65) if attacking else Vector2(25.,15.3)
+  var origin=arrival+Vector2(-.35 if n<2 else 1.05,1.95 if n%2==0 else -1.95) if attacking else Vector2(25.,15.3)
   var planned=Nav.find_path(battle,origin,p.battle_position)
   var points: Array[Vector2]=[origin]
   if planned.success:
@@ -93,6 +111,11 @@ func _process(delta):
  if not visible:return
  if current_battle_id!=b.get_instance_id():reset(b)
  var size=view.get_viewport_rect().size;var factor=size.x/1152.;surface.scale=Vector2.ONE*factor;surface.size=size/factor;shade.size=surface.size
+ deployment_panel.visible=stage=="deployment" and not all_committed()
+ for choice in arrival_buttons:
+  arrival_buttons[choice].set_pressed_no_signal(b.arrival_choice==choice)
+  arrival_buttons[choice].disabled=b.is_side_deployment_committed(b.attacker_side_id)
+ arrival_status.text={"close":"Closer contact. Less room before the first exchange.","medium":"Balanced approach with nearby street cover.","far":"More space to organize. A longer advance to contact."}.get(b.arrival_choice,"")
  if stage=="deployment" and b.battle_phase=="deployment" and all_committed():begin_arrival()
  if b.battle_phase=="active" and stage!="active":
   stage="active";routes={};sound.set_engine(Vector2.ZERO,false)
@@ -101,7 +124,7 @@ func _process(delta):
   stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results()
  if stage=="arrival":
   clock+=delta
-  if clock>=5.4 and not door_played:door_played=true;sound.play("door",Vector2(49,28),-11.)
+  if clock>=5.4 and not door_played:door_played=true;sound.play("door",arrival_center(),-11.)
   if clock>=intro_duration:stage="ready";ready_clock=0.;sound.set_engine(Vector2.ZERO,false)
  elif stage=="ready":ready_clock+=delta
  elif stage=="ending":
@@ -111,7 +134,7 @@ func _process(delta):
   result_root.modulate.a=smoothstep(1.5,2.7,end_clock)
   continue_button.disabled=end_clock<3.
  var expand=1.-smoothstep(2.6,4.4,clock) if stage=="arrival" else 0.
- context.expansion=expand;context.position=Vector2(18,18).lerp(Vector2(56,150),expand);context.size=Vector2(620,78).lerp(Vector2(1040,210),expand)
+ context.expansion=expand;context.position=Vector2(18,18).lerp(Vector2(56,150),expand);context.size=Vector2(476,78).lerp(Vector2(1040,210),expand)
  context.visible=stage!="deployment";context.queue_redraw()
  shade.color.a=.20*expand if stage=="arrival" else (.57*smoothstep(1.2,2.8,end_clock) if stage=="ending" else 0.)
  start_button.visible=stage=="ready";start_button.position=Vector2(471,surface.size.y-70)
@@ -202,13 +225,19 @@ class Context extends Control:
   var t=expansion
   draw_style_box(Card.style(Color(.055,.082,.094,.95),Color("#6c705e")),Rect2(Vector2.ZERO,size))
   var left=Rect2(Vector2(10,27).lerp(Vector2(30,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
-  var right=Rect2(Vector2(306,27).lerp(Vector2(650,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
+  var right=Rect2(Vector2(294,27).lerp(Vector2(650,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
   if p.attacker.emblem!=null:draw_texture_rect(p.attacker.emblem,left,false)
   if p.defender.emblem!=null:draw_texture_rect(p.defender.emblem,right,false)
   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
   draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),"MERCER HEIGHTS  /  HAROLD AVE.",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
   draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),p.attacker.name,HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(12,23,t)),ink)
-  draw_string(p.font,Vector2(355,45).lerp(Vector2(775,90),t),p.defender.name,HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(12,23,t)),ink)
+  draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),p.defender.name,HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(12,23,t)),ink)
   draw_string(p.font,Vector2(60,65).lerp(Vector2(155,147),t),"HAROLD APARTMENTS",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,17,t)),muted)
-  draw_string(p.font,Vector2(355,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
-  draw_string(p.font,Vector2(230,45).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+  draw_string(p.font,Vector2(343,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+  draw_string(p.font,Vector2(219,45).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+
+func arrival_center() -> Vector2:
+ if battle!=null:
+  for v in battle.vehicles.values():
+   if v.side_id==battle.attacker_side_id:return v.battle_position
+ return Vector2(49,28)

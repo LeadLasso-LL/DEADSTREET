@@ -1,0 +1,3544 @@
+[
+  {
+    "decisions": [
+      {
+        "force": "garrison:rival_hq",
+        "order": "push",
+        "reason": "sustained_advantage",
+        "share": 0.609925458922481,
+        "side": "defender",
+        "time": 17.8666666666667
+      }
+    ],
+    "max_quiet": 4.70000000000011,
+    "order": "push",
+    "phase": "resolved",
+    "samples": [
+      {
+        "time": 0.0333333333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(49.92451, 33.25672)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.0745, 24.65672)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.03, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 15.0333333333333,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(43.30761, 26.02387)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(37.64785, 20.01412)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(27.02571, 20.1854)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      }
+    ],
+    "seed": 2002,
+    "shots": 79,
+    "time": 27.9666666666672,
+    "winner": "defender"
+  },
+  {
+    "decisions": [],
+    "max_quiet": 164.399999999992,
+    "order": "push",
+    "phase": "active",
+    "samples": [
+      {
+        "time": 0.0333333333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(49.92451, 33.25672)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.0745, 24.65672)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.03, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 15.0333333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 0.19,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(43.43439, 28.4469)",
+            "target": "rival_soldier",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 30.0000000000007,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 45.0,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 60.0333333333325,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 75.0333333333316,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 90.0333333333308,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 105.03333333333,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 120.033333333329,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 135.033333333328,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 150.033333333327,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 165.033333333327,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 180.033333333326,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(44.2392, 28.04404)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(36.06736, 21.14058)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.96,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      }
+    ],
+    "seed": 2003,
+    "shots": 43,
+    "time": 180.033333333326,
+    "winner": ""
+  },
+  {
+    "decisions": [],
+    "max_quiet": 169.999999999992,
+    "order": "focus_right",
+    "phase": "active",
+    "samples": [
+      {
+        "time": 0.0333333333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(49.92451, 33.25672)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.0745, 24.65672)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.03, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 15.0333333333333,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 30.0000000000007,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 45.0,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 60.0333333333325,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 75.0333333333316,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 90.0333333333308,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 105.03333333333,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 120.033333333329,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 135.033333333328,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 150.033333333327,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 165.033333333327,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      },
+      {
+        "time": 180.033333333326,
+        "units": [
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(41.85424, 22.47396)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(33.87585, 24.29104)",
+            "target": "",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_bin_east_3",
+            "hp": 1.08,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(40.9, 36.525)",
+            "target": "rival_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_3_2",
+            "hp": 0.22,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(26.15, 24.75)",
+            "target": "player_soldier_smg",
+            "wounded": true
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier_smg",
+            "wounded": false
+          },
+          {
+            "alive": false,
+            "cover": "",
+            "hp": 0.0,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(28.59051, 26.34083)",
+            "target": "",
+            "wounded": true
+          }
+        ]
+      }
+    ],
+    "seed": 2005,
+    "shots": 47,
+    "time": 180.033333333326,
+    "winner": ""
+  },
+  {
+    "decisions": [],
+    "max_quiet": 180.033333333326,
+    "order": "hold",
+    "phase": "active",
+    "samples": [
+      {
+        "time": 0.0333333333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 15.0333333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 30.0000000000007,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 45.0,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 60.0333333333325,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 75.0333333333316,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 90.0333333333308,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 105.03333333333,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 120.033333333329,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 135.033333333328,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 150.033333333327,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 165.033333333327,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      },
+      {
+        "time": 180.033333333326,
+        "units": [
+          {
+            "alive": true,
+            "cover": "cover_south_car_4_3",
+            "hp": 1.5,
+            "id": "player_showcase_shotgun",
+            "intent": "",
+            "pos": "(50.0, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_4_3",
+            "hp": 1.5,
+            "id": "player_soldier",
+            "intent": "",
+            "pos": "(49.0, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_car_5_3",
+            "hp": 1.5,
+            "id": "player_soldier_shotgun",
+            "intent": "",
+            "pos": "(60.15, 24.75)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "",
+            "hp": 1.5,
+            "id": "player_soldier_smg",
+            "intent": "",
+            "pos": "(54.15, 33.35)",
+            "target": "rival_soldier_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_2_2",
+            "hp": 1.5,
+            "id": "rival_showcase_shotgun",
+            "intent": "",
+            "pos": "(22.15, 33.35)",
+            "target": "player_showcase_shotgun",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_north_bin_spilled_2",
+            "hp": 1.5,
+            "id": "rival_soldier",
+            "intent": "",
+            "pos": "(17.95, 21.525)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_south_car_1_2",
+            "hp": 1.5,
+            "id": "rival_soldier_rifle",
+            "intent": "",
+            "pos": "(12.15, 33.35)",
+            "target": "player_soldier",
+            "wounded": false
+          },
+          {
+            "alive": true,
+            "cover": "cover_stoop_east_2",
+            "hp": 1.5,
+            "id": "rival_soldier_shotgun",
+            "intent": "",
+            "pos": "(26.25, 19.35)",
+            "target": "player_soldier",
+            "wounded": false
+          }
+        ]
+      }
+    ],
+    "seed": 2011,
+    "shots": 0,
+    "time": 180.033333333326,
+    "winner": ""
+  }
+]
