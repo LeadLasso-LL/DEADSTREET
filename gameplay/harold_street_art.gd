@@ -39,12 +39,10 @@ func ground() -> void:
 		rect(Rect2(q+Vector2(0,1.5),Vector2(1152,1.2)),Color("#171f23"))
 	for x in range(-320,830,27):
 		for y in [173,175]:rect(Rect2(x,y,13,.65),Color("#897044"))
-	# Dry asphalt: aggregate, repaired utility cuts, cracks; no wet reflections.
+	# Dry asphalt: aggregate and cracks; no wet reflections.
 	for i in range(7500):
 		var q=Vector2(rng.randf_range(-70,580),rng.randf_range(140,209))
 		rect(Rect2(q,Vector2(.45,.35)),Color(.55,.55,.5,rng.randf_range(.035,.13)))
-	for patch in [Rect2(60,178,33,11),Rect2(185,157,39,9),Rect2(301,181,28,14),Rect2(420,161,42,13)]:
-		rect(patch,Color("#20272b"));draw_rect(patch,Color("#41433c"),false,.45)
 	for i in range(50):
 		var q=Vector2(rng.randf_range(0,512),rng.randf_range(141,208))
 		line(q,q+Vector2(3,1),Color("#151d21"),.5);line(q+Vector2(3,1),q+Vector2(5,-1),Color("#151d21"),.4)
@@ -88,11 +86,13 @@ func ground() -> void:
 		draw_colored_polygon(PackedVector2Array([q,q+Vector2(b.size.x*8,0),q+Vector2(b.size.x*8+3,b.size.y*6+4),q+Vector2(2,b.size.y*6+4)]),Color(.015,.022,.026,.6))
 func stairs(start: Vector2,w: float,depth: float) -> void:
 	var q=p(start);var width=w*8
-	for n in range(7):
-		var y=q.y+n*depth*6/7.-(7-n)*1.0
-		rect(Rect2(q.x,y,width,depth*6/7.+1),Color("#777468").darkened(n*.028))
-		line(Vector2(q.x,y),Vector2(q.x+width,y),Color("#a59c86"),.55)
-		line(Vector2(q.x+width-2,y),Vector2(q.x+width-4,y+1),Color("#4d5349"),.4)
+	var step_depth=(depth*6-3)/5.
+	for n in range(5):
+		var y=q.y+3+n*step_depth
+		rect(Rect2(q.x,y,width,step_depth-1.6),Color("#8a8270").darkened(n*.025))
+		rect(Rect2(q.x,y+step_depth-1.6,width,1.6),Color("#514e43"))
+		line(Vector2(q.x+1,y),Vector2(q.x+width-1,y),Color("#b0a28a"),.7)
+		if n==2:line(Vector2(q.x+4,y+1),Vector2(q.x+7,y+2),Color("#676351"),.5)
 func object_art() -> void:
 	var r: Rect2=prop[1];var q=p(r.position);var sz=Vector2(r.size.x*8,r.size.y*6)
 	match str(prop[2]):
@@ -169,14 +169,17 @@ func facade(q: Vector2,sz: Vector2,id: String) -> void:
 		rect(Rect2(door_x-15,base-48,30,4),Color("#8a795c"))
 		line(Vector2(door_x-15,base-44),Vector2(door_x+15,base-44),Color("#212c27"),1)
 		if seed_id==1:
-			rect(Rect2(q.x+20,base-57,sz.x-40,9),Color("#373e35"))
-			label(Vector2(q.x+21,base-50),H.OBJECTIVE,sz.x-42,6,Color("#d7c4a0"))
+			rect(Rect2(q.x+5,base-61,sz.x-10,13),Color("#283b35"))
+			sign_letters(Vector2(q.x+5,base-58),H.OBJECTIVE,sz.x-10,Color("#eee0b8"))
 			for x in [door_x-18,door_x+17]:
 				rect(Rect2(x,base-37,2,5),Color("#dfbb78"))
 				rect(Rect2(x-.5,base-38,3,1),INK)
-		for x in [q.x+10,q.x+sz.x-27]:
-			rect(Rect2(x,base-29,17,20),Color("#182427"))
-			for n in range(5):line(Vector2(x+2+n*3,base-29),Vector2(x+2+n*3,base-9),Color("#716c56"),.7)
+		# A continuous stone landing reaches the bottom of the door.
+		var landing_width=32.8 if seed_id==1 else 28.8
+		rect(Rect2(door_x-landing_width/2,base-8,landing_width,11),Color("#8a8270"))
+		line(Vector2(door_x-landing_width/2,base-8),Vector2(door_x-landing_width/2,base+3),Color("#b0a28a"),.7)
+		for x in [q.x+10,q.x+sz.x-28]:
+			window(Vector2(x,base-32),seed_id==1,seed_id)
 		label(Vector2(q.x+5,base-3),"MH",15,8,Color("#a59d82"))
 	# Torn notices and paint tags gather at reachable street level.
 	for n in range(3):
@@ -193,15 +196,16 @@ func facade(q: Vector2,sz: Vector2,id: String) -> void:
 			line(Vector2(x,y),Vector2(x+20,y),Color("#121f22"),2)
 			line(Vector2(x,y-8),Vector2(x+20,y-8),Color("#88816a"),.65)
 			for bar in range(6):line(Vector2(x+bar*4,y-8),Vector2(x+bar*4,y),Color("#26332f"),.8)
-			line(Vector2(x+3,y),Vector2(x+17,y+30),Color("#111e22"),1.4)
-			for n in range(8):line(Vector2(x+3+n*1.7,y+n*3.6),Vector2(x+7+n*1.7,y+n*3.6),Color("#7b7764"),.65)
+			# Retracted lowest ladder clears the apartment name board.
+			line(Vector2(x+3,y),Vector2(x+7,y+8) if level==0 else Vector2(x+17,y+30),Color("#111e22"),1.4)
+			for n in range(2 if level==0 else 8):line(Vector2(x+3+n*1.7,y+n*3.6),Vector2(x+7+n*1.7,y+n*3.6),Color("#7b7764"),.65)
 func label(q: Vector2,words: String,width: float,size: int,c: Color) -> void:
 	draw_string(ThemeDB.fallback_font,q,words,HORIZONTAL_ALIGNMENT_CENTER,width,size,c)
 func shopfront(x: float,y: float,w: float) -> void:
 	rect(Rect2(x+4,y-47,w-8,44),Color("#353b32"))
-	rect(Rect2(x+4,y-48,w-8,11),Color("#3c5549"))
+	rect(Rect2(x+4,y-50,w-8,13),Color("#28463c"))
 	line(Vector2(x+5,y-47),Vector2(x+w-5,y-47),Color("#9e9f7b"),.7)
-	label(Vector2(x+6,y-39),H.STORE.to_upper(),w-12,8,Color("#e7d6a9"))
+	sign_letters(Vector2(x+6,y-47),H.STORE,w-12,Color("#f0e0b8"))
 	var dx=x+w*.67
 	for a in [[x+8,dx-x-13],[dx+20,x+w-dx-26]]:
 		var wx: float=a[0];var ww: float=a[1]
@@ -245,3 +249,15 @@ func _draw() -> void:
 		draw_rect(Rect2(-22,-29,44,8),Color("#b7c4ad"),false,.65)
 		label(Vector2(-21,-23),H.STREET,42,6,Color("#edf0d7"))
 	else:super._draw()
+
+func sign_letters(q: Vector2,words: String,width: float,c: Color) -> void:
+	# Explicit pixels keep the principal storefront names legible at battle zoom.
+	var glyphs={"A":["01110","10001","10001","11111","10001","10001","10001"],"D":["11110","10001","10001","10001","10001","10001","11110"],"E":["11111","10000","10000","11110","10000","10000","11111"],"H":["10001","10001","10001","11111","10001","10001","10001"],"I":["11111","00100","00100","00100","00100","00100","11111"],"L":["10000","10000","10000","10000","10000","10000","11111"],"M":["10001","11011","10101","10101","10001","10001","10001"],"N":["10001","11001","11001","10101","10011","10011","10001"],"O":["01110","10001","10001","10001","10001","10001","01110"],"P":["11110","10001","10001","11110","10000","10000","10000"],"R":["11110","10001","10001","11110","10100","10010","10001"],"S":["01111","10000","10000","01110","00001","00001","11110"],"T":["11111","00100","00100","00100","00100","00100","00100"],"C":["01111","10000","10000","10000","10000","10000","01111"],"-":["00000","00000","00000","11111","00000","00000","00000"]}
+	var title=words.to_upper()
+	var origin=Vector2(roundf(q.x+(width-(title.length()*6-1))/2),roundf(q.y))
+	for i in range(title.length()):
+		if not glyphs.has(title[i]):continue
+		var rows=glyphs[title[i]]
+		for y in range(7):
+			for x in range(5):
+				if rows[y][x]=="1":rect(Rect2(origin+Vector2(i*6+x,y),Vector2.ONE),c)
