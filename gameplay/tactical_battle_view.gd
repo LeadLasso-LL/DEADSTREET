@@ -4275,6 +4275,18 @@ func _sync_dusk_art() -> void:
 	_dusk_nodes.append(ground)
 	dynamic_unit_root.y_sort_enabled = true
 	for row in preload("res://battle/geometry/dusk_street_catalog.gd").props():
+		# Long stoop walls must sort by local depth, not their frontmost endpoint.
+		if row[2]=="stoop_wall":
+			var wall_bounds: Rect2=row[1]
+			var count=int(ceil(wall_bounds.size.y/.55))
+			for segment in range(count):
+				var piece=art.new()
+				var part=Rect2(wall_bounds.position+Vector2(0,segment*wall_bounds.size.y/count),Vector2(wall_bounds.size.x,wall_bounds.size.y/count))
+				piece.prop=[str(row[0])+"_"+str(segment),part,"stoop_wall"]
+				piece.position=Vector2(part.get_center().x*8,part.end.y*6)
+				dynamic_unit_root.add_child(piece)
+				_dusk_nodes.append(piece)
+			continue
 		var item = art.new()
 		item.prop = row
 		var bounds: Rect2 = row[1]
