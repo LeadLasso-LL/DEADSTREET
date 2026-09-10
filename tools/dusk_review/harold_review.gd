@@ -207,6 +207,14 @@ func capture(second: int) -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(out_dir+"/frontage_detail.png")
+		for detail in [["alley_detail",1.65,Vector2(-5,-80)],["street_sign_detail",2.5,Vector2(190,-20)]]:
+			view._dusk_zoom=detail[1]
+			view._dusk_pan=detail[2]
+			view._frame_camera()
+			await process_frame
+			await process_frame
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().save_png(out_dir+"/"+str(detail[0])+".png")
 		view._dusk_zoom=1.1
 		view._dusk_pan=Vector2.ZERO
 		view._frame_camera()

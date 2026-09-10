@@ -11,6 +11,7 @@ func _ready() -> void:
 	super._ready()
 	apartment_font=SystemFont.new()
 	apartment_font.font_names=PackedStringArray(["Georgia","Times New Roman"])
+	apartment_font.font_weight=700
 	shop_font=SystemFont.new()
 	shop_font.font_names=PackedStringArray(["Arial","Liberation Sans"])
 	shop_font.font_weight=700
@@ -43,10 +44,14 @@ func _ready() -> void:
 		var cache_path="res://assets/art/harold_frontage/"+key+".png"
 		if ResourceLoader.exists(cache_path):
 			frontage_texture=load(cache_path)
-			if prop.is_empty():frontage_bounds=Rect2(-320,-280,1152,568)
-			else:
-				var bounds: Rect2=prop[1]
-				frontage_bounds=Rect2(bounds.position.x*8-2,bounds.end.y*6-264,bounds.size.x*8+4,270)
+			frontage_bounds=cache_bounds(key,Rect2() if prop.is_empty() else prop[1])
+
+static func cache_bounds(key: String,bounds: Rect2=Rect2()) -> Rect2:
+	if key=="ground":return Rect2(-320,-280,1152,568)
+	# Alley return and ironwork extend beyond the front elevation, including its top.
+	var extra=72 if key=="harold_apartments" else 0
+	var side=24 if key=="harold_apartments" else 0
+	return Rect2(bounds.position.x*8-2,bounds.end.y*6-264-extra,bounds.size.x*8+4+side,270+extra)
 
 func ground() -> void:
 	rng.seed=991
@@ -229,24 +234,15 @@ func facade(q: Vector2,sz: Vector2,id: String) -> void:
 	else:
 		var door_x=25.*8-position.x if seed_id==1 else 51.4*8-position.x
 		apartment_entry(door_x,base,seed_id==1)
-		for x in [q.x+10,q.x+sz.x-28]:
+		for x in [q.x+(5 if seed_id==1 else 10),q.x+sz.x-28]:
 			window(Vector2(x,base-32),seed_id==1,seed_id)
 	# Torn notices and paint tags gather at reachable street level.
 	for n in range(3):
 		var notice=Vector2(q.x+sz.x-14-n*4,base-15+n)
 		rect(Rect2(notice,Vector2(3,5)),Color("#a39b7e"))
 		line(notice+Vector2(0,2),notice+Vector2(2,2),Color("#575b4c"),.5)
-	# Apartment fire escape: small landings and rails, without covering the entrance.
-	if seed_id==1:
-		var x=q.x+sz.x-27
-		for level in range(4):
-			var y=base-73-level*39
-			line(Vector2(x,y),Vector2(x+20,y),Color("#121f22"),2)
-			line(Vector2(x,y-8),Vector2(x+20,y-8),Color("#88816a"),.65)
-			for bar in range(6):line(Vector2(x+bar*4,y-8),Vector2(x+bar*4,y),Color("#26332f"),.8)
-			# Retracted lowest ladder clears the apartment name board.
-			line(Vector2(x+3,y),Vector2(x+7,y+8) if level==0 else Vector2(x+17,y+30),Color("#111e22"),1.4)
-			for n in range(2 if level==0 else 8):line(Vector2(x+3+n*1.7,y+n*3.6),Vector2(x+7+n*1.7,y+n*3.6),Color("#7b7764"),.65)
+	# Fire escape belongs on the alley return, never across the street facade.
+	if seed_id==1: alley_fire_escape(Vector2(q.x+sz.x,base))
 func label(q: Vector2,words: String,width: float,size: int,c: Color) -> void:
 	draw_string(ThemeDB.fallback_font,q,words,HORIZONTAL_ALIGNMENT_CENTER,width,size,c)
 func shopfront(x: float,y: float,w: float) -> void:
@@ -362,10 +358,7 @@ func _draw() -> void:
 		asset("lamp_0",Vector2(2,0),10)
 		draw_set_transform(Vector2.ZERO)
 	elif not prop.is_empty() and prop[2]=="street_sign":
-		line(Vector2(0,0),Vector2(0,-29),Color("#a0a397"),1.1)
-		rect(Rect2(-22,-29,44,8),Color("#1e5844"))
-		draw_rect(Rect2(-22,-29,44,8),Color("#b7c4ad"),false,.65)
-		label(Vector2(-21,-23),H.STREET,42,6,Color("#edf0d7"))
+		street_name_sign()
 	else:super._draw()
 
 func painted_text(q: Vector2,words: String,width: float,height: float,font: Font,c: Color,raised: bool=false) -> void:
@@ -417,20 +410,23 @@ func apartment_entry(door_x: float,base: float,primary: bool) -> void:
 	line(Vector2(door_x-14,base-48),Vector2(door_x+14,base-48),Color("#a09173"),.5)
 	line(Vector2(door_x-13.5,base-44.8),Vector2(door_x+14.5,base-44.8),Color("#192b29"),1)
 	if primary:
-		# Deliberately discreet: readable at inspection zoom, located beside the doorway.
-		var plaque=Rect2(door_x-33,base-34,18,7.6)
+		# Keep the inset green/brass plaque; stack the name so its letters survive battle zoom.
+		var plaque=Rect2(door_x-40,base-40,26,15)
 		rect(Rect2(plaque.position+Vector2(.6,.8),plaque.size),Color(.045,.045,.035,.65))
-		rect(plaque,Color("#79705a"))
-		rect(Rect2(plaque.position+Vector2(.5,.5),plaque.size-Vector2(1,1)),Color("#3a453b"))
-		painted_text(plaque.position+Vector2(1,3.3),"Harold Apartments",16,2.1,apartment_font,Color("#c1b18a"))
-		painted_text(plaque.position+Vector2(1,5.8),"1455 Mercer Ave.",16,1.65,shop_font,Color("#a49d7f"))
-		for px in [plaque.position.x+.7,plaque.end.x-1]:
-			rect(Rect2(px,plaque.position.y+.8,.35,.35),Color("#beb190"))
+		rect(plaque,Color("#8b7e62"))
+		rect(Rect2(plaque.position+Vector2(.6,.6),plaque.size-Vector2(1.2,1.2)),Color("#303e34"))
+		line(plaque.position+Vector2(.8,.6),plaque.position+Vector2(25.2,.6),Color("#aea082"),.35)
+		painted_text(plaque.position+Vector2(1.5,5),"HAROLD",23,4.2,apartment_font,Color("#e3d2a5"))
+		painted_text(plaque.position+Vector2(1.5,9.4),"APARTMENTS",23,3.7,apartment_font,Color("#e3d2a5"))
+		line(plaque.position+Vector2(3,10.5),plaque.position+Vector2(23,10.5),Color("#827b60"),.3)
+		painted_text(plaque.position+Vector2(1.4,13.5),"1455 Mercer Ave.",23.2,2.25,shop_font,Color("#c8bfa1"))
+		for px in [plaque.position.x+.9,plaque.end.x-1.2]:
+			rect(Rect2(px,plaque.position.y+1,.35,.35),Color("#c2b28e"))
 		for lx in [door_x-17.5,door_x+16.5]:
-			rect(Rect2(lx,base-37,2.6,5.8),Color("#222e28"))
-			rect(Rect2(lx+.5,base-36.4,1.5,4.1),Color("#c8a66d"))
-			line(Vector2(lx+.3,base-34),Vector2(lx+2,base-34),Color("#65573e"),.4)
-			rect(Rect2(lx-.3,base-37.6,3.1,1),Color("#4b4e3e"))
+			rect(Rect2(lx,base-52,2.6,5.8),Color("#222e28"))
+			rect(Rect2(lx+.5,base-51.4,1.5,4.1),Color("#c8a66d"))
+			line(Vector2(lx+.3,base-49),Vector2(lx+2,base-49),Color("#65573e"),.4)
+			rect(Rect2(lx-.3,base-52.6,3.1,1),Color("#4b4e3e"))
 	var landing_width=32.8 if primary else 28.8
 	var landing=Rect2(door_x-landing_width/2,base-8,landing_width,7)
 	rect(landing,Color("#727667"))
@@ -491,3 +487,99 @@ func cabinet(q: Vector2,sz: Vector2) -> void:
 	line(t+Vector2(sz.x-3.4,16),t+Vector2(sz.x-3.4,18.3),Color("#a0a48a"),.6)
 	rect(Rect2(q+Vector2(.5,sz.y-2),Vector2(sz.x-1,2)),Color("#2d4035"))
 	grain(Rect2(t+Vector2(1,2),Vector2(sz.x-3,sz.y+8)),55,Color(.07,.14,.09,.24),Color(.69,.73,.58,.12))
+
+func street_name_sign() -> void:
+	# A thin enamel blade on a galvanized channel post at the curb, scaled to a person.
+	line(Vector2(.5,0),Vector2(3,2),Color(.025,.04,.04,.6),1.2)
+	rect(Rect2(-1,-.5,2,1),Color("#343c36"))
+	rect(Rect2(-.65,-34,1.3,34),Color("#536159"))
+	line(Vector2(-.5,-33.8),Vector2(-.5,-.5),Color("#99a18f"),.32)
+	line(Vector2(.55,-33.8),Vector2(.55,-.5),Color("#2d3f37"),.36)
+	for y in range(-27,-2,3):rect(Rect2(-.15,y,.3,.5),Color("#263c33"))
+	# Slight edge thickness, restrained border and two actual mounting bolts.
+	rect(Rect2(-10.7,-34.8,22,5.2),Color("#152e29"))
+	rect(Rect2(-11,-35.2,22,5.2),Color("#235440"))
+	draw_rect(Rect2(-10.5,-34.7,21,4.2),Color("#a5b8a0"),false,.28)
+	line(Vector2(-10.6,-35.2),Vector2(10.7,-35.2),Color("#749c7d"),.28)
+	painted_text(Vector2(-9.5,-31.4),H.STREET,19,2.8,shop_font,Color("#e0e5ce"))
+	for y in [-34.3,-30.9]:rect(Rect2(-.2,y,.4,.35),Color("#d0d2bc"))
+	line(Vector2(7.8,-30.2),Vector2(9.5,-30.2),Color("#667b5f"),.25)
+
+func alley_point(base: Vector2,depth: float,outward: float,height: float) -> Vector2:
+	# Foreshortened return plane: receding masonry and all ironwork share this basis.
+	return base+Vector2(depth*.18+outward,-depth-height)
+
+func alley_fire_escape(base: Vector2) -> void:
+	var iron=Color("#192727")
+	var edge=Color("#768175")
+	# Narrow shaded return, attached to the building corner. The playable mouth stays open.
+	draw_colored_polygon(PackedVector2Array([alley_point(base,0,0,0),alley_point(base,68,0,0),alley_point(base,68,0,260),alley_point(base,0,0,260)]),Color("#342f2a"))
+	for h in range(0,260,3):
+		for d in range(0,68,8):
+			var start=float(d)+ (3. if (h/3)%2 else 0.)
+			var end=minf(start+7.1,68.)
+			if start>=68:continue
+			var c=Color("#494033").lightened(rng.randf_range(-.09,.035))
+			draw_colored_polygon(PackedVector2Array([alley_point(base,start,0,h),alley_point(base,end,0,h),alley_point(base,end,0,h+2.5),alley_point(base,start,0,h+2.5)]),c)
+	line(base,alley_point(base,0,0,260),Color("#776550"),.55)
+	line(alley_point(base,68,0,0),alley_point(base,68,0,260),Color("#1d2a27"),.8)
+	# Side windows open directly onto each landing. Keep their recessed plane distinct.
+	for level in range(5):
+		var h=62.+level*39.
+		var a=alley_point(base,9,.15,h+1)
+		var b=alley_point(base,31,.15,h+1)
+		draw_colored_polygon(PackedVector2Array([a,b,b-Vector2(0,23),a-Vector2(0,23)]),Color("#111e21"))
+		line(a,b,Color("#887d61"),1.2)
+		line(a-Vector2(0,22),b-Vector2(0,22),Color("#6c624d"),.8)
+		line(a-Vector2(0,11),b-Vector2(0,11),Color("#5d6455"),.7)
+		line(a,b+Vector2(0,0),Color("#948a6e"),.35)
+	# Draw from the upper/back structure toward the nearest landing.
+	for level in range(4,-1,-1):
+		var h=62.+level*39.
+		# Cantilever brackets connect outer beams back to masonry below each floor.
+		for d in [7.,42.]:
+			line(alley_point(base,d,0,h-9),alley_point(base,d,12,h),iron,1.5)
+			line(alley_point(base,d,0,h),alley_point(base,d,12,h),edge,.65)
+		var a=alley_point(base,6,1,h)
+		var b=alley_point(base,44,1,h)
+		var c=alley_point(base,44,12,h)
+		var e=alley_point(base,6,12,h)
+		draw_colored_polygon(PackedVector2Array([a,b,c,e]),Color("#293934"))
+		# Open grating with a deep front rim; tread/rail highlights are thin worn steel.
+		for d in range(7,44,3):
+			line(alley_point(base,d,1,h),alley_point(base,d,12,h),Color("#101f22"),1.3)
+			line(alley_point(base,d,1,h+.35),alley_point(base,d,12,h+.35),Color("#58675c"),.35)
+		line(a,e,iron,2)
+		line(e,c,iron,1.7)
+		line(a-Vector2(0,.6),e-Vector2(0,.6),edge,.55)
+		# The long flight rises away along the alley, with two stringers and real cross-treads.
+		if level<4:
+			for out in [2.,10.5]:
+				line(alley_point(base,9,out,h),alley_point(base,40,out,h+39),iron,1.7)
+				line(alley_point(base,9,out,h+9),alley_point(base,40,out,h+48),edge,.65)
+			for n in range(11):
+				var d=9.+float(n)*3.1
+				var step_h=h+float(n)*3.9
+				line(alley_point(base,d,2,step_h),alley_point(base,d,10.5,step_h),iron,1.6)
+				line(alley_point(base,d,2,step_h+.5),alley_point(base,d,10.5,step_h+.5),edge,.55)
+				if n%2==0:
+					line(alley_point(base,d,10.5,step_h),alley_point(base,d,10.5,step_h+9),Color("#59695c"),.65)
+		# Outer balusters and end rail follow the same deck, never float beside it.
+		for d in range(6,45,6):
+			line(alley_point(base,d,12,h),alley_point(base,d,12,h+9),iron,.95)
+		line(alley_point(base,6,12,h+9),alley_point(base,44,12,h+9),edge,.65)
+		for out in [1.,6.,12.]:
+			line(alley_point(base,6,out,h),alley_point(base,6,out,h+9),iron,.95)
+		line(alley_point(base,6,1,h+9),alley_point(base,6,12,h+9),edge,.7)
+		# Small anchor plates and restrained rust sit at structural connections.
+		for d in [7.,42.]:
+			var bolt=alley_point(base,d,0,h)
+			line(bolt+Vector2(0,2),bolt-Vector2(0,3),Color("#293731"),1)
+			rect(Rect2(bolt-Vector2(.2,1),Vector2(.4,.5)),Color("#ac9973"))
+			line(alley_point(base,d,12,h),alley_point(base,d+2,12,h),Color("#756044"),.5)
+	# Retracted drop ladder ends above head height and above the dumpster, not on the path.
+	for out in [3.,9.]:
+		line(alley_point(base,6,out,62),alley_point(base,6,out,32),iron,1.2)
+		line(alley_point(base,6,out+.3,61),alley_point(base,6,out+.3,32),edge,.35)
+	for h in range(34,62,3):
+		line(alley_point(base,6,3,h),alley_point(base,6,9,h),edge,.65)

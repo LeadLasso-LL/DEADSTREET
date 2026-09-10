@@ -8,7 +8,7 @@ func _process(delta: float) -> bool:
 		held=true
 		root.title="Dead Street - Harold frontage review (paused)"
 		var view=runtime.get_node("TacticalBattleView")
-		view._dusk_zoom=1.65
-		view._dusk_pan=Vector2(-65,-10)
+		view._dusk_zoom=1.4
+		view._dusk_pan=Vector2(-5,-65)
 		view._frame_camera()
 	return false

@@ -4291,7 +4291,8 @@ func _sync_dusk_art() -> void:
 		_dusk_nodes.append(lamp)
 	var street_sign = art.new()
 	street_sign.prop = ["harold_sign",Rect2(),"street_sign"]
-	street_sign.position = Vector2(60*8,22*6)
+	# At the curb edge, clear of the walking strip and the end of the parked car.
+	street_sign.position = Vector2(61.5*8,22.85*6)
 	dynamic_unit_root.add_child(street_sign)
 	_dusk_nodes.append(street_sign)
 

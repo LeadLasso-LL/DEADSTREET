@@ -11,7 +11,7 @@ func bake() -> void:
 	for row in Catalog.props():
 		if row[2]=="building" and not str(row[0]).begins_with("south"):
 			var b: Rect2=row[1]
-			jobs.append([row[0],row,Rect2(b.position.x*8-2,b.end.y*6-264,b.size.x*8+4,270)])
+			jobs.append([row[0],row,Art.cache_bounds(str(row[0]),b)])
 	for job in jobs:
 		var bounds: Rect2=job[2]
 		var viewport=SubViewport.new()

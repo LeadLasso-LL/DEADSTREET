@@ -38,3 +38,13 @@ This revision supersedes the frontage/signage descriptions immediately above. Vi
 - Diagnostic comparison isolated the slowdown: midpoint solid-wall cover averaged 23.37 ms per combat step versus 7.04 ms with the former sight-transparent walls. Open-corner slots restored approximately 59 FPS with the walls still solid.
 - Reproduce validation: Godot --path . --script tools/dusk_review/harold_review.gd. Reports and close captures: tools/dusk_review/frontage_results/. Paused interactive inspection: Godot --path . --script tools/dusk_review/frontage_preview.gd (wheel zoom, middle-drag pan, Home fit).
 - The standing prohibition on flat South Park paper-cutout map art is recorded in HAROLD_AVE_PRODUCTION_BRIEF.md. The HUD and later deployment/arrival milestones remain queued under that brief.
+
+
+## Plaque readability, alley fire escape and curbside sign
+- Preserved the dark green/brass plaque with a modest 26 x 15 authoring-pixel rectangle. Harold / Apartments use larger, brighter bold serif lettering; 1455 Mercer Ave. remains beneath. Shifted the adjacent ground-floor window slightly and raised the entrance sconces to leave the plaque unobscured.
+- Removed the former front fire escape. The alley return now carries recessed side windows, five connected grated landings, two-stringer stair flights with individual treads, balusters, cantilever supports, anchor plates and a raised drop ladder. All components use one foreshortened side-plane projection. This is elevated scenery; it adds no climbable route or navigation obstacle.
+- Replaced the 44 x 8 street board with a 22 x 5.2 enamel blade, fine pale border, mounting bolts and a galvanized channel post. Ground anchor is now (61.5, 22.85), at the north curb and beyond the parked car, instead of (60, 22).
+- Shared cache_bounds() between the baker and renderer includes the alley return and upper ironwork; rebuilt the facade caches. No combat-service or physical cover changes.
+- Inspected fresh normal, frontage-close, alley and curb-sign captures. The review runner now saves alley_detail.png and street_sign_detail.png alongside its existing captures.
+- Validation: editor import and bake completed without errors; 40 wall checks passed, all 76 cover destinations and both entrances reachable, geometry valid. A 15-second live-combat run averaged 59.06 active FPS with 16.89 ms active p95 and 35 observed shots. Existing wider validation-suite issues were not rerun or changed.
+- Status: implemented and technically reviewed, pending the user's visual verdict. Interactive paused preview frames the plaque, alley and curbside sign together; wheel zoom and middle-drag pan remain available.

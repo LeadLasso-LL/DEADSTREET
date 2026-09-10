@@ -38,3 +38,9 @@ All map construction must be inspected for and corrected when it resembles flat 
 Stair sides are constant-height solid masonry walls from the building through the final step, blocking sight/fire as well as movement. Units must obtain a sightline around the ends; no over-wall shooting. Stairs themselves remain traversable in the existing flat navigation model.
 Signs belong to the street: restrained Mercer Mini-Mart fascia; discreet rectangle left of the apartment entrance reading Harold Apartments with 1455 Mercer Ave. beneath. Address text follows the latest explicit request; it does not rename the campaign street from Harold Ave.
 Retain the red blackletter M identity, with modest fading/chipping that reveals brick rather than a pristine pasted-on mark. Final faction-emblem matching still needs the approved source image. Visual acceptance remains the user's decision.
+
+
+## Plaque, alley fire escape and street sign — follow-up correction
+Keep the green/brass apartment plaque beside the door, but make its words readable at street/inspection zoom. The name may stack within the small rectangle; retain 1455 Mercer Ave. underneath. Do not return to large facade lettering.
+The apartment fire escape belongs on the alley side, with coherent landings, treads, railings, supports and wall attachment. Remove front-elevation fire escapes.
+The green Harold Ave. pole sign must be a small realistic rectangular street-name blade with a curbside ground anchor, clear of the sidewalk's walking strip.
