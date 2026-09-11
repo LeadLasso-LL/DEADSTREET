@@ -1,5 +1,12 @@
 # Dead Street — Project Control
 
+## Ravicci regular outfit review (2026-09-11)
+
+All five owner-specified Italian-American Ravicci outfits are built for review on the existing normal rig: layered tailoring, three eyewear treatments, an open camel coat and buttoned black sniper coat. The final 1,080-frame geometry/bounds review passed. Standing left shoulders, eight standing/aiming facings and SE motion samples were visually inspected. See [RAVICCI_UNIT_DESIGN.md](RAVICCI_UNIT_DESIGN.md).
+
+Full runtime atlas production and faction binding remain subsequent work; visual acceptance belongs to the owner. Orlov Bratva is next in the regular faction order. New specials remain deferred.
+
+
 ## Ventresca regular outfit review (2026-09-11)
 
 All five owner-specified Italian-American Ventresca regular outfits are built on the accepted rig, including the pistol wristwatch, layered tailoring and sniper's mid-thigh wool coat. The full 1,080-frame review passed geometry and clipping checks. Technical visual inspection covered every standing left shoulder and both shoulder joins, eight standing/aiming facings, SE motion samples and all 30 weapons in SE aiming. Body proportions are unchanged. The sniper inherits the Calle Ocho SE/SW stock-fit refinement. See [VENTRESCA_UNIT_DESIGN.md](VENTRESCA_UNIT_DESIGN.md).

@@ -2,7 +2,7 @@
 
 ## Two-pass production rule — 2026-09-11 owner decision
 
-**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. The owner approved Eastex's five regular outfits, then approved the one-time Whittaker outfit pass. Calle Ocho and Ventresca Family are built for review; Ravicci Family follows. See [VENTRESCA_UNIT_DESIGN.md](VENTRESCA_UNIT_DESIGN.md). Preserve the canonical sheet order below. See [WHITTAKER_UNIT_DESIGN.md](WHITTAKER_UNIT_DESIGN.md) and [CALLE_OCHO_UNIT_DESIGN.md](CALLE_OCHO_UNIT_DESIGN.md). See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md).
+**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. The owner approved Eastex's five regular outfits, then approved the one-time Whittaker outfit pass. Calle Ocho, Ventresca Family and Ravicci Family are built for review; Orlov Bratva follows. See [RAVICCI_UNIT_DESIGN.md](RAVICCI_UNIT_DESIGN.md). See [VENTRESCA_UNIT_DESIGN.md](VENTRESCA_UNIT_DESIGN.md). Preserve the canonical sheet order below. See [WHITTAKER_UNIT_DESIGN.md](WHITTAKER_UNIT_DESIGN.md) and [CALLE_OCHO_UNIT_DESIGN.md](CALLE_OCHO_UNIT_DESIGN.md). See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md).
 
 **Pass 2: faction-specific special units.** After all regular faction-unit designs, return to special-unit outfits, unique specs, custom animations, gameplay, balance and faction-wide caps. Ideas can be recorded during Pass 1; new specialist production must not delay moving to the next regular faction roster.
 
