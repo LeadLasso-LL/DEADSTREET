@@ -1,5 +1,12 @@
 # Dead Street — Project Control
 
+## Ventresca regular outfit review (2026-09-11)
+
+All five owner-specified Italian-American Ventresca regular outfits are built on the accepted rig, including the pistol wristwatch, layered tailoring and sniper's mid-thigh wool coat. The full 1,080-frame review passed geometry and clipping checks. Technical visual inspection covered every standing left shoulder and both shoulder joins, eight standing/aiming facings, SE motion samples and all 30 weapons in SE aiming. Body proportions are unchanged. The sniper inherits the Calle Ocho SE/SW stock-fit refinement. See [VENTRESCA_UNIT_DESIGN.md](VENTRESCA_UNIT_DESIGN.md).
+
+These are outfit review candidates; owner visual acceptance, full runtime atlas production and faction binding remain subsequent work. Ravicci Family is next. New faction-specific specials remain deferred. Standing authorization covers routine commits and pushes to the established build branch.
+
+
 ## Calle Ocho regular outfit review and sniper stock fit (2026-09-11)
 
 The owner approved the Whittaker outfit review and supplied all five Calle Ocho designs, with Mexican-American units throughout. Calle Ocho's regular pistol, SMG, shotgun, rifle and sniper outfits are built on the accepted rig. The full 1,080-frame review passed geometry and clipping checks. Technical visual inspection covered standing shoulder joins, eight standing/aiming facings, SE action samples and all 30 weapons in SE aiming. See [CALLE_OCHO_UNIT_DESIGN.md](CALLE_OCHO_UNIT_DESIGN.md).

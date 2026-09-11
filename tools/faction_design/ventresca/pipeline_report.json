@@ -1,0 +1,21 @@
+{
+  "faction": "ventresca",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 7.098,
+    "render_and_bounds": 6.803,
+    "palette_and_review_sheets": 17.342,
+    "motion_and_armory_sheets": 0.147
+  },
+  "total_seconds": 31.394,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
