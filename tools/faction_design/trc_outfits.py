@@ -14,19 +14,20 @@ BLUE=(GREEN[1],)
 DESCRIPTIONS={'pistol':'Black cap + shades / green ballistic vest / short black sleeves',
 'smg':'High-cut helmet + headset / green ski mask / compact black carrier',
 'shotgun':'Full helmet + black mask / green shirt / shoulder armor + shell loops',
-'rifle':'Green helmet + headset / black face cloth / green carrier + black pouches',
+'rifle':'Black full helmet + ski mask / green carrier + black pouches',
 'sniper':'Green hood + black ski mask / light shoulder strips / slim chest rig'}
 NOTES={'pistol':['Green tactical pants / duty belt + holster','TRC chest patch / black boots and gloves'],
 'smg':['Rolled forearms / green pants + black knees','TRC helmet patch / black boots and gloves'],
 'shotgun':['Black pants and knee pads','TRC sleeve patch / normal proportions'],
 'rifle':['Black pants / green knee pads','TRC chest patch / black boots and gloves'],
-'sniper':['Green pants / black reinforced knees','TRC sleeve patch / black boots and gloves']}
+'sniper':['Black pants / black reinforced knees','TRC sleeve patch / black boots and gloves']}
 def spec(role,colors):
  return base.costume(role,colors,'combed',trc=True,role=role,ankle_boots=True,gloves=True)
 SPECS={r:spec(r,GREEN if r in ['shotgun','sniper'] else BLACK) for r in DESCRIPTIONS}
-for r in ['pistol','smg','sniper']:SPECS[r].update(pants=GREEN[0],pants_hi=GREEN[1])
+for r in ['pistol','smg']:SPECS[r].update(pants=GREEN[0],pants_hi=GREEN[1])
 for r in SPECS:SPECS[r].update(shoe=BLACK[0],shoe_hi=BLACK[1])
 SPECS['pistol']['sleeve']='short'
+SPECS['sniper'].update(pants=BLACK[0],pants_hi=BLACK[1])
 EXTRA_PALETTE=base.EXTRA_PALETTE+list(GREEN)+list(BLACK)+['#aaa078']
 def patch(g,x,y,scale=1):
  t=base.E.SubElement(g,N+'g',{'transform':f'translate({x} {y}) scale({scale})'})
@@ -44,6 +45,7 @@ def mask(g,c,skin,hi,d,green=False):
 def head(g,c,skin,hi,d='SE'):
  if not c.get('trc'):return base.head(g,c,skin,hi,d)
  r=c['role'];back=d in ['N','NE','NW'];side=d in ['E','W']
+ if r=='rifle':return head(g,dict(c,role='shotgun'),skin,hi,d)
  if r in ['smg','shotgun','sniper']:mask(g,c,skin,hi,d,r=='smg')
  else:base.head(g,dict(c,cap=r=='pistol'),skin,hi,d)
  if r=='pistol' and not back:

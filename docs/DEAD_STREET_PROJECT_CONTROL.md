@@ -1,5 +1,9 @@
 # Dead Street — Project Control
 
+## TRC headwear and trouser revision (2026-09-11)
+
+Owner changed sniper pants to black and rifle headwear to exactly match the shotgun black helmet and ski mask. See TRC_UNIT_DESIGN.md.
+
 ## TRC regular outfit review (2026-09-11)
 
 Five owner-specified TRC outfits are built for review with shared black/forest-green clothing, distinct helmets and masks, modest armor, shell loops, pouches and small star-and-eye patches. Full 1,080-frame geometry/render-bound checks passed. Standing left shoulders, both joins, eight idle/aim facings and SE motion samples were visually inspected. See [TRC_UNIT_DESIGN.md](TRC_UNIT_DESIGN.md).

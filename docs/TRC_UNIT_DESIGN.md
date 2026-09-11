@@ -7,8 +7,8 @@ Owner direction: black and the TRC emblem green throughout clothing/equipment, i
 | Pistol | Forward black tactical cap; short brown hair, clean-shaven; black wraparound sunglasses/lenses; fitted short-sleeve black tactical shirt; lightweight green ballistic vest with TRC chest patch; green tactical pants; black duty belt/holster, boots and gloves. |
 | SMG | Black high-cut helmet/headset; green ski mask; black combat shirt rolled to forearms; compact black carrier; green pants, black knee pads; helmet-side TRC patch; black boots/gloves. |
 | Shotgun | Black full-coverage helmet and ski mask; green long-sleeve combat shirt; heavier black vest and close-fitting shoulder protection; front shell loops; TRC upper-sleeve patch; black tactical pants/knee pads; black heavy boots/gloves. |
-| Rifle | Green high-cut helmet, black straps/headset; black lower-face cloth; black long-sleeve combat shirt; green carrier/black magazine pouches; TRC chest patch; black pants/green knees; black boots/gloves. |
-| Sniper | Green hood over black ski mask; lightweight green jacket with short shoulder fabric strips; slim black chest rig; upper-sleeve TRC patch; green pants/black reinforced knees; black boots/gloves. |
+| Rifle | Black full-coverage helmet and black ski mask, exactly matching shotgun headwear; black long-sleeve combat shirt; green carrier/black magazine pouches; TRC chest patch; black pants/green knees; black boots/gloves. |
+| Sniper | Green hood over black ski mask; lightweight green jacket with short shoulder fabric strips; slim black chest rig; upper-sleeve TRC patch; black pants/black reinforced knees; black boots/gloves. |
 
 ## Implementation
 
@@ -27,3 +27,9 @@ Six PNG boards, motion GIF and three validation/report JSON files are in tools/f
 Owner visual acceptance and full runtime atlas/faction binding remain subsequent work. These are outfit/motion review candidates. New special units remain deferred. NBPD is next.
 
 Local checkpoint only: the earlier automatic approval review still blocks GitHub push; no retry is part of this pass.
+
+## Owner revision
+
+Sniper trousers are black. Rifle headwear delegates to the exact shotgun headwear drawing: black full-coverage helmet and black ski mask. Other wardrobe and anatomy remain unchanged.
+
+Revision verification: full 1,080-frame pass succeeded; eight standing facings visually checked for black sniper trousers, identical rifle/shotgun headwear and connected shoulders.
