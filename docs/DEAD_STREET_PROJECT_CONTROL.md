@@ -1,5 +1,9 @@
 # Dead Street — Project Control
 
+## Eastex regular outfit review (2026-09-11)
+
+The owner specified all five regular Eastex 44's outfits, with African American units throughout. The pistol, SMG, shotgun, rifle and sniper wardrobe adapters and review assets are built on the existing rig. The 1,080-frame review covers eight directions, standard action samples and 30 armory models; rendering and ordinary-body geometry checks pass. Technical visual inspection covered standing shoulder joins, eight standing/aiming facings, SE action samples and SE armory fit. See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md) for the exact clothing specification and review evidence. This is an outfit review candidate; full runtime atlas production and binding follow outfit acceptance. Calle Ocho follows Eastex in the regular-unit design order. Faction-specific specials remain deferred.
+
 ## Current roadmap decisions (2026-09-11)
 
 The owner has split faction production into two passes: **regular units for every faction first; new faction-specific special units afterward**. Eastex follows Mercer in the official sheet order. Preserve the completed Mercer sniper and dual-pistol specialist; regular sniper outfits remain part of the regular roster pass. See §12 and [FACTION_WORK_ORDER.md](FACTION_WORK_ORDER.md).

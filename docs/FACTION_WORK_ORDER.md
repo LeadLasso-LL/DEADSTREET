@@ -2,7 +2,7 @@
 
 ## Two-pass production rule — 2026-09-11 owner decision
 
-**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. Eastex is next after Mercer.
+**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. Eastex's five regular outfits are built for owner review; Calle Ocho follows after this outfit review. See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md).
 
 **Pass 2: faction-specific special units.** After all regular faction-unit designs, return to special-unit outfits, unique specs, custom animations, gameplay, balance and faction-wide caps. Ideas can be recorded during Pass 1; new specialist production must not delay moving to the next regular faction roster.
 
