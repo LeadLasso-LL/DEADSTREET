@@ -1,7 +1,12 @@
 extends SceneTree
 
 func _initialize():
-    var base = "res://tools/faction_design/eastex/"
+    var args = OS.get_cmdline_user_args()
+    var base = args[0] if args.size() > 0 else "res://tools/faction_design/eastex/"
+    if not base.begins_with("res://tools/faction_design/") or ".." in base:
+        push_error("Invalid faction review directory")
+        quit(1)
+        return
     var jobs: Array = JSON.parse_string(FileAccess.get_file_as_string(base + "jobs.json"))
     var failures: Array = []
     for key: String in jobs:

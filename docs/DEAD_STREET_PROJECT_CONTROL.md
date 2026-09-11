@@ -1,8 +1,16 @@
 # Dead Street — Project Control
 
-## Eastex regular outfit review (2026-09-11)
+## Whittaker regular outfit review (2026-09-11)
 
-The owner specified all five regular Eastex 44's outfits, with African American units throughout. The pistol, SMG, shotgun, rifle and sniper wardrobe adapters and review assets are built on the existing rig. The 1,080-frame review covers eight directions, standard action samples and 30 armory models; rendering and ordinary-body geometry checks pass. Technical visual inspection covered standing shoulder joins, eight standing/aiming facings, SE action samples and SE armory fit. See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md) for the exact clothing specification and review evidence. This is an outfit review candidate; full runtime atlas production and binding follow outfit acceptance. Calle Ocho follows Eastex in the regular-unit design order. Faction-specific specials remain deferred.
+The owner approved Eastex's outfits, then authorized a one-time jump to Whittaker. All five regular Whittaker outfits are built to the exact owner directions, with white units throughout, using the existing anatomy and standard motion clips. The final 1,080-frame review passes geometry and frame-bound checks. Technical visual inspection covered standing shoulder joins, all eight standing/aiming facings, SE action samples and all 30 weapons in SE aiming; the SMG side-hair correction was rechecked afterward. See [WHITTAKER_UNIT_DESIGN.md](WHITTAKER_UNIT_DESIGN.md) for specifications, review outputs and reproduction.
+
+Whittaker art is ready for owner review; full runtime atlas production and faction binding follow outfit acceptance. Return to Calle Ocho after this one-time exception, then continue the canonical sheet order. New faction-specific specials remain deferred.
+
+The shared faction runner batches generation, rendering, checks and review sheets, supports targeted outfit revisions, and records full versus partial scope explicitly. Its regression build reproduced all six accepted Eastex PNG sheets and the motion GIF byte-for-byte. Full final checks and human visual inspection remain required.
+
+## Eastex outfit acceptance (2026-09-11)
+
+The owner approved the five regular Eastex 44's outfit designs after the pushed review at 3ace811. See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md) for the exact wardrobe and 1,080-frame review evidence. Full runtime atlas production and faction binding remain subsequent work.
 
 ## Current roadmap decisions (2026-09-11)
 

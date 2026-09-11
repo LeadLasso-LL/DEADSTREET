@@ -1,0 +1,15 @@
+{
+  "reference_commit": "3ace811b47c215a2e23c7e505e1965c632bd652d",
+  "reference_directory": "tools/faction_design/eastex",
+  "frames": 1080,
+  "files_byte_identical": {
+    "eastex_aim_directions.png": true,
+    "eastex_armory_fit.png": true,
+    "eastex_idle_directions.png": true,
+    "eastex_lineup_review.png": true,
+    "eastex_motion_review.gif": true,
+    "eastex_motion_samples.png": true,
+    "eastex_outfit_review.png": true
+  },
+  "total_seconds": 46.989
+}

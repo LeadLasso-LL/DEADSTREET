@@ -2,7 +2,7 @@
 
 ## Two-pass production rule — 2026-09-11 owner decision
 
-**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. Eastex's five regular outfits are built for owner review; Calle Ocho follows after this outfit review. See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md).
+**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. The owner approved Eastex's five regular outfits, then authorized a one-time jump to Whittaker, whose five outfits are now ready for review. Return to Calle Ocho afterward; preserve the canonical sheet order below. See [WHITTAKER_UNIT_DESIGN.md](WHITTAKER_UNIT_DESIGN.md). See [EASTEX_44S_UNIT_DESIGN.md](EASTEX_44S_UNIT_DESIGN.md).
 
 **Pass 2: faction-specific special units.** After all regular faction-unit designs, return to special-unit outfits, unique specs, custom animations, gameplay, balance and faction-wide caps. Ideas can be recorded during Pass 1; new specialist production must not delay moving to the next regular faction roster.
 
@@ -10,7 +10,7 @@ Keep the completed Mercer sniper and dual-pistol specialist. This changes future
 
 ## Faction order within each pass
 
-Follow the official faction sheet left to right on each row, then descend to the next row. Eastex follows Mercer; Whittaker is not second.
+Follow the official faction sheet left to right on each row, then descend to the next row. Eastex follows Mercer. The owner authorized Whittaker as a one-time exception after Eastex; resume at Calle Ocho afterward.
 
 1. Mercer Saints
 2. Eastex 44’s

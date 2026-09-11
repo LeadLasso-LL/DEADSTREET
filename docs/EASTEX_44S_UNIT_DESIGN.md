@@ -22,8 +22,9 @@ force a uniform color scheme. The SMG undershirt must remain visibly separate fr
 the jersey. The shotgun hood stays down and the sniper hood stays up. Camo patches
 follow the existing leg segments; boot details retain the existing limb geometry.
 
-The five designs are recorded as owner-directed specifications. Generated art is
-a review candidate until the owner accepts it. Review weapons are examples from
+The owner approved the five generated outfit designs after the review checkpoint
+and authorized the one-time Whittaker pass. Full runtime atlas production and
+faction binding remain subsequent work. Review weapons are examples from
 the existing armory and do not establish faction weapon restrictions or new stats.
 
 ## Reproduction
@@ -51,8 +52,9 @@ or combat tuning is changed by this review generator.
 - The motion GIF reuses the standard walk, fire, reload, cover and wounded clips.
   These are outfit review samples, not a complete runtime atlas release. Full
   production binding remains a later step after outfit acceptance.
-- Art remains ready for owner review; automated checks do not assert product
-  acceptance. No special-unit design or combat-stat change is included.
+- The owner subsequently approved the outfit designs. Automated checks alone do
+  not assert product acceptance. No special-unit design or combat-stat change is
+  included.
 
 Review outputs: [outfit sheet](../tools/faction_design/eastex/eastex_outfit_review.png),
 [all standing directions](../tools/faction_design/eastex/eastex_idle_directions.png),

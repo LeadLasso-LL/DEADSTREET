@@ -1,0 +1,21 @@
+{
+  "faction": "whittaker",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 9.009,
+    "render_and_bounds": 8.093,
+    "palette_and_review_sheets": 26.028,
+    "motion_and_armory_sheets": 0.204
+  },
+  "total_seconds": 43.334,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
