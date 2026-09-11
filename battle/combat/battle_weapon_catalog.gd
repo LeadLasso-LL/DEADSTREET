@@ -198,3 +198,60 @@ static func _make_definition(weapon_type_id: String) -> BattleWeaponDefinition:
 			)
 		_:
 			return null
+
+
+# Class identity remains stable; model data is equipment, never a unit tier bonus.
+static var _models: Dictionary = {}
+static var _model_cache: Dictionary = {}
+
+static func model_data() -> Dictionary:
+	if _models.is_empty():
+		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/weapon_models.json"))
+		if data is Dictionary: _models = data
+	return _models
+
+static func default_model(weapon_class: String) -> String:
+	return str(model_data().get("defaults", {}).get(weapon_class, ""))
+
+static func models_for_class(weapon_class: String) -> Array[String]:
+	var result: Array[String] = []
+	for id: String in model_data().get("models", {}):
+		if str(model_data().models[id].weapon_class) == weapon_class: result.append(id)
+	return result
+
+static func get_model(id: String) -> BattleWeaponDefinition:
+	if _model_cache.has(id): return _model_cache[id]
+	var row: Dictionary = model_data().get("models", {}).get(id, {})
+	if row.is_empty(): return null
+	var d: BattleWeaponDefinition = _make_definition(str(row.weapon_class))
+	if d == null: return null
+	d.model_id = id
+	d.display_name = str(row.name)
+	d.tier = int(row.tier)
+	for key: String in ["movement_multiplier", "max_range", "shots_per_second", "graze_trauma", "solid_trauma", "critical_trauma", "miss_probability", "graze_probability", "solid_probability", "critical_probability", "acquire_seconds", "reacquire_seconds", "recoil_per_shot", "recoil_recovery"]:
+		d.set(key, float(row[key]))
+	if not d.has_valid_combat_profile(): return null
+	_model_cache[id] = d
+	return d
+
+static func for_participant(p) -> BattleWeaponDefinition:
+	if p == null: return null
+	var id: String = p.weapon_model_id
+	if id.is_empty(): return get_definition(p.weapon_type)
+	var d: BattleWeaponDefinition = get_model(id)
+	return d if d != null and d.weapon_type_id == p.weapon_type else null
+
+# Tactical loadout setup only. Campaign inventory transfers will call their own authority.
+# Never equip during combat, change unit class, or use a swap as a free reload.
+static func equip_for_setup(b, p, id: String) -> bool:
+	if b == null or p == null or b.battle_phase == "active" or b.battle_phase == "resolved": return false
+	if b.get_participant(p.participant_id) != p or not p.is_alive: return false
+	var d: BattleWeaponDefinition = get_model(id)
+	if d == null or d.weapon_type_id != p.weapon_type: return false
+	p.weapon_model_id = id
+	p.weapon_recoil = 0.0
+	p.weapon_state = create_initial_state(p.weapon_type)
+	p.acquire_reaction_target_id = ""
+	p.sniper_aim_target_id = ""
+	p.sniper_aim_engagement_active = false
+	return true

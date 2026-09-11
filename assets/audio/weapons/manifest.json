@@ -1,0 +1,547 @@
+{
+  "source": "Original procedural synthesis; no external samples",
+  "revision": 1,
+  "variations": 3,
+  "assets": {
+    "glock_17_0.wav": {
+      "sha256": "c0a381330d5c8448bc9a6e840de3a477e4401e1daa9d0e9b146eb7097d5684f9",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 13.9375,
+      "centroid_hz": 1614.6681143641174
+    },
+    "glock_17_1.wav": {
+      "sha256": "afeaf0f1335db16c1d600f5343b770399de532a845db556b5bdffa1d018a4136",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 14.291666666666666,
+      "centroid_hz": 1656.3826094329663
+    },
+    "glock_17_2.wav": {
+      "sha256": "b9adb41331bf60e342aec967d7fb97d5671b8a0c75f5144aa2c5286b29699cf2",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 15.3125,
+      "centroid_hz": 1748.030823282569
+    },
+    "m1911_0.wav": {
+      "sha256": "2e46e640d86a4d030406737c87f940f61852361fea71e8ff9d469d80a6b4b761",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 21.25,
+      "centroid_hz": 1330.4326864377824
+    },
+    "m1911_1.wav": {
+      "sha256": "ac554b07720f316add9a699f5f775c1db91571eb0a24386ffa238641ebbba9d8",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 22.270833333333332,
+      "centroid_hz": 1334.157784325543
+    },
+    "m1911_2.wav": {
+      "sha256": "d92f78ce8b19bb97dc4ca1ad0796354a2746ef24cc0cb8fe45e1ffa65162cf6c",
+      "peak_dbfs": -1.2096149476276306,
+      "energy_90_ms": 24.583333333333332,
+      "centroid_hz": 1432.8007639981467
+    },
+    "usp_0.wav": {
+      "sha256": "20309315e06c76e2ad8d98a24171577b07c68b5b446f7289da82c49dbfbe33ee",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 18.3125,
+      "centroid_hz": 1421.703330938199
+    },
+    "usp_1.wav": {
+      "sha256": "2ba3644f5a467bdc98eb72826aae0c528dbc9a59c46142206f06e7008652582a",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 18.208333333333332,
+      "centroid_hz": 1702.9862948948726
+    },
+    "usp_2.wav": {
+      "sha256": "641878ac62d943a26632ddf8222ef150867e1b8d5bd9b934d17cd91542ad02ef",
+      "peak_dbfs": -1.2096149476276283,
+      "energy_90_ms": 17.833333333333332,
+      "centroid_hz": 1597.810656454826
+    },
+    "cz75_0.wav": {
+      "sha256": "055fd89d553de2babcf07cddd5bbd891f96430d78e0fa1d73230d47e166a72c2",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 17.3125,
+      "centroid_hz": 1922.778917048527
+    },
+    "cz75_1.wav": {
+      "sha256": "c0e8dc32f800055f094030363a9eda72b0490f634433f81eed1c84f841a7580c",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 16.791666666666668,
+      "centroid_hz": 1802.9864607748955
+    },
+    "cz75_2.wav": {
+      "sha256": "078da946f94c231a8206d7d321e33710bb829b77f96ff13185f0bbeaca1a6c16",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 13.875,
+      "centroid_hz": 1840.0846776608105
+    },
+    "desert_eagle_0.wav": {
+      "sha256": "59666ade5cb5cd074eb56a2863f0bc52c224156ec3fe833ccaee40d68800af37",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 40.916666666666664,
+      "centroid_hz": 2438.95510317407
+    },
+    "desert_eagle_1.wav": {
+      "sha256": "8d08d79eeb281bc88d8e59f4e0a71c60b73bcedb782e9491f2f3b5155642199b",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 42.979166666666664,
+      "centroid_hz": 2371.9408406085645
+    },
+    "desert_eagle_2.wav": {
+      "sha256": "f8bbbcb17d3883404bf7c9ede412e2324a04b6f558a79cdf4799606dca36a46e",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 41.3125,
+      "centroid_hz": 2497.672119176619
+    },
+    "five_seven_0.wav": {
+      "sha256": "53dc2737810c21eaedd54f31f95bb8d14cc79ebb7a6626447732a48ed4104736",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 10.958333333333334,
+      "centroid_hz": 2593.780085845428
+    },
+    "five_seven_1.wav": {
+      "sha256": "ab451442c702bd7e53063f91b46ad9f21072b0e4816f4a5a7b5481f8969d4ccf",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 10.458333333333334,
+      "centroid_hz": 3230.6804573702957
+    },
+    "five_seven_2.wav": {
+      "sha256": "c24a419187e7fa96a50b83048a701c5ecd1ec9aeaa771cf6fe6c746cdd91642f",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 11.5,
+      "centroid_hz": 3226.068249527492
+    },
+    "uzi_0.wav": {
+      "sha256": "04338b5670a7fe54c1ce4b166939c7c54b1692bd9d3a6134a4a414603107b715",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 12.729166666666666,
+      "centroid_hz": 1801.1325312716149
+    },
+    "uzi_1.wav": {
+      "sha256": "518576f6854be6b7acf8759216cf7178eef46af4bb6c479781cda4af8f43f13c",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 13.083333333333334,
+      "centroid_hz": 1552.8830372656355
+    },
+    "uzi_2.wav": {
+      "sha256": "48959db3d667cb56f9a5ad3bbdf3b05d594065a13d8d8fdba8454cb4f34fdf7b",
+      "peak_dbfs": -1.2096149476276306,
+      "energy_90_ms": 11.291666666666666,
+      "centroid_hz": 1610.3015885456405
+    },
+    "mac10_0.wav": {
+      "sha256": "d45cd6008bec330d9e04363bcc5525d4ff0bf7196f6071d375016034890a3c7b",
+      "peak_dbfs": -1.2096149476276306,
+      "energy_90_ms": 7.083333333333333,
+      "centroid_hz": 2065.7033564576354
+    },
+    "mac10_1.wav": {
+      "sha256": "d55a7e1b5025491e41376bb326eac45bf492cbd50f4e5adaabb560226bd5b18f",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 7.916666666666667,
+      "centroid_hz": 2546.378676121253
+    },
+    "mac10_2.wav": {
+      "sha256": "79a7f2fe237d350f1b3bb696f3d852952575e67a3e9f485c4bc2d5f9d9661638",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 7.729166666666666,
+      "centroid_hz": 2457.308791517815
+    },
+    "mp5_0.wav": {
+      "sha256": "4a67a2fa3562c50acd649c0b43e7feb77be9c0cde5ee15a3e4beb1af2272a9b6",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 10.625,
+      "centroid_hz": 1981.9211169910996
+    },
+    "mp5_1.wav": {
+      "sha256": "f77b2f960aca1cdb3eeea96b5469356e4d259e98f8df466abae725d8a4f081c2",
+      "peak_dbfs": -1.2096149476276306,
+      "energy_90_ms": 9.979166666666668,
+      "centroid_hz": 1825.2933493171531
+    },
+    "mp5_2.wav": {
+      "sha256": "ac9b1bea63dcc86f72a518fac4f7fcf5494432890514f15769487f1b7e0db2dc",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 10.083333333333332,
+      "centroid_hz": 2092.0990603657606
+    },
+    "mp5k_0.wav": {
+      "sha256": "17a67ceee8ef5d063bf9b278c260c9d05ab0628f0abc82506061de6a59a3977b",
+      "peak_dbfs": -1.2096149476276306,
+      "energy_90_ms": 6.6875,
+      "centroid_hz": 2751.076031524695
+    },
+    "mp5k_1.wav": {
+      "sha256": "d3e7366bc0daf39b76af44033778050889efb696fb2d4ac428c8011ed2de1892",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 6.166666666666667,
+      "centroid_hz": 2994.850159993864
+    },
+    "mp5k_2.wav": {
+      "sha256": "9202caa40143ba0791dca6ede53c8bf0025b39e697dd491a1364598639631aae",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 6.0625,
+      "centroid_hz": 2707.1727444100193
+    },
+    "vector_0.wav": {
+      "sha256": "818558682cb871c4318723bda9659a95bb522da6b72593e62bafdd248ff06969",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 9.604166666666668,
+      "centroid_hz": 1951.107986500927
+    },
+    "vector_1.wav": {
+      "sha256": "69706c1fdbd9c09172de1d424217e61993e8ace9df8cc409c5b7df7d0c0692e0",
+      "peak_dbfs": -1.2096149476276283,
+      "energy_90_ms": 9.520833333333332,
+      "centroid_hz": 1626.2911335166139
+    },
+    "vector_2.wav": {
+      "sha256": "72bb87c2ecaba3bc313792d971a11ed4188ebf227da20be2ecbb90593b5f34b0",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 9.791666666666668,
+      "centroid_hz": 1848.0544054575037
+    },
+    "p90_0.wav": {
+      "sha256": "823737910e1387c4aaa46de2a7a2dccf296b9905196a7d72f7c39c13627822aa",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 5.875,
+      "centroid_hz": 3271.5387582089256
+    },
+    "p90_1.wav": {
+      "sha256": "0172f94ecd35fc37e25f8be5cd797538f79a0bf7c4f2b9903b598d92cb65d9b8",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 7.145833333333333,
+      "centroid_hz": 3092.895664561982
+    },
+    "p90_2.wav": {
+      "sha256": "c9def4d0a49d970bce6649fd73209e2f3cea9ff1b6f85cfdd12bc6a0936477e6",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 6.541666666666667,
+      "centroid_hz": 3502.000209705856
+    },
+    "ak47_0.wav": {
+      "sha256": "6d011c90ba9db14768d7d09a406e2b8fdb4691bdfa696c1a0cd288e836764199",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 33.895833333333336,
+      "centroid_hz": 2655.2696069690655
+    },
+    "ak47_1.wav": {
+      "sha256": "da81cc0fa131264df4c71bc265b999c8544deb7b8fb9e750a807afd35df7e5d7",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 35.0,
+      "centroid_hz": 2799.7929016904536
+    },
+    "ak47_2.wav": {
+      "sha256": "892e451a4b48264c4b6e8312c1b83836bc40f6352202817c25e9f7b06d474c2a",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 33.1875,
+      "centroid_hz": 2999.453080297627
+    },
+    "mini14_0.wav": {
+      "sha256": "d3044773fbe4bfffa3ed0235550d542d60f2a55ca2b5d095f4fe0e313f642a5e",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 23.416666666666664,
+      "centroid_hz": 2643.302791768721
+    },
+    "mini14_1.wav": {
+      "sha256": "e53bc35a07b006d37f9082f4285df621d8c10d4da11370d2333fdac3fb2d0d4c",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 24.270833333333332,
+      "centroid_hz": 2688.202950713773
+    },
+    "mini14_2.wav": {
+      "sha256": "c41535ad69363004b12e72381e5ae743148340e203ff2b7eb8b0d1950e836609",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 25.458333333333332,
+      "centroid_hz": 2385.153773662371
+    },
+    "m4a1_0.wav": {
+      "sha256": "5a6a4a4a55aaf81ce3b0b01fec7b26a55714a7201be511150614be38a832a69c",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 24.6875,
+      "centroid_hz": 3619.5979722497327
+    },
+    "m4a1_1.wav": {
+      "sha256": "17808aa23837a3053c73b1ad0941982252a95af68d4d4101ada816bfac3d12c4",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 24.666666666666668,
+      "centroid_hz": 3233.6299836455123
+    },
+    "m4a1_2.wav": {
+      "sha256": "ca3607b98574346c00a3de3c813ce71828553737776f8580f597f2f57baa0f57",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 23.833333333333336,
+      "centroid_hz": 2771.3987211148783
+    },
+    "g36c_0.wav": {
+      "sha256": "502b68e5932717e36ad4d890f72e51c9dc8a54188fdea34c1ef5b1f5c870fdea",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 17.270833333333332,
+      "centroid_hz": 3492.756337842169
+    },
+    "g36c_1.wav": {
+      "sha256": "0f38877af074a1f883a3ffb29c89fac60676bfa0a874e4442004cc54b9c57db4",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 16.666666666666668,
+      "centroid_hz": 3767.0256704979415
+    },
+    "g36c_2.wav": {
+      "sha256": "da2a08144edbfb3a0fad4f96c48e6b9bbd35fd510168e900cfbf4af431db5499",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 18.854166666666668,
+      "centroid_hz": 4029.357500914557
+    },
+    "scar_h_0.wav": {
+      "sha256": "09d44bce617dd8244d4ddaa5dcf70d91b055d85aa7c0a8dc7845622dd8f615eb",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 53.0,
+      "centroid_hz": 2432.439170866684
+    },
+    "scar_h_1.wav": {
+      "sha256": "243cfa1c0d32cd61750eaa9d2a7cd6a7a59f1ae8ec7612068bce7876e078bb6f",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 52.479166666666664,
+      "centroid_hz": 2358.333177673353
+    },
+    "scar_h_2.wav": {
+      "sha256": "efacae7edb9b00ba36ea545ba56c357cf678ab9c27bd2ffc20f345e097fe20a8",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 50.333333333333336,
+      "centroid_hz": 2245.110541428997
+    },
+    "aug_0.wav": {
+      "sha256": "da2bbe6959b444c96cc439542e23b85bcd39b27a4a0e7cf3f55d5c37936fe504",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 26.625,
+      "centroid_hz": 3114.091647974545
+    },
+    "aug_1.wav": {
+      "sha256": "b219efe2356345b2e3aaaaa1aa86109458f55a84f03f621653e5ea46f9d03968",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 31.770833333333332,
+      "centroid_hz": 3297.0066003330703
+    },
+    "aug_2.wav": {
+      "sha256": "ef666e6db6fffd20d6de5227dd88d2d1bd4610b9e8b8fa4f35621fca2c20ce00",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 29.479166666666668,
+      "centroid_hz": 3303.289954496775
+    },
+    "rem870_0.wav": {
+      "sha256": "6ac3c99cd5a32ff14085e27fe6e156c71cb189750fccd345afe8310ec4c5cdba",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 73.4375,
+      "centroid_hz": 1321.8646123267242
+    },
+    "rem870_1.wav": {
+      "sha256": "b473fbb647035f9b6db87db7efab046f9c072776e54944c30c651534174d256b",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 72.60416666666666,
+      "centroid_hz": 1221.2432403810883
+    },
+    "rem870_2.wav": {
+      "sha256": "dea69575ed56fa2f91b7a49ec2da68cab190c89038ff20ca923c67681f329b46",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 72.625,
+      "centroid_hz": 1215.5229710211074
+    },
+    "moss500_0.wav": {
+      "sha256": "04d9c8b3d7e8a6801eb50ca14b2b540b41611056b0521416112b2cd984f3ee2e",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 56.75,
+      "centroid_hz": 1799.7182560189704
+    },
+    "moss500_1.wav": {
+      "sha256": "1152c3dc114adf23965e5f6c821c3e6870f056b8deeadab3d56352cc6995c90a",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 58.416666666666664,
+      "centroid_hz": 1638.5728908701662
+    },
+    "moss500_2.wav": {
+      "sha256": "f011cd21f7d315baa3ceb52ff62d1bda7f1c760f3c6de06a9109f36f16f10766",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 60.916666666666664,
+      "centroid_hz": 1781.09866355973
+    },
+    "spas12_0.wav": {
+      "sha256": "c3a3088c441a36258070f209745a17b700e089c9c49067d01a6d437260d5216c",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 88.10416666666666,
+      "centroid_hz": 1050.6328730558903
+    },
+    "spas12_1.wav": {
+      "sha256": "f25ec94823c11efbc069be7c602a00bc5e23c2f7bbd8ba472bdd3c4d4e087544",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 80.20833333333334,
+      "centroid_hz": 1078.7632110349525
+    },
+    "spas12_2.wav": {
+      "sha256": "e1cec19cb1e9f25e0cf2ecab6c621f15257071893256e5d54929bcf97dd74281",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 82.75,
+      "centroid_hz": 1085.4500756404368
+    },
+    "benelli_m2_0.wav": {
+      "sha256": "58a98a882f55b1c68f48b615a67c1a372d36357289dce38773ffd0a315fc327e",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 57.895833333333336,
+      "centroid_hz": 1593.2752368422903
+    },
+    "benelli_m2_1.wav": {
+      "sha256": "8b7f51eb086bb6690b2d80d9d15abffb6083c1b52a8f17acac3937fbb2e31d48",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 58.083333333333336,
+      "centroid_hz": 1819.170366035644
+    },
+    "benelli_m2_2.wav": {
+      "sha256": "10eb41037c12c129abd367ebb04536e3afdde4223a9dbbe3d6b9810b8608788f",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 56.541666666666664,
+      "centroid_hz": 1595.1259154923837
+    },
+    "benelli_m4_0.wav": {
+      "sha256": "1e3f738881a6318c74805053a4c3901e8b5e0d6aef260819616c12dd9cec0b0d",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 62.833333333333336,
+      "centroid_hz": 1511.6528676063388
+    },
+    "benelli_m4_1.wav": {
+      "sha256": "759a935a1543b173e08b3ccad4efad249d256be18308a6b73a11e0b25e290f7b",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 61.47916666666667,
+      "centroid_hz": 1465.679403623197
+    },
+    "benelli_m4_2.wav": {
+      "sha256": "581704d01897af2a29faee2694dba92ea7a95b2e2acf9fac8e2cb48937a601eb",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 69.125,
+      "centroid_hz": 1420.87328224503
+    },
+    "saiga12_0.wav": {
+      "sha256": "562647422bb0658d4a368d96a55af08374a45e38e7a26ef2adf1d94731703f22",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 53.8125,
+      "centroid_hz": 1866.8415317267957
+    },
+    "saiga12_1.wav": {
+      "sha256": "13fa0bbfa4fbd9666c1f1e173a79a141153af1638f69618b95e2be41facca9fa",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 57.520833333333336,
+      "centroid_hz": 1662.4959685588258
+    },
+    "saiga12_2.wav": {
+      "sha256": "380f24a81fbcfc131a4ae6ddcbc1eb395e22e23acaa19c28f2b9a158e6d9fa12",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 57.75,
+      "centroid_hz": 1715.8743930072606
+    },
+    "rem700_0.wav": {
+      "sha256": "d90b9e5f5d8cf765c04c2492c0f2ab4e047801472f663dd03363bf5a20164198",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 64.39583333333333,
+      "centroid_hz": 2896.574877423284
+    },
+    "rem700_1.wav": {
+      "sha256": "308c7156bbcdcf3e3d364acb2c868eccf0deb9f1d070a04b05922fd7821d37e1",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 58.729166666666664,
+      "centroid_hz": 3166.256073905375
+    },
+    "rem700_2.wav": {
+      "sha256": "c3602bba4869d04b43d170d2ffe95ac2036681ff1a7f93c64a58c9a8e2294c88",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 58.458333333333336,
+      "centroid_hz": 2909.004663740108
+    },
+    "sks_0.wav": {
+      "sha256": "7de1a5665c9f5a724198a524f5928c5d6a044128ccb9a7b84a197e23cf3849a9",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 33.604166666666664,
+      "centroid_hz": 2426.6814237136487
+    },
+    "sks_1.wav": {
+      "sha256": "1dad335096fe4105d0ccb0a935aa693f60303120a80b5e9e94b33ccb0dc91b7d",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 37.479166666666664,
+      "centroid_hz": 2350.846728486985
+    },
+    "sks_2.wav": {
+      "sha256": "5435aade188652ddf8e8730c5b595a5ee527fa80149d51e90eb06c9c46ddafb0",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 33.25,
+      "centroid_hz": 2489.4235404347855
+    },
+    "svd_0.wav": {
+      "sha256": "571f878c22d85c2eacf102b5360afda2edc35bf42a1664bc3759ca05adc6e021",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 47.02083333333333,
+      "centroid_hz": 3345.024001564768
+    },
+    "svd_1.wav": {
+      "sha256": "dbb45218594c5b8648284543496c3f0c33f1b4a04e8a61c7089bbdcdff6f5643",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 49.354166666666664,
+      "centroid_hz": 3506.3884637263463
+    },
+    "svd_2.wav": {
+      "sha256": "c64cd45693e2adaab4c07e8701dbb03e2710e9a67096c4a0ba5b3eeadc8c1a4b",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 46.85416666666667,
+      "centroid_hz": 3463.071009553196
+    },
+    "ssg69_0.wav": {
+      "sha256": "8bff3806d8fcb44bc108b180750d709bec144273e4ad2d2050fe0e108ab318ff",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 54.70833333333333,
+      "centroid_hz": 2786.6278559721895
+    },
+    "ssg69_1.wav": {
+      "sha256": "ddf2431d60b987d1d599fe6a67e83a709444f2e1c068e6f7761944a343b2f63d",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 50.833333333333336,
+      "centroid_hz": 2330.84394785626
+    },
+    "ssg69_2.wav": {
+      "sha256": "2af3276300e261803a0f8dbd1b762daedb0eba17a2b615313e9a3a012566711c",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 54.64583333333333,
+      "centroid_hz": 2543.585566083279
+    },
+    "awm_0.wav": {
+      "sha256": "63fcdc84ae2883df05fab2a52644403c846e7ee864adfc01090a166f9b6c758b",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 91.0,
+      "centroid_hz": 3355.8028772922476
+    },
+    "awm_1.wav": {
+      "sha256": "2c17b4620feacea8c44c24fc6667370ab1a792f6d0e5fa2da536958906d266d9",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 92.16666666666666,
+      "centroid_hz": 3555.477587839719
+    },
+    "awm_2.wav": {
+      "sha256": "bfccca9a5ed5ae9b24712ef5521b566061a51bc4d837ad02d45e81a24cf7a1b2",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 98.47916666666667,
+      "centroid_hz": 3492.7214450518127
+    },
+    "psg1_0.wav": {
+      "sha256": "09eab25496959c351aa5acbf31765b3fd2f438a8073e520f3bf6c085d27d4eec",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 63.291666666666664,
+      "centroid_hz": 2829.606099021659
+    },
+    "psg1_1.wav": {
+      "sha256": "20ed0c80c81af230e85ff86f0df1a4570608a666f89aff823c5aeb753ee9d3a9",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 63.97916666666667,
+      "centroid_hz": 2982.5381986444468
+    },
+    "psg1_2.wav": {
+      "sha256": "83f94d6d535dc613ac08c8d1254fe20894d229fd5f67e4631c9d0db8d40d1aee",
+      "peak_dbfs": -1.2096149476276294,
+      "energy_90_ms": 63.375,
+      "centroid_hz": 2678.941835395962
+    }
+  }
+}

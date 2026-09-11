@@ -1,0 +1,23 @@
+{
+  "art": "uzi_smg.svg",
+  "scale": 0.8,
+  "right_grip": [
+    13,
+    9
+  ],
+  "left_grip": [
+    32,
+    6
+  ],
+  "muzzle": [
+    47,
+    3
+  ],
+  "carry_origin": [
+    32,
+    39
+  ],
+  "carry_angle": 25,
+  "grip_style": "two_hand_smg",
+  "direction_status": "Eight-direction running preview; view projections and hand ordering in directions.py"
+}

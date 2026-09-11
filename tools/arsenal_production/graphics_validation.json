@@ -1,0 +1,43 @@
+{
+  "combat_seconds": 37.5385189999997,
+  "errors": [],
+  "fps_low": 34.0,
+  "fps_median": 49.0,
+  "models": {
+    "player_arsenal_shotgun": {
+      "model": "benelli_m4",
+      "variant": "arsenal_1_benelli_m4"
+    },
+    "player_soldier": {
+      "model": "awm",
+      "variant": "arsenal_1_awm"
+    },
+    "player_soldier_shotgun": {
+      "model": "five_seven",
+      "variant": "arsenal_1_five_seven"
+    },
+    "player_soldier_smg": {
+      "model": "vector",
+      "variant": "arsenal_1_vector"
+    },
+    "rival_arsenal_shotgun": {
+      "model": "saiga12",
+      "variant": "arsenal_0_saiga12"
+    },
+    "rival_soldier": {
+      "model": "desert_eagle",
+      "variant": "arsenal_0_desert_eagle"
+    },
+    "rival_soldier_rifle": {
+      "model": "psg1",
+      "variant": "arsenal_0_psg1"
+    },
+    "rival_soldier_shotgun": {
+      "model": "p90",
+      "variant": "arsenal_0_p90"
+    }
+  },
+  "resolved": true,
+  "shots": 54,
+  "winner": "defender"
+}

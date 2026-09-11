@@ -368,7 +368,7 @@ static func _update_acquire_reaction(
 		participant.acquire_reaction_remaining_seconds = 0.0
 		return
 	participant.acquire_reaction_remaining_seconds = (
-		BattleCombatBehaviorCatalog.HEALTHY_FIRST_SHOT_REACTION_SECONDS
+		BattleWeaponCatalog.for_participant(participant).acquire_seconds
 	)
 
 
@@ -397,27 +397,27 @@ static func _update_sniper_aim(
 	if not BattleFireControlService.is_spatial_fire_engagement(battle_state, participant, target):
 		participant.sniper_aim_engagement_active = false
 		return
+	# Movement breaks the settled aim. Re-aim after arriving, never shoot while jogging.
+	if participant.velocity.length_squared() > 0.04:
+		participant.sniper_aim_engagement_active = false
+		participant.sniper_aim_remaining_seconds = BattleWeaponCatalog.for_participant(participant).acquire_seconds
+		return
 	var engaged_target_id: String = target.participant_id
 	if (
 		participant.sniper_aim_engagement_active
 		and participant.sniper_aim_target_id == engaged_target_id
 	):
-		if participant.has_wound_reaction():
-			participant.sniper_aim_remaining_seconds = 0.0
 		return
 	var is_initial_aim: bool = participant.sniper_aim_target_id.is_empty()
 	participant.sniper_aim_target_id = engaged_target_id
 	participant.sniper_aim_engagement_active = true
-	if participant.has_wound_reaction():
-		participant.sniper_aim_remaining_seconds = 0.0
-		return
 	if is_initial_aim:
 		participant.sniper_aim_remaining_seconds = (
-			BattleCombatBehaviorCatalog.SNIPER_INITIAL_AIM_SECONDS
+			BattleWeaponCatalog.for_participant(participant).acquire_seconds
 		)
 		return
 	participant.sniper_aim_remaining_seconds = (
-		BattleCombatBehaviorCatalog.SNIPER_TARGET_CHANGE_REACQUIRE_SECONDS
+		BattleWeaponCatalog.for_participant(participant).reacquire_seconds
 	)
 
 
@@ -937,7 +937,7 @@ static func _short_range_still_needs_to_close(
 		return false
 	if BattleCombatBehaviorCatalog.uses_short_range_range_state(weapon_type_id):
 		var range_distance: float = participant.battle_position.distance_to(target.battle_position)
-		return not BattleCombatBehaviorCatalog.is_in_useful_firing_range(weapon_type_id, range_distance)
+		return not BattleCombatBehaviorCatalog.participant_in_range(participant, range_distance)
 	return _is_too_far_for_preferred_band(participant, target, weapon_type_id)
 
 
@@ -959,7 +959,7 @@ static func _is_too_far_for_preferred_band(
 ) -> bool:
 	if participant == null or target == null:
 		return false
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(participant)
 	if profile == null:
 		return false
 	var range_distance: float = participant.battle_position.distance_to(target.battle_position)
@@ -979,6 +979,9 @@ static func _closing_should_commit(
 	if participant == null or target == null:
 		return false
 	var commit_range: float = BattleCombatBehaviorCatalog.closing_commit_range(weapon_type_id)
+	var model = BattleWeaponCatalog.for_participant(participant)
+	var base = BattleWeaponCatalog.get_definition(weapon_type_id)
+	if model != null and base != null: commit_range *= model.max_range / base.max_range
 	if not is_finite(commit_range) or commit_range <= 0.0:
 		return false
 	var range_distance: float = participant.battle_position.distance_to(target.battle_position)
@@ -1201,7 +1204,7 @@ static func _cheap_closing_slot_still_valid(
 	var slot_range: float = slot.position.distance_to(hostile.battle_position)
 	if not is_finite(slot_range):
 		return false
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(participant)
 	if (
 		profile != null
 		and profile.preferred_min_distance > 0.0
@@ -1289,7 +1292,7 @@ static func _can_take_worthwhile_closing_shot(
 	if participant == null or target == null:
 		return false
 	var weapon_type_id: String = _participant_weapon_type_id(participant)
-	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(weapon_type_id)
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(participant)
 	if definition == null or not definition.is_valid():
 		return false
 	var range_distance: float = participant.battle_position.distance_to(target.battle_position)
@@ -1593,7 +1596,7 @@ static func _wounded_reenter_destination(
 	if participant == null or hostile == null:
 		return Vector2.ZERO
 	var weapon_type_id: String = _participant_weapon_type_id(participant)
-	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(weapon_type_id)
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(participant)
 	if definition == null or not definition.is_valid():
 		return participant.battle_position
 	var current_range: float = participant.battle_position.distance_to(hostile.battle_position)
@@ -1691,7 +1694,8 @@ static func _navigate_to_combat_destination(
 static func _healthy_slot_is_role_suitable(
 	slot: BattleCoverSlot,
 	target: BattleParticipant,
-	weapon_type_id: String
+	weapon_type_id: String,
+	participant: BattleParticipant
 ) -> bool:
 	if slot == null or not slot.is_valid() or target == null:
 		return false
@@ -1699,7 +1703,7 @@ static func _healthy_slot_is_role_suitable(
 	if not is_finite(replan_distance):
 		return false
 	var slot_range: float = slot.position.distance_to(target.battle_position)
-	var band_error: float = BattleCombatBehaviorCatalog.preferred_band_error(weapon_type_id, slot_range)
+	var band_error: float = BattleCombatBehaviorCatalog.participant_band_error(participant, slot_range)
 	if not is_finite(band_error):
 		return false
 	return band_error <= replan_distance
@@ -1768,11 +1772,11 @@ static func _healthy_no_role_cover_key(
 			has_los = 1
 	var range_distance: float = participant.battle_position.distance_to(target.battle_position)
 	var in_max_range: int = 0
-	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(weapon_type_id)
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(participant)
 	if definition != null and is_finite(range_distance) and range_distance <= definition.max_range:
 		in_max_range = 1
 	var in_band: int = 0
-	var band_error: float = BattleCombatBehaviorCatalog.preferred_band_error(weapon_type_id, range_distance)
+	var band_error: float = BattleCombatBehaviorCatalog.participant_band_error(participant, range_distance)
 	if is_finite(band_error) and is_equal_approx(band_error, 0.0):
 		in_band = 1
 	var threat_urgency: int = 0
@@ -1904,7 +1908,7 @@ static func _cheap_cover_decision_still_valid(
 	if evaluation == null or not evaluation.combat_usable:
 		return false
 	if require_role and weapon_type_id != BattleWeaponCatalog.WEAPON_PISTOL:
-		if not _healthy_slot_is_role_suitable(slot, hostile, weapon_type_id):
+		if not _healthy_slot_is_role_suitable(slot, hostile, weapon_type_id, participant):
 			return false
 	return true
 
@@ -2493,7 +2497,7 @@ static func _healthy_role_requires_weapon_range(
 	if BattleCombatBehaviorCatalog.uses_short_range_range_state(weapon_type_id):
 		if participant != null and target != null:
 			var range_distance: float = participant.battle_position.distance_to(target.battle_position)
-			if BattleCombatBehaviorCatalog.is_in_useful_firing_range(weapon_type_id, range_distance):
+			if BattleCombatBehaviorCatalog.participant_in_range(participant, range_distance):
 				return true
 		return false
 	return _push_applies(battle_state, participant)
@@ -2512,7 +2516,7 @@ static func _short_range_exposed_threat_urgency(
 	if _has_valid_occupancy(battle_state, participant):
 		return false
 	var range_distance: float = participant.battle_position.distance_to(hostile.battle_position)
-	if not BattleCombatBehaviorCatalog.is_in_useful_firing_range(weapon_type_id, range_distance):
+	if not BattleCombatBehaviorCatalog.participant_in_range(participant, range_distance):
 		return false
 	return BattleFireControlService.would_fire_if_source_cover_exposed(
 		battle_state,
@@ -2678,9 +2682,7 @@ static func _fall_back_destination(
 	if not is_finite(distance) or distance <= 0.0:
 		return _fall_back_destination_result(false)
 	var preferred_min: float = 0.0
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(
-		_participant_weapon_type_id(source)
-	)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(source)
 	if profile != null and is_finite(profile.preferred_min_distance):
 		preferred_min = profile.preferred_min_distance
 	for step_index: int in range(16, 0, -1):
@@ -2780,9 +2782,7 @@ static func _focus_biased_destination(
 		radius = 0.0
 	if not _is_finite_vector(direction) or direction.is_equal_approx(Vector2.ZERO):
 		return base_destination
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(
-		_participant_weapon_type_id(source)
-	)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(source)
 	if profile != null:
 		var preferred_min: float = profile.preferred_min_distance
 		var preferred_max: float = profile.preferred_max_distance
@@ -2880,7 +2880,7 @@ static func _push_approach_destination(
 	var weapon_type_id: String = _participant_weapon_type_id(source)
 	if not _push_uses_controlled_advance(weapon_type_id):
 		return target.battle_position
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(source)
 	if profile == null:
 		return source.battle_position
 	var distance: float = source.battle_position.distance_to(target.battle_position)
@@ -2956,7 +2956,7 @@ static func _desired_move_mode(
 		weapon_type_id = source.weapon_state.weapon_type_id
 	elif not source.weapon_type.is_empty():
 		weapon_type_id = source.weapon_type
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(source)
 	if profile == null:
 		if rejection_code == "out_of_range" or rejection_code == "line_of_sight_blocked":
 			return MOVE_APPROACH
@@ -2980,7 +2980,7 @@ static func _retreat_destination(
 		weapon_type_id = source.weapon_state.weapon_type_id
 	elif not source.weapon_type.is_empty():
 		weapon_type_id = source.weapon_type
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(source)
 	if profile == null:
 		return Vector2.ZERO
 	var away: Vector2 = source.battle_position - target.battle_position

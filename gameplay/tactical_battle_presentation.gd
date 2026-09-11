@@ -4,7 +4,7 @@ const Factions=preload("res://gameplay/battle_faction_identity.gd")
 const Card=preload("res://gameplay/tactical_unit_card.gd")
 const Nav=preload("res://battle/navigation/battle_navigation_service.gd")
 const Visual=preload("res://battle/presentation/tactical_participant_visual.gd")
-const ROLES=["smg","rifle","pistol","shotgun"]
+const ROLES=["smg","rifle","pistol","shotgun","sniper"]
 var view: Node
 var surface: Control
 var context: Context
@@ -213,7 +213,8 @@ func build_results():
   units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
   result_snapshot[side]=[]
   for i in range(units.size()):
-   var card=Card.build(panel,Vector2(99+(i%2)*168,102+(i/2)*135),font);Card.update(card,units[i],"",false);result_cards[units[i].participant_id]=card
+   var columns: int=3 if units.size()>4 else 2
+   var card=Card.build(panel,Vector2((30 if columns==3 else 99)+(i%columns)*156,102+(i/columns)*135),font);Card.update(card,units[i],"",false);result_cards[units[i].participant_id]=card
    result_snapshot[side].append({"id":units[i].participant_id,"state":card.status.text,"health_width":card.health.size.x,"role":card.role.text,"weapon":card.gun.text,"tint":str(card.portrait.modulate)})
  var done=Button.new();result_root.add_child(done);done.text="CONTINUE";done.position=Vector2(426,410);done.size=Vector2(188,36);done.focus_mode=Control.FOCUS_NONE
  done.add_theme_font_override("font",font);done.add_theme_font_size_override("font_size",12);done.add_theme_stylebox_override("normal",Card.style(Color("#273a32"),Color("#77927c")))

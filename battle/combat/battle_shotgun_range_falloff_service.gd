@@ -24,7 +24,7 @@ static func apply(
 ) -> BattleShotgunRangeFalloffResult:
 	if definition == null or definition.weapon_type_id != BattleWeaponCatalog.WEAPON_SHOTGUN:
 		return null
-	var t: float = distance_t(distance)
+	var t: float = distance_t(distance * BattleWeaponCatalog.SHOTGUN_MAX_RANGE / definition.max_range)
 	var close_miss_end: float = definition.miss_probability
 	var close_graze_end: float = close_miss_end + definition.graze_probability
 	var close_solid_end: float = close_graze_end + definition.solid_probability

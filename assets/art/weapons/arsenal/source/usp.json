@@ -1,0 +1,23 @@
+{
+  "art": "pistol.svg",
+  "scale": 0.7616000000000002,
+  "right_grip": [
+    2,
+    7
+  ],
+  "left_grip": [
+    0,
+    8
+  ],
+  "muzzle": [
+    19,
+    2
+  ],
+  "carry_origin": [
+    42,
+    39
+  ],
+  "carry_angle": 17,
+  "grip_style": "two_hand_pistol",
+  "direction_status": "Eight-direction running preview; view projections and hand ordering in directions.py"
+}

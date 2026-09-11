@@ -67,6 +67,8 @@ const DEFAULT_FOOT_OFFSET_Y := -46.0
 
 static var _texture_cache: Dictionary = {}
 static var _frames_cache: Dictionary = {}
+static var _variant_lru: Array[String] = []
+const MAX_CACHED_VARIANTS := 12
 
 
 static func animation_name(clip_id: String, direction_id: String) -> String:
@@ -103,18 +105,22 @@ static func manifest() -> Dictionary:
 			_manifest = value
 	return _manifest
 
-static func variant_for(gang: String, weapon: String) -> String:
+static func variant_for(gang: String, weapon: String, model_id: String = "") -> String:
 	var outfit: String = ""
 	match gang:
 		"local_street_gang": outfit = "0"
 		"russian_organized_crime": outfit = "1"
 		"italian_mob": outfit = "2"
+	if not model_id.is_empty():
+		var model_variant: String = str(arsenal_manifest().get("models", {}).get(outfit+"_"+model_id, ""))
+		if not model_variant.is_empty(): return model_variant
 	var gun: String = ""
 	match weapon:
 		"rifle": gun = "ak_rifle"
 		"shotgun": gun = "pump_shotgun"
 		"smg": gun = "uzi_smg"
 		"pistol": gun = "pistol"
+		"sniper": gun = "ak_rifle"
 	if outfit.is_empty() or gun.is_empty():
 		return ""
 	return outfit + "_" + gun
@@ -122,6 +128,7 @@ static func variant_for(gang: String, weapon: String) -> String:
 static func bound_variant_ids() -> Array[String]:
 	var result: Array[String] = []
 	result.assign(manifest().get("variants", []))
+	result.append_array(arsenal_manifest().get("variants", {}).keys())
 	return result
 
 static func bound_clip_ids() -> Array[String]:
@@ -129,8 +136,8 @@ static func bound_clip_ids() -> Array[String]:
 	result.assign(manifest().get("clips", {}).keys())
 	return result
 
-static func has_bound_frames(_participant_id: String, gang: String, weapon: String) -> bool:
-	return bound_variant_ids().has(variant_for(gang, weapon))
+static func has_bound_frames(_participant_id: String, gang: String, weapon: String, model_id: String = "") -> bool:
+	return bound_variant_ids().has(variant_for(gang, weapon, model_id))
 
 static func playback_clip_id(clip_id: String) -> String:
 	return clip_id if bound_clip_ids().has(clip_id) else CLIP_IDLE
@@ -145,8 +152,9 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 	if not bound_variant_ids().has(variant_id):
 		return null
 	if _frames_cache.has(variant_id):
+		_touch_variant(variant_id)
 		return _frames_cache[variant_id] as SpriteFrames
-	var atlas: Texture2D = _texture("res://assets/art/units/pixel_v1/" + variant_id + ".png")
+	var atlas: Texture2D = _texture(atlas_path(variant_id, "units"))
 	if atlas == null:
 		return null
 	var frames := SpriteFrames.new()
@@ -157,7 +165,7 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 		var spec: Dictionary = manifest()["clips"][clip]
 		var clip_atlas: Texture2D=atlas
 		if spec.get("atlas", "") in ["death_back","check_comrade"]:
-			var extra_path="res://assets/art/units/pixel_v1/"+str(spec.atlas)+"/"+variant_id+".png"
+			var extra_path=atlas_path(variant_id, str(spec.atlas))
 			if not FileAccess.file_exists(extra_path):continue
 			clip_atlas=_texture(extra_path)
 		for d in range(directions.size()):
@@ -173,6 +181,7 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 				if spec.get("atlas", "") in ["death_back","check_comrade"]:tex.region=Rect2(i*128,d*128,128,128)
 				frames.add_frame(anim, tex)
 	_frames_cache[variant_id] = frames
+	_touch_variant(variant_id)
 	return frames
 
 
@@ -217,3 +226,34 @@ static func _load_texture(path: String) -> Texture2D:
 	if image.load(path) != OK:
 		return null
 	return ImageTexture.create_from_image(image)
+
+
+static var _arsenal: Dictionary = {}
+static func arsenal_manifest() -> Dictionary:
+	if _arsenal.is_empty():
+		var path: String = "res://assets/art/weapons/arsenal/manifest.json"
+		if FileAccess.file_exists(path):
+			var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if data is Dictionary: _arsenal = data
+	return _arsenal
+
+static func base_variant(variant: String) -> String:
+	return str(arsenal_manifest().get("variants", {}).get(variant, {}).get("base", variant))
+
+static func atlas_path(variant: String, folder: String) -> String:
+	var row: Dictionary = arsenal_manifest().get("variants", {}).get(variant, {})
+	if not row.is_empty():
+		return "res://assets/art/weapons/arsenal/"+folder+"/"+str(row.file)+".png"
+	return "res://assets/art/units/pixel_v1/"+("" if folder=="units" else folder+"/")+variant+".png"
+
+
+# Browsing the arsenal must not retain dozens of 4096x6144 atlases indefinitely.
+# Active sprites own their frames independently, so eviction cannot blank a living unit.
+static func _touch_variant(variant: String) -> void:
+	_variant_lru.erase(variant)
+	_variant_lru.append(variant)
+	while _variant_lru.size() > MAX_CACHED_VARIANTS:
+		var old: String = _variant_lru.pop_front()
+		_frames_cache.erase(old)
+		for folder: String in ["units", "death_back", "check_comrade"]:
+			_texture_cache.erase(atlas_path(old, folder))

@@ -1,0 +1,1121 @@
+{
+  "battles": [
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 4
+      },
+      "cover_hustle": 1.18,
+      "duration": 38.05,
+      "models": {
+        "player_arsenal_shotgun": "rem870",
+        "player_soldier": "ak47",
+        "player_soldier_shotgun": "glock_17",
+        "player_soldier_smg": "uzi",
+        "rival_arsenal_shotgun": "moss500",
+        "rival_soldier": "m1911",
+        "rival_soldier_rifle": "mini14",
+        "rival_soldier_shotgun": "mac10"
+      },
+      "pair": 0,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(25.83094, 25.08119)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(58.45891, 25.90045)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "rival_soldier"
+        },
+        "player_soldier_shotgun": {
+          "at": "(27.55, 20.35)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(32.85, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(26.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier": {
+          "at": "(45.75687, 23.6999)",
+          "intent": "",
+          "mode": "recover_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(24.27507, 19.43849)",
+          "intent": "",
+          "mode": "recover_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(31.03291, 16.77058)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "player_soldier"
+        }
+      },
+      "seed": 4200,
+      "shots": {
+        "ak47": 14,
+        "glock_17": 1,
+        "m1911": 15,
+        "mac10": 20,
+        "mini14": 20,
+        "moss500": 2,
+        "rem870": 2,
+        "uzi": 21
+      },
+      "snipers": false,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.268,
+        "rival_soldier": 1.408,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 0.451
+      },
+      "wall_ms": 30256,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 2
+      },
+      "cover_hustle": 1.18,
+      "duration": 44.9999999999996,
+      "models": {
+        "player_arsenal_shotgun": "moss500",
+        "player_soldier": "mini14",
+        "player_soldier_shotgun": "m1911",
+        "player_soldier_smg": "mac10",
+        "rival_arsenal_shotgun": "spas12",
+        "rival_soldier": "usp",
+        "rival_soldier_rifle": "m4a1",
+        "rival_soldier_shotgun": "mp5"
+      },
+      "pair": 1,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(28.96176, 18.89015)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(49.388, 24.14743)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_soldier"
+        },
+        "player_soldier_shotgun": {
+          "at": "(33.8202, 27.58151)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(43.44264, 22.44754)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(23.79552, 31.60838)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_soldier": {
+          "at": "(41.42653, 23.86083)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(18.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(30.21005, 19.10738)",
+          "intent": "",
+          "mode": "defend_reposition",
+          "target": ""
+        }
+      },
+      "seed": 4201,
+      "shots": {
+        "m1911": 11,
+        "m4a1": 30,
+        "mini14": 19,
+        "mp5": 8,
+        "spas12": 2,
+        "usp": 16
+      },
+      "snipers": false,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.0,
+        "rival_soldier": 0.00600000000000007,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 0.0
+      },
+      "wall_ms": 31698,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 2,
+        "defender": 2
+      },
+      "cover_hustle": 1.18,
+      "duration": 119.999999999995,
+      "models": {
+        "player_arsenal_shotgun": "spas12",
+        "player_soldier": "m4a1",
+        "player_soldier_shotgun": "usp",
+        "player_soldier_smg": "mp5",
+        "rival_arsenal_shotgun": "benelli_m2",
+        "rival_soldier": "cz75",
+        "rival_soldier_rifle": "g36c",
+        "rival_soldier_shotgun": "mp5k"
+      },
+      "pair": 2,
+      "phase": "active",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(27.61698, 22.84937)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(42.5, 22.075)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_soldier"
+        },
+        "player_soldier_shotgun": {
+          "at": "(32.85, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_soldier"
+        },
+        "player_soldier_smg": {
+          "at": "(39.69618, 30.34525)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(26.98194, 28.83872)",
+          "intent": "",
+          "mode": "defend_reposition",
+          "target": ""
+        },
+        "rival_soldier": {
+          "at": "(18.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_shotgun"
+        },
+        "rival_soldier_rifle": {
+          "at": "(12.15, 33.35)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_shotgun"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(26.19018, 22.58006)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        }
+      },
+      "seed": 4202,
+      "shots": {
+        "cz75": 11,
+        "g36c": 17,
+        "m4a1": 8,
+        "mp5": 6,
+        "mp5k": 6,
+        "spas12": 1,
+        "usp": 8
+      },
+      "snipers": false,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 1.5,
+        "player_soldier_shotgun": 0.368,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.0,
+        "rival_soldier": 0.58,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 0.0
+      },
+      "wall_ms": 57983,
+      "winner": ""
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 3
+      },
+      "cover_hustle": 1.18,
+      "duration": 12.7,
+      "models": {
+        "player_arsenal_shotgun": "benelli_m2",
+        "player_soldier": "g36c",
+        "player_soldier_shotgun": "cz75",
+        "player_soldier_smg": "mp5k",
+        "rival_arsenal_shotgun": "benelli_m4",
+        "rival_soldier": "desert_eagle",
+        "rival_soldier_rifle": "scar_h",
+        "rival_soldier_shotgun": "vector"
+      },
+      "pair": 3,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(41.24246, 19.04585)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(53.75601, 27.89466)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_arsenal_shotgun"
+        },
+        "player_soldier_shotgun": {
+          "at": "(42.5, 22.075)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(45.50056, 22.93792)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(39.25256, 19.98369)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier": {
+          "at": "(34.8789, 22.68785)",
+          "intent": "",
+          "mode": "close",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(16.71959, 26.80025)",
+          "intent": "",
+          "mode": "seek_role_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(35.04112, 19.14891)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        }
+      },
+      "seed": 4203,
+      "shots": {
+        "benelli_m4": 2,
+        "cz75": 8,
+        "desert_eagle": 9,
+        "g36c": 13,
+        "scar_h": 13,
+        "vector": 10
+      },
+      "snipers": false,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.232,
+        "rival_soldier": 1.5,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 0.0
+      },
+      "wall_ms": 12854,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 3
+      },
+      "cover_hustle": 1.18,
+      "duration": 14.9000000000001,
+      "models": {
+        "player_arsenal_shotgun": "benelli_m4",
+        "player_soldier": "scar_h",
+        "player_soldier_shotgun": "desert_eagle",
+        "player_soldier_smg": "vector",
+        "rival_arsenal_shotgun": "saiga12",
+        "rival_soldier": "five_seven",
+        "rival_soldier_rifle": "aug",
+        "rival_soldier_shotgun": "p90"
+      },
+      "pair": 4,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(47.76781, 20.01804)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(57.082, 26.45)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_arsenal_shotgun"
+        },
+        "player_soldier_shotgun": {
+          "at": "(45.35614, 22.63174)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(44.75343, 22.72306)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(35.5911, 35.23492)",
+          "intent": "",
+          "mode": "close",
+          "target": "player_soldier"
+        },
+        "rival_soldier": {
+          "at": "(31.73995, 23.09105)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_soldier_rifle": {
+          "at": "(25.65079, 25.03661)",
+          "intent": "",
+          "mode": "seek_role_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(17.95, 21.525)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        }
+      },
+      "seed": 4204,
+      "shots": {
+        "aug": 20,
+        "desert_eagle": 2,
+        "five_seven": 8,
+        "p90": 17,
+        "scar_h": 10,
+        "vector": 3
+      },
+      "snipers": false,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.91,
+        "rival_soldier": 0.0,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 0.14
+      },
+      "wall_ms": 10014,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 1
+      },
+      "cover_hustle": 1.18,
+      "duration": 43.1499999999997,
+      "models": {
+        "player_arsenal_shotgun": "saiga12",
+        "player_soldier": "aug",
+        "player_soldier_shotgun": "five_seven",
+        "player_soldier_smg": "p90",
+        "rival_arsenal_shotgun": "rem870",
+        "rival_soldier": "glock_17",
+        "rival_soldier_rifle": "ak47",
+        "rival_soldier_shotgun": "uzi"
+      },
+      "pair": 5,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(33.04799, 24.23258)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(42.45092, 22.28383)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "rival_soldier_rifle"
+        },
+        "player_soldier_shotgun": {
+          "at": "(26.88341, 20.47868)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(39.89948, 32.4907)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(28.13255, 27.83859)",
+          "intent": "",
+          "mode": "defend_reposition",
+          "target": ""
+        },
+        "rival_soldier": {
+          "at": "(18.52827, 22.9397)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "rival_soldier_rifle": {
+          "at": "(12.15, 33.35)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(26.22994, 20.43305)",
+          "intent": "",
+          "mode": "defend_reposition",
+          "target": ""
+        }
+      },
+      "seed": 4205,
+      "shots": {
+        "ak47": 18,
+        "aug": 13,
+        "five_seven": 2,
+        "glock_17": 12,
+        "p90": 7,
+        "saiga12": 1,
+        "uzi": 6
+      },
+      "snipers": false,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.0,
+        "rival_soldier": 0.0,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 0.0
+      },
+      "wall_ms": 22910,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 3
+      },
+      "cover_hustle": 1.18,
+      "duration": 42.2499999999997,
+      "models": {
+        "player_arsenal_shotgun": "rem870",
+        "player_soldier": "rem700",
+        "player_soldier_shotgun": "glock_17",
+        "player_soldier_smg": "uzi",
+        "rival_arsenal_shotgun": "moss500",
+        "rival_soldier": "m1911",
+        "rival_soldier_rifle": "sks",
+        "rival_soldier_shotgun": "mac10"
+      },
+      "pair": 0,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(29.5, 22.85)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(50.82503, 24.9707)",
+          "intent": "",
+          "mode": "retreat",
+          "target": "rival_soldier"
+        },
+        "player_soldier_shotgun": {
+          "at": "(32.35291, 25.36418)",
+          "intent": "",
+          "mode": "recover_cover",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(35.96777, 23.98832)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(42.55239, 28.21055)",
+          "intent": "",
+          "mode": "close",
+          "target": ""
+        },
+        "rival_soldier": {
+          "at": "(46.95001, 23.52737)",
+          "intent": "",
+          "mode": "recover_cover",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(1.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(40.05, 15.15)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        }
+      },
+      "seed": 4200,
+      "shots": {
+        "glock_17": 3,
+        "m1911": 13,
+        "mac10": 42,
+        "rem700": 4,
+        "rem870": 1,
+        "sks": 7,
+        "uzi": 7
+      },
+      "snipers": true,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.0,
+        "rival_soldier": 1.5,
+        "rival_soldier_rifle": 0.451,
+        "rival_soldier_shotgun": 1.185
+      },
+      "wall_ms": 31684,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 3
+      },
+      "cover_hustle": 1.18,
+      "duration": 33.7500000000002,
+      "models": {
+        "player_arsenal_shotgun": "moss500",
+        "player_soldier": "sks",
+        "player_soldier_shotgun": "m1911",
+        "player_soldier_smg": "mac10",
+        "rival_arsenal_shotgun": "spas12",
+        "rival_soldier": "usp",
+        "rival_soldier_rifle": "svd",
+        "rival_soldier_shotgun": "mp5"
+      },
+      "pair": 1,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(32.85, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(48.40193, 25.57567)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier_shotgun": {
+          "at": "(59.36378, 24.45251)",
+          "intent": "",
+          "mode": "close",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(42.5, 22.075)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_arsenal_shotgun"
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(38.45, 16.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_smg"
+        },
+        "rival_soldier": {
+          "at": "(21.2252, 20.49107)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "rival_soldier_rifle": {
+          "at": "(9.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_smg"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(26.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_smg"
+        }
+      },
+      "seed": 4201,
+      "shots": {
+        "mac10": 31,
+        "moss500": 4,
+        "mp5": 27,
+        "sks": 7,
+        "spas12": 5,
+        "svd": 7,
+        "usp": 10
+      },
+      "snipers": true,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 1.14130528684917,
+        "rival_soldier": 0.0,
+        "rival_soldier_rifle": 1.5,
+        "rival_soldier_shotgun": 1.335
+      },
+      "wall_ms": 20142,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 3
+      },
+      "cover_hustle": 1.18,
+      "duration": 37.1,
+      "models": {
+        "player_arsenal_shotgun": "spas12",
+        "player_soldier": "svd",
+        "player_soldier_shotgun": "usp",
+        "player_soldier_smg": "mp5",
+        "rival_arsenal_shotgun": "benelli_m2",
+        "rival_soldier": "cz75",
+        "rival_soldier_rifle": "ssg69",
+        "rival_soldier_shotgun": "mp5k"
+      },
+      "pair": 2,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(36.5083, 23.85626)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(42.5, 22.075)",
+          "intent": "",
+          "mode": "",
+          "target": "rival_soldier_shotgun"
+        },
+        "player_soldier_shotgun": {
+          "at": "(58.61849, 22.94173)",
+          "intent": "",
+          "mode": "close",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(39.85, 33.35)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(45.575, 26.65)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier": {
+          "at": "(33.15, 33.35)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(1.673808, 24.10281)",
+          "intent": "",
+          "mode": "recover_cover",
+          "target": ""
+        },
+        "rival_soldier_shotgun": {
+          "at": "(39.65, 22.075)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        }
+      },
+      "seed": 4202,
+      "shots": {
+        "benelli_m2": 7,
+        "cz75": 18,
+        "mp5": 12,
+        "mp5k": 28,
+        "spas12": 2,
+        "ssg69": 2,
+        "svd": 2
+      },
+      "snipers": true,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 1.31,
+        "rival_soldier": 1.5,
+        "rival_soldier_rifle": 0.0,
+        "rival_soldier_shotgun": 1.458
+      },
+      "wall_ms": 14707,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 4
+      },
+      "cover_hustle": 1.18,
+      "duration": 24.8000000000002,
+      "models": {
+        "player_arsenal_shotgun": "benelli_m2",
+        "player_soldier": "ssg69",
+        "player_soldier_shotgun": "cz75",
+        "player_soldier_smg": "mp5k",
+        "rival_arsenal_shotgun": "benelli_m4",
+        "rival_soldier": "desert_eagle",
+        "rival_soldier_rifle": "awm",
+        "rival_soldier_shotgun": "vector"
+      },
+      "pair": 3,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(32.85, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(60.19216, 24.87066)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "rival_arsenal_shotgun"
+        },
+        "player_soldier_shotgun": {
+          "at": "(57.8176, 22.05089)",
+          "intent": "",
+          "mode": "close",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(37.998, 23.49231)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(54.15, 33.35)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier": {
+          "at": "(39.65, 22.075)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(1.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(42.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        }
+      },
+      "seed": 4203,
+      "shots": {
+        "awm": 4,
+        "benelli_m2": 7,
+        "benelli_m4": 6,
+        "desert_eagle": 10,
+        "mp5k": 8,
+        "ssg69": 1,
+        "vector": 29
+      },
+      "snipers": true,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.82,
+        "rival_soldier": 1.5,
+        "rival_soldier_rifle": 0.47,
+        "rival_soldier_shotgun": 0.784924856332632
+      },
+      "wall_ms": 11503,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 2
+      },
+      "cover_hustle": 1.18,
+      "duration": 39.1499999999999,
+      "models": {
+        "player_arsenal_shotgun": "benelli_m4",
+        "player_soldier": "awm",
+        "player_soldier_shotgun": "desert_eagle",
+        "player_soldier_smg": "vector",
+        "rival_arsenal_shotgun": "saiga12",
+        "rival_soldier": "five_seven",
+        "rival_soldier_rifle": "psg1",
+        "rival_soldier_shotgun": "p90"
+      },
+      "pair": 4,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(34.91387, 19.3566)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(43.95737, 22.49412)",
+          "intent": "",
+          "mode": "recover_cover",
+          "target": ""
+        },
+        "player_soldier_shotgun": {
+          "at": "(30.24781, 23.6999)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "rival_soldier"
+        },
+        "player_soldier_smg": {
+          "at": "(31.66987, 25.82722)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(38.5146, 25.53028)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": ""
+        },
+        "rival_soldier": {
+          "at": "(21.15, 19.35)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_shotgun"
+        },
+        "rival_soldier_rifle": {
+          "at": "(9.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier_shotgun"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(26.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        }
+      },
+      "seed": 4204,
+      "shots": {
+        "awm": 1,
+        "benelli_m4": 1,
+        "desert_eagle": 10,
+        "five_seven": 19,
+        "p90": 17,
+        "psg1": 5,
+        "saiga12": 2,
+        "vector": 27
+      },
+      "snipers": true,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.0,
+        "rival_soldier": 1.214,
+        "rival_soldier_rifle": 1.214,
+        "rival_soldier_shotgun": 0.0
+      },
+      "wall_ms": 13784,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 4
+      },
+      "cover_hustle": 1.18,
+      "duration": 29.5500000000003,
+      "models": {
+        "player_arsenal_shotgun": "saiga12",
+        "player_soldier": "psg1",
+        "player_soldier_shotgun": "five_seven",
+        "player_soldier_smg": "p90",
+        "rival_arsenal_shotgun": "rem870",
+        "rival_soldier": "glock_17",
+        "rival_soldier_rifle": "rem700",
+        "rival_soldier_shotgun": "uzi"
+      },
+      "pair": 5,
+      "phase": "resolved",
+      "positions": {
+        "player_arsenal_shotgun": {
+          "at": "(32.85, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "player_soldier": {
+          "at": "(49.82374, 32.20562)",
+          "intent": "",
+          "mode": "seek_cover",
+          "target": "rival_arsenal_shotgun"
+        },
+        "player_soldier_shotgun": {
+          "at": "(58.76758, 23.10758)",
+          "intent": "",
+          "mode": "close",
+          "target": ""
+        },
+        "player_soldier_smg": {
+          "at": "(39.85, 33.35)",
+          "intent": "",
+          "mode": "",
+          "target": ""
+        },
+        "rival_arsenal_shotgun": {
+          "at": "(38.78568, 36.06701)",
+          "intent": "",
+          "mode": "close",
+          "target": "player_soldier"
+        },
+        "rival_soldier": {
+          "at": "(26.68717, 32.2999)",
+          "intent": "",
+          "mode": "close",
+          "target": "player_soldier"
+        },
+        "rival_soldier_rifle": {
+          "at": "(1.15, 24.75)",
+          "intent": "",
+          "mode": "",
+          "target": "player_soldier"
+        },
+        "rival_soldier_shotgun": {
+          "at": "(33.82037, 22.52011)",
+          "intent": "",
+          "mode": "close",
+          "target": "player_soldier"
+        }
+      },
+      "seed": 4205,
+      "shots": {
+        "glock_17": 13,
+        "p90": 18,
+        "psg1": 1,
+        "rem700": 5,
+        "rem870": 3,
+        "saiga12": 5,
+        "uzi": 30
+      },
+      "snipers": true,
+      "vitality": {
+        "player_arsenal_shotgun": 0.0,
+        "player_soldier": 0.0,
+        "player_soldier_shotgun": 0.0,
+        "player_soldier_smg": 0.0,
+        "rival_arsenal_shotgun": 0.768,
+        "rival_soldier": 1.5,
+        "rival_soldier_rifle": 0.54,
+        "rival_soldier_shotgun": 0.666192444695367
+      },
+      "wall_ms": 9702,
+      "winner": "defender"
+    }
+  ],
+  "checks": 96,
+  "errors": []
+}

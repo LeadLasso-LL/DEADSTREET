@@ -282,8 +282,7 @@ static func rank_healthy_role(
 				var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(evaluation.slot_id)
 				if slot != null:
 					slot_range = slot.position.distance_to(hostile.battle_position)
-			evaluation.band_error = BattleCombatBehaviorCatalog.preferred_band_error(
-				weapon_type_id,
+			evaluation.band_error = BattleCombatBehaviorCatalog.participant_band_error(participant,
 				slot_range
 			)
 			if not is_finite(evaluation.band_error):
@@ -313,7 +312,7 @@ static func rank_closing_cover(
 	if not is_finite(current_range):
 		return ranked
 	var preferred_min: float = 0.0
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(participant)
 	if profile != null:
 		preferred_min = profile.preferred_min_distance
 	var progress_epsilon: float = BattleCombatBehaviorCatalog.CLOSING_PROGRESS_EPSILON
@@ -428,7 +427,7 @@ static func rank_short_range_out_of_range_staging(
 	if not is_finite(current_range):
 		return ranked
 	var preferred_min: float = 0.0
-	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.get_profile(weapon_type_id)
+	var profile: BattleCombatBehaviorProfile = BattleCombatBehaviorCatalog.for_participant(participant)
 	if profile != null:
 		preferred_min = profile.preferred_min_distance
 	var progress_epsilon: float = BattleCombatBehaviorCatalog.CLOSING_PROGRESS_EPSILON

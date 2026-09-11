@@ -1,0 +1,22 @@
+{
+  "art": "pump_shotgun.svg",
+  "scale": 1.08,
+  "right_grip": [
+    11,
+    9
+  ],
+  "left_grip": [
+    34,
+    6
+  ],
+  "muzzle": [
+    56,
+    1
+  ],
+  "carry_origin": [
+    27,
+    36
+  ],
+  "carry_angle": 25,
+  "grip_style": "two_hand_pump"
+}

@@ -4,6 +4,14 @@ extends RefCounted
 const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
 
 var weapon_type_id: String = ""
+var model_id: String = ""
+var display_name: String = ""
+var tier: int = 1
+var movement_multiplier: float = 1.0
+var acquire_seconds: float = 0.25
+var reacquire_seconds: float = 1.0
+var recoil_per_shot: float = 0.0
+var recoil_recovery: float = 0.2
 var max_range: float = 0.0
 var shots_per_second: float = 0.0
 var magazine_capacity: int = 0

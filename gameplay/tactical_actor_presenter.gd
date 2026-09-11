@@ -203,11 +203,11 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	if not TacticalUnitAnimationCatalog.has_bound_frames(
 		participant.participant_id,
 		participant.identity.gang_archetype_id,
-		participant.weapon_type
+		participant.weapon_type, participant.weapon_model_id
 	):
 		return false
 	var frames: SpriteFrames = TacticalUnitAnimationCatalog.frames_for(
-		TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type)
+		TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id)
 	)
 	if frames == null:
 		return false
@@ -331,7 +331,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		elif clip == "fire" or clip == "cover_fire":
 			cursor = shot_age * 20.0
 		elif clip == "reload":
-			var definition = load("res://battle/combat/battle_weapon_catalog.gd").get_definition(participant.weapon_type)
+			var definition = load("res://battle/combat/battle_weapon_catalog.gd").for_participant(participant)
 			if definition != null and definition.reload_seconds > 0.0:
 				cursor = (1.0 - participant.weapon_state.reload_remaining_seconds / definition.reload_seconds) * (count - 1)
 		if TacticalUnitAnimationCatalog.clip_loops(clip):
@@ -340,7 +340,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	if int(state.get("muzzle_sequence", -1)) != int(state["sequence"]):
 		if _muzzles.is_empty():
 			_muzzles = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/muzzles.json"))
-		var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type)
+			_merge_arsenal_anchors(_muzzles, "muzzles")
+		var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id)
 		var pose: String = "cover" if clip.begins_with("cover") else "open"
 		if clip.begins_with("wounded"):
 			pose = clip + "/" + str(body.frame)
@@ -351,9 +352,11 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		body.material.set_shader_parameter("blood_enabled",blood_enabled)
 		body.material.set_shader_parameter("wounded_stain",participant.is_wounded and participant.is_alive and clip.begins_with("wounded"))
 		if participant.is_wounded and clip.begins_with("wounded"):
-			if _abdomen.is_empty(): _abdomen=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
-			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type)
-			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=load("res://assets/art/units/pixel_v1/blood_masks/"+stain_variant+".png")
+			if _abdomen.is_empty():
+				_abdomen=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
+				_merge_arsenal_anchors(_abdomen, "abdomen")
+			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type,participant.weapon_model_id)
+			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=load("res://assets/art/units/pixel_v1/blood_masks/"+TacticalUnitAnimationCatalog.base_variant(stain_variant)+".png")
 			body.material.set_shader_parameter("clothing_mask",_blood_masks[stain_variant])
 			var point: Array=_abdomen.get(stain_variant+"/"+dir_id+"/"+clip+"/"+str(body.frame),[64.0,64.0])
 			body.material.set_shader_parameter("stain_center",Vector2(float(point[0]),float(point[1])))
@@ -410,3 +413,10 @@ func set_outline_width(width: float) -> void:
 		var body = node.get_node("body")
 		if body.material is ShaderMaterial:
 			body.material.set_shader_parameter("outline_width",width)
+
+
+func _merge_arsenal_anchors(target: Dictionary, kind: String) -> void:
+	var path: String = "res://assets/art/weapons/arsenal/"+kind+".json"
+	if FileAccess.file_exists(path):
+		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if data is Dictionary: target.merge(data, true)

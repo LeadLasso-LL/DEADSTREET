@@ -71,7 +71,9 @@ static func _advance_participant(
 	if not participant.is_alive:
 		participant.velocity = Vector2.ZERO
 		return false
-	var speed: float = participant.movement_speed * cover_hustle_multiplier(battle_state, participant)
+	var definition = load("res://battle/combat/battle_weapon_catalog.gd").for_participant(participant)
+	var weight_speed: float = definition.movement_multiplier if definition != null else 1.0
+	var speed: float = participant.movement_speed * weight_speed * cover_hustle_multiplier(battle_state, participant)
 	if not is_finite(speed) or speed < 0.0:
 		participant.velocity = Vector2.ZERO
 		return false

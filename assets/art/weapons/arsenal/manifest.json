@@ -1,0 +1,487 @@
+{
+  "models": {
+    "0_glock_17": "0_pistol",
+    "1_glock_17": "1_pistol",
+    "2_glock_17": "2_pistol",
+    "0_m1911": "arsenal_0_m1911",
+    "1_m1911": "arsenal_1_m1911",
+    "2_m1911": "arsenal_2_m1911",
+    "0_usp": "arsenal_0_usp",
+    "1_usp": "arsenal_1_usp",
+    "2_usp": "arsenal_2_usp",
+    "0_cz75": "arsenal_0_cz75",
+    "1_cz75": "arsenal_1_cz75",
+    "2_cz75": "arsenal_2_cz75",
+    "0_desert_eagle": "arsenal_0_desert_eagle",
+    "1_desert_eagle": "arsenal_1_desert_eagle",
+    "2_desert_eagle": "arsenal_2_desert_eagle",
+    "0_five_seven": "arsenal_0_five_seven",
+    "1_five_seven": "arsenal_1_five_seven",
+    "2_five_seven": "arsenal_2_five_seven",
+    "0_uzi": "0_uzi_smg",
+    "1_uzi": "1_uzi_smg",
+    "2_uzi": "2_uzi_smg",
+    "0_mac10": "arsenal_0_mac10",
+    "1_mac10": "arsenal_1_mac10",
+    "2_mac10": "arsenal_2_mac10",
+    "0_mp5": "arsenal_0_mp5",
+    "1_mp5": "arsenal_1_mp5",
+    "2_mp5": "arsenal_2_mp5",
+    "0_mp5k": "arsenal_0_mp5k",
+    "1_mp5k": "arsenal_1_mp5k",
+    "2_mp5k": "arsenal_2_mp5k",
+    "0_vector": "arsenal_0_vector",
+    "1_vector": "arsenal_1_vector",
+    "2_vector": "arsenal_2_vector",
+    "0_p90": "arsenal_0_p90",
+    "1_p90": "arsenal_1_p90",
+    "2_p90": "arsenal_2_p90",
+    "0_ak47": "0_ak_rifle",
+    "1_ak47": "1_ak_rifle",
+    "2_ak47": "2_ak_rifle",
+    "0_mini14": "arsenal_0_mini14",
+    "1_mini14": "arsenal_1_mini14",
+    "2_mini14": "arsenal_2_mini14",
+    "0_m4a1": "arsenal_0_m4a1",
+    "1_m4a1": "arsenal_1_m4a1",
+    "2_m4a1": "arsenal_2_m4a1",
+    "0_g36c": "arsenal_0_g36c",
+    "1_g36c": "arsenal_1_g36c",
+    "2_g36c": "arsenal_2_g36c",
+    "0_scar_h": "arsenal_0_scar_h",
+    "1_scar_h": "arsenal_1_scar_h",
+    "2_scar_h": "arsenal_2_scar_h",
+    "0_aug": "arsenal_0_aug",
+    "1_aug": "arsenal_1_aug",
+    "2_aug": "arsenal_2_aug",
+    "0_rem870": "0_pump_shotgun",
+    "1_rem870": "1_pump_shotgun",
+    "2_rem870": "2_pump_shotgun",
+    "0_moss500": "arsenal_0_moss500",
+    "1_moss500": "arsenal_1_moss500",
+    "2_moss500": "arsenal_2_moss500",
+    "0_spas12": "arsenal_0_spas12",
+    "1_spas12": "arsenal_1_spas12",
+    "2_spas12": "arsenal_2_spas12",
+    "0_benelli_m2": "arsenal_0_benelli_m2",
+    "1_benelli_m2": "arsenal_1_benelli_m2",
+    "2_benelli_m2": "arsenal_2_benelli_m2",
+    "0_benelli_m4": "arsenal_0_benelli_m4",
+    "1_benelli_m4": "arsenal_1_benelli_m4",
+    "2_benelli_m4": "arsenal_2_benelli_m4",
+    "0_saiga12": "arsenal_0_saiga12",
+    "1_saiga12": "arsenal_1_saiga12",
+    "2_saiga12": "arsenal_2_saiga12",
+    "0_rem700": "arsenal_0_rem700",
+    "1_rem700": "arsenal_1_rem700",
+    "2_rem700": "arsenal_2_rem700",
+    "0_sks": "arsenal_0_sks",
+    "1_sks": "arsenal_1_sks",
+    "2_sks": "arsenal_2_sks",
+    "0_svd": "arsenal_0_svd",
+    "1_svd": "arsenal_1_svd",
+    "2_svd": "arsenal_2_svd",
+    "0_ssg69": "arsenal_0_ssg69",
+    "1_ssg69": "arsenal_1_ssg69",
+    "2_ssg69": "arsenal_2_ssg69",
+    "0_awm": "arsenal_0_awm",
+    "1_awm": "arsenal_1_awm",
+    "2_awm": "arsenal_2_awm",
+    "0_psg1": "arsenal_0_psg1",
+    "1_psg1": "arsenal_1_psg1",
+    "2_psg1": "arsenal_2_psg1"
+  },
+  "variants": {
+    "arsenal_0_m1911": {
+      "file": "0_m1911",
+      "base": "0_pistol",
+      "model": "m1911"
+    },
+    "arsenal_1_m1911": {
+      "file": "1_m1911",
+      "base": "1_pistol",
+      "model": "m1911"
+    },
+    "arsenal_2_m1911": {
+      "file": "2_m1911",
+      "base": "2_pistol",
+      "model": "m1911"
+    },
+    "arsenal_0_usp": {
+      "file": "0_usp",
+      "base": "0_pistol",
+      "model": "usp"
+    },
+    "arsenal_1_usp": {
+      "file": "1_usp",
+      "base": "1_pistol",
+      "model": "usp"
+    },
+    "arsenal_2_usp": {
+      "file": "2_usp",
+      "base": "2_pistol",
+      "model": "usp"
+    },
+    "arsenal_0_cz75": {
+      "file": "0_cz75",
+      "base": "0_pistol",
+      "model": "cz75"
+    },
+    "arsenal_1_cz75": {
+      "file": "1_cz75",
+      "base": "1_pistol",
+      "model": "cz75"
+    },
+    "arsenal_2_cz75": {
+      "file": "2_cz75",
+      "base": "2_pistol",
+      "model": "cz75"
+    },
+    "arsenal_0_desert_eagle": {
+      "file": "0_desert_eagle",
+      "base": "0_pistol",
+      "model": "desert_eagle"
+    },
+    "arsenal_1_desert_eagle": {
+      "file": "1_desert_eagle",
+      "base": "1_pistol",
+      "model": "desert_eagle"
+    },
+    "arsenal_2_desert_eagle": {
+      "file": "2_desert_eagle",
+      "base": "2_pistol",
+      "model": "desert_eagle"
+    },
+    "arsenal_0_five_seven": {
+      "file": "0_five_seven",
+      "base": "0_pistol",
+      "model": "five_seven"
+    },
+    "arsenal_1_five_seven": {
+      "file": "1_five_seven",
+      "base": "1_pistol",
+      "model": "five_seven"
+    },
+    "arsenal_2_five_seven": {
+      "file": "2_five_seven",
+      "base": "2_pistol",
+      "model": "five_seven"
+    },
+    "arsenal_0_mac10": {
+      "file": "0_mac10",
+      "base": "0_uzi_smg",
+      "model": "mac10"
+    },
+    "arsenal_1_mac10": {
+      "file": "1_mac10",
+      "base": "1_uzi_smg",
+      "model": "mac10"
+    },
+    "arsenal_2_mac10": {
+      "file": "2_mac10",
+      "base": "2_uzi_smg",
+      "model": "mac10"
+    },
+    "arsenal_0_mp5": {
+      "file": "0_mp5",
+      "base": "0_uzi_smg",
+      "model": "mp5"
+    },
+    "arsenal_1_mp5": {
+      "file": "1_mp5",
+      "base": "1_uzi_smg",
+      "model": "mp5"
+    },
+    "arsenal_2_mp5": {
+      "file": "2_mp5",
+      "base": "2_uzi_smg",
+      "model": "mp5"
+    },
+    "arsenal_0_mp5k": {
+      "file": "0_mp5k",
+      "base": "0_uzi_smg",
+      "model": "mp5k"
+    },
+    "arsenal_1_mp5k": {
+      "file": "1_mp5k",
+      "base": "1_uzi_smg",
+      "model": "mp5k"
+    },
+    "arsenal_2_mp5k": {
+      "file": "2_mp5k",
+      "base": "2_uzi_smg",
+      "model": "mp5k"
+    },
+    "arsenal_0_vector": {
+      "file": "0_vector",
+      "base": "0_uzi_smg",
+      "model": "vector"
+    },
+    "arsenal_1_vector": {
+      "file": "1_vector",
+      "base": "1_uzi_smg",
+      "model": "vector"
+    },
+    "arsenal_2_vector": {
+      "file": "2_vector",
+      "base": "2_uzi_smg",
+      "model": "vector"
+    },
+    "arsenal_0_p90": {
+      "file": "0_p90",
+      "base": "0_uzi_smg",
+      "model": "p90"
+    },
+    "arsenal_1_p90": {
+      "file": "1_p90",
+      "base": "1_uzi_smg",
+      "model": "p90"
+    },
+    "arsenal_2_p90": {
+      "file": "2_p90",
+      "base": "2_uzi_smg",
+      "model": "p90"
+    },
+    "arsenal_0_mini14": {
+      "file": "0_mini14",
+      "base": "0_ak_rifle",
+      "model": "mini14"
+    },
+    "arsenal_1_mini14": {
+      "file": "1_mini14",
+      "base": "1_ak_rifle",
+      "model": "mini14"
+    },
+    "arsenal_2_mini14": {
+      "file": "2_mini14",
+      "base": "2_ak_rifle",
+      "model": "mini14"
+    },
+    "arsenal_0_m4a1": {
+      "file": "0_m4a1",
+      "base": "0_ak_rifle",
+      "model": "m4a1"
+    },
+    "arsenal_1_m4a1": {
+      "file": "1_m4a1",
+      "base": "1_ak_rifle",
+      "model": "m4a1"
+    },
+    "arsenal_2_m4a1": {
+      "file": "2_m4a1",
+      "base": "2_ak_rifle",
+      "model": "m4a1"
+    },
+    "arsenal_0_g36c": {
+      "file": "0_g36c",
+      "base": "0_ak_rifle",
+      "model": "g36c"
+    },
+    "arsenal_1_g36c": {
+      "file": "1_g36c",
+      "base": "1_ak_rifle",
+      "model": "g36c"
+    },
+    "arsenal_2_g36c": {
+      "file": "2_g36c",
+      "base": "2_ak_rifle",
+      "model": "g36c"
+    },
+    "arsenal_0_scar_h": {
+      "file": "0_scar_h",
+      "base": "0_ak_rifle",
+      "model": "scar_h"
+    },
+    "arsenal_1_scar_h": {
+      "file": "1_scar_h",
+      "base": "1_ak_rifle",
+      "model": "scar_h"
+    },
+    "arsenal_2_scar_h": {
+      "file": "2_scar_h",
+      "base": "2_ak_rifle",
+      "model": "scar_h"
+    },
+    "arsenal_0_aug": {
+      "file": "0_aug",
+      "base": "0_ak_rifle",
+      "model": "aug"
+    },
+    "arsenal_1_aug": {
+      "file": "1_aug",
+      "base": "1_ak_rifle",
+      "model": "aug"
+    },
+    "arsenal_2_aug": {
+      "file": "2_aug",
+      "base": "2_ak_rifle",
+      "model": "aug"
+    },
+    "arsenal_0_moss500": {
+      "file": "0_moss500",
+      "base": "0_pump_shotgun",
+      "model": "moss500"
+    },
+    "arsenal_1_moss500": {
+      "file": "1_moss500",
+      "base": "1_pump_shotgun",
+      "model": "moss500"
+    },
+    "arsenal_2_moss500": {
+      "file": "2_moss500",
+      "base": "2_pump_shotgun",
+      "model": "moss500"
+    },
+    "arsenal_0_spas12": {
+      "file": "0_spas12",
+      "base": "0_pump_shotgun",
+      "model": "spas12"
+    },
+    "arsenal_1_spas12": {
+      "file": "1_spas12",
+      "base": "1_pump_shotgun",
+      "model": "spas12"
+    },
+    "arsenal_2_spas12": {
+      "file": "2_spas12",
+      "base": "2_pump_shotgun",
+      "model": "spas12"
+    },
+    "arsenal_0_benelli_m2": {
+      "file": "0_benelli_m2",
+      "base": "0_pump_shotgun",
+      "model": "benelli_m2"
+    },
+    "arsenal_1_benelli_m2": {
+      "file": "1_benelli_m2",
+      "base": "1_pump_shotgun",
+      "model": "benelli_m2"
+    },
+    "arsenal_2_benelli_m2": {
+      "file": "2_benelli_m2",
+      "base": "2_pump_shotgun",
+      "model": "benelli_m2"
+    },
+    "arsenal_0_benelli_m4": {
+      "file": "0_benelli_m4",
+      "base": "0_pump_shotgun",
+      "model": "benelli_m4"
+    },
+    "arsenal_1_benelli_m4": {
+      "file": "1_benelli_m4",
+      "base": "1_pump_shotgun",
+      "model": "benelli_m4"
+    },
+    "arsenal_2_benelli_m4": {
+      "file": "2_benelli_m4",
+      "base": "2_pump_shotgun",
+      "model": "benelli_m4"
+    },
+    "arsenal_0_saiga12": {
+      "file": "0_saiga12",
+      "base": "0_pump_shotgun",
+      "model": "saiga12"
+    },
+    "arsenal_1_saiga12": {
+      "file": "1_saiga12",
+      "base": "1_pump_shotgun",
+      "model": "saiga12"
+    },
+    "arsenal_2_saiga12": {
+      "file": "2_saiga12",
+      "base": "2_pump_shotgun",
+      "model": "saiga12"
+    },
+    "arsenal_0_rem700": {
+      "file": "0_rem700",
+      "base": "0_ak_rifle",
+      "model": "rem700"
+    },
+    "arsenal_1_rem700": {
+      "file": "1_rem700",
+      "base": "1_ak_rifle",
+      "model": "rem700"
+    },
+    "arsenal_2_rem700": {
+      "file": "2_rem700",
+      "base": "2_ak_rifle",
+      "model": "rem700"
+    },
+    "arsenal_0_sks": {
+      "file": "0_sks",
+      "base": "0_ak_rifle",
+      "model": "sks"
+    },
+    "arsenal_1_sks": {
+      "file": "1_sks",
+      "base": "1_ak_rifle",
+      "model": "sks"
+    },
+    "arsenal_2_sks": {
+      "file": "2_sks",
+      "base": "2_ak_rifle",
+      "model": "sks"
+    },
+    "arsenal_0_svd": {
+      "file": "0_svd",
+      "base": "0_ak_rifle",
+      "model": "svd"
+    },
+    "arsenal_1_svd": {
+      "file": "1_svd",
+      "base": "1_ak_rifle",
+      "model": "svd"
+    },
+    "arsenal_2_svd": {
+      "file": "2_svd",
+      "base": "2_ak_rifle",
+      "model": "svd"
+    },
+    "arsenal_0_ssg69": {
+      "file": "0_ssg69",
+      "base": "0_ak_rifle",
+      "model": "ssg69"
+    },
+    "arsenal_1_ssg69": {
+      "file": "1_ssg69",
+      "base": "1_ak_rifle",
+      "model": "ssg69"
+    },
+    "arsenal_2_ssg69": {
+      "file": "2_ssg69",
+      "base": "2_ak_rifle",
+      "model": "ssg69"
+    },
+    "arsenal_0_awm": {
+      "file": "0_awm",
+      "base": "0_ak_rifle",
+      "model": "awm"
+    },
+    "arsenal_1_awm": {
+      "file": "1_awm",
+      "base": "1_ak_rifle",
+      "model": "awm"
+    },
+    "arsenal_2_awm": {
+      "file": "2_awm",
+      "base": "2_ak_rifle",
+      "model": "awm"
+    },
+    "arsenal_0_psg1": {
+      "file": "0_psg1",
+      "base": "0_ak_rifle",
+      "model": "psg1"
+    },
+    "arsenal_1_psg1": {
+      "file": "1_psg1",
+      "base": "1_ak_rifle",
+      "model": "psg1"
+    },
+    "arsenal_2_psg1": {
+      "file": "2_psg1",
+      "base": "2_ak_rifle",
+      "model": "psg1"
+    }
+  },
+  "sniper_outfits": "Temporary existing rifle role outfits; dedicated faction sniper outfits deferred."
+}

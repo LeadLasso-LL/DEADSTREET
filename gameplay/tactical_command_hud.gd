@@ -6,7 +6,7 @@ const Catalog = preload("res://battle/core/battle_force_command_catalog.gd")
 const Anim = preload("res://battle/presentation/tactical_unit_animation_catalog.gd")
 const Card=preload("res://gameplay/tactical_unit_card.gd")
 const HEIGHT = 180.0
-const ROLES = ["smg", "rifle", "pistol", "shotgun"]
+const ROLES = ["smg", "rifle", "pistol", "shotgun", "sniper"]
 const NAMES = {"smg":"IMI UZI", "rifle":"AK-47", "pistol":"GLOCK 17", "shotgun":"REMINGTON 870"}
 const LABELS = {"push":"PUSH", "hold":"HOLD", "focus_left":"FOCUS LEFT", "focus_right":"FOCUS RIGHT", "fall_back":"FALL BACK"}
 const TIPS = {"push":"Increase forward pressure and willingness to advance.", "hold":"Maintain local ground and avoid unnecessary chasing.", "focus_left":"Bias the force toward its left flank.", "focus_right":"Bias the force toward its right flank.", "fall_back":"Retreat toward the deployment side while remaining engaged."}
@@ -42,7 +42,7 @@ func setup(p_view: Node) -> void:
  strength_fill=ColorRect.new();strength_bg.add_child(strength_fill);strength_fill.size=Vector2(136,6);strength_fill.color=Color("#83b899");strength_fill.mouse_filter=Control.MOUSE_FILTER_IGNORE
  var midpoint=ColorRect.new();strength_bg.add_child(midpoint);midpoint.position=Vector2(135,0);midpoint.size=Vector2(2,6);midpoint.color=Color("#e0dfc9");midpoint.mouse_filter=Control.MOUSE_FILTER_IGNORE
  battle_label=label(surface,Vector2(660,10),Vector2(452,18),"COMMAND CENTER",12,Color("#c4cbbf"))
- for i in range(4):
+ for i in range(5):
   cards[i]=Card.build(surface,Vector2(28+i*151,34),font)
   cards[i].root.pressed.connect(select_card.bind(i))
  var command_ids=["push","hold","fall_back","focus_left","focus_right"]
@@ -88,8 +88,11 @@ func _process(_delta: float) -> void:
  var units: Array=Query.friendly_cards(battle,selected)
  units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
  var alive=0
- for i in range(4):
+ for i in range(5):
   var widgets: Dictionary=cards[i];widgets.root.visible=i<units.size()
+  var compact: bool=units.size()>4
+  widgets.root.position.x=28+i*(120 if compact else 151)
+  widgets.root.scale=Vector2(.81 if compact else 1.,1.)
   if i>=units.size():continue
   var c: Dictionary=units[i];var p=battle.get_participant(c.participant_id)
   widgets.id=c.participant_id

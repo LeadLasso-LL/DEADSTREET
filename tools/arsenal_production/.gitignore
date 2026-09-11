@@ -1,0 +1,17 @@
+__pycache__/
+render_svg/
+samples/
+*.log
+*.png.import
+*.wav.import
+completed_*.json
+payload.json
+jobs.json
+render_check.json
+sample_report.json
+install_payload.py
+*_tmp.py
+*_download.b64
+stage_manifest.json
+integrate_*.py
+finish_build.py

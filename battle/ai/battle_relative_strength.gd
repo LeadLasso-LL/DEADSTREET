@@ -5,7 +5,7 @@ const Vitality=preload("res://battle/combat/battle_combat_consequence_service.gd
 const INTERVAL=.5
 static func unit_power(p) -> float:
  if p==null or not p.is_alive or not p.has_battle_position:return 0.
- var w=Weapons.get_definition(p.weapon_type)
+ var w=Weapons.for_participant(p)
  if w==null:return 0.
  var trauma=w.graze_probability*w.graze_trauma+w.solid_probability*w.solid_trauma+w.critical_probability*w.critical_trauma
  var firing_time=float(w.magazine_capacity)/maxf(w.shots_per_second,.01)

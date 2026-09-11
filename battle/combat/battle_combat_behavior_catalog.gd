@@ -275,3 +275,25 @@ static func _make_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile
 			)
 		_:
 			return null
+
+
+# Model ranges scale the role's tactical band, without changing role identity.
+static func for_participant(p) -> BattleCombatBehaviorProfile:
+	if p == null: return null
+	var profile: BattleCombatBehaviorProfile = get_profile(p.weapon_type)
+	var model: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(p)
+	var baseline: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(p.weapon_type)
+	if profile == null or model == null or baseline == null: return profile
+	var scale: float = model.max_range / baseline.max_range
+	profile.preferred_min_distance *= scale
+	profile.preferred_max_distance *= scale
+	return profile
+
+static func participant_in_range(p, distance: float) -> bool:
+	var d: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(p)
+	return d != null and is_finite(distance) and distance <= d.max_range
+
+static func participant_band_error(p, distance: float) -> float:
+	var profile: BattleCombatBehaviorProfile = for_participant(p)
+	if profile == null or not is_finite(distance): return INF
+	return maxf(0.0, maxf(profile.preferred_min_distance-distance, distance-profile.preferred_max_distance))

@@ -19,6 +19,8 @@ var side_id: String = ""
 var tactical_force_id: String = ""
 var weapon_type: String = ""
 var weapon_state: BattleWeaponState = null
+var weapon_model_id: String = ""
+var weapon_recoil: float = 0.0
 var is_alive: bool = true
 var is_wounded: bool = false
 var vitality: float = 1.5
@@ -88,6 +90,7 @@ func _init(
 	faction_id = p_faction_id
 	side_id = p_side_id
 	weapon_type = p_weapon_type
+	weapon_model_id = BattleWeaponCatalog.default_model(p_weapon_type)
 	weapon_state = BattleWeaponCatalog.create_initial_state(p_weapon_type)
 	is_alive = p_is_alive
 	is_wounded = p_is_wounded

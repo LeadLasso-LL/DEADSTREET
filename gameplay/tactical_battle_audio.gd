@@ -1,5 +1,6 @@
 extends Node
 # Event-driven presentation only. Uses an independent deterministic variation index.
+const Weapons=preload("res://battle/combat/battle_weapon_catalog.gd")
 var view: Node
 var enabled=true
 var streams={}
@@ -66,7 +67,7 @@ func _process(_delta):
   seen[e.sequence_id]=true
   var p=b.get_participant(e.source_participant_id)
   if p==null:continue
-  play(p.weapon_type+str(e.sequence_id%3),e.source_position if e.has_source_position else p.battle_position,-8. if p.weapon_type!="shotgun" else -6.5,e.sequence_id)
+  play(_model_report(p,e.sequence_id%3),e.source_position if e.has_source_position else p.battle_position,-8. if p.weapon_type!="shotgun" else -6.5,e.sequence_id)
   shots_played+=1;gun_duck=1.
   if e.trauma_applied>0:play("impact",e.target_position,-21.,e.sequence_id)
  for p in b.participants.values():
@@ -77,3 +78,14 @@ func _process(_delta):
   var reloading=p.weapon_state!=null and p.weapon_state.is_reloading
   if reloading and not reloads.get(id,false):play("reload",p.battle_position,-20.,cursor)
   reloads[id]=reloading
+
+
+func _model_report(p, variation: int) -> String:
+ var model: String=p.weapon_model_id
+ if model.is_empty():model=Weapons.default_model(p.weapon_type)
+ var key: String=model+"_"+str(variation)
+ if not streams.has(key):
+  var path: String="res://assets/audio/weapons/"+key+".wav"
+  if ResourceLoader.exists(path):streams[key]=load(path)
+  else:return p.weapon_type+str(variation)
+ return key

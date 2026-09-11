@@ -443,7 +443,7 @@ static func _score_candidate(
 	)
 	if is_finite(band_error):
 		score -= clampf(band_error / 20.0, 0.0, 3.5)
-	var definition = BattleWeaponCatalog.get_definition(participant.weapon_type)
+	var definition = BattleWeaponCatalog.for_participant(participant)
 	if definition != null and range_distance > definition.max_range:
 		score -= clampf((range_distance - definition.max_range) / 20.0, 0.0, 2.0)
 	var cover_weight: float = 0.0

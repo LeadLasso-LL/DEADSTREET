@@ -1,6 +1,9 @@
 class_name BattleTargetSelectionService
 extends RefCounted
 
+const Weapons := preload("res://battle/combat/battle_weapon_catalog.gd")
+const LOS := preload("res://battle/combat/battle_line_of_sight_service.gd")
+
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleTargetSelectionResult := preload("res://battle/combat/battle_target_selection_result.gd")
@@ -182,6 +185,9 @@ static func _select_best_hostile_id(
 	source: BattleParticipant,
 	candidate_ids: Array[String]
 ) -> String:
+	if source.weapon_type == "sniper":
+		var sniper_id: String = _sniper_target(battle_state, source, candidate_ids)
+		if not sniper_id.is_empty(): return sniper_id
 	var best_id: String = ""
 	var best: BattleParticipant = null
 	for candidate_id: String in candidate_ids:
@@ -203,3 +209,31 @@ static func _select_best_hostile_id(
 
 static func _is_finite_vector(value: Vector2) -> bool:
 	return is_finite(value.x) and is_finite(value.y)
+
+
+# Pick a distant visible target, then finish the acquisition instead of target hopping.
+# A close visible threat overrides the long-range preference; player focus wins upstream.
+static func _sniper_target(b: BattleState, source: BattleParticipant, ids: Array[String]) -> String:
+	var d = Weapons.for_participant(source)
+	if d == null: return ""
+	var urgent: String = ""
+	var urgent_distance: float = INF
+	var distant: String = ""
+	var farthest: float = -1.0
+	var retained: bool = false
+	for id: String in ids:
+		var p: BattleParticipant = b.get_participant(id)
+		var distance: float = source.battle_position.distance_to(p.battle_position)
+		if distance > d.max_range: continue
+		var sight = LOS.check_participant_to_participant(b, source.participant_id, id)
+		if sight == null or not sight.success or not sight.has_line_of_sight: continue
+		if distance < 12.0 and distance < urgent_distance:
+			urgent = id
+			urgent_distance = distance
+		if id == source.target_participant_id: retained = true
+		if distance > farthest:
+			distant = id
+			farthest = distance
+	if not urgent.is_empty(): return urgent
+	if retained: return source.target_participant_id
+	return distant

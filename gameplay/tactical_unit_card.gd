@@ -1,4 +1,5 @@
 extends RefCounted
+const Weapons=preload("res://battle/combat/battle_weapon_catalog.gd")
 const Query=preload("res://gameplay/tactical_unit_hud_query.gd")
 const Anim=preload("res://battle/presentation/tactical_unit_animation_catalog.gd")
 const NAMES={"smg":"IMI UZI","rifle":"AK-47","pistol":"GLOCK 17","shotgun":"REMINGTON 870"}
@@ -27,10 +28,18 @@ static func update(w: Dictionary,p,selected: String="",interactive=true) -> void
  w.status.text=state;w.status.add_theme_color_override("font_color",tint)
  w.root.disabled=not c.can_select;w.root.mouse_filter=Control.MOUSE_FILTER_STOP if interactive else Control.MOUSE_FILTER_IGNORE
  w.root.add_theme_stylebox_override("normal",w.selected if c.is_selected else w.normal)
- w.role.text=c.weapon_type.to_upper()+" 1";w.gun.text=NAMES.get(c.weapon_type,c.weapon_type.to_upper())+"  /  T1"
+ w.role.text=c.weapon_type.to_upper()+" 1"
+ var model=Weapons.for_participant(p)
+ var name: String=model.display_name if model!=null and not model.display_name.is_empty() else NAMES.get(c.weapon_type,c.weapon_type.to_upper())
+ var tier: int=model.tier if model!=null else 1
+ var short_name: String="AWM" if model!=null and model.model_id=="awm" else name
+ w.gun.text=short_name.to_upper()+" / T"+str(tier)
+ w.gun.add_theme_font_size_override("font_size",8 if short_name.length()>18 else 10)
+ w.gun.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+ w.root.tooltip_text=name+" · Weapon tier "+str(tier)+(" · Movement %+.0f%%"%((model.movement_multiplier-1.)*100.) if model!=null else "")
  w.health.size=Vector2(123.*float(c.vitality_ratio),4);w.health.color=Color("#c6a368") if state=="WOUNDED" else Color("#7da986")
  w.portrait.modulate=Color(.72,.22,.26) if state=="DEAD" else (Color(1.,.72,.72) if state=="WOUNDED" else Color.WHITE)
- var variant=Anim.variant_for(p.identity.gang_archetype_id,p.weapon_type)
+ var variant=Anim.variant_for(p.identity.gang_archetype_id,p.weapon_type,p.weapon_model_id)
  if not textures.has(variant):
-  var path="res://assets/art/units/pixel_v1/portraits/"+variant+".png";textures[variant]=load(path) if ResourceLoader.exists(path) else null
+  var path=Anim.atlas_path(variant,"portraits");textures[variant]=load(path) if ResourceLoader.exists(path) else null
  w.portrait.texture=textures[variant]

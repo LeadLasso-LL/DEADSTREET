@@ -95,7 +95,7 @@ static func resolve_attack(
 			"invalid_weapon_state",
 			"Battle attack resolution failed: participant weapon state is invalid."
 		)
-	var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(source.weapon_state.weapon_type_id)
+	var definition: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(source)
 	if definition == null:
 		return BattleAttackResult.failed(
 			"invalid_weapon_state",
@@ -132,6 +132,13 @@ static func resolve_attack(
 	var resolved_roll: float = outcome_roll
 	if cover_effect != null:
 		resolved_roll = cover_effect.post_cover_roll
+	# Range/handling change shot quality. They never create a separate kill lottery.
+	if not definition.model_id.is_empty():
+		var distance: float = source.battle_position.distance_to(target.battle_position)
+		var far: float = 0.0 if source.weapon_type == "shotgun" else clampf((distance / definition.max_range - 0.55) / 0.45, 0.0, 1.0)
+		var handling: float = minf(0.20, source.weapon_recoil)
+		if source.weapon_type == "sniper" and distance < 12.0: handling += 0.15 * (1.0 - distance / 12.0)
+		resolved_roll *= maxf(0.45, 1.0 - far * (0.08 if source.weapon_type == "sniper" else 0.18) - handling)
 	var hit_quality: String = profile.resolve_hit_quality(resolved_roll)
 	if hit_quality.is_empty():
 		return BattleAttackResult.failed(
@@ -153,6 +160,7 @@ static func resolve_attack(
 			"shot_commit_failed",
 			"Battle attack resolution failed: weapon cycling could not be committed."
 		)
+	source.weapon_recoil = minf(0.20, source.weapon_recoil + definition.recoil_per_shot)
 	var consequence: BattleCombatConsequenceResult = BattleCombatConsequenceService.apply_trauma(
 		battle_state,
 		target,

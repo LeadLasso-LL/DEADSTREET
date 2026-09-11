@@ -1,16 +1,37 @@
 # Dead Street — Project Control
 
-## Latest implementation: Harold 4v4 recording (2026-09-10)
+## Current owner direction: checkpoint and attacker tuning (2026-09-11 UTC)
+
+The owner authorized commit/push of the recovered arsenal as an editable work-in-progress checkpoint. Next scope: improve attacker chances and preserve battle resolution without a time limit. The 120-second figure is a test observation cutoff only; live battle resolution uses surviving sides. Full regression audit: prior ee3694a fails 120 assertions; the arsenal tree fails 166 (46 additional failures pending triage). Focused arsenal validators pass. See ARSENAL_PRODUCTION_REPORT.md and tools/arsenal_production/core_checkpoint_comparison.json.
+
+## Recovery record: arsenal production pass (2026-09-11 UTC)
+
+Recovered directly from the laptop after the active build conversation was interrupted. The pass is on disk and UNCOMMITTED; HEAD remains `ee3694a` (approved weapon roster checkpoint). Thirty equipment models, 78 new animated faction/model variants (143,520 frames), 90 shot sounds, model-specific tuning, sniper behavior, and the isolated arsenal review scene are built. Dedicated sniper outfits remain deferred. See [ARSENAL_PRODUCTION_REPORT.md](ARSENAL_PRODUCTION_REPORT.md) and [ARSENAL_MODEL_REFERENCE.md](ARSENAL_MODEL_REFERENCE.md).
+
+Recovery re-ran the current arsenal gameplay and presentation validators: 290 gameplay checks and 12,800 presentation checks passed, no reported failures. Final frame-clearance production completed. The saved 12-battle comparison has 11 defender wins and one non-sniper matchup (pair 2, seed 4202) still active at 120 seconds; all six sniper matchups resolved. The saved report incorrectly said all 12 resolved; this was corrected during recovery. A prior rendered sniper battle completed with 54 shots, median 49 FPS and sampled low 34 FPS. No new full CORE VALIDATION or live graphics run was performed during recovery.
+
+Remaining: investigate the unresolved comparison seed, assess balance and owner visual/feel review, then complete a scoped git checkpoint. `tools/arsenal_production/stage_tmp.py` was prepared before interruption but its `stage_manifest.json` is absent; do not claim the pass was staged, committed or pushed. Existing unrelated dirty work remains. The current user request was recovery and a factual follow-up; no new gameplay or art behavior was changed in recovery.
+
+## Prior implementation: Harold 4v4 recording (2026-09-10)
 
 See [BATTLE_SHOWCASE_2026-09-10.md](BATTLE_SHOWCASE_2026-09-10.md) for the faction wardrobe specification, live four-card HUD, recovered whole-force controls, backward deaths, validation and reproducible recording setup. The prior approved Harold map baseline remains in force; new character/HUD visuals are ready for product-owner review.
 
 
 > **2026-09-10 approved map baseline — latest:** Brandon visually accepted the complete Harold Ave. street pass and final arrival-car correction through `139d10c`, and directed that it become the reusable standard for future maps. The accepted drawn/pixel-art map and units supersede the older DAZ/source-style gates below as the active visual baseline. Read [MAP_BUILDING_STANDARD.md](MAP_BUILDING_STANDARD.md) for consolidated art/cover rules, workflow and versioned reference captures, and [HAROLD_AVE_IMPLEMENTATION.md](HAROLD_AVE_IMPLEMENTATION.md) for technical evidence. The street is visually accepted; deployment/arrival/HUD and broader combat work retain their separate status. Await Brandon's next requested scope. Earlier tracker entries are historical and do not revoke this acceptance.
 
+> **2026-09-08 owner style clarification and grip correction (latest):** Owner explicitly identifies the primary gap as DRAWN/ILLUSTRATED versus reduced/rendered realism. Clothing/proportion changes alone do not solve it and must not displace the static illustration gate. Direct enlarged inspection confirms G test support hand is crowded against the firing hand near the receiver, with awkward wrist/finger arrangement; small solver residuals did not validate a plausible grip. Earlier "no more grip refinement" statement is superseded. Make one bounded support-grip correction, verify source close-up and small-size read, then freeze it for the illustration test. Reference analysis is appended to the source-correction report. No new asset purchase, camera canonization, runtime bind or animation implied.
+
+
+> **2026-09-08 source correction (latest, supersedes older next-gate text):** Direct reference comparison exposed composition and lighting faults. Both legacy light colors read back black; environment settings had targeted the wrong object; 96/20 intensity requests both clamped to 2. Isolated composition_04 now verifies scene-only environment, ground off and corrected white photometric lights, producing real cast shadows. Front yaw 0 / elevation 40 / 320 mm and G test pose are REVIEW CANDIDATES ONLY. Graphic G/H/I/J processing is repeatable; J soft-contour result remains unaccepted. Compact proportions, garment structure and integrated style still fall short of the reference. Legacy default render path has NOT been migrated; use the explicitly verified experimental path. Static style remains the gate; no direction production/animation/bind. See [source correction evidence](CHARACTER_FACTORY_V14_SOURCE_CORRECTION.md). HEAD unchanged; experiments uncommitted.
+
+> **2026-09-08 latest checkpoint (supersedes earlier next-gate text):** Owner saw and approved G_NEUTRAL_FORWARD50 for temporary testing only. The first V1.4 reconstruction matrix is complete and independently repeatable; no style accepted. D improves rifle contrast but lifts clothing too much and remains too flat. Static style remains the gate. Material-label guidance and E/F reconstruction are now implemented and independently repeatable; about 11% of solid pixels remain unclassified and retain source RGB. E/F improve material distinction, but no style is accepted. Next preflight: source composition and broad body forms against the reference, before further filter tuning. Pose/camera changes require review as candidates. See reconstruction evidence for exact runs. No more grip refinement is required for this test. Catalog unbound, HEAD 5a7d3bd, experiments uncommitted. See [reconstruction evidence](CHARACTER_FACTORY_V14_RECONSTRUCTION.md). Use inline images plus direct open links for review.
+
+> **2026-09-08 current-state correction (supersedes the older next-gate text below):** V1.3 post-processing is insufficient; no static style accepted. SOURCE_2 alpha16 preview bounds are contaminated and 96/80/64 labels are not gameplay screen heights. Integrity diagnostics proved the carbine is present but occluded in HYBRID_B. Direct remote arm probes now demonstrate rifle visibility at the same camera, but fail support-hand placement. Follow-up weapon-local contact solving produced `G_NEUTRAL_FORWARD50`: a readable across-body carry with repeatable joints/camera and support-hand target residuals about 1.9/2.3 DAZ units. This is an unaccepted posture candidate, not collision-free production proof. The owner authorized G_NEUTRAL_FORWARD50 as a temporary test pose without seeing the comparison (image delivery failed). This is authorization to continue testing, NOT visual acceptance of the pose or style. Next: bounded grip refinement and V1.4 graphic reconstruction; ensure review images are actually accessible before asking for visual judgment. Camera and HYBRID_B remain provisional; catalog remains unbound. HEAD is still `5a7d3bd`; integrity/probe tooling and reports are uncommitted. See [arm probe evidence](CHARACTER_FACTORY_V14_ARM_PROBE.md).
+
 **Canonical living development tracker.**  
 Last audit: **2026-09-07**.  
 Last product-state correction: **2026-09-07** — Human Generator trial insufficient; DAZ Studio / Genesis 9 is the capability-vetted source pipeline.  
-Last implementation milestone: **2026-09-07** — Character Factory V1.1/V1.2 static rifleman calibration checkpoint (56° + HYBRID_B as **provisional continuation only**; look **not** accepted).  
+Last implementation milestone: **2026-09-07** — Character Factory V1.3 style-conversion 3×3 generated on the V1.2 baseline (56° + HYBRID_B). **No style accepted.** Look remains **not** accepted.
 Cleanup checkpoint: **product owner accepted M7F cleanup without an additional manual F5 baseline test.** That is **not** visual acceptance of any new character art.
 
 This file is not a game design document, not a player encyclopedia, and not a vision rewrite.
@@ -90,25 +111,25 @@ Rules:
 
 ## 3. Current project snapshot
 
-| Field | State (2026-09-07, Character Factory V1.1/V1.2 static rifleman calibration) |
+| Field | State (2026-09-07, Character Factory V1.3 style-conversion experiment) |
 |---|---|
 | Engine / project | Godot 4.7, Forward Plus, Jolt; main scene `res://gameplay/gameplay_runtime.tscn` |
 | Branch | `main` tracking `origin/main` |
-| HEAD | Checkpoint *Calibrate DAZ rifleman silhouette* |
-| Working tree | Factory calibration tooling + this tracker. Generated PNGs stay **outside** the repo (`%LOCALAPPDATA%\DeadStreetCharacterFactory\`). |
+| HEAD | Checkpoint *Calibrate DAZ rifleman silhouette* (`5a7d3bd`) |
+| Working tree | V1.3 factory tooling + this tracker (uncommitted). Generated PNGs stay **outside** the repo (`%LOCALAPPDATA%\DeadStreetCharacterFactory\`). |
 | Tags | none |
-| CORE VALIDATION | **PASS** (2026-09-07 after V1.2 silhouette checkpoint) — technical only |
+| CORE VALIDATION | **PASS** (2026-09-07 after V1.3 style-conversion run) — technical only |
 | Last clearly accepted checkpoint | `530dbed` — M7F cleanup accepted **without an additional manual F5 baseline test**. Not visual acceptance of new character art. |
 | Current active initiative | 🔵 Tactical **character visual language / source pipeline** |
-| Current experiment | 🔵 **DAZ Studio / Genesis 9 Character Factory** — unpaid rifleman proof + camera/pose/silhouette calibration; **visual look not accepted** |
+| Current experiment | 🔵 **DAZ Studio / Genesis 9 Character Factory** — V1.3 3×3 style matrix generated; **no style accepted**; look **not** accepted |
 | Superseded experiments | ❌ MPFB `look_calib_01` (retired) · ❌ Human Generator trial (insufficient; no longer active) |
-| Immediate next validation gate | **DEAD STREET STYLE CONVERSION V1.3** on the provisional 56° + HYBRID_B source baseline |
+| Immediate next validation gate | Product-owner review of V1.3 style-conversion boards. No style accepted. |
 | Current known blockers | No accepted character look; camera remains provisional; no style profile accepted; proof remains unbound |
 | Current ❓ decisions | Permanent character source pipeline; camera/pitch/render must be recalibrated on the next accepted source (do **not** inherit M7F 48°/2.05, and do **not** treat 56° as canon); casualty persistence; HQ garrison fate; vitality HUD vs “hidden” trauma |
-| Next recommended milestone | **DEAD STREET STYLE CONVERSION V1.3** |
-| Do not start yet | Walk-cycle proof, Godot movement integration, full animation libraries, multiple characters, politics, police, city-map polish, extra factions, Russian units, binding factory PNGs |
+| Next recommended milestone | Product-owner review of V1.3 boards. Do **not** assume 8-direction or movement is next. |
+| Do not start yet | 8-direction production, walk-cycle proof, Godot movement integration, full animation libraries, multiple characters, politics, police, city-map polish, extra factions, Russian units, binding factory PNGs |
 
-**One-line status:** Persistent proving-ground campaign + real-time HQ assault is playable. Rejected M7F character is gone. Procedural fallback remains the runtime unit baseline. Character Factory V1–V1.2 produced an unbound rifleman proof and selected **provisional** 56° + HYBRID_B as the next-experiment source baseline. DAZ look is **not** accepted. Camera and style remain unaccepted. Next = style-conversion calibration.
+**One-line status:** Persistent proving-ground campaign + real-time HQ assault is playable. Procedural fallback remains the runtime unit baseline. Character Factory V1.3 generated a 3 source × 3 post style matrix on the provisional 56° + HYBRID_B baseline. **No style is accepted.** Camera remains provisional. Next = product-owner review of the boards.
 
 ---
 
@@ -142,6 +163,7 @@ These are reusable / accepted unless later repo evidence says otherwise. Product
 - Character Factory V1 can assemble paid Classic Tank Top Outfit + Multi-Caliber Weapon System carbine + already-installed Worker Uniform Boots, render eight unbound directions, and write three non-canon Godot style boards
 - Character Factory V1.1 tested 48° / 56° / 64° elevations and three pose families (SE only); **56°** is the provisional continuation camera, **not canon**
 - Character Factory V1.2 tested three hybrid rifle-silhouette variants; **HYBRID_B** is the provisional continuation pose, **not accepted art**
+- Character Factory V1.3 generated a 3 source × 3 post style matrix on that baseline; **no style is accepted**
 - CORE VALIDATION can stay green while art is experimental
 
 ### WHAT HAS NOT BEEN PROVEN
@@ -173,7 +195,7 @@ These are reusable / accepted unless later repo evidence says otherwise. Product
 | Field | State |
 |---|---|
 | Classification | CURRENT CAPABILITY-VETTED SOURCE PIPELINE |
-| Status | V0 smoke, V1 paid-asset rifleman proof, V1.1 camera/pose matrix, and V1.2 hybrid silhouette **generated 2026-09-07** (unattended). Static visual style **UNACCEPTED**. |
+| Status | V0–V1.2 factory work plus V1.3 style-conversion 3×3 **generated 2026-09-07**. Static visual style **UNACCEPTED**. Product review pending. |
 | Acceptance | **NOT EARNED.** Proof is unbound. No style profile is accepted. Camera remains provisional. |
 | In repo | Factory launcher/script/recipes/Godot image tool + `provisional_baseline.json` only. No DAZ DUF/textures/renders. |
 | DAZ | Studio 6.25.2026.14722 General Release Pro; discovered at runtime, not hardcoded |
@@ -182,7 +204,7 @@ These are reusable / accepted unless later repo evidence says otherwise. Product
 | Runtime | Procedural fallback still active; catalog still unbound (`bound_variant_ids()` empty) |
 | Camera / light | **Provisional continuation:** `PROVISIONAL_TACTICAL_56` / 56°. **Not canon.** V1.1 also tested 48° and 64° (history retained). V0 `PROVISIONAL_SMOKE_ONLY` remains the smoke profile. Do not write this into `TacticalUnitPipelineSpec`. |
 | Pose | **Provisional continuation:** `HYBRID_B`. **Not accepted.** V1.2 HYBRID_A / HYBRID_C retained as history. |
-| Style profiles | `clean_downsample` / `grounded_grit` / `digitized_grit` — **NON-CANON** comparison treatments. None accepted. |
+| Style profiles | V1 comparison `clean_downsample` / `grounded_grit` / `digitized_grit` and V1.3 `POST_0`/`POST_1`/`POST_2` on `SOURCE_0`/`SOURCE_1`/`SOURCE_2` — **NON-CANON**. None accepted. |
 | Blender | **Not required** for the core source pipeline. Reserve only for future custom asset work if necessary. |
 | Permanent production pipeline? | No — ❓ until a street-clothing + weapon source-character proof **passes product F5** |
 
@@ -217,7 +239,8 @@ If it would not sit in the same game as canonical Dead Street tactical art: **re
 4. Character Factory V1 paid-asset rifleman proof — **done 2026-09-07** (unbound; **not** visual acceptance)
 5. Character Factory V1.1 camera/pose calibration (48°/56°/64° × three poses, SE) — **done 2026-09-07**; 56° chosen as **provisional continuation only**
 6. Character Factory V1.2 hybrid rifle silhouette (HYBRID_A/B/C at 56°, SE) — **done 2026-09-07**; HYBRID_B chosen as **provisional continuation pose only**
-7. **Next:** DEAD STREET STYLE CONVERSION V1.3 on that static source baseline. Do **not** start walk-cycle or Godot movement until a static style is selected and proven across 8 directions.
+7. Character Factory V1.3 style-conversion 3×3 (SE, 56°, HYBRID_B) — **generated 2026-09-07**; **no style accepted**
+8. **Next:** Product-owner review of V1.3 boards. Do **not** start 8-direction production, walk-cycle, or Godot movement until a static style is selected.
 
 ### WHAT MUST NOT BE BUILT YET
 
@@ -587,7 +610,7 @@ Completed work is marked complete. We do not schedule it again.
 
 The next meaningful milestones. Unrelated exciting features do not jump the queue.
 
-**A–D and V1.1/V1.2 calibration are complete as technical factory work.** Static visual style remains **UNACCEPTED**. Camera remains **provisional**. Paid-asset proof remains **unbound**. Next is style-conversion, not movement.
+**A–E factory work through V1.3 is generated.** Static visual style remains **UNACCEPTED**. Camera remains **provisional**. Paid-asset proof remains **unbound**. Next is product-owner style review, not 8-direction production or movement.
 
 | Order | Milestone | Why now | Prerequisites | Definition of Done | Automated validation | Manual validation | Explicitly DO NOT add |
 |---|---|---|---|---|---|---|---|
@@ -597,7 +620,7 @@ The next meaningful milestones. Unrelated exciting features do not jump the queu
 | D | **DAZ Genesis 9 source-character proof — street clothing + weapon** | Smoke Matt is not Dead Street | C | Unbound factory proof of one gang-member identity with approved street clothing + weapon. **Not** bound into the 2D presenter. | Factory run + CORE VALIDATION PASS 2026-09-07. **Not** visual accept | Product-owner review vs street reference | Extra characters; animation libraries; HG resurrection; treating any style profile as canon |
 | D1 | **Camera / pose calibration (V1.1)** | V1 camera was provisional | D | Test 48° / 56° / 64° and three pose families, SE only | Factory + CORE VALIDATION | Product-owner comparison boards | Treating any camera as canon; 8-dir waste |
 | D2 | **Hybrid rifle silhouette (V1.2)** | Black rifle disappeared on black tank | D1 | Three hybrid poses at 56°; HYBRID_B selected as **provisional continuation only** | Factory + CORE VALIDATION | Product-owner 80/64px boards | Binding; deleting A/C history; calling pose accepted |
-| E | **DEAD STREET STYLE CONVERSION V1.3** | Source baseline is locked provisionally; look language is not | D2 | Calibrate Dead Street style conversion on 56° + HYBRID_B. Style remains unaccepted until product owner chooses. | Factory + CORE VALIDATION | Judge “armed rifleman” at tactical scale | Walk cycle; Godot bind; canon camera |
+| E | **DEAD STREET STYLE CONVERSION V1.3** | Source baseline is locked provisionally; look language is not | D2 | 3 DAZ sources × 3 Godot posts on 56° + HYBRID_B, SE only. **No style accepted.** Product review pending. | Factory PASS 2026-09-07; **CORE VALIDATION: PASS** | Judge all 9 cells at 80/64px vs the tactical-unit reference | Binding; naming a winner; 8-dir; walk; Godot bind |
 | F | **Prove selected style across 8 directions** | One SE cell is not a unit | E **style selected** | Same person, same style, eight directions | Factory + CORE VALIDATION | Identity continuity across facings | Animation libraries |
 | G | **Manual product-owner visual review** | Only F5 can accept look | F | Accept / reject recorded here | CORE VALIDATION PASS ≠ accept | F5 at normal tactical view | Animation library on a rejected body |
 | H | **Walk / identity continuity** | Movement must be the same person | G **accepted** | Real walk on the accepted body, then Godot movement-speed sync / foot-slide evaluation | Clip schema; fallback for unbound clips | F5 walk does not break identity | Cover/fire/death libraries |
@@ -615,18 +638,18 @@ An idea entering this list does **not** gain priority. It waits until the near-t
 
 ### NOW
 
+- Product-owner review of V1.3 style-conversion boards
 - Keep CORE VALIDATION green without expanding it for taste
 - Do not resurrect `look_calib_01`
 - Do not bind factory PNGs
 - Do not treat 56° or HYBRID_B as canon/accepted art
-- Do not start walk-cycle or Godot movement integration yet
+- Do not start 8-direction production, walk-cycle, or Godot movement integration yet
 
 ### NEXT
 
-- **DEAD STREET STYLE CONVERSION V1.3** on `PROVISIONAL_TACTICAL_56` + `HYBRID_B`
-- Prove selected style across 8 directions
-- Product-owner F5 of the **new** candidate
-- Only if accepted: walk / identity continuity / Godot movement sync
+- If a static style is selected: 8-direction consistency proof
+- Then animation source proof
+- Then Godot movement integration
 
 ### LATER
 
@@ -681,7 +704,7 @@ godot --headless --path <repo> --quit-after 2 res://validation/core_validation_r
 Must **not** replace the main scene (`gameplay_runtime.tscn`).  
 Optional: `--dump-checks` or `DUMP_ALL_CHECKS` in `validation/core_validation_runner.gd`.
 
-**Last run:** 2026-09-07 — `DEAD STREET CORE VALIDATION: PASS` after Character Factory V1.2 silhouette checkpoint. Headless prints expected `!is_inside_tree()` camera noise during nested vispasses; the suite still reports PASS.
+**Last run:** 2026-09-07 — `DEAD STREET CORE VALIDATION: PASS` after Character Factory V1.3 style-conversion 3×3. Headless prints expected `!is_inside_tree()` camera noise during nested vispasses; the suite still reports PASS.
 
 ### Non-equivalence
 
@@ -761,6 +784,7 @@ Append-only. Seeded with verifiable decisions only.
 | 2026-09-07 | Character Factory V1.1 camera/pose calibration | MILESTONE | Isolate elevation + rifle pose | `tools/character_factory/` | Tested 48° / 56° / 64° and three pose families (SE). **56°** chosen as provisional continuation only. **Not** canon. |
 | 2026-09-07 | Character Factory V1.2 hybrid rifle silhouette | MILESTONE | Improve rifle readability without changing assets | `tools/character_factory/` | HYBRID_A/B/C at 56°. **HYBRID_B** chosen as provisional continuation pose only. **Not** accepted art. Alternates retained. |
 | 2026-09-07 | Static rifleman calibration checkpoint | PRODUCT / MILESTONE | Lock source baseline for style conversion | Factory + this file | Next = **DEAD STREET STYLE CONVERSION V1.3**. Movement/Godot bind deferred until style is selected and proven across 8 directions. |
+| 2026-09-07 | Character Factory V1.3 style-conversion 3×3 | MILESTONE | Test DAZ source treatments × deterministic sprite posts on the same HYBRID_B / 56° source | `tools/character_factory/` | 3 sources × 3 posts generated. **No style accepted.** Unbound. Product review pending. |
 
 ---
 
