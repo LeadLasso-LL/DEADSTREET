@@ -1,0 +1,21 @@
+{
+  "faction": "stateline",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 8.607,
+    "render_and_bounds": 7.195,
+    "palette_and_review_sheets": 20.634,
+    "motion_and_armory_sheets": 0.171
+  },
+  "total_seconds": 36.607,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
