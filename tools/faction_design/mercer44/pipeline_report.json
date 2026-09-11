@@ -1,0 +1,21 @@
+{
+  "faction": "mercer44",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 7.775,
+    "render_and_bounds": 6.869,
+    "palette_and_review_sheets": 17.948,
+    "motion_and_armory_sheets": 0.152
+  },
+  "total_seconds": 32.747,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
