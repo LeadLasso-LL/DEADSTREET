@@ -1,5 +1,11 @@
 # Dead Street — Project Control
 
+## McAllister regular outfit review (2026-09-11)
+
+All five owner-specified white McAllister units are built for review with the estate/sporting wardrobe. Full 1,080-frame geometry/render-bound checks passed after correcting a preview adapter palette-binding mismatch. Standing left shoulders, both joins, eight idle/aim facings and SE motion samples were visually inspected. See [MCALLISTER_UNIT_DESIGN.md](MCALLISTER_UNIT_DESIGN.md).
+
+Owner visual acceptance and full runtime atlas/faction binding remain subsequent work. Major-gang regular outfit reviews are now built; Texas Recovery Coalition is next. New specials remain deferred. This checkpoint is local while the earlier automatic push-approval blockage remains unresolved.
+
 ## Sierra Roja mask revision (2026-09-11)
 
 Owner replaced pistol head/face styling with an olive-green ski mask and the shotgun cowboy hat/face styling with a black ski mask. Other outfits and proportions remain unchanged. See SIERRA_ROJA_UNIT_DESIGN.md.

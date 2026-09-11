@@ -1,0 +1,21 @@
+{
+  "faction": "mcallister",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 7.921,
+    "render_and_bounds": 7.877,
+    "palette_and_review_sheets": 18.184,
+    "motion_and_armory_sheets": 0.147
+  },
+  "total_seconds": 34.132,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
