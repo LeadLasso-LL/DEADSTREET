@@ -49,7 +49,8 @@ new restriction on Whittaker equipment, and no combat stats change in this pass.
   GIF byte-for-byte. Its separate 1,080-frame regression build also passed.
   See `shared_pipeline_regression.json` and `pipeline_report.json` for evidence
   and measured build time; these timings exclude review and remote transfer.
-- Clothing approval is pending owner review. Full runtime atlas production and
+- The owner approved the clothing review. Subsequent sniper stock feedback is
+  tested in [Calle Ocho's review](CALLE_OCHO_UNIT_DESIGN.md). Full runtime atlas production and
   faction binding remain subsequent work; the motion GIF uses standard clips.
 
 Review outputs: [outfit sheet](../tools/faction_design/whittaker/whittaker_outfit_review.png),

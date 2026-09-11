@@ -1,0 +1,44 @@
+{
+  "body_geometry_unchanged": true,
+  "weapon_scale_grips_muzzle_and_angle_unchanged": true,
+  "other_six_facings_byte_identical": true,
+  "pose_pairs_checked": 96,
+  "comparison_frames": 24,
+  "scope": "Calle Ocho review sniper, SE and SW; live atlases and older faction art not rebuilt",
+  "aiming_stock_center_checks": [
+    {
+      "model": "rem700",
+      "aiming_stock_to_shoulder_before": 7.705,
+      "after": 1.002
+    },
+    {
+      "model": "sks",
+      "aiming_stock_to_shoulder_before": 7.705,
+      "after": 1.002
+    },
+    {
+      "model": "svd",
+      "aiming_stock_to_shoulder_before": 7.45,
+      "after": 0.841
+    },
+    {
+      "model": "ssg69",
+      "aiming_stock_to_shoulder_before": 7.45,
+      "after": 0.841
+    },
+    {
+      "model": "awm",
+      "aiming_stock_to_shoulder_before": 9.589,
+      "after": 2.915
+    },
+    {
+      "model": "psg1",
+      "aiming_stock_to_shoulder_before": 7.093,
+      "after": 0.928
+    }
+  ],
+  "render": {
+    "failures": [],
+    "frames": 24
+  }
+}
