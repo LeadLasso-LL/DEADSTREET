@@ -189,6 +189,7 @@ static func resolve_attack(
 		target_was_alive,
 		target.is_alive
 	)
+	attack_event.weapon_hand = source.weapon_state.last_fired_hand
 	attack_event.hit_quality = hit_quality
 	attack_event.trauma_applied = trauma_applied
 	attack_event.elapsed_time_seconds = battle_state.elapsed_time_seconds

@@ -9,6 +9,12 @@ const Launch=preload("res://campaign/missions/neighborhood_hq_attack_service.gd"
 const AI=preload("res://battle/ai/battle_deployment_ai_service.gd")
 static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_value: int) -> Dictionary:
  var state=runtime.game_state
+ # This sandbox equips one Mercer specialist; it does not choose the campaign cap.
+ if str(loadouts.get("defender",{}).get("specialist",""))=="mercer_dual_glock":
+  for soldier in state.soldiers.values():
+   if soldier.faction_id=="rival_gang" and soldier.weapon_type_id=="pistol":
+    soldier.specialist_id="mercer_dual_glock"
+    break
  # Recruit the review role before battle construction; never turn a live rifleman into a sniper.
  if sniper_test:
   state.get_soldier(Starter.SOLDIER_ID).weapon_type_id="sniper"

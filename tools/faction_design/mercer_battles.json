@@ -1,0 +1,29 @@
+{
+  "battles": [
+    {
+      "observation_cutoff": false,
+      "phase": "resolved",
+      "seconds": 37.0,
+      "shots": 66,
+      "snipers": false,
+      "specialist_hands": [
+        3,
+        2
+      ],
+      "winner": "defender"
+    },
+    {
+      "observation_cutoff": false,
+      "phase": "resolved",
+      "seconds": 15.9000000000001,
+      "shots": 80,
+      "snipers": true,
+      "specialist_hands": [
+        3,
+        2
+      ],
+      "winner": "attacker"
+    }
+  ],
+  "errors": []
+}

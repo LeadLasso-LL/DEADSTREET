@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "mercer_rem700": {
+      "file": "mercer_rem700",
+      "base": "0_ak_rifle"
+    },
+    "mercer_sks": {
+      "file": "mercer_sks",
+      "base": "0_ak_rifle"
+    },
+    "mercer_svd": {
+      "file": "mercer_svd",
+      "base": "0_ak_rifle"
+    },
+    "mercer_ssg69": {
+      "file": "mercer_ssg69",
+      "base": "0_ak_rifle"
+    },
+    "mercer_awm": {
+      "file": "mercer_awm",
+      "base": "0_ak_rifle"
+    },
+    "mercer_psg1": {
+      "file": "mercer_psg1",
+      "base": "0_ak_rifle"
+    },
+    "mercer_dual_glock": {
+      "file": "mercer_dual_glock",
+      "base": "0_pistol"
+    }
+  },
+  "models": {
+    "0_rem700": "mercer_rem700",
+    "0_sks": "mercer_sks",
+    "0_svd": "mercer_svd",
+    "0_ssg69": "mercer_ssg69",
+    "0_awm": "mercer_awm",
+    "0_psg1": "mercer_psg1"
+  },
+  "clips": {
+    "fire_left": {
+      "start": 0,
+      "count": 3,
+      "fps": 20,
+      "loop": false,
+      "atlas": "fire_left"
+    },
+    "cover_fire_left": {
+      "start": 0,
+      "count": 3,
+      "fps": 20,
+      "loop": false,
+      "atlas": "cover_fire_left"
+    }
+  }
+}

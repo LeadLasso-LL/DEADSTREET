@@ -5,6 +5,8 @@ const BattleWeaponDefinition := preload("res://battle/combat/battle_weapon_defin
 const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
 const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
 
+const Specialists = preload("res://battle/combat/battle_specialist_catalog.gd")
+
 const WEAPON_PISTOL := "pistol"
 const WEAPON_SHOTGUN := "shotgun"
 const WEAPON_SMG := "smg"
@@ -239,7 +241,15 @@ static func for_participant(p) -> BattleWeaponDefinition:
 	var id: String = p.weapon_model_id
 	if id.is_empty(): return get_definition(p.weapon_type)
 	var d: BattleWeaponDefinition = get_model(id)
-	return d if d != null and d.weapon_type_id == p.weapon_type else null
+	if d == null or d.weapon_type_id != p.weapon_type: return null
+	if not p.specialist_id.is_empty():
+		if not Specialists.eligible(p.faction_id, p.weapon_type, id, p.specialist_id): return null
+		return Specialists.profile(d)
+	return d
+
+static func state_for_participant(p) -> BattleWeaponState:
+	var d = for_participant(p)
+	return BattleWeaponState.new(d.weapon_type_id, d.magazine_capacity) if d != null else null
 
 # Tactical loadout setup only. Campaign inventory transfers will call their own authority.
 # Never equip during combat, change unit class, or use a swap as a free reload.
@@ -248,9 +258,10 @@ static func equip_for_setup(b, p, id: String) -> bool:
 	if b.get_participant(p.participant_id) != p or not p.is_alive: return false
 	var d: BattleWeaponDefinition = get_model(id)
 	if d == null or d.weapon_type_id != p.weapon_type: return false
+	if not p.specialist_id.is_empty() and not Specialists.eligible(p.faction_id, p.weapon_type, id, p.specialist_id): return false
 	p.weapon_model_id = id
 	p.weapon_recoil = 0.0
-	p.weapon_state = create_initial_state(p.weapon_type)
+	p.weapon_state = state_for_participant(p)
 	p.acquire_reaction_target_id = ""
 	p.sniper_aim_target_id = ""
 	p.sniper_aim_engagement_active = false

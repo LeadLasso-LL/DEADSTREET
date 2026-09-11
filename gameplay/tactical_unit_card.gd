@@ -39,7 +39,7 @@ static func update(w: Dictionary,p,selected: String="",interactive=true) -> void
  w.root.tooltip_text=name+" · Weapon tier "+str(tier)+(" · Movement %+.0f%%"%((model.movement_multiplier-1.)*100.) if model!=null else "")
  w.health.size=Vector2(123.*float(c.vitality_ratio),4);w.health.color=Color("#c6a368") if state=="WOUNDED" else Color("#7da986")
  w.portrait.modulate=Color(.72,.22,.26) if state=="DEAD" else (Color(1.,.72,.72) if state=="WOUNDED" else Color.WHITE)
- var variant=Anim.variant_for(p.identity.gang_archetype_id,p.weapon_type,p.weapon_model_id)
+ var variant=Anim.variant_for(p.identity.gang_archetype_id,p.weapon_type,p.weapon_model_id,p.specialist_id)
  if not textures.has(variant):
   var path=Anim.atlas_path(variant,"portraits");textures[variant]=load(path) if ResourceLoader.exists(path) else null
  w.portrait.texture=textures[variant]

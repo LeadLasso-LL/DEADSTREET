@@ -7,6 +7,8 @@ var ammo_in_magazine: int = 0
 var cooldown_remaining_seconds: float = 0.0
 var reload_remaining_seconds: float = 0.0
 var is_reloading: bool = false
+var next_firing_hand: int = 0
+var last_fired_hand: int = 0
 
 
 func _init(

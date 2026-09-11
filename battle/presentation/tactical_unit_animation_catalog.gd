@@ -76,7 +76,7 @@ static func animation_name(clip_id: String, direction_id: String) -> String:
 
 
 static func clip_loops(clip_id: String) -> bool:
-	return bool(manifest().get("clips", {}).get(clip_id, {}).get("loop", false))
+	return bool(clip_specs().get(clip_id, {}).get("loop", false))
 
 
 static func implemented_clip_ids() -> Array[String]:
@@ -105,12 +105,16 @@ static func manifest() -> Dictionary:
 			_manifest = value
 	return _manifest
 
-static func variant_for(gang: String, weapon: String, model_id: String = "") -> String:
+static func variant_for(gang: String, weapon: String, model_id: String = "", specialist_id: String = "") -> String:
 	var outfit: String = ""
 	match gang:
 		"local_street_gang": outfit = "0"
 		"russian_organized_crime": outfit = "1"
 		"italian_mob": outfit = "2"
+	if outfit == "0":
+		if specialist_id == "mercer_dual_glock" and model_id == "glock_17": return "mercer_dual_glock"
+		var mercer_variant: String = str(mercer_manifest().get("models", {}).get(outfit+"_"+model_id, ""))
+		if not mercer_variant.is_empty(): return mercer_variant
 	if not model_id.is_empty():
 		var model_variant: String = str(arsenal_manifest().get("models", {}).get(outfit+"_"+model_id, ""))
 		if not model_variant.is_empty(): return model_variant
@@ -129,24 +133,25 @@ static func bound_variant_ids() -> Array[String]:
 	var result: Array[String] = []
 	result.assign(manifest().get("variants", []))
 	result.append_array(arsenal_manifest().get("variants", {}).keys())
+	result.append_array(mercer_manifest().get("variants", {}).keys())
 	return result
 
 static func bound_clip_ids() -> Array[String]:
 	var result: Array[String] = []
-	result.assign(manifest().get("clips", {}).keys())
+	result.assign(clip_specs().keys())
 	return result
 
-static func has_bound_frames(_participant_id: String, gang: String, weapon: String, model_id: String = "") -> bool:
-	return bound_variant_ids().has(variant_for(gang, weapon, model_id))
+static func has_bound_frames(_participant_id: String, gang: String, weapon: String, model_id: String = "", specialist_id: String = "") -> bool:
+	return bound_variant_ids().has(variant_for(gang, weapon, model_id, specialist_id))
 
 static func playback_clip_id(clip_id: String) -> String:
 	return clip_id if bound_clip_ids().has(clip_id) else CLIP_IDLE
 
 static func clip_frame_count(clip_id: String) -> int:
-	return int(manifest().get("clips", {}).get(clip_id, {}).get("count", 0))
+	return int(clip_specs().get(clip_id, {}).get("count", 0))
 
 static func clip_fps(clip_id: String) -> float:
-	return float(manifest().get("clips", {}).get(clip_id, {}).get("fps", 1.0))
+	return float(clip_specs().get(clip_id, {}).get("fps", 1.0))
 
 static func frames_for(variant_id: String) -> SpriteFrames:
 	if not bound_variant_ids().has(variant_id):
@@ -162,9 +167,9 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 	var directions: Array = manifest()["directions"]
 	var rows: int = int(manifest()["rows_per_direction"])
 	for clip: String in bound_clip_ids():
-		var spec: Dictionary = manifest()["clips"][clip]
+		var spec: Dictionary = clip_specs()[clip]
 		var clip_atlas: Texture2D=atlas
-		if spec.get("atlas", "") in ["death_back","check_comrade"]:
+		if spec.get("atlas", "") in ["death_back","check_comrade","fire_left","cover_fire_left"]:
 			var extra_path=atlas_path(variant_id, str(spec.atlas))
 			if not FileAccess.file_exists(extra_path):continue
 			clip_atlas=_texture(extra_path)
@@ -178,7 +183,7 @@ static func frames_for(variant_id: String) -> SpriteFrames:
 				var tex := AtlasTexture.new()
 				tex.atlas = clip_atlas
 				tex.region = Rect2((cell % 32) * 128, (d * rows + cell / 32) * 128, 128, 128)
-				if spec.get("atlas", "") in ["death_back","check_comrade"]:tex.region=Rect2(i*128,d*128,128,128)
+				if spec.get("atlas", "") in ["death_back","check_comrade","fire_left","cover_fire_left"]:tex.region=Rect2(i*128,d*128,128,128)
 				frames.add_frame(anim, tex)
 	_frames_cache[variant_id] = frames
 	_touch_variant(variant_id)
@@ -238,9 +243,11 @@ static func arsenal_manifest() -> Dictionary:
 	return _arsenal
 
 static func base_variant(variant: String) -> String:
+	if mercer_manifest().get("variants", {}).has(variant): return str(mercer_manifest().variants[variant].base)
 	return str(arsenal_manifest().get("variants", {}).get(variant, {}).get("base", variant))
 
 static func atlas_path(variant: String, folder: String) -> String:
+	if mercer_manifest().get("variants", {}).has(variant): return "res://assets/art/units/mercer/"+folder+"/"+variant+".png"
 	var row: Dictionary = arsenal_manifest().get("variants", {}).get(variant, {})
 	if not row.is_empty():
 		return "res://assets/art/weapons/arsenal/"+folder+"/"+str(row.file)+".png"
@@ -255,5 +262,26 @@ static func _touch_variant(variant: String) -> void:
 	while _variant_lru.size() > MAX_CACHED_VARIANTS:
 		var old: String = _variant_lru.pop_front()
 		_frames_cache.erase(old)
-		for folder: String in ["units", "death_back", "check_comrade"]:
+		for folder: String in ["units", "death_back", "check_comrade", "fire_left", "cover_fire_left"]:
 			_texture_cache.erase(atlas_path(old, folder))
+
+static var _mercer: Dictionary = {}
+static func mercer_manifest() -> Dictionary:
+	if _mercer.is_empty():
+		var path = "res://assets/art/units/mercer/manifest.json"
+		if FileAccess.file_exists(path):
+			var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if data is Dictionary: _mercer = data
+	return _mercer
+
+static func clip_specs() -> Dictionary:
+	var clips: Dictionary = manifest().get("clips", {}).duplicate()
+	clips.merge(mercer_manifest().get("clips", {}), true)
+	return clips
+
+static func foot_anchor(variant: String) -> Vector2:
+	return Vector2(64,104 if variant.begins_with("mercer_") else 110)
+
+static func blood_mask_path(variant: String) -> String:
+	if variant.begins_with("mercer_"): return atlas_path(variant, "blood_masks")
+	return "res://assets/art/units/pixel_v1/blood_masks/"+base_variant(variant)+".png"

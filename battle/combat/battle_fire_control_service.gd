@@ -17,7 +17,7 @@ const BattleCombatBehaviorCatalog := preload("res://battle/combat/battle_combat_
 static func initialize_weapon_state(participant: BattleParticipant) -> bool:
 	if participant == null:
 		return false
-	var state: BattleWeaponState = BattleWeaponCatalog.create_initial_state(participant.weapon_type)
+	var state: BattleWeaponState = BattleWeaponCatalog.state_for_participant(participant)
 	participant.weapon_state = state
 	return state != null
 
@@ -226,6 +226,8 @@ static func commit_shot(
 	var cooldown_seconds: float = effective_cooldown_seconds(definition, fire_rate_multiplier)
 	if not is_finite(cooldown_seconds) or cooldown_seconds < 0.0:
 		return false
+	state.last_fired_hand = state.next_firing_hand if not participant.specialist_id.is_empty() and not participant.is_wounded else 0
+	if not participant.specialist_id.is_empty(): state.next_firing_hand = 1 - state.last_fired_hand
 	state.ammo_in_magazine -= 1
 	state.cooldown_remaining_seconds = cooldown_seconds
 	return true
@@ -307,6 +309,7 @@ static func _refill_magazine_to_capacity(
 	if state == null or definition == null:
 		return
 	state.ammo_in_magazine = definition.magazine_capacity
+	state.next_firing_hand = 0
 
 
 static func _fire_block_reason(

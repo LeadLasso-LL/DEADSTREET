@@ -203,11 +203,11 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	if not TacticalUnitAnimationCatalog.has_bound_frames(
 		participant.participant_id,
 		participant.identity.gang_archetype_id,
-		participant.weapon_type, participant.weapon_model_id
+		participant.weapon_type, participant.weapon_model_id, participant.specialist_id
 	):
 		return false
 	var frames: SpriteFrames = TacticalUnitAnimationCatalog.frames_for(
-		TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id)
+		TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id)
 	)
 	if frames == null:
 		return false
@@ -217,6 +217,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 			var current := existing.get_node("body") as AnimatedSprite2D
 			if current.sprite_frames != frames:
 				current.sprite_frames = frames
+				current.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 				_motion.erase(participant.participant_id)
 			return true
 	var art_ppu: float = TacticalUnitAnimationCatalog.art_pixels_per_unit()
@@ -228,7 +229,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	body.name = "body"
 	body.sprite_frames = frames
 	body.centered = true
-	body.offset = TacticalUnitAnimationCatalog.sprite_foot_offset()
+	body.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
 		var finish := ShaderMaterial.new()
@@ -275,6 +276,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		if event.source_participant_id == id and event.sequence_id > int(state["sequence"]):
 			state["sequence"] = event.sequence_id
 			state["shot"] = event.elapsed_time_seconds
+			state["weapon_hand"] = event.weapon_hand
 	var shot_age: float = now - float(state["shot"])
 	if battle_state.battle_phase != "active":
 		shot_age = 100.0
@@ -312,6 +314,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		clip = "aim"
 	elif participant.is_wounded:
 		clip = "wounded_idle"
+	if not participant.specialist_id.is_empty() and int(state.get("weapon_hand",0)) == 1 and clip in ["fire","cover_fire"]:
+		clip += "_left"
 	if state["clip"] != clip:
 		state["clip"] = clip
 		state["start"] = now
@@ -328,7 +332,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		if clip == "walk" or clip == "wounded_walk":
 			# Match the authored contact travel to distance; wounded gait stays shorter.
 			cursor = float(state["distance"]) / (2.7 if clip == "walk" else 2.5) * count
-		elif clip == "fire" or clip == "cover_fire":
+		elif clip in ["fire", "cover_fire", "fire_left", "cover_fire_left"]:
 			cursor = shot_age * 20.0
 		elif clip == "reload":
 			var definition = load("res://battle/combat/battle_weapon_catalog.gd").for_participant(participant)
@@ -341,12 +345,14 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		if _muzzles.is_empty():
 			_muzzles = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/muzzles.json"))
 			_merge_arsenal_anchors(_muzzles, "muzzles")
-		var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id)
+		var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id)
 		var pose: String = "cover" if clip.begins_with("cover") else "open"
 		if clip.begins_with("wounded"):
 			pose = clip + "/" + str(body.frame)
+		elif not participant.specialist_id.is_empty() and int(state.get("weapon_hand",0)) == 1:
+			pose += "_left"
 		var point: Array = _muzzles.get(variant + "/" + dir_id + "/" + pose, [64.0, 64.0])
-		state["shot_muzzle"] = node.position + (Vector2(float(point[0]), float(point[1])) - Vector2(64,110)) * (pixels_per_unit / TacticalUnitAnimationCatalog.art_pixels_per_unit()) * node.scale.x
+		state["shot_muzzle"] = node.position + (Vector2(float(point[0]), float(point[1])) - TacticalUnitAnimationCatalog.foot_anchor(variant)) * (pixels_per_unit / TacticalUnitAnimationCatalog.art_pixels_per_unit()) * node.scale.x
 		state["muzzle_sequence"] = state["sequence"]
 	if body.material is ShaderMaterial:
 		body.material.set_shader_parameter("blood_enabled",blood_enabled)
@@ -355,8 +361,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 			if _abdomen.is_empty():
 				_abdomen=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
 				_merge_arsenal_anchors(_abdomen, "abdomen")
-			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type,participant.weapon_model_id)
-			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=load("res://assets/art/units/pixel_v1/blood_masks/"+TacticalUnitAnimationCatalog.base_variant(stain_variant)+".png")
+			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type,participant.weapon_model_id,participant.specialist_id)
+			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=load(TacticalUnitAnimationCatalog.blood_mask_path(stain_variant))
 			body.material.set_shader_parameter("clothing_mask",_blood_masks[stain_variant])
 			var point: Array=_abdomen.get(stain_variant+"/"+dir_id+"/"+clip+"/"+str(body.frame),[64.0,64.0])
 			body.material.set_shader_parameter("stain_center",Vector2(float(point[0]),float(point[1])))
@@ -420,3 +426,8 @@ func _merge_arsenal_anchors(target: Dictionary, kind: String) -> void:
 	if FileAccess.file_exists(path):
 		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if data is Dictionary: target.merge(data, true)
+
+	var mercer_path = "res://assets/art/units/mercer/anchors.json"
+	if FileAccess.file_exists(mercer_path):
+		var mercer: Variant = JSON.parse_string(FileAccess.get_file_as_string(mercer_path))
+		if mercer is Dictionary: target.merge(mercer.get(kind, {}), true)

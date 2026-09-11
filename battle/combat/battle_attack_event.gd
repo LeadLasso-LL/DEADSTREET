@@ -13,6 +13,7 @@ var target_is_wounded: bool = false
 var target_was_alive: bool = false
 var target_is_alive: bool = false
 var sequence_id: int = 0
+var weapon_hand: int = 0
 var elapsed_time_seconds: float = 0.0
 var source_position: Vector2 = Vector2.ZERO
 var target_position: Vector2 = Vector2.ZERO

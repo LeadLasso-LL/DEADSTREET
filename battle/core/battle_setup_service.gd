@@ -1,6 +1,8 @@
 class_name BattleSetupService
 extends RefCounted
 
+const BattleWeaponCatalog = preload("res://battle/combat/battle_weapon_catalog.gd")
+
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleSide := preload("res://battle/core/battle_side.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
@@ -285,6 +287,10 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			"",
 			attacker_tactical_force_id
 		)
+		participant.specialist_id = soldier.specialist_id
+		participant.weapon_state = BattleWeaponCatalog.state_for_participant(participant)
+		if participant.weapon_state == null:
+			return BattleSetupResult.failed("invalid_specialist", "Invalid specialist loadout.", mission.id, battle_id)
 		if not battle_state.add_participant(participant) or not attacker_side.add_participant_id(participant.participant_id):
 			push_error(
 				"BattleSetupService.create_neighborhood_hq_battle: failed to add participant '%s'."
@@ -310,6 +316,10 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			"",
 			defender_tactical_force_id
 		)
+		participant.specialist_id = soldier.specialist_id
+		participant.weapon_state = BattleWeaponCatalog.state_for_participant(participant)
+		if participant.weapon_state == null:
+			return BattleSetupResult.failed("invalid_specialist", "Invalid specialist loadout.", mission.id, battle_id)
 		if not battle_state.add_participant(participant) or not defender_side.add_participant_id(participant.participant_id):
 			push_error(
 				"BattleSetupService.create_neighborhood_hq_battle: failed to add participant '%s'."

@@ -19,6 +19,7 @@ var side_id: String = ""
 var tactical_force_id: String = ""
 var weapon_type: String = ""
 var weapon_state: BattleWeaponState = null
+var specialist_id: String = ""
 var weapon_model_id: String = ""
 var weapon_recoil: float = 0.0
 var is_alive: bool = true

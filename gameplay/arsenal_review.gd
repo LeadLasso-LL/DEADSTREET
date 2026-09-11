@@ -18,6 +18,7 @@ var direction="sw"
 var clip="idle"
 var faction="russian_organized_crime"
 var selected="glock_17"
+var mercer_specialist=false
 var loadouts={"attacker":{},"defender":{}}
 var loadout_options={}
 var font: SystemFont
@@ -44,12 +45,24 @@ func _ready():
  for id in ["sw","s","se","e","ne","n","nw","w"]:dir.add_item(id.to_upper());dir.set_item_metadata(dir.item_count-1,id)
  dir.item_selected.connect(func(i):direction=str(dir.get_item_metadata(i));refresh())
  var animation=OptionButton.new();surface.add_child(animation);animation.position=Vector2(762,506);animation.size=Vector2(167,32)
- for id in ["idle","walk","aim","fire","reload","cover_popout","cover_fire","wounded_walk","death","death_back","check_comrade"]:animation.add_item(id.replace("_"," ").capitalize());animation.set_item_metadata(animation.item_count-1,id)
+ for id in ["idle","walk","aim","fire","fire_left","reload","cover_popout","cover_fire","wounded_walk","death","death_back","check_comrade"]:animation.add_item(id.replace("_"," ").capitalize());animation.set_item_metadata(animation.item_count-1,id)
  animation.item_selected.connect(func(i):clip=str(animation.get_item_metadata(i));refresh())
  button(surface,Vector2(942,506),Vector2(158,32),"PLAY REPORT",play_report)
  var gang=OptionButton.new();surface.add_child(gang);gang.position=Vector2(28,506);gang.size=Vector2(265,32);gang.add_item("ORLOV BRATVA");gang.add_item("MERCER SAINTS");gang.add_item("ITALIAN MOB — LEGACY")
  gang.item_selected.connect(func(i):faction=["russian_organized_crime","local_street_gang","italian_mob"][i];refresh())
- text(Vector2(28,550),Vector2(1090,20),"REVIEW LOADOUTS    •    Sniper test recruits snipers in the rifle slots. Dedicated sniper outfits are deferred.",11)
+ var special=CheckButton.new();surface.add_child(special);special.position=Vector2(304,506);special.size=Vector2(340,32);special.text="Mercer dual-pistol specialist";special.add_theme_font_size_override("font_size",12)
+ special.toggled.connect(func(on):
+  mercer_specialist=on
+  loadouts["defender"]["specialist"]="mercer_dual_glock" if on else ""
+  if on:
+   faction="local_street_gang";gang.select(1);show_class("pistol");choose("glock_17")
+   var option=loadout_options["defenderpistol"]
+   for i in range(option.item_count):
+    if option.get_item_metadata(i)=="glock_17":option.select(i)
+   loadouts["defender"]["pistol"]="glock_17"
+  loadout_options["defenderpistol"].disabled=on
+  refresh())
+ text(Vector2(28,550),Vector2(1090,20),"REVIEW LOADOUTS    •    Sniper test recruits snipers in the rifle slots. Mercer sniper outfit supports all six rifles. Specialist toggle equips Mercer’s pistol slot.",11)
  for side_index in range(2):
   var side="attacker" if side_index==0 else "defender"
   text(Vector2(28,585+side_index*38),Vector2(110,26),"ORLOV" if side_index==0 else "MERCER",12)
@@ -82,12 +95,17 @@ func show_class(kind: String):
 func choose(id: String):selected=id;refresh()
 func refresh():
  for b in grid.get_children():b.add_theme_stylebox_override("normal",Card.style(Color("#39443c") if b.get_meta("model")==selected else Color("#243136"),Color("#b4b18c") if b.get_meta("model")==selected else Color("#4e605d")))
- var d=Weapons.get_model(selected);name_label.text=d.display_name+"  /  T"+str(d.tier)
+ var d=Weapons.get_model(selected)
+ var special=mercer_specialist and faction=="local_street_gang" and selected=="glock_17"
+ if special:d=preload("res://battle/combat/battle_specialist_catalog.gd").profile(d)
+ name_label.text=d.display_name+"  /  T"+str(d.tier)
  stats.text="%s CLASS\n\nRange: %.1f\nShot pace: %.2f / sec\nSolid trauma: %.2f\nCritical trauma: %.2f\nInitial aim: %.2f sec\nMovement: %+.0f%%\n\nRange and trauma use game units."%[d.weapon_type_id.to_upper(),d.max_range,d.shots_per_second,d.solid_trauma,d.critical_trauma,d.acquire_seconds,(d.movement_multiplier-1.)*100.]
- var variant=Anim.variant_for(faction,d.weapon_type_id,selected);sprite.sprite_frames=Anim.frames_for(variant)
+ stats.text += "\nMagazine: %d • Reload: %.1fs"%[d.magazine_capacity,d.reload_seconds]
+ var variant=Anim.variant_for(faction,d.weapon_type_id,selected,"mercer_dual_glock" if special else "");sprite.sprite_frames=Anim.frames_for(variant)
  if sprite.sprite_frames!=null:
   var animation=Anim.animation_name(clip,direction)
-  if sprite.sprite_frames.has_animation(animation):sprite.stop();sprite.play(animation)
+  if not sprite.sprite_frames.has_animation(animation):animation=Anim.animation_name("idle",direction)
+  sprite.stop();sprite.speed_scale=float(sprite.sprite_frames.get_frame_count(animation))/(d.reload_seconds*Anim.clip_fps("reload")) if clip=="reload" else 1.;sprite.play(animation)
  var path="res://assets/art/weapons/arsenal/icons/"+selected+".png";icon.texture=load(path) if ResourceLoader.exists(path) else null
 func play_report():
  var path="res://assets/audio/weapons/"+selected+"_0.wav"
