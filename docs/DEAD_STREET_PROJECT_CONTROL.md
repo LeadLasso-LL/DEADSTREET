@@ -6,7 +6,7 @@ The owner approved the Whittaker outfit review and supplied all five Calle Ocho 
 
 A conservative Calle Ocho sniper carry-position adjustment seats the stock closer to the shoulder in SE/SW without resizing the body or rifle. All six sniper models improved in the focused aiming comparison; 96 pose pairs preserved body geometry and weapon scale/anchors/angles. The other six facings are byte-identical. Existing faction atlases have not been rebuilt with this review adjustment.
 
-Calle Ocho is ready for outfit review; full runtime production and binding remain subsequent work. Ventresca Family is next in the regular-unit sheet order. Specials remain deferred. Whittaker is locally committed at 17bd646; GitHub push remains blocked by automatic approval review pending explicit destination authorization, as reported in the active conversation.
+Calle Ocho is ready for outfit review; full runtime production and binding remain subsequent work. Ventresca Family is next in the regular-unit sheet order. Specials remain deferred. Whittaker 17bd646 and Calle Ocho 22994c3 are pushed and verified on the existing GitHub build branch. The owner renewed standing project-wide push authorization in perpetuity; see [PROJECT_WORKFLOW_AUTHORIZATION.md](PROJECT_WORKFLOW_AUTHORIZATION.md).
 
 ## Whittaker regular outfit review (2026-09-11)
 
