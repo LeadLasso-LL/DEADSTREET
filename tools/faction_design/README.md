@@ -11,3 +11,9 @@ standing/aiming art candidates, not production animation atlases. The preview
 script changes outfit bindings only inside its own process. Existing faction
 atlases and combat behavior are untouched. See `docs/MERCER_SAINTS_UNIT_DESIGN.md`
 for approved clothing and starting balance decisions, and unresolved choices.
+
+Read `docs/UNIT_ART_STANDARD.md` before making another unit. The generator checks
+the specialist torso and lower body against the existing Mercer pistol unit in
+six poses. Eighteen frames render, including that reference. The fixed-scale
+`mercer_body_comparison.png` accompanies `mercer_new_units_review.png`.
+Geometry and frame-clearance reports support, but do not replace, visual review.

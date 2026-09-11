@@ -1,5 +1,13 @@
 # Dead Street — Project Control
 
+## Current unit art correction and push authorization (2026-09-11)
+
+The owner rejected both the oversized specialist shirt and the later shrunken torso. Clothing instructions never authorize changes to the established anatomy. Use folds or omit bagginess. Every new unit requires an explicit visual check of its standing left shoulder and consistent weapon/body proportions across facings and stances. See [UNIT_ART_STANDARD.md](UNIT_ART_STANDARD.md).
+
+Owner authorization: "You have my explicit authorization to push what you need to for this entire project." This is standing authorization for ongoing Dead Street project commits and pushes to the established LeadLasso-LL/DEADSTREET repository. The current checkpoint branch is build/arsenal-checkpoint-20260911. A pushed review candidate is not automatically product-accepted art.
+
+The revised Mercer preview restores the existing pistol unit's exact torso geometry and placement, verified together with the unchanged lower body in six poses. Both new outfits receive connected shoulder/sleeve joins. The sniper front/rear rifle projection is corrected without replacing its weapon drawing or changing body proportions. Eighteen frames include the existing unit for a fixed-scale comparison; rendering and geometry checks pass. Standing left shoulders and front rifle proportions were visually inspected by the technical lead. Full eight-direction animation and specialist combat integration remain next; these previews do not implement those systems.
+
 ## Current design work: Mercer Saints outfits and specialist
 
 The owner approved preserving the existing four Mercer outfits, a black hooded sniper with a lower-face bandana, black pants/boots and one red pocket rag, and a dual-Glock pistol specialist with a baggier red long-sleeve shirt, black pants, white shoes and a black ski mask. Specialist starting stats are approved for playtesting; faction-wide caps are required but their values remain open. See [MERCER_SAINTS_UNIT_DESIGN.md](MERCER_SAINTS_UNIT_DESIGN.md).

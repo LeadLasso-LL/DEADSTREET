@@ -1,0 +1,32 @@
+[
+  {
+    "pose": "dual_glock_SE_idle",
+    "torso_matches_reference": true,
+    "lower_body_matches_reference": true
+  },
+  {
+    "pose": "dual_glock_SE_aim",
+    "torso_matches_reference": true,
+    "lower_body_matches_reference": true
+  },
+  {
+    "pose": "dual_glock_S_idle",
+    "torso_matches_reference": true,
+    "lower_body_matches_reference": true
+  },
+  {
+    "pose": "dual_glock_S_aim",
+    "torso_matches_reference": true,
+    "lower_body_matches_reference": true
+  },
+  {
+    "pose": "dual_glock_N_idle",
+    "torso_matches_reference": true,
+    "lower_body_matches_reference": true
+  },
+  {
+    "pose": "dual_glock_N_aim",
+    "torso_matches_reference": true,
+    "lower_body_matches_reference": true
+  }
+]
