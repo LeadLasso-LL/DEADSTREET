@@ -13,10 +13,10 @@ DUST='#a09271'
 BLOOD='#683f32'
 SAND=('#b7ab88','#d1c5a4','#7e785d')
 DESCRIPTIONS={
-'pistol':'Cracked ivory smile mask / cut-off pink motel polo / cord belt',
+'pistol':'Cracked smile mask / bare scarred torso + sand and dried blood / cord belt',
 'smg':'Patchy shaved head / dirty tank / prison suit tied at waist',
 'shotgun':'Repaired cloth sack / blue work shirt / blood-smeared apron',
-'rifle':'Thinning red hair / taped shades / bare-chest suit + crooked tie',
+'rifle':'Worn welding mask / bare-chest suit + crooked tie / camo trousers',
 'sniper':'Faded floral curtain / gauze face wrap / ragged charcoal sweater'}
 NOTES={
 'pistol':['Greasy jaw-length hair / one bandaged forearm','Sandy trousers / battered white tennis shoes'],
@@ -57,11 +57,17 @@ def head(g,c,skin,hi,d='SE'):
     for attr in ['fill','stroke']:
      if el.get(attr) in ['#332b27','#5a4637']:el.set(attr,{'#332b27':'#6c4732','#5a4637':'#9a714e'}[el.get(attr)])
    path(g,'M-4 -47 Q-1 -50 4 -47 M-3 -48 Q1 -50 5 -46','none','#9a714e',.65)
-   if not back:
-    shape='M1 -42 L7 -42 6 -38 2 -38Z' if side else 'M-6 -42 L-1 -42 -1 -39 -6 -39Z M1 -42 L6 -42 6 -39 1 -39Z'
-    path(g,shape,'#10191c','#0c1316',.8)
-    path(g,'M-1 -41 L1 -41 M-7 -42 L-6 -41','none','#0c1316',.7)
-    path(g,'M-6 -42 L-4 -41','none','#b8b092',1.2)
+   if back:
+    path(g,'M-7 -44 Q0 -42 7 -44 M-5 -47 Q0 -50 5 -47','none','#252c2b',1.7)
+    path(g,'M6 -44 L8 -43 8 -38','none','#5e6257',1.1)
+   else:
+    path(g,'M-7 -48 Q0 -51 7 -48 L8 -38 5 -31 -4 -31 -8 -38Z','#3e4540','#182321',.8)
+    path(g,'M-6 -47 L5 -48 6 -37 3 -33 -3 -33','none','#687064',.7)
+    lens='M1 -44 L7 -44 7 -40 1 -40Z' if side else 'M-5 -44 L5 -44 5 -40 -5 -40Z'
+    path(g,lens,'#132321','#92917a',.7)
+    path(g,'M-4 -43 L3 -43','none','#3e5750',.55)
+    path(g,'M-6 -38 L-4 -36 M3 -35 L5 -37','none',DUST,.6)
+    blot(g,4,-47,'#796044',.8)
   elif not back:
    # Thin worn plastic faceplate, no larger skull or sculpted monster anatomy.
    path(g,'M-6 -44 Q0 -48 6 -44 L6 -37 3 -33 -2 -33 -6 -37Z','#c7bea3','#68644f',.65)
@@ -100,7 +106,16 @@ def head(g,c,skin,hi,d='SE'):
    path(g,f'M{x-1} {y} q1 -2 2 0 q-1 2 -2 0Z','none','#99977a',.45)
 def torso(g,c,skin,hi,d='SE'):
  if not c.get('raider'):return base.torso(g,c,skin,hi,d)
- rig.ORIGINAL_TORSO(g,c,skin,hi,d);t=list(g)[0];role=c['role'];back=d in ['N','NE','NW']
+ role=c['role'];back=d in ['N','NE','NW']
+ body=dict(c,cloth=skin,lit=hi,shade='#8a7056') if role=='pistol' else c
+ rig.ORIGINAL_TORSO(g,body,skin,hi,d);t=list(g)[0]
+ if role=='pistol':
+  path(t,'M-7 -26 L-4 -22 -3 -19 M4 -15 L6 -12 M-6 -8 L-2 -6','none','#895747',.8)
+  path(t,'M-7 -25 L-4 -21 M4 -14 L6 -11','none','#c3a085',.4)
+  blot(t,-5,-15,BLOOD,2.2);blot(t,6,-24,BLOOD,1.8)
+  grime(t,[(-7,-28),(5,-18),(-3,-7),(7,-4)])
+  if back:path(t,'M0 -27 L0 -10 M-6 -25 Q-2 -23 -3 -18 M6 -25 Q2 -23 3 -18','none','#9d8062',.6)
+  else:path(t,'M-7 -27 Q-4 -24 -1 -26 M1 -26 Q4 -24 7 -27 M0 -22 L0 -16','none','#9d8062',.6)
  if role=='smg':
   # Peeled-down jumpsuit is worn at the waist, not on the back of the tank.
   path(t,'M-11 -4 Q0 -1 11 -4 L11 5 5 4 0 6 -6 4 -11 5Z','#a36135','#71472c',.6)
@@ -130,10 +145,6 @@ def torso(g,c,skin,hi,d='SE'):
      path(t,f'M{x+off} {y} l-.6 {dy}','none',BLOOD,.7)
  if not back:
   if role=='pistol':
-   path(t,'M-4 -32 L0 -28 4 -32 2 -25 0 -27 -2 -25Z',c['lit'],c['shade'],.55)
-   path(t,'M0 -27 L0 -20','none',c['shade'],.65)
-   path(t,'M5 -23 L8 -23 8 -20 5 -20Z','#bfa68b','none')
-   path(t,'M5.5 -22 L7.5 -22','none','#705b4b',.5)
    path(t,'M-10 -1 Q0 2 10 -1 M1 0 L4 5 1 3 -1 6 -2 2Z','none','#292c27',1)
   elif role=='smg':
    for x in [-6,-3,0,3,6]:path(t,f'M{x} -23 L{x} -7','none','#999783',.35)
