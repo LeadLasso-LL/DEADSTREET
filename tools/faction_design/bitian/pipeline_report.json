@@ -1,0 +1,21 @@
+{
+  "faction": "bitian",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 8.228,
+    "render_and_bounds": 7.012,
+    "palette_and_review_sheets": 18.51,
+    "motion_and_armory_sheets": 0.145
+  },
+  "total_seconds": 33.897,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}

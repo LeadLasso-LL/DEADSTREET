@@ -1,5 +1,11 @@
 # Dead Street — Project Control
 
+## Bìtiān regular outfit review (2026-09-11)
+
+All five owner-specified Chinese Bìtiān outfits are built for review. The full 1,080-frame geometry/render-bound review passed. Standing left shoulders, both joins, eight idle/aim facings and SE motion samples were visually inspected. Normal anatomy and weapon scale are preserved. See [BITIAN_UNIT_DESIGN.md](BITIAN_UNIT_DESIGN.md).
+
+Owner visual acceptance and full runtime atlas/faction binding remain subsequent work. Stateline Raiders MC is next; new specials remain deferred. This checkpoint is local while the earlier automatic push-approval blockage remains unresolved.
+
 ## Zangyaku regular outfit review (2026-09-11)
 
 All five owner-specified Japanese Zangyaku outfits are built for review. The corrected final 1,080-frame geometry/bounds pass succeeds. Standing left shoulders, both joins, direction sheets and SE motion samples were visually reviewed. Normal body and leg proportions are preserved. See [ZANGYAKU_UNIT_DESIGN.md](ZANGYAKU_UNIT_DESIGN.md).
