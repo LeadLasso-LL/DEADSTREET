@@ -1,5 +1,10 @@
 # Dead Street — Project Control
 
+## Union del Sur regular outfits - 2026-09-11
+
+Five approved regular outfits implemented in the existing review rig. Full 1,080-frame geometry/render review passed; standing shoulders, eight-direction aiming, and motion samples visually inspected. See UNION_SUR_UNIT_DESIGN.md and tools/faction_design/union_sur/. Live gameplay atlas integration remains pending; special units remain deferred. Next outfit faction: L'Ordine di Lombardia.
+
+
 ## W&M replacement wardrobe - 2026-09-11
 
 Owner superseded the reused-outfit roster with five original W&M outfits retaining the two family styles. See WM_CORP_UNIT_DESIGN.md for current specifications. Dedicated profile and all review outputs replaced; original parent factions preserved. Full 1,080-frame validation passed, shoulders/directions/motion reviewed. Local checkpoint; live integration pending.
