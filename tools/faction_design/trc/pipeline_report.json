@@ -1,0 +1,21 @@
+{
+  "faction": "trc",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 23.144,
+    "render_and_bounds": 25.453,
+    "palette_and_review_sheets": 54.292,
+    "motion_and_armory_sheets": 0.634
+  },
+  "total_seconds": 103.532,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}

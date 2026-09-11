@@ -1,5 +1,11 @@
 # Dead Street — Project Control
 
+## TRC regular outfit review (2026-09-11)
+
+Five owner-specified TRC outfits are built for review with shared black/forest-green clothing, distinct helmets and masks, modest armor, shell loops, pouches and small star-and-eye patches. Full 1,080-frame geometry/render-bound checks passed. Standing left shoulders, both joins, eight idle/aim facings and SE motion samples were visually inspected. See [TRC_UNIT_DESIGN.md](TRC_UNIT_DESIGN.md).
+
+Owner acceptance and full runtime atlas/faction binding remain subsequent work. NBPD is next; new specials remain deferred. This checkpoint is local while the earlier automatic push-approval blockage remains unresolved.
+
 ## McAllister regular outfit review (2026-09-11)
 
 All five owner-specified white McAllister units are built for review with the estate/sporting wardrobe. Full 1,080-frame geometry/render-bound checks passed after correcting a preview adapter palette-binding mismatch. Standing left shoulders, both joins, eight idle/aim facings and SE motion samples were visually inspected. See [MCALLISTER_UNIT_DESIGN.md](MCALLISTER_UNIT_DESIGN.md).
