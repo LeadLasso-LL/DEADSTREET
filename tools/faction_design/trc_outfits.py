@@ -69,6 +69,43 @@ def head(g,c,skin,hi,d='SE'):
    if not back:path(g,'M7 -39 L8 -35 3 -35','none',BLACK[1],.8)
    path(g,'M-5 -39 L-3 -34 3 -33 5 -39','none',BLACK[2],.7)
    if r=='smg':patch(g,6,-47,.55)
+
+# Condensed block glyphs drawn as vectors, rasterized by the existing pixel pass.
+PRINT_GOLD='#aaa078'
+GLYPHS={
+'T':['111','010','010','010','010'],'R':['110','101','110','101','101'],
+'C':['111','100','100','100','111'],'E':['111','100','110','100','111'],
+'X':['101','101','010','101','101'],'A':['010','101','111','101','101'],
+'S':['111','100','111','001','111'],'O':['111','101','101','101','111'],
+'V':['101','101','101','101','010'],'Y':['101','101','010','010','010'],
+'L':['100','100','100','100','111'],'I':['111','010','010','010','111'],
+'N':['101','111','111','111','101'],' ':['000']*5}
+def print_line(g,text,y,width,height):
+ cell=width/(len(text)*4-1);dy=height/5
+ for i,ch in enumerate(text):
+  for row,bits in enumerate(GLYPHS[ch]):
+   for col,bit in enumerate(bits):
+    if bit!='1':continue
+    x=-width/2+(i*4+col)*cell;yy=y+row*dy
+    path(g,f'M{x} {yy} h{cell*.94} v{dy*.94} h{-cell*.94}Z',PRINT_GOLD,'none')
+def back_marking(t,d):
+ # Parent is the animated, direction-transformed torso, not screen space.
+ g=base.E.SubElement(t,N+'g',{'data-trc-back-marking':'true','transform':'scale(-1 1)' if d=='NW' else 'scale(1 1)'})
+ print_line(g,'TRC',-26,16,5)
+ # Established star-and-eye design, printed directly on the outer garment.
+ e=base.E.SubElement(g,N+'g',{'transform':'translate(0 -15) scale(1.55)'})
+ path(e,'M0 -2.5 L.7 -.7 2.6 -.7 1.1 .5 1.7 2.4 0 1.2 -1.7 2.4 -1.1 .5 -2.6 -.7 -.7 -.7Z',GREEN[0],PRINT_GOLD,.4)
+ path(e,'M-1.2 0 Q0 -1.1 1.2 0 Q0 1 -1.2 0Z',PRINT_GOLD,'none')
+ path(e,'M0 -.35 L0 .35','none',BLACK[2],.55)
+ print_line(g,'TEXAS RECOVERY',-9,17,2.3)
+ print_line(g,'COALITION',-5.8,12,2.3)
+ # Tiny deterministic gaps resemble worn ink without adding a panel.
+ for el in list(g):
+  if el.tag!=N+'path':continue
+  # Sparse missing ink cells, shared consistently by every outfit and pose.
+  d=el.get('d','')
+  if d.startswith('M-6.545454') or d.startswith('M4.363636'):el.set('opacity','.72')
+
 def torso(g,c,skin,hi,d='SE'):
  if not c.get('trc'):return base.torso(g,c,skin,hi,d)
  rig.ORIGINAL_TORSO(g,c,skin,hi,d);t=list(g)[0];r=c['role'];back=d in ['N','NE','NW']
@@ -93,6 +130,7 @@ def torso(g,c,skin,hi,d='SE'):
     for x in [-6,0,6]:
      path(t,f'M{x-1.8} -11 L{x+1.8} -11 {x+1.8} -3 {x-1.8} -3Z',BLACK[0],BLACK[2],.5)
      path(t,f'M{x-1} -9 L{x+1} -9','none',BLACK[1],.5)
+ if back:back_marking(t,d)
  path(t,'M-10 -1 L11 -1','none',BLACK[2],2)
  if r=='pistol':path(t,'M8 0 L12 0 12 8 8 7Z',BLACK[0],BLACK[2],.6)
 def forearm(g,a,b,c,skin,hi,r=3.1):

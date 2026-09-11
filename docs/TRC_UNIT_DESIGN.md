@@ -33,3 +33,7 @@ Local checkpoint only: the earlier automatic approval review still blocks GitHub
 Sniper trousers are black. Rifle headwear delegates to the exact shotgun headwear drawing: black full-coverage helmet and black ski mask. Other wardrobe and anatomy remain unchanged.
 
 Revision verification: full 1,080-frame pass succeeded; eight standing facings visually checked for black sniper trousers, identical rifle/shotgun headwear and connected shoulders.
+
+## Shared back marking
+
+All five regular units now carry centered muted-gold TRC lettering above the established star-and-eye motif, then TEXAS RECOVERY / COALITION on two smaller lines. Condensed block glyphs and subtle worn ink follow the animated outer torso. NW print is counter-mirrored so lettering stays readable. Existing clothing and body geometry preserved. Small full-name lettering reads as fine print at native gameplay scale. Full 1,080-frame validation passed; rear idle/aim, walk, reload and wounded views visually checked. Review assets only; live gameplay integration remains pending.
