@@ -9,7 +9,7 @@ sys.path.insert(0,str(HERE))
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument('faction',choices=['eastex','whittaker','calle_ocho','ventresca','ravicci','zangyaku','bitian','stateline','sierra_roja','mcallister','trc','nbpd','mercer44','wm_corp','union_sur','lombardia','sand_raiders'])
+    p.add_argument('faction',choices=['eastex','whittaker','calle_ocho','ventresca','ravicci','zangyaku','bitian','stateline','sierra_roja','mcallister','trc','nbpd','mercer44','wm_corp','union_sur','lombardia','sand_raiders','saffar'])
     p.add_argument('--godot',required=True)
     p.add_argument('--full',action='store_true')
     p.add_argument('--roles',nargs='+',choices=['pistol','smg','shotgun','rifle','sniper'])

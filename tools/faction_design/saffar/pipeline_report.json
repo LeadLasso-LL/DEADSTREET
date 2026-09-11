@@ -1,0 +1,21 @@
+{
+  "faction": "saffar",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 7.817,
+    "render_and_bounds": 7.091,
+    "palette_and_review_sheets": 18.469,
+    "motion_and_armory_sheets": 0.134
+  },
+  "total_seconds": 33.514,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
