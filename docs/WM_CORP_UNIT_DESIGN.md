@@ -1,17 +1,17 @@
-# Whittaker-McAllister Corporation regular outfits
+# Whittaker-McAllister Corporation regular outfits — replacement design
 
-Owner direction, 2026-09-11: all white units. Rural Whittaker men and polished McAllister personnel serve together, retaining their original family wardrobes.
+Owner's new direction supersedes the original reused-family outfit set. All units white. Two polished McAllister personnel and three rural Whittaker personnel, each with a NEW outfit while retaining their family's style.
 
-| Role | Original outfit reused |
+| Role | Current design |
 |---|---|
-| Pistol | McAllister: sandy side-part hair, black Wayfarer-style shades, rolled pale blue open-collar shirt, tan chinos/brown belt, brown loafers, silver watch. |
-| SMG | Whittaker: backward faded red trucker cap, shaggy blonde hair, sleeveless charcoal tee, tattooed arms, faded blue jeans, scuffed brown work boots. |
-| Shotgun | Whittaker: brown cowboy hat, collar-length brown hair/mustache, open brown canvas vest over dark green plaid, worn black jeans, heavy tan boots. |
-| Rifle | McAllister: neat dark side-part hair, black aviators, navy quarter-zip over white collar, charcoal utility trousers, black boots, magazine belt, fitted black gloves. |
-| Sniper | Whittaker: woodland hood and hunting jacket, mostly hidden sandy hair, olive lower-face cloth, reinforced dark olive trousers, muddy brown hunting boots. |
+| Pistol — McAllister | Swept-back chestnut hair, clean-shaven; black rectangular sunglasses; ivory short-sleeve knit polo with dark brown collar trim; slate blue chinos; brown belt; dark brown suede loafers; gold wristwatch. |
+| SMG — Whittaker | Forward weathered tan cap; reddish-brown mullet and light stubble; open sleeveless faded blue denim shirt over white tank; tattooed arms; charcoal straight-leg jeans; worn tan lace-up work boots. |
+| Shotgun — Whittaker | Faded navy mesh trucker cap; shaggy brown hair and thick beard; open tobacco-brown canvas chore jacket over rust henley; worn blue jeans with one patched knee; dark brown steel-toe boots. Normal body proportions. |
+| Rifle — McAllister | Neatly trimmed blonde hair, clean-shaven; dark brown quilted vest over pale green button-up, sleeves rolled to forearms; navy utility trousers; black magazine belt; dark brown lace-up boots; black gloves. |
+| Sniper — Whittaker | Faded brown hunting cap; shoulder-length sandy hair and scruffy beard; brown camouflage lower-face gaiter; muted brown woodland jacket with raised collar; faded olive work pants with brown knees; muddy dark brown hunting boots; brown gloves. |
 
-Implementation: tools/faction_design/wm_corp_outfits.py dispatches directly to the original family profile per role. Full source wardrobe details remain in WHITTAKER_UNIT_DESIGN.md and MCALLISTER_UNIT_DESIGN.md. No blended outfits or body changes.
+Source: tools/faction_design/wm_corp_outfits.py. Dedicated wardrobe replaces the original family-profile dispatch. Uses accepted ordinary anatomy and animation rig. Original Whittaker and McAllister profiles unchanged.
 
-Full review passed: 1,080 frames, zero bounds/render failures, accepted body geometry preserved. All eight standing/aiming views and motion samples visually reviewed, including standing left shoulders, both joins and weapon proportions.
+Review assets only; live gameplay atlas/faction integration pending. No new special units or gameplay balancing. Next: La Union del Sur. Existing automatic push blockage remains; local checkpoint.
 
-Output: tools/faction_design/wm_corp/. Outfit and standard-motion review assets only; live gameplay atlas/faction integration remains pending. Specialists remain deferred. Local checkpoint; prior automatic push block remains. Next: La Union del Sur.
+Validation: full 1,080-frame render/geometry review passed with no failures. Visually inspected all eight standing and aiming views plus motion samples. Standing left shoulder and both joins remain connected; normal proportions preserved. Final rifle facial-contrast correction re-rendered and visually checked.
