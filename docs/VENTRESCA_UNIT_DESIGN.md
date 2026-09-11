@@ -6,9 +6,9 @@ Status: built for owner outfit review. All five units are Italian-American. Full
 
 | Class | Head and face | Clothing and footwear | Accessories |
 |---|---|---|---|
-| Pistol | Short dark brown hair, neat side part, clean-shaven | Unzipped black tracksuit jacket over white T-shirt; matching black track pants; white sneakers | Gold chain and gold wristwatch |
+| Pistol | Short dark brown hair, neat side part, clean-shaven | Unzipped black tracksuit jacket over white T-shirt; matching black track pants; white sneakers | Gold chain, gold wristwatch and black Wayfarer-style sunglasses |
 | SMG | Slicked-back black hair with some length at the neck | Open lightweight black suit jacket; burgundy knit polo; black tailored trousers; black leather loafers | Thin gold chain at collar |
-| Shotgun | Receding dark hair combed back; thick mustache | Dark brown leather jacket over cream turtleneck; charcoal dress trousers; sturdy brown leather ankle boots | None specified |
+| Shotgun | Forward-facing black curved-brim baseball cap over receding dark hair; thick mustache | Dark brown leather jacket over cream turtleneck; charcoal dress trousers; sturdy brown leather ankle boots | Gold-framed aviator sunglasses |
 | Rifle | Short black hair neatly combed back; clean-shaven | Dark gray suit jacket and trousers; pale blue dress shirt; narrow black tie; black leather dress shoes | Black leather gloves |
 | Sniper | Low charcoal flat cap; short salt-and-pepper hair at sides; dark gray lower-face scarf | Black wool coat ending at mid-thigh over charcoal turtleneck; black tailored trousers; black leather ankle boots | Black gloves |
 
@@ -31,3 +31,7 @@ Run from the repository with the installed Python and Godot executables:
 The runner also supports scoped role revisions, followed by a full final pass. Outputs are in tools/faction_design/ventresca/: outfit and lineup sheets, idle/aim direction sheets, motion samples, armory fit, motion GIF and three validation/pipeline reports. Intermediate frames and jobs are ignored.
 
 Continue with Ravicci Family in the canonical sheet order. New faction-specific specials remain deferred until the regular faction roster pass is complete.
+
+## Accessory revision (2026-09-11)
+
+Owner requested black Wayfarer-style sunglasses for pistol, and a forward-facing curved-brim black baseball cap with gold-framed aviators for shotgun. Updated those two heads and regenerated the full review: 1,080 frames passed geometry and bounds checks in 32.711 seconds. Revised standing/aiming sheet and all eight standing facings were visually inspected, including standing left shoulder attachment. Existing body and weapon geometry is preserved.

@@ -16,9 +16,9 @@ GRAY=('#454c50','#646d71','#2c3439')
 WHITE=('#d6d5c9','#eeeee2','#929c9b')
 GOLD=('#bc9a4e','#e0c783','#79632f')
 DESCRIPTIONS={
- 'pistol':'Side-parted hair / open black tracksuit / white tee / gold jewelry',
+ 'pistol':'Black sunglasses / open black tracksuit / white tee / gold jewelry',
  'smg':'Slicked-back hair / black suit jacket / burgundy knit polo',
- 'shotgun':'Receding hair / mustache / brown leather / cream turtleneck',
+ 'shotgun':'Black curved-brim cap / gold aviators / leather / cream knit',
  'rifle':'Combed-back hair / gray suit / pale blue shirt / narrow black tie',
  'sniper':'Low flat cap / gray scarf / mid-thigh black wool coat / gloves',
 }
@@ -34,9 +34,9 @@ def costume(top,colors,head,**extra):
              sleeve='long',wide=BASE['wide'],new_unit=True,ventresca=True,
              pants='#23292c',pants_hi='#41484b',shoe='#161c1f',shoe_hi='#3e474b',**extra)
 SPECS={
- 'pistol':costume('track',BLACK,'sidepart',watch=True,chain=True),
+ 'pistol':costume('track',BLACK,'sidepart',watch=True,chain=True,glasses='wayfarer'),
  'smg':costume('blazer',BLACK,'slicklong',chain=True,loafers=True),
- 'shotgun':costume('leather',BROWN,'receding',ankle_boots=True),
+ 'shotgun':costume('leather',BROWN,'receding',ankle_boots=True,cap=True,glasses='aviator'),
  'rifle':costume('suit',GRAY,'combed',gloves=True),
  'sniper':costume('overcoat',BLACK,'flat',gloves=True,ankle_boots=True),
 }
@@ -75,6 +75,28 @@ def head(g,c,skin,hi,d='SE'):
   path(g,('M3 -41 L5 -41 M3 -35 L5 -35' if side else 'M-3 -40.5 L-1 -40.5 M2 -40.5 L4 -40.5 M-1 -35 L2 -35'),'none','#332b27',.6)
   path(g,'M1 -39 L2 -37','none',hi,.65)
   if h=='receding':path(g,('M3 -38 Q5 -39 7 -37 L7 -35 4 -36 2 -35Z' if side else 'M-4 -37 Q-2 -39 0 -37.5 Q2 -39 4 -37 L4 -35 -1 -36 -4 -35Z'),hair,'none')
+ if c.get('glasses') and not back:
+  aviator=c['glasses']=='aviator'
+  frame=GOLD[0] if aviator else '#101619'
+  if side:
+   lens=('M1 -42 L6 -42 Q8 -41 6 -38 Q3 -36 2 -39Z' if aviator else 'M1 -42 L7 -42 6 -38 2 -38Z')
+   path(g,lens,'#161f24',frame,.7 if aviator else 1)
+   path(g,'M-5 -42 L1 -41','none',frame,.8)
+   path(g,'M3 -41 L5 -40','none','#4c5357',.5)
+  else:
+   lens=('M-6 -42 Q-3 -43 -1 -41 L-2 -38 Q-5 -36 -6 -40Z M1 -41 Q3 -43 6 -42 L6 -40 Q5 -36 2 -38Z' if aviator else 'M-6 -42 L-1 -42 -1.5 -38 -5 -38Z M1 -42 L6 -42 5 -38 1.5 -38Z')
+   path(g,lens,'#161f24',frame,.7 if aviator else 1)
+   path(g,'M-1 -41 Q0 -42 1 -41 M-7 -42 L-6 -41 M6 -41 L7 -42','none',frame,.7)
+   path(g,'M-5 -41 L-3 -40 M2 -41 L4 -40','none','#4c5357',.45)
+ if c.get('cap'):
+  path(g,'M-7 -45 Q-7 -51 0 -51 Q7 -51 8 -45 L7 -44 Q0 -43 -7 -45Z','#202629','#12191c',.8)
+  path(g,'M-1 -50 Q2 -48 2 -44','none','#383f42',.55)
+  if back:
+   path(g,'M-3 -45 L3 -45 M-2 -44 L2 -44','none','#12191c',.7)
+  else:
+   brim=('M2 -45 Q7 -46 12 -43 Q13 -41 9 -41 L5 -43Z' if side else 'M-6 -45 Q1 -44 7 -45 Q11 -43 9 -42 Q2 -42 -4 -43Z')
+   path(g,brim,'#202629','#12191c',.65)
+   path(g,('M6 -44 Q10 -43 11 -42' if side else 'M-3 -44 Q3 -43 8 -43'),'none','#383f42',.5)
  if h=='flat':
   # Short graying side hair is visible below the low, shallow wool cap.
   for x in [-5.5,5.5]:
