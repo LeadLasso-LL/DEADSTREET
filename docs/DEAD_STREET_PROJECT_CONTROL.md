@@ -1,5 +1,10 @@
 # Dead Street — Project Control
 
+## NBPD regular outfit review ? 2026-09-11
+
+Five NBPD regular outfits built on the accepted rig; shared green/gold striped trousers, police duty belts, white uniforms and green bomber jackets. Full 1,080-frame validation passed and standing/aiming directions plus motion samples visually reviewed. See NBPD_UNIT_DESIGN.md. Review assets only; live gameplay atlas integration remains pending. Local checkpoint; previous automatic push rejection remains unresolved. Both authority regular rosters are now built for review; Mercer 44s follows in sheet order.
+
+
 ## TRC headwear and trouser revision (2026-09-11)
 
 Owner changed sniper pants to black and rifle headwear to exactly match the shotgun black helmet and ski mask. See TRC_UNIT_DESIGN.md.
