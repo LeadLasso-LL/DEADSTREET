@@ -11,9 +11,9 @@ TITLE='ZANGYAKU'
 PREFIX='zangyaku'
 BLUE=('#b59a61',)
 DESCRIPTIONS={'pistol':'Black ponytail / silver shades / open gray shirt / tattoos',
-'smg':'Blonde spikes / open satin bomber / white tank / silver hoop',
+'smg':'Blonde spikes / black headband / satin bomber / white tank',
 'shotgun':'Crew cut / square shades / tattoo sleeves / red parachute pants',
-'rifle':'Parted hair / round gold glasses / white V-neck / gray trousers',
+'rifle':'Parted hair / round black glasses / white V-neck / gray trousers',
 'sniper':'Black beanie / long straight hair / matte raincoat / hood down'}
 NOTES={'pistol':['Open collar tattoos / silver watch','Black trousers / leather loafers'],
 'smg':['Dark roots / tattooed forearms','Charcoal pants / black-white sneakers'],
@@ -56,12 +56,17 @@ def head(g,c,skin,hi,d='SE'):
   path(g,'M-7 -43 L-9 -48 -6 -47 -7 -51 -4 -50 -4 -55 -1 -52 1 -57 3 -52 7 -55 6 -50 10 -51 8 -47 9 -44 5 -42 3 -44 0 -43 -3 -44Z','#d4b768','#8c793f',.7)
   path(g,'M-5 -49 L-3 -45 M-2 -51 L0 -45 M2 -52 L1 -46 M6 -51 L4 -45 M7 -47 L5 -44','none','#f0d58b',.9)
   path(g,'M-6 -44 Q0 -48 6 -44','none','#1b2225',1.35)
+  path(g,'M-7 -45 Q0 -44 7 -45 L7 -42 Q0 -41 -7 -43Z','#101619','#0d1519',.55)
+  path(g,'M-6 -44 Q0 -43 6 -44','none','#343f44',.45)
+  if back:
+   path(g,'M-2 -44 L2 -44 3 -41 0 -40 -3 -42Z','#101619','#0d1519',.45)
+   path(g,'M0 -41 L-2 -37 -3 -38 -2 -42Z M1 -41 L3 -38 4 -39 2 -42Z','#101619','#0d1519',.4)
   if not back:path(g,'M-6 -39 Q-9 -38 -7 -36 Q-5 -36 -6 -39','none','#b8c3c4',.7)
  if role=='shotgun':
   path(g,'M-6 -44 L-6 -48 Q0 -51 6 -48 L7 -43 5 -43 4 -46 -4 -46 -4 -43Z','#11191d','none')
   path(g,'M-6 -43 L-6 -37 -4 -36 -4 -42Z M4 -42 L4 -37 6 -37 6 -43Z','#11191d','none')
  if role in ['pistol','shotgun','rifle'] and not back:
-  frame='#b8c3c4' if role=='pistol' else '#101619' if role=='shotgun' else base.GOLD[0]
+  frame='#b8c3c4' if role=='pistol' else '#101619' if role=='shotgun' else '#101619'
   lens='#182229' if role!='rifle' else skin
   if role=='rifle':
    if side:path(g,'M1 -41 Q1 -44 4 -44 Q7 -44 7 -41 Q7 -38 4 -38 Q1 -38 1 -41Z',lens,frame,.65)

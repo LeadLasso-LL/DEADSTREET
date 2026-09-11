@@ -11,11 +11,11 @@
   "frames": 1080,
   "failures": [],
   "timings_seconds": {
-    "source_and_geometry": 7.988,
-    "render_and_bounds": 6.921,
-    "palette_and_review_sheets": 20.201,
-    "motion_and_armory_sheets": 0.19
+    "source_and_geometry": 8.671,
+    "render_and_bounds": 6.779,
+    "palette_and_review_sheets": 19.849,
+    "motion_and_armory_sheets": 0.162
   },
-  "total_seconds": 35.303,
+  "total_seconds": 35.461,
   "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
 }
