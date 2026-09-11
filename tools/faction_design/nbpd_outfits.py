@@ -16,7 +16,7 @@ BLUE=(GREEN[1],)
 DESCRIPTIONS={'pistol':'Green peaked cap / black aviators / white short-sleeve uniform',
 'smg':'Green police cap / rolled white sleeves / black bulletproof vest',
 'shotgun':'Green cowboy hat / gray hair + mustache / green police bomber',
-'rifle':'Sandy side part / black aviators / white shirt + tucked black tie',
+'rifle':'Green cowboy hat / black aviators / white shirt + tucked black tie',
 'sniper':'Green police cap / raised bomber collar / communications earpiece'}
 NOTES={r:['Green pants / thin gold outer stripes','Black boots / fully equipped police duty belt'] for r in DESCRIPTIONS}
 def spec(r):
@@ -60,7 +60,7 @@ def head(g,c,skin,hi,d='SE'):
   if not back:
    path(g,'M-6 -44 Q0 -43 7 -45 L11 -42 Q3 -40 -5 -42Z',GREEN[0],GREEN[2],.6)
    patch(g,1,-47,.55)
- elif r=='shotgun':
+ elif r in ['shotgun','rifle']:
   path(g,'M-7 -46 L-6 -53 Q-3 -55 0 -52 Q3 -55 6 -53 L8 -46Z',GREEN[0],GREEN[2],.7)
   path(g,'M-7 -47 Q0 -45 7 -47','none',BLACK[2],1.6)
   path(g,'M-12 -46 Q-8 -42 0 -44 Q8 -42 12 -46 L12 -43 Q7 -39 0 -41 Q-8 -39 -12 -43Z',GREEN[0],GREEN[2],.7)

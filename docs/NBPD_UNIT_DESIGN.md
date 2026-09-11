@@ -10,7 +10,7 @@ Emblem-green trousers with thin gold outer-leg stripes; black boots; black polic
 | Pistol | Green peaked police cap, black visor and gold badge; short brown hair, clean-shaven; black aviators; white short-sleeve uniform with epaulettes and two chest pockets, left gold badge and right gold nameplate; both upper-sleeve NBPD patches. |
 | SMG | Green police baseball cap with small emblem; short black hair; white shirt rolled to elbows; fitted black bulletproof vest with small front gold badge and white POLICE back lettering; shoulder patches; black gloves. |
 | Shotgun | Green felt cowboy hat with black band and small gold badge; short graying hair and thick mustache; green old-school police bomber with broad collar, ribbed cuffs and waistband, partly unzipped over white uniform; gold chest badge and sleeve patches; black leather gloves. |
-| Rifle | Neatly side-combed sandy blonde hair, black aviators; white long-sleeve uniform buttoned at wrists, tucked narrow black tie; gold badge/nameplate and sleeve patches; shoulder radio microphone and additional belt magazine pouches. |
+| Rifle | Same green cowboy hat, black band and gold badge as Shotgun; neatly side-combed sandy blonde hair, black aviators; white long-sleeve uniform buttoned at wrists, tucked narrow black tie; gold badge/nameplate and sleeve patches; shoulder radio microphone and additional belt magazine pouches. |
 | Sniper | Same green police baseball cap as SMG; short dark brown hair; green bomber zipped high with raised collar, white shirt at neck; sleeve patches and chest badge; black communications earpiece and fitted black gloves. |
 
 ## Implementation and review
@@ -18,3 +18,5 @@ Source: tools/faction_design/nbpd_outfits.py. Uses existing rig, animation clips
 These are outfit and standard-motion review assets, not completed live gameplay atlases or faction binding. No new gameplay stats, special units or armor mechanics are introduced by the clothing.
 
 Full review passed: 1,080 frames, zero render/bounds failures, accepted body geometry preserved. Visually inspected all eight standing and aiming directions plus motion samples, including standing left shoulders, both joins and weapon/body consistency. Details are simplified at the native pixel scale. Push remains subject to the previously reported automatic approval block; local work continues under standing user authorization.
+
+Revision: rifle now uses the exact shotgun cowboy-hat drawing, retaining his own hair and aviators. Full 1,080-frame review passed; all eight standing and aiming views visually checked, including shoulder joins.
