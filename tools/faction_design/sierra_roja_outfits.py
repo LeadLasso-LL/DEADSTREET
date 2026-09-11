@@ -11,12 +11,12 @@ TITLE='CARTEL DE SIERRA ROJA'
 PREFIX='sierra_roja'
 BLUE=('#986653',)
 CAMO=['#85775a','#334633','#252f2b','#6c7654']
-DESCRIPTIONS={'pistol':'Black aviators / cream chain-print silk / blue jeans / gold jewelry',
+DESCRIPTIONS={'pistol':'Olive ski mask / cream chain-print silk / blue jeans / gold jewelry',
 'smg':'Forward black cap / burgundy polo / high crossbody bag / tattoos',
-'shotgun':'Tan cowboy hat / black mustache / brown leather vest / rolled sleeves',
+'shotgun':'Black ski mask / brown leather vest / rolled charcoal sleeves',
 'rifle':'Buzz cut + black shades / olive combat shirt / fitted tactical vest',
 'sniper':'Woodland boonie + field shirt / olive face cloth / light camo strips'}
-NOTES={'pistol':['Collar-length black hair / trimmed mustache','Brown pointed leather boots'],
+NOTES={'pistol':['Olive full-head ski mask / gold chain','Brown pointed leather boots'],
 'smg':['Light blue jeans / white leather sneakers','Open polo collar / faded sides'],
 'shotgun':['Charcoal shirt / faded black jeans','Silver buckle / brown square-toe boots'],
 'rifle':['Tan cargo pants / brown combat boots','Magazine pouches / black gloves'],
@@ -38,8 +38,16 @@ EXTRA_PALETTE=base.EXTRA_PALETTE+CAMO+['#c9bfa4','#e5dcc1','#9d9073','#b49b62','
 def head(g,c,skin,hi,d='SE'):
  if not c.get('sierra'):return base.head(g,c,skin,hi,d)
  role=c['role'];back=d in ['N','NE','NW'];side=d in ['E','W']
- if role=='shotgun':
-  western.head(g,dict(c,whittaker=True,head='cowboy',hair='#182024',hair_hi='#3c4649',hat='#a28b61',hat_hi='#c4ab80',hat_shade='#59422e',mustache=True),skin,hi,d)
+ if role in ['pistol','shotgun']:
+  temp=base.E.Element(N+'g')
+  rig.ORIGINAL_HEAD(temp,dict(c,head='mask'),skin,hi,d)
+  if role=='pistol':
+   for el in temp.iter():
+    for attr in ['fill','stroke']:
+     color=el.get(attr)
+     if color in ['#202527','#42494a']:
+      el.set(attr,{'#202527':'#4b593d','#42494a':'#788568'}[color])
+  g.extend(list(temp))
   return
  base.head(g,c,skin,hi,d)
  if role=='rifle':

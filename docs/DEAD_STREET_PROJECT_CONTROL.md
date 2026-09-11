@@ -1,5 +1,9 @@
 # Dead Street — Project Control
 
+## Sierra Roja mask revision (2026-09-11)
+
+Owner replaced pistol head/face styling with an olive-green ski mask and the shotgun cowboy hat/face styling with a black ski mask. Other outfits and proportions remain unchanged. See SIERRA_ROJA_UNIT_DESIGN.md.
+
 ## Sierra Roja regular outfit review (2026-09-11)
 
 All five owner-specified Mexican Sierra Roja outfits are built for review, including the cream chain-print shirt, high crossbody bag, cowboy hat, fitted tactical vest and woodland boonie/shoulder strips. The full 1,080-frame geometry/render-bound check passed. Standing left shoulders, both joins, eight idle/aim facings and SE motion samples were visually inspected. See [SIERRA_ROJA_UNIT_DESIGN.md](SIERRA_ROJA_UNIT_DESIGN.md).

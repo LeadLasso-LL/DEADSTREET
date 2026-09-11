@@ -4,15 +4,15 @@ Owner specification, 2026-09-11: all Mexican units. Five regular outfit review c
 
 | Class | Outfit |
 | --- | --- |
-| Pistol | Black hair brushed back to collar, neat mustache; black aviators with black lenses; cream silk short-sleeve shirt, muted gold chain print, top buttons undone; dark blue fitted jeans; brown pointed-toe leather boots; gold chain and watch. |
+| Pistol | Olive-green full-head ski mask, replacing previous hair and facial accessories; cream silk short-sleeve shirt, muted gold chain print, top buttons undone; dark blue fitted jeans; brown pointed-toe leather boots; gold chain and watch. |
 | SMG | Forward black baseball cap, short dark hair and faded sides; open-collar burgundy polo; light blue straight-leg jeans; white leather sneakers; small black crossbody bag high on chest; forearm tattoos. |
-| Shotgun | Tan cowboy hat, dark brown band; short black hair, thick mustache; brown leather vest over charcoal button-up with sleeves rolled to elbows; faded black jeans, silver buckle; scuffed brown square-toe boots. |
+| Shotgun | Black full-head ski mask, replacing cowboy hat and facial details; brown leather vest over charcoal button-up with sleeves rolled to elbows; faded black jeans, silver buckle; scuffed brown square-toe boots. |
 | Rifle | Black buzz cut, dark stubble; black wraparound sunglasses and lenses; olive combat shirt rolled to forearms; fitted black tactical vest and magazine pouches; tan cargo pants; brown combat boots; black gloves. |
 | Sniper | Faded woodland boonie; dark brown neck hair; olive lower-face cloth; woodland field shirt; loose muted olive camouflage strips at shoulders; dark olive cargo pants; worn brown lace-up boots; olive gloves. |
 
 ## Implementation
 
-tools/faction_design/sierra_roja_outfits.py extends the accepted ordinary-unit rig and shared review runner. Clothing details preserve body proportions. The tactical vest fits within the torso and the sniper tabs add light fabric detail. Hat silhouettes, black eyewear, shirt pattern, high bag and layered vest distinguish the five roles. Fine jewelry, boot styling and fabric patterns are simplified at native pixel scale.
+tools/faction_design/sierra_roja_outfits.py extends the accepted ordinary-unit rig and shared review runner. Clothing details preserve body proportions. The tactical vest fits within the torso and the sniper tabs add light fabric detail. Ski masks, sniper boonie, rifle black eyewear, shirt pattern, high bag and layered vest distinguish the five roles. Fine jewelry, boot styling and fabric patterns are simplified at native pixel scale.
 
 ## Verification
 
@@ -25,3 +25,9 @@ Six PNG review boards, motion GIF and three validation/report JSON files are in 
 Owner visual acceptance and full runtime atlas/faction binding remain subsequent work. New specials remain deferred. Whittaker was completed early as the approved exception, so McAllister Holdings is next.
 
 Local checkpoint only: the earlier automatic approval review still blocks GitHub push; this pass makes no retry.
+
+## Owner headwear revision
+
+Pistol now wears an olive-green ski mask; shotgun now wears a black ski mask. Prior headwear and face details are replaced. Other wardrobe and anatomy are preserved. Review sheets and motion outputs are regenerated.
+
+Mask revision validation: full 1,080-frame pass succeeds; all eight standing facings visually checked for mask colors, removal of prior head details and connected shoulders. Runtime 33.937 seconds.
