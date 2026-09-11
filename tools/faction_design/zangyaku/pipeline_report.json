@@ -1,0 +1,21 @@
+{
+  "faction": "zangyaku",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 7.988,
+    "render_and_bounds": 6.921,
+    "palette_and_review_sheets": 20.201,
+    "motion_and_armory_sheets": 0.19
+  },
+  "total_seconds": 35.303,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
