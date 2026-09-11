@@ -1,5 +1,12 @@
 # Dead Street — Project Control
 
+## Orlov sniper outfit review (2026-09-11)
+
+The owner clarified that Orlov's pistol, SMG, shotgun and rifle outfits already exist and must be kept. Only its sniper required new design. The supplied ushanka, snug black face covering, zipped heavy black jacket, dark green trousers/gloves and black boots are built for review. All 216 sniper-class frames pass geometry/bounds checks. Standing left shoulder, both joins, eight idle/aim facings, motion samples and all six rifle fits were visually inspected. See [ORLOV_SNIPER_DESIGN.md](ORLOV_SNIPER_DESIGN.md).
+
+Owner visual review and full runtime atlas/faction binding remain subsequent work. Existing Orlov regular outfits are preserved. Zangyaku is next; new specials remain deferred.
+
+
 ## Ravicci regular outfit review (2026-09-11)
 
 All five owner-specified Italian-American Ravicci outfits are built for review on the existing normal rig: layered tailoring, three eyewear treatments, an open camel coat and buttoned black sniper coat. The final 1,080-frame geometry/bounds review passed. Standing left shoulders, eight standing/aiming facings and SE motion samples were visually inspected. See [RAVICCI_UNIT_DESIGN.md](RAVICCI_UNIT_DESIGN.md).

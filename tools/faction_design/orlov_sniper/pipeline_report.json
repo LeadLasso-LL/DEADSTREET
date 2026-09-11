@@ -1,0 +1,11 @@
+{
+  "roles": [
+    "sniper"
+  ],
+  "full_class_review": true,
+  "frames": 216,
+  "failures": [],
+  "motion_frames": 108,
+  "total_seconds": 7.773,
+  "runtime_binding": false
+}
