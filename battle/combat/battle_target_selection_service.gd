@@ -3,6 +3,7 @@ extends RefCounted
 
 const Weapons := preload("res://battle/combat/battle_weapon_catalog.gd")
 const LOS := preload("res://battle/combat/battle_line_of_sight_service.gd")
+const FireControl := preload("res://battle/combat/battle_fire_control_service.gd")
 
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
@@ -188,6 +189,9 @@ static func _select_best_hostile_id(
 	if source.weapon_type == "sniper":
 		var sniper_id: String = _sniper_target(battle_state, source, candidate_ids)
 		if not sniper_id.is_empty(): return sniper_id
+	elif _uses_assault_targeting(battle_state, source):
+		var visible_id: String = _assault_target(battle_state, source, candidate_ids)
+		if not visible_id.is_empty(): return visible_id
 	var best_id: String = ""
 	var best: BattleParticipant = null
 	for candidate_id: String in candidate_ids:
@@ -237,3 +241,25 @@ static func _sniper_target(b: BattleState, source: BattleParticipant, ids: Array
 	if not urgent.is_empty(): return urgent
 	if retained: return source.target_participant_id
 	return distant
+
+
+# Advancing units engage visible threats instead of tracking a blocked enemy.
+# Explicit player targets are honored upstream; sniper acquisition is unchanged.
+static func _uses_assault_targeting(b: BattleState, source: BattleParticipant) -> bool:
+	var force = b.get_tactical_force(source.tactical_force_id)
+	return force != null and force.command_id in ["push", "focus_left", "focus_right"]
+
+
+static func _assault_target(b: BattleState, source: BattleParticipant, ids: Array[String]) -> String:
+	var best_id: String = ""
+	var best_distance: float = INF
+	for id: String in ids:
+		var candidate: BattleParticipant = b.get_participant(id)
+		if not FireControl.is_spatial_fire_engagement(b, source, candidate): continue
+		var distance: float = source.battle_position.distance_to(candidate.battle_position)
+		# Avoid restarting acquisition for small changes in relative distance.
+		if id == source.target_participant_id: distance *= 0.85
+		if distance < best_distance:
+			best_distance = distance
+			best_id = id
+	return best_id

@@ -1,12 +1,16 @@
 # Dead Street — Project Control
 
-## Current owner direction: checkpoint and attacker tuning (2026-09-11 UTC)
+## Current checkpoint and attacker tactics (2026-09-11 UTC)
 
-The owner authorized commit/push of the recovered arsenal as an editable work-in-progress checkpoint. Next scope: improve attacker chances and preserve battle resolution without a time limit. The 120-second figure is a test observation cutoff only; live battle resolution uses surviving sides. Full regression audit: prior ee3694a fails 120 assertions; the arsenal tree fails 166 (46 additional failures pending triage). Focused arsenal validators pass. See ARSENAL_PRODUCTION_REPORT.md and tools/arsenal_production/core_checkpoint_comparison.json.
+The recovered arsenal is committed and pushed as `d18c486` on `build/arsenal-checkpoint-20260911`. Automatic approval review rejected direct publication to `main`; the audited checkpoint branch was used instead. The owner authorized further editing after review.
 
-## Recovery record: arsenal production pass (2026-09-11 UTC)
+The attacker tactics follow-up is implemented and verified: advancing units select usable targets, retain protective firing positions, and break mutual tucked-cover peek deadlocks. Matched-loadout attackers improved from 0/3 wins to 2/3 on the same seeds. All 11 final comparison battles resolved naturally; the previously stalled pair resolved in 51.15 seconds. Time never determines a battle result. The diagnostic explicitly labels observation cutoffs and checks that elapsed time alone cannot resolve combat.
 
-Recovered directly from the laptop after the active build conversation was interrupted. The pass is on disk and UNCOMMITTED; HEAD remains `ee3694a` (approved weapon roster checkpoint). Thirty equipment models, 78 new animated faction/model variants (143,520 frames), 90 shot sounds, model-specific tuning, sniper behavior, and the isolated arsenal review scene are built. Dedicated sniper outfits remain deferred. See [ARSENAL_PRODUCTION_REPORT.md](ARSENAL_PRODUCTION_REPORT.md) and [ARSENAL_MODEL_REFERENCE.md](ARSENAL_MODEL_REFERENCE.md).
+Focused checks pass: 12 tactics and 290 arsenal assertions. Full CORE VALIDATION remains at the identical 166 failed assertions of the arsenal checkpoint, with no failures added by this follow-up. The arsenal's earlier increase from 120 to 166 remains open. See [ATTACKER_TACTICS_2026-09-11.md](ATTACKER_TACTICS_2026-09-11.md) for behavior, reproducible evidence and limits. Visual/feel review and broader balance tuning remain available from this checkpoint.
+
+## Historical recovery record: arsenal production pass (2026-09-11 UTC)
+
+The following records the state at initial recovery, before the completed checkpoint and tactics work above. Recovered directly from the laptop after the active build conversation was interrupted. At that point the pass was on disk and uncommitted, with HEAD at `ee3694a` (approved weapon roster checkpoint). Thirty equipment models, 78 new animated faction/model variants (143,520 frames), 90 shot sounds, model-specific tuning, sniper behavior, and the isolated arsenal review scene are built. Dedicated sniper outfits remain deferred. See [ARSENAL_PRODUCTION_REPORT.md](ARSENAL_PRODUCTION_REPORT.md) and [ARSENAL_MODEL_REFERENCE.md](ARSENAL_MODEL_REFERENCE.md).
 
 Recovery re-ran the current arsenal gameplay and presentation validators: 290 gameplay checks and 12,800 presentation checks passed, no reported failures. Final frame-clearance production completed. The saved 12-battle comparison has 11 defender wins and one non-sniper matchup (pair 2, seed 4202) still active at 120 seconds; all six sniper matchups resolved. The saved report incorrectly said all 12 resolved; this was corrected during recovery. A prior rendered sniper battle completed with 54 shots, median 49 FPS and sampled low 34 FPS. No new full CORE VALIDATION or live graphics run was performed during recovery.
 

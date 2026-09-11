@@ -127,11 +127,14 @@ static func _begin_expose_if_needed(
 		return
 	if not participant.has_target_participant or participant.target_participant_id.is_empty():
 		return
-	if not BattleFireControlService.would_fire_if_source_cover_exposed(
-		battle_state,
-		participant.participant_id,
-		participant.target_participant_id
-	):
+	# Readiness to peek differs from permission to shoot. A hidden opponent
+	# must not make both sides wait forever for the other to expose first.
+	var opportunity = BattleFireControlService.evaluate_participant_target_eligibility(
+		battle_state, participant.participant_id, participant.target_participant_id, true
+	)
+	if opportunity == null or not opportunity.success:
+		return
+	if not opportunity.can_fire and opportunity.rejection_code != "target_tucked_protected":
 		return
 	participant.cover_posture = POSTURE_TUCKED
 	participant.cover_posture_phase = PHASE_EXPOSING

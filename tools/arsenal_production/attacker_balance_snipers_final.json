@@ -1,0 +1,71 @@
+{
+  "battles": [
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 1
+      },
+      "elapsed": 119.699999999995,
+      "equal_loadouts": true,
+      "observation_cutoff": false,
+      "pair": 0,
+      "phase": "resolved",
+      "seed": 4200,
+      "shots": {
+        "attacker": 46,
+        "defender": 52
+      },
+      "snipers": true,
+      "survivors": [
+        {
+          "id": "rival_arsenal_shotgun",
+          "model": "rem870",
+          "move": "",
+          "position": "(22.15, 33.35)",
+          "target": "player_soldier",
+          "wounded": false
+        }
+      ],
+      "wall_ms": 25034,
+      "winner": "defender"
+    },
+    {
+      "alive": {
+        "attacker": 2,
+        "defender": 0
+      },
+      "elapsed": 18.4500000000001,
+      "equal_loadouts": true,
+      "observation_cutoff": false,
+      "pair": 4,
+      "phase": "resolved",
+      "seed": 4204,
+      "shots": {
+        "attacker": 21,
+        "defender": 16
+      },
+      "snipers": true,
+      "survivors": [
+        {
+          "id": "player_arsenal_shotgun",
+          "model": "benelli_m4",
+          "move": "",
+          "position": "(32.85, 24.75)",
+          "target": "rival_arsenal_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "player_soldier",
+          "model": "awm",
+          "move": "",
+          "position": "(57.082, 26.45)",
+          "target": "rival_arsenal_shotgun",
+          "wounded": false
+        }
+      ],
+      "wall_ms": 5981,
+      "winner": "attacker"
+    }
+  ],
+  "errors": []
+}

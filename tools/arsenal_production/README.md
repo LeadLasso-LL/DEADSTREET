@@ -41,3 +41,9 @@ Art uses the existing SVG rig and palette. Weapon scale, supporting-hand attachm
 Campaign manufacturing, resource recipes, stockpiles, transport, trade, storage, and faction-specific sniper outfits remain separate future work.
 
 See `docs/ARSENAL_PRODUCTION_REPORT.md` for the acceptance results and remaining balance limitations. `docs/ARSENAL_MODEL_REFERENCE.md` lists every current model and its core game values.
+
+## Attacker tactics diagnostics
+
+Run `Godot --headless --path . --script res://tools/arsenal_production/validate_attacker_tactics.gd` for the focused tactics contracts.
+
+Run `Godot --headless --path . --script res://tools/arsenal_production/attacker_balance_review.gd -- --equal --pairs=0,2,4 --out=attacker_balance_candidate.json` to reproduce the matched-loadout comparison. Omit `--equal` and `--pairs` for the original six mixed-loadout matchups. Add `--snipers` to replace each team's rifle recruitment slot with a sniper. The optional `--observe=240` budget limits diagnostic observation only; active battles remain active and are labelled `observation_cutoff`, without assigning a winner. The live battle has no time-limit result. See `docs/ATTACKER_TACTICS_2026-09-11.md` for saved before/after results and regression limits.

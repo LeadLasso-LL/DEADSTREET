@@ -1408,6 +1408,9 @@ static func _healthy_occupied_cover_should_persist(
 		return true
 	if target == null:
 		return true
+	# Keep a protected firing position even outside the preferred range band.
+	if BattleFireControlService.is_spatial_fire_engagement(battle_state, participant, target):
+		return true
 	if _short_range_still_needs_to_close(battle_state, participant, weapon_type_id):
 		return _closing_staging_hold_is_current(battle_state, participant, target)
 	return BattleCombatCoverEvaluationService.occupied_cover_is_suitable(
