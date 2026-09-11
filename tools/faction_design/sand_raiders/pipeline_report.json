@@ -1,0 +1,21 @@
+{
+  "faction": "sand_raiders",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 8.412,
+    "render_and_bounds": 6.938,
+    "palette_and_review_sheets": 21.789,
+    "motion_and_armory_sheets": 0.176
+  },
+  "total_seconds": 37.315,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}

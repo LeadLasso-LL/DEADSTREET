@@ -1,5 +1,10 @@
 # Dead Street — Project Control
 
+## Raiders of the Sand regular outfits - 2026-09-11
+
+Five regular outfits and motion review assets complete; final 1,080 geometry/render checks passed, with shoulders, facings and motion samples visually reviewed. See SAND_RAIDERS_UNIT_DESIGN.md and tools/faction_design/sand_raiders/. Gameplay atlas integration remains pending. Brute, Coyote, specials and melee behavior remain separate later work. Next outfit faction: Majmu’at al-Saffar.
+
+
 ## Lombardia regular outfits - 2026-09-11
 
 Five regular outfit profiles completed; 1,080 geometry/render checks passed and standing shoulders, eight-direction aiming and motion samples visually inspected. See LOMBARDIA_UNIT_DESIGN.md and tools/faction_design/lombardia/. Gameplay atlas integration remains pending; special units remain deferred. Next faction for outfit direction: Raiders of the Sand.
