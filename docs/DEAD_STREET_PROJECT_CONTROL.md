@@ -1,5 +1,9 @@
 # Dead Street — Project Control
 
+## W&M Corporation regular outfit review - 2026-09-11
+
+Original McAllister pistol/rifle and Whittaker SMG/shotgun/sniper wardrobes combined by role. All 1,080 frame checks passed; direction and motion sheets visually reviewed. See WM_CORP_UNIT_DESIGN.md. Local checkpoint; existing automatic push block and pending live gameplay integration remain. La Union del Sur follows.
+
 ## Mercer 44s regular outfit review - 2026-09-11
 
 Five regular outfits built and visually reviewed; 1,080 frame checks passed. See MERCER44_UNIT_DESIGN.md. Local checkpoint, previous push block unchanged. Live gameplay integration pending. Whittaker-McAllister Corporation follows.
