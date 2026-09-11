@@ -1,18 +1,26 @@
 # Dead Street — Project Control
 
+## Current roadmap decisions (2026-09-11)
+
+The owner has split faction production into two passes: **regular units for every faction first; new faction-specific special units afterward**. Eastex follows Mercer in the official sheet order. Preserve the completed Mercer sniper and dual-pistol specialist; regular sniper outfits remain part of the regular roster pass. See §12 and [FACTION_WORK_ORDER.md](FACTION_WORK_ORDER.md).
+
+**Vehicle roster development is now an explicit roadmap workstream:** variety comparable to the gun armory, faction vehicle differences, distinct models/designs, campaign movement range and unit carrying capacity. See §11 for scope and open decisions. This is a roadmap update; detailed vehicle design and implementation are still to come.
+
+Current Mercer animation/gameplay checkpoint: `6d1aaee`, committed and pushed on `build/arsenal-checkpoint-20260911`; see [MERCER_ANIMATION_GAMEPLAY.md](MERCER_ANIMATION_GAMEPLAY.md). The older factory snapshots and restrictions below are historical; the latest approved drawn-unit architecture and current plan govern ongoing production.
+
 ## Current unit art correction and push authorization (2026-09-11)
 
 The owner rejected both the oversized specialist shirt and the later shrunken torso. Clothing instructions never authorize changes to the established anatomy. Use folds or omit bagginess. Every new unit requires an explicit visual check of its standing left shoulder and consistent weapon/body proportions across facings and stances. See [UNIT_ART_STANDARD.md](UNIT_ART_STANDARD.md).
 
 Owner authorization: "You have my explicit authorization to push what you need to for this entire project." This is standing authorization for ongoing Dead Street project commits and pushes to the established LeadLasso-LL/DEADSTREET repository. The current checkpoint branch is build/arsenal-checkpoint-20260911. A pushed review candidate is not automatically product-accepted art.
 
-The revised Mercer preview restores the existing pistol unit's exact torso geometry and placement, verified together with the unchanged lower body in six poses. Both new outfits receive connected shoulder/sleeve joins. The sniper front/rear rifle projection is corrected without replacing its weapon drawing or changing body proportions. Eighteen frames include the existing unit for a fixed-scale comparison; rendering and geometry checks pass. Standing left shoulders and front rifle proportions were visually inspected by the technical lead. Full eight-direction animation and specialist combat integration remain next; these previews do not implement those systems.
+The revised Mercer preview restores the existing pistol unit's exact torso geometry and placement, verified together with the unchanged lower body in six poses. Both new outfits receive connected shoulder/sleeve joins. The sniper front/rear rifle projection is corrected without replacing its weapon drawing or changing body proportions. Eighteen frames include the existing unit for a fixed-scale comparison; rendering and geometry checks pass. Standing left shoulders and front rifle proportions were visually inspected by the technical lead. The previews were followed by completed eight-direction animation and specialist combat integration in `6d1aaee`; see [MERCER_ANIMATION_GAMEPLAY.md](MERCER_ANIMATION_GAMEPLAY.md).
 
-## Current design work: Mercer Saints outfits and specialist
+## Mercer Saints outfit and specialist design record
 
 The owner approved preserving the existing four Mercer outfits, a black hooded sniper with a lower-face bandana, black pants/boots and one red pocket rag, and a dual-Glock pistol specialist with a baggier red long-sleeve shirt, black pants, white shoes and a black ski mask. Specialist starting stats are approved for playtesting; faction-wide caps are required but their values remain open. See [MERCER_SAINTS_UNIT_DESIGN.md](MERCER_SAINTS_UNIT_DESIGN.md).
 
-The isolated standing/aiming previews under `tools/faction_design/` are visual review candidates built from the native rig. Full animation production and specialist gameplay integration follow visual review. Existing combat regression status remains documented below. Faction clothing uses believable cultural/workwear identities and selective color accents.
+The isolated standing/aiming previews under `tools/faction_design/` are visual review candidates built from the native rig. Full animation production and specialist gameplay integration are now implemented in `6d1aaee`; the earlier isolated previews remain the design record. Existing combat regression status remains documented below. Faction clothing uses believable cultural/workwear identities and selective color accents.
 
 ## Current checkpoint and attacker tactics (2026-09-11 UTC)
 
@@ -127,7 +135,7 @@ Rules:
 
 ---
 
-## 3. Current project snapshot
+## 3. Historical project snapshot — 2026-09-07
 
 | Field | State (2026-09-07, Character Factory V1.3 style-conversion experiment) |
 |---|---|
@@ -151,7 +159,7 @@ Rules:
 
 ---
 
-## 4. Current active initiative
+## 4. Historical active initiative — 2026-09-07
 
 ### OBJECTIVE
 
@@ -536,7 +544,23 @@ flowchart TD
 
 ## 11. Master development roadmap
 
-Completed work is marked complete. We do not schedule it again.
+Completed work is marked complete. We do not schedule it again. The current content priorities below supersede older phase descriptions where the production order differs.
+
+### Current content priorities — owner decision, 2026-09-11
+
+**Faction units:** Complete regular-unit designs across all factions before a separate faction-specialist pass. Follow §12 and [FACTION_WORK_ORDER.md](FACTION_WORK_ORDER.md). Completed Mercer work is retained.
+
+**Vehicle roster development — PLANNED:** Develop vehicles with the variety and meaningful choices of the gun armory. This expands the existing movement/vehicle foundation; it is a design workstream, not a claim that a full vehicle roster already exists.
+
+| Design area | Scope to develop |
+|---|---|
+| Models and appearance | Distinct vehicle types/models with their own recognizable designs |
+| Faction differences | Faction vehicle preferences and roster differences; decide which models are shared or restricted |
+| Campaign movement range | Per-model movement capability, expressed consistently with the campaign travel system |
+| Unit carrying capacity | Per-model unit capacity and clear driver/passenger accounting |
+| Meaningful choices | Movement, capacity and other approved traits should create useful alternatives, as in the gun armory |
+
+Specific models, faction allocations and numerical specs remain open for collaborative design. Cost, upkeep, durability and tactical vehicle behavior are possible additional dimensions to decide, not approved rules. Plan model/spec definitions, faction rosters and visual designs together, then integrate approved options with campaign travel and the battle-testing vehicle selector. The bridge blockade and Whittaker Estate maps will need these vehicle choices; map-specific compositions remain open.
 
 ### PHASE A — Foundation / persistent world core — ✅ / 🟢 DONE
 
@@ -626,6 +650,19 @@ Completed work is marked complete. We do not schedule it again.
 
 ## 12. Near-term execution plan
 
+The current unit pass covers **regular units for every faction first**, following [FACTION_WORK_ORDER.md](FACTION_WORK_ORDER.md). Eastex 44's is next after Mercer. Regular class outfits, including snipers, stay in this pass; faction-unique special units have their own later pass.
+
+1. Work through each faction's regular roster in the official sheet's left-to-right row order. Reuse the established anatomy, weapon rig and standard animation clips after outfit review.
+2. Move to the next faction's regular roster without waiting for custom special-unit design, animations or gameplay. Record special-unit ideas as they arise.
+3. After every faction's regular units have been designed, return to faction-specific special units as a separate pass, including their unique specs, animations, balance and faction-wide caps. Exact caps remain undecided.
+4. Develop the vehicle roster as a dedicated roadmap workstream described in §11. Its detailed scheduling and model/stat choices remain open; this entry records scope and does not start production.
+
+Preserve the completed Mercer sniper and dual-pistol specialist in checkpoint `6d1aaee`; the new order changes future work. Existing shoulder-join and consistent body/weapon-proportion review requirements still apply.
+
+### Historical execution plan — 2026-09-07 (superseded)
+
+The following factory plan is retained as history. Its old production restrictions do not set the current faction build order.
+
 The next meaningful milestones. Unrelated exciting features do not jump the queue.
 
 **A–E factory work through V1.3 is generated.** Static visual style remains **UNACCEPTED**. Camera remains **provisional**. Paid-asset proof remains **unbound**. Next is product-owner style review, not 8-direction production or movement.
@@ -656,18 +693,14 @@ An idea entering this list does **not** gain priority. It waits until the near-t
 
 ### NOW
 
-- Product-owner review of V1.3 style-conversion boards
-- Keep CORE VALIDATION green without expanding it for taste
-- Do not resurrect `look_calib_01`
-- Do not bind factory PNGs
-- Do not treat 56° or HYBRID_B as canon/accepted art
-- Do not start 8-direction production, walk-cycle, or Godot movement integration yet
+- Regular faction-unit design pass, starting with Eastex after Mercer; see §12.
+- Reuse the established rig and animations, with explicit standing-left-shoulder and consistent-proportion review.
 
-### NEXT
+### NEXT / SCHEDULED SEPARATELY
 
-- If a static style is selected: 8-direction consistency proof
-- Then animation source proof
-- Then Godot movement integration
+- Finish regular-unit designs for all factions before producing new faction-specific special units.
+- Keep special-unit concepts in the backlog during the regular pass; preserve the completed Mercer specialist.
+- Vehicle roster development: faction differences, models/designs, campaign movement range, unit carrying capacity and meaningful tradeoffs. See §11; exact scheduling, models and specs remain open.
 
 ### LATER
 
@@ -803,6 +836,8 @@ Append-only. Seeded with verifiable decisions only.
 | 2026-09-07 | Character Factory V1.2 hybrid rifle silhouette | MILESTONE | Improve rifle readability without changing assets | `tools/character_factory/` | HYBRID_A/B/C at 56°. **HYBRID_B** chosen as provisional continuation pose only. **Not** accepted art. Alternates retained. |
 | 2026-09-07 | Static rifleman calibration checkpoint | PRODUCT / MILESTONE | Lock source baseline for style conversion | Factory + this file | Next = **DEAD STREET STYLE CONVERSION V1.3**. Movement/Godot bind deferred until style is selected and proven across 8 directions. |
 | 2026-09-07 | Character Factory V1.3 style-conversion 3×3 | MILESTONE | Test DAZ source treatments × deterministic sprite posts on the same HYBRID_B / 56° source | `tools/character_factory/` | 3 sources × 3 posts generated. **No style accepted.** Unbound. Product review pending. |
+| 2026-09-11 | Regular faction units before new faction-specialist production | PRODUCT / ROADMAP | Custom special-unit design, animations and gameplay take longer and must not slow the regular roster pass | Unit art, animation, faction rosters | Finish regular-unit designs for every faction first in official sheet order; Eastex next. Preserve completed Mercer work. Produce new faction specials in a separate later pass. |
+| 2026-09-11 | Develop a varied vehicle roster comparable to the gun armory | PRODUCT / ROADMAP | Vehicle choice should have faction identity and meaningful model/spec differences | Vehicles, campaign travel, faction rosters, battle testing | Plan distinct designs/models, faction vehicle differences, movement range and carrying capacity. Specific models, numbers and detailed scheduling remain open. |
 
 ---
 

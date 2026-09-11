@@ -1,5 +1,15 @@
 # Faction production order
 
+## Two-pass production rule — 2026-09-11 owner decision
+
+**Pass 1: regular units across every faction.** Complete regular roster designs in the sheet order below, including ordinary sniper-class outfits. Reuse approved anatomy, weapon rig and standard animation clips. Eastex is next after Mercer.
+
+**Pass 2: faction-specific special units.** After all regular faction-unit designs, return to special-unit outfits, unique specs, custom animations, gameplay, balance and faction-wide caps. Ideas can be recorded during Pass 1; new specialist production must not delay moving to the next regular faction roster.
+
+Keep the completed Mercer sniper and dual-pistol specialist. This changes future sequencing and does not undo completed work. See [the current project roadmap](DEAD_STREET_PROJECT_CONTROL.md#12-near-term-execution-plan); vehicle roster development is recorded separately in §11.
+
+## Faction order within each pass
+
 Follow the official faction sheet left to right on each row, then descend to the next row. Eastex follows Mercer; Whittaker is not second.
 
 1. Mercer Saints
