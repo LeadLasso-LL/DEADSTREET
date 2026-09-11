@@ -1,0 +1,21 @@
+{
+  "faction": "sierra_roja",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 8.444,
+    "render_and_bounds": 7.002,
+    "palette_and_review_sheets": 19.737,
+    "motion_and_armory_sheets": 0.165
+  },
+  "total_seconds": 35.351,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
