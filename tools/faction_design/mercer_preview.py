@@ -35,7 +35,7 @@ SNIPER = dict(top='hoodie', cloth='#202527', lit='#353b3d', shade='#111819',
               head='hood', sleeve='long', wide=1.04, pocket_rag=True)
 DUAL = dict(top='tee', cloth='#9a343b', lit='#be4c4b', shade='#622b34',
             pants='#202527', pants_hi='#353b3d', shoe='#d6d5c9', shoe_hi='#eeeee2',
-            head='mask', sleeve='long', wide=1.16)
+            head='mask', sleeve='long', wide=1.0)
 
 
 def torso(g, costume, skin, highlight, direction='SE'):
@@ -85,6 +85,49 @@ def gun(parent, hand, angle, scale=1.0):
     build.p(parent, f'M{x-.9} {y-.6} L{x+.7} {y+.3}', 'none', '#a67550', .65)
 
 
+def specialist_shirt(g, direction):
+    """Normal build, relaxed hem; torso and upper sleeves share one outline."""
+    if direction == 'SE':
+        shape = ('M-5 -33 Q-10 -32 -13 -28 '
+                 'Q-18 -23 -20 -14 L-14 -12 L-10 -22 '
+                 'L-9 -13 L-10 2 Q0 3 10 1 L9 -14 L10 -22 '
+                 'L13 -12 L19 -14 Q17 -23 12 -28 Q9 -32 5 -33 Z')
+    else:
+        shape = ('M-5 -33 Q-10 -32 -12 -28 '
+                 'L-18 -14 L-12 -12 L-9 -23 '
+                 'L-9 -12 L-10 2 Q0 3 10 2 L9 -12 L9 -23 '
+                 'L12 -12 L18 -14 L12 -28 Q10 -32 5 -33 Z')
+    outfits.path(g, shape, DUAL['cloth'], '#090f12', 1.0)
+    # Long, modest folds describe hanging fabric without a rounded body highlight.
+    outfits.path(g, 'M-8 -28 L-7 -16 L-7 0 L-4 1 L-5 -17 L-5 -30Z',
+                 DUAL['lit'], 'none')
+    outfits.path(g, 'M8 -27 L7 -16 L7 0 L4 1 L5 -15Z', DUAL['shade'], 'none')
+    outfits.path(g, 'M-12 -26 L-15 -18 M12 -26 L15 -18',
+                 'none', DUAL['lit'], .7)
+    outfits.path(g, 'M-8 -9 L-5 -7 M4 -4 L8 -6 M-8 0 L-3 1',
+                 'none', DUAL['shade'], .65)
+    outfits.path(g, 'M-5 -32 Q0 -29 5 -32', 'none', DUAL['shade'], .85)
+
+
+def specialist_forearm(g, elbow, hand):
+    """Sleeve contours stop at the elbow; no black line across the fabric join."""
+    a, b = np.array(elbow, float), np.array(hand, float)
+    v = (b-a) / max(.001, np.linalg.norm(b-a))
+    n = np.array([-v[1], v[0]])
+    p, q = a+n*2.8, a-n*2.8
+    tip_p, tip_q = b+n*2.0, b-n*2.0
+    xy = outfits.xy
+    outfits.path(g, f'M{xy(p)} Q{xy(a+v*3+n*2.9)} {xy(tip_p)} '
+                 f'L{xy(tip_q)} L{xy(q)}Z', DUAL['cloth'], 'none')
+    outfits.path(g, f'M{xy(p)} Q{xy(a+v*3+n*2.9)} {xy(tip_p)} '
+                 f'M{xy(q)} L{xy(tip_q)}', 'none', '#090f12', .9)
+    outfits.path(g, f'M{xy(a+v*1.8+n*.8)} L{xy(b-v*2+n*.5)}',
+                 'none', DUAL['lit'], .65)
+    cuff = b-v*2
+    outfits.path(g, f'M{xy(cuff+n*2)} L{xy(cuff-n*2)}',
+                 'none', DUAL['shade'], .8)
+
+
 def dual(direction, aim=False):
     outfits.SPECS[(0, 'pistol')] = DUAL
     root = directions.make(0, 1.25, direction, 'pistol', settle=1, aim=float(aim))
@@ -97,14 +140,13 @@ def dual(direction, aim=False):
         g[:] = []
         near_hand = np.array([43., 40.]) if aim else np.array([29., 51.])
         far_hand = np.array([59., 31.]) if aim else np.array([58., 48.])
-        far_arm = build.group(g)
-        outfits.arm(far_arm, [51.8, 32.5], [59., 41.], far_hand, DUAL, skin, hi)
+        specialist_forearm(g, [59., 42.], far_hand)
         gun(g, far_hand, 8 if aim else 66)
         body = build.group(g, id='stain_surface', transform='translate(43 56)')
-        torso(body, DUAL, skin, hi, direction)
+        specialist_shirt(body, direction)
         head = build.group(g, transform=head_transform)
         outfits.head(build.group(head, transform='translate(43 56)'), DUAL, skin, hi, direction)
-        outfits.arm(g, [27., 32.5], [26., 43.], near_hand, DUAL, skin, hi)
+        specialist_forearm(g, [26., 43.], near_hand)
         gun(g, near_hand, 8 if aim else 66)
     else:
         assert direction in ['S', 'N']
@@ -118,11 +160,11 @@ def dual(direction, aim=False):
         angles = [-78, -78] if back and aim else [68, 68]
         arms = build.group(g)
         for side, hand in zip([-1, 1], hands):
-            outfits.arm(arms, [side*11., -27.], [side*15., -14.], hand, DUAL, skin, hi)
+            specialist_forearm(arms, [side*15., -13.], hand)
         if back:
             for hand, angle in zip(hands, angles):
                 gun(g, hand, angle, .7 if aim else .85)
-        torso(build.group(g, id='stain_surface'), DUAL, skin, hi, direction)
+        specialist_shirt(build.group(g, id='stain_surface'), direction)
         head = build.group(g, transform='translate(0 1) translate(0 -34) scale(.88) translate(0 34)')
         outfits.head(head, DUAL, skin, hi, direction)
         if not back:

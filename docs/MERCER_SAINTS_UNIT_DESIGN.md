@@ -27,6 +27,10 @@ validated final balance or a claim that dual-pistol combat is implemented.
 
 - Pistol-class faction specialist carrying two matching Glock 17s.
 - Baggier long-sleeve red shirt, black pants, white shoes, black ski mask.
+- Keep normal body proportions. The shirt hangs loosely through its hem and folds;
+  baggier clothing must not create an inflated or rounded body.
+- Shoulders and sleeves form a continuous garment, with no heavy black line
+  separating an arm from the torso.
 - Separate pistol in each hand; alternating shots, visibly separate arm recoil.
 - Faction-exclusive special units should generally offer a modest advantage over
   comparable standard units while preserving reasons to recruit ordinary units.
