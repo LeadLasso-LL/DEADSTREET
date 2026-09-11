@@ -1,0 +1,18 @@
+{
+  "bounds": {
+    "dual_glock_N_aim": "[P: (40, 30), S: (48, 91)]",
+    "dual_glock_N_idle": "[P: (40, 30), S: (50, 91)]",
+    "dual_glock_SE_aim": "[P: (44, 34), S: (50, 91)]",
+    "dual_glock_SE_idle": "[P: (44, 31), S: (45, 94)]",
+    "dual_glock_S_aim": "[P: (40, 30), S: (48, 93)]",
+    "dual_glock_S_idle": "[P: (40, 30), S: (50, 93)]",
+    "sniper_N_aim": "[P: (44, 25), S: (40, 96)]",
+    "sniper_N_idle": "[P: (43, 28), S: (41, 93)]",
+    "sniper_SE_aim": "[P: (43, 32), S: (69, 93)]",
+    "sniper_SE_idle": "[P: (36, 29), S: (67, 96)]",
+    "sniper_S_aim": "[P: (44, 28), S: (40, 95)]",
+    "sniper_S_idle": "[P: (43, 28), S: (41, 95)]"
+  },
+  "failures": [],
+  "frames": 12
+}

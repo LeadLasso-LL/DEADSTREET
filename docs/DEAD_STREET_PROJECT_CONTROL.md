@@ -1,5 +1,11 @@
 # Dead Street — Project Control
 
+## Current design work: Mercer Saints outfits and specialist
+
+The owner approved preserving the existing four Mercer outfits, a black hooded sniper with a lower-face bandana, black pants/boots and one red pocket rag, and a dual-Glock pistol specialist with a baggier red long-sleeve shirt, black pants, white shoes and a black ski mask. Specialist starting stats are approved for playtesting; faction-wide caps are required but their values remain open. See [MERCER_SAINTS_UNIT_DESIGN.md](MERCER_SAINTS_UNIT_DESIGN.md).
+
+The isolated standing/aiming previews under `tools/faction_design/` are visual review candidates built from the native rig. Full animation production and specialist gameplay integration follow visual review. Existing combat regression status remains documented below. Faction clothing uses believable cultural/workwear identities and selective color accents.
+
 ## Current checkpoint and attacker tactics (2026-09-11 UTC)
 
 The recovered arsenal is committed and pushed as `d18c486` on `build/arsenal-checkpoint-20260911`. Automatic approval review rejected direct publication to `main`; the audited checkpoint branch was used instead. The owner authorized further editing after review.

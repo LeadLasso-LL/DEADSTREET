@@ -1,0 +1,6 @@
+__pycache__/
+*.log
+mercer/*.svg
+mercer/*_idle.png
+mercer/*_aim.png
+mercer/jobs.json
