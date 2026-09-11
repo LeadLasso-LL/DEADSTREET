@@ -1,0 +1,21 @@
+{
+  "faction": "lombardia",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 7.801,
+    "render_and_bounds": 6.961,
+    "palette_and_review_sheets": 20.016,
+    "motion_and_armory_sheets": 0.214
+  },
+  "total_seconds": 34.994,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}
