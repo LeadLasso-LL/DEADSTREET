@@ -13,7 +13,7 @@ BLUE=('#b59a61',)
 DESCRIPTIONS={'pistol':'Black ponytail / silver shades / open gray shirt / tattoos',
 'smg':'Blonde spikes / black headband / satin bomber / white tank',
 'shotgun':'Crew cut / square shades / tattoo sleeves / red parachute pants',
-'rifle':'Parted hair / round black glasses / white V-neck / gray trousers',
+'rifle':'Parted hair / black sunglasses / white V-neck / gray trousers',
 'sniper':'Black beanie / long straight hair / matte raincoat / hood down'}
 NOTES={'pistol':['Open collar tattoos / silver watch','Black trousers / leather loafers'],
 'smg':['Dark roots / tattooed forearms','Charcoal pants / black-white sneakers'],
@@ -68,14 +68,9 @@ def head(g,c,skin,hi,d='SE'):
  if role in ['pistol','shotgun','rifle'] and not back:
   frame='#b8c3c4' if role=='pistol' else '#101619' if role=='shotgun' else '#101619'
   lens='#182229' if role!='rifle' else skin
-  if role=='rifle':
-   if side:path(g,'M1 -41 Q1 -44 4 -44 Q7 -44 7 -41 Q7 -38 4 -38 Q1 -38 1 -41Z',lens,frame,.65)
-   else:
-    for x in [-3.5,3.5]:path(g,f'M{x-2.5} -41 Q{x-2.5} -43.5 {x} -43.5 Q{x+2.5} -43.5 {x+2.5} -41 Q{x+2.5} -38.5 {x} -38.5 Q{x-2.5} -38.5 {x-2.5} -41Z',lens,frame,.6)
-  else:
-   bottom=-40 if role=='pistol' else -38.5
-   shape=f'M1 -42 L7 -42 6 {bottom} 2 {bottom}Z' if side else f'M-6 -42 L-1 -42 -1 {bottom} -6 {bottom}Z M1 -42 L6 -42 6 {bottom} 1 {bottom}Z'
-   path(g,shape,lens,frame,.65 if role=='pistol' else .9)
+  bottom=-40 if role=='pistol' else -38.5
+  shape=f'M1 -42 L7 -42 6 {bottom} 2 {bottom}Z' if side else f'M-6 -42 L-1 -42 -1 {bottom} -6 {bottom}Z M1 -42 L6 -42 6 {bottom} 1 {bottom}Z'
+  path(g,shape,'#182229',frame,.65 if role=='pistol' else .9)
   path(g,'M-1 -41 L1 -41 M-7 -42 L-6 -41 M6 -41 L7 -42','none',frame,.6)
  if role=='sniper':
   for x in [-7,-5,5,7]:path(g,f'M{x} -37 Q{x+.5} -29 {x} -23','none','#343f44',.6)
