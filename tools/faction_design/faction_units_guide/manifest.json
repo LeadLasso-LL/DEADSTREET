@@ -1,0 +1,922 @@
+[
+  {
+    "index": 0,
+    "faction": "mercer",
+    "role": "pistol",
+    "weapon_id": "glock_17",
+    "weapon_name": "Glock 17",
+    "weapon_tier": 1
+  },
+  {
+    "index": 1,
+    "faction": "mercer",
+    "role": "smg",
+    "weapon_id": "mac10",
+    "weapon_name": "MAC-10",
+    "weapon_tier": 1
+  },
+  {
+    "index": 2,
+    "faction": "mercer",
+    "role": "shotgun",
+    "weapon_id": "moss500",
+    "weapon_name": "Mossberg 500 Cruiser",
+    "weapon_tier": 1
+  },
+  {
+    "index": 3,
+    "faction": "mercer",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 4,
+    "faction": "mercer",
+    "role": "sniper",
+    "weapon_id": "sks",
+    "weapon_name": "SKS with scope",
+    "weapon_tier": 1
+  },
+  {
+    "index": 5,
+    "faction": "eastex",
+    "role": "pistol",
+    "weapon_id": "m1911",
+    "weapon_name": "Colt M1911A1",
+    "weapon_tier": 1
+  },
+  {
+    "index": 6,
+    "faction": "eastex",
+    "role": "smg",
+    "weapon_id": "uzi",
+    "weapon_name": "IMI Uzi",
+    "weapon_tier": 1
+  },
+  {
+    "index": 7,
+    "faction": "eastex",
+    "role": "shotgun",
+    "weapon_id": "rem870",
+    "weapon_name": "Remington 870",
+    "weapon_tier": 1
+  },
+  {
+    "index": 8,
+    "faction": "eastex",
+    "role": "rifle",
+    "weapon_id": "mini14",
+    "weapon_name": "Ruger Mini-14",
+    "weapon_tier": 1
+  },
+  {
+    "index": 9,
+    "faction": "eastex",
+    "role": "sniper",
+    "weapon_id": "rem700",
+    "weapon_name": "Remington 700",
+    "weapon_tier": 1
+  },
+  {
+    "index": 10,
+    "faction": "calle_ocho",
+    "role": "pistol",
+    "weapon_id": "cz75",
+    "weapon_name": "CZ 75 SP-01",
+    "weapon_tier": 2
+  },
+  {
+    "index": 11,
+    "faction": "calle_ocho",
+    "role": "smg",
+    "weapon_id": "mac10",
+    "weapon_name": "MAC-10",
+    "weapon_tier": 1
+  },
+  {
+    "index": 12,
+    "faction": "calle_ocho",
+    "role": "shotgun",
+    "weapon_id": "moss500",
+    "weapon_name": "Mossberg 500 Cruiser",
+    "weapon_tier": 1
+  },
+  {
+    "index": 13,
+    "faction": "calle_ocho",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 14,
+    "faction": "calle_ocho",
+    "role": "sniper",
+    "weapon_id": "sks",
+    "weapon_name": "SKS with scope",
+    "weapon_tier": 1
+  },
+  {
+    "index": 15,
+    "faction": "ventresca",
+    "role": "pistol",
+    "weapon_id": "m1911",
+    "weapon_name": "Colt M1911A1",
+    "weapon_tier": 1
+  },
+  {
+    "index": 16,
+    "faction": "ventresca",
+    "role": "smg",
+    "weapon_id": "mp5k",
+    "weapon_name": "HK MP5K",
+    "weapon_tier": 2
+  },
+  {
+    "index": 17,
+    "faction": "ventresca",
+    "role": "shotgun",
+    "weapon_id": "spas12",
+    "weapon_name": "Franchi SPAS-12",
+    "weapon_tier": 2
+  },
+  {
+    "index": 18,
+    "faction": "ventresca",
+    "role": "rifle",
+    "weapon_id": "mini14",
+    "weapon_name": "Ruger Mini-14",
+    "weapon_tier": 1
+  },
+  {
+    "index": 19,
+    "faction": "ventresca",
+    "role": "sniper",
+    "weapon_id": "ssg69",
+    "weapon_name": "Steyr SSG 69",
+    "weapon_tier": 2
+  },
+  {
+    "index": 20,
+    "faction": "ravicci",
+    "role": "pistol",
+    "weapon_id": "usp",
+    "weapon_name": "HK USP",
+    "weapon_tier": 2
+  },
+  {
+    "index": 21,
+    "faction": "ravicci",
+    "role": "smg",
+    "weapon_id": "mp5",
+    "weapon_name": "HK MP5",
+    "weapon_tier": 2
+  },
+  {
+    "index": 22,
+    "faction": "ravicci",
+    "role": "shotgun",
+    "weapon_id": "benelli_m4",
+    "weapon_name": "Benelli M4",
+    "weapon_tier": 3
+  },
+  {
+    "index": 23,
+    "faction": "ravicci",
+    "role": "rifle",
+    "weapon_id": "aug",
+    "weapon_name": "Steyr AUG A3",
+    "weapon_tier": 3
+  },
+  {
+    "index": 24,
+    "faction": "ravicci",
+    "role": "sniper",
+    "weapon_id": "psg1",
+    "weapon_name": "HK PSG1",
+    "weapon_tier": 3
+  },
+  {
+    "index": 25,
+    "faction": "orlov",
+    "role": "pistol",
+    "weapon_id": "cz75",
+    "weapon_name": "CZ 75 SP-01",
+    "weapon_tier": 2
+  },
+  {
+    "index": 26,
+    "faction": "orlov",
+    "role": "smg",
+    "weapon_id": "uzi",
+    "weapon_name": "IMI Uzi",
+    "weapon_tier": 1
+  },
+  {
+    "index": 27,
+    "faction": "orlov",
+    "role": "shotgun",
+    "weapon_id": "saiga12",
+    "weapon_name": "Saiga-12",
+    "weapon_tier": 3
+  },
+  {
+    "index": 28,
+    "faction": "orlov",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 29,
+    "faction": "orlov",
+    "role": "sniper",
+    "weapon_id": "svd",
+    "weapon_name": "Dragunov SVD",
+    "weapon_tier": 2
+  },
+  {
+    "index": 30,
+    "faction": "zangyaku",
+    "role": "pistol",
+    "weapon_id": "usp",
+    "weapon_name": "HK USP",
+    "weapon_tier": 2
+  },
+  {
+    "index": 31,
+    "faction": "zangyaku",
+    "role": "smg",
+    "weapon_id": "mp5k",
+    "weapon_name": "HK MP5K",
+    "weapon_tier": 2
+  },
+  {
+    "index": 32,
+    "faction": "zangyaku",
+    "role": "shotgun",
+    "weapon_id": "benelli_m2",
+    "weapon_name": "Benelli M2 Tactical",
+    "weapon_tier": 2
+  },
+  {
+    "index": 33,
+    "faction": "zangyaku",
+    "role": "rifle",
+    "weapon_id": "g36c",
+    "weapon_name": "HK G36C",
+    "weapon_tier": 2
+  },
+  {
+    "index": 34,
+    "faction": "zangyaku",
+    "role": "sniper",
+    "weapon_id": "ssg69",
+    "weapon_name": "Steyr SSG 69",
+    "weapon_tier": 2
+  },
+  {
+    "index": 35,
+    "faction": "bitian",
+    "role": "pistol",
+    "weapon_id": "cz75",
+    "weapon_name": "CZ 75 SP-01",
+    "weapon_tier": 2
+  },
+  {
+    "index": 36,
+    "faction": "bitian",
+    "role": "smg",
+    "weapon_id": "uzi",
+    "weapon_name": "IMI Uzi",
+    "weapon_tier": 1
+  },
+  {
+    "index": 37,
+    "faction": "bitian",
+    "role": "shotgun",
+    "weapon_id": "spas12",
+    "weapon_name": "Franchi SPAS-12",
+    "weapon_tier": 2
+  },
+  {
+    "index": 38,
+    "faction": "bitian",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 39,
+    "faction": "bitian",
+    "role": "sniper",
+    "weapon_id": "sks",
+    "weapon_name": "SKS with scope",
+    "weapon_tier": 1
+  },
+  {
+    "index": 40,
+    "faction": "stateline",
+    "role": "pistol",
+    "weapon_id": "m1911",
+    "weapon_name": "Colt M1911A1",
+    "weapon_tier": 1
+  },
+  {
+    "index": 41,
+    "faction": "stateline",
+    "role": "smg",
+    "weapon_id": "mac10",
+    "weapon_name": "MAC-10",
+    "weapon_tier": 1
+  },
+  {
+    "index": 42,
+    "faction": "stateline",
+    "role": "shotgun",
+    "weapon_id": "rem870",
+    "weapon_name": "Remington 870",
+    "weapon_tier": 1
+  },
+  {
+    "index": 43,
+    "faction": "stateline",
+    "role": "rifle",
+    "weapon_id": "mini14",
+    "weapon_name": "Ruger Mini-14",
+    "weapon_tier": 1
+  },
+  {
+    "index": 44,
+    "faction": "stateline",
+    "role": "sniper",
+    "weapon_id": "rem700",
+    "weapon_name": "Remington 700",
+    "weapon_tier": 1
+  },
+  {
+    "index": 45,
+    "faction": "sierra_roja",
+    "role": "pistol",
+    "weapon_id": "desert_eagle",
+    "weapon_name": "Desert Eagle",
+    "weapon_tier": 3
+  },
+  {
+    "index": 46,
+    "faction": "sierra_roja",
+    "role": "smg",
+    "weapon_id": "mp5",
+    "weapon_name": "HK MP5",
+    "weapon_tier": 2
+  },
+  {
+    "index": 47,
+    "faction": "sierra_roja",
+    "role": "shotgun",
+    "weapon_id": "saiga12",
+    "weapon_name": "Saiga-12",
+    "weapon_tier": 3
+  },
+  {
+    "index": 48,
+    "faction": "sierra_roja",
+    "role": "rifle",
+    "weapon_id": "m4a1",
+    "weapon_name": "M4A1",
+    "weapon_tier": 2
+  },
+  {
+    "index": 49,
+    "faction": "sierra_roja",
+    "role": "sniper",
+    "weapon_id": "svd",
+    "weapon_name": "Dragunov SVD",
+    "weapon_tier": 2
+  },
+  {
+    "index": 50,
+    "faction": "whittaker",
+    "role": "pistol",
+    "weapon_id": "m1911",
+    "weapon_name": "Colt M1911A1",
+    "weapon_tier": 1
+  },
+  {
+    "index": 51,
+    "faction": "whittaker",
+    "role": "smg",
+    "weapon_id": "uzi",
+    "weapon_name": "IMI Uzi",
+    "weapon_tier": 1
+  },
+  {
+    "index": 52,
+    "faction": "whittaker",
+    "role": "shotgun",
+    "weapon_id": "rem870",
+    "weapon_name": "Remington 870",
+    "weapon_tier": 1
+  },
+  {
+    "index": 53,
+    "faction": "whittaker",
+    "role": "rifle",
+    "weapon_id": "mini14",
+    "weapon_name": "Ruger Mini-14",
+    "weapon_tier": 1
+  },
+  {
+    "index": 54,
+    "faction": "whittaker",
+    "role": "sniper",
+    "weapon_id": "rem700",
+    "weapon_name": "Remington 700",
+    "weapon_tier": 1
+  },
+  {
+    "index": 55,
+    "faction": "mcallister",
+    "role": "pistol",
+    "weapon_id": "usp",
+    "weapon_name": "HK USP",
+    "weapon_tier": 2
+  },
+  {
+    "index": 56,
+    "faction": "mcallister",
+    "role": "smg",
+    "weapon_id": "mp5",
+    "weapon_name": "HK MP5",
+    "weapon_tier": 2
+  },
+  {
+    "index": 57,
+    "faction": "mcallister",
+    "role": "shotgun",
+    "weapon_id": "benelli_m2",
+    "weapon_name": "Benelli M2 Tactical",
+    "weapon_tier": 2
+  },
+  {
+    "index": 58,
+    "faction": "mcallister",
+    "role": "rifle",
+    "weapon_id": "aug",
+    "weapon_name": "Steyr AUG A3",
+    "weapon_tier": 3
+  },
+  {
+    "index": 59,
+    "faction": "mcallister",
+    "role": "sniper",
+    "weapon_id": "ssg69",
+    "weapon_name": "Steyr SSG 69",
+    "weapon_tier": 2
+  },
+  {
+    "index": 60,
+    "faction": "trc",
+    "role": "pistol",
+    "weapon_id": "five_seven",
+    "weapon_name": "FN Five-seveN",
+    "weapon_tier": 3
+  },
+  {
+    "index": 61,
+    "faction": "trc",
+    "role": "smg",
+    "weapon_id": "p90",
+    "weapon_name": "FN P90",
+    "weapon_tier": 3
+  },
+  {
+    "index": 62,
+    "faction": "trc",
+    "role": "shotgun",
+    "weapon_id": "benelli_m4",
+    "weapon_name": "Benelli M4",
+    "weapon_tier": 3
+  },
+  {
+    "index": 63,
+    "faction": "trc",
+    "role": "rifle",
+    "weapon_id": "scar_h",
+    "weapon_name": "FN SCAR-H",
+    "weapon_tier": 3
+  },
+  {
+    "index": 64,
+    "faction": "trc",
+    "role": "sniper",
+    "weapon_id": "awm",
+    "weapon_name": "Accuracy International AWM",
+    "weapon_tier": 3
+  },
+  {
+    "index": 65,
+    "faction": "nbpd",
+    "role": "pistol",
+    "weapon_id": "glock_17",
+    "weapon_name": "Glock 17",
+    "weapon_tier": 1
+  },
+  {
+    "index": 66,
+    "faction": "nbpd",
+    "role": "smg",
+    "weapon_id": "mp5",
+    "weapon_name": "HK MP5",
+    "weapon_tier": 2
+  },
+  {
+    "index": 67,
+    "faction": "nbpd",
+    "role": "shotgun",
+    "weapon_id": "rem870",
+    "weapon_name": "Remington 870",
+    "weapon_tier": 1
+  },
+  {
+    "index": 68,
+    "faction": "nbpd",
+    "role": "rifle",
+    "weapon_id": "m4a1",
+    "weapon_name": "M4A1",
+    "weapon_tier": 2
+  },
+  {
+    "index": 69,
+    "faction": "nbpd",
+    "role": "sniper",
+    "weapon_id": "psg1",
+    "weapon_name": "HK PSG1",
+    "weapon_tier": 3
+  },
+  {
+    "index": 70,
+    "faction": "mercer44",
+    "role": "pistol",
+    "weapon_id": "glock_17",
+    "weapon_name": "Glock 17",
+    "weapon_tier": 1
+  },
+  {
+    "index": 71,
+    "faction": "mercer44",
+    "role": "smg",
+    "weapon_id": "mac10",
+    "weapon_name": "MAC-10",
+    "weapon_tier": 1
+  },
+  {
+    "index": 72,
+    "faction": "mercer44",
+    "role": "shotgun",
+    "weapon_id": "moss500",
+    "weapon_name": "Mossberg 500 Cruiser",
+    "weapon_tier": 1
+  },
+  {
+    "index": 73,
+    "faction": "mercer44",
+    "role": "rifle",
+    "weapon_id": "m4a1",
+    "weapon_name": "M4A1",
+    "weapon_tier": 2
+  },
+  {
+    "index": 74,
+    "faction": "mercer44",
+    "role": "sniper",
+    "weapon_id": "rem700",
+    "weapon_name": "Remington 700",
+    "weapon_tier": 1
+  },
+  {
+    "index": 75,
+    "faction": "wm_corp",
+    "role": "pistol",
+    "weapon_id": "usp",
+    "weapon_name": "HK USP",
+    "weapon_tier": 2
+  },
+  {
+    "index": 76,
+    "faction": "wm_corp",
+    "role": "smg",
+    "weapon_id": "uzi",
+    "weapon_name": "IMI Uzi",
+    "weapon_tier": 1
+  },
+  {
+    "index": 77,
+    "faction": "wm_corp",
+    "role": "shotgun",
+    "weapon_id": "benelli_m2",
+    "weapon_name": "Benelli M2 Tactical",
+    "weapon_tier": 2
+  },
+  {
+    "index": 78,
+    "faction": "wm_corp",
+    "role": "rifle",
+    "weapon_id": "scar_h",
+    "weapon_name": "FN SCAR-H",
+    "weapon_tier": 3
+  },
+  {
+    "index": 79,
+    "faction": "wm_corp",
+    "role": "sniper",
+    "weapon_id": "rem700",
+    "weapon_name": "Remington 700",
+    "weapon_tier": 1
+  },
+  {
+    "index": 80,
+    "faction": "union_sur",
+    "role": "pistol",
+    "weapon_id": "five_seven",
+    "weapon_name": "FN Five-seveN",
+    "weapon_tier": 3
+  },
+  {
+    "index": 81,
+    "faction": "union_sur",
+    "role": "smg",
+    "weapon_id": "uzi",
+    "weapon_name": "IMI Uzi",
+    "weapon_tier": 1
+  },
+  {
+    "index": 82,
+    "faction": "union_sur",
+    "role": "shotgun",
+    "weapon_id": "saiga12",
+    "weapon_name": "Saiga-12",
+    "weapon_tier": 3
+  },
+  {
+    "index": 83,
+    "faction": "union_sur",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 84,
+    "faction": "union_sur",
+    "role": "sniper",
+    "weapon_id": "svd",
+    "weapon_name": "Dragunov SVD",
+    "weapon_tier": 2
+  },
+  {
+    "index": 85,
+    "faction": "lombardia",
+    "role": "pistol",
+    "weapon_id": "cz75",
+    "weapon_name": "CZ 75 SP-01",
+    "weapon_tier": 2
+  },
+  {
+    "index": 86,
+    "faction": "lombardia",
+    "role": "smg",
+    "weapon_id": "mp5k",
+    "weapon_name": "HK MP5K",
+    "weapon_tier": 2
+  },
+  {
+    "index": 87,
+    "faction": "lombardia",
+    "role": "shotgun",
+    "weapon_id": "benelli_m4",
+    "weapon_name": "Benelli M4",
+    "weapon_tier": 3
+  },
+  {
+    "index": 88,
+    "faction": "lombardia",
+    "role": "rifle",
+    "weapon_id": "g36c",
+    "weapon_name": "HK G36C",
+    "weapon_tier": 2
+  },
+  {
+    "index": 89,
+    "faction": "lombardia",
+    "role": "sniper",
+    "weapon_id": "psg1",
+    "weapon_name": "HK PSG1",
+    "weapon_tier": 3
+  },
+  {
+    "index": 90,
+    "faction": "sand_raiders",
+    "role": "pistol",
+    "weapon_id": "m1911",
+    "weapon_name": "Colt M1911A1",
+    "weapon_tier": 1
+  },
+  {
+    "index": 91,
+    "faction": "sand_raiders",
+    "role": "smg",
+    "weapon_id": "mac10",
+    "weapon_name": "MAC-10",
+    "weapon_tier": 1
+  },
+  {
+    "index": 92,
+    "faction": "sand_raiders",
+    "role": "shotgun",
+    "weapon_id": "moss500",
+    "weapon_name": "Mossberg 500 Cruiser",
+    "weapon_tier": 1
+  },
+  {
+    "index": 93,
+    "faction": "sand_raiders",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 94,
+    "faction": "sand_raiders",
+    "role": "sniper",
+    "weapon_id": "sks",
+    "weapon_name": "SKS with scope",
+    "weapon_tier": 1
+  },
+  {
+    "index": 95,
+    "faction": "saffar",
+    "role": "pistol",
+    "weapon_id": "cz75",
+    "weapon_name": "CZ 75 SP-01",
+    "weapon_tier": 2
+  },
+  {
+    "index": 96,
+    "faction": "saffar",
+    "role": "smg",
+    "weapon_id": "mp5",
+    "weapon_name": "HK MP5",
+    "weapon_tier": 2
+  },
+  {
+    "index": 97,
+    "faction": "saffar",
+    "role": "shotgun",
+    "weapon_id": "spas12",
+    "weapon_name": "Franchi SPAS-12",
+    "weapon_tier": 2
+  },
+  {
+    "index": 98,
+    "faction": "saffar",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 99,
+    "faction": "saffar",
+    "role": "sniper",
+    "weapon_id": "svd",
+    "weapon_name": "Dragunov SVD",
+    "weapon_tier": 2
+  },
+  {
+    "index": 100,
+    "faction": "kurgan",
+    "role": "pistol",
+    "weapon_id": "cz75",
+    "weapon_name": "CZ 75 SP-01",
+    "weapon_tier": 2
+  },
+  {
+    "index": 101,
+    "faction": "kurgan",
+    "role": "smg",
+    "weapon_id": "mp5k",
+    "weapon_name": "HK MP5K",
+    "weapon_tier": 2
+  },
+  {
+    "index": 102,
+    "faction": "kurgan",
+    "role": "shotgun",
+    "weapon_id": "saiga12",
+    "weapon_name": "Saiga-12",
+    "weapon_tier": 3
+  },
+  {
+    "index": 103,
+    "faction": "kurgan",
+    "role": "rifle",
+    "weapon_id": "ak47",
+    "weapon_name": "AK-47",
+    "weapon_tier": 1
+  },
+  {
+    "index": 104,
+    "faction": "kurgan",
+    "role": "sniper",
+    "weapon_id": "svd",
+    "weapon_name": "Dragunov SVD",
+    "weapon_tier": 2
+  },
+  {
+    "index": 105,
+    "faction": "ashford_crane",
+    "role": "pistol",
+    "weapon_id": "glock_17",
+    "weapon_name": "Glock 17",
+    "weapon_tier": 1
+  },
+  {
+    "index": 106,
+    "faction": "ashford_crane",
+    "role": "smg",
+    "weapon_id": "mp5k",
+    "weapon_name": "HK MP5K",
+    "weapon_tier": 2
+  },
+  {
+    "index": 107,
+    "faction": "ashford_crane",
+    "role": "shotgun",
+    "weapon_id": "benelli_m2",
+    "weapon_name": "Benelli M2 Tactical",
+    "weapon_tier": 2
+  },
+  {
+    "index": 108,
+    "faction": "ashford_crane",
+    "role": "rifle",
+    "weapon_id": "g36c",
+    "weapon_name": "HK G36C",
+    "weapon_tier": 2
+  },
+  {
+    "index": 109,
+    "faction": "ashford_crane",
+    "role": "sniper",
+    "weapon_id": "ssg69",
+    "weapon_name": "Steyr SSG 69",
+    "weapon_tier": 2
+  },
+  {
+    "index": 110,
+    "faction": "blacktop",
+    "role": "pistol",
+    "weapon_id": "desert_eagle",
+    "weapon_name": "Desert Eagle",
+    "weapon_tier": 3
+  },
+  {
+    "index": 111,
+    "faction": "blacktop",
+    "role": "smg",
+    "weapon_id": "vector",
+    "weapon_name": "KRISS Vector",
+    "weapon_tier": 3
+  },
+  {
+    "index": 112,
+    "faction": "blacktop",
+    "role": "shotgun",
+    "weapon_id": "spas12",
+    "weapon_name": "Franchi SPAS-12",
+    "weapon_tier": 2
+  },
+  {
+    "index": 113,
+    "faction": "blacktop",
+    "role": "rifle",
+    "weapon_id": "m4a1",
+    "weapon_name": "M4A1",
+    "weapon_tier": 2
+  },
+  {
+    "index": 114,
+    "faction": "blacktop",
+    "role": "sniper",
+    "weapon_id": "rem700",
+    "weapon_name": "Remington 700",
+    "weapon_tier": 1
+  }
+]
