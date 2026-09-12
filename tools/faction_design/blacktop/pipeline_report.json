@@ -1,0 +1,21 @@
+{
+  "faction": "blacktop",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 10.51,
+    "render_and_bounds": 12.334,
+    "palette_and_review_sheets": 30.484,
+    "motion_and_armory_sheets": 0.258
+  },
+  "total_seconds": 53.59,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}

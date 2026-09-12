@@ -1,5 +1,9 @@
 # Dead Street — Project Control
 
+## Blacktop Apostles regular outfit review - 2026-09-12
+
+Five regular leather outfits and shared hooded-skeleton/cracked-halo patches built. Full 1,080-frame geometry/render review passed; front/back, shoulders, facings and motion samples visually inspected. See BLACKTOP_UNIT_DESIGN.md. Final faction in the regular outfit design sequence; user review pending. Gameplay atlas integration and special units remain pending. Next proposed milestone: consolidated roster/integration audit. Local checkpoint only.
+
 ## Ashford-Crane regular outfit review - 2026-09-12
 
 Five regular outfits with distinct ivory theatrical masks completed on the accepted rig. Full 1,080-frame geometry/render checks passed; standing shoulders, facings and motion samples visually inspected. See ASHFORD_CRANE_UNIT_DESIGN.md. Gameplay atlas integration and special units remain pending. Next: Blacktop Apostles MC. Local checkpoint only.
