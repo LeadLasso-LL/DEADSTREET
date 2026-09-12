@@ -16,6 +16,11 @@ const TacticalOrdersController := preload("res://gameplay/tactical_orders_contro
 const BattleState := preload("res://battle/core/battle_state.gd")
 const BattleCombatRandom := preload("res://battle/combat/battle_combat_random.gd")
 
+const ArmorPanel := preload("res://gameplay/armor_selection_panel.gd")
+var armor_layer: CanvasLayer
+var armor_surface: Control
+var armor_button: Button
+
 var game_state: GameState = null
 var game_flow_controller: GameFlowController = null
 var tactical_deployment_controller: TacticalDeploymentController = null
@@ -46,12 +51,14 @@ func _ready() -> void:
 	game_flow_controller = create_result.controller
 	_bind_campaign_map_view()
 	_sync_presentation_views()
+	_build_armor_store()
 	_log_boot()
 	_log_mode_if_changed()
 
 
 func _process(delta: float) -> void:
 	_log_mode_if_changed()
+	_sync_armor_store()
 	if game_flow_controller == null:
 		return
 	var mode: String = game_flow_controller.get_current_mode()
@@ -73,6 +80,9 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if armor_surface != null and armor_surface.has_node("ArmorStore"):
+		if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE: armor_surface.get_node("ArmorStore").queue_free()
+		return
 	if event is InputEventKey:
 		var key_event: InputEventKey = event as InputEventKey
 		if not key_event.pressed or key_event.echo:
@@ -709,3 +719,20 @@ func _log_mode_if_changed() -> void:
 	_sync_presentation_views()
 	var pending: PackedStringArray = PackedStringArray(list_pending_battles())
 	print("GameplayRuntime: mode=%s pending=%s" % [mode, ",".join(pending)])
+
+func _build_armor_store() -> void:
+	armor_layer=CanvasLayer.new();armor_layer.layer=70;add_child(armor_layer)
+	armor_surface=Control.new();armor_layer.add_child(armor_surface);armor_surface.size=Vector2(1152,860);armor_surface.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	armor_button=Button.new();armor_surface.add_child(armor_button);armor_button.position=Vector2(960,18);armor_button.size=Vector2(160,38);armor_button.text="ARMOR STORE"
+	armor_button.pressed.connect(func():
+		if get_current_mode()!=GameFlowController.MODE_CAMPAIGN or armor_surface.has_node("ArmorStore"):return
+		var panel=ArmorPanel.new();panel.name="ArmorStore";panel.configure(game_state,StarterWorldService.PLAYER_FACTION_ID,false);armor_surface.add_child(panel))
+	_sync_armor_store()
+func _sync_armor_store() -> void:
+	if armor_layer==null:return
+	var campaign: bool=get_current_mode()==GameFlowController.MODE_CAMPAIGN
+	armor_layer.visible=campaign
+	if not campaign and armor_surface.has_node("ArmorStore"):armor_surface.get_node("ArmorStore").queue_free()
+	var viewport=get_viewport().get_visible_rect().size
+	var factor=minf(viewport.x/1152.,viewport.y/860.)
+	armor_surface.scale=Vector2.ONE*factor;armor_surface.position=(viewport-Vector2(1152,860)*factor)*.5

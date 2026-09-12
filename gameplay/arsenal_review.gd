@@ -7,6 +7,9 @@ const Card=preload("res://gameplay/tactical_unit_card.gd")
 const Factions=preload("res://battle/identity/faction_unit_catalog.gd")
 const Tiers=preload("res://battle/combat/battle_unit_tier_catalog.gd")
 const Stars=preload("res://gameplay/unit_tier_stars.gd")
+const Armor=preload("res://campaign/equipment/armor_catalog.gd")
+const ArmorPanel=preload("res://gameplay/armor_selection_panel.gd")
+const ArmorMarkers=preload("res://gameplay/unit_armor_markers.gd")
 const CLASSES=["pistol","smg","shotgun","rifle","sniper"]
 var ui: CanvasLayer
 var surface: Control
@@ -21,13 +24,17 @@ var direction="sw"
 var clip="idle"
 var faction="orlov"
 var unit_tier=1
+var preview_armor=""
+var armor_markers: Control
+var armor_options={}
+var armor_preview_select: OptionButton
 var tier_stars: Control
 var unit_tier_select: OptionButton
 var animation_select: OptionButton
 var faction_select: OptionButton
 var selected="glock_17"
 var mercer_specialist=false
-var loadouts={"attacker":{"faction":"orlov","unit_tiers":{}},"defender":{"faction":"mercer","unit_tiers":{}}}
+var loadouts={"attacker":{"faction":"orlov","unit_tiers":{},"armor":{}},"defender":{"faction":"mercer","unit_tiers":{},"armor":{}}}
 var loadout_options={}
 var side_options={}
 var font: SystemFont
@@ -43,8 +50,9 @@ func _ready():
  surface=Control.new();ui.add_child(surface);surface.size=Vector2(1152,860)
  var bg=ColorRect.new();surface.add_child(bg);bg.size=surface.size;bg.color=Color("#121c20")
  text(Vector2(28,20),Vector2(850,36),"DEAD STREET  /  BATTLE SANDBOX",26)
- note=text(Vector2(28,58),Vector2(1100,25),"23 factions · 115 outfits · 30 weapons · All factions, weapons and unit tiers unlocked",13)
- for i in range(CLASSES.size()):button(surface,Vector2(28+i*221,95),Vector2(209,35),CLASSES[i].to_upper(),show_class.bind(CLASSES[i]))
+ note=text(Vector2(28,58),Vector2(1100,25),"23 factions · 115 outfits · 30 weapons · All factions, weapons, training and armor unlocked",13)
+ for i in range(CLASSES.size()):button(surface,Vector2(28+i*184,95),Vector2(172,35),CLASSES[i].to_upper(),show_class.bind(CLASSES[i]))
+ button(surface,Vector2(948,95),Vector2(172,35),"ARMOR",open_armor_catalog)
  grid=GridContainer.new();surface.add_child(grid);grid.position=Vector2(28,148);grid.columns=2;grid.add_theme_constant_override("h_separation",12);grid.add_theme_constant_override("v_separation",12)
  name_label=text(Vector2(658,146),Vector2(470,30),"",22)
  stats=text(Vector2(658,180),Vector2(230,245),"",14);stats.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -66,7 +74,10 @@ func _ready():
  unit_tier_select=tier_option
  for rank in range(1,4):tier_option.add_item("Unit %d - %s"%[rank,Tiers.label_for(rank)])
  tier_option.item_selected.connect(func(i):unit_tier=i+1;refresh())
- tier_stars=Stars.new();surface.add_child(tier_stars);tier_stars.position=Vector2(550,516)
+ tier_stars=Stars.new();surface.add_child(tier_stars);tier_stars.position=Vector2(550,507)
+ armor_markers=ArmorMarkers.new();surface.add_child(armor_markers);armor_markers.position=Vector2(550,523)
+ armor_preview_select=armor_option(Vector2(658,548),Vector2(442,30))
+ armor_preview_select.item_selected.connect(func(i):preview_armor=str(armor_preview_select.get_item_metadata(i));refresh())
  var special=CheckButton.new();surface.add_child(special);special.position=Vector2(28,548);special.text="Mercer dual-pistol specialist (defender pistol slot)";special.add_theme_font_size_override("font_size",12)
  special.toggled.connect(func(on):
   mercer_specialist=on
@@ -107,6 +118,10 @@ func _ready():
    for tier in range(1,4):rank.add_item(str(tier));rank.set_item_tooltip(tier-1,Tiers.label_for(tier))
    rank.item_selected.connect(func(i):loadouts[side]["unit_tiers"][kind]=i+1)
    loadouts[side]["unit_tiers"][kind]=1
+   var armor_select=armor_option(Vector2(x,row_y+34),Vector2(170,26))
+   armor_select.name=side+"_"+kind+"_armor";armor_options[side+kind]=armor_select
+   armor_select.item_selected.connect(func(i):loadouts[side]["armor"][kind]=str(armor_select.get_item_metadata(i)))
+   loadouts[side]["armor"][kind]=""
  button(surface,Vector2(826,797),Vector2(284,39),"TEST 5v5 - ALL FIVE CLASSES",start_battle.bind(false))
  text(Vector2(28,800),Vector2(775,42),"Esc returns to the sandbox. Unit-tier bonuses are initial balance values for testing.\nGuide weapon pairings are suggestions; they do not limit these loadouts.",12)
  show_class("pistol")
@@ -133,12 +148,15 @@ func refresh():
  if special:d=preload("res://battle/combat/battle_specialist_catalog.gd").profile(d)
  d=Tiers.profile(d,unit_tier)
  tier_stars.tier=unit_tier
+ armor_markers.tier=Armor.tier(preview_armor)
+ armor_preview_select.select(0 if preview_armor.is_empty() else Armor.IDS.find(preview_armor)+1)
  unit_tier_select.select(unit_tier-1)
  faction_select.select(Factions.all_ids().find(faction))
  name_label.text=d.display_name+"  /  WEAPON T"+str(d.tier)
  name_label.add_theme_font_size_override("font_size",18 if name_label.text.length()>34 else 22)
- stats.text="%s CLASS\n\nRange: %.1f\nShot pace: %.2f / sec\nSolid trauma: %.2f\nCritical trauma: %.2f\nInitial aim: %.2f sec\nMovement: %+.0f%%\n\nRange and trauma use game units."%[d.weapon_type_id.to_upper(),d.max_range,d.shots_per_second,d.solid_trauma,d.critical_trauma,d.acquire_seconds,(d.movement_multiplier-1.)*100.]
+ stats.text="%s CLASS\n\nRange: %.1f\nShot pace: %.2f / sec\nSolid trauma: %.2f\nCritical trauma: %.2f\nInitial aim: %.2f sec\nMovement: %+.0f%%"%[d.weapon_type_id.to_upper(),d.max_range,d.shots_per_second,d.solid_trauma,d.critical_trauma,d.acquire_seconds,(d.movement_multiplier-1.)*100.]
  stats.text += "\nUnit %d - %s"%[unit_tier,Tiers.label_for(unit_tier)]
+ stats.text += "\nArmor: +%.0f%% HP"%(Armor.bonus(preview_armor)*100.)
  stats.text += "\nMagazine: %d • Reload: %.1fs"%[d.magazine_capacity,d.reload_seconds]
  var variant=Anim.variant_for(faction,d.weapon_type_id,selected,"mercer_dual_glock" if special else "");sprite.sprite_frames=Anim.frames_for(variant)
  if sprite.sprite_frames!=null:
@@ -183,3 +201,18 @@ func faction_option(at: Vector2,sz: Vector2,chosen: String) -> OptionButton:
   option.set_item_tooltip(option.item_count-1,Factions.display_name(id))
   if id==chosen:option.select(option.item_count-1)
  return option
+
+func armor_option(at: Vector2,sz: Vector2) -> OptionButton:
+ var option=OptionButton.new();surface.add_child(option);option.position=at;option.size=sz;option.fit_to_longest_item=false;option.clip_text=true;option.add_theme_font_size_override("font_size",11)
+ option.add_item("No armor");option.set_item_metadata(0,"")
+ for id: String in Armor.IDS:
+  option.add_item("%s  +%d%% HP"%[Armor.label(id),roundi(Armor.bonus(id)*100.)]);option.set_item_metadata(option.item_count-1,id)
+ return option
+func open_armor_catalog() -> void:
+ if surface.has_node("ArmorCatalog"):return
+ var panel=ArmorPanel.new();panel.name="ArmorCatalog";panel.configure(null,"",true)
+ panel.armor_selected.connect(func(id):
+  preview_armor=id
+  armor_preview_select.select(0 if id.is_empty() else Armor.IDS.find(id)+1)
+  refresh())
+ surface.add_child(panel)

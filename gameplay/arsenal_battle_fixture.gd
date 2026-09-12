@@ -40,6 +40,9 @@ static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_v
  for soldier in state.soldiers.values():
   var side: String="attacker" if soldier.faction_id==Starter.PLAYER_FACTION_ID else "defender"
   soldier.unit_tier=int(loadouts.get(side,{}).get("unit_tiers",{}).get(soldier.weapon_type_id,1))
+  var armor_id: String=str(loadouts.get(side,{}).get("armor",{}).get(soldier.weapon_type_id,""))
+  if not soldier.Armor.valid(armor_id):return {"error":"unknown armor"}
+  soldier.armor_id=armor_id
  var deployment=Deployment.new(Starter.DEBUG_FORCE_ID,Starter.PLAYER_FACTION_ID,Starter.KEEP_ID,Starter.HQ_ID,soldiers,vehicles,10.)
  var launched=Launch.launch_from_stronghold(state,Mission.new(Starter.DEBUG_MISSION_ID,"capture_neighborhood_hq",deployment))
  if launched==null or not launched.success:return {"error":"review launch"}

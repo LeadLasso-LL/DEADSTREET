@@ -12,6 +12,12 @@ const PLAYER_INTENT_MOVE := "move"
 const PLAYER_INTENT_COVER := "cover"
 const PLAYER_INTENT_TARGET := "target"
 
+const Armor := preload("res://campaign/equipment/armor_catalog.gd")
+var armor_id: String = ""
+var max_vitality: float:
+	get:
+		return Armor.max_hp(armor_id)
+
 var participant_id: String = ""
 var campaign_soldier_id: String = ""
 var faction_id: String = ""

@@ -3,13 +3,13 @@
   "profile": "ventresca",
   "model": "g36c",
   "role": "rifle",
-  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "fingerprint": "f6c5938cb8dae7109573beb729f0f59deb5af616b0686f092e93e1d35be1e19b",
   "frames": 1840,
   "clips": 17,
   "directions": 8,
   "body_checks": 40,
   "borders": [],
-  "seconds": 58.48,
-  "generation_seconds": 14.53,
-  "render_seconds": 27.23
+  "seconds": 34.41,
+  "generation_seconds": 10.48,
+  "render_seconds": 19.03
 }

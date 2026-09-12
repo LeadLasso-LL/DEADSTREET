@@ -1,6 +1,11 @@
 class_name Soldier
 extends RefCounted
 
+const Armor := preload("res://campaign/equipment/armor_catalog.gd")
+var armor_id: String = "":
+	set(value):
+		armor_id = value if Armor.valid(value) else ""
+
 var id: String = ""
 var faction_id: String = ""
 var home_stronghold_id: String = ""
@@ -45,6 +50,7 @@ func to_dict() -> Dictionary:
 		"weapon_type_id": weapon_type_id,
 		"specialist_id": specialist_id,
 		"unit_tier": unit_tier,
+		"armor_id": armor_id,
 		"strategic_strength": strategic_strength,
 		"upkeep_per_turn": upkeep_per_turn,
 	}
@@ -58,5 +64,6 @@ func from_dict(data: Dictionary) -> void:
 	weapon_type_id = str(data.get("weapon_type_id", ""))
 	specialist_id = str(data.get("specialist_id", ""))
 	unit_tier = int(data.get("unit_tier", 1))
+	armor_id = str(data.get("armor_id", ""))
 	strategic_strength = float(data.get("strategic_strength", 0.0))
 	upkeep_per_turn = float(data.get("upkeep_per_turn", 0.0))

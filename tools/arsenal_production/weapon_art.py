@@ -84,17 +84,34 @@ def make(model,original):
    mag(g,-1,6,True,5,10);grip(g,13,6);grip(g,31,5);box(g,31,1,22,2,DARK)
    rails(g,13,-3,33);path(g,'M13 -2 L17 -5 H31 V-2Z','#343f42');details(g,4,30)
    definition.update(right_grip=[13,10],left_grip=[32,8],muzzle=[53,2],scale=1.00)
+  elif id=='m4a1':
+   # Slim AR receiver, exposed buffer tube and compact telescoping stock.
+   # Keep the established attachment anchors and muzzle position.
+   box(g,-4,1,15,2,'#384347')
+   path(g,'M-6 0 H1 L3 2 2 4 -3 5 -4 9 -6 9Z','#20292d')
+   line(g,'M-5 1 H0 M-5 3 V7','#657075',.55)
+   path(g,'M8 .2 H26 L29 1.5 V4.5 H23 L21 7 H17 L16 5 H10Z','#303b40')
+   path(g,'M16 5 H21 V8 H16Z','none',DARK,.65)
+   grip(g,11,6,'#202a2e');mag(g,22,5.5,True,3.8,11)
+   box(g,29,.7,12,3.4,'#202a2e');rails(g,9,-.5,40)
+   line(g,'M30 3 H40','#525f64',.55)
+   for x in [31,34,37]:box(g,x,1.5,1.4,.8,DARK)
+   box(g,41,1.7,9,1.5,DARK);box(g,50,1.3,2,2.4,'#30393d')
+   path(g,'M40 2 L41.5 -2.8 43 2Z','none',METAL,.85)
+   box(g,10,-2,1.4,1.2,DARK)
+   path(g,'M17 1.1 H23 V2.6 H17Z',DARK,'none')
+   line(g,'M9 1 H15 M23 4 H26','#6b797e',.5)
+   definition.update(muzzle=[52,3],scale=1.10)
   else:
-   end={'mini14':53,'m4a1':51,'g36c':44,'scar_h':55}[id]
+   end={'mini14':53,'g36c':44,'scar_h':55}[id]
    stock(g,-5,0,wood=id=='mini14',skeleton=id=='g36c')
    path(g,f'M8 0 H{end-17} L{end-12} 2 V6 H20 L18 8 H10Z')
    if id=='mini14':path(g,'M5 4 H37 V7 H13 L8 11 5 10Z',WOOD);box(g,33,0,7,4,WOOD)
    else:grip(g)
    mag(g,21,7,curve=id=='m4a1',wide=5 if id=='scar_h' else 4,length=11)
    box(g,32,1,end-39,5,'#293336');box(g,end-7,2,8,2,DARK)
-   if id=='g36c':path(g,'M11 0 V-6 H31 L36 0','none',METAL,1.7)
+   if id=='g36c':path(g,'M11 0 V-3 H31 L34 0','none',METAL,1.35)
    else:rails(g,10,-1,end-10)
-   if id=='m4a1':path(g,'M40 2 L43 -5 44 2Z',METAL);line(g,'M-3 1 H7')
    if id=='scar_h':box(g,10,-1,22,7,'#3c474b');rails(g,10,-2,42);details(g,10,31)
    for x in range(33,max(34,end-8),2):line(g,f'M{x} 2 v2','#697378',.5)
    details(g,10,30);definition.update(muzzle=[end+1,3],scale=1.03 if id=='g36c' else 1.06 if id=='scar_h' else 1.10)

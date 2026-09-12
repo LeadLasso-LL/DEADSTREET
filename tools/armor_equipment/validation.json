@@ -1,0 +1,22 @@
+[
+  {
+    "command": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\armor_equipment\\validate_rifles.py",
+    "exit": 0,
+    "output": "REFINED_RIFLE_ASSETS {\"sets\": 48, \"frames\": 88320, \"clips_per_set\": 17, \"directions\": 8, \"faction_body_checks\": 1680, \"new_faction_border_contacts\": 0}\n"
+  },
+  {
+    "command": "res://tools/faction_roster/validate_pack.gd",
+    "exit": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nROSTER_PACK raw PNG loaded from PCK; export file count=3844\n"
+  },
+  {
+    "command": "res://tools/armor_equipment/validate_ui.gd",
+    "exit": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nOpenGL API 3.3.0 NVIDIA 555.97 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design\n\nGameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=\nGameplayRuntime: mode=campaign pending=\nGameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=\nGameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault\nTacticalDeploymentController: auto-placed 2 attacker vehicle(s)\nGameplayRuntime: mode=tactical_deployment pending=\nTacticalDeploymentController: deployed player_arsenal_shotgun to cover arsenal_second_vehicle__door_0_north slot arsenal_second_vehicle__door_0_north_cover\nTacticalDeploymentController: deployed player_arsenal_sniper to cover arsenal_second_vehicle__door_0_south slot arsenal_second_vehicle__door_0_south_cover\nTacticalDeploymentController: deployed player_soldier to cover arsenal_second_vehicle__door_1_north slot arsenal_second_vehicle__door_1_north_cover\nTacticalDeploymentController: deployed player_soldier_shotgun to cover arsenal_second_vehicle__door_1_south slot arsenal_second_vehicle__door_1_south_cover\nTacticalDeploymentController: deployed player_soldier_smg to cover player_vehicle__door_0_north slot player_vehicle__door_0_north_cover\nTacticalDeploymentController: attacker side attacker committed\nTacticalDeploymentController: defender AI deployed and committed side defender posture=even\nARMOR_UI checks=96 errors=[]\nWARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)\n"
+  },
+  {
+    "command": "res://tools/armor_equipment/validate_armor.gd",
+    "exit": 0,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nARMOR_RULES cases=8280 errors=[]\n"
+  }
+]

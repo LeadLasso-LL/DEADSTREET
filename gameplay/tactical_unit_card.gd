@@ -3,6 +3,8 @@ const Weapons=preload("res://battle/combat/battle_weapon_catalog.gd")
 const Query=preload("res://gameplay/tactical_unit_hud_query.gd")
 const Anim=preload("res://battle/presentation/tactical_unit_animation_catalog.gd")
 const Stars=preload("res://gameplay/unit_tier_stars.gd")
+const Armor=preload("res://campaign/equipment/armor_catalog.gd")
+const ArmorMarkers=preload("res://gameplay/unit_armor_markers.gd")
 const Tiers=preload("res://battle/combat/battle_unit_tier_catalog.gd")
 const NAMES={"smg":"IMI UZI","rifle":"AK-47","pistol":"GLOCK 17","shotgun":"REMINGTON 870"}
 static var textures={}
@@ -16,14 +18,15 @@ static func build(parent: Node,at: Vector2,font: Font) -> Dictionary:
  card.add_theme_stylebox_override("normal",normal);card.add_theme_stylebox_override("hover",selected);card.add_theme_stylebox_override("pressed",selected)
  card.add_theme_stylebox_override("disabled",style(Color("#231e21"),Color("#5c343b")))
  var status=label(card,Vector2(8,4),Vector2(125,12),"ACTIVE",9,Color("#83b889"),font);status.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
- var portrait=TextureRect.new();card.add_child(portrait);portrait.position=Vector2(9,19);portrait.size=Vector2(123,62)
+ var portrait=TextureRect.new();card.add_child(portrait);portrait.position=Vector2(9,19);portrait.size=Vector2(123,58)
  portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;portrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE
  var role=label(card,Vector2(8,83),Vector2(88,15),"",12,Color("#e3e1d3"),font);role.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
- var stars=Stars.new();card.add_child(stars);stars.position=Vector2(100,85);stars.size=Vector2(32,12)
+ var stars=Stars.new();card.add_child(stars);stars.position=Vector2(100,78);stars.size=Vector2(32,12)
+ var armor=ArmorMarkers.new();card.add_child(armor);armor.position=Vector2(100,91);armor.size=Vector2(32,9)
  var gun=label(card,Vector2(5,100),Vector2(131,13),"",10,Color("#9caba9"),font);gun.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
  var bg=ColorRect.new();card.add_child(bg);bg.position=Vector2(9,116);bg.size=Vector2(123,4);bg.color=Color("#11181c");bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
  var health=ColorRect.new();card.add_child(health);health.position=Vector2(9,116);health.size=Vector2(123,4);health.mouse_filter=Control.MOUSE_FILTER_IGNORE
- return {"root":card,"status":status,"portrait":portrait,"role":role,"stars":stars,"gun":gun,"health":health,"id":"","normal":normal,"selected":selected}
+ return {"root":card,"status":status,"portrait":portrait,"role":role,"stars":stars,"armor":armor,"gun":gun,"health":health,"id":"","normal":normal,"selected":selected}
 static func update(w: Dictionary,p,selected: String="",interactive=true) -> void:
  var c=Query.card_for(p,selected);w.id=c.participant_id
  var state="DEAD" if not c.is_alive else ("WOUNDED" if c.is_wounded else "ACTIVE")
@@ -31,7 +34,7 @@ static func update(w: Dictionary,p,selected: String="",interactive=true) -> void
  w.status.text=state;w.status.add_theme_color_override("font_color",tint)
  w.root.disabled=not c.can_select;w.root.mouse_filter=Control.MOUSE_FILTER_STOP if interactive else Control.MOUSE_FILTER_IGNORE
  w.root.add_theme_stylebox_override("normal",w.selected if c.is_selected else w.normal)
- w.role.text=c.weapon_type.to_upper();w.stars.tier=int(c.unit_tier)
+ w.role.text=c.weapon_type.to_upper();w.stars.tier=int(c.unit_tier);w.armor.tier=int(c.armor_tier)
  var model=Weapons.for_participant(p)
  var name: String=model.display_name if model!=null and not model.display_name.is_empty() else NAMES.get(c.weapon_type,c.weapon_type.to_upper())
  var tier: int=model.tier if model!=null else 1
@@ -40,6 +43,7 @@ static func update(w: Dictionary,p,selected: String="",interactive=true) -> void
  w.gun.add_theme_font_size_override("font_size",8 if short_name.length()>18 else 10)
  w.gun.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
  w.root.tooltip_text="Unit tier %d - %s\n"%[int(c.unit_tier),Tiers.label_for(int(c.unit_tier))]+name+" · Weapon tier "+str(tier)+(" · Movement %+.0f%%"%((model.movement_multiplier-1.)*100.) if model!=null else "")
+ w.root.tooltip_text+="\n"+Armor.label(c.armor_id)+" · HP +%.0f%%"%(Armor.bonus(c.armor_id)*100.)
  w.health.size=Vector2(123.*float(c.vitality_ratio),4);w.health.color=Color("#c6a368") if state=="WOUNDED" else Color("#7da986")
  w.portrait.modulate=Color(.72,.22,.26) if state=="DEAD" else (Color(1.,.72,.72) if state=="WOUNDED" else Color.WHITE)
  var variant=Anim.variant_for(p.identity.gang_archetype_id,p.weapon_type,p.weapon_model_id,p.specialist_id)

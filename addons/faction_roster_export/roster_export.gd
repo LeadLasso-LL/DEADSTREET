@@ -12,6 +12,8 @@ func _get_name() -> String:
 
 static func catalog_paths(data: Dictionary) -> PackedStringArray:
 	var paths := PackedStringArray([MANIFEST, "res://assets/data/faction_units.json"])
+	for armor_id: String in ["patrol_vest", "field_carrier", "reinforced_carrier"]:
+		paths.append("res://assets/art/equipment/armor/"+armor_id+".png")
 	var factions: Dictionary = {}
 	for pairing: String in data.get("models", {}):
 		factions[pairing.get_slice(":", 0)] = true

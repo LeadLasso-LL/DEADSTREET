@@ -1,0 +1,8 @@
+{
+  "sets": 48,
+  "frames": 88320,
+  "clips_per_set": 17,
+  "directions": 8,
+  "faction_body_checks": 1680,
+  "new_faction_border_contacts": 0
+}

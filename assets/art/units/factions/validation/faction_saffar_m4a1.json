@@ -3,13 +3,13 @@
   "profile": "saffar",
   "model": "m4a1",
   "role": "rifle",
-  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "fingerprint": "f6c5938cb8dae7109573beb729f0f59deb5af616b0686f092e93e1d35be1e19b",
   "frames": 1840,
   "clips": 17,
   "directions": 8,
   "body_checks": 40,
   "borders": [],
-  "seconds": 67.88,
-  "generation_seconds": 20.84,
-  "render_seconds": 36.77
+  "seconds": 41.12,
+  "generation_seconds": 13.41,
+  "render_seconds": 21.83
 }

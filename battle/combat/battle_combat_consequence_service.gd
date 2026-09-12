@@ -16,10 +16,10 @@ const WOUNDED_VITALITY_FRACTION := 0.35
 const WOUNDED_VITALITY_THRESHOLD := BASELINE_VITALITY * WOUNDED_VITALITY_FRACTION
 
 
-static func clamp_vitality(value: float) -> float:
+static func clamp_vitality(value: float, maximum: float = BASELINE_VITALITY) -> float:
 	if not is_finite(value):
 		return 0.0
-	return clampf(value, 0.0, BASELINE_VITALITY)
+	return clampf(value, 0.0, maximum if is_finite(maximum) and maximum > 0.0 else BASELINE_VITALITY)
 
 
 static func is_dead_vitality(vitality: float) -> bool:
@@ -47,7 +47,7 @@ static func apply_trauma(
 	var applied_trauma: float = trauma
 	if not is_finite(applied_trauma) or applied_trauma < 0.0:
 		applied_trauma = 0.0
-	var vitality_before: float = clamp_vitality(target.vitality)
+	var vitality_before: float = clamp_vitality(target.vitality, target.max_vitality)
 	target.vitality = vitality_before
 	var was_wounded: bool = target.is_wounded
 	var was_alive: bool = target.is_alive
@@ -64,7 +64,7 @@ static func apply_trauma(
 			false,
 			false
 		)
-	var vitality_after: float = clamp_vitality(vitality_before - applied_trauma)
+	var vitality_after: float = clamp_vitality(vitality_before - applied_trauma, target.max_vitality)
 	target.vitality = vitality_after
 	if is_dead_vitality(vitality_after):
 		target.vitality = 0.0

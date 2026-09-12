@@ -46,6 +46,9 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 		"participant_id": "",
 		"weapon_type": "",
 		"unit_tier": 0,
+		"armor_tier": 0,
+		"armor_id": "",
+		"max_vitality": 1.5,
 		"role_label": "",
 		"display_name": "",
 		"firearm_label": "",
@@ -60,12 +63,12 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 	}
 	if participant == null:
 		return card
-	var current_vitality: float = BattleCombatConsequenceService.clamp_vitality(participant.vitality)
+	var current_vitality: float = BattleCombatConsequenceService.clamp_vitality(participant.vitality, participant.max_vitality)
 	if not participant.is_alive:
 		current_vitality = 0.0
 	var ratio: float = 0.0
 	if participant.is_alive and BattleCombatConsequenceService.BASELINE_VITALITY > 0.0:
-		ratio = clampf(current_vitality / BattleCombatConsequenceService.BASELINE_VITALITY, 0.0, 1.0)
+		ratio = clampf(current_vitality / participant.max_vitality, 0.0, 1.0)
 	var state: String = CARD_STATE_HEALTHY
 	var can_select: bool = false
 	if not participant.is_alive:
@@ -77,6 +80,9 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 	card["participant_id"] = participant.participant_id
 	card["weapon_type"] = participant.weapon_type
 	card["unit_tier"] = participant.unit_tier
+	card["armor_tier"] = participant.Armor.tier(participant.armor_id)
+	card["armor_id"] = participant.armor_id
+	card["max_vitality"] = participant.max_vitality
 	card["role_label"] = role_label_for(participant.weapon_type)
 	card["display_name"] = ""
 	card["firearm_label"] = ""

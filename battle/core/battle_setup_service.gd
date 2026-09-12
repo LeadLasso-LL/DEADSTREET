@@ -288,6 +288,8 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			attacker_tactical_force_id
 		)
 		participant.unit_tier = soldier.unit_tier
+		participant.armor_id = soldier.armor_id
+		participant.vitality = participant.max_vitality
 		participant.specialist_id = soldier.specialist_id
 		participant.weapon_state = BattleWeaponCatalog.state_for_participant(participant)
 		if participant.weapon_state == null:
@@ -318,6 +320,8 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 			defender_tactical_force_id
 		)
 		participant.unit_tier = soldier.unit_tier
+		participant.armor_id = soldier.armor_id
+		participant.vitality = participant.max_vitality
 		participant.specialist_id = soldier.specialist_id
 		participant.weapon_state = BattleWeaponCatalog.state_for_participant(participant)
 		if participant.weapon_state == null:

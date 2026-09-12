@@ -3,13 +3,13 @@
   "profile": "zangyaku",
   "model": "g36c",
   "role": "rifle",
-  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "fingerprint": "f6c5938cb8dae7109573beb729f0f59deb5af616b0686f092e93e1d35be1e19b",
   "frames": 1840,
   "clips": 17,
   "directions": 8,
   "body_checks": 40,
   "borders": [],
-  "seconds": 56.56,
-  "generation_seconds": 12.92,
-  "render_seconds": 27.02
+  "seconds": 36.59,
+  "generation_seconds": 10.14,
+  "render_seconds": 20.25
 }
