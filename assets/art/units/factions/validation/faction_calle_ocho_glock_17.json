@@ -1,0 +1,15 @@
+{
+  "variant": "faction_calle_ocho_glock_17",
+  "profile": "calle_ocho",
+  "model": "glock_17",
+  "role": "pistol",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 55.94,
+  "generation_seconds": 15.53,
+  "render_seconds": 24.83
+}

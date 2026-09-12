@@ -1,0 +1,15 @@
+{
+  "variant": "faction_mcallister_desert_eagle",
+  "profile": "mcallister",
+  "model": "desert_eagle",
+  "role": "pistol",
+  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 66.69,
+  "generation_seconds": 16.97,
+  "render_seconds": 38.3
+}

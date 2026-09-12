@@ -1,0 +1,15 @@
+{
+  "variant": "faction_calle_ocho_benelli_m2",
+  "profile": "calle_ocho",
+  "model": "benelli_m2",
+  "role": "shotgun",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 62.88,
+  "generation_seconds": 16.44,
+  "render_seconds": 27.7
+}

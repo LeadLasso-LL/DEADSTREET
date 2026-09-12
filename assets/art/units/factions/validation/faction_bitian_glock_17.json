@@ -1,0 +1,15 @@
+{
+  "variant": "faction_bitian_glock_17",
+  "profile": "bitian",
+  "model": "glock_17",
+  "role": "pistol",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 64.08,
+  "generation_seconds": 19.89,
+  "render_seconds": 29.08
+}

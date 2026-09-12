@@ -1,0 +1,15 @@
+{
+  "variant": "faction_calle_ocho_mac10",
+  "profile": "calle_ocho",
+  "model": "mac10",
+  "role": "smg",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 58.39,
+  "generation_seconds": 13.56,
+  "render_seconds": 27.8
+}

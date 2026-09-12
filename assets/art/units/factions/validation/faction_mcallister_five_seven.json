@@ -1,0 +1,15 @@
+{
+  "variant": "faction_mcallister_five_seven",
+  "profile": "mcallister",
+  "model": "five_seven",
+  "role": "pistol",
+  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 57.12,
+  "generation_seconds": 19.66,
+  "render_seconds": 29.39
+}

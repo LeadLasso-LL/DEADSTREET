@@ -1,0 +1,15 @@
+{
+  "variant": "faction_kurgan_mini14",
+  "profile": "kurgan",
+  "model": "mini14",
+  "role": "rifle",
+  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 38.05,
+  "generation_seconds": 13.05,
+  "render_seconds": 19.55
+}

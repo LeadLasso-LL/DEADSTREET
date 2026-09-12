@@ -1,0 +1,15 @@
+{
+  "variant": "faction_calle_ocho_cz75",
+  "profile": "calle_ocho",
+  "model": "cz75",
+  "role": "pistol",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 60.75,
+  "generation_seconds": 18.05,
+  "render_seconds": 27.53
+}

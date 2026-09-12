@@ -1,0 +1,15 @@
+{
+  "variant": "faction_mcallister_benelli_m4",
+  "profile": "mcallister",
+  "model": "benelli_m4",
+  "role": "shotgun",
+  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 66.08,
+  "generation_seconds": 19.48,
+  "render_seconds": 36.5
+}

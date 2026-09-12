@@ -1,0 +1,15 @@
+{
+  "variant": "faction_eastex_benelli_m4",
+  "profile": "eastex",
+  "model": "benelli_m4",
+  "role": "shotgun",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 68.22,
+  "generation_seconds": 21.86,
+  "render_seconds": 28.56
+}
