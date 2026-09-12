@@ -1,5 +1,13 @@
 class_name Vehicle
 extends RefCounted
+const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
+var cargo: ResourceStore=ResourceStore.new()
+var resource_capacity: int:
+	get:return int(Models.model(vehicle_type_id).get("resource_capacity",0))
+func cargo_amount() -> float:
+	var total=0.
+	for amount in cargo.to_dict().values():total+=float(amount)
+	return total
 
 var id: String = ""
 var faction_id: String = ""
@@ -43,6 +51,7 @@ func to_dict() -> Dictionary:
 		"passenger_capacity": passenger_capacity,
 		"movement_per_turn": movement_per_turn,
 		"upkeep_per_turn": upkeep_per_turn,
+		"cargo": cargo.to_dict(),
 	}
 
 
@@ -54,3 +63,15 @@ func from_dict(data: Dictionary) -> void:
 	passenger_capacity = int(data.get("passenger_capacity", 0))
 	movement_per_turn = float(data.get("movement_per_turn", 0.0))
 	upkeep_per_turn = float(data.get("upkeep_per_turn", 0.0))
+	if Models.has_model(vehicle_type_id):
+		var model=Models.model(vehicle_type_id)
+		passenger_capacity=int(model.unit_capacity)
+		movement_per_turn=float(model.movement_per_turn)
+		upkeep_per_turn=float(model.upkeep_per_turn)
+	cargo=ResourceStore.new()
+	var saved: Variant=data.get("cargo",{})
+	if saved is Dictionary and resource_capacity>0:
+		for key in saved:
+			var amount=float(saved[key])
+			if not str(key).is_empty() and is_finite(amount) and amount>0. and cargo_amount()+amount<=resource_capacity:
+				cargo.add(str(key),amount)

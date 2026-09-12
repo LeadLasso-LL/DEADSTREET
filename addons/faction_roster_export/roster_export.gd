@@ -14,6 +14,15 @@ static func catalog_paths(data: Dictionary) -> PackedStringArray:
 	var paths := PackedStringArray([MANIFEST, "res://assets/data/faction_units.json"])
 	for armor_id: String in ["patrol_vest", "field_carrier", "reinforced_carrier"]:
 		paths.append("res://assets/art/equipment/armor/"+armor_id+".png")
+	paths.append("res://assets/data/vehicle_models.json")
+	var fleet_path="res://assets/art/vehicles/fleet/manifest.json"
+	if FileAccess.file_exists(fleet_path):
+		paths.append(fleet_path)
+		var fleet: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(fleet_path))
+		for model_id in fleet.get("models",{}):
+			paths.append("res://assets/art/vehicles/fleet/icons/"+str(model_id)+".png")
+			for frame in fleet.models[model_id].frames:
+				paths.append("res://assets/art/vehicles/fleet/sprites/"+str(frame))
 	var factions: Dictionary = {}
 	for pairing: String in data.get("models", {}):
 		factions[pairing.get_slice(":", 0)] = true

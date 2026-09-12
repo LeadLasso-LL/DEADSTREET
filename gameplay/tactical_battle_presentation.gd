@@ -94,8 +94,13 @@ func begin_arrival():
   var attacking=p.side_id==battle.attacker_side_id
   var origin=arrival+Vector2(-.35 if n<2 else 1.05,1.95 if n%2==0 else -1.95) if attacking else Vector2(25.,15.3)
   var planned=Nav.find_path(battle,origin,p.battle_position)
+  if attacking and not p.transport_vehicle_id.is_empty():
+   var vehicle=battle.get_vehicle(p.transport_vehicle_id)
+   var exit=preload("res://battle/vehicles/battle_vehicle_exit_service.gd").route(battle,vehicle,p.battle_position)
+   if not exit.is_empty():origin=exit.origin;planned=exit.path
+   else:planned=null
   var points: Array[Vector2]=[origin]
-  if planned.success:
+  if planned!=null and planned.success:
    points.append_array(planned.waypoints)
   else:
    # Keep an invalid route stationary rather than walking through scenery.
@@ -126,7 +131,11 @@ func _process(delta):
   stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)
  if stage=="arrival":
   clock+=delta
-  if clock>=5.4 and not door_played:door_played=true;sound.play("door",arrival_center(),-11.)
+  if clock>=5.4 and not door_played:
+   door_played=true
+   for transport in battle.vehicles.values():
+    if int(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(transport.vehicle_type_id).get("doors",4))>0:
+     sound.play("door",arrival_center(),-11.);break
   if clock>=intro_duration:stage="ready";ready_clock=0.;sound.set_engine(Vector2.ZERO,false)
  elif stage=="ready":ready_clock+=delta
  elif stage=="ending":
@@ -150,12 +159,12 @@ func apply_poses():
   var node=view._dusk_vehicle_nodes[id];var v=battle.get_vehicle(id)
   if v==null:continue
   node.door_open=1.;node.visible=true
-  if stage in ["arrival","ready"]:
+  if stage in ["arrival","ready"] and str(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(v.vehicle_type_id).get("vehicle_class",""))!="two_wheelers":
    var progress=smoothstep(2.2,5.3,clock)
    var offset=Vector2((1.-progress)*38*8,0)
    var visual_bounds: Rect2=node.prop[1];visual_bounds.position.x+=offset.x/8.;node.prop[1]=visual_bounds
    node.position+=offset;node.door_open=smoothstep(5.35,5.9,clock)
-   if stage=="arrival":sound.set_engine(v.battle_position+Vector2(offset.x/8,0),clock>2.1 and clock<5.85,lerpf(1.35,.75,progress))
+   if stage=="arrival" and v.vehicle_type_id!="yardbird":sound.set_engine(v.battle_position+Vector2(offset.x/8,0),clock>2.1 and clock<5.85,lerpf(1.35,.75,progress))
   node.queue_redraw()
  if stage=="ending":
   outro.apply(view,end_clock)

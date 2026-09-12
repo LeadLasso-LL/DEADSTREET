@@ -203,7 +203,18 @@ func _draw_forces() -> void:
 		var view_pos: Vector2 = _to_view(campaign_position_of_force(force, graph))
 		var ring: Color = _faction_tint(force.faction_id)
 		draw_circle(view_pos, FORCE_RADIUS + 3.0, ring, false, 2.0, true)
-		draw_circle(view_pos, FORCE_RADIUS, PROVISIONAL_FORCE_FILL, true)
+		var fleet=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
+		var drawn=0
+		for vehicle_id in force.vehicle_group.vehicle_ids:
+			var vehicle=game_state.get_vehicle(vehicle_id)
+			if vehicle==null:continue
+			var icon=fleet.icon(vehicle.vehicle_type_id)
+			if icon==null:continue
+			var sz=icon.get_size();sz*=minf(46./sz.x,31./sz.y)
+			draw_texture_rect(icon,Rect2(view_pos-sz*.5+Vector2(drawn*10,-drawn*5),sz),false)
+			drawn+=1
+			if drawn>=3:break
+		if drawn==0:draw_circle(view_pos, FORCE_RADIUS, PROVISIONAL_FORCE_FILL, true)
 		_draw_label(view_pos + Vector2(0.0, -FORCE_RADIUS - 18.0), force.id)
 		_draw_label(view_pos + Vector2(0.0, -FORCE_RADIUS - 4.0), force.faction_id, 12)
 

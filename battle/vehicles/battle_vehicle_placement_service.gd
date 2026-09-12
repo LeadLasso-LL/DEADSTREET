@@ -119,7 +119,8 @@ static func place_vehicle(
 	preview_vehicle.has_battle_position = true
 	preview_vehicle.battle_position = position
 	preview_vehicle.set_facing_direction(normalized_facing)
-	if BattleVehicleCoverService.collect_legal_body_slots(battle_state, preview_vehicle).is_empty():
+	var needs_cover=bool(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(vehicle.vehicle_type_id).get("cover",true))
+	if needs_cover and BattleVehicleCoverService.collect_legal_body_slots(battle_state, preview_vehicle).is_empty():
 		return BattleVehiclePlacementResult.failed(
 			"cover_failed",
 			"Vehicle placement failed: body cover could not be created for '%s'." % vehicle_id,

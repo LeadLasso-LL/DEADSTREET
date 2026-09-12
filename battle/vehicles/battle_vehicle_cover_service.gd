@@ -20,6 +20,7 @@ const SLOT_LEFT := "left"
 const SLOT_RIGHT := "right"
 const BODY_COVER_SUFFIX := "__body_cover"
 const COVER_STANDOFF := 0.40
+const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 
 
 static func body_cover_object_id(vehicle_id: String) -> String:
@@ -38,6 +39,7 @@ static func collect_legal_body_slots(battle_state: BattleState, vehicle: BattleV
 	var slots: Array[BattleCoverSlot] = []
 	if battle_state == null or vehicle == null:
 		return slots
+	if not bool(Models.model(vehicle.vehicle_type_id).get("cover",true)):return slots
 	if not BattleVehicleBodyService.has_usable_pose(vehicle):
 		return slots
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
@@ -68,6 +70,7 @@ static func collect_legal_body_slots(battle_state: BattleState, vehicle: BattleV
 			continue
 		if not geometry.get_movement_blocking_obstacle_id_at(slot.position).is_empty():
 			continue
+		if not BattleVehicleBodyService.blocking_vehicle_id_at(battle_state,slot.position).is_empty():continue
 		slots.append(slot)
 	return slots
 
@@ -78,6 +81,8 @@ static func ensure_body_cover(battle_state: BattleState, vehicle_id: String) -> 
 	if not battle_state.has_vehicle(vehicle_id):
 		return false
 	var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
+	# Two-wheelers occupy space but do not provide car-sized ballistic cover.
+	if not bool(Models.model(vehicle.vehicle_type_id).get("cover",true)):return true
 	if not BattleVehicleBodyService.has_usable_pose(vehicle):
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
@@ -89,30 +94,9 @@ static func ensure_body_cover(battle_state: BattleState, vehicle_id: String) -> 
 	var cover_object: BattleCoverObject = BattleCoverObject.new(object_id, "")
 	if not geometry.add_cover_object(cover_object):
 		return false
-	var profile: BattleVehiclePhysicalProfile = BattleVehicleBodyService.profile_for_vehicle(vehicle)
-	if profile == null:
-		return false
-	var facing: Vector2 = vehicle.facing_direction
-	var right: Vector2 = Vector2(-facing.y, facing.x)
-	var specs: Array[Dictionary] = [
-		_slot_spec(vehicle, profile, SLOT_FRONT, facing, true),
-		_slot_spec(vehicle, profile, SLOT_REAR, -facing, true),
-		_slot_spec(vehicle, profile, SLOT_RIGHT, right, false),
-		_slot_spec(vehicle, profile, SLOT_LEFT, -right, false),
-	]
 	var added: int = 0
-	for spec: Dictionary in specs:
-		var slot: BattleCoverSlot = BattleCoverSlot.new(
-			str(spec.get("id", "")),
-			object_id,
-			spec.get("position", Vector2.ZERO),
-			spec.get("facing", Vector2.ZERO)
-		)
-		if not slot.is_valid():
-			continue
-		if not geometry.add_cover_slot(slot):
-			continue
-		added += 1
+	for slot: BattleCoverSlot in collect_legal_body_slots(battle_state,vehicle):
+		if geometry.add_cover_slot(slot):added+=1
 	if added <= 0:
 		geometry.remove_cover_object(object_id)
 		return false

@@ -52,6 +52,9 @@ static func deploy(game_state: GameState, request: DeploymentRequest) -> Deploym
 	if request.vehicle_ids.is_empty():
 		return DeploymentResult.failed("no_vehicles", "Deployment failed: at least one vehicle must be selected.")
 
+	if request.vehicle_ids.size()>request.soldier_ids.size():
+		return DeploymentResult.failed("insufficient_drivers", "Deployment failed: every vehicle needs a soldier to drive it.")
+
 	var soldier_group: SoldierGroup = SoldierGroup.new()
 	for soldier_id: String in request.soldier_ids:
 		soldier_group.add_soldier_id(soldier_id)

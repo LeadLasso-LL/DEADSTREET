@@ -4287,11 +4287,13 @@ func _sync_dusk_vehicles() -> void:
 		for corner in corners: bounds = bounds.expand(corner)
 		var node = _dusk_vehicle_nodes.get(id)
 		if node == null:
-			node = preload("res://gameplay/harold_street_art.gd").new()
+			node = preload("res://gameplay/fleet_vehicle_art.gd").new()
 			node.prop = ["arrival_car",bounds,"car",""]
 			dynamic_unit_root.add_child(node)
 			_dusk_vehicle_nodes[id] = node
-		var next_position := Vector2(bounds.get_center().x*8,bounds.end.y*6)
+		node.model_id = vehicle.vehicle_type_id
+		node.facing = vehicle.facing_direction
+		var next_position := Vector2(vehicle.battle_position.x*8,vehicle.battle_position.y*6)
 		var changed: bool = node.prop.is_empty() or node.position != next_position
 		node.prop = ["arrival_car",bounds,"car",""]
 		node.position = next_position

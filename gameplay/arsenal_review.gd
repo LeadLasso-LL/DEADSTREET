@@ -53,6 +53,7 @@ func _ready():
  note=text(Vector2(28,58),Vector2(1100,25),"23 factions · 115 outfits · 30 weapons · All factions, weapons, training and armor unlocked",13)
  for i in range(CLASSES.size()):button(surface,Vector2(28+i*184,95),Vector2(172,35),CLASSES[i].to_upper(),show_class.bind(CLASSES[i]))
  button(surface,Vector2(948,95),Vector2(172,35),"ARMOR",open_armor_catalog)
+ button(surface,Vector2(914,16),Vector2(206,37),"VEHICLE FLEET",open_vehicle_fleet)
  grid=GridContainer.new();surface.add_child(grid);grid.position=Vector2(28,148);grid.columns=2;grid.add_theme_constant_override("h_separation",12);grid.add_theme_constant_override("v_separation",12)
  name_label=text(Vector2(658,146),Vector2(470,30),"",22)
  stats=text(Vector2(658,180),Vector2(230,245),"",14);stats.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -215,4 +216,12 @@ func open_armor_catalog() -> void:
   preview_armor=id
   armor_preview_select.select(0 if id.is_empty() else Armor.IDS.find(id)+1)
   refresh())
+ surface.add_child(panel)
+
+func open_vehicle_fleet() -> void:
+ if surface.has_node("VehicleFleet"):return
+ var panel=preload("res://gameplay/vehicle_fleet_panel.gd").new();panel.name="VehicleFleet"
+ panel.faction_id=str(loadouts.attacker.faction)
+ panel.selected=loadouts.attacker.get("vehicles",["bayou","bayou"]).duplicate()
+ panel.convoy_selected.connect(func(models):loadouts.attacker["vehicles"]=models)
  surface.add_child(panel)

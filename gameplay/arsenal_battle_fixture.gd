@@ -1,6 +1,5 @@
 extends RefCounted
 # Isolated weapon review: a fresh starter world per run, no campaign save writes.
-const Scenario=preload("res://tools/battle_showcase/scenario.gd")
 const Weapons=preload("res://battle/combat/battle_weapon_catalog.gd")
 const Starter=preload("res://gameplay/starter_world_service.gd")
 const Mission=preload("res://campaign/missions/mission_request.gd")
@@ -9,6 +8,8 @@ const Launch=preload("res://campaign/missions/neighborhood_hq_attack_service.gd"
 const Factions=preload("res://battle/identity/faction_unit_catalog.gd")
 const Identity=preload("res://battle/identity/tactical_identity_factory.gd")
 const Tiers=preload("res://battle/combat/battle_unit_tier_catalog.gd")
+const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
+const Fleet=preload("res://campaign/vehicles/vehicle_fleet_service.gd")
 const AI=preload("res://battle/ai/battle_deployment_ai_service.gd")
 static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_value: int, full_roster: bool = false) -> Dictionary:
  var state=runtime.game_state
@@ -32,11 +33,15 @@ static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_v
   Starter._add_hq_soldier(state,"rival_arsenal_sniper","sniper",1.9,35.)
   if state.get_soldier("rival_arsenal_sniper").garrison_hq_id!=Starter.HQ_ID:return {"error":"review sniper recruitment"}
   soldiers.append("player_arsenal_sniper")
-  # Two existing cars provide legal transport for five people; car capacity stays four.
-  var car=state.get_vehicle(Starter.VEHICLE_ID)
-  var second=car.get_script().new("arsenal_second_vehicle",Starter.PLAYER_FACTION_ID,"car","",car.passenger_capacity,car.movement_per_turn,0.)
-  state.add_vehicle(second);state.assign_vehicle_to_stronghold(second.id,Starter.KEEP_ID)
-  vehicles.append(second.id)
+ var convoy: Array=loadouts.get("attacker",{}).get("vehicles",["bayou","bayou"] if full_roster else ["bayou"])
+ var transport=Models.convoy(convoy,soldiers.size())
+ if not transport.valid:return {"error":transport.get("error","Insufficient transport")}
+ vehicles.clear()
+ for index in range(convoy.size()):
+  var vehicle_id="sandbox_transport_%02d"%index
+  var v=Fleet.create(vehicle_id,Starter.PLAYER_FACTION_ID,str(convoy[index]))
+  if v==null:return {"error":"Unknown vehicle"}
+  state.add_vehicle(v);state.assign_vehicle_to_stronghold(v.id,Starter.KEEP_ID);vehicles.append(v.id)
  for soldier in state.soldiers.values():
   var side: String="attacker" if soldier.faction_id==Starter.PLAYER_FACTION_ID else "defender"
   soldier.unit_tier=int(loadouts.get(side,{}).get("unit_tiers",{}).get(soldier.weapon_type_id,1))
@@ -65,11 +70,12 @@ static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_v
   var id: String=str(loadouts.get(side,{}).get(p.weapon_type,Weapons.default_model(p.weapon_type)))
   if not Weapons.equip_for_setup(b,p,id):return {"error":"review equip "+id}
  var controller=runtime.tactical_deployment_controller
- if not controller.choose_arrival("far") or not controller.place_unplaced_in_cover():
-  # Use the authored default arrival if this map names the choice differently.
-  if not controller.place_unplaced_in_cover():return {"error":"review attacker cover"}
- var committed=controller.try_commit_attacker()
- if committed==null or not committed.success:return {"error":"review commit"}
+ controller.choose_arrival("far")
+ if not controller.place_unplaced_in_cover():
+  var fallback=AI.apply_and_commit_side(b,b.attacker_side_id,b.defender_side_id)
+  if fallback==null or not fallback.success:return {"error":"review deployment: "+("no result" if fallback==null else fallback.error_code)}
+ var committed=controller.try_commit_attacker() if not b.is_side_deployment_committed(b.attacker_side_id) else preload("res://battle/core/battle_deployment_commit_result.gd").succeeded(b.attacker_side_id)
+ if committed==null or not committed.success:return {"error":"review commit: "+("no result" if committed==null else committed.error_code)}
  for side in [b.attacker_side_id,b.defender_side_id]:
   if not b.is_side_deployment_committed(side):
    var other=b.defender_side_id if side==b.attacker_side_id else b.attacker_side_id

@@ -18,6 +18,7 @@ var max_vitality: float:
 	get:
 		return Armor.max_hp(armor_id)
 
+var transport_vehicle_id: String = ""
 var participant_id: String = ""
 var campaign_soldier_id: String = ""
 var faction_id: String = ""

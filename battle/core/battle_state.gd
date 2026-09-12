@@ -61,6 +61,8 @@ var _static_nav_graph: BattleNavigationGraph = null
 var _static_nav_build_count: int = 0
 # Cheap occupancy/reservation stamp. Bumped only when a slot becomes free.
 var cover_occupancy_revision: int = 0
+# Unowned cover temporarily occluded by an open arrival door; restored when clear.
+var vehicle_hidden_cover_slots: Dictionary = {}
 
 
 func _init(

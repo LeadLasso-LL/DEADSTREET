@@ -360,6 +360,22 @@ static func create_neighborhood_hq_battle(game_state: GameState, mission_id: Str
 				battle_id
 			)
 
+	# Reserve one actual unit as each vehicle's driver, then fill passenger seats.
+	var passenger_index: int=0
+	var assignments: Dictionary={}
+	for vehicle_id: String in attacker_vehicle_ids:
+		if passenger_index>=attacker_soldier_ids.size():break
+		assignments[attacker_soldier_ids[passenger_index]]=vehicle_id
+		passenger_index+=1
+	for vehicle_id: String in attacker_vehicle_ids:
+		var transport: Vehicle=game_state.get_vehicle(vehicle_id)
+		for seat in range(1,transport.passenger_capacity):
+			if passenger_index>=attacker_soldier_ids.size():break
+			assignments[attacker_soldier_ids[passenger_index]]=vehicle_id
+			passenger_index+=1
+	for person: BattleParticipant in battle_state.participants.values():
+		if person.side_id==SIDE_ATTACKER:person.transport_vehicle_id=str(assignments.get(person.campaign_soldier_id,""))
+
 	var attacker_zone: DeploymentZone = DeploymentZone.new(ZONE_ATTACKER, SIDE_ATTACKER, "attacker_entry")
 	_copy_ids_into(attacker_side.participant_ids, attacker_zone.allowed_participant_ids)
 	_copy_ids_into(attacker_side.vehicle_ids, attacker_zone.allowed_vehicle_ids)

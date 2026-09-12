@@ -200,7 +200,8 @@ static func _choose_candidate(
 		preview.has_battle_position = true
 		preview.battle_position = position
 		preview.set_facing_direction(pose_facing)
-		if BattleVehicleCoverService.collect_legal_body_slots(battle_state, preview).is_empty():
+		var needs_cover=bool(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(vehicle.vehicle_type_id).get("cover",true))
+		if needs_cover and BattleVehicleCoverService.collect_legal_body_slots(battle_state, preview).is_empty():
 			continue
 		return candidate
 	return {}
@@ -228,7 +229,7 @@ static func _candidate_is_free(
 		other_ghost.has_battle_position = true
 		other_ghost.battle_position = other.get("position", Vector2.ZERO)
 		other_ghost.set_facing_direction(other.get("facing", Vector2.RIGHT))
-		if BattleVehicleBodyService.bodies_intersect(ghost, other_ghost):
+		if not Geometry2D.intersect_polygons(BattleVehicleBodyService.cleared_corners(ghost,0.6),BattleVehicleBodyService.cleared_corners(other_ghost,0.6)).is_empty():
 			return false
 	return true
 
@@ -240,7 +241,8 @@ static func _generate_candidates(
 	context: BattleVehiclePlacementContext
 ) -> Array[Dictionary]:
 	var candidates: Array[Dictionary] = []
-	var usable: Rect2 = _fallback_usable_rect(own_rect, profile)
+	var extents=Vector2(absf(facing.x)*profile.half_length()+absf(facing.y)*profile.half_width(),absf(facing.y)*profile.half_length()+absf(facing.x)*profile.half_width())+Vector2.ONE*LEGAL_INSET_PAD
+	var usable=Rect2(own_rect.position+extents,own_rect.size-extents*2.)
 	var rearward: Vector2 = -facing
 	var lateral: Vector2 = Vector2(-facing.y, facing.x)
 	var rear_center: Vector2 = _rect_rear_center(usable, rearward)

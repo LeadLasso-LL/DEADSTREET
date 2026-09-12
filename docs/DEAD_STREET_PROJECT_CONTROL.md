@@ -1,3 +1,13 @@
+## Vehicle fleet installed and validated - 2026-09-12
+
+**40 models installed on the development PC and validated on Windows Godot 4.7.2.** Four classes: eight Two-Wheelers (1–2 seats), twelve Passenger Cars (1–4), ten Utility Vehicles (1–7), and ten Heavy Transports (1–12). Only Heavy Transports carry campaign resources. Seats include the driver; every moving vehicle reserves one actual unit. Six suggested models for each of the 23 factions are recommendations, not restrictions. Every model is available in the battle sandbox fleet selector.
+
+Includes prices, upkeep, movement, seats, cargo limits, purchase/cargo/save services, campaign icons, model footprints, mixed-convoy assignment, arrival placement, door cover and disembark paths. Artwork comprises 832 directional/door sprites and 40 icons, with a 17-page illustrated guide. The 2,528 model/gameplay checks and 43 mixed-convoy checks passed on Linux and Windows. Selector and script-load checks passed. A native D3D12/Forward+ run passed four visual scenarios; representative TRC transport, NBPD patrol, Raider bus and bicycle screenshots were inspected. Two-wheelers use parked arrivals; riding and pedaling animations remain necessary work.
+
+The user specifically approved writing to `C:\Users\brand\OneDrive\Documents\dead-street`; the earlier transfer block is resolved. Changes were applied with baseline hash guards and unrelated work preserved. Existing GitHub push authorization remains valid. See `tools/vehicle_fleet/README.md` and `docs/vehicle_fleet/Fleet_Specifications.md`. Git history and remote confirmation are authoritative for synchronization status.
+
+The active milestone remains the completed battle sandbox. Full campaign purchasing/loading screens, fuel/repair systems and later specialists remain separate work. This vehicle milestone does not declare the whole sandbox finished.
+
 ## Full regular roster and independent unit tiers - 2026-09-12
 
 **Built and validated; ready for owner sandbox playtest.** The accepted 23-faction, 115-outfit regular roster is connected to runtime animations. Every faction can use all six existing models in each of its five weapon classes: 690 combinations, each with all 17 regular clips in eight directions. Existing Mercer and regular Orlov atlases are retained; 636 additional animation sets complete the roster. Approved body proportions and wardrobes are preserved.

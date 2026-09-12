@@ -76,3 +76,11 @@ func get_movement_per_turn(game_state: GameState) -> float:
 	if not found:
 		return 0.0
 	return slowest
+
+func get_total_resource_capacity(game_state: GameState) -> int:
+	var total=0
+	if game_state==null:return total
+	for vehicle_id in vehicle_ids:
+		var vehicle=game_state.get_vehicle(vehicle_id)
+		if vehicle!=null:total+=vehicle.resource_capacity
+	return total
