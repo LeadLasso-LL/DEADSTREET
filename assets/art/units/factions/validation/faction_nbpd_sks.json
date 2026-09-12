@@ -1,0 +1,15 @@
+{
+  "variant": "faction_nbpd_sks",
+  "profile": "nbpd",
+  "model": "sks",
+  "role": "sniper",
+  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 60.83,
+  "generation_seconds": 21.28,
+  "render_seconds": 29.81
+}

@@ -1,0 +1,15 @@
+{
+  "variant": "faction_ravicci_benelli_m4",
+  "profile": "ravicci",
+  "model": "benelli_m4",
+  "role": "shotgun",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 62.75,
+  "generation_seconds": 16.19,
+  "render_seconds": 30.08
+}

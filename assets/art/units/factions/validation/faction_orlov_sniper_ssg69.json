@@ -1,0 +1,15 @@
+{
+  "variant": "faction_orlov_sniper_ssg69",
+  "profile": "orlov_sniper",
+  "model": "ssg69",
+  "role": "sniper",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 61.69,
+  "generation_seconds": 17.19,
+  "render_seconds": 27.81
+}

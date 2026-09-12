@@ -1,0 +1,15 @@
+{
+  "variant": "faction_orlov_sniper_rem700",
+  "profile": "orlov_sniper",
+  "model": "rem700",
+  "role": "sniper",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 54.69,
+  "generation_seconds": 12.59,
+  "render_seconds": 25.58
+}
