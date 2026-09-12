@@ -893,8 +893,8 @@
       "length": 5.12,
       "width": 2.02,
       "height": 1.32,
-      "paint": "#492c50",
-      "description": "Deep plum-black performance sedan with a low pillarless-style cabin, bronze wheels and sculpted carbon side skirts.",
+      "paint": "#181d20",
+      "description": "Gloss-black performance sedan with a low pillarless-style cabin, bronze wheels and sculpted carbon side skirts.",
       "cover": true,
       "doors": 4,
       "design_era": "contemporary_2034",
@@ -913,7 +913,7 @@
       "drive_by_heat": 30,
       "drive_by_limit_per_turn": 1,
       "drive_by_min_crew": 2,
-      "roof_color": "#20222e"
+      "roof_color": "#202629"
     },
     "workhorse": {
       "id": "workhorse",

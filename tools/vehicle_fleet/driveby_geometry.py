@@ -26,7 +26,7 @@ def nocturne(d,m,door):
  L=m['length'];Y=m['width']/2;p=m['paint'];r=.365;belt=.86
  anchors=[(-L*.49,Y*.77,.31,.73),(-L*.40,Y*.94,.25,.89),(-L*.30,Y,.24,.94),(-L*.12,Y*.93,.23,.84),(L*.15,Y*.94,.23,.88),(L*.31,Y,.24,.94),(L*.43,Y*.91,.31,.79),(L*.49,Y*.72,.37,.65)]
  wheel_body(d,m,r,[-L*.33,L*.33],anchors)
- greenhouse(d,-L*.25,L*.23,Y*.80,belt,1.32,p,.68,.35,2,'#222733')
+ greenhouse(d,-L*.25,L*.23,Y*.80,belt,1.32,p,.68,.35,2,'#202629')
  lamps(d,L,Y,belt,p,'modern')
  for side in [-1,1]:
   y=side*(Y+.013)
@@ -35,9 +35,9 @@ def nocturne(d,m,door):
   d.poly([(L*.28,y,.68),(L*.19,y,.66),(L*.17,y,.78),(L*.26,y,.79)],'#192b31',None,priority=.06)
   # Four frameless doors with slim handles, uninterrupted low roofline.
   for xx in [-L*.16,L*.07]:
-   d.line([(xx-.05,side*Y*.91,.89),(xx+.10,side*Y*.91,.89)],'#93828a',1,.07)
+   d.line([(xx-.05,side*Y*.91,.89),(xx+.10,side*Y*.91,.89)],'#899397',1,.07)
   d.line([(L*.18,side*Y*.73,1.03),(L*.21,side*Y*1.04,1.01)],'#566972',2,.06)
-  d.line([(L*.32,side*.30,.948),(L*.44,side*.41,.82)],'#8f5d7f',1,.065)
+  d.line([(L*.32,side*.30,.948),(L*.44,side*.41,.82)],'#68777d',1,.065)
   # Small integrated rear spoiler follows the deck, never a roof tower.
   d.poly([(-L*.47,side*.08,.80),(-L*.39,side*.08,.82),(-L*.39,side*Y*.82,.89),(-L*.47,side*Y*.77,.87)],CARBON,INK,1,.075)
   d.line([(-L*.491,side*.23,.68),(-L*.491,side*Y*.73,.68)],'#e39084',1,.08)
