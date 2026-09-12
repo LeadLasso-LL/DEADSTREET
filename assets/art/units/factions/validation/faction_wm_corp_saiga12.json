@@ -1,0 +1,15 @@
+{
+  "variant": "faction_wm_corp_saiga12",
+  "profile": "wm_corp",
+  "model": "saiga12",
+  "role": "shotgun",
+  "fingerprint": "67d58facfa2a5ca4b65b349c2219dc36d4f645b7d374829807a66f11021a7f7f",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 67.3,
+  "generation_seconds": 21.95,
+  "render_seconds": 35.25
+}

@@ -1,0 +1,15 @@
+{
+  "variant": "faction_ventresca_m1911",
+  "profile": "ventresca",
+  "model": "m1911",
+  "role": "pistol",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 53.97,
+  "generation_seconds": 15.16,
+  "render_seconds": 25.28
+}

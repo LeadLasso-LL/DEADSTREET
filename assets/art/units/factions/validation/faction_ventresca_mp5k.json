@@ -1,0 +1,15 @@
+{
+  "variant": "faction_ventresca_mp5k",
+  "profile": "ventresca",
+  "model": "mp5k",
+  "role": "smg",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 56.53,
+  "generation_seconds": 14.92,
+  "render_seconds": 26.02
+}

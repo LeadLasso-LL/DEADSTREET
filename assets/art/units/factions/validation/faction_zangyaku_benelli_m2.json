@@ -1,0 +1,15 @@
+{
+  "variant": "faction_zangyaku_benelli_m2",
+  "profile": "zangyaku",
+  "model": "benelli_m2",
+  "role": "shotgun",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 65.03,
+  "generation_seconds": 18.75,
+  "render_seconds": 29.72
+}

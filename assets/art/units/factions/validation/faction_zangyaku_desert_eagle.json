@@ -1,0 +1,15 @@
+{
+  "variant": "faction_zangyaku_desert_eagle",
+  "profile": "zangyaku",
+  "model": "desert_eagle",
+  "role": "pistol",
+  "fingerprint": "104a6ed9255ecbba02ffd7ae9df0c1c8fd4414a7c14ef16c82e8247beb87d3bb",
+  "frames": 1840,
+  "clips": 17,
+  "directions": 8,
+  "body_checks": 40,
+  "borders": [],
+  "seconds": 62.11,
+  "generation_seconds": 17.5,
+  "render_seconds": 28.77
+}
