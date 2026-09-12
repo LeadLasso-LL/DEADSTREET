@@ -11,6 +11,7 @@ import numpy as np
 from vehicle_detail_geometry import motorcycle,exotic,armored,shell,canopy,badge
 from fleet_2034_geometry import render as render_2034
 from endgame_geometry import render as render_endgame
+from driveby_geometry import render as render_driveby
 from PIL import Image,ImageDraw,ImageColor
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'assets/art/vehicles/fleet'
@@ -136,6 +137,7 @@ class Drawing:
   return image
 def bike(d,m):motorcycle(d,m)
 def vehicle(d,m,door=0):
+ if m['id'] in ['revenant','nocturne']:return render_driveby(d,m,door)
  return render_endgame(d,m,door) if m.get("endgame") or m.get("service_only") else render_2034(d,m,door)
 
 def build(selected=None):

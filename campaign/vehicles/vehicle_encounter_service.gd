@@ -2,14 +2,15 @@ class_name VehicleEncounterService
 extends RefCounted
 ## Stateful encounter rules used by the sandbox lab. World event generation is separate.
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
-var data: Dictionary={"version":1,"turn":0,"journeys":{},"claims":{},"resources":{},"cash":{},"accounts":{},"locations":{},"prisons":{},"heat":{},"battle_uses":{}}
+var data: Dictionary={"version":1,"turn":0,"journeys":{},"claims":{},"resources":{},"cash":{},"accounts":{},"locations":{},"prisons":{},"heat":{},"battle_uses":{},"driveby_uses":{},"roads":[]}
 func to_dict() -> Dictionary:return data.duplicate(true)
 func from_dict(saved: Dictionary) -> bool:
 	if int(saved.get("version",0))!=1:return false
 	for key in ["journeys","claims","resources","cash","accounts","locations","prisons","heat","battle_uses"]:
 		if not saved.get(key) is Dictionary:return false
 	if int(saved.get("turn",-1))<0:return false
-	data=saved.duplicate(true);return true
+	if not saved.get("driveby_uses",{}) is Dictionary or not saved.get("roads",[]) is Array:return false
+	data=saved.duplicate(true);data.turn=int(data.turn);data["driveby_uses"]=data.get("driveby_uses",{});data["roads"]=data.get("roads",[]);return true
 func result(ok: bool,message: String,extra: Dictionary={}) -> Dictionary:
 	var r={"success":ok,"message":message};r.merge(extra,true);return r
 func start_journey(id: String,owner: String,vehicles: Array) -> Dictionary:
@@ -24,7 +25,7 @@ func start_journey(id: String,owner: String,vehicles: Array) -> Dictionary:
 		for u in units:
 			if str(u).is_empty() or seen_units.has(str(u)):return result(false,"An occupant cannot be assigned twice.")
 			seen_units[str(u)]=true
-		seen_vehicles[key]={"model":m.id,"occupants":units.duplicate(),"jammer":false,"ended_turn":-1}
+		seen_vehicles[key]={"model":m.id,"occupants":units.duplicate(),"jammer":false,"ended_turn":-1,"road_node":str(v.get("road_node","")),"movement_left":float(m.movement_per_turn)}
 	data.journeys[id]={"owner":owner,"vehicles":seen_vehicles,"used":{},"closed":false}
 	return result(true,"Journey manifest registered.")
 func vehicle(journey: String,id: String,ability: String="") -> Dictionary:
@@ -34,7 +35,7 @@ func vehicle(journey: String,id: String,ability: String="") -> Dictionary:
 	if v.is_empty() or (not ability.is_empty() and Models.model(v.model).get("ability_id","")!=ability):return {}
 	return v
 func can_move(journey: String,id: String) -> bool:
-	var v=vehicle(journey,id);return not v.is_empty() and int(v.ended_turn)!=int(data.turn)
+	var v=vehicle(journey,id);return not v.is_empty() and int(v.ended_turn)!=int(data.turn) and float(v.get("movement_left",Models.model(v.model).movement_per_turn))>0.
 func once(journey: String,key: String) -> bool:
 	if data.journeys[journey].used.has(key):return false
 	data.journeys[journey].used[key]=true;return true
@@ -106,6 +107,9 @@ func deliver_resources(id: String,destination: String) -> Dictionary:
 	s.status="delivered";return result(true,"Sealed cargo delivered once.")
 func advance_turn() -> Array:
 	data.turn=int(data.turn)+1;var paid=[]
+	for j in data.journeys.values():
+		if j.get("closed",false):continue
+		for v in j.vehicles.values():v.movement_left=float(Models.model(v.model).movement_per_turn)
 	for id in data.claims:
 		var claim=data.claims[id];var shipment=data.resources[id];var target=data.locations.get(shipment.origin,{})
 		if claim.paid or int(claim.due)>int(data.turn) or target.get("owner","")!=shipment.owner:continue
@@ -142,3 +146,31 @@ func rescue_prisoners(id: String,rescuer: String,battle_won: bool) -> Dictionary
 		if not p.get("alive",true):continue
 		var unit=p.duplicate(true);unit.status="freed";unit.returns_to=unit.allegiance;freed.append(unit)
 	s.status="rescued";return result(true,"Surviving prisoners freed; original allegiances retained.",{"freed":freed,"auto_recruited":0})
+
+func travel_road(journey: String,id: String,destination: String) -> Dictionary:
+	var v=vehicle(journey,id)
+	if v.is_empty() or not can_move(journey,id):return result(false,"Vehicle has no movement available.")
+	var source=str(v.get("road_node",""));var cost=-1.
+	for edge in data.roads:
+		if edge.get("kind","")=="road" and edge.get("from","")==source and edge.get("to","")==destination:
+			cost=float(edge.get("distance",-1));break
+	var remaining=float(v.get("movement_left",Models.model(v.model).movement_per_turn))
+	if source.is_empty() or destination==source or not is_finite(cost) or cost<=0. or cost>remaining:return result(false,"A connected road within the remaining movement budget is required.")
+	v.road_node=destination;v.movement_left=maxf(0.,remaining-cost)
+	return result(true,"Road movement completed.",{"road_node":destination,"distance_spent":cost,"movement_remaining":v.movement_left})
+func drive_by(journey: String,id: String,target_id: String) -> Dictionary:
+	var v=vehicle(journey,id,"drive_by");var target=data.locations.get(target_id,{})
+	if v.is_empty() or int(v.ended_turn)==int(data.turn):return result(false,"An available drive-by vehicle is required.")
+	var m=Models.model(v.model);var owner=str(data.journeys[journey].owner)
+	if v.occupants.size()<int(m.drive_by_min_crew):return result(false,"Drive-By requires a driver and at least one passenger unit.")
+	if target.is_empty() or target.get("kind","") not in ["business","building"] or target.get("status","")!="operational":return result(false,"Target must be an intact business or building.")
+	if str(target.get("owner","")).is_empty() or target.owner==owner:return result(false,"Friendly and unowned locations are not valid raid targets.")
+	if target.get("defenders",-1)!=0:return result(false,"Defenders present or defense state unknown. Resolve a normal battle.")
+	if str(v.get("road_node","")).is_empty() or target.get("road_node","")!=v.road_node:return result(false,"Reach the target's connected roadside location first.")
+	var use_key=id+":"+str(int(data.turn))
+	if data.driveby_uses.has(use_key):return result(false,"This vehicle has already performed its drive-by this turn.")
+	var remaining=float(v.get("movement_left",m.movement_per_turn))
+	if not is_finite(remaining) or remaining<0.:return result(false,"Invalid movement budget.")
+	data.driveby_uses[use_key]=target_id;target.status="destroyed";target.hp=0;target.income_active=false;target.production_active=false
+	data.heat[owner]=float(data.heat.get(owner,0))+float(m.drive_by_heat)
+	return result(true,"Undefended target destroyed. Remaining movement retained.",{"target":target_id,"movement_remaining":remaining,"heat_added":int(m.drive_by_heat),"loot":{},"territory_captured":false,"turn_ended":false})

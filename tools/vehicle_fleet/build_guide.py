@@ -68,21 +68,21 @@ def start(title,subtitle):
  page+=1;rect(0,0,W,H,BG);rect(34,34,7,80,GOLD)
  text(58,29,'DEAD STREET / FLEET GUIDE',14,GOLD,'Bold')
  text(58,53,title,34,FG,'Bold');para(58,101,subtitle,784,16,MUTED)
- rect(34,1190,832,1,BORDER);text(35,1210,'71 models / 4 classes / Fictional game specifications',13,MUTED)
+ rect(34,1190,832,1,BORDER);text(35,1210,'73 models / 4 classes / Fictional game specifications',13,MUTED)
  text(819,1208,f'{page:02d}',16,GOLD,'Bold')
 def end():c.showPage()
-start('The 2034 fleet','71 vehicles / Campaign transport and tactical arrivals.')
+start('The 2034 fleet','73 vehicles / Campaign transport and tactical arrivals.')
 text(58,165,'FROM A $90 BICYCLE TO A TROOP TRANSPORT',21,GOLD,'Bold')
 para(58,207,'Civilian vehicles do most of the work. Faction identity comes from the model, condition, and occasional official livery - with broad access in the test sandbox.',780,24,FG)
 for id,x,y in [('yardbird',40,340),('halcyon',440,340),('lastlight',40,565),('aegis',440,565)]:
  image(id,x,y,380,190);text(x+18,y+192,MODELS[id]['name'],22,FG,'Bold')
-for i,(key,title,n,cap) in enumerate([('two_wheelers','Two-Wheelers',14,'1-2'),('passenger_cars','Passenger Cars',21,'1-4'),('utility_vehicles','Utility Vehicles',15,'1-7'),('heavy_transports','Heavy Transports',21,'1-12')]):
+for i,(key,title,n,cap) in enumerate([('two_wheelers','Two-Wheelers',15,'1-2'),('passenger_cars','Passenger Cars',22,'1-4'),('utility_vehicles','Utility Vehicles',15,'1-7'),('heavy_transports','Heavy Transports',21,'1-12')]):
  x=40+(i%2)*420;y=850+(i//2)*130;rect(x,y,402,112,PANEL,BORDER)
  text(x+17,y+13,title,22,GOLD,'Bold');text(x+17,y+52,f'{n} models / {cap} units',21)
 para(58,1127,'Prices and upkeep are the first balance pass. Flagship abilities are explicit. Luxury prices do not grant hidden combat bonuses.',780,17)
 end()
 start('How the fleet works','Shared rules for every model in this guide.')
-rules=[('Seats include the driver','A four-seat car moves four of your units in total. Every moving vehicle needs one actual unit to drive or ride it; no free extra driver is created.'),('Travel uses road distance per turn','The movement number is campaign distance, not real-world mph. A convoy moves at the pace of its slowest vehicle. Splitting a convoy can preserve the speed of its faster group.'),('Heavy Transports carry all freight','Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits. Independent cash trucks and prison carriers use dedicated manifests instead of general freight.'),('Real seats, realistic compromises','Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.'),('Parked vehicles and cover','These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.'),('Everything is available in the sandbox','All 71 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.'),('2034, with intentional older vehicles','Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems. Flagship abilities are playable in Encounter Lab; campaign event generation is not connected yet.')]
+rules=[('Seats include the driver','A four-seat car moves four of your units in total. Every moving vehicle needs one actual unit to drive or ride it; no free extra driver is created.'),('Travel uses road distance per turn','The movement number is campaign distance, not real-world mph. A convoy moves at the pace of its slowest vehicle. Splitting a convoy can preserve the speed of its faster group.'),('Heavy Transports carry all freight','Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits. Independent cash trucks and prison carriers use dedicated manifests instead of general freight.'),('Real seats, realistic compromises','Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.'),('Parked vehicles and cover','These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.'),('Everything is available in the sandbox','All 73 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.'),('2034, with intentional older vehicles','Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems. Flagship abilities are playable in Encounter Lab; campaign event generation is not connected yet.')]
 y=163
 for heading,body in rules:
  text(58,y,heading,22,GOLD,'Bold');y=para(58,y+34,body,783,18,FG,24)+20
@@ -119,7 +119,7 @@ for offset in range(0,len(keys),6):
  end()
 c.save()
 # Searchable source tables and decisions, generated alongside the illustrations.
-lines=['# Dead Street - Vehicle Fleet','', '71 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.','', 'Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.','']
+lines=['# Dead Street - Vehicle Fleet','', '73 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.','', 'Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.','']
 for key,info in DATA['classes'].items():
  lines+=['## '+info['name'],'','| Model | Price | Upkeep / turn | Seats | Road units / turn | Cargo slots | Footprint (m) |','|---|---:|---:|---:|---:|---:|---|']
  for m in MODELS.values():
@@ -130,7 +130,7 @@ for key,ids in DATA['faction_preferences'].items():lines.append('| '+FACTIONS[ke
 lines+=['','## Rules and boundaries','']
 for heading,body in rules:lines+=['- **'+heading+':** '+body]
 lines+=['','## Balance examples','','- Five units on five Yardbird bicycles: $450 total, zero upkeep, 1 road unit per turn.','- Five units in one Rancher Seven: $22,500, $61 per turn, 4.7 road units per turn, two spare seats.','- Twelve units in one Shuttle Twelve: $24,500, $76 per turn, 3.9 movement, two cargo slots.','- One Meridian Highroof and one Shortbox 11: ten seats, thirty cargo slots, $63,500 purchase and $184 per turn. Convoy movement is 3.2.','- A fast car escorting a slow freight truck inherits the truck\'s road pace while grouped.','','## Implementation status','','The catalog and artwork use the same model IDs as the sandbox fleet selector. Current validation results are recorded in tools/vehicle_fleet/validation.json, validation_mixed.json and native_review/report.json; see tools/vehicle_fleet/README.md for the reviewed milestone. Two-wheelers currently use parked tactical arrivals; riding, pedaling and mounted-passenger animations are not yet authored. Four-wheel vehicles use the existing arrival presentation with model-specific directional and door art. Repository history records commit and push status.','']
-lines+=['## Endgame abilities','', 'Eight flagships have tested encounter rules. The Encounter Lab is available from the fleet selector. Automatic campaign events and battle ability triggers remain future integration work.', '', '| Vehicle | Ability | Effect | Limits |', '|---|---|---|---|']
+lines+=['## Endgame abilities','', 'Ten premium vehicles have encounter rules. The Encounter Lab is available from the fleet selector. Automatic campaign events and battle ability triggers remain future integration work.', '', '| Vehicle | Ability | Effect | Limits |', '|---|---|---|---|']
 for m in MODELS.values():
  if m.get('endgame'):lines.append(f"| {m['name']} | {m['ability_name']} | {m['ability_summary']} | {m['ability_limits']} |")
 lines+=['', 'Independent services: Sterling CIT-4 carries $75,000 with 3 crew; Sterling Bastion Reserve carries $300,000 with 4 crew; Custodian P8 carries 3 guards plus 8 prisoners. Cash debits source on dispatch and credits one destination or victorious captor exactly once. Prisoner rescue preserves original allegiance. These three are unlocked for sandbox encounters but excluded from faction purchasing.', '']
@@ -142,7 +142,7 @@ row_heights=[max(overview_images[m['id']].height for m in overview_models[i:i+5]
 poster=Image.new('RGB',(1800,150+sum(row_heights)+20),BG);draw=ImageDraw.Draw(poster)
 f=lambda n:ImageFont.truetype(str(bold),n)
 draw.text((45,30),'DEAD STREET / THE VEHICLE FLEET',fill=FG,font=f(42))
-draw.text((47,88),'71 models - consistent illustration scale - 4 transport classes',fill=MUTED,font=ImageFont.truetype(str(regular),22))
+draw.text((47,88),'73 models - consistent illustration scale - 4 transport classes',fill=MUTED,font=ImageFont.truetype(str(regular),22))
 for i,m in enumerate(overview_models):
  row=i//5;x=(i%5)*350+25;y=150+sum(row_heights[:row]);art_bottom=y+row_heights[row]-80
  im=overview_images[m['id']]

@@ -1,0 +1,10 @@
+{
+  "engine": "4.7.2-stable (official)",
+  "errors": [],
+  "lab_scenarios": 2,
+  "models": [
+    "revenant",
+    "nocturne"
+  ],
+  "scenarios": 1
+}

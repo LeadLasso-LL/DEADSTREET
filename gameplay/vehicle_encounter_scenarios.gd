@@ -1,6 +1,6 @@
 extends RefCounted
 const Service=preload("res://campaign/vehicles/vehicle_encounter_service.gd")
-const IDS=["wraith_zero","crownfire","eidolon","asterion","nomad","archangel","leviathan","palisade","sterling_cit","sterling_reserve","custodian"]
+const IDS=["wraith_zero","crownfire","eidolon","asterion","nomad","archangel","leviathan","palisade","sterling_cit","sterling_reserve","custodian","revenant","nocturne"]
 const BRIEFS=[
 "Scout the connected road ahead. Counter-test: try to scout an unconnected location.",
 "Escape one mobile interception. Movement ends this turn. Counter-test: a physical checkpoint.",
@@ -12,16 +12,21 @@ const BRIEFS=[
 "Dispatch 10 supplies, then lose the truck. Refund at the origin after two turns. Counter-test: capture the origin; refund waits until it is restored.",
 "Dispatch $75,000 from the bank. Resolve to deliver; counter-test intercepts and steals it. Cash is credited exactly once.",
 "Dispatch $300,000 from the bank. Resolve to deliver; counter-test intercepts and steals it. There is no bonded-cargo protection.",
-"Dispatch three guards and eight prisoners. Resolve frees surviving prisoners after victory; counter-test rejects an unsuccessful raid. Allegiances stay unchanged."
+"Dispatch three guards and eight prisoners. Resolve frees surviving prisoners after victory; counter-test rejects an unsuccessful raid. Allegiances stay unchanged.",
+"Reach the roadside shop, destroy it, then press Run again to continue driving. Once per vehicle per turn; +30 heat. Counter-test: defended building.",
+"Reach the roadside business, destroy it, then press Run again to continue driving. Remaining movement is preserved, never refilled. Counter-test: defended building."
 ]
 var service=Service.new()
 func reset():
  service=Service.new()
  var vehicles=[]
- for id in IDS:vehicles.append({"id":id,"model":id,"occupants":[id+"_driver"]})
+ for id in IDS:vehicles.append({"id":id,"model":id,"occupants":[id+"_driver",id+"_passenger"] if id in ["revenant","nocturne"] else [id+"_driver"],"road_node":"start"})
  service.start_journey("lab","player",vehicles)
  service.data.accounts={"bank":500000.,"destination":0.,"interceptor":0.}
  service.data.locations={"origin":{"owner":"player","stock":{"supplies":20.}},"destination":{"owner":"player","stock":{"supplies":0.}}}
+ for id in ["revenant","nocturne"]:service.data.locations[id+"_shop"]={"owner":"enemy","kind":"business","status":"operational","defenders":0,"road_node":"strip","hp":100,"income_active":true,"production_active":true}
+ service.data.locations.defended={"owner":"enemy","kind":"building","status":"operational","defenders":1,"road_node":"strip","hp":100,"income_active":true,"production_active":true}
+ service.data.roads=[{"from":"start","to":"strip","kind":"road","distance":2.},{"from":"strip","to":"exit","kind":"road","distance":2.5}]
 func run(index: int,counter: bool=false) -> Dictionary:
  var id=IDS[index]
  match index:
@@ -50,9 +55,20 @@ func run(index: int,counter: bool=false) -> Dictionary:
     for n in range(8):prisoners.append({"id":"prisoner_%d"%n,"allegiance":"eastex" if n<4 else "whittaker","alive":true})
     return service.dispatch_prisoners("transfer",prisoners,3)
    return service.rescue_prisoners("transfer","player",not counter)
+  11,12:
+   var v=service.vehicle("lab",id)
+   if v.road_node=="start":
+    var moved=service.travel_road("lab",id,"strip")
+    if not moved.success:return moved
+   if counter:return service.drive_by("lab",id,"defended")
+   if service.data.locations[id+"_shop"].status=="destroyed":return service.travel_road("lab",id,"exit")
+   return service.drive_by("lab",id,id+"_shop")
  return service.result(false,"Unknown scenario.")
-func state_text() -> String:
+func state_text(index: int=-1) -> String:
  var d=service.data
+ if index>=11:
+  var id=IDS[index];var v=service.vehicle("lab",id);var target=d.locations[id+"_shop"]
+  return "TURN %d  |  HEAT %d\nRoad location: %s\nRemaining movement: %.1f / %.1f\nTarget: %s  |  Defenders: %d\nIncome: %s  |  Production: %s\nTerritory stays with its owner. No loot awarded.\nDefended test building: %s / 1 defender"%[d.turn,int(d.heat.get("player",0)),v.road_node,float(v.movement_left),float(Service.Models.model(v.model).movement_per_turn),target.status,target.defenders,"active" if target.income_active else "stopped","active" if target.production_active else "stopped",d.locations.defended.status]
  var text="TURN %d    |    HEAT %d\n"%[d.turn,int(d.heat.get("player",0))]
  text+="Bank $%s   Destination $%s   Interceptor $%s\n"%[str(int(d.accounts.bank)),str(int(d.accounts.destination)),str(int(d.accounts.interceptor))]
  text+="Origin: %s · %d supplies   |   Destination: %d supplies\n"%[d.locations.origin.owner,int(d.locations.origin.stock.supplies),int(d.locations.destination.stock.supplies)]

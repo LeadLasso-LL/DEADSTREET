@@ -42,10 +42,11 @@ func execute(counter: bool):
  var result=scenarios.run(picker.selected,counter)
  outcome.text=("SUCCESS · " if result.success else "STOPPED · ")+result.message
  if result.has("blockade"):outcome.text+="\nRoad ahead: %s blockade · %d units · %d vehicles"%[result.blockade,result.units,result.vehicles]
+ if result.has("movement_remaining"):outcome.text+="\n%.1f road units remaining. Turn %d."%[float(result.movement_remaining),scenarios.service.data.turn]
  if result.has("freed"):outcome.text+="\n%d survivors return to their original factions. No automatic recruitment."%result.freed.size()
  refresh()
 func refresh():
- var id=Scenarios.IDS[picker.selected];brief.text=Scenarios.BRIEFS[picker.selected];icon.texture=Models.icon(id);state_label.text=scenarios.state_text()
+ var id=Scenarios.IDS[picker.selected];brief.text=Scenarios.BRIEFS[picker.selected];icon.texture=Models.icon(id);state_label.text=scenarios.state_text(picker.selected)
 func load_snapshot():
  var raw=JSON.parse_string(FileAccess.get_file_as_string("user://vehicle_encounter_lab.json")) if FileAccess.file_exists("user://vehicle_encounter_lab.json") else null
  outcome.text="Snapshot restored." if raw is Dictionary and scenarios.service.from_dict(raw) else "No valid saved snapshot."

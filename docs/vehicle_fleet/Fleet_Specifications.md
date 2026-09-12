@@ -1,6 +1,6 @@
 # Dead Street - Vehicle Fleet
 
-71 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
+73 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
 
 Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.
 
@@ -22,6 +22,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Cinder 900 | $12,500 | $24 | 2 | 5.6 | 0 | 2.30 x 0.85 |
 | Wraith Zero | $88,000 | $145 | 1 | 7.2 | 0 | 2.25 x 0.82 |
 | Crownfire V-Twin | $125,000 | $225 | 2 | 7.0 | 0 | 2.80 x 1.02 |
+| Revenant R2 | $165,000 | $310 | 2 | 7.4 | 0 | 2.32 x 0.86 |
 
 ## Passenger Cars
 
@@ -48,6 +49,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Halcyon H1 | $148,000 | $168 | 2 | 7.4 | 0 | 4.72 x 2.04 |
 | Eidolon GT | $640,000 | $950 | 4 | 6.9 | 0 | 5.20 x 2.04 |
 | Asterion One | $980,000 | $1400 | 2 | 7.8 | 0 | 4.88 x 2.12 |
+| Nocturne RS | $1,150,000 | $1650 | 4 | 7.1 | 0 | 5.12 x 2.02 |
 
 ## Utility Vehicles
 
@@ -130,7 +132,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 - **Heavy Transports carry all freight:** Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits. Independent cash trucks and prison carriers use dedicated manifests instead of general freight.
 - **Real seats, realistic compromises:** Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.
 - **Parked vehicles and cover:** These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.
-- **Everything is available in the sandbox:** All 71 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
+- **Everything is available in the sandbox:** All 73 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
 - **2034, with intentional older vehicles:** Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems. Flagship abilities are playable in Encounter Lab; campaign event generation is not connected yet.
 
 ## Balance examples
@@ -147,14 +149,16 @@ The catalog and artwork use the same model IDs as the sandbox fleet selector. Cu
 
 ## Endgame abilities
 
-Eight flagships have tested encounter rules. The Encounter Lab is available from the fleet selector. Automatic campaign events and battle ability triggers remain future integration work.
+Ten premium vehicles have encounter rules. The Encounter Lab is available from the fleet selector. Automatic campaign events and battle ability triggers remain future integration work.
 
 | Vehicle | Ability | Effect | Limits |
 |---|---|---|---|
 | Wraith Zero | Forward Eye | Scout the next connected road location before entering. | Reveals the blockade and convoy strength at one adjacent road node; it does not reveal the entire map. |
 | Crownfire V-Twin | Breakaway | Escape one mobile interception per journey. | Ends this vehicle's movement for the turn. Roadblocks still stop it; other convoy vehicles are not protected. |
+| Revenant R2 | Drive-By | Destroy an undefended roadside business or building and retain remaining movement. | Once per vehicle per turn. Driver plus passenger required. Adds 30 heat; no free travel, capture or loot. Defended targets block the ability. |
 | Eidolon GT | Ghost Channel | An active jammer blocks routine police pullover events. | Wanted checkpoints and deliberate interceptions still work. Only this car receives the protection. |
 | Asterion One | Flanking Arrival | Choose an alternate connected road entrance for its occupants. | The entrance must be legal, connected and available. It does not relocate the rest of the convoy. |
+| Nocturne RS | Drive-By | Destroy an undefended roadside business or building and retain remaining movement. | Once per vehicle per turn. Driver plus passenger required. Adds 30 heat; no free travel, capture or loot. Defended targets block the ability. |
 | Nomad Sovereign 6x6 | Cross-Country | Take designated dirt and wilderness connections. | The vehicle must split from companions that cannot use the route. No water, walls or unmarked shortcuts. |
 | Archangel Recovery | Life Support | Recover one critically wounded occupant per battle. | Requires reaching a secure extraction zone alive. The survivor remains wounded and unavailable until recovery. |
 | Leviathan Breacher | Breach Charge | Force through one light blockade per journey. | Fortified checkpoints still require combat. A breach adds 25 heat and protects only its own occupants. |

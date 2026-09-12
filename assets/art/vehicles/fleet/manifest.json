@@ -188,6 +188,18 @@
         "crownfire_ne_0.png"
       ]
     },
+    "revenant": {
+      "frames": [
+        "revenant_e_0.png",
+        "revenant_se_0.png",
+        "revenant_s_0.png",
+        "revenant_sw_0.png",
+        "revenant_w_0.png",
+        "revenant_nw_0.png",
+        "revenant_n_0.png",
+        "revenant_ne_0.png"
+      ]
+    },
     "rattleback": {
       "frames": [
         "rattleback_e_0.png",
@@ -774,6 +786,34 @@
         "asterion_ne_0.png",
         "asterion_ne_1.png",
         "asterion_ne_2.png"
+      ]
+    },
+    "nocturne": {
+      "frames": [
+        "nocturne_e_0.png",
+        "nocturne_e_1.png",
+        "nocturne_e_2.png",
+        "nocturne_se_0.png",
+        "nocturne_se_1.png",
+        "nocturne_se_2.png",
+        "nocturne_s_0.png",
+        "nocturne_s_1.png",
+        "nocturne_s_2.png",
+        "nocturne_sw_0.png",
+        "nocturne_sw_1.png",
+        "nocturne_sw_2.png",
+        "nocturne_w_0.png",
+        "nocturne_w_1.png",
+        "nocturne_w_2.png",
+        "nocturne_nw_0.png",
+        "nocturne_nw_1.png",
+        "nocturne_nw_2.png",
+        "nocturne_n_0.png",
+        "nocturne_n_1.png",
+        "nocturne_n_2.png",
+        "nocturne_ne_0.png",
+        "nocturne_ne_1.png",
+        "nocturne_ne_2.png"
       ]
     },
     "workhorse": {

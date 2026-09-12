@@ -1,6 +1,6 @@
 # Dead Street vehicle fleet - endgame expansion
 
-71 models: **14 Two-Wheelers, 21 Passenger Cars, 15 Utility Vehicles and 21 Heavy Transports**. All models are unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources; faction motor pools remain suggestions.
+73 models: **15 Two-Wheelers, 22 Passenger Cars, 15 Utility Vehicles and 21 Heavy Transports**. All models are unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources; faction motor pools remain suggestions.
 
 ## Art direction
 
@@ -16,7 +16,7 @@ Lastlight and Dustchapel are dedicated Raiders of the Sand transports, with repa
 
 Use **VEHICLE FLEET** in Arsenal Review. Every convoy vehicle needs an actual unit to drive it, and combined seats must accommodate the attackers. Models feed campaign forces, movement, arrival placement, troop assignment, parked collision/cover, disembark paths and save/load. Convoys travel at their slowest member's road movement rate.
 
-Artwork contains **1,480 sprites and 71 icons**: 57 enclosed/four-wheel vehicles with eight facings and three door phases, plus fourteen two-wheelers with eight facings. The complete guide contains 26 pages. Five new endgame sheets complement the historical 60-model 2034 sheets.
+Artwork contains **1,512 sprites and 73 icons**: 58 enclosed/four-wheel vehicles with eight facings and three door phases, plus fifteen two-wheelers with eight facings. The complete guide contains 26 pages. Five new endgame sheets complement the historical 60-model 2034 sheets.
 
 Two-wheelers continue to use parked arrivals. Riding, pedaling and mounted-passenger animations remain pending. Vehicle damage, turrets and campaign fuel/charging/repair interfaces are not part of this pass. Electric models currently use their listed upkeep values; they do not enable an unimplemented charging system. Vehicle styling adds no hidden unit armor or outfit overlays.
 
@@ -52,7 +52,7 @@ The development repository received baseline-guarded source changes. Unrelated w
 
 ## Endgame abilities and independent services
 
-Eight flagship vehicles are the two highest-price and highest-upkeep choices in each class: Wraith Zero, Crownfire V-Twin, Eidolon GT, Asterion One, Nomad Sovereign 6x6, Archangel Recovery, Leviathan Breacher and Palisade Escrow. Each has an explicit ability and counterplay. Catalog metadata and the phone sheets describe the exact boundaries. New native art lives in `endgame_geometry.py`; existing 60-model art is preserved. `build_art.py` accepts model IDs to rebuild only selected sprites.
+The original endgame expansion added two premium vehicles per class: Wraith Zero, Crownfire V-Twin, Eidolon GT, Asterion One, Nomad Sovereign 6x6, Archangel Recovery, Leviathan Breacher and Palisade Escrow. Each has an explicit ability and counterplay. Catalog metadata and the phone sheets describe the exact boundaries. New native art lives in `endgame_geometry.py`; existing 60-model art is preserved. `build_art.py` accepts model IDs to rebuild only selected sprites.
 
 Sterling CIT-4 and Sterling Bastion Reserve are independent cash services, carrying $75,000 with three crew and $300,000 with four crew. Custodian P8 has three guard seats plus eight separate prisoner positions. These three models are available in the sandbox; the faction purchase service rejects them. Their listed prices are reference fleet values. They do not carry ordinary resource freight.
 
@@ -66,3 +66,13 @@ Windows Godot 4.7.2 passed **4,387 full-fleet checks, 43 mixed-convoy checks and
 godot --headless --path . --script tools/vehicle_fleet/validate_encounters.gd
 godot --path . --script tools/vehicle_fleet/review_endgame.gd
 ```
+
+## Drive-by vehicles — 2026-09-12
+
+Revenant R2: two seats, 7.4 road units per turn, $165,000 purchase, $310 upkeep. Nocturne RS: four seats, 7.1 movement, $1,150,000 purchase, $1,650 upkeep. Both have native eight-direction artwork; Nocturne includes three door phases. The two models are unlocked in the fleet selector and work with the existing arrival/cover/driver systems.
+
+Drive-By destroys an operational, enemy-owned, undefended roadside business/building. It needs a driver and passenger and is limited to once per vehicle per turn. One defender or unknown defense state blocks the action. Destruction stops income and production, leaves ownership unchanged, gives no loot, adds 30 heat, and neither advances the turn nor refills movement. Normal connected-road distance is still deducted. Charges and remaining movement survive lab snapshot save/load. Even a strike made at zero remaining movement grants no further travel.
+
+In Encounter Lab, select Revenant or Nocturne. Run first drives two road units to the target and destroys it; Run again drives another 2.5 road units to the exit. Counter-test targets a building with one defender. The live display reports target status, income/production, heat, position and remaining movement. This remains encounter-lab functionality; campaign target destruction/world dispatch integration is not automatically active.
+
+Build: `python tools/vehicle_fleet/build_driveby_sheet.py`. Rules gate: `godot --headless --path . --script tools/vehicle_fleet/validate_driveby.gd`. Model gate can be limited to this addition with `godot --headless --path . --script tools/vehicle_fleet/validate_fleet.gd -- revenant nocturne`. Its report is `validation_driveby_fleet.json`, preserving the previous full-fleet report. Native review: `review_driveby.gd`.

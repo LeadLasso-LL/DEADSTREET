@@ -11,6 +11,7 @@ class HeadlessView extends Node:
 	var _dusk_pan=Vector2.ZERO
 	var deployment_controller
 	func _frame_camera():pass
+var selected_models=Array(OS.get_cmdline_user_args())
 var checks=0
 var errors: Array=[]
 func _initialize():call_deferred("run")
@@ -18,7 +19,7 @@ func check(ok: bool,message: String):
 	checks+=1
 	if not ok:errors.append(message);printerr("FLEET_FAIL ",message)
 func run():
-	check(Models.all_ids().size()==71,"71 models")
+	check(Models.all_ids().size()==73,"73 models")
 	check(Models.data().faction_preferences.size()==23,"23 faction preferences")
 	for faction in Models.data().faction_preferences:
 		for id in Models.preferences(faction):check(Models.has_model(id),"preference "+str(id))
@@ -31,6 +32,7 @@ func run():
 			check(covered,brand+" branded class "+category)
 	var manifest: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Models.ART+"manifest.json"))
 	for id: String in Models.all_ids():
+		if not selected_models.is_empty() and not selected_models.has(id):continue
 		var m=Models.model(id);var c: Dictionary=Models.data().classes[m.vehicle_class]
 		check(m.unit_capacity>=1 and m.unit_capacity<=c.max_units,id+" class capacity")
 		check((m.resource_capacity>0)==(bool(c.resources) and not m.get("service_only",false)),id+" exclusive freight class")
@@ -60,6 +62,7 @@ func run():
 	check(bought.success and gang.money==983500.,"campaign vehicle purchase")
 	# Every model completes real campaign travel, parking, deployment and troop assignment.
 	for id: String in Models.all_ids():
+		if not selected_models.is_empty() and not selected_models.has(id):continue
 		var convoy=[]
 		for i in range(ceili(5./float(Models.model(id).unit_capacity))):convoy.append(id)
 		var runtime=load("res://gameplay/gameplay_runtime.gd").new()
@@ -87,7 +90,8 @@ func run():
 		print("FLEET_MODEL_TEST ",id,flush_stdout())
 		runtime.free();await process_frame
 	print("FLEET_VALIDATION checks=",checks," errors=",errors)
-	var file=FileAccess.open("res://tools/vehicle_fleet/validation.json",FileAccess.WRITE)
-	file.store_string(JSON.stringify({"checks":checks,"errors":errors},"  "))
+	var report_path="res://tools/vehicle_fleet/validation.json" if selected_models.is_empty() else "res://tools/vehicle_fleet/validation_driveby_fleet.json"
+	var file=FileAccess.open(report_path,FileAccess.WRITE)
+	file.store_string(JSON.stringify({"checks":checks,"errors":errors,"models_tested":Models.all_ids() if selected_models.is_empty() else selected_models,"catalog_models":Models.all_ids().size()},"  "))
 	quit(0 if errors.is_empty() else 1)
 func flush_stdout():return ""
