@@ -1146,3 +1146,10 @@ Arrival choices, four open door cover spots, compact context panel, stalled aggr
 ### Harold battle effects and aftermath — 2026-09-10
 
 Added modestly stronger hit spray, wounded trails and death pools; removed hit circles and floating combat-state labels. Exposed navigation to cover gains 18% speed without changing base or wounded tuning. All three requested victory endings now play before results: attackers enter the objective; defenders kneel beside fallen comrades; casualty-free defenders regroup, with wounded entering and healthy guarding outward. Original 72 BPM muffled 808 apartment instrumental and dry weapon revision 3 are reusable and reproducible. Heartbeat/start is preserved exactly. See docs/HAROLD_BATTLE_FINISH_2026-09-10.md and docs/references/battle_finish. Campaign consequences remain deferred.
+
+
+## Endgame vehicle expansion — 2026-09-12
+
+Active objective remains the completed battle sandbox. Fleet expands from 60 to 71 with two endgame flagships per class, two independent bank cash trucks and one prison carrier. New artwork, costs, upkeep, seats, movement and class limits are catalog-backed. Every model is available in the sandbox; independent services are excluded from normal faction purchase. Existing unit outfits and armor-as-HP rules are unchanged.
+
+Eight named abilities are implemented as stateful rules in the playable Vehicle Fleet -> Encounter Lab, including journey charges, scoped occupants, heat, secure extraction, delayed bonded cargo claims, source ownership checks, exactly-once bank settlement and allegiance-preserving prisoner release. Automatic world encounter generation and actual battle ability triggers remain a later integration step. Do not describe these as automatically active in the normal campaign. The lab supports snapshot save/load and positive/counterplay scenarios. See tools/vehicle_fleet/README.md and docs/vehicle_fleet/endgame/Dead_Street_Endgame_Fleet.pdf.

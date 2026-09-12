@@ -164,6 +164,30 @@
         "cinder_ne_0.png"
       ]
     },
+    "wraith_zero": {
+      "frames": [
+        "wraith_zero_e_0.png",
+        "wraith_zero_se_0.png",
+        "wraith_zero_s_0.png",
+        "wraith_zero_sw_0.png",
+        "wraith_zero_w_0.png",
+        "wraith_zero_nw_0.png",
+        "wraith_zero_n_0.png",
+        "wraith_zero_ne_0.png"
+      ]
+    },
+    "crownfire": {
+      "frames": [
+        "crownfire_e_0.png",
+        "crownfire_se_0.png",
+        "crownfire_s_0.png",
+        "crownfire_sw_0.png",
+        "crownfire_w_0.png",
+        "crownfire_nw_0.png",
+        "crownfire_n_0.png",
+        "crownfire_ne_0.png"
+      ]
+    },
     "rattleback": {
       "frames": [
         "rattleback_e_0.png",
@@ -696,6 +720,62 @@
         "halcyon_ne_2.png"
       ]
     },
+    "eidolon": {
+      "frames": [
+        "eidolon_e_0.png",
+        "eidolon_e_1.png",
+        "eidolon_e_2.png",
+        "eidolon_se_0.png",
+        "eidolon_se_1.png",
+        "eidolon_se_2.png",
+        "eidolon_s_0.png",
+        "eidolon_s_1.png",
+        "eidolon_s_2.png",
+        "eidolon_sw_0.png",
+        "eidolon_sw_1.png",
+        "eidolon_sw_2.png",
+        "eidolon_w_0.png",
+        "eidolon_w_1.png",
+        "eidolon_w_2.png",
+        "eidolon_nw_0.png",
+        "eidolon_nw_1.png",
+        "eidolon_nw_2.png",
+        "eidolon_n_0.png",
+        "eidolon_n_1.png",
+        "eidolon_n_2.png",
+        "eidolon_ne_0.png",
+        "eidolon_ne_1.png",
+        "eidolon_ne_2.png"
+      ]
+    },
+    "asterion": {
+      "frames": [
+        "asterion_e_0.png",
+        "asterion_e_1.png",
+        "asterion_e_2.png",
+        "asterion_se_0.png",
+        "asterion_se_1.png",
+        "asterion_se_2.png",
+        "asterion_s_0.png",
+        "asterion_s_1.png",
+        "asterion_s_2.png",
+        "asterion_sw_0.png",
+        "asterion_sw_1.png",
+        "asterion_sw_2.png",
+        "asterion_w_0.png",
+        "asterion_w_1.png",
+        "asterion_w_2.png",
+        "asterion_nw_0.png",
+        "asterion_nw_1.png",
+        "asterion_nw_2.png",
+        "asterion_n_0.png",
+        "asterion_n_1.png",
+        "asterion_n_2.png",
+        "asterion_ne_0.png",
+        "asterion_ne_1.png",
+        "asterion_ne_2.png"
+      ]
+    },
     "workhorse": {
       "frames": [
         "workhorse_e_0.png",
@@ -1058,6 +1138,62 @@
         "obsidian_ne_0.png",
         "obsidian_ne_1.png",
         "obsidian_ne_2.png"
+      ]
+    },
+    "nomad": {
+      "frames": [
+        "nomad_e_0.png",
+        "nomad_e_1.png",
+        "nomad_e_2.png",
+        "nomad_se_0.png",
+        "nomad_se_1.png",
+        "nomad_se_2.png",
+        "nomad_s_0.png",
+        "nomad_s_1.png",
+        "nomad_s_2.png",
+        "nomad_sw_0.png",
+        "nomad_sw_1.png",
+        "nomad_sw_2.png",
+        "nomad_w_0.png",
+        "nomad_w_1.png",
+        "nomad_w_2.png",
+        "nomad_nw_0.png",
+        "nomad_nw_1.png",
+        "nomad_nw_2.png",
+        "nomad_n_0.png",
+        "nomad_n_1.png",
+        "nomad_n_2.png",
+        "nomad_ne_0.png",
+        "nomad_ne_1.png",
+        "nomad_ne_2.png"
+      ]
+    },
+    "archangel": {
+      "frames": [
+        "archangel_e_0.png",
+        "archangel_e_1.png",
+        "archangel_e_2.png",
+        "archangel_se_0.png",
+        "archangel_se_1.png",
+        "archangel_se_2.png",
+        "archangel_s_0.png",
+        "archangel_s_1.png",
+        "archangel_s_2.png",
+        "archangel_sw_0.png",
+        "archangel_sw_1.png",
+        "archangel_sw_2.png",
+        "archangel_w_0.png",
+        "archangel_w_1.png",
+        "archangel_w_2.png",
+        "archangel_nw_0.png",
+        "archangel_nw_1.png",
+        "archangel_nw_2.png",
+        "archangel_n_0.png",
+        "archangel_n_1.png",
+        "archangel_n_2.png",
+        "archangel_ne_0.png",
+        "archangel_ne_1.png",
+        "archangel_ne_2.png"
       ]
     },
     "courier": {
@@ -1506,6 +1642,146 @@
         "concierge_ne_0.png",
         "concierge_ne_1.png",
         "concierge_ne_2.png"
+      ]
+    },
+    "leviathan": {
+      "frames": [
+        "leviathan_e_0.png",
+        "leviathan_e_1.png",
+        "leviathan_e_2.png",
+        "leviathan_se_0.png",
+        "leviathan_se_1.png",
+        "leviathan_se_2.png",
+        "leviathan_s_0.png",
+        "leviathan_s_1.png",
+        "leviathan_s_2.png",
+        "leviathan_sw_0.png",
+        "leviathan_sw_1.png",
+        "leviathan_sw_2.png",
+        "leviathan_w_0.png",
+        "leviathan_w_1.png",
+        "leviathan_w_2.png",
+        "leviathan_nw_0.png",
+        "leviathan_nw_1.png",
+        "leviathan_nw_2.png",
+        "leviathan_n_0.png",
+        "leviathan_n_1.png",
+        "leviathan_n_2.png",
+        "leviathan_ne_0.png",
+        "leviathan_ne_1.png",
+        "leviathan_ne_2.png"
+      ]
+    },
+    "palisade": {
+      "frames": [
+        "palisade_e_0.png",
+        "palisade_e_1.png",
+        "palisade_e_2.png",
+        "palisade_se_0.png",
+        "palisade_se_1.png",
+        "palisade_se_2.png",
+        "palisade_s_0.png",
+        "palisade_s_1.png",
+        "palisade_s_2.png",
+        "palisade_sw_0.png",
+        "palisade_sw_1.png",
+        "palisade_sw_2.png",
+        "palisade_w_0.png",
+        "palisade_w_1.png",
+        "palisade_w_2.png",
+        "palisade_nw_0.png",
+        "palisade_nw_1.png",
+        "palisade_nw_2.png",
+        "palisade_n_0.png",
+        "palisade_n_1.png",
+        "palisade_n_2.png",
+        "palisade_ne_0.png",
+        "palisade_ne_1.png",
+        "palisade_ne_2.png"
+      ]
+    },
+    "sterling_cit": {
+      "frames": [
+        "sterling_cit_e_0.png",
+        "sterling_cit_e_1.png",
+        "sterling_cit_e_2.png",
+        "sterling_cit_se_0.png",
+        "sterling_cit_se_1.png",
+        "sterling_cit_se_2.png",
+        "sterling_cit_s_0.png",
+        "sterling_cit_s_1.png",
+        "sterling_cit_s_2.png",
+        "sterling_cit_sw_0.png",
+        "sterling_cit_sw_1.png",
+        "sterling_cit_sw_2.png",
+        "sterling_cit_w_0.png",
+        "sterling_cit_w_1.png",
+        "sterling_cit_w_2.png",
+        "sterling_cit_nw_0.png",
+        "sterling_cit_nw_1.png",
+        "sterling_cit_nw_2.png",
+        "sterling_cit_n_0.png",
+        "sterling_cit_n_1.png",
+        "sterling_cit_n_2.png",
+        "sterling_cit_ne_0.png",
+        "sterling_cit_ne_1.png",
+        "sterling_cit_ne_2.png"
+      ]
+    },
+    "sterling_reserve": {
+      "frames": [
+        "sterling_reserve_e_0.png",
+        "sterling_reserve_e_1.png",
+        "sterling_reserve_e_2.png",
+        "sterling_reserve_se_0.png",
+        "sterling_reserve_se_1.png",
+        "sterling_reserve_se_2.png",
+        "sterling_reserve_s_0.png",
+        "sterling_reserve_s_1.png",
+        "sterling_reserve_s_2.png",
+        "sterling_reserve_sw_0.png",
+        "sterling_reserve_sw_1.png",
+        "sterling_reserve_sw_2.png",
+        "sterling_reserve_w_0.png",
+        "sterling_reserve_w_1.png",
+        "sterling_reserve_w_2.png",
+        "sterling_reserve_nw_0.png",
+        "sterling_reserve_nw_1.png",
+        "sterling_reserve_nw_2.png",
+        "sterling_reserve_n_0.png",
+        "sterling_reserve_n_1.png",
+        "sterling_reserve_n_2.png",
+        "sterling_reserve_ne_0.png",
+        "sterling_reserve_ne_1.png",
+        "sterling_reserve_ne_2.png"
+      ]
+    },
+    "custodian": {
+      "frames": [
+        "custodian_e_0.png",
+        "custodian_e_1.png",
+        "custodian_e_2.png",
+        "custodian_se_0.png",
+        "custodian_se_1.png",
+        "custodian_se_2.png",
+        "custodian_s_0.png",
+        "custodian_s_1.png",
+        "custodian_s_2.png",
+        "custodian_sw_0.png",
+        "custodian_sw_1.png",
+        "custodian_sw_2.png",
+        "custodian_w_0.png",
+        "custodian_w_1.png",
+        "custodian_w_2.png",
+        "custodian_nw_0.png",
+        "custodian_nw_1.png",
+        "custodian_nw_2.png",
+        "custodian_n_0.png",
+        "custodian_n_1.png",
+        "custodian_n_2.png",
+        "custodian_ne_0.png",
+        "custodian_ne_1.png",
+        "custodian_ne_2.png"
       ]
     }
   }

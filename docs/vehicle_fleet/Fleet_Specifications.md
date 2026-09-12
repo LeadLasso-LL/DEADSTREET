@@ -1,6 +1,6 @@
 # Dead Street - Vehicle Fleet
 
-60 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
+71 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
 
 Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.
 
@@ -20,6 +20,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Marshal Police | $22,500 | $38 | 1 | 5.7 | 0 | 2.60 x 1.02 |
 | Pulse EX | $8,800 | $9 | 1 | 6.1 | 0 | 2.12 x 0.82 |
 | Cinder 900 | $12,500 | $24 | 2 | 5.6 | 0 | 2.30 x 0.85 |
+| Wraith Zero | $88,000 | $145 | 1 | 7.2 | 0 | 2.25 x 0.82 |
+| Crownfire V-Twin | $125,000 | $225 | 2 | 7.0 | 0 | 2.80 x 1.02 |
 
 ## Passenger Cars
 
@@ -44,6 +46,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Mistral Estate | $58,000 | $76 | 4 | 6.2 | 0 | 4.98 x 1.96 |
 | Kestrel RX | $18,500 | $44 | 4 | 6.0 | 0 | 4.03 x 1.86 |
 | Halcyon H1 | $148,000 | $168 | 2 | 7.4 | 0 | 4.72 x 2.04 |
+| Eidolon GT | $640,000 | $950 | 4 | 6.9 | 0 | 5.20 x 2.04 |
+| Asterion One | $980,000 | $1400 | 2 | 7.8 | 0 | 4.88 x 2.12 |
 
 ## Utility Vehicles
 
@@ -62,6 +66,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Torque EV5 | $68,000 | $67 | 5 | 5.4 | 0 | 5.54 x 2.08 |
 | Dunecat R | $36,500 | $83 | 4 | 5.1 | 0 | 5.62 x 2.15 |
 | Obsidian X | $92,000 | $121 | 5 | 5.9 | 0 | 5.05 x 2.08 |
+| Nomad Sovereign 6x6 | $445,000 | $775 | 6 | 5.3 | 0 | 6.30 x 2.30 |
+| Archangel Recovery | $520,000 | $925 | 5 | 5.6 | 0 | 5.70 x 2.18 |
 
 ## Heavy Transports
 
@@ -83,6 +89,11 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Dustchapel RV | $18,800 | $128 | 8 | 2.9 | 8 | 7.60 x 2.42 |
 | Relay TRC | $118,000 | $145 | 6 | 4.6 | 4 | 6.25 x 2.12 |
 | Concierge Lounge | $108,000 | $136 | 6 | 4.9 | 4 | 5.92 x 2.08 |
+| Leviathan Breacher | $1,350,000 | $2300 | 12 | 3.6 | 8 | 7.30 x 2.48 |
+| Palisade Escrow | $1,800,000 | $3100 | 6 | 3.8 | 14 | 7.15 x 2.46 |
+| Sterling CIT-4 | $86,000 | $120 | 3 | 4.5 | 0 | 5.50 x 2.20 |
+| Sterling Bastion Reserve | $165,000 | $230 | 4 | 3.6 | 0 | 6.55 x 2.38 |
+| Custodian P8 | $68,000 | $140 | 3 | 3.8 | 0 | 6.50 x 2.26 |
 
 ## Suggested faction fleets
 
@@ -116,11 +127,11 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 
 - **Seats include the driver:** A four-seat car moves four of your units in total. Every moving vehicle needs one actual unit to drive or ride it; no free extra driver is created.
 - **Travel uses road distance per turn:** The movement number is campaign distance, not real-world mph. A convoy moves at the pace of its slowest vehicle. Splitting a convoy can preserve the speed of its faster group.
-- **Heavy Transports carry all freight:** Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits.
+- **Heavy Transports carry all freight:** Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits. Independent cash trucks and prison carriers use dedicated manifests instead of general freight.
 - **Real seats, realistic compromises:** Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.
 - **Parked vehicles and cover:** These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.
-- **Everything is available in the sandbox:** All 60 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
-- **2034, with intentional older vehicles:** Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems.
+- **Everything is available in the sandbox:** All 71 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
+- **2034, with intentional older vehicles:** Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems. Flagship abilities are playable in Encounter Lab; campaign event generation is not connected yet.
 
 ## Balance examples
 
@@ -133,3 +144,20 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 ## Implementation status
 
 The catalog and artwork use the same model IDs as the sandbox fleet selector. Current validation results are recorded in tools/vehicle_fleet/validation.json, validation_mixed.json and native_review/report.json; see tools/vehicle_fleet/README.md for the reviewed milestone. Two-wheelers currently use parked tactical arrivals; riding, pedaling and mounted-passenger animations are not yet authored. Four-wheel vehicles use the existing arrival presentation with model-specific directional and door art. Repository history records commit and push status.
+
+## Endgame abilities
+
+Eight flagships have tested encounter rules. The Encounter Lab is available from the fleet selector. Automatic campaign events and battle ability triggers remain future integration work.
+
+| Vehicle | Ability | Effect | Limits |
+|---|---|---|---|
+| Wraith Zero | Forward Eye | Scout the next connected road location before entering. | Reveals the blockade and convoy strength at one adjacent road node; it does not reveal the entire map. |
+| Crownfire V-Twin | Breakaway | Escape one mobile interception per journey. | Ends this vehicle's movement for the turn. Roadblocks still stop it; other convoy vehicles are not protected. |
+| Eidolon GT | Ghost Channel | An active jammer blocks routine police pullover events. | Wanted checkpoints and deliberate interceptions still work. Only this car receives the protection. |
+| Asterion One | Flanking Arrival | Choose an alternate connected road entrance for its occupants. | The entrance must be legal, connected and available. It does not relocate the rest of the convoy. |
+| Nomad Sovereign 6x6 | Cross-Country | Take designated dirt and wilderness connections. | The vehicle must split from companions that cannot use the route. No water, walls or unmarked shortcuts. |
+| Archangel Recovery | Life Support | Recover one critically wounded occupant per battle. | Requires reaching a secure extraction zone alive. The survivor remains wounded and unavailable until recovery. |
+| Leviathan Breacher | Breach Charge | Force through one light blockade per journey. | Fortified checkpoints still require combat. A breach adds 25 heat and protects only its own occupants. |
+| Palisade Escrow | Bonded Cargo | Lost cargo is replaced at its departure location after two turns. | Captured cargo never becomes enemy loot. Claims wait in escrow if the origin is lost. Truck and crew remain at risk. |
+
+Independent services: Sterling CIT-4 carries $75,000 with 3 crew; Sterling Bastion Reserve carries $300,000 with 4 crew; Custodian P8 carries 3 guards plus 8 prisoners. Cash debits source on dispatch and credits one destination or victorious captor exactly once. Prisoner rescue preserves original allegiance. These three are unlocked for sandbox encounters but excluded from faction purchasing.

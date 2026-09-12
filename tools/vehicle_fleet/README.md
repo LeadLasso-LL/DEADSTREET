@@ -1,6 +1,6 @@
-# Dead Street vehicle fleet - 2034 design pass
+# Dead Street vehicle fleet - endgame expansion
 
-60 models: **12 Two-Wheelers, 19 Passenger Cars, 13 Utility Vehicles and 16 Heavy Transports**. All models are unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources; faction motor pools remain suggestions.
+71 models: **14 Two-Wheelers, 21 Passenger Cars, 15 Utility Vehicles and 21 Heavy Transports**. All models are unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources; faction motor pools remain suggestions.
 
 ## Art direction
 
@@ -16,7 +16,7 @@ Lastlight and Dustchapel are dedicated Raiders of the Sand transports, with repa
 
 Use **VEHICLE FLEET** in Arsenal Review. Every convoy vehicle needs an actual unit to drive it, and combined seats must accommodate the attackers. Models feed campaign forces, movement, arrival placement, troop assignment, parked collision/cover, disembark paths and save/load. Convoys travel at their slowest member's road movement rate.
 
-Artwork contains **1,248 sprites and 60 icons**: 48 enclosed/four-wheel vehicles with eight facings and three door phases, plus twelve two-wheelers with eight facings. The complete guide contains 22 pages, ten complete-fleet phone sheets and two additional authority/Raiders close-ups.
+Artwork contains **1,480 sprites and 71 icons**: 57 enclosed/four-wheel vehicles with eight facings and three door phases, plus fourteen two-wheelers with eight facings. The complete guide contains 26 pages. Five new endgame sheets complement the historical 60-model 2034 sheets.
 
 Two-wheelers continue to use parked arrivals. Riding, pedaling and mounted-passenger animations remain pending. Vehicle damage, turrets and campaign fuel/charging/repair interfaces are not part of this pass. Electric models currently use their listed upkeep values; they do not enable an unimplemented charging system. Vehicle styling adds no hidden unit armor or outfit overlays.
 
@@ -28,12 +28,12 @@ Prices and movement are fictional game-balance values. Original models retain th
 python tools/vehicle_fleet/build_catalog.py
 python tools/vehicle_fleet/build_art.py
 python tools/vehicle_fleet/build_guide.py
-python tools/vehicle_fleet/build_2034_boards.py
+python tools/vehicle_fleet/build_endgame_boards.py
 ```
 
 Requires Pillow, NumPy and ReportLab. `fleet_2034_geometry.py`, `vehicle_detail_geometry.py` and `build_art.py` are the editable geometry masters. The embedded Windows Python runtime uses an explicit script-directory import path. Canonical sprites remain 640x480, ground origin (320,330), 40 pixels per world unit. Native PNGs load through VehicleModelCatalog and the existing export plugin.
 
-## Validation
+## Previous 60-model validation
 
 Windows Godot 4.7.2: **3,730 model/gameplay checks and 43 mixed-convoy checks passed with zero errors**. Script-load and selector/filter/add/remove/apply checks passed. Coverage includes all 60 models, image loading/bounds, both authority brands in all four classes, economy/cargo limits, save compatibility, drivers, campaign travel, arrival placement and disembark paths.
 
@@ -49,3 +49,20 @@ godot --path . --script tools/vehicle_fleet/review_native.gd
 ```
 
 The development repository received baseline-guarded source changes. Unrelated work was preserved. Git history and remote confirmation record commit/push status. The completed battle sandbox remains the active objective.
+
+## Endgame abilities and independent services
+
+Eight flagship vehicles are the two highest-price and highest-upkeep choices in each class: Wraith Zero, Crownfire V-Twin, Eidolon GT, Asterion One, Nomad Sovereign 6x6, Archangel Recovery, Leviathan Breacher and Palisade Escrow. Each has an explicit ability and counterplay. Catalog metadata and the phone sheets describe the exact boundaries. New native art lives in `endgame_geometry.py`; existing 60-model art is preserved. `build_art.py` accepts model IDs to rebuild only selected sprites.
+
+Sterling CIT-4 and Sterling Bastion Reserve are independent cash services, carrying $75,000 with three crew and $300,000 with four crew. Custodian P8 has three guard seats plus eight separate prisoner positions. These three models are available in the sandbox; the faction purchase service rejects them. Their listed prices are reference fleet values. They do not carry ordinary resource freight.
+
+Open **Vehicle Fleet -> Encounter Lab** to exercise all eleven controlled scenarios. Run/resolve, counter-test/intercept, advance turn, reset, and saved snapshots call the stateful `VehicleEncounterService`. Cash is debited at departure and credited to one recipient once. Palisade claims pay after two turns, wait while the origin is captured, and cannot be delivered and refunded twice. Life Support is limited to one living critical occupant per owner per battle across recovery vehicles. Prisoner rescue preserves original allegiance.
+
+This is a runnable encounter-rule sandbox. Automatic campaign police stops, connected-road scouting UI, roadblock generation, banking/prison dispatchers, real bank security escorts, prisoner battle entities, battle entrance switching and extraction hooks are **not wired**. The service takes authoritative journey/event outcomes from its caller. Production world integration must connect these events before abilities affect ordinary campaign journeys or tactical battles. Standard arrival/cover behavior works for all new vehicle models. Two-wheelers still have parked arrival presentation, without new riding animations.
+
+Windows Godot 4.7.2 passed **4,387 full-fleet checks, 43 mixed-convoy checks and 77 encounter checks**, with zero errors. Script compilation and fleet selector checks also passed. Validation for this expansion is recorded in `validation.json`, `validation_mixed.json`, `validation_encounters.json`, and `endgame_review/report.json`. The encounter suite includes 77 assertions plus all eleven interactive scenarios. Native scenarios cover each flagship class, both bank services and Custodian arrival.
+
+```bash
+godot --headless --path . --script tools/vehicle_fleet/validate_encounters.gd
+godot --path . --script tools/vehicle_fleet/review_endgame.gd
+```

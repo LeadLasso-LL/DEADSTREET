@@ -1,0 +1,16 @@
+{
+  "models": [
+    "wraith_zero",
+    "crownfire",
+    "eidolon",
+    "asterion",
+    "nomad",
+    "archangel",
+    "leviathan",
+    "palisade",
+    "sterling_cit",
+    "sterling_reserve",
+    "custodian"
+  ],
+  "sheets": 5
+}

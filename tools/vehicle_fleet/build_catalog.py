@@ -1,6 +1,8 @@
 """Dead Street's fictional vehicle models. Prices/speeds are game balance values."""
 from pathlib import Path
-import json
+import json,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from endgame_catalog import extend, apply
 ROOT=Path(__file__).resolve().parents[2]
 CLASSES={
  'two_wheelers':{'name':'Two-Wheelers','max_units':2,'resources':False},
@@ -139,6 +141,8 @@ PREFERENCES.update({
  'lombardia':['monarch','regent','mistral','sentinel','concierge','harbor'],
  'sand_raiders':['yardbird','badlands','workhorse','pilgrim','lastlight','dustchapel'],
  'blacktop':['ironhorse','longhaul','cinder','workhorse','dunecat','wayfarer']})
+extend(GROUPS)
+
 def build():
  models={}
  for group,rows in GROUPS.items():
@@ -152,7 +156,8 @@ def build():
  for m in models.values():
   m['brand']='trc' if m['id'] in ['outrider','vigil','watchdog','bastion','aegis','relay'] else ('nbpd' if m['id'] in ['marshal','interceptor','warden','bulwark'] else '')
   m['door_rows']=[] if m['doors']==0 else ([.20] if m['body']=='armored_transport' else ([.34] if m['vehicle_class']=='heavy_transports' else ([.23] if m['body']=='pickup' else ([.12,-.075] if m['doors']==4 else [.12]))))
- data=dict(version=3,setting_year=2034,classes=CLASSES,models=models,faction_preferences=PREFERENCES,notes={'capacity':'Includes the driver; all occupants are units. Empty vehicles may exist in inventory.','movement':'Road distance units per campaign turn; convoys use the slowest vehicle. Not road top speed.','resources':'Only Heavy Transports carry campaign resources. One abstract resource unit occupies one cargo slot; personal equipment is not freight.','balance':'Prices, upkeep, and movement are initial game-balance values. Models and manufacturers are fictional.','preferences':'Suggestions only; the sandbox unlocks every model for every faction.','era':'2034 contemporary fleet with deliberate heritage and scavenged exceptions. Electric powertrains currently affect listed upkeep only; charging and fuel systems are not implemented.'})
+ apply(models)
+ data=dict(version=4,setting_year=2034,classes=CLASSES,models=models,faction_preferences=PREFERENCES,notes={'capacity':'Includes the driver; all occupants are units. Empty vehicles may exist in inventory.','movement':'Road distance units per campaign turn; convoys use the slowest vehicle. Not road top speed.','resources':'Only Heavy Transports carry campaign resources. One abstract resource unit occupies one cargo slot; personal equipment is not freight.','balance':'Prices, upkeep, and movement are initial game-balance values. Models and manufacturers are fictional.','preferences':'Suggestions only; the sandbox unlocks every model for every faction.','era':'2034 contemporary fleet with deliberate heritage and scavenged exceptions. Electric powertrains currently affect listed upkeep only; charging and fuel systems are not implemented.'})
  (ROOT/'assets/data/vehicle_models.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print('FLEET_CATALOG',len(models),'models',len(PREFERENCES),'factions')
 if __name__=='__main__':build()

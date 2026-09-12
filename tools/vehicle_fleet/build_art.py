@@ -10,6 +10,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np
 from vehicle_detail_geometry import motorcycle,exotic,armored,shell,canopy,badge
 from fleet_2034_geometry import render as render_2034
+from endgame_geometry import render as render_endgame
 from PIL import Image,ImageDraw,ImageColor
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'assets/art/vehicles/fleet'
@@ -74,6 +75,7 @@ class Drawing:
  def marking(self,word,x,y,z,width,height,color):
   glyphs={'P':['11110','10001','10001','11110','10000','10000','10000'],'O':['01110','10001','10001','10001','10001','10001','01110'],'L':['10000','10000','10000','10000','10000','10000','11111'],'I':['11111','00100','00100','00100','00100','00100','11111'],'C':['01111','10000','10000','10000','10000','10000','01111'],'E':['11111','10000','10000','11110','10000','10000','11111'],'T':['11111','00100','00100','00100','00100','00100','00100'],'R':['11110','10001','10001','11110','10100','10010','10001']}
   glyphs.update({'S':['01111','10000','10000','01110','00001','00001','11110'],'W':['10001','10001','10001','10101','10101','11011','10001'],'A':['01110','10001','10001','11111','10001','10001','10001']})
+  glyphs.update({'N':['10001','11001','11001','10101','10011','10011','10001'],'G':['01110','10001','10000','10111','10001','10001','01110'],'U':['10001','10001','10001','10001','10001','10001','01110'],'D':['11110','10001','10001','10001','10001','10001','11110'],'Y':['10001','10001','01010','00100','00100','00100','00100']})
   dx=width/(len(word)*6-1);dz=height/7;direction=1 if y>0 else -1
   for n,char in enumerate(word):
    for row,bits in enumerate(glyphs[char]):
@@ -134,9 +136,9 @@ class Drawing:
   return image
 def bike(d,m):motorcycle(d,m)
 def vehicle(d,m,door=0):
- return render_2034(d,m,door)
+ return render_endgame(d,m,door) if m.get("endgame") or m.get("service_only") else render_2034(d,m,door)
 
-def build():
+def build(selected=None):
  data=json.loads((ROOT/'assets/data/vehicle_models.json').read_text())
  (OUT/'sprites').mkdir(parents=True,exist_ok=True);(OUT/'icons').mkdir(exist_ok=True)
  (OUT/'.gdignore').write_text('')
@@ -145,6 +147,10 @@ def build():
   frames=[]
   for facing,angle in ANGLES.items():
    for phase in ([0] if m['doors']==0 else [0,1,2]):
+    if selected and id not in selected:
+     path=OUT/"sprites"/f"{id}_{facing}_{phase}.png"
+     assert path.exists(),str(path)
+     frames.append(path.name);continue
     drawing=Drawing(angle);vehicle(drawing,m,phase*.5)
     path=OUT/'sprites'/f'{id}_{facing}_{phase}.png'
     image=drawing.export(path);frames.append(path.name)
@@ -155,4 +161,4 @@ def build():
   manifest['models'][id]={'frames':frames}
  (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
  print('FLEET_ART',len(manifest['models']),'models',sum(len(v['frames']) for v in manifest['models'].values()),'directional/door sprites')
-if __name__=='__main__':build()
+if __name__=='__main__':build(set(sys.argv[1:]) or None)

@@ -12,6 +12,7 @@ static func purchase(state: GameState,faction_id: String,stronghold_id: String,m
 	var home=state.get_map_location(stronghold_id)
 	if not faction is MajorGang or not home is Stronghold or home.owner_faction_id!=faction_id:return {"success":false,"error":"A faction-owned stronghold is required"}
 	var m=Models.model(model_id)
+	if m.get("service_only",false):return {"success":false,"error":"Independent service vehicle; available for sandbox encounters only."}
 	if faction.money<float(m.price):return {"success":false,"error":"Insufficient funds"}
 	var suffix=state.vehicles.size();var id="fleet_%s_%d"%[model_id,suffix]
 	while state.has_vehicle(id):suffix+=1;id="fleet_%s_%d"%[model_id,suffix]

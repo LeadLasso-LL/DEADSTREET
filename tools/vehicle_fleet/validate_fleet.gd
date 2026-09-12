@@ -18,7 +18,7 @@ func check(ok: bool,message: String):
 	checks+=1
 	if not ok:errors.append(message);printerr("FLEET_FAIL ",message)
 func run():
-	check(Models.all_ids().size()==60,"60 models")
+	check(Models.all_ids().size()==71,"71 models")
 	check(Models.data().faction_preferences.size()==23,"23 faction preferences")
 	for faction in Models.data().faction_preferences:
 		for id in Models.preferences(faction):check(Models.has_model(id),"preference "+str(id))
@@ -33,13 +33,13 @@ func run():
 	for id: String in Models.all_ids():
 		var m=Models.model(id);var c: Dictionary=Models.data().classes[m.vehicle_class]
 		check(m.unit_capacity>=1 and m.unit_capacity<=c.max_units,id+" class capacity")
-		check((m.resource_capacity>0)==bool(c.resources),id+" exclusive freight class")
+		check((m.resource_capacity>0)==(bool(c.resources) and not m.get("service_only",false)),id+" exclusive freight class")
 		check(m.price>0 and m.movement_per_turn>0 and m.upkeep_per_turn>=0,id+" economy")
 		var vehicle=Fleet.create("test",Starter.PLAYER_FACTION_ID,id)
 		check(vehicle!=null and vehicle.passenger_capacity==int(m.unit_capacity),id+" factory")
 		var store=ResourceStore.new();store.set_amount("supplies",100.)
-		check(Fleet.load_resource(vehicle,store,"supplies",1.)==bool(c.resources),id+" cargo eligibility")
-		if c.resources:
+		check(Fleet.load_resource(vehicle,store,"supplies",1.)==(bool(c.resources) and not m.get("service_only",false)),id+" cargo eligibility")
+		if c.resources and not m.get("service_only",false):
 			check(not Fleet.load_resource(vehicle,store,"supplies",m.resource_capacity+1.),id+" cargo overflow rejected")
 			check(vehicle.cargo_amount()==1. and store.get_amount("supplies")==99.,id+" atomic cargo rejection")
 		var restored=VehicleData.new();restored.from_dict(vehicle.to_dict())

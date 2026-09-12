@@ -19,6 +19,7 @@ func _ready():
 	font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
 	var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#111b20")
 	label_at(Vector2(28,18),Vector2(890,38),"DEAD STREET / VEHICLE FLEET",26)
+	button_at(Vector2(810,18),Vector2(178,35),"ENCOUNTER LAB",open_encounter_lab)
 	button_at(Vector2(1000,18),Vector2(120,35),"CLOSE",queue_free)
 	label_at(Vector2(28,58),Vector2(1090,38),"%d models · All unlocked · Seats include the driver · Only Heavy Transports carry resources"%Models.all_ids().size(),13)
 	var i=0
@@ -50,7 +51,7 @@ func refresh_models():
 		var m=Models.model(id)
 		if m.vehicle_class!=selected_class:continue
 		if preferred.button_pressed and not Models.preferences(faction_id).has(id):continue
-		var tile=PanelContainer.new();grid.add_child(tile);tile.custom_minimum_size=Vector2(352,270)
+		var tile=PanelContainer.new();grid.add_child(tile);tile.custom_minimum_size=Vector2(352,310)
 		tile.add_theme_stylebox_override("panel",Card.style(Color("#26323a"),Color("#4c6068")))
 		var holder=Control.new();tile.add_child(holder)
 		Card.label(holder,Vector2(12,8),Vector2(328,25),m.name,18,Color("#e4dfc9"),font)
@@ -58,7 +59,13 @@ func refresh_models():
 		icon.texture=Models.icon(id);icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;icon.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 		Card.label(holder,Vector2(12,157),Vector2(328,23),"$%d · %d seats · %.1f road units/turn"%[m.price,m.unit_capacity,m.movement_per_turn],13,Color("#c6d5cb"),font)
 		Card.label(holder,Vector2(12,183),Vector2(328,23),"Cargo %d · Upkeep $%d/turn"%[m.resource_capacity,m.upkeep_per_turn],12,Color("#a8bbc2"),font)
-		var add=Button.new();holder.add_child(add);add.position=Vector2(12,220);add.size=Vector2(328,34);add.text="ADD TO CONVOY";add.tooltip_text=m.description
+		var detail=str(m.get("ability_name",""))
+		if m.get("service_role","")=="bank_cash":detail="Independent cash service · $%d capacity"%int(m.cash_capacity)
+		if m.get("service_role","")=="prisoner_transfer":detail="Independent custody · 3 guards + 8 prisoners"
+		var info=Card.label(holder,Vector2(12,209),Vector2(328,50),detail,12,Color("#e4c67f"),font)
+		info.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		info.tooltip_text=str(m.get("ability_summary",""))+" "+str(m.get("ability_limits",""))
+		var add=Button.new();holder.add_child(add);add.position=Vector2(12,268);add.size=Vector2(328,34);add.text="ADD TO CONVOY";add.tooltip_text=m.description
 		add.pressed.connect(func():
 			if selected.size()<required_units:selected.append(id);refresh_convoy())
 func refresh_convoy():
@@ -70,3 +77,7 @@ func refresh_convoy():
 	apply_button.disabled=not summary.valid
 	status.text="%d/%d seats · %.1f road units/turn · %d resource slots · Fleet value $%d · Upkeep $%d/turn"%[summary.get("units",0),required_units,summary.get("movement",0.),summary.get("cargo",0),summary.get("price",0),summary.get("upkeep",0)]
 	status.text+="\nConvoys travel at their slowest vehicle's pace. "+("Ready for the sandbox." if summary.valid else summary.get("error","Choose a convoy."))
+
+func open_encounter_lab():
+	if has_node("EncounterLab"):return
+	var lab=load("res://gameplay/vehicle_encounter_lab.gd").new();lab.name="EncounterLab";add_child(lab)
