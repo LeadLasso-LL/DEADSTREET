@@ -11,13 +11,13 @@ PREFIX='saffar'
 BLUE=('#788b74',)
 TAN=('#b7a27d','#d4c19a','#807053')
 DESCRIPTIONS={
-'pistol':'Black aviators + trimmed beard / rolled cream linen / gold watch',
+'pistol':'White-red head wrap / rolled cream linen / gold watch',
 'smg':'Curly hair / burgundy striped track jacket / patterned neck scarf',
-'shotgun':'Bald + graying beard / brown leather vest / rolled slate shirt',
+'shotgun':'White-red head wrap / brown leather vest / rolled slate shirt',
 'rifle':'Black wraparound shades / olive field jacket / compact brown rig',
 'sniper':'Tan-black head wrap / brown field jacket / olive underlayer'}
 NOTES={
-'pistol':['Swept-back black hair / open collar','Dark brown trousers / brown loafers'],
+'pistol':['Short patterned scarf tail / open collar','Dark brown trousers / brown loafers'],
 'smg':['High black shoulder bag / black undershirt','Charcoal cargo pants / black-white runners'],
 'shotgun':['Olive work trousers / brown lace-up boots','Weathered tan shell-loop belt'],
 'rifle':['Sand shirt / charcoal utility trousers','Tan combat boots / fitted black gloves'],
@@ -39,7 +39,7 @@ for role,p,ph,s,sh in [
 ('rifle','#2c3438','#4e5a5f','#a58f67','#c6b28a'),
 ('sniper','#4b3d30','#726049','#62503a','#8b7452')]:
  SPECS[role].update(pants=p,pants_hi=ph,shoe=s,shoe_hi=sh)
-EXTRA_PALETTE=base.EXTRA_PALETTE+list(TAN)+['#c8c0a9','#e4dcc5','#97907a','#67333d','#91525b','#40232c','#48543d','#6d7959','#69533e','#8d7454','#516774','#758a92','#4e573e','#73805a','#a58f67','#c6b28a']
+EXTRA_PALETTE=base.EXTRA_PALETTE+list(TAN)+['#deded1','#f2f1e5','#9b9f92','#99565a','#c8c0a9','#e4dcc5','#97907a','#67333d','#91525b','#40232c','#48543d','#6d7959','#69533e','#8d7454','#516774','#758a92','#4e573e','#73805a','#a58f67','#c6b28a']
 def beard(g,side=False,gray=False,stubble=False):
  fill='#42463d' if stubble else '#20282a'
  shape='M-5 -39 L-3 -37 -1 -38 2 -37 5 -39 5 -35 2 -32 -2 -33 -5 -35Z'
@@ -52,6 +52,14 @@ def beard(g,side=False,gray=False,stubble=False):
 def head(g,c,skin,hi,d='SE'):
  if not c.get('saffar'):return base.head(g,c,skin,hi,d)
  role=c['role'];back=d in ['N','NE','NW'];side=d in ['E','W']
+ if role in ['pistol','shotgun']:
+  wrapped=base.E.Element(N+'g')
+  head(wrapped,dict(c,role='sniper'),skin,hi,d)
+  mapping={TAN[0]:'#deded1',TAN[1]:'#f2f1e5',TAN[2]:'#9b9f92','#33372c':'#99565a'}
+  for el in wrapped.iter():
+   for attr in ['fill','stroke']:
+    if el.get(attr) in mapping:el.set(attr,mapping[el.get(attr)])
+  g.extend(list(wrapped));return
  if role in ['shotgun','sniper']:
   path(g,'M-6 -37 L-7 -44 Q-6 -50 0 -50 Q6 -50 7 -44 L6 -37 3 -33 -3 -34Z',skin,w=1.15)
   if not back:
@@ -128,10 +136,11 @@ def torso(g,c,skin,hi,d='SE'):
    for x in [-5,0,5]:
     path(t,f'M{x-2} -19 L{x+2} -19 {x+2} -8 {x-2} -8Z','#705a3f','#352e24',.5)
     path(t,f'M{x-1} -16 L{x+1} -16','none','#9c8560',.6)
- if role=='sniper':
-  # One short patterned scarf end rests over the left shoulder.
-  path(t,'M-7 -33 L-3 -32 -4 -24 -5 -20 -8 -22Z',TAN[0],TAN[2],.5)
-  for y in [-29,-26,-23]:path(t,f'M-7 {y} L-4 {y+.8}','none','#33372c',.55)
+ if role in ['pistol','shotgun','sniper']:
+  # The same short shoulder tail follows its head-wrap palette.
+  cloth,edge,pattern=(TAN[0],TAN[2],'#33372c') if role=='sniper' else ('#deded1','#9b9f92','#99565a')
+  path(t,'M-7 -33 L-3 -32 -4 -24 -5 -20 -8 -22Z',cloth,edge,.5)
+  for y in [-29,-26,-23]:path(t,f'M-7 {y} L-4 {y+.8}','none',pattern,.55)
 def arm(g,a,b,h,c,skin,hi):
  if not c.get('saffar'):return base.arm(g,a,b,h,c,skin,hi)
  temp=c
