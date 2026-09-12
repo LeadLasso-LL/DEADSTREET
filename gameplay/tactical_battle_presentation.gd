@@ -191,7 +191,7 @@ func update_markers():
   var node=view.actor_presenter._unit_nodes[id]
   if not markers.has(id):
    var badge=TextureRect.new();surface.add_child(badge);badge.mouse_filter=Control.MOUSE_FILTER_IGNORE;badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-   badge.texture=Factions.for_side(battle,p.side_id).emblem;markers[id]=badge
+   badge.texture=Factions.for_side(battle,p.side_id).emblem;Factions.style_emblem(badge);markers[id]=badge
   var badge=markers[id];badge.visible=identifiers_enabled and p.is_alive and node.visible and stage!="deployment" and not results_visible()
   var lift=-29. if p.is_alive else -8.
   if p.is_alive and (p.has_occupied_cover_slot() or p.is_wounded):lift=-21.
@@ -204,7 +204,7 @@ func build_results():
   var faction=attacker if column==0 else defender;var side: String=faction.side
   var win=side==winner;var color=Color("#8abb91") if win else Color("#d26d75")
   var panel=Panel.new();result_root.add_child(panel);panel.position=Vector2(column*532,0);panel.size=Vector2(508,390);panel.add_theme_stylebox_override("panel",Card.style(Color("#111b20"),Color("#465c50") if win else Color("#64444c")))
-  var emblem=TextureRect.new();panel.add_child(emblem);emblem.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;emblem.texture=faction.emblem;emblem.position=Vector2(24,20);emblem.size=Vector2(62,62);emblem.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+  var emblem=TextureRect.new();panel.add_child(emblem);emblem.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;emblem.texture=faction.emblem;emblem.position=Vector2(24,20);emblem.size=Vector2(62,62);emblem.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS;Factions.style_emblem(emblem)
   Card.label(panel,Vector2(104,23),Vector2(382,27),faction.name,22,Color("#e1e1d5"),font)
   Card.label(panel,Vector2(104,55),Vector2(375,24),"VICTORY" if win else ("DEFEAT" if not winner.is_empty() else "DRAW"),16,color,font)
   var units=[]
@@ -234,15 +234,27 @@ class Context extends Control:
   draw_style_box(Card.style(Color(.055,.082,.094,.95),Color("#6c705e")),Rect2(Vector2.ZERO,size))
   var left=Rect2(Vector2(10,27).lerp(Vector2(30,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
   var right=Rect2(Vector2(294,27).lerp(Vector2(650,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
-  if p.attacker.emblem!=null:draw_texture_rect(p.attacker.emblem,left,false)
-  if p.defender.emblem!=null:draw_texture_rect(p.defender.emblem,right,false)
+  if p.attacker.emblem!=null:draw_emblem(p.attacker.emblem,left)
+  if p.defender.emblem!=null:draw_emblem(p.defender.emblem,right)
   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
   draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),"MERCER HEIGHTS  /  HAROLD AVE.",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
-  draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),p.attacker.name,HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(12,23,t)),ink)
-  draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),p.defender.name,HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(12,23,t)),ink)
+  draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),str(p.attacker.get("short_name",p.attacker.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.attacker.get("short_name",p.attacker.name)),t,155.),ink)
+  draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),str(p.defender.get("short_name",p.defender.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.defender.get("short_name",p.defender.name)),t,126.),ink)
   draw_string(p.font,Vector2(60,65).lerp(Vector2(155,147),t),"HAROLD APARTMENTS",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,17,t)),muted)
   draw_string(p.font,Vector2(343,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   draw_string(p.font,Vector2(219,45).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+
+ func draw_emblem(texture: Texture2D,area: Rect2) -> void:
+  var points=PackedVector2Array();var uvs=PackedVector2Array()
+  for i in range(64):
+   var normal=Vector2.from_angle(float(i)*TAU/64.)
+   points.append(area.get_center()+normal*area.size*.5)
+   uvs.append(Vector2(.5,.5)+normal*.5)
+  draw_polygon(points,PackedColorArray([Color.WHITE]),uvs,texture)
+ func title_size(p,title: String,t: float,compact_width: float) -> int:
+  var points: int=int(lerpf(12,23,t));var width: float=lerpf(compact_width,390.,t)
+  while points>8 and p.font.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,points).x>width:points-=1
+  return points
 
 func arrival_center() -> Vector2:
  if battle!=null:

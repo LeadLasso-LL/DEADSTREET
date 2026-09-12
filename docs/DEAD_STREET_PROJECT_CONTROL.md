@@ -1,3 +1,15 @@
+## Full regular roster and independent unit tiers - 2026-09-12
+
+**Built and validated; ready for owner sandbox playtest.** The accepted 23-faction, 115-outfit regular roster is connected to runtime animations. Every faction can use all six existing models in each of its five weapon classes: 690 combinations, each with all 17 regular clips in eight directions. Existing Mercer and regular Orlov atlases are retained; 636 additional animation sets complete the roster. Approved body proportions and wardrobes are preserved.
+
+The Faction Units Guide weapon pairings are presentation suggestions only. The sandbox unlocks every faction, weapon and training tier. Both sides select a faction plus one weapon and tier per class, then launch all five classes in a 5v5 battle. Use `tools/arsenal_production/Open-Arsenal.ps1`. Campaign unlocks, recruitment progression and special-unit expansion remain separate work.
+
+Unit tiers are independent of weapon tiers: **1 Regular, 2 Experienced, 3 Veteran**, displayed as one, two or three small gold HUD stars. Initial balance gives higher tiers modest improvements to accuracy, acquisition, reload and recoil handling. Health, damage per hit, critical chance, range, movement, magazine size and firing cadence are unchanged. Soldier tiers persist in saves and transfer into battles; older saves default to tier one. Exact trial values and reproduction commands are in `tools/faction_roster/README.md`.
+
+Validation covers all 2,070 faction/model/tier assignments, all 690 runtime animation sets, 636 production anatomy/edge reports, PNG integrity and wound/muzzle anchors, cache retention beyond twelve active variants, raw PNG loading from a game pack, and rendered mixed-tier 5v5 battles. The existing Mercer dual-pistol specialist also passes both-hand battle regression checks. Large elapsed-time values never end a living battle. Technical checks and visual inspection do not replace owner approval of the new live experience.
+
+Older entries below that list regular-faction runtime integration as pending are superseded by this milestone. New faction specialists, armor design, the vehicle catalog, bridge battle and Whittaker Estate remain future roadmap work. The user's standing commit/push authorization remains valid; the earlier automatic push-approval block has not been resolved.
+
 # Dead Street — Project Control
 
 ## Blacktop Apostles regular outfit review - 2026-09-12

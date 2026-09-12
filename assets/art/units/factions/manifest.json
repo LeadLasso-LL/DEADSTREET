@@ -1,0 +1,5153 @@
+{
+  "schema_version": 1,
+  "complete": true,
+  "faction_count": 23,
+  "unit_count": 115,
+  "model_pairings": 690,
+  "models": {
+    "mercer:glock_17": "0_pistol",
+    "mercer:m1911": "arsenal_0_m1911",
+    "mercer:usp": "arsenal_0_usp",
+    "mercer:cz75": "arsenal_0_cz75",
+    "mercer:desert_eagle": "arsenal_0_desert_eagle",
+    "mercer:five_seven": "arsenal_0_five_seven",
+    "mercer:uzi": "0_uzi_smg",
+    "mercer:mac10": "arsenal_0_mac10",
+    "mercer:mp5": "arsenal_0_mp5",
+    "mercer:mp5k": "arsenal_0_mp5k",
+    "mercer:vector": "arsenal_0_vector",
+    "mercer:p90": "arsenal_0_p90",
+    "mercer:ak47": "0_ak_rifle",
+    "mercer:mini14": "arsenal_0_mini14",
+    "mercer:m4a1": "arsenal_0_m4a1",
+    "mercer:g36c": "arsenal_0_g36c",
+    "mercer:scar_h": "arsenal_0_scar_h",
+    "mercer:aug": "arsenal_0_aug",
+    "mercer:rem870": "0_pump_shotgun",
+    "mercer:moss500": "arsenal_0_moss500",
+    "mercer:spas12": "arsenal_0_spas12",
+    "mercer:benelli_m2": "arsenal_0_benelli_m2",
+    "mercer:benelli_m4": "arsenal_0_benelli_m4",
+    "mercer:saiga12": "arsenal_0_saiga12",
+    "mercer:rem700": "mercer_rem700",
+    "mercer:sks": "mercer_sks",
+    "mercer:svd": "mercer_svd",
+    "mercer:ssg69": "mercer_ssg69",
+    "mercer:awm": "mercer_awm",
+    "mercer:psg1": "mercer_psg1",
+    "eastex:glock_17": "faction_eastex_glock_17",
+    "eastex:m1911": "faction_eastex_m1911",
+    "eastex:usp": "faction_eastex_usp",
+    "eastex:cz75": "faction_eastex_cz75",
+    "eastex:desert_eagle": "faction_eastex_desert_eagle",
+    "eastex:five_seven": "faction_eastex_five_seven",
+    "eastex:uzi": "faction_eastex_uzi",
+    "eastex:mac10": "faction_eastex_mac10",
+    "eastex:mp5": "faction_eastex_mp5",
+    "eastex:mp5k": "faction_eastex_mp5k",
+    "eastex:vector": "faction_eastex_vector",
+    "eastex:p90": "faction_eastex_p90",
+    "eastex:ak47": "faction_eastex_ak47",
+    "eastex:mini14": "faction_eastex_mini14",
+    "eastex:m4a1": "faction_eastex_m4a1",
+    "eastex:g36c": "faction_eastex_g36c",
+    "eastex:scar_h": "faction_eastex_scar_h",
+    "eastex:aug": "faction_eastex_aug",
+    "eastex:rem870": "faction_eastex_rem870",
+    "eastex:moss500": "faction_eastex_moss500",
+    "eastex:spas12": "faction_eastex_spas12",
+    "eastex:benelli_m2": "faction_eastex_benelli_m2",
+    "eastex:benelli_m4": "faction_eastex_benelli_m4",
+    "eastex:saiga12": "faction_eastex_saiga12",
+    "eastex:rem700": "faction_eastex_rem700",
+    "eastex:sks": "faction_eastex_sks",
+    "eastex:svd": "faction_eastex_svd",
+    "eastex:ssg69": "faction_eastex_ssg69",
+    "eastex:awm": "faction_eastex_awm",
+    "eastex:psg1": "faction_eastex_psg1",
+    "calle_ocho:glock_17": "faction_calle_ocho_glock_17",
+    "calle_ocho:m1911": "faction_calle_ocho_m1911",
+    "calle_ocho:usp": "faction_calle_ocho_usp",
+    "calle_ocho:cz75": "faction_calle_ocho_cz75",
+    "calle_ocho:desert_eagle": "faction_calle_ocho_desert_eagle",
+    "calle_ocho:five_seven": "faction_calle_ocho_five_seven",
+    "calle_ocho:uzi": "faction_calle_ocho_uzi",
+    "calle_ocho:mac10": "faction_calle_ocho_mac10",
+    "calle_ocho:mp5": "faction_calle_ocho_mp5",
+    "calle_ocho:mp5k": "faction_calle_ocho_mp5k",
+    "calle_ocho:vector": "faction_calle_ocho_vector",
+    "calle_ocho:p90": "faction_calle_ocho_p90",
+    "calle_ocho:ak47": "faction_calle_ocho_ak47",
+    "calle_ocho:mini14": "faction_calle_ocho_mini14",
+    "calle_ocho:m4a1": "faction_calle_ocho_m4a1",
+    "calle_ocho:g36c": "faction_calle_ocho_g36c",
+    "calle_ocho:scar_h": "faction_calle_ocho_scar_h",
+    "calle_ocho:aug": "faction_calle_ocho_aug",
+    "calle_ocho:rem870": "faction_calle_ocho_rem870",
+    "calle_ocho:moss500": "faction_calle_ocho_moss500",
+    "calle_ocho:spas12": "faction_calle_ocho_spas12",
+    "calle_ocho:benelli_m2": "faction_calle_ocho_benelli_m2",
+    "calle_ocho:benelli_m4": "faction_calle_ocho_benelli_m4",
+    "calle_ocho:saiga12": "faction_calle_ocho_saiga12",
+    "calle_ocho:rem700": "faction_calle_ocho_rem700",
+    "calle_ocho:sks": "faction_calle_ocho_sks",
+    "calle_ocho:svd": "faction_calle_ocho_svd",
+    "calle_ocho:ssg69": "faction_calle_ocho_ssg69",
+    "calle_ocho:awm": "faction_calle_ocho_awm",
+    "calle_ocho:psg1": "faction_calle_ocho_psg1",
+    "ventresca:glock_17": "faction_ventresca_glock_17",
+    "ventresca:m1911": "faction_ventresca_m1911",
+    "ventresca:usp": "faction_ventresca_usp",
+    "ventresca:cz75": "faction_ventresca_cz75",
+    "ventresca:desert_eagle": "faction_ventresca_desert_eagle",
+    "ventresca:five_seven": "faction_ventresca_five_seven",
+    "ventresca:uzi": "faction_ventresca_uzi",
+    "ventresca:mac10": "faction_ventresca_mac10",
+    "ventresca:mp5": "faction_ventresca_mp5",
+    "ventresca:mp5k": "faction_ventresca_mp5k",
+    "ventresca:vector": "faction_ventresca_vector",
+    "ventresca:p90": "faction_ventresca_p90",
+    "ventresca:ak47": "faction_ventresca_ak47",
+    "ventresca:mini14": "faction_ventresca_mini14",
+    "ventresca:m4a1": "faction_ventresca_m4a1",
+    "ventresca:g36c": "faction_ventresca_g36c",
+    "ventresca:scar_h": "faction_ventresca_scar_h",
+    "ventresca:aug": "faction_ventresca_aug",
+    "ventresca:rem870": "faction_ventresca_rem870",
+    "ventresca:moss500": "faction_ventresca_moss500",
+    "ventresca:spas12": "faction_ventresca_spas12",
+    "ventresca:benelli_m2": "faction_ventresca_benelli_m2",
+    "ventresca:benelli_m4": "faction_ventresca_benelli_m4",
+    "ventresca:saiga12": "faction_ventresca_saiga12",
+    "ventresca:rem700": "faction_ventresca_rem700",
+    "ventresca:sks": "faction_ventresca_sks",
+    "ventresca:svd": "faction_ventresca_svd",
+    "ventresca:ssg69": "faction_ventresca_ssg69",
+    "ventresca:awm": "faction_ventresca_awm",
+    "ventresca:psg1": "faction_ventresca_psg1",
+    "ravicci:glock_17": "faction_ravicci_glock_17",
+    "ravicci:m1911": "faction_ravicci_m1911",
+    "ravicci:usp": "faction_ravicci_usp",
+    "ravicci:cz75": "faction_ravicci_cz75",
+    "ravicci:desert_eagle": "faction_ravicci_desert_eagle",
+    "ravicci:five_seven": "faction_ravicci_five_seven",
+    "ravicci:uzi": "faction_ravicci_uzi",
+    "ravicci:mac10": "faction_ravicci_mac10",
+    "ravicci:mp5": "faction_ravicci_mp5",
+    "ravicci:mp5k": "faction_ravicci_mp5k",
+    "ravicci:vector": "faction_ravicci_vector",
+    "ravicci:p90": "faction_ravicci_p90",
+    "ravicci:ak47": "faction_ravicci_ak47",
+    "ravicci:mini14": "faction_ravicci_mini14",
+    "ravicci:m4a1": "faction_ravicci_m4a1",
+    "ravicci:g36c": "faction_ravicci_g36c",
+    "ravicci:scar_h": "faction_ravicci_scar_h",
+    "ravicci:aug": "faction_ravicci_aug",
+    "ravicci:rem870": "faction_ravicci_rem870",
+    "ravicci:moss500": "faction_ravicci_moss500",
+    "ravicci:spas12": "faction_ravicci_spas12",
+    "ravicci:benelli_m2": "faction_ravicci_benelli_m2",
+    "ravicci:benelli_m4": "faction_ravicci_benelli_m4",
+    "ravicci:saiga12": "faction_ravicci_saiga12",
+    "ravicci:rem700": "faction_ravicci_rem700",
+    "ravicci:sks": "faction_ravicci_sks",
+    "ravicci:svd": "faction_ravicci_svd",
+    "ravicci:ssg69": "faction_ravicci_ssg69",
+    "ravicci:awm": "faction_ravicci_awm",
+    "ravicci:psg1": "faction_ravicci_psg1",
+    "orlov:glock_17": "1_pistol",
+    "orlov:m1911": "arsenal_1_m1911",
+    "orlov:usp": "arsenal_1_usp",
+    "orlov:cz75": "arsenal_1_cz75",
+    "orlov:desert_eagle": "arsenal_1_desert_eagle",
+    "orlov:five_seven": "arsenal_1_five_seven",
+    "orlov:uzi": "1_uzi_smg",
+    "orlov:mac10": "arsenal_1_mac10",
+    "orlov:mp5": "arsenal_1_mp5",
+    "orlov:mp5k": "arsenal_1_mp5k",
+    "orlov:vector": "arsenal_1_vector",
+    "orlov:p90": "arsenal_1_p90",
+    "orlov:ak47": "1_ak_rifle",
+    "orlov:mini14": "arsenal_1_mini14",
+    "orlov:m4a1": "arsenal_1_m4a1",
+    "orlov:g36c": "arsenal_1_g36c",
+    "orlov:scar_h": "arsenal_1_scar_h",
+    "orlov:aug": "arsenal_1_aug",
+    "orlov:rem870": "1_pump_shotgun",
+    "orlov:moss500": "arsenal_1_moss500",
+    "orlov:spas12": "arsenal_1_spas12",
+    "orlov:benelli_m2": "arsenal_1_benelli_m2",
+    "orlov:benelli_m4": "arsenal_1_benelli_m4",
+    "orlov:saiga12": "arsenal_1_saiga12",
+    "orlov:rem700": "faction_orlov_sniper_rem700",
+    "orlov:sks": "faction_orlov_sniper_sks",
+    "orlov:svd": "faction_orlov_sniper_svd",
+    "orlov:ssg69": "faction_orlov_sniper_ssg69",
+    "orlov:awm": "faction_orlov_sniper_awm",
+    "orlov:psg1": "faction_orlov_sniper_psg1",
+    "zangyaku:glock_17": "faction_zangyaku_glock_17",
+    "zangyaku:m1911": "faction_zangyaku_m1911",
+    "zangyaku:usp": "faction_zangyaku_usp",
+    "zangyaku:cz75": "faction_zangyaku_cz75",
+    "zangyaku:desert_eagle": "faction_zangyaku_desert_eagle",
+    "zangyaku:five_seven": "faction_zangyaku_five_seven",
+    "zangyaku:uzi": "faction_zangyaku_uzi",
+    "zangyaku:mac10": "faction_zangyaku_mac10",
+    "zangyaku:mp5": "faction_zangyaku_mp5",
+    "zangyaku:mp5k": "faction_zangyaku_mp5k",
+    "zangyaku:vector": "faction_zangyaku_vector",
+    "zangyaku:p90": "faction_zangyaku_p90",
+    "zangyaku:ak47": "faction_zangyaku_ak47",
+    "zangyaku:mini14": "faction_zangyaku_mini14",
+    "zangyaku:m4a1": "faction_zangyaku_m4a1",
+    "zangyaku:g36c": "faction_zangyaku_g36c",
+    "zangyaku:scar_h": "faction_zangyaku_scar_h",
+    "zangyaku:aug": "faction_zangyaku_aug",
+    "zangyaku:rem870": "faction_zangyaku_rem870",
+    "zangyaku:moss500": "faction_zangyaku_moss500",
+    "zangyaku:spas12": "faction_zangyaku_spas12",
+    "zangyaku:benelli_m2": "faction_zangyaku_benelli_m2",
+    "zangyaku:benelli_m4": "faction_zangyaku_benelli_m4",
+    "zangyaku:saiga12": "faction_zangyaku_saiga12",
+    "zangyaku:rem700": "faction_zangyaku_rem700",
+    "zangyaku:sks": "faction_zangyaku_sks",
+    "zangyaku:svd": "faction_zangyaku_svd",
+    "zangyaku:ssg69": "faction_zangyaku_ssg69",
+    "zangyaku:awm": "faction_zangyaku_awm",
+    "zangyaku:psg1": "faction_zangyaku_psg1",
+    "bitian:glock_17": "faction_bitian_glock_17",
+    "bitian:m1911": "faction_bitian_m1911",
+    "bitian:usp": "faction_bitian_usp",
+    "bitian:cz75": "faction_bitian_cz75",
+    "bitian:desert_eagle": "faction_bitian_desert_eagle",
+    "bitian:five_seven": "faction_bitian_five_seven",
+    "bitian:uzi": "faction_bitian_uzi",
+    "bitian:mac10": "faction_bitian_mac10",
+    "bitian:mp5": "faction_bitian_mp5",
+    "bitian:mp5k": "faction_bitian_mp5k",
+    "bitian:vector": "faction_bitian_vector",
+    "bitian:p90": "faction_bitian_p90",
+    "bitian:ak47": "faction_bitian_ak47",
+    "bitian:mini14": "faction_bitian_mini14",
+    "bitian:m4a1": "faction_bitian_m4a1",
+    "bitian:g36c": "faction_bitian_g36c",
+    "bitian:scar_h": "faction_bitian_scar_h",
+    "bitian:aug": "faction_bitian_aug",
+    "bitian:rem870": "faction_bitian_rem870",
+    "bitian:moss500": "faction_bitian_moss500",
+    "bitian:spas12": "faction_bitian_spas12",
+    "bitian:benelli_m2": "faction_bitian_benelli_m2",
+    "bitian:benelli_m4": "faction_bitian_benelli_m4",
+    "bitian:saiga12": "faction_bitian_saiga12",
+    "bitian:rem700": "faction_bitian_rem700",
+    "bitian:sks": "faction_bitian_sks",
+    "bitian:svd": "faction_bitian_svd",
+    "bitian:ssg69": "faction_bitian_ssg69",
+    "bitian:awm": "faction_bitian_awm",
+    "bitian:psg1": "faction_bitian_psg1",
+    "stateline:glock_17": "faction_stateline_glock_17",
+    "stateline:m1911": "faction_stateline_m1911",
+    "stateline:usp": "faction_stateline_usp",
+    "stateline:cz75": "faction_stateline_cz75",
+    "stateline:desert_eagle": "faction_stateline_desert_eagle",
+    "stateline:five_seven": "faction_stateline_five_seven",
+    "stateline:uzi": "faction_stateline_uzi",
+    "stateline:mac10": "faction_stateline_mac10",
+    "stateline:mp5": "faction_stateline_mp5",
+    "stateline:mp5k": "faction_stateline_mp5k",
+    "stateline:vector": "faction_stateline_vector",
+    "stateline:p90": "faction_stateline_p90",
+    "stateline:ak47": "faction_stateline_ak47",
+    "stateline:mini14": "faction_stateline_mini14",
+    "stateline:m4a1": "faction_stateline_m4a1",
+    "stateline:g36c": "faction_stateline_g36c",
+    "stateline:scar_h": "faction_stateline_scar_h",
+    "stateline:aug": "faction_stateline_aug",
+    "stateline:rem870": "faction_stateline_rem870",
+    "stateline:moss500": "faction_stateline_moss500",
+    "stateline:spas12": "faction_stateline_spas12",
+    "stateline:benelli_m2": "faction_stateline_benelli_m2",
+    "stateline:benelli_m4": "faction_stateline_benelli_m4",
+    "stateline:saiga12": "faction_stateline_saiga12",
+    "stateline:rem700": "faction_stateline_rem700",
+    "stateline:sks": "faction_stateline_sks",
+    "stateline:svd": "faction_stateline_svd",
+    "stateline:ssg69": "faction_stateline_ssg69",
+    "stateline:awm": "faction_stateline_awm",
+    "stateline:psg1": "faction_stateline_psg1",
+    "sierra_roja:glock_17": "faction_sierra_roja_glock_17",
+    "sierra_roja:m1911": "faction_sierra_roja_m1911",
+    "sierra_roja:usp": "faction_sierra_roja_usp",
+    "sierra_roja:cz75": "faction_sierra_roja_cz75",
+    "sierra_roja:desert_eagle": "faction_sierra_roja_desert_eagle",
+    "sierra_roja:five_seven": "faction_sierra_roja_five_seven",
+    "sierra_roja:uzi": "faction_sierra_roja_uzi",
+    "sierra_roja:mac10": "faction_sierra_roja_mac10",
+    "sierra_roja:mp5": "faction_sierra_roja_mp5",
+    "sierra_roja:mp5k": "faction_sierra_roja_mp5k",
+    "sierra_roja:vector": "faction_sierra_roja_vector",
+    "sierra_roja:p90": "faction_sierra_roja_p90",
+    "sierra_roja:ak47": "faction_sierra_roja_ak47",
+    "sierra_roja:mini14": "faction_sierra_roja_mini14",
+    "sierra_roja:m4a1": "faction_sierra_roja_m4a1",
+    "sierra_roja:g36c": "faction_sierra_roja_g36c",
+    "sierra_roja:scar_h": "faction_sierra_roja_scar_h",
+    "sierra_roja:aug": "faction_sierra_roja_aug",
+    "sierra_roja:rem870": "faction_sierra_roja_rem870",
+    "sierra_roja:moss500": "faction_sierra_roja_moss500",
+    "sierra_roja:spas12": "faction_sierra_roja_spas12",
+    "sierra_roja:benelli_m2": "faction_sierra_roja_benelli_m2",
+    "sierra_roja:benelli_m4": "faction_sierra_roja_benelli_m4",
+    "sierra_roja:saiga12": "faction_sierra_roja_saiga12",
+    "sierra_roja:rem700": "faction_sierra_roja_rem700",
+    "sierra_roja:sks": "faction_sierra_roja_sks",
+    "sierra_roja:svd": "faction_sierra_roja_svd",
+    "sierra_roja:ssg69": "faction_sierra_roja_ssg69",
+    "sierra_roja:awm": "faction_sierra_roja_awm",
+    "sierra_roja:psg1": "faction_sierra_roja_psg1",
+    "whittaker:glock_17": "faction_whittaker_glock_17",
+    "whittaker:m1911": "faction_whittaker_m1911",
+    "whittaker:usp": "faction_whittaker_usp",
+    "whittaker:cz75": "faction_whittaker_cz75",
+    "whittaker:desert_eagle": "faction_whittaker_desert_eagle",
+    "whittaker:five_seven": "faction_whittaker_five_seven",
+    "whittaker:uzi": "faction_whittaker_uzi",
+    "whittaker:mac10": "faction_whittaker_mac10",
+    "whittaker:mp5": "faction_whittaker_mp5",
+    "whittaker:mp5k": "faction_whittaker_mp5k",
+    "whittaker:vector": "faction_whittaker_vector",
+    "whittaker:p90": "faction_whittaker_p90",
+    "whittaker:ak47": "faction_whittaker_ak47",
+    "whittaker:mini14": "faction_whittaker_mini14",
+    "whittaker:m4a1": "faction_whittaker_m4a1",
+    "whittaker:g36c": "faction_whittaker_g36c",
+    "whittaker:scar_h": "faction_whittaker_scar_h",
+    "whittaker:aug": "faction_whittaker_aug",
+    "whittaker:rem870": "faction_whittaker_rem870",
+    "whittaker:moss500": "faction_whittaker_moss500",
+    "whittaker:spas12": "faction_whittaker_spas12",
+    "whittaker:benelli_m2": "faction_whittaker_benelli_m2",
+    "whittaker:benelli_m4": "faction_whittaker_benelli_m4",
+    "whittaker:saiga12": "faction_whittaker_saiga12",
+    "whittaker:rem700": "faction_whittaker_rem700",
+    "whittaker:sks": "faction_whittaker_sks",
+    "whittaker:svd": "faction_whittaker_svd",
+    "whittaker:ssg69": "faction_whittaker_ssg69",
+    "whittaker:awm": "faction_whittaker_awm",
+    "whittaker:psg1": "faction_whittaker_psg1",
+    "mcallister:glock_17": "faction_mcallister_glock_17",
+    "mcallister:m1911": "faction_mcallister_m1911",
+    "mcallister:usp": "faction_mcallister_usp",
+    "mcallister:cz75": "faction_mcallister_cz75",
+    "mcallister:desert_eagle": "faction_mcallister_desert_eagle",
+    "mcallister:five_seven": "faction_mcallister_five_seven",
+    "mcallister:uzi": "faction_mcallister_uzi",
+    "mcallister:mac10": "faction_mcallister_mac10",
+    "mcallister:mp5": "faction_mcallister_mp5",
+    "mcallister:mp5k": "faction_mcallister_mp5k",
+    "mcallister:vector": "faction_mcallister_vector",
+    "mcallister:p90": "faction_mcallister_p90",
+    "mcallister:ak47": "faction_mcallister_ak47",
+    "mcallister:mini14": "faction_mcallister_mini14",
+    "mcallister:m4a1": "faction_mcallister_m4a1",
+    "mcallister:g36c": "faction_mcallister_g36c",
+    "mcallister:scar_h": "faction_mcallister_scar_h",
+    "mcallister:aug": "faction_mcallister_aug",
+    "mcallister:rem870": "faction_mcallister_rem870",
+    "mcallister:moss500": "faction_mcallister_moss500",
+    "mcallister:spas12": "faction_mcallister_spas12",
+    "mcallister:benelli_m2": "faction_mcallister_benelli_m2",
+    "mcallister:benelli_m4": "faction_mcallister_benelli_m4",
+    "mcallister:saiga12": "faction_mcallister_saiga12",
+    "mcallister:rem700": "faction_mcallister_rem700",
+    "mcallister:sks": "faction_mcallister_sks",
+    "mcallister:svd": "faction_mcallister_svd",
+    "mcallister:ssg69": "faction_mcallister_ssg69",
+    "mcallister:awm": "faction_mcallister_awm",
+    "mcallister:psg1": "faction_mcallister_psg1",
+    "trc:glock_17": "faction_trc_glock_17",
+    "trc:m1911": "faction_trc_m1911",
+    "trc:usp": "faction_trc_usp",
+    "trc:cz75": "faction_trc_cz75",
+    "trc:desert_eagle": "faction_trc_desert_eagle",
+    "trc:five_seven": "faction_trc_five_seven",
+    "trc:uzi": "faction_trc_uzi",
+    "trc:mac10": "faction_trc_mac10",
+    "trc:mp5": "faction_trc_mp5",
+    "trc:mp5k": "faction_trc_mp5k",
+    "trc:vector": "faction_trc_vector",
+    "trc:p90": "faction_trc_p90",
+    "trc:ak47": "faction_trc_ak47",
+    "trc:mini14": "faction_trc_mini14",
+    "trc:m4a1": "faction_trc_m4a1",
+    "trc:g36c": "faction_trc_g36c",
+    "trc:scar_h": "faction_trc_scar_h",
+    "trc:aug": "faction_trc_aug",
+    "trc:rem870": "faction_trc_rem870",
+    "trc:moss500": "faction_trc_moss500",
+    "trc:spas12": "faction_trc_spas12",
+    "trc:benelli_m2": "faction_trc_benelli_m2",
+    "trc:benelli_m4": "faction_trc_benelli_m4",
+    "trc:saiga12": "faction_trc_saiga12",
+    "trc:rem700": "faction_trc_rem700",
+    "trc:sks": "faction_trc_sks",
+    "trc:svd": "faction_trc_svd",
+    "trc:ssg69": "faction_trc_ssg69",
+    "trc:awm": "faction_trc_awm",
+    "trc:psg1": "faction_trc_psg1",
+    "nbpd:glock_17": "faction_nbpd_glock_17",
+    "nbpd:m1911": "faction_nbpd_m1911",
+    "nbpd:usp": "faction_nbpd_usp",
+    "nbpd:cz75": "faction_nbpd_cz75",
+    "nbpd:desert_eagle": "faction_nbpd_desert_eagle",
+    "nbpd:five_seven": "faction_nbpd_five_seven",
+    "nbpd:uzi": "faction_nbpd_uzi",
+    "nbpd:mac10": "faction_nbpd_mac10",
+    "nbpd:mp5": "faction_nbpd_mp5",
+    "nbpd:mp5k": "faction_nbpd_mp5k",
+    "nbpd:vector": "faction_nbpd_vector",
+    "nbpd:p90": "faction_nbpd_p90",
+    "nbpd:ak47": "faction_nbpd_ak47",
+    "nbpd:mini14": "faction_nbpd_mini14",
+    "nbpd:m4a1": "faction_nbpd_m4a1",
+    "nbpd:g36c": "faction_nbpd_g36c",
+    "nbpd:scar_h": "faction_nbpd_scar_h",
+    "nbpd:aug": "faction_nbpd_aug",
+    "nbpd:rem870": "faction_nbpd_rem870",
+    "nbpd:moss500": "faction_nbpd_moss500",
+    "nbpd:spas12": "faction_nbpd_spas12",
+    "nbpd:benelli_m2": "faction_nbpd_benelli_m2",
+    "nbpd:benelli_m4": "faction_nbpd_benelli_m4",
+    "nbpd:saiga12": "faction_nbpd_saiga12",
+    "nbpd:rem700": "faction_nbpd_rem700",
+    "nbpd:sks": "faction_nbpd_sks",
+    "nbpd:svd": "faction_nbpd_svd",
+    "nbpd:ssg69": "faction_nbpd_ssg69",
+    "nbpd:awm": "faction_nbpd_awm",
+    "nbpd:psg1": "faction_nbpd_psg1",
+    "mercer44:glock_17": "faction_mercer44_glock_17",
+    "mercer44:m1911": "faction_mercer44_m1911",
+    "mercer44:usp": "faction_mercer44_usp",
+    "mercer44:cz75": "faction_mercer44_cz75",
+    "mercer44:desert_eagle": "faction_mercer44_desert_eagle",
+    "mercer44:five_seven": "faction_mercer44_five_seven",
+    "mercer44:uzi": "faction_mercer44_uzi",
+    "mercer44:mac10": "faction_mercer44_mac10",
+    "mercer44:mp5": "faction_mercer44_mp5",
+    "mercer44:mp5k": "faction_mercer44_mp5k",
+    "mercer44:vector": "faction_mercer44_vector",
+    "mercer44:p90": "faction_mercer44_p90",
+    "mercer44:ak47": "faction_mercer44_ak47",
+    "mercer44:mini14": "faction_mercer44_mini14",
+    "mercer44:m4a1": "faction_mercer44_m4a1",
+    "mercer44:g36c": "faction_mercer44_g36c",
+    "mercer44:scar_h": "faction_mercer44_scar_h",
+    "mercer44:aug": "faction_mercer44_aug",
+    "mercer44:rem870": "faction_mercer44_rem870",
+    "mercer44:moss500": "faction_mercer44_moss500",
+    "mercer44:spas12": "faction_mercer44_spas12",
+    "mercer44:benelli_m2": "faction_mercer44_benelli_m2",
+    "mercer44:benelli_m4": "faction_mercer44_benelli_m4",
+    "mercer44:saiga12": "faction_mercer44_saiga12",
+    "mercer44:rem700": "faction_mercer44_rem700",
+    "mercer44:sks": "faction_mercer44_sks",
+    "mercer44:svd": "faction_mercer44_svd",
+    "mercer44:ssg69": "faction_mercer44_ssg69",
+    "mercer44:awm": "faction_mercer44_awm",
+    "mercer44:psg1": "faction_mercer44_psg1",
+    "wm_corp:glock_17": "faction_wm_corp_glock_17",
+    "wm_corp:m1911": "faction_wm_corp_m1911",
+    "wm_corp:usp": "faction_wm_corp_usp",
+    "wm_corp:cz75": "faction_wm_corp_cz75",
+    "wm_corp:desert_eagle": "faction_wm_corp_desert_eagle",
+    "wm_corp:five_seven": "faction_wm_corp_five_seven",
+    "wm_corp:uzi": "faction_wm_corp_uzi",
+    "wm_corp:mac10": "faction_wm_corp_mac10",
+    "wm_corp:mp5": "faction_wm_corp_mp5",
+    "wm_corp:mp5k": "faction_wm_corp_mp5k",
+    "wm_corp:vector": "faction_wm_corp_vector",
+    "wm_corp:p90": "faction_wm_corp_p90",
+    "wm_corp:ak47": "faction_wm_corp_ak47",
+    "wm_corp:mini14": "faction_wm_corp_mini14",
+    "wm_corp:m4a1": "faction_wm_corp_m4a1",
+    "wm_corp:g36c": "faction_wm_corp_g36c",
+    "wm_corp:scar_h": "faction_wm_corp_scar_h",
+    "wm_corp:aug": "faction_wm_corp_aug",
+    "wm_corp:rem870": "faction_wm_corp_rem870",
+    "wm_corp:moss500": "faction_wm_corp_moss500",
+    "wm_corp:spas12": "faction_wm_corp_spas12",
+    "wm_corp:benelli_m2": "faction_wm_corp_benelli_m2",
+    "wm_corp:benelli_m4": "faction_wm_corp_benelli_m4",
+    "wm_corp:saiga12": "faction_wm_corp_saiga12",
+    "wm_corp:rem700": "faction_wm_corp_rem700",
+    "wm_corp:sks": "faction_wm_corp_sks",
+    "wm_corp:svd": "faction_wm_corp_svd",
+    "wm_corp:ssg69": "faction_wm_corp_ssg69",
+    "wm_corp:awm": "faction_wm_corp_awm",
+    "wm_corp:psg1": "faction_wm_corp_psg1",
+    "union_sur:glock_17": "faction_union_sur_glock_17",
+    "union_sur:m1911": "faction_union_sur_m1911",
+    "union_sur:usp": "faction_union_sur_usp",
+    "union_sur:cz75": "faction_union_sur_cz75",
+    "union_sur:desert_eagle": "faction_union_sur_desert_eagle",
+    "union_sur:five_seven": "faction_union_sur_five_seven",
+    "union_sur:uzi": "faction_union_sur_uzi",
+    "union_sur:mac10": "faction_union_sur_mac10",
+    "union_sur:mp5": "faction_union_sur_mp5",
+    "union_sur:mp5k": "faction_union_sur_mp5k",
+    "union_sur:vector": "faction_union_sur_vector",
+    "union_sur:p90": "faction_union_sur_p90",
+    "union_sur:ak47": "faction_union_sur_ak47",
+    "union_sur:mini14": "faction_union_sur_mini14",
+    "union_sur:m4a1": "faction_union_sur_m4a1",
+    "union_sur:g36c": "faction_union_sur_g36c",
+    "union_sur:scar_h": "faction_union_sur_scar_h",
+    "union_sur:aug": "faction_union_sur_aug",
+    "union_sur:rem870": "faction_union_sur_rem870",
+    "union_sur:moss500": "faction_union_sur_moss500",
+    "union_sur:spas12": "faction_union_sur_spas12",
+    "union_sur:benelli_m2": "faction_union_sur_benelli_m2",
+    "union_sur:benelli_m4": "faction_union_sur_benelli_m4",
+    "union_sur:saiga12": "faction_union_sur_saiga12",
+    "union_sur:rem700": "faction_union_sur_rem700",
+    "union_sur:sks": "faction_union_sur_sks",
+    "union_sur:svd": "faction_union_sur_svd",
+    "union_sur:ssg69": "faction_union_sur_ssg69",
+    "union_sur:awm": "faction_union_sur_awm",
+    "union_sur:psg1": "faction_union_sur_psg1",
+    "lombardia:glock_17": "faction_lombardia_glock_17",
+    "lombardia:m1911": "faction_lombardia_m1911",
+    "lombardia:usp": "faction_lombardia_usp",
+    "lombardia:cz75": "faction_lombardia_cz75",
+    "lombardia:desert_eagle": "faction_lombardia_desert_eagle",
+    "lombardia:five_seven": "faction_lombardia_five_seven",
+    "lombardia:uzi": "faction_lombardia_uzi",
+    "lombardia:mac10": "faction_lombardia_mac10",
+    "lombardia:mp5": "faction_lombardia_mp5",
+    "lombardia:mp5k": "faction_lombardia_mp5k",
+    "lombardia:vector": "faction_lombardia_vector",
+    "lombardia:p90": "faction_lombardia_p90",
+    "lombardia:ak47": "faction_lombardia_ak47",
+    "lombardia:mini14": "faction_lombardia_mini14",
+    "lombardia:m4a1": "faction_lombardia_m4a1",
+    "lombardia:g36c": "faction_lombardia_g36c",
+    "lombardia:scar_h": "faction_lombardia_scar_h",
+    "lombardia:aug": "faction_lombardia_aug",
+    "lombardia:rem870": "faction_lombardia_rem870",
+    "lombardia:moss500": "faction_lombardia_moss500",
+    "lombardia:spas12": "faction_lombardia_spas12",
+    "lombardia:benelli_m2": "faction_lombardia_benelli_m2",
+    "lombardia:benelli_m4": "faction_lombardia_benelli_m4",
+    "lombardia:saiga12": "faction_lombardia_saiga12",
+    "lombardia:rem700": "faction_lombardia_rem700",
+    "lombardia:sks": "faction_lombardia_sks",
+    "lombardia:svd": "faction_lombardia_svd",
+    "lombardia:ssg69": "faction_lombardia_ssg69",
+    "lombardia:awm": "faction_lombardia_awm",
+    "lombardia:psg1": "faction_lombardia_psg1",
+    "sand_raiders:glock_17": "faction_sand_raiders_glock_17",
+    "sand_raiders:m1911": "faction_sand_raiders_m1911",
+    "sand_raiders:usp": "faction_sand_raiders_usp",
+    "sand_raiders:cz75": "faction_sand_raiders_cz75",
+    "sand_raiders:desert_eagle": "faction_sand_raiders_desert_eagle",
+    "sand_raiders:five_seven": "faction_sand_raiders_five_seven",
+    "sand_raiders:uzi": "faction_sand_raiders_uzi",
+    "sand_raiders:mac10": "faction_sand_raiders_mac10",
+    "sand_raiders:mp5": "faction_sand_raiders_mp5",
+    "sand_raiders:mp5k": "faction_sand_raiders_mp5k",
+    "sand_raiders:vector": "faction_sand_raiders_vector",
+    "sand_raiders:p90": "faction_sand_raiders_p90",
+    "sand_raiders:ak47": "faction_sand_raiders_ak47",
+    "sand_raiders:mini14": "faction_sand_raiders_mini14",
+    "sand_raiders:m4a1": "faction_sand_raiders_m4a1",
+    "sand_raiders:g36c": "faction_sand_raiders_g36c",
+    "sand_raiders:scar_h": "faction_sand_raiders_scar_h",
+    "sand_raiders:aug": "faction_sand_raiders_aug",
+    "sand_raiders:rem870": "faction_sand_raiders_rem870",
+    "sand_raiders:moss500": "faction_sand_raiders_moss500",
+    "sand_raiders:spas12": "faction_sand_raiders_spas12",
+    "sand_raiders:benelli_m2": "faction_sand_raiders_benelli_m2",
+    "sand_raiders:benelli_m4": "faction_sand_raiders_benelli_m4",
+    "sand_raiders:saiga12": "faction_sand_raiders_saiga12",
+    "sand_raiders:rem700": "faction_sand_raiders_rem700",
+    "sand_raiders:sks": "faction_sand_raiders_sks",
+    "sand_raiders:svd": "faction_sand_raiders_svd",
+    "sand_raiders:ssg69": "faction_sand_raiders_ssg69",
+    "sand_raiders:awm": "faction_sand_raiders_awm",
+    "sand_raiders:psg1": "faction_sand_raiders_psg1",
+    "saffar:glock_17": "faction_saffar_glock_17",
+    "saffar:m1911": "faction_saffar_m1911",
+    "saffar:usp": "faction_saffar_usp",
+    "saffar:cz75": "faction_saffar_cz75",
+    "saffar:desert_eagle": "faction_saffar_desert_eagle",
+    "saffar:five_seven": "faction_saffar_five_seven",
+    "saffar:uzi": "faction_saffar_uzi",
+    "saffar:mac10": "faction_saffar_mac10",
+    "saffar:mp5": "faction_saffar_mp5",
+    "saffar:mp5k": "faction_saffar_mp5k",
+    "saffar:vector": "faction_saffar_vector",
+    "saffar:p90": "faction_saffar_p90",
+    "saffar:ak47": "faction_saffar_ak47",
+    "saffar:mini14": "faction_saffar_mini14",
+    "saffar:m4a1": "faction_saffar_m4a1",
+    "saffar:g36c": "faction_saffar_g36c",
+    "saffar:scar_h": "faction_saffar_scar_h",
+    "saffar:aug": "faction_saffar_aug",
+    "saffar:rem870": "faction_saffar_rem870",
+    "saffar:moss500": "faction_saffar_moss500",
+    "saffar:spas12": "faction_saffar_spas12",
+    "saffar:benelli_m2": "faction_saffar_benelli_m2",
+    "saffar:benelli_m4": "faction_saffar_benelli_m4",
+    "saffar:saiga12": "faction_saffar_saiga12",
+    "saffar:rem700": "faction_saffar_rem700",
+    "saffar:sks": "faction_saffar_sks",
+    "saffar:svd": "faction_saffar_svd",
+    "saffar:ssg69": "faction_saffar_ssg69",
+    "saffar:awm": "faction_saffar_awm",
+    "saffar:psg1": "faction_saffar_psg1",
+    "kurgan:glock_17": "faction_kurgan_glock_17",
+    "kurgan:m1911": "faction_kurgan_m1911",
+    "kurgan:usp": "faction_kurgan_usp",
+    "kurgan:cz75": "faction_kurgan_cz75",
+    "kurgan:desert_eagle": "faction_kurgan_desert_eagle",
+    "kurgan:five_seven": "faction_kurgan_five_seven",
+    "kurgan:uzi": "faction_kurgan_uzi",
+    "kurgan:mac10": "faction_kurgan_mac10",
+    "kurgan:mp5": "faction_kurgan_mp5",
+    "kurgan:mp5k": "faction_kurgan_mp5k",
+    "kurgan:vector": "faction_kurgan_vector",
+    "kurgan:p90": "faction_kurgan_p90",
+    "kurgan:ak47": "faction_kurgan_ak47",
+    "kurgan:mini14": "faction_kurgan_mini14",
+    "kurgan:m4a1": "faction_kurgan_m4a1",
+    "kurgan:g36c": "faction_kurgan_g36c",
+    "kurgan:scar_h": "faction_kurgan_scar_h",
+    "kurgan:aug": "faction_kurgan_aug",
+    "kurgan:rem870": "faction_kurgan_rem870",
+    "kurgan:moss500": "faction_kurgan_moss500",
+    "kurgan:spas12": "faction_kurgan_spas12",
+    "kurgan:benelli_m2": "faction_kurgan_benelli_m2",
+    "kurgan:benelli_m4": "faction_kurgan_benelli_m4",
+    "kurgan:saiga12": "faction_kurgan_saiga12",
+    "kurgan:rem700": "faction_kurgan_rem700",
+    "kurgan:sks": "faction_kurgan_sks",
+    "kurgan:svd": "faction_kurgan_svd",
+    "kurgan:ssg69": "faction_kurgan_ssg69",
+    "kurgan:awm": "faction_kurgan_awm",
+    "kurgan:psg1": "faction_kurgan_psg1",
+    "ashford_crane:glock_17": "faction_ashford_crane_glock_17",
+    "ashford_crane:m1911": "faction_ashford_crane_m1911",
+    "ashford_crane:usp": "faction_ashford_crane_usp",
+    "ashford_crane:cz75": "faction_ashford_crane_cz75",
+    "ashford_crane:desert_eagle": "faction_ashford_crane_desert_eagle",
+    "ashford_crane:five_seven": "faction_ashford_crane_five_seven",
+    "ashford_crane:uzi": "faction_ashford_crane_uzi",
+    "ashford_crane:mac10": "faction_ashford_crane_mac10",
+    "ashford_crane:mp5": "faction_ashford_crane_mp5",
+    "ashford_crane:mp5k": "faction_ashford_crane_mp5k",
+    "ashford_crane:vector": "faction_ashford_crane_vector",
+    "ashford_crane:p90": "faction_ashford_crane_p90",
+    "ashford_crane:ak47": "faction_ashford_crane_ak47",
+    "ashford_crane:mini14": "faction_ashford_crane_mini14",
+    "ashford_crane:m4a1": "faction_ashford_crane_m4a1",
+    "ashford_crane:g36c": "faction_ashford_crane_g36c",
+    "ashford_crane:scar_h": "faction_ashford_crane_scar_h",
+    "ashford_crane:aug": "faction_ashford_crane_aug",
+    "ashford_crane:rem870": "faction_ashford_crane_rem870",
+    "ashford_crane:moss500": "faction_ashford_crane_moss500",
+    "ashford_crane:spas12": "faction_ashford_crane_spas12",
+    "ashford_crane:benelli_m2": "faction_ashford_crane_benelli_m2",
+    "ashford_crane:benelli_m4": "faction_ashford_crane_benelli_m4",
+    "ashford_crane:saiga12": "faction_ashford_crane_saiga12",
+    "ashford_crane:rem700": "faction_ashford_crane_rem700",
+    "ashford_crane:sks": "faction_ashford_crane_sks",
+    "ashford_crane:svd": "faction_ashford_crane_svd",
+    "ashford_crane:ssg69": "faction_ashford_crane_ssg69",
+    "ashford_crane:awm": "faction_ashford_crane_awm",
+    "ashford_crane:psg1": "faction_ashford_crane_psg1",
+    "blacktop:glock_17": "faction_blacktop_glock_17",
+    "blacktop:m1911": "faction_blacktop_m1911",
+    "blacktop:usp": "faction_blacktop_usp",
+    "blacktop:cz75": "faction_blacktop_cz75",
+    "blacktop:desert_eagle": "faction_blacktop_desert_eagle",
+    "blacktop:five_seven": "faction_blacktop_five_seven",
+    "blacktop:uzi": "faction_blacktop_uzi",
+    "blacktop:mac10": "faction_blacktop_mac10",
+    "blacktop:mp5": "faction_blacktop_mp5",
+    "blacktop:mp5k": "faction_blacktop_mp5k",
+    "blacktop:vector": "faction_blacktop_vector",
+    "blacktop:p90": "faction_blacktop_p90",
+    "blacktop:ak47": "faction_blacktop_ak47",
+    "blacktop:mini14": "faction_blacktop_mini14",
+    "blacktop:m4a1": "faction_blacktop_m4a1",
+    "blacktop:g36c": "faction_blacktop_g36c",
+    "blacktop:scar_h": "faction_blacktop_scar_h",
+    "blacktop:aug": "faction_blacktop_aug",
+    "blacktop:rem870": "faction_blacktop_rem870",
+    "blacktop:moss500": "faction_blacktop_moss500",
+    "blacktop:spas12": "faction_blacktop_spas12",
+    "blacktop:benelli_m2": "faction_blacktop_benelli_m2",
+    "blacktop:benelli_m4": "faction_blacktop_benelli_m4",
+    "blacktop:saiga12": "faction_blacktop_saiga12",
+    "blacktop:rem700": "faction_blacktop_rem700",
+    "blacktop:sks": "faction_blacktop_sks",
+    "blacktop:svd": "faction_blacktop_svd",
+    "blacktop:ssg69": "faction_blacktop_ssg69",
+    "blacktop:awm": "faction_blacktop_awm",
+    "blacktop:psg1": "faction_blacktop_psg1"
+  },
+  "variants": {
+    "faction_eastex_glock_17": {
+      "file": "faction_eastex_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "eastex",
+      "base": "0_pistol"
+    },
+    "faction_eastex_m1911": {
+      "file": "faction_eastex_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "eastex",
+      "base": "0_pistol"
+    },
+    "faction_eastex_usp": {
+      "file": "faction_eastex_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "eastex",
+      "base": "0_pistol"
+    },
+    "faction_eastex_cz75": {
+      "file": "faction_eastex_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "eastex",
+      "base": "0_pistol"
+    },
+    "faction_eastex_desert_eagle": {
+      "file": "faction_eastex_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "eastex",
+      "base": "0_pistol"
+    },
+    "faction_eastex_five_seven": {
+      "file": "faction_eastex_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "eastex",
+      "base": "0_pistol"
+    },
+    "faction_eastex_uzi": {
+      "file": "faction_eastex_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "eastex",
+      "base": "0_uzi_smg"
+    },
+    "faction_eastex_mac10": {
+      "file": "faction_eastex_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "eastex",
+      "base": "0_uzi_smg"
+    },
+    "faction_eastex_mp5": {
+      "file": "faction_eastex_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "eastex",
+      "base": "0_uzi_smg"
+    },
+    "faction_eastex_mp5k": {
+      "file": "faction_eastex_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "eastex",
+      "base": "0_uzi_smg"
+    },
+    "faction_eastex_vector": {
+      "file": "faction_eastex_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "eastex",
+      "base": "0_uzi_smg"
+    },
+    "faction_eastex_p90": {
+      "file": "faction_eastex_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "eastex",
+      "base": "0_uzi_smg"
+    },
+    "faction_eastex_ak47": {
+      "file": "faction_eastex_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_mini14": {
+      "file": "faction_eastex_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_m4a1": {
+      "file": "faction_eastex_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_g36c": {
+      "file": "faction_eastex_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_scar_h": {
+      "file": "faction_eastex_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_aug": {
+      "file": "faction_eastex_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_rem870": {
+      "file": "faction_eastex_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "eastex",
+      "base": "0_pump_shotgun"
+    },
+    "faction_eastex_moss500": {
+      "file": "faction_eastex_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "eastex",
+      "base": "0_pump_shotgun"
+    },
+    "faction_eastex_spas12": {
+      "file": "faction_eastex_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "eastex",
+      "base": "0_pump_shotgun"
+    },
+    "faction_eastex_benelli_m2": {
+      "file": "faction_eastex_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "eastex",
+      "base": "0_pump_shotgun"
+    },
+    "faction_eastex_benelli_m4": {
+      "file": "faction_eastex_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "eastex",
+      "base": "0_pump_shotgun"
+    },
+    "faction_eastex_saiga12": {
+      "file": "faction_eastex_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "eastex",
+      "base": "0_pump_shotgun"
+    },
+    "faction_eastex_rem700": {
+      "file": "faction_eastex_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_sks": {
+      "file": "faction_eastex_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_svd": {
+      "file": "faction_eastex_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_ssg69": {
+      "file": "faction_eastex_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_awm": {
+      "file": "faction_eastex_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_eastex_psg1": {
+      "file": "faction_eastex_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "eastex",
+      "base": "0_ak_rifle"
+    },
+    "faction_calle_ocho_glock_17": {
+      "file": "faction_calle_ocho_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "calle_ocho",
+      "base": "2_pistol"
+    },
+    "faction_calle_ocho_m1911": {
+      "file": "faction_calle_ocho_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "calle_ocho",
+      "base": "2_pistol"
+    },
+    "faction_calle_ocho_usp": {
+      "file": "faction_calle_ocho_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "calle_ocho",
+      "base": "2_pistol"
+    },
+    "faction_calle_ocho_cz75": {
+      "file": "faction_calle_ocho_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "calle_ocho",
+      "base": "2_pistol"
+    },
+    "faction_calle_ocho_desert_eagle": {
+      "file": "faction_calle_ocho_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "calle_ocho",
+      "base": "2_pistol"
+    },
+    "faction_calle_ocho_five_seven": {
+      "file": "faction_calle_ocho_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "calle_ocho",
+      "base": "2_pistol"
+    },
+    "faction_calle_ocho_uzi": {
+      "file": "faction_calle_ocho_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "calle_ocho",
+      "base": "2_uzi_smg"
+    },
+    "faction_calle_ocho_mac10": {
+      "file": "faction_calle_ocho_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "calle_ocho",
+      "base": "2_uzi_smg"
+    },
+    "faction_calle_ocho_mp5": {
+      "file": "faction_calle_ocho_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "calle_ocho",
+      "base": "2_uzi_smg"
+    },
+    "faction_calle_ocho_mp5k": {
+      "file": "faction_calle_ocho_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "calle_ocho",
+      "base": "2_uzi_smg"
+    },
+    "faction_calle_ocho_vector": {
+      "file": "faction_calle_ocho_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "calle_ocho",
+      "base": "2_uzi_smg"
+    },
+    "faction_calle_ocho_p90": {
+      "file": "faction_calle_ocho_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "calle_ocho",
+      "base": "2_uzi_smg"
+    },
+    "faction_calle_ocho_ak47": {
+      "file": "faction_calle_ocho_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_mini14": {
+      "file": "faction_calle_ocho_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_m4a1": {
+      "file": "faction_calle_ocho_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_g36c": {
+      "file": "faction_calle_ocho_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_scar_h": {
+      "file": "faction_calle_ocho_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_aug": {
+      "file": "faction_calle_ocho_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_rem870": {
+      "file": "faction_calle_ocho_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "calle_ocho",
+      "base": "2_pump_shotgun"
+    },
+    "faction_calle_ocho_moss500": {
+      "file": "faction_calle_ocho_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "calle_ocho",
+      "base": "2_pump_shotgun"
+    },
+    "faction_calle_ocho_spas12": {
+      "file": "faction_calle_ocho_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "calle_ocho",
+      "base": "2_pump_shotgun"
+    },
+    "faction_calle_ocho_benelli_m2": {
+      "file": "faction_calle_ocho_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "calle_ocho",
+      "base": "2_pump_shotgun"
+    },
+    "faction_calle_ocho_benelli_m4": {
+      "file": "faction_calle_ocho_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "calle_ocho",
+      "base": "2_pump_shotgun"
+    },
+    "faction_calle_ocho_saiga12": {
+      "file": "faction_calle_ocho_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "calle_ocho",
+      "base": "2_pump_shotgun"
+    },
+    "faction_calle_ocho_rem700": {
+      "file": "faction_calle_ocho_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_sks": {
+      "file": "faction_calle_ocho_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_svd": {
+      "file": "faction_calle_ocho_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_ssg69": {
+      "file": "faction_calle_ocho_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_awm": {
+      "file": "faction_calle_ocho_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_calle_ocho_psg1": {
+      "file": "faction_calle_ocho_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "calle_ocho",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_glock_17": {
+      "file": "faction_ventresca_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "ventresca",
+      "base": "2_pistol"
+    },
+    "faction_ventresca_m1911": {
+      "file": "faction_ventresca_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "ventresca",
+      "base": "2_pistol"
+    },
+    "faction_ventresca_usp": {
+      "file": "faction_ventresca_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "ventresca",
+      "base": "2_pistol"
+    },
+    "faction_ventresca_cz75": {
+      "file": "faction_ventresca_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "ventresca",
+      "base": "2_pistol"
+    },
+    "faction_ventresca_desert_eagle": {
+      "file": "faction_ventresca_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "ventresca",
+      "base": "2_pistol"
+    },
+    "faction_ventresca_five_seven": {
+      "file": "faction_ventresca_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "ventresca",
+      "base": "2_pistol"
+    },
+    "faction_ventresca_uzi": {
+      "file": "faction_ventresca_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "ventresca",
+      "base": "2_uzi_smg"
+    },
+    "faction_ventresca_mac10": {
+      "file": "faction_ventresca_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "ventresca",
+      "base": "2_uzi_smg"
+    },
+    "faction_ventresca_mp5": {
+      "file": "faction_ventresca_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "ventresca",
+      "base": "2_uzi_smg"
+    },
+    "faction_ventresca_mp5k": {
+      "file": "faction_ventresca_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "ventresca",
+      "base": "2_uzi_smg"
+    },
+    "faction_ventresca_vector": {
+      "file": "faction_ventresca_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "ventresca",
+      "base": "2_uzi_smg"
+    },
+    "faction_ventresca_p90": {
+      "file": "faction_ventresca_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "ventresca",
+      "base": "2_uzi_smg"
+    },
+    "faction_ventresca_ak47": {
+      "file": "faction_ventresca_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_mini14": {
+      "file": "faction_ventresca_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_m4a1": {
+      "file": "faction_ventresca_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_g36c": {
+      "file": "faction_ventresca_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_scar_h": {
+      "file": "faction_ventresca_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_aug": {
+      "file": "faction_ventresca_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_rem870": {
+      "file": "faction_ventresca_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "ventresca",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ventresca_moss500": {
+      "file": "faction_ventresca_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "ventresca",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ventresca_spas12": {
+      "file": "faction_ventresca_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "ventresca",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ventresca_benelli_m2": {
+      "file": "faction_ventresca_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "ventresca",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ventresca_benelli_m4": {
+      "file": "faction_ventresca_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "ventresca",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ventresca_saiga12": {
+      "file": "faction_ventresca_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "ventresca",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ventresca_rem700": {
+      "file": "faction_ventresca_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_sks": {
+      "file": "faction_ventresca_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_svd": {
+      "file": "faction_ventresca_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_ssg69": {
+      "file": "faction_ventresca_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_awm": {
+      "file": "faction_ventresca_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ventresca_psg1": {
+      "file": "faction_ventresca_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "ventresca",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_glock_17": {
+      "file": "faction_ravicci_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "ravicci",
+      "base": "2_pistol"
+    },
+    "faction_ravicci_m1911": {
+      "file": "faction_ravicci_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "ravicci",
+      "base": "2_pistol"
+    },
+    "faction_ravicci_usp": {
+      "file": "faction_ravicci_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "ravicci",
+      "base": "2_pistol"
+    },
+    "faction_ravicci_cz75": {
+      "file": "faction_ravicci_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "ravicci",
+      "base": "2_pistol"
+    },
+    "faction_ravicci_desert_eagle": {
+      "file": "faction_ravicci_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "ravicci",
+      "base": "2_pistol"
+    },
+    "faction_ravicci_five_seven": {
+      "file": "faction_ravicci_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "ravicci",
+      "base": "2_pistol"
+    },
+    "faction_ravicci_uzi": {
+      "file": "faction_ravicci_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "ravicci",
+      "base": "2_uzi_smg"
+    },
+    "faction_ravicci_mac10": {
+      "file": "faction_ravicci_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "ravicci",
+      "base": "2_uzi_smg"
+    },
+    "faction_ravicci_mp5": {
+      "file": "faction_ravicci_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "ravicci",
+      "base": "2_uzi_smg"
+    },
+    "faction_ravicci_mp5k": {
+      "file": "faction_ravicci_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "ravicci",
+      "base": "2_uzi_smg"
+    },
+    "faction_ravicci_vector": {
+      "file": "faction_ravicci_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "ravicci",
+      "base": "2_uzi_smg"
+    },
+    "faction_ravicci_p90": {
+      "file": "faction_ravicci_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "ravicci",
+      "base": "2_uzi_smg"
+    },
+    "faction_ravicci_ak47": {
+      "file": "faction_ravicci_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_mini14": {
+      "file": "faction_ravicci_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_m4a1": {
+      "file": "faction_ravicci_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_g36c": {
+      "file": "faction_ravicci_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_scar_h": {
+      "file": "faction_ravicci_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_aug": {
+      "file": "faction_ravicci_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_rem870": {
+      "file": "faction_ravicci_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "ravicci",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ravicci_moss500": {
+      "file": "faction_ravicci_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "ravicci",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ravicci_spas12": {
+      "file": "faction_ravicci_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "ravicci",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ravicci_benelli_m2": {
+      "file": "faction_ravicci_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "ravicci",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ravicci_benelli_m4": {
+      "file": "faction_ravicci_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "ravicci",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ravicci_saiga12": {
+      "file": "faction_ravicci_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "ravicci",
+      "base": "2_pump_shotgun"
+    },
+    "faction_ravicci_rem700": {
+      "file": "faction_ravicci_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_sks": {
+      "file": "faction_ravicci_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_svd": {
+      "file": "faction_ravicci_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_ssg69": {
+      "file": "faction_ravicci_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_awm": {
+      "file": "faction_ravicci_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_ravicci_psg1": {
+      "file": "faction_ravicci_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "ravicci",
+      "base": "2_ak_rifle"
+    },
+    "faction_orlov_sniper_rem700": {
+      "file": "faction_orlov_sniper_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "orlov",
+      "base": "1_ak_rifle"
+    },
+    "faction_orlov_sniper_sks": {
+      "file": "faction_orlov_sniper_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "orlov",
+      "base": "1_ak_rifle"
+    },
+    "faction_orlov_sniper_svd": {
+      "file": "faction_orlov_sniper_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "orlov",
+      "base": "1_ak_rifle"
+    },
+    "faction_orlov_sniper_ssg69": {
+      "file": "faction_orlov_sniper_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "orlov",
+      "base": "1_ak_rifle"
+    },
+    "faction_orlov_sniper_awm": {
+      "file": "faction_orlov_sniper_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "orlov",
+      "base": "1_ak_rifle"
+    },
+    "faction_orlov_sniper_psg1": {
+      "file": "faction_orlov_sniper_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "orlov",
+      "base": "1_ak_rifle"
+    },
+    "faction_zangyaku_glock_17": {
+      "file": "faction_zangyaku_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "zangyaku",
+      "base": "2_pistol"
+    },
+    "faction_zangyaku_m1911": {
+      "file": "faction_zangyaku_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "zangyaku",
+      "base": "2_pistol"
+    },
+    "faction_zangyaku_usp": {
+      "file": "faction_zangyaku_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "zangyaku",
+      "base": "2_pistol"
+    },
+    "faction_zangyaku_cz75": {
+      "file": "faction_zangyaku_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "zangyaku",
+      "base": "2_pistol"
+    },
+    "faction_zangyaku_desert_eagle": {
+      "file": "faction_zangyaku_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "zangyaku",
+      "base": "2_pistol"
+    },
+    "faction_zangyaku_five_seven": {
+      "file": "faction_zangyaku_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "zangyaku",
+      "base": "2_pistol"
+    },
+    "faction_zangyaku_uzi": {
+      "file": "faction_zangyaku_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "zangyaku",
+      "base": "2_uzi_smg"
+    },
+    "faction_zangyaku_mac10": {
+      "file": "faction_zangyaku_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "zangyaku",
+      "base": "2_uzi_smg"
+    },
+    "faction_zangyaku_mp5": {
+      "file": "faction_zangyaku_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "zangyaku",
+      "base": "2_uzi_smg"
+    },
+    "faction_zangyaku_mp5k": {
+      "file": "faction_zangyaku_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "zangyaku",
+      "base": "2_uzi_smg"
+    },
+    "faction_zangyaku_vector": {
+      "file": "faction_zangyaku_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "zangyaku",
+      "base": "2_uzi_smg"
+    },
+    "faction_zangyaku_p90": {
+      "file": "faction_zangyaku_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "zangyaku",
+      "base": "2_uzi_smg"
+    },
+    "faction_zangyaku_ak47": {
+      "file": "faction_zangyaku_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_mini14": {
+      "file": "faction_zangyaku_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_m4a1": {
+      "file": "faction_zangyaku_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_g36c": {
+      "file": "faction_zangyaku_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_scar_h": {
+      "file": "faction_zangyaku_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_aug": {
+      "file": "faction_zangyaku_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_rem870": {
+      "file": "faction_zangyaku_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "zangyaku",
+      "base": "2_pump_shotgun"
+    },
+    "faction_zangyaku_moss500": {
+      "file": "faction_zangyaku_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "zangyaku",
+      "base": "2_pump_shotgun"
+    },
+    "faction_zangyaku_spas12": {
+      "file": "faction_zangyaku_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "zangyaku",
+      "base": "2_pump_shotgun"
+    },
+    "faction_zangyaku_benelli_m2": {
+      "file": "faction_zangyaku_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "zangyaku",
+      "base": "2_pump_shotgun"
+    },
+    "faction_zangyaku_benelli_m4": {
+      "file": "faction_zangyaku_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "zangyaku",
+      "base": "2_pump_shotgun"
+    },
+    "faction_zangyaku_saiga12": {
+      "file": "faction_zangyaku_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "zangyaku",
+      "base": "2_pump_shotgun"
+    },
+    "faction_zangyaku_rem700": {
+      "file": "faction_zangyaku_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_sks": {
+      "file": "faction_zangyaku_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_svd": {
+      "file": "faction_zangyaku_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_ssg69": {
+      "file": "faction_zangyaku_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_awm": {
+      "file": "faction_zangyaku_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_zangyaku_psg1": {
+      "file": "faction_zangyaku_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "zangyaku",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_glock_17": {
+      "file": "faction_bitian_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "bitian",
+      "base": "2_pistol"
+    },
+    "faction_bitian_m1911": {
+      "file": "faction_bitian_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "bitian",
+      "base": "2_pistol"
+    },
+    "faction_bitian_usp": {
+      "file": "faction_bitian_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "bitian",
+      "base": "2_pistol"
+    },
+    "faction_bitian_cz75": {
+      "file": "faction_bitian_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "bitian",
+      "base": "2_pistol"
+    },
+    "faction_bitian_desert_eagle": {
+      "file": "faction_bitian_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "bitian",
+      "base": "2_pistol"
+    },
+    "faction_bitian_five_seven": {
+      "file": "faction_bitian_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "bitian",
+      "base": "2_pistol"
+    },
+    "faction_bitian_uzi": {
+      "file": "faction_bitian_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "bitian",
+      "base": "2_uzi_smg"
+    },
+    "faction_bitian_mac10": {
+      "file": "faction_bitian_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "bitian",
+      "base": "2_uzi_smg"
+    },
+    "faction_bitian_mp5": {
+      "file": "faction_bitian_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "bitian",
+      "base": "2_uzi_smg"
+    },
+    "faction_bitian_mp5k": {
+      "file": "faction_bitian_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "bitian",
+      "base": "2_uzi_smg"
+    },
+    "faction_bitian_vector": {
+      "file": "faction_bitian_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "bitian",
+      "base": "2_uzi_smg"
+    },
+    "faction_bitian_p90": {
+      "file": "faction_bitian_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "bitian",
+      "base": "2_uzi_smg"
+    },
+    "faction_bitian_ak47": {
+      "file": "faction_bitian_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_mini14": {
+      "file": "faction_bitian_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_m4a1": {
+      "file": "faction_bitian_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_g36c": {
+      "file": "faction_bitian_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_scar_h": {
+      "file": "faction_bitian_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_aug": {
+      "file": "faction_bitian_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_rem870": {
+      "file": "faction_bitian_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "bitian",
+      "base": "2_pump_shotgun"
+    },
+    "faction_bitian_moss500": {
+      "file": "faction_bitian_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "bitian",
+      "base": "2_pump_shotgun"
+    },
+    "faction_bitian_spas12": {
+      "file": "faction_bitian_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "bitian",
+      "base": "2_pump_shotgun"
+    },
+    "faction_bitian_benelli_m2": {
+      "file": "faction_bitian_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "bitian",
+      "base": "2_pump_shotgun"
+    },
+    "faction_bitian_benelli_m4": {
+      "file": "faction_bitian_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "bitian",
+      "base": "2_pump_shotgun"
+    },
+    "faction_bitian_saiga12": {
+      "file": "faction_bitian_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "bitian",
+      "base": "2_pump_shotgun"
+    },
+    "faction_bitian_rem700": {
+      "file": "faction_bitian_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_sks": {
+      "file": "faction_bitian_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_svd": {
+      "file": "faction_bitian_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_ssg69": {
+      "file": "faction_bitian_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_awm": {
+      "file": "faction_bitian_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_bitian_psg1": {
+      "file": "faction_bitian_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "bitian",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_glock_17": {
+      "file": "faction_stateline_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "stateline",
+      "base": "2_pistol"
+    },
+    "faction_stateline_m1911": {
+      "file": "faction_stateline_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "stateline",
+      "base": "2_pistol"
+    },
+    "faction_stateline_usp": {
+      "file": "faction_stateline_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "stateline",
+      "base": "2_pistol"
+    },
+    "faction_stateline_cz75": {
+      "file": "faction_stateline_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "stateline",
+      "base": "2_pistol"
+    },
+    "faction_stateline_desert_eagle": {
+      "file": "faction_stateline_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "stateline",
+      "base": "2_pistol"
+    },
+    "faction_stateline_five_seven": {
+      "file": "faction_stateline_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "stateline",
+      "base": "2_pistol"
+    },
+    "faction_stateline_uzi": {
+      "file": "faction_stateline_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "stateline",
+      "base": "2_uzi_smg"
+    },
+    "faction_stateline_mac10": {
+      "file": "faction_stateline_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "stateline",
+      "base": "2_uzi_smg"
+    },
+    "faction_stateline_mp5": {
+      "file": "faction_stateline_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "stateline",
+      "base": "2_uzi_smg"
+    },
+    "faction_stateline_mp5k": {
+      "file": "faction_stateline_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "stateline",
+      "base": "2_uzi_smg"
+    },
+    "faction_stateline_vector": {
+      "file": "faction_stateline_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "stateline",
+      "base": "2_uzi_smg"
+    },
+    "faction_stateline_p90": {
+      "file": "faction_stateline_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "stateline",
+      "base": "2_uzi_smg"
+    },
+    "faction_stateline_ak47": {
+      "file": "faction_stateline_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_mini14": {
+      "file": "faction_stateline_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_m4a1": {
+      "file": "faction_stateline_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_g36c": {
+      "file": "faction_stateline_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_scar_h": {
+      "file": "faction_stateline_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_aug": {
+      "file": "faction_stateline_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_rem870": {
+      "file": "faction_stateline_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "stateline",
+      "base": "2_pump_shotgun"
+    },
+    "faction_stateline_moss500": {
+      "file": "faction_stateline_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "stateline",
+      "base": "2_pump_shotgun"
+    },
+    "faction_stateline_spas12": {
+      "file": "faction_stateline_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "stateline",
+      "base": "2_pump_shotgun"
+    },
+    "faction_stateline_benelli_m2": {
+      "file": "faction_stateline_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "stateline",
+      "base": "2_pump_shotgun"
+    },
+    "faction_stateline_benelli_m4": {
+      "file": "faction_stateline_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "stateline",
+      "base": "2_pump_shotgun"
+    },
+    "faction_stateline_saiga12": {
+      "file": "faction_stateline_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "stateline",
+      "base": "2_pump_shotgun"
+    },
+    "faction_stateline_rem700": {
+      "file": "faction_stateline_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_sks": {
+      "file": "faction_stateline_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_svd": {
+      "file": "faction_stateline_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_ssg69": {
+      "file": "faction_stateline_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_awm": {
+      "file": "faction_stateline_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_stateline_psg1": {
+      "file": "faction_stateline_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "stateline",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_glock_17": {
+      "file": "faction_sierra_roja_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "sierra_roja",
+      "base": "2_pistol"
+    },
+    "faction_sierra_roja_m1911": {
+      "file": "faction_sierra_roja_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "sierra_roja",
+      "base": "2_pistol"
+    },
+    "faction_sierra_roja_usp": {
+      "file": "faction_sierra_roja_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "sierra_roja",
+      "base": "2_pistol"
+    },
+    "faction_sierra_roja_cz75": {
+      "file": "faction_sierra_roja_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "sierra_roja",
+      "base": "2_pistol"
+    },
+    "faction_sierra_roja_desert_eagle": {
+      "file": "faction_sierra_roja_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "sierra_roja",
+      "base": "2_pistol"
+    },
+    "faction_sierra_roja_five_seven": {
+      "file": "faction_sierra_roja_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "sierra_roja",
+      "base": "2_pistol"
+    },
+    "faction_sierra_roja_uzi": {
+      "file": "faction_sierra_roja_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "sierra_roja",
+      "base": "2_uzi_smg"
+    },
+    "faction_sierra_roja_mac10": {
+      "file": "faction_sierra_roja_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "sierra_roja",
+      "base": "2_uzi_smg"
+    },
+    "faction_sierra_roja_mp5": {
+      "file": "faction_sierra_roja_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "sierra_roja",
+      "base": "2_uzi_smg"
+    },
+    "faction_sierra_roja_mp5k": {
+      "file": "faction_sierra_roja_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "sierra_roja",
+      "base": "2_uzi_smg"
+    },
+    "faction_sierra_roja_vector": {
+      "file": "faction_sierra_roja_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "sierra_roja",
+      "base": "2_uzi_smg"
+    },
+    "faction_sierra_roja_p90": {
+      "file": "faction_sierra_roja_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "sierra_roja",
+      "base": "2_uzi_smg"
+    },
+    "faction_sierra_roja_ak47": {
+      "file": "faction_sierra_roja_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_mini14": {
+      "file": "faction_sierra_roja_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_m4a1": {
+      "file": "faction_sierra_roja_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_g36c": {
+      "file": "faction_sierra_roja_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_scar_h": {
+      "file": "faction_sierra_roja_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_aug": {
+      "file": "faction_sierra_roja_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_rem870": {
+      "file": "faction_sierra_roja_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "sierra_roja",
+      "base": "2_pump_shotgun"
+    },
+    "faction_sierra_roja_moss500": {
+      "file": "faction_sierra_roja_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "sierra_roja",
+      "base": "2_pump_shotgun"
+    },
+    "faction_sierra_roja_spas12": {
+      "file": "faction_sierra_roja_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "sierra_roja",
+      "base": "2_pump_shotgun"
+    },
+    "faction_sierra_roja_benelli_m2": {
+      "file": "faction_sierra_roja_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "sierra_roja",
+      "base": "2_pump_shotgun"
+    },
+    "faction_sierra_roja_benelli_m4": {
+      "file": "faction_sierra_roja_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "sierra_roja",
+      "base": "2_pump_shotgun"
+    },
+    "faction_sierra_roja_saiga12": {
+      "file": "faction_sierra_roja_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "sierra_roja",
+      "base": "2_pump_shotgun"
+    },
+    "faction_sierra_roja_rem700": {
+      "file": "faction_sierra_roja_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_sks": {
+      "file": "faction_sierra_roja_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_svd": {
+      "file": "faction_sierra_roja_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_ssg69": {
+      "file": "faction_sierra_roja_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_awm": {
+      "file": "faction_sierra_roja_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_sierra_roja_psg1": {
+      "file": "faction_sierra_roja_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "sierra_roja",
+      "base": "2_ak_rifle"
+    },
+    "faction_whittaker_glock_17": {
+      "file": "faction_whittaker_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "whittaker",
+      "base": "1_pistol"
+    },
+    "faction_whittaker_m1911": {
+      "file": "faction_whittaker_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "whittaker",
+      "base": "1_pistol"
+    },
+    "faction_whittaker_usp": {
+      "file": "faction_whittaker_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "whittaker",
+      "base": "1_pistol"
+    },
+    "faction_whittaker_cz75": {
+      "file": "faction_whittaker_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "whittaker",
+      "base": "1_pistol"
+    },
+    "faction_whittaker_desert_eagle": {
+      "file": "faction_whittaker_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "whittaker",
+      "base": "1_pistol"
+    },
+    "faction_whittaker_five_seven": {
+      "file": "faction_whittaker_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "whittaker",
+      "base": "1_pistol"
+    },
+    "faction_whittaker_uzi": {
+      "file": "faction_whittaker_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "whittaker",
+      "base": "1_uzi_smg"
+    },
+    "faction_whittaker_mac10": {
+      "file": "faction_whittaker_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "whittaker",
+      "base": "1_uzi_smg"
+    },
+    "faction_whittaker_mp5": {
+      "file": "faction_whittaker_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "whittaker",
+      "base": "1_uzi_smg"
+    },
+    "faction_whittaker_mp5k": {
+      "file": "faction_whittaker_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "whittaker",
+      "base": "1_uzi_smg"
+    },
+    "faction_whittaker_vector": {
+      "file": "faction_whittaker_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "whittaker",
+      "base": "1_uzi_smg"
+    },
+    "faction_whittaker_p90": {
+      "file": "faction_whittaker_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "whittaker",
+      "base": "1_uzi_smg"
+    },
+    "faction_whittaker_ak47": {
+      "file": "faction_whittaker_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_mini14": {
+      "file": "faction_whittaker_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_m4a1": {
+      "file": "faction_whittaker_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_g36c": {
+      "file": "faction_whittaker_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_scar_h": {
+      "file": "faction_whittaker_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_aug": {
+      "file": "faction_whittaker_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_rem870": {
+      "file": "faction_whittaker_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "whittaker",
+      "base": "1_pump_shotgun"
+    },
+    "faction_whittaker_moss500": {
+      "file": "faction_whittaker_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "whittaker",
+      "base": "1_pump_shotgun"
+    },
+    "faction_whittaker_spas12": {
+      "file": "faction_whittaker_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "whittaker",
+      "base": "1_pump_shotgun"
+    },
+    "faction_whittaker_benelli_m2": {
+      "file": "faction_whittaker_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "whittaker",
+      "base": "1_pump_shotgun"
+    },
+    "faction_whittaker_benelli_m4": {
+      "file": "faction_whittaker_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "whittaker",
+      "base": "1_pump_shotgun"
+    },
+    "faction_whittaker_saiga12": {
+      "file": "faction_whittaker_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "whittaker",
+      "base": "1_pump_shotgun"
+    },
+    "faction_whittaker_rem700": {
+      "file": "faction_whittaker_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_sks": {
+      "file": "faction_whittaker_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_svd": {
+      "file": "faction_whittaker_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_ssg69": {
+      "file": "faction_whittaker_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_awm": {
+      "file": "faction_whittaker_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_whittaker_psg1": {
+      "file": "faction_whittaker_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "whittaker",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_glock_17": {
+      "file": "faction_mcallister_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "mcallister",
+      "base": "1_pistol"
+    },
+    "faction_mcallister_m1911": {
+      "file": "faction_mcallister_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "mcallister",
+      "base": "1_pistol"
+    },
+    "faction_mcallister_usp": {
+      "file": "faction_mcallister_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "mcallister",
+      "base": "1_pistol"
+    },
+    "faction_mcallister_cz75": {
+      "file": "faction_mcallister_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "mcallister",
+      "base": "1_pistol"
+    },
+    "faction_mcallister_desert_eagle": {
+      "file": "faction_mcallister_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "mcallister",
+      "base": "1_pistol"
+    },
+    "faction_mcallister_five_seven": {
+      "file": "faction_mcallister_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "mcallister",
+      "base": "1_pistol"
+    },
+    "faction_mcallister_uzi": {
+      "file": "faction_mcallister_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "mcallister",
+      "base": "1_uzi_smg"
+    },
+    "faction_mcallister_mac10": {
+      "file": "faction_mcallister_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "mcallister",
+      "base": "1_uzi_smg"
+    },
+    "faction_mcallister_mp5": {
+      "file": "faction_mcallister_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "mcallister",
+      "base": "1_uzi_smg"
+    },
+    "faction_mcallister_mp5k": {
+      "file": "faction_mcallister_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "mcallister",
+      "base": "1_uzi_smg"
+    },
+    "faction_mcallister_vector": {
+      "file": "faction_mcallister_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "mcallister",
+      "base": "1_uzi_smg"
+    },
+    "faction_mcallister_p90": {
+      "file": "faction_mcallister_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "mcallister",
+      "base": "1_uzi_smg"
+    },
+    "faction_mcallister_ak47": {
+      "file": "faction_mcallister_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_mini14": {
+      "file": "faction_mcallister_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_m4a1": {
+      "file": "faction_mcallister_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_g36c": {
+      "file": "faction_mcallister_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_scar_h": {
+      "file": "faction_mcallister_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_aug": {
+      "file": "faction_mcallister_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_rem870": {
+      "file": "faction_mcallister_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "mcallister",
+      "base": "1_pump_shotgun"
+    },
+    "faction_mcallister_moss500": {
+      "file": "faction_mcallister_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "mcallister",
+      "base": "1_pump_shotgun"
+    },
+    "faction_mcallister_spas12": {
+      "file": "faction_mcallister_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "mcallister",
+      "base": "1_pump_shotgun"
+    },
+    "faction_mcallister_benelli_m2": {
+      "file": "faction_mcallister_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "mcallister",
+      "base": "1_pump_shotgun"
+    },
+    "faction_mcallister_benelli_m4": {
+      "file": "faction_mcallister_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "mcallister",
+      "base": "1_pump_shotgun"
+    },
+    "faction_mcallister_saiga12": {
+      "file": "faction_mcallister_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "mcallister",
+      "base": "1_pump_shotgun"
+    },
+    "faction_mcallister_rem700": {
+      "file": "faction_mcallister_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_sks": {
+      "file": "faction_mcallister_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_svd": {
+      "file": "faction_mcallister_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_ssg69": {
+      "file": "faction_mcallister_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_awm": {
+      "file": "faction_mcallister_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_mcallister_psg1": {
+      "file": "faction_mcallister_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "mcallister",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_glock_17": {
+      "file": "faction_trc_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "trc",
+      "base": "1_pistol"
+    },
+    "faction_trc_m1911": {
+      "file": "faction_trc_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "trc",
+      "base": "1_pistol"
+    },
+    "faction_trc_usp": {
+      "file": "faction_trc_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "trc",
+      "base": "1_pistol"
+    },
+    "faction_trc_cz75": {
+      "file": "faction_trc_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "trc",
+      "base": "1_pistol"
+    },
+    "faction_trc_desert_eagle": {
+      "file": "faction_trc_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "trc",
+      "base": "1_pistol"
+    },
+    "faction_trc_five_seven": {
+      "file": "faction_trc_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "trc",
+      "base": "1_pistol"
+    },
+    "faction_trc_uzi": {
+      "file": "faction_trc_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "trc",
+      "base": "1_uzi_smg"
+    },
+    "faction_trc_mac10": {
+      "file": "faction_trc_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "trc",
+      "base": "1_uzi_smg"
+    },
+    "faction_trc_mp5": {
+      "file": "faction_trc_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "trc",
+      "base": "1_uzi_smg"
+    },
+    "faction_trc_mp5k": {
+      "file": "faction_trc_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "trc",
+      "base": "1_uzi_smg"
+    },
+    "faction_trc_vector": {
+      "file": "faction_trc_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "trc",
+      "base": "1_uzi_smg"
+    },
+    "faction_trc_p90": {
+      "file": "faction_trc_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "trc",
+      "base": "1_uzi_smg"
+    },
+    "faction_trc_ak47": {
+      "file": "faction_trc_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_mini14": {
+      "file": "faction_trc_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_m4a1": {
+      "file": "faction_trc_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_g36c": {
+      "file": "faction_trc_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_scar_h": {
+      "file": "faction_trc_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_aug": {
+      "file": "faction_trc_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_rem870": {
+      "file": "faction_trc_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "trc",
+      "base": "1_pump_shotgun"
+    },
+    "faction_trc_moss500": {
+      "file": "faction_trc_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "trc",
+      "base": "1_pump_shotgun"
+    },
+    "faction_trc_spas12": {
+      "file": "faction_trc_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "trc",
+      "base": "1_pump_shotgun"
+    },
+    "faction_trc_benelli_m2": {
+      "file": "faction_trc_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "trc",
+      "base": "1_pump_shotgun"
+    },
+    "faction_trc_benelli_m4": {
+      "file": "faction_trc_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "trc",
+      "base": "1_pump_shotgun"
+    },
+    "faction_trc_saiga12": {
+      "file": "faction_trc_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "trc",
+      "base": "1_pump_shotgun"
+    },
+    "faction_trc_rem700": {
+      "file": "faction_trc_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_sks": {
+      "file": "faction_trc_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_svd": {
+      "file": "faction_trc_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_ssg69": {
+      "file": "faction_trc_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_awm": {
+      "file": "faction_trc_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_trc_psg1": {
+      "file": "faction_trc_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "trc",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_glock_17": {
+      "file": "faction_nbpd_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "nbpd",
+      "base": "1_pistol"
+    },
+    "faction_nbpd_m1911": {
+      "file": "faction_nbpd_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "nbpd",
+      "base": "1_pistol"
+    },
+    "faction_nbpd_usp": {
+      "file": "faction_nbpd_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "nbpd",
+      "base": "1_pistol"
+    },
+    "faction_nbpd_cz75": {
+      "file": "faction_nbpd_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "nbpd",
+      "base": "1_pistol"
+    },
+    "faction_nbpd_desert_eagle": {
+      "file": "faction_nbpd_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "nbpd",
+      "base": "1_pistol"
+    },
+    "faction_nbpd_five_seven": {
+      "file": "faction_nbpd_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "nbpd",
+      "base": "1_pistol"
+    },
+    "faction_nbpd_uzi": {
+      "file": "faction_nbpd_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "nbpd",
+      "base": "1_uzi_smg"
+    },
+    "faction_nbpd_mac10": {
+      "file": "faction_nbpd_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "nbpd",
+      "base": "1_uzi_smg"
+    },
+    "faction_nbpd_mp5": {
+      "file": "faction_nbpd_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "nbpd",
+      "base": "1_uzi_smg"
+    },
+    "faction_nbpd_mp5k": {
+      "file": "faction_nbpd_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "nbpd",
+      "base": "1_uzi_smg"
+    },
+    "faction_nbpd_vector": {
+      "file": "faction_nbpd_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "nbpd",
+      "base": "1_uzi_smg"
+    },
+    "faction_nbpd_p90": {
+      "file": "faction_nbpd_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "nbpd",
+      "base": "1_uzi_smg"
+    },
+    "faction_nbpd_ak47": {
+      "file": "faction_nbpd_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_mini14": {
+      "file": "faction_nbpd_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_m4a1": {
+      "file": "faction_nbpd_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_g36c": {
+      "file": "faction_nbpd_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_scar_h": {
+      "file": "faction_nbpd_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_aug": {
+      "file": "faction_nbpd_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_rem870": {
+      "file": "faction_nbpd_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "nbpd",
+      "base": "1_pump_shotgun"
+    },
+    "faction_nbpd_moss500": {
+      "file": "faction_nbpd_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "nbpd",
+      "base": "1_pump_shotgun"
+    },
+    "faction_nbpd_spas12": {
+      "file": "faction_nbpd_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "nbpd",
+      "base": "1_pump_shotgun"
+    },
+    "faction_nbpd_benelli_m2": {
+      "file": "faction_nbpd_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "nbpd",
+      "base": "1_pump_shotgun"
+    },
+    "faction_nbpd_benelli_m4": {
+      "file": "faction_nbpd_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "nbpd",
+      "base": "1_pump_shotgun"
+    },
+    "faction_nbpd_saiga12": {
+      "file": "faction_nbpd_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "nbpd",
+      "base": "1_pump_shotgun"
+    },
+    "faction_nbpd_rem700": {
+      "file": "faction_nbpd_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_sks": {
+      "file": "faction_nbpd_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_svd": {
+      "file": "faction_nbpd_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_ssg69": {
+      "file": "faction_nbpd_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_awm": {
+      "file": "faction_nbpd_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_nbpd_psg1": {
+      "file": "faction_nbpd_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "nbpd",
+      "base": "1_ak_rifle"
+    },
+    "faction_mercer44_glock_17": {
+      "file": "faction_mercer44_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "mercer44",
+      "base": "0_pistol"
+    },
+    "faction_mercer44_m1911": {
+      "file": "faction_mercer44_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "mercer44",
+      "base": "0_pistol"
+    },
+    "faction_mercer44_usp": {
+      "file": "faction_mercer44_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "mercer44",
+      "base": "0_pistol"
+    },
+    "faction_mercer44_cz75": {
+      "file": "faction_mercer44_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "mercer44",
+      "base": "0_pistol"
+    },
+    "faction_mercer44_desert_eagle": {
+      "file": "faction_mercer44_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "mercer44",
+      "base": "0_pistol"
+    },
+    "faction_mercer44_five_seven": {
+      "file": "faction_mercer44_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "mercer44",
+      "base": "0_pistol"
+    },
+    "faction_mercer44_uzi": {
+      "file": "faction_mercer44_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "mercer44",
+      "base": "0_uzi_smg"
+    },
+    "faction_mercer44_mac10": {
+      "file": "faction_mercer44_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "mercer44",
+      "base": "0_uzi_smg"
+    },
+    "faction_mercer44_mp5": {
+      "file": "faction_mercer44_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "mercer44",
+      "base": "0_uzi_smg"
+    },
+    "faction_mercer44_mp5k": {
+      "file": "faction_mercer44_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "mercer44",
+      "base": "0_uzi_smg"
+    },
+    "faction_mercer44_vector": {
+      "file": "faction_mercer44_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "mercer44",
+      "base": "0_uzi_smg"
+    },
+    "faction_mercer44_p90": {
+      "file": "faction_mercer44_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "mercer44",
+      "base": "0_uzi_smg"
+    },
+    "faction_mercer44_ak47": {
+      "file": "faction_mercer44_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_mini14": {
+      "file": "faction_mercer44_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_m4a1": {
+      "file": "faction_mercer44_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_g36c": {
+      "file": "faction_mercer44_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_scar_h": {
+      "file": "faction_mercer44_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_aug": {
+      "file": "faction_mercer44_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_rem870": {
+      "file": "faction_mercer44_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "mercer44",
+      "base": "0_pump_shotgun"
+    },
+    "faction_mercer44_moss500": {
+      "file": "faction_mercer44_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "mercer44",
+      "base": "0_pump_shotgun"
+    },
+    "faction_mercer44_spas12": {
+      "file": "faction_mercer44_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "mercer44",
+      "base": "0_pump_shotgun"
+    },
+    "faction_mercer44_benelli_m2": {
+      "file": "faction_mercer44_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "mercer44",
+      "base": "0_pump_shotgun"
+    },
+    "faction_mercer44_benelli_m4": {
+      "file": "faction_mercer44_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "mercer44",
+      "base": "0_pump_shotgun"
+    },
+    "faction_mercer44_saiga12": {
+      "file": "faction_mercer44_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "mercer44",
+      "base": "0_pump_shotgun"
+    },
+    "faction_mercer44_rem700": {
+      "file": "faction_mercer44_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_sks": {
+      "file": "faction_mercer44_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_svd": {
+      "file": "faction_mercer44_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_ssg69": {
+      "file": "faction_mercer44_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_awm": {
+      "file": "faction_mercer44_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_mercer44_psg1": {
+      "file": "faction_mercer44_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "mercer44",
+      "base": "0_ak_rifle"
+    },
+    "faction_wm_corp_glock_17": {
+      "file": "faction_wm_corp_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "wm_corp",
+      "base": "1_pistol"
+    },
+    "faction_wm_corp_m1911": {
+      "file": "faction_wm_corp_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "wm_corp",
+      "base": "1_pistol"
+    },
+    "faction_wm_corp_usp": {
+      "file": "faction_wm_corp_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "wm_corp",
+      "base": "1_pistol"
+    },
+    "faction_wm_corp_cz75": {
+      "file": "faction_wm_corp_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "wm_corp",
+      "base": "1_pistol"
+    },
+    "faction_wm_corp_desert_eagle": {
+      "file": "faction_wm_corp_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "wm_corp",
+      "base": "1_pistol"
+    },
+    "faction_wm_corp_five_seven": {
+      "file": "faction_wm_corp_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "wm_corp",
+      "base": "1_pistol"
+    },
+    "faction_wm_corp_uzi": {
+      "file": "faction_wm_corp_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "wm_corp",
+      "base": "1_uzi_smg"
+    },
+    "faction_wm_corp_mac10": {
+      "file": "faction_wm_corp_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "wm_corp",
+      "base": "1_uzi_smg"
+    },
+    "faction_wm_corp_mp5": {
+      "file": "faction_wm_corp_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "wm_corp",
+      "base": "1_uzi_smg"
+    },
+    "faction_wm_corp_mp5k": {
+      "file": "faction_wm_corp_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "wm_corp",
+      "base": "1_uzi_smg"
+    },
+    "faction_wm_corp_vector": {
+      "file": "faction_wm_corp_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "wm_corp",
+      "base": "1_uzi_smg"
+    },
+    "faction_wm_corp_p90": {
+      "file": "faction_wm_corp_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "wm_corp",
+      "base": "1_uzi_smg"
+    },
+    "faction_wm_corp_ak47": {
+      "file": "faction_wm_corp_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_mini14": {
+      "file": "faction_wm_corp_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_m4a1": {
+      "file": "faction_wm_corp_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_g36c": {
+      "file": "faction_wm_corp_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_scar_h": {
+      "file": "faction_wm_corp_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_aug": {
+      "file": "faction_wm_corp_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_rem870": {
+      "file": "faction_wm_corp_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "wm_corp",
+      "base": "1_pump_shotgun"
+    },
+    "faction_wm_corp_moss500": {
+      "file": "faction_wm_corp_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "wm_corp",
+      "base": "1_pump_shotgun"
+    },
+    "faction_wm_corp_spas12": {
+      "file": "faction_wm_corp_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "wm_corp",
+      "base": "1_pump_shotgun"
+    },
+    "faction_wm_corp_benelli_m2": {
+      "file": "faction_wm_corp_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "wm_corp",
+      "base": "1_pump_shotgun"
+    },
+    "faction_wm_corp_benelli_m4": {
+      "file": "faction_wm_corp_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "wm_corp",
+      "base": "1_pump_shotgun"
+    },
+    "faction_wm_corp_saiga12": {
+      "file": "faction_wm_corp_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "wm_corp",
+      "base": "1_pump_shotgun"
+    },
+    "faction_wm_corp_rem700": {
+      "file": "faction_wm_corp_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_sks": {
+      "file": "faction_wm_corp_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_svd": {
+      "file": "faction_wm_corp_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_ssg69": {
+      "file": "faction_wm_corp_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_awm": {
+      "file": "faction_wm_corp_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_wm_corp_psg1": {
+      "file": "faction_wm_corp_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "wm_corp",
+      "base": "1_ak_rifle"
+    },
+    "faction_union_sur_glock_17": {
+      "file": "faction_union_sur_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "union_sur",
+      "base": "2_pistol"
+    },
+    "faction_union_sur_m1911": {
+      "file": "faction_union_sur_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "union_sur",
+      "base": "2_pistol"
+    },
+    "faction_union_sur_usp": {
+      "file": "faction_union_sur_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "union_sur",
+      "base": "2_pistol"
+    },
+    "faction_union_sur_cz75": {
+      "file": "faction_union_sur_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "union_sur",
+      "base": "2_pistol"
+    },
+    "faction_union_sur_desert_eagle": {
+      "file": "faction_union_sur_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "union_sur",
+      "base": "2_pistol"
+    },
+    "faction_union_sur_five_seven": {
+      "file": "faction_union_sur_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "union_sur",
+      "base": "2_pistol"
+    },
+    "faction_union_sur_uzi": {
+      "file": "faction_union_sur_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "union_sur",
+      "base": "2_uzi_smg"
+    },
+    "faction_union_sur_mac10": {
+      "file": "faction_union_sur_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "union_sur",
+      "base": "2_uzi_smg"
+    },
+    "faction_union_sur_mp5": {
+      "file": "faction_union_sur_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "union_sur",
+      "base": "2_uzi_smg"
+    },
+    "faction_union_sur_mp5k": {
+      "file": "faction_union_sur_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "union_sur",
+      "base": "2_uzi_smg"
+    },
+    "faction_union_sur_vector": {
+      "file": "faction_union_sur_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "union_sur",
+      "base": "2_uzi_smg"
+    },
+    "faction_union_sur_p90": {
+      "file": "faction_union_sur_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "union_sur",
+      "base": "2_uzi_smg"
+    },
+    "faction_union_sur_ak47": {
+      "file": "faction_union_sur_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_mini14": {
+      "file": "faction_union_sur_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_m4a1": {
+      "file": "faction_union_sur_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_g36c": {
+      "file": "faction_union_sur_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_scar_h": {
+      "file": "faction_union_sur_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_aug": {
+      "file": "faction_union_sur_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_rem870": {
+      "file": "faction_union_sur_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "union_sur",
+      "base": "2_pump_shotgun"
+    },
+    "faction_union_sur_moss500": {
+      "file": "faction_union_sur_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "union_sur",
+      "base": "2_pump_shotgun"
+    },
+    "faction_union_sur_spas12": {
+      "file": "faction_union_sur_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "union_sur",
+      "base": "2_pump_shotgun"
+    },
+    "faction_union_sur_benelli_m2": {
+      "file": "faction_union_sur_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "union_sur",
+      "base": "2_pump_shotgun"
+    },
+    "faction_union_sur_benelli_m4": {
+      "file": "faction_union_sur_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "union_sur",
+      "base": "2_pump_shotgun"
+    },
+    "faction_union_sur_saiga12": {
+      "file": "faction_union_sur_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "union_sur",
+      "base": "2_pump_shotgun"
+    },
+    "faction_union_sur_rem700": {
+      "file": "faction_union_sur_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_sks": {
+      "file": "faction_union_sur_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_svd": {
+      "file": "faction_union_sur_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_ssg69": {
+      "file": "faction_union_sur_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_awm": {
+      "file": "faction_union_sur_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_union_sur_psg1": {
+      "file": "faction_union_sur_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "union_sur",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_glock_17": {
+      "file": "faction_lombardia_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "lombardia",
+      "base": "2_pistol"
+    },
+    "faction_lombardia_m1911": {
+      "file": "faction_lombardia_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "lombardia",
+      "base": "2_pistol"
+    },
+    "faction_lombardia_usp": {
+      "file": "faction_lombardia_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "lombardia",
+      "base": "2_pistol"
+    },
+    "faction_lombardia_cz75": {
+      "file": "faction_lombardia_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "lombardia",
+      "base": "2_pistol"
+    },
+    "faction_lombardia_desert_eagle": {
+      "file": "faction_lombardia_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "lombardia",
+      "base": "2_pistol"
+    },
+    "faction_lombardia_five_seven": {
+      "file": "faction_lombardia_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "lombardia",
+      "base": "2_pistol"
+    },
+    "faction_lombardia_uzi": {
+      "file": "faction_lombardia_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "lombardia",
+      "base": "2_uzi_smg"
+    },
+    "faction_lombardia_mac10": {
+      "file": "faction_lombardia_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "lombardia",
+      "base": "2_uzi_smg"
+    },
+    "faction_lombardia_mp5": {
+      "file": "faction_lombardia_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "lombardia",
+      "base": "2_uzi_smg"
+    },
+    "faction_lombardia_mp5k": {
+      "file": "faction_lombardia_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "lombardia",
+      "base": "2_uzi_smg"
+    },
+    "faction_lombardia_vector": {
+      "file": "faction_lombardia_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "lombardia",
+      "base": "2_uzi_smg"
+    },
+    "faction_lombardia_p90": {
+      "file": "faction_lombardia_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "lombardia",
+      "base": "2_uzi_smg"
+    },
+    "faction_lombardia_ak47": {
+      "file": "faction_lombardia_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_mini14": {
+      "file": "faction_lombardia_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_m4a1": {
+      "file": "faction_lombardia_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_g36c": {
+      "file": "faction_lombardia_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_scar_h": {
+      "file": "faction_lombardia_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_aug": {
+      "file": "faction_lombardia_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_rem870": {
+      "file": "faction_lombardia_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "lombardia",
+      "base": "2_pump_shotgun"
+    },
+    "faction_lombardia_moss500": {
+      "file": "faction_lombardia_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "lombardia",
+      "base": "2_pump_shotgun"
+    },
+    "faction_lombardia_spas12": {
+      "file": "faction_lombardia_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "lombardia",
+      "base": "2_pump_shotgun"
+    },
+    "faction_lombardia_benelli_m2": {
+      "file": "faction_lombardia_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "lombardia",
+      "base": "2_pump_shotgun"
+    },
+    "faction_lombardia_benelli_m4": {
+      "file": "faction_lombardia_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "lombardia",
+      "base": "2_pump_shotgun"
+    },
+    "faction_lombardia_saiga12": {
+      "file": "faction_lombardia_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "lombardia",
+      "base": "2_pump_shotgun"
+    },
+    "faction_lombardia_rem700": {
+      "file": "faction_lombardia_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_sks": {
+      "file": "faction_lombardia_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_svd": {
+      "file": "faction_lombardia_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_ssg69": {
+      "file": "faction_lombardia_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_awm": {
+      "file": "faction_lombardia_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_lombardia_psg1": {
+      "file": "faction_lombardia_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "lombardia",
+      "base": "2_ak_rifle"
+    },
+    "faction_sand_raiders_glock_17": {
+      "file": "faction_sand_raiders_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "sand_raiders",
+      "base": "1_pistol"
+    },
+    "faction_sand_raiders_m1911": {
+      "file": "faction_sand_raiders_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "sand_raiders",
+      "base": "1_pistol"
+    },
+    "faction_sand_raiders_usp": {
+      "file": "faction_sand_raiders_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "sand_raiders",
+      "base": "1_pistol"
+    },
+    "faction_sand_raiders_cz75": {
+      "file": "faction_sand_raiders_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "sand_raiders",
+      "base": "1_pistol"
+    },
+    "faction_sand_raiders_desert_eagle": {
+      "file": "faction_sand_raiders_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "sand_raiders",
+      "base": "1_pistol"
+    },
+    "faction_sand_raiders_five_seven": {
+      "file": "faction_sand_raiders_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "sand_raiders",
+      "base": "1_pistol"
+    },
+    "faction_sand_raiders_uzi": {
+      "file": "faction_sand_raiders_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "sand_raiders",
+      "base": "1_uzi_smg"
+    },
+    "faction_sand_raiders_mac10": {
+      "file": "faction_sand_raiders_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "sand_raiders",
+      "base": "1_uzi_smg"
+    },
+    "faction_sand_raiders_mp5": {
+      "file": "faction_sand_raiders_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "sand_raiders",
+      "base": "1_uzi_smg"
+    },
+    "faction_sand_raiders_mp5k": {
+      "file": "faction_sand_raiders_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "sand_raiders",
+      "base": "1_uzi_smg"
+    },
+    "faction_sand_raiders_vector": {
+      "file": "faction_sand_raiders_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "sand_raiders",
+      "base": "1_uzi_smg"
+    },
+    "faction_sand_raiders_p90": {
+      "file": "faction_sand_raiders_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "sand_raiders",
+      "base": "1_uzi_smg"
+    },
+    "faction_sand_raiders_ak47": {
+      "file": "faction_sand_raiders_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_mini14": {
+      "file": "faction_sand_raiders_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_m4a1": {
+      "file": "faction_sand_raiders_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_g36c": {
+      "file": "faction_sand_raiders_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_scar_h": {
+      "file": "faction_sand_raiders_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_aug": {
+      "file": "faction_sand_raiders_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_rem870": {
+      "file": "faction_sand_raiders_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "sand_raiders",
+      "base": "1_pump_shotgun"
+    },
+    "faction_sand_raiders_moss500": {
+      "file": "faction_sand_raiders_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "sand_raiders",
+      "base": "1_pump_shotgun"
+    },
+    "faction_sand_raiders_spas12": {
+      "file": "faction_sand_raiders_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "sand_raiders",
+      "base": "1_pump_shotgun"
+    },
+    "faction_sand_raiders_benelli_m2": {
+      "file": "faction_sand_raiders_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "sand_raiders",
+      "base": "1_pump_shotgun"
+    },
+    "faction_sand_raiders_benelli_m4": {
+      "file": "faction_sand_raiders_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "sand_raiders",
+      "base": "1_pump_shotgun"
+    },
+    "faction_sand_raiders_saiga12": {
+      "file": "faction_sand_raiders_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "sand_raiders",
+      "base": "1_pump_shotgun"
+    },
+    "faction_sand_raiders_rem700": {
+      "file": "faction_sand_raiders_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_sks": {
+      "file": "faction_sand_raiders_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_svd": {
+      "file": "faction_sand_raiders_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_ssg69": {
+      "file": "faction_sand_raiders_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_awm": {
+      "file": "faction_sand_raiders_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_sand_raiders_psg1": {
+      "file": "faction_sand_raiders_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "sand_raiders",
+      "base": "1_ak_rifle"
+    },
+    "faction_saffar_glock_17": {
+      "file": "faction_saffar_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "saffar",
+      "base": "2_pistol"
+    },
+    "faction_saffar_m1911": {
+      "file": "faction_saffar_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "saffar",
+      "base": "2_pistol"
+    },
+    "faction_saffar_usp": {
+      "file": "faction_saffar_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "saffar",
+      "base": "2_pistol"
+    },
+    "faction_saffar_cz75": {
+      "file": "faction_saffar_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "saffar",
+      "base": "2_pistol"
+    },
+    "faction_saffar_desert_eagle": {
+      "file": "faction_saffar_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "saffar",
+      "base": "2_pistol"
+    },
+    "faction_saffar_five_seven": {
+      "file": "faction_saffar_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "saffar",
+      "base": "2_pistol"
+    },
+    "faction_saffar_uzi": {
+      "file": "faction_saffar_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "saffar",
+      "base": "2_uzi_smg"
+    },
+    "faction_saffar_mac10": {
+      "file": "faction_saffar_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "saffar",
+      "base": "2_uzi_smg"
+    },
+    "faction_saffar_mp5": {
+      "file": "faction_saffar_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "saffar",
+      "base": "2_uzi_smg"
+    },
+    "faction_saffar_mp5k": {
+      "file": "faction_saffar_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "saffar",
+      "base": "2_uzi_smg"
+    },
+    "faction_saffar_vector": {
+      "file": "faction_saffar_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "saffar",
+      "base": "2_uzi_smg"
+    },
+    "faction_saffar_p90": {
+      "file": "faction_saffar_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "saffar",
+      "base": "2_uzi_smg"
+    },
+    "faction_saffar_ak47": {
+      "file": "faction_saffar_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_mini14": {
+      "file": "faction_saffar_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_m4a1": {
+      "file": "faction_saffar_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_g36c": {
+      "file": "faction_saffar_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_scar_h": {
+      "file": "faction_saffar_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_aug": {
+      "file": "faction_saffar_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_rem870": {
+      "file": "faction_saffar_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "saffar",
+      "base": "2_pump_shotgun"
+    },
+    "faction_saffar_moss500": {
+      "file": "faction_saffar_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "saffar",
+      "base": "2_pump_shotgun"
+    },
+    "faction_saffar_spas12": {
+      "file": "faction_saffar_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "saffar",
+      "base": "2_pump_shotgun"
+    },
+    "faction_saffar_benelli_m2": {
+      "file": "faction_saffar_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "saffar",
+      "base": "2_pump_shotgun"
+    },
+    "faction_saffar_benelli_m4": {
+      "file": "faction_saffar_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "saffar",
+      "base": "2_pump_shotgun"
+    },
+    "faction_saffar_saiga12": {
+      "file": "faction_saffar_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "saffar",
+      "base": "2_pump_shotgun"
+    },
+    "faction_saffar_rem700": {
+      "file": "faction_saffar_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_sks": {
+      "file": "faction_saffar_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_svd": {
+      "file": "faction_saffar_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_ssg69": {
+      "file": "faction_saffar_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_awm": {
+      "file": "faction_saffar_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_saffar_psg1": {
+      "file": "faction_saffar_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "saffar",
+      "base": "2_ak_rifle"
+    },
+    "faction_kurgan_glock_17": {
+      "file": "faction_kurgan_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "kurgan",
+      "base": "1_pistol"
+    },
+    "faction_kurgan_m1911": {
+      "file": "faction_kurgan_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "kurgan",
+      "base": "1_pistol"
+    },
+    "faction_kurgan_usp": {
+      "file": "faction_kurgan_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "kurgan",
+      "base": "1_pistol"
+    },
+    "faction_kurgan_cz75": {
+      "file": "faction_kurgan_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "kurgan",
+      "base": "1_pistol"
+    },
+    "faction_kurgan_desert_eagle": {
+      "file": "faction_kurgan_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "kurgan",
+      "base": "1_pistol"
+    },
+    "faction_kurgan_five_seven": {
+      "file": "faction_kurgan_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "kurgan",
+      "base": "1_pistol"
+    },
+    "faction_kurgan_uzi": {
+      "file": "faction_kurgan_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "kurgan",
+      "base": "1_uzi_smg"
+    },
+    "faction_kurgan_mac10": {
+      "file": "faction_kurgan_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "kurgan",
+      "base": "1_uzi_smg"
+    },
+    "faction_kurgan_mp5": {
+      "file": "faction_kurgan_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "kurgan",
+      "base": "1_uzi_smg"
+    },
+    "faction_kurgan_mp5k": {
+      "file": "faction_kurgan_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "kurgan",
+      "base": "1_uzi_smg"
+    },
+    "faction_kurgan_vector": {
+      "file": "faction_kurgan_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "kurgan",
+      "base": "1_uzi_smg"
+    },
+    "faction_kurgan_p90": {
+      "file": "faction_kurgan_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "kurgan",
+      "base": "1_uzi_smg"
+    },
+    "faction_kurgan_ak47": {
+      "file": "faction_kurgan_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_mini14": {
+      "file": "faction_kurgan_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_m4a1": {
+      "file": "faction_kurgan_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_g36c": {
+      "file": "faction_kurgan_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_scar_h": {
+      "file": "faction_kurgan_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_aug": {
+      "file": "faction_kurgan_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_rem870": {
+      "file": "faction_kurgan_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "kurgan",
+      "base": "1_pump_shotgun"
+    },
+    "faction_kurgan_moss500": {
+      "file": "faction_kurgan_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "kurgan",
+      "base": "1_pump_shotgun"
+    },
+    "faction_kurgan_spas12": {
+      "file": "faction_kurgan_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "kurgan",
+      "base": "1_pump_shotgun"
+    },
+    "faction_kurgan_benelli_m2": {
+      "file": "faction_kurgan_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "kurgan",
+      "base": "1_pump_shotgun"
+    },
+    "faction_kurgan_benelli_m4": {
+      "file": "faction_kurgan_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "kurgan",
+      "base": "1_pump_shotgun"
+    },
+    "faction_kurgan_saiga12": {
+      "file": "faction_kurgan_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "kurgan",
+      "base": "1_pump_shotgun"
+    },
+    "faction_kurgan_rem700": {
+      "file": "faction_kurgan_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_sks": {
+      "file": "faction_kurgan_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_svd": {
+      "file": "faction_kurgan_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_ssg69": {
+      "file": "faction_kurgan_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_awm": {
+      "file": "faction_kurgan_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_kurgan_psg1": {
+      "file": "faction_kurgan_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "kurgan",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_glock_17": {
+      "file": "faction_ashford_crane_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "ashford_crane",
+      "base": "1_pistol"
+    },
+    "faction_ashford_crane_m1911": {
+      "file": "faction_ashford_crane_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "ashford_crane",
+      "base": "1_pistol"
+    },
+    "faction_ashford_crane_usp": {
+      "file": "faction_ashford_crane_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "ashford_crane",
+      "base": "1_pistol"
+    },
+    "faction_ashford_crane_cz75": {
+      "file": "faction_ashford_crane_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "ashford_crane",
+      "base": "1_pistol"
+    },
+    "faction_ashford_crane_desert_eagle": {
+      "file": "faction_ashford_crane_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "ashford_crane",
+      "base": "1_pistol"
+    },
+    "faction_ashford_crane_five_seven": {
+      "file": "faction_ashford_crane_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "ashford_crane",
+      "base": "1_pistol"
+    },
+    "faction_ashford_crane_uzi": {
+      "file": "faction_ashford_crane_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "ashford_crane",
+      "base": "1_uzi_smg"
+    },
+    "faction_ashford_crane_mac10": {
+      "file": "faction_ashford_crane_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "ashford_crane",
+      "base": "1_uzi_smg"
+    },
+    "faction_ashford_crane_mp5": {
+      "file": "faction_ashford_crane_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "ashford_crane",
+      "base": "1_uzi_smg"
+    },
+    "faction_ashford_crane_mp5k": {
+      "file": "faction_ashford_crane_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "ashford_crane",
+      "base": "1_uzi_smg"
+    },
+    "faction_ashford_crane_vector": {
+      "file": "faction_ashford_crane_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "ashford_crane",
+      "base": "1_uzi_smg"
+    },
+    "faction_ashford_crane_p90": {
+      "file": "faction_ashford_crane_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "ashford_crane",
+      "base": "1_uzi_smg"
+    },
+    "faction_ashford_crane_ak47": {
+      "file": "faction_ashford_crane_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_mini14": {
+      "file": "faction_ashford_crane_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_m4a1": {
+      "file": "faction_ashford_crane_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_g36c": {
+      "file": "faction_ashford_crane_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_scar_h": {
+      "file": "faction_ashford_crane_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_aug": {
+      "file": "faction_ashford_crane_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_rem870": {
+      "file": "faction_ashford_crane_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "ashford_crane",
+      "base": "1_pump_shotgun"
+    },
+    "faction_ashford_crane_moss500": {
+      "file": "faction_ashford_crane_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "ashford_crane",
+      "base": "1_pump_shotgun"
+    },
+    "faction_ashford_crane_spas12": {
+      "file": "faction_ashford_crane_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "ashford_crane",
+      "base": "1_pump_shotgun"
+    },
+    "faction_ashford_crane_benelli_m2": {
+      "file": "faction_ashford_crane_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "ashford_crane",
+      "base": "1_pump_shotgun"
+    },
+    "faction_ashford_crane_benelli_m4": {
+      "file": "faction_ashford_crane_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "ashford_crane",
+      "base": "1_pump_shotgun"
+    },
+    "faction_ashford_crane_saiga12": {
+      "file": "faction_ashford_crane_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "ashford_crane",
+      "base": "1_pump_shotgun"
+    },
+    "faction_ashford_crane_rem700": {
+      "file": "faction_ashford_crane_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_sks": {
+      "file": "faction_ashford_crane_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_svd": {
+      "file": "faction_ashford_crane_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_ssg69": {
+      "file": "faction_ashford_crane_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_awm": {
+      "file": "faction_ashford_crane_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_ashford_crane_psg1": {
+      "file": "faction_ashford_crane_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "ashford_crane",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_glock_17": {
+      "file": "faction_blacktop_glock_17",
+      "model": "glock_17",
+      "role": "pistol",
+      "faction": "blacktop",
+      "base": "1_pistol"
+    },
+    "faction_blacktop_m1911": {
+      "file": "faction_blacktop_m1911",
+      "model": "m1911",
+      "role": "pistol",
+      "faction": "blacktop",
+      "base": "1_pistol"
+    },
+    "faction_blacktop_usp": {
+      "file": "faction_blacktop_usp",
+      "model": "usp",
+      "role": "pistol",
+      "faction": "blacktop",
+      "base": "1_pistol"
+    },
+    "faction_blacktop_cz75": {
+      "file": "faction_blacktop_cz75",
+      "model": "cz75",
+      "role": "pistol",
+      "faction": "blacktop",
+      "base": "1_pistol"
+    },
+    "faction_blacktop_desert_eagle": {
+      "file": "faction_blacktop_desert_eagle",
+      "model": "desert_eagle",
+      "role": "pistol",
+      "faction": "blacktop",
+      "base": "1_pistol"
+    },
+    "faction_blacktop_five_seven": {
+      "file": "faction_blacktop_five_seven",
+      "model": "five_seven",
+      "role": "pistol",
+      "faction": "blacktop",
+      "base": "1_pistol"
+    },
+    "faction_blacktop_uzi": {
+      "file": "faction_blacktop_uzi",
+      "model": "uzi",
+      "role": "smg",
+      "faction": "blacktop",
+      "base": "1_uzi_smg"
+    },
+    "faction_blacktop_mac10": {
+      "file": "faction_blacktop_mac10",
+      "model": "mac10",
+      "role": "smg",
+      "faction": "blacktop",
+      "base": "1_uzi_smg"
+    },
+    "faction_blacktop_mp5": {
+      "file": "faction_blacktop_mp5",
+      "model": "mp5",
+      "role": "smg",
+      "faction": "blacktop",
+      "base": "1_uzi_smg"
+    },
+    "faction_blacktop_mp5k": {
+      "file": "faction_blacktop_mp5k",
+      "model": "mp5k",
+      "role": "smg",
+      "faction": "blacktop",
+      "base": "1_uzi_smg"
+    },
+    "faction_blacktop_vector": {
+      "file": "faction_blacktop_vector",
+      "model": "vector",
+      "role": "smg",
+      "faction": "blacktop",
+      "base": "1_uzi_smg"
+    },
+    "faction_blacktop_p90": {
+      "file": "faction_blacktop_p90",
+      "model": "p90",
+      "role": "smg",
+      "faction": "blacktop",
+      "base": "1_uzi_smg"
+    },
+    "faction_blacktop_ak47": {
+      "file": "faction_blacktop_ak47",
+      "model": "ak47",
+      "role": "rifle",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_mini14": {
+      "file": "faction_blacktop_mini14",
+      "model": "mini14",
+      "role": "rifle",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_m4a1": {
+      "file": "faction_blacktop_m4a1",
+      "model": "m4a1",
+      "role": "rifle",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_g36c": {
+      "file": "faction_blacktop_g36c",
+      "model": "g36c",
+      "role": "rifle",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_scar_h": {
+      "file": "faction_blacktop_scar_h",
+      "model": "scar_h",
+      "role": "rifle",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_aug": {
+      "file": "faction_blacktop_aug",
+      "model": "aug",
+      "role": "rifle",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_rem870": {
+      "file": "faction_blacktop_rem870",
+      "model": "rem870",
+      "role": "shotgun",
+      "faction": "blacktop",
+      "base": "1_pump_shotgun"
+    },
+    "faction_blacktop_moss500": {
+      "file": "faction_blacktop_moss500",
+      "model": "moss500",
+      "role": "shotgun",
+      "faction": "blacktop",
+      "base": "1_pump_shotgun"
+    },
+    "faction_blacktop_spas12": {
+      "file": "faction_blacktop_spas12",
+      "model": "spas12",
+      "role": "shotgun",
+      "faction": "blacktop",
+      "base": "1_pump_shotgun"
+    },
+    "faction_blacktop_benelli_m2": {
+      "file": "faction_blacktop_benelli_m2",
+      "model": "benelli_m2",
+      "role": "shotgun",
+      "faction": "blacktop",
+      "base": "1_pump_shotgun"
+    },
+    "faction_blacktop_benelli_m4": {
+      "file": "faction_blacktop_benelli_m4",
+      "model": "benelli_m4",
+      "role": "shotgun",
+      "faction": "blacktop",
+      "base": "1_pump_shotgun"
+    },
+    "faction_blacktop_saiga12": {
+      "file": "faction_blacktop_saiga12",
+      "model": "saiga12",
+      "role": "shotgun",
+      "faction": "blacktop",
+      "base": "1_pump_shotgun"
+    },
+    "faction_blacktop_rem700": {
+      "file": "faction_blacktop_rem700",
+      "model": "rem700",
+      "role": "sniper",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_sks": {
+      "file": "faction_blacktop_sks",
+      "model": "sks",
+      "role": "sniper",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_svd": {
+      "file": "faction_blacktop_svd",
+      "model": "svd",
+      "role": "sniper",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_ssg69": {
+      "file": "faction_blacktop_ssg69",
+      "model": "ssg69",
+      "role": "sniper",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_awm": {
+      "file": "faction_blacktop_awm",
+      "model": "awm",
+      "role": "sniper",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    },
+    "faction_blacktop_psg1": {
+      "file": "faction_blacktop_psg1",
+      "model": "psg1",
+      "role": "sniper",
+      "faction": "blacktop",
+      "base": "1_ak_rifle"
+    }
+  }
+}

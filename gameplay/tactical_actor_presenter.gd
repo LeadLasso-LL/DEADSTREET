@@ -4,9 +4,8 @@ extends RefCounted
 # Retained dynamic actor visuals. Creates sprites once and syncs transforms.
 # Does not own vehicle physics, cover, combat, or selection hit-testing.
 #
-# UNIT_VISUALS_ENABLED keeps the retained actor path available for a future
-# accepted character set. No painted unit is bound today; unclaimed soldiers
-# use the procedural TacticalBattleView fallback.
+# Accepted units use retained eight-direction animation sets. Unknown
+# presentation identities retain the procedural TacticalBattleView fallback.
 # Painted humans select directional clips; they are not continuously rotated.
 
 const BattleVisualBinding := preload("res://battle/presentation/battle_visual_binding.gd")
@@ -39,6 +38,7 @@ var _motion: Dictionary = {}
 var _muzzles: Dictionary = {}
 var _abdomen: Dictionary = {}
 var _blood_masks: Dictionary = {}
+var _faction_anchor_keys: Dictionary = {}
 var blood_enabled := true
 var blood_layer: Node2D
 
@@ -200,12 +200,15 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 		return false
 	if participant == null or not participant.has_identity():
 		return false
-	if not TacticalUnitAnimationCatalog.has_bound_frames(
-		participant.participant_id,
-		participant.identity.gang_archetype_id,
-		participant.weapon_type, participant.weapon_model_id, participant.specialist_id
-	):
-		return false
+	var variant: String = TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id)
+	if not TacticalUnitAnimationCatalog.is_bound_variant(variant): return false
+	# Active actors own their frames. Do not rebuild an evicted catalog entry every
+	# frame when a battle contains more variants than the browsing cache can hold.
+	if _unit_nodes.has(participant.participant_id):
+		var active: Node2D = _unit_nodes[participant.participant_id] as Node2D
+		if active != null and is_instance_valid(active):
+			var active_body := active.get_node("body") as AnimatedSprite2D
+			if str(active_body.get_meta("variant", "")) == variant: return true
 	var frames: SpriteFrames = TacticalUnitAnimationCatalog.frames_for(
 		TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id)
 	)
@@ -217,6 +220,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 			var current := existing.get_node("body") as AnimatedSprite2D
 			if current.sprite_frames != frames:
 				current.sprite_frames = frames
+				current.set_meta("variant", variant)
 				current.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 				_motion.erase(participant.participant_id)
 			return true
@@ -228,6 +232,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	var body: AnimatedSprite2D = AnimatedSprite2D.new()
 	body.name = "body"
 	body.sprite_frames = frames
+	body.set_meta("variant", variant)
 	body.centered = true
 	body.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -351,6 +356,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 			pose = clip + "/" + str(body.frame)
 		elif not participant.specialist_id.is_empty() and int(state.get("weapon_hand",0)) == 1:
 			pose += "_left"
+		_ensure_faction_anchors(variant, "muzzles", _muzzles)
 		var point: Array = _muzzles.get(variant + "/" + dir_id + "/" + pose, [64.0, 64.0])
 		state["shot_muzzle"] = node.position + (Vector2(float(point[0]), float(point[1])) - TacticalUnitAnimationCatalog.foot_anchor(variant)) * (pixels_per_unit / TacticalUnitAnimationCatalog.art_pixels_per_unit()) * node.scale.x
 		state["muzzle_sequence"] = state["sequence"]
@@ -362,7 +368,8 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 				_abdomen=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
 				_merge_arsenal_anchors(_abdomen, "abdomen")
 			var stain_variant: String=TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id,participant.weapon_type,participant.weapon_model_id,participant.specialist_id)
-			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=load(TacticalUnitAnimationCatalog.blood_mask_path(stain_variant))
+			_ensure_faction_anchors(stain_variant, "abdomen", _abdomen)
+			if not _blood_masks.has(stain_variant): _blood_masks[stain_variant]=TacticalUnitAnimationCatalog._load_texture(TacticalUnitAnimationCatalog.blood_mask_path(stain_variant))
 			body.material.set_shader_parameter("clothing_mask",_blood_masks[stain_variant])
 			var point: Array=_abdomen.get(stain_variant+"/"+dir_id+"/"+clip+"/"+str(body.frame),[64.0,64.0])
 			body.material.set_shader_parameter("stain_center",Vector2(float(point[0]),float(point[1])))
@@ -414,6 +421,10 @@ func _clear_all() -> void:
 	_prune_unwanted_units({})
 	_claimed.clear()
 	_claimed_participants.clear()
+	_muzzles.clear()
+	_abdomen.clear()
+	_blood_masks.clear()
+	_faction_anchor_keys.clear()
 func set_outline_width(width: float) -> void:
 	for node in _unit_nodes.values():
 		var body = node.get_node("body")
@@ -431,3 +442,14 @@ func _merge_arsenal_anchors(target: Dictionary, kind: String) -> void:
 	if FileAccess.file_exists(mercer_path):
 		var mercer: Variant = JSON.parse_string(FileAccess.get_file_as_string(mercer_path))
 		if mercer is Dictionary: target.merge(mercer.get(kind, {}), true)
+
+
+func _ensure_faction_anchors(variant: String, kind: String, target: Dictionary) -> void:
+	var key := variant+":"+kind
+	if not variant.begins_with("faction_") or _faction_anchor_keys.has(key): return
+	var path := "res://assets/art/units/factions/anchors/"+variant+".json"
+	if FileAccess.file_exists(path):
+		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if data is Dictionary:
+			target.merge(data.get(kind, {}), true)
+			_faction_anchor_keys[key] = true

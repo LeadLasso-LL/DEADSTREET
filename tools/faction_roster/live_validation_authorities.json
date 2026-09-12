@@ -1,0 +1,80 @@
+{
+  "elapsed": 12.8256897171717,
+  "errors": [],
+  "models": {
+    "player_arsenal_shotgun": {
+      "class": "shotgun",
+      "faction": "trc",
+      "tier": 3,
+      "variant": "faction_trc_saiga12",
+      "weapon": "saiga12"
+    },
+    "player_arsenal_sniper": {
+      "class": "sniper",
+      "faction": "trc",
+      "tier": 3,
+      "variant": "faction_trc_svd",
+      "weapon": "svd"
+    },
+    "player_soldier": {
+      "class": "rifle",
+      "faction": "trc",
+      "tier": 2,
+      "variant": "faction_trc_ak47",
+      "weapon": "ak47"
+    },
+    "player_soldier_shotgun": {
+      "class": "pistol",
+      "faction": "trc",
+      "tier": 1,
+      "variant": "faction_trc_cz75",
+      "weapon": "cz75"
+    },
+    "player_soldier_smg": {
+      "class": "smg",
+      "faction": "trc",
+      "tier": 2,
+      "variant": "faction_trc_mp5k",
+      "weapon": "mp5k"
+    },
+    "rival_arsenal_shotgun": {
+      "class": "shotgun",
+      "faction": "nbpd",
+      "tier": 2,
+      "variant": "faction_nbpd_benelli_m4",
+      "weapon": "benelli_m4"
+    },
+    "rival_arsenal_sniper": {
+      "class": "sniper",
+      "faction": "nbpd",
+      "tier": 1,
+      "variant": "faction_nbpd_awm",
+      "weapon": "awm"
+    },
+    "rival_soldier": {
+      "class": "pistol",
+      "faction": "nbpd",
+      "tier": 3,
+      "variant": "faction_nbpd_five_seven",
+      "weapon": "five_seven"
+    },
+    "rival_soldier_rifle": {
+      "class": "rifle",
+      "faction": "nbpd",
+      "tier": 3,
+      "variant": "faction_nbpd_scar_h",
+      "weapon": "scar_h"
+    },
+    "rival_soldier_shotgun": {
+      "class": "smg",
+      "faction": "nbpd",
+      "tier": 1,
+      "variant": "faction_nbpd_p90",
+      "weapon": "p90"
+    }
+  },
+  "observation_cutoff": false,
+  "resolved": true,
+  "shots": 53,
+  "winner": "defender"
+}

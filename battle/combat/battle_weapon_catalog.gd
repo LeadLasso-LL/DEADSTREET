@@ -1,6 +1,8 @@
 class_name BattleWeaponCatalog
 extends RefCounted
 
+const UnitTiers := preload("res://battle/combat/battle_unit_tier_catalog.gd")
+
 const BattleWeaponDefinition := preload("res://battle/combat/battle_weapon_definition.gd")
 const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
 const BattleAttackProfile := preload("res://battle/combat/battle_attack_profile.gd")
@@ -205,6 +207,7 @@ static func _make_definition(weapon_type_id: String) -> BattleWeaponDefinition:
 # Class identity remains stable; model data is equipment, never a unit tier bonus.
 static var _models: Dictionary = {}
 static var _model_cache: Dictionary = {}
+static var _legacy_tier_bases: Dictionary = {}
 
 static func model_data() -> Dictionary:
 	if _models.is_empty():
@@ -239,13 +242,19 @@ static func get_model(id: String) -> BattleWeaponDefinition:
 static func for_participant(p) -> BattleWeaponDefinition:
 	if p == null: return null
 	var id: String = p.weapon_model_id
-	if id.is_empty(): return get_definition(p.weapon_type)
+	if id.is_empty():
+		if p.unit_tier <= 1: return get_definition(p.weapon_type)
+		# Class-only legacy participants also need stable tier-profile cache keys.
+		# Public get_definition() still returns an independent definition to callers.
+		if not _legacy_tier_bases.has(p.weapon_type):
+			_legacy_tier_bases[p.weapon_type] = get_definition(p.weapon_type)
+		return UnitTiers.profile(_legacy_tier_bases[p.weapon_type], p.unit_tier)
 	var d: BattleWeaponDefinition = get_model(id)
 	if d == null or d.weapon_type_id != p.weapon_type: return null
 	if not p.specialist_id.is_empty():
 		if not Specialists.eligible(p.faction_id, p.weapon_type, id, p.specialist_id): return null
-		return Specialists.profile(d)
-	return d
+		d = Specialists.profile(d)
+	return UnitTiers.profile(d, p.unit_tier)
 
 static func state_for_participant(p) -> BattleWeaponState:
 	var d = for_participant(p)

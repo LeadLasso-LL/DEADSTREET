@@ -19,6 +19,9 @@ var side_id: String = ""
 var tactical_force_id: String = ""
 var weapon_type: String = ""
 var weapon_state: BattleWeaponState = null
+var unit_tier: int = 1:
+	set(value):
+		unit_tier = clampi(value, 1, 3)
 var specialist_id: String = ""
 var weapon_model_id: String = ""
 var weapon_recoil: float = 0.0

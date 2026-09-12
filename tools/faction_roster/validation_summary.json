@@ -1,0 +1,108 @@
+{
+  "validated_at_utc": "2026-09-12T03:30:48.105434+00:00",
+  "factions": 23,
+  "regular_outfits": 115,
+  "runtime_animation_coverage": {
+    "animations": 93840,
+    "errors": [],
+    "frames": 1269600,
+    "pairings": 690,
+    "pending": 0
+  },
+  "new_asset_integrity": {
+    "new_variants": 636,
+    "pairings": 690,
+    "outfits": 115,
+    "frames": 1170240,
+    "geometry_checks": 25440,
+    "border_touches": 0,
+    "png_bytes": 3427708342
+  },
+  "equipment_and_tier_assignments": 2070,
+  "ui_selector_interactions": 136,
+  "export_asset_paths": 3841,
+  "active_variant_cache": {
+    "active_actors": 13,
+    "cache_limit": 12,
+    "errors": []
+  },
+  "rendered_battles": {
+    "live_validation": {
+      "elapsed": 17.6379388499278,
+      "errors": [],
+      "observation_cutoff": false,
+      "resolved": true,
+      "shots": 65,
+      "winner": "defender"
+    },
+    "live_validation_authorities": {
+      "elapsed": 12.8256897171717,
+      "errors": [],
+      "observation_cutoff": false,
+      "resolved": true,
+      "shots": 53,
+      "winner": "defender"
+    }
+  },
+  "mercer_specialist_regression": {
+    "battles": [
+      {
+        "observation_cutoff": false,
+        "phase": "resolved",
+        "seconds": 37.0,
+        "shots": 66,
+        "snipers": false,
+        "specialist_hands": [
+          3,
+          2
+        ],
+        "winner": "defender"
+      },
+      {
+        "observation_cutoff": false,
+        "phase": "resolved",
+        "seconds": 15.9000000000001,
+        "shots": 80,
+        "snipers": true,
+        "specialist_hands": [
+          3,
+          2
+        ],
+        "winner": "attacker"
+      }
+    ],
+    "errors": []
+  },
+  "visual_review": {
+    "standing_outfits_inspected": 115,
+    "standing_left_shoulders_inspected": 115,
+    "factions": [
+      "ashford_crane",
+      "bitian",
+      "blacktop",
+      "calle_ocho",
+      "eastex",
+      "kurgan",
+      "lombardia",
+      "mcallister",
+      "mercer",
+      "mercer44",
+      "nbpd",
+      "orlov",
+      "ravicci",
+      "saffar",
+      "sand_raiders",
+      "sierra_roja",
+      "stateline",
+      "trc",
+      "union_sur",
+      "ventresca",
+      "whittaker",
+      "wm_corp",
+      "zangyaku"
+    ],
+    "scope": "Standing and front-view proportions across all regular outfits; rear, aim, reload, wounded, comrade and fall samples for authorities, merged and invading factions. Automated coverage checks every regular animation/frame; not every frame manually inspected."
+  },
+  "tier_balance_status": "Initial playtest values; independent of weapon tier.",
+  "errors": []
+}

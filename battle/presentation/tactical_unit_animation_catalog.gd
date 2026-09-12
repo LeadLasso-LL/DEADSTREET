@@ -1,8 +1,11 @@
 class_name TacticalUnitAnimationCatalog
 extends RefCounted
 
+const Factions := preload("res://battle/identity/faction_unit_catalog.gd")
+const Weapons := preload("res://battle/combat/battle_weapon_catalog.gd")
+
 # Cached SpriteFrames for tactical people.
-# Canonical 8-direction clip schema for a future accepted character set.
+# Accepted regular outfits share the same eight-direction clip schema.
 # Approved pixel outfits with equipment-independent cached atlases.
 # Does not own combat or TacticalBattleView.
 
@@ -80,20 +83,8 @@ static func clip_loops(clip_id: String) -> bool:
 
 
 static func implemented_clip_ids() -> Array[String]:
-	return [
-		CLIP_IDLE,
-		CLIP_WALK,
-		CLIP_AIM,
-		CLIP_FIRE,
-		CLIP_RELOAD,
-		CLIP_COVER_EXPOSED_IDLE,
-		CLIP_COVER_TUCKED_IDLE,
-		CLIP_COVER_POPOUT,
-		CLIP_COVER_FIRE,
-		CLIP_WOUNDED_IDLE,
-		CLIP_DEATH,
-		CLIP_DEATH_BACK
-	]
+	return bound_clip_ids()
+
 
 
 static var _manifest: Dictionary = {}
@@ -106,6 +97,16 @@ static func manifest() -> Dictionary:
 	return _manifest
 
 static func variant_for(gang: String, weapon: String, model_id: String = "", specialist_id: String = "") -> String:
+	var faction_id: String = Factions.canonical_id(gang)
+	if not faction_id.is_empty():
+		var model: String = Weapons.default_model(weapon) if model_id.is_empty() else model_id
+		var definition = Weapons.get_model(model)
+		if definition == null or definition.weapon_type_id != weapon: return ""
+		if faction_id == "mercer" and specialist_id == "mercer_dual_glock" and model == "glock_17": return "mercer_dual_glock"
+		var bound: String = str(faction_manifest().get("models", {}).get(faction_id+":"+model, ""))
+		if not bound.is_empty(): return bound
+		# Legacy entry points still work before a roster asset build is installed.
+		if not gang in ["local_street_gang", "russian_organized_crime"]: return ""
 	var outfit: String = ""
 	match gang:
 		"local_street_gang": outfit = "0"
@@ -134,6 +135,7 @@ static func bound_variant_ids() -> Array[String]:
 	result.assign(manifest().get("variants", []))
 	result.append_array(arsenal_manifest().get("variants", {}).keys())
 	result.append_array(mercer_manifest().get("variants", {}).keys())
+	result.append_array(faction_manifest().get("variants", {}).keys())
 	return result
 
 static func bound_clip_ids() -> Array[String]:
@@ -142,7 +144,7 @@ static func bound_clip_ids() -> Array[String]:
 	return result
 
 static func has_bound_frames(_participant_id: String, gang: String, weapon: String, model_id: String = "", specialist_id: String = "") -> bool:
-	return bound_variant_ids().has(variant_for(gang, weapon, model_id, specialist_id))
+	return is_bound_variant(variant_for(gang, weapon, model_id, specialist_id))
 
 static func playback_clip_id(clip_id: String) -> String:
 	return clip_id if bound_clip_ids().has(clip_id) else CLIP_IDLE
@@ -154,7 +156,7 @@ static func clip_fps(clip_id: String) -> float:
 	return float(clip_specs().get(clip_id, {}).get("fps", 1.0))
 
 static func frames_for(variant_id: String) -> SpriteFrames:
-	if not bound_variant_ids().has(variant_id):
+	if not is_bound_variant(variant_id):
 		return null
 	if _frames_cache.has(variant_id):
 		_touch_variant(variant_id)
@@ -243,10 +245,12 @@ static func arsenal_manifest() -> Dictionary:
 	return _arsenal
 
 static func base_variant(variant: String) -> String:
+	if faction_manifest().get("variants", {}).has(variant): return str(faction_manifest().variants[variant].base)
 	if mercer_manifest().get("variants", {}).has(variant): return str(mercer_manifest().variants[variant].base)
 	return str(arsenal_manifest().get("variants", {}).get(variant, {}).get("base", variant))
 
 static func atlas_path(variant: String, folder: String) -> String:
+	if faction_manifest().get("variants", {}).has(variant): return "res://assets/art/units/factions/"+folder+"/"+variant+".png"
 	if mercer_manifest().get("variants", {}).has(variant): return "res://assets/art/units/mercer/"+folder+"/"+variant+".png"
 	var row: Dictionary = arsenal_manifest().get("variants", {}).get(variant, {})
 	if not row.is_empty():
@@ -280,8 +284,21 @@ static func clip_specs() -> Dictionary:
 	return clips
 
 static func foot_anchor(variant: String) -> Vector2:
-	return Vector2(64,104 if variant.begins_with("mercer_") else 110)
+	return Vector2(64,104 if variant.begins_with("mercer_") or variant.begins_with("faction_") else 110)
 
 static func blood_mask_path(variant: String) -> String:
-	if variant.begins_with("mercer_"): return atlas_path(variant, "blood_masks")
+	if variant.begins_with("mercer_") or variant.begins_with("faction_"): return atlas_path(variant, "blood_masks")
 	return "res://assets/art/units/pixel_v1/blood_masks/"+base_variant(variant)+".png"
+
+
+static var _factions: Dictionary = {}
+static func faction_manifest() -> Dictionary:
+	if _factions.is_empty():
+		var path := "res://assets/art/units/factions/manifest.json"
+		if FileAccess.file_exists(path):
+			var value: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if value is Dictionary: _factions = value
+	return _factions
+
+static func is_bound_variant(variant: String) -> bool:
+	return faction_manifest().get("variants", {}).has(variant) or arsenal_manifest().get("variants", {}).has(variant) or mercer_manifest().get("variants", {}).has(variant) or manifest().get("variants", []).has(variant)

@@ -1,0 +1,80 @@
+{
+  "elapsed": 17.6379388499278,
+  "errors": [],
+  "models": {
+    "player_arsenal_shotgun": {
+      "class": "shotgun",
+      "faction": "orlov",
+      "tier": 3,
+      "variant": "arsenal_1_saiga12",
+      "weapon": "saiga12"
+    },
+    "player_arsenal_sniper": {
+      "class": "sniper",
+      "faction": "orlov",
+      "tier": 3,
+      "variant": "faction_orlov_sniper_svd",
+      "weapon": "svd"
+    },
+    "player_soldier": {
+      "class": "rifle",
+      "faction": "orlov",
+      "tier": 2,
+      "variant": "1_ak_rifle",
+      "weapon": "ak47"
+    },
+    "player_soldier_shotgun": {
+      "class": "pistol",
+      "faction": "orlov",
+      "tier": 1,
+      "variant": "arsenal_1_cz75",
+      "weapon": "cz75"
+    },
+    "player_soldier_smg": {
+      "class": "smg",
+      "faction": "orlov",
+      "tier": 2,
+      "variant": "arsenal_1_mp5k",
+      "weapon": "mp5k"
+    },
+    "rival_arsenal_shotgun": {
+      "class": "shotgun",
+      "faction": "mercer",
+      "tier": 2,
+      "variant": "arsenal_0_benelli_m4",
+      "weapon": "benelli_m4"
+    },
+    "rival_arsenal_sniper": {
+      "class": "sniper",
+      "faction": "mercer",
+      "tier": 1,
+      "variant": "mercer_awm",
+      "weapon": "awm"
+    },
+    "rival_soldier": {
+      "class": "pistol",
+      "faction": "mercer",
+      "tier": 3,
+      "variant": "arsenal_0_five_seven",
+      "weapon": "five_seven"
+    },
+    "rival_soldier_rifle": {
+      "class": "rifle",
+      "faction": "mercer",
+      "tier": 3,
+      "variant": "arsenal_0_scar_h",
+      "weapon": "scar_h"
+    },
+    "rival_soldier_shotgun": {
+      "class": "smg",
+      "faction": "mercer",
+      "tier": 1,
+      "variant": "arsenal_0_p90",
+      "weapon": "p90"
+    }
+  },
+  "observation_cutoff": false,
+  "resolved": true,
+  "shots": 65,
+  "winner": "defender"
+}

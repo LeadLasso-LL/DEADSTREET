@@ -45,6 +45,7 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 	var card: Dictionary = {
 		"participant_id": "",
 		"weapon_type": "",
+		"unit_tier": 0,
 		"role_label": "",
 		"display_name": "",
 		"firearm_label": "",
@@ -75,6 +76,7 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 		can_select = true
 	card["participant_id"] = participant.participant_id
 	card["weapon_type"] = participant.weapon_type
+	card["unit_tier"] = participant.unit_tier
 	card["role_label"] = role_label_for(participant.weapon_type)
 	card["display_name"] = ""
 	card["firearm_label"] = ""

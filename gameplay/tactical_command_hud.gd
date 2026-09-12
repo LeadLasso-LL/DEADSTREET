@@ -1,5 +1,6 @@
 extends Control
 # Screen-space tactical roster and whole-force controls. Simulation owns all state.
+const Factions = preload("res://battle/identity/faction_unit_catalog.gd")
 const Query = preload("res://gameplay/tactical_unit_hud_query.gd")
 const Commands = preload("res://battle/core/battle_force_command_service.gd")
 const Catalog = preload("res://battle/core/battle_force_command_catalog.gd")
@@ -36,7 +37,7 @@ func setup(p_view: Node) -> void:
  surface=Control.new();add_child(surface);surface.mouse_filter=Control.MOUSE_FILTER_STOP
  var bg=Panel.new();surface.add_child(bg);bg.position=Vector2(12,0);bg.size=Vector2(1128,HEIGHT-8);bg.add_theme_stylebox_override("panel",style(Color("#11191d"),Color("#444e50")))
  bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
- faction_label=label(surface,Vector2(28,10),Vector2(570,18),"ORLOV BRATVA  /  OPERATIVES",12,Color("#c4cbbf"))
+ faction_label=label(surface,Vector2(28,10),Vector2(306,18),"OPERATIVES",12,Color("#c4cbbf"))
  strength_label=label(surface,Vector2(350,5),Vector2(276,12),"RELATIVE STRENGTH  /  EVEN",9,Color("#bfc8ba"))
  var strength_bg=ColorRect.new();surface.add_child(strength_bg);strength_bg.position=Vector2(350,22);strength_bg.size=Vector2(272,6);strength_bg.color=Color("#a15e68");strength_bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
  strength_fill=ColorRect.new();strength_bg.add_child(strength_fill);strength_fill.size=Vector2(136,6);strength_fill.color=Color("#83b899");strength_fill.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -98,11 +99,16 @@ func _process(_delta: float) -> void:
   widgets.id=c.participant_id
   Card.update(widgets,p,selected)
   if c.is_alive:alive+=1
- var faction="ORLOV BRATVA"
+ var faction="ATTACKERS"
  if not units.is_empty():
   var p=battle.get_participant(units[0].participant_id)
-  if p.identity.gang_archetype_id=="local_street_gang":faction="MERCER SAINTS"
+  if p.has_identity():
+   var profile=Factions.profile(p.identity.gang_archetype_id)
+   faction=str(profile.get("hud_name",profile.get("name",p.identity.gang_archetype_id))).to_upper()
  faction_label.text=faction+"  /  %d OPERATIVES"%alive
+ var title_size=12
+ while title_size>8 and font.get_string_size(faction_label.text,HORIZONTAL_ALIGNMENT_LEFT,-1,title_size).x>306:title_size-=1
+ faction_label.add_theme_font_size_override("font_size",title_size)
  var order=current_order(battle)
  command_label.text="CURRENT ORDER  /  "+LABELS.get(order,"MIXED")
  for id in buttons:

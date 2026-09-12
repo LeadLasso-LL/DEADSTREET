@@ -1,0 +1,150 @@
+{
+  "factions": {
+    "mercer": {
+      "name": "Mercer Saints",
+      "leader": "Malcolm Rowe II \u00b7 \u201cMac 11\u201d",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/mercer.png"
+    },
+    "eastex": {
+      "name": "Eastex 44\u2019s",
+      "leader": "Andre Hollis \u00b7 \u201cDre Holly\u201d",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/eastex.png"
+    },
+    "calle_ocho": {
+      "name": "Calle Ocho",
+      "leader": "Vicente \u201cChente\u201d Garza",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/calle_ocho.png"
+    },
+    "ventresca": {
+      "name": "Ventresca Family",
+      "leader": "Silvio Ventresca \u00b7 \u201cDon Silvio\u201d",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/ventresca.png"
+    },
+    "ravicci": {
+      "name": "Ravicci Family",
+      "leader": "Aurelio Ravicci \u00b7 \u201cDon Aurelio\u201d",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/ravicci.png"
+    },
+    "orlov": {
+      "name": "Orlov Bratva",
+      "leader": "Konstantin Orlov",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/orlov.png"
+    },
+    "zangyaku": {
+      "name": "Zangyaku",
+      "leader": "Shinzo Arakawa",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/zangyaku.png"
+    },
+    "bitian": {
+      "name": "B\u00ecti\u0101n",
+      "leader": "Han Zhengkun",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/bitian.png"
+    },
+    "stateline": {
+      "name": "Stateline Raiders MC",
+      "leader": "Oliver \u201cOllie\u201d Rourke",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/stateline.png"
+    },
+    "sierra_roja": {
+      "name": "C\u00e1rtel de Sierra Roja",
+      "leader": "\u201cEl Mudo\u201d Murrieta",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/sierra_roja.png"
+    },
+    "whittaker": {
+      "name": "Whittaker Oil & Land Co.",
+      "leader": "Beaumont \u201cBeau\u201d Whittaker IV",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/whittaker.png",
+      "hud_name": "WHITTAKER"
+    },
+    "mcallister": {
+      "name": "McAllister Holdings, Inc.",
+      "leader": "Harlan McAllister III",
+      "category": "major",
+      "emblem": "res://assets/art/factions/roster/mcallister.png",
+      "hud_name": "MCALLISTER"
+    },
+    "trc": {
+      "name": "Texas Recovery Coalition",
+      "leader": "Commander Everett Voss",
+      "category": "authority",
+      "emblem": "res://assets/art/factions/roster/trc.png",
+      "hud_name": "TRC"
+    },
+    "nbpd": {
+      "name": "New Briarport Police Department",
+      "leader": "Chief Douglas \u201cDoug\u201d Pritchard",
+      "category": "authority",
+      "emblem": "res://assets/art/factions/roster/nbpd.png",
+      "hud_name": "NBPD"
+    },
+    "mercer44": {
+      "name": "Mercer 44\u2019s",
+      "leader": "Mac 11 / Dre Holly / successor",
+      "category": "merged",
+      "emblem": "res://assets/art/factions/roster/mercer44.png"
+    },
+    "wm_corp": {
+      "name": "Whittaker-McAllister Corporation",
+      "leader": "Eleanor \u201cNelly\u201d Whittaker",
+      "category": "merged",
+      "emblem": "res://assets/art/factions/roster/wm_corp.png",
+      "hud_name": "W&M CORP."
+    },
+    "union_sur": {
+      "name": "La Uni\u00f3n del Sur",
+      "leader": "Depends on the absorbing faction",
+      "category": "merged",
+      "emblem": "res://assets/art/factions/roster/union_sur.png"
+    },
+    "lombardia": {
+      "name": "L\u2019Ordine di Lombardia",
+      "leader": "Depends on the absorbing faction",
+      "category": "merged",
+      "emblem": "res://assets/art/factions/roster/lombardia.png",
+      "hud_name": "L\u2019ORDINE DI LOMBARDIA"
+    },
+    "sand_raiders": {
+      "name": "Raiders of the Sand",
+      "leader": "Coyote",
+      "category": "invading",
+      "emblem": "res://assets/art/factions/roster/sand_raiders.png",
+      "hud_name": "RAIDERS OF THE SAND"
+    },
+    "saffar": {
+      "name": "Majmu\u2019at al-Saffar",
+      "leader": "Farid al-Saffar",
+      "category": "invading",
+      "emblem": "res://assets/art/factions/roster/saffar.png"
+    },
+    "kurgan": {
+      "name": "The Kurgan Group",
+      "leader": "Colonel Pavel Antonov",
+      "category": "invading",
+      "emblem": "res://assets/art/factions/roster/kurgan.png"
+    },
+    "ashford_crane": {
+      "name": "The Ashford-Crane Collective",
+      "leader": "Julian Ashford-Crane",
+      "category": "invading",
+      "emblem": "res://assets/art/factions/roster/ashford_crane.png",
+      "hud_name": "ASHFORD-CRANE"
+    },
+    "blacktop": {
+      "name": "Blacktop Apostles MC",
+      "leader": "Wade \u201cWrath\u201d McGrath",
+      "category": "invading",
+      "emblem": "res://assets/art/factions/roster/blacktop.png"
+    }
+  }
+}

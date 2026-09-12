@@ -6,6 +6,9 @@ var faction_id: String = ""
 var home_stronghold_id: String = ""
 var garrison_hq_id: String = ""
 var weapon_type_id: String = ""
+var unit_tier: int = 1:
+	set(value):
+		unit_tier = clampi(value, 1, 3)
 var specialist_id: String = ""
 var strategic_strength: float = 0.0:
 	set(value):
@@ -41,6 +44,7 @@ func to_dict() -> Dictionary:
 		"garrison_hq_id": garrison_hq_id,
 		"weapon_type_id": weapon_type_id,
 		"specialist_id": specialist_id,
+		"unit_tier": unit_tier,
 		"strategic_strength": strategic_strength,
 		"upkeep_per_turn": upkeep_per_turn,
 	}
@@ -53,5 +57,6 @@ func from_dict(data: Dictionary) -> void:
 	garrison_hq_id = str(data.get("garrison_hq_id", ""))
 	weapon_type_id = str(data.get("weapon_type_id", ""))
 	specialist_id = str(data.get("specialist_id", ""))
+	unit_tier = int(data.get("unit_tier", 1))
 	strategic_strength = float(data.get("strategic_strength", 0.0))
 	upkeep_per_turn = float(data.get("upkeep_per_turn", 0.0))
