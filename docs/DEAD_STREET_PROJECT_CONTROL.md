@@ -1,3 +1,14 @@
+## 2034 fleet proportions and expansion - 2026-09-12
+
+**Built and validated; new art awaits product review. 60 models, 1,248 directional/door sprites and 60 icons.** Twelve Two-Wheelers, nineteen Passenger Cars, thirteen Utility Vehicles and sixteen Heavy Transports. The 2034 setting now guides contemporary silhouettes: lower cabins, fuller hood/deck proportions, raked glazing, sculpted bodywork and visible wheel openings. The TRC and NBPD retain branded options in every class. Intentional heritage/scavenged vehicles preserve faction character.
+
+Fourteen additions include electric road/trail transport, a copper roadster, a shooting brake, rally hatch, hypercar, electric pickup, desert pickup, performance SUV, TRC communications van and luxury shuttle. Two dedicated Raiders of the Sand heavy models complete the request: Lastlight Prison Bus (12 units/12 cargo slots) and Dustchapel RV (8/8). All are unlocked in the sandbox, with individual prices, upkeep and campaign movement. Only Heavy Transports carry campaign resources; seats include drivers.
+
+Windows Godot 4.7.2 passed 3,730 model/gameplay checks, 43 mixed-convoy checks, script and selector checks, and six native D3D12/Forward+ scenarios. All eight vehicle facings, representative door phases, sprite bounds, the 22-page guide and twelve phone sheets were reviewed. See `tools/vehicle_fleet/README.md` for reproducible steps and limits.
+
+This remains battle-sandbox work. Two-wheeler riding/pedaling animations, full campaign vehicle interfaces, fuel/charging/repair and specialists remain pending. Vehicle visuals add no unit armor or outfit changes. Applied changes were guarded against the prior `db92794` checkpoint, preserving unrelated work. Git history and remote confirmation record the new checkpoint.
+
+
 ## Vehicle fleet expansion and visual revision — 2026-09-12
 
 **46 models; 944 directional/door sprites; 46 icons.** Ten Two-Wheelers, fourteen Passenger Cars, ten Utility Vehicles and twelve Heavy Transports. Motorcycle wheels are exposed and exhausts shortened; two low-bar sportbikes and two V-twin cruiser/tourer silhouettes are distinct. Scarlet, lime, azure, plum/ivory, champagne/burgundy and pearl/black finishes expand the sports/luxury range, with beveled fenders and sculpted body shapes.

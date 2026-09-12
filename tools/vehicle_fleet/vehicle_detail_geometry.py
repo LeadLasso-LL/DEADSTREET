@@ -90,7 +90,7 @@ def motorcycle(d,m):
     for side in [-1,1]:d.line([(-.08+slope*(z-.43)*.5,side*.16,z),(.12+slope*(z-.43)*.5,side*.16,z)],'#26343b',1,.02)
  else:d.box(-.18,.18,-.13,.13,.39,.62,engine)
  # Exhaust is a short low silencer behind the engine, not a full-length silver slab.
- if not scooter:
+ if not scooter and not m.get('electric'):
   d.line([(.10,.17,.44),(-.10,.23,.37),(-.48,.23,.40)],'#626c70' if cruiser else '#29343b',2)
   d.line([(-.48,.23,.40),(-.53,.23,.405)],'#929ca0',1)
  seat_z=.72 if cruiser else (.80 if not sport else .86)
@@ -103,9 +103,9 @@ def motorcycle(d,m):
   shell(d,[(-.18,.10,seat_z-.04,seat_z+.08),(-.04,.20,seat_z-.09,seat_z+.18),(.19,.22,seat_z-.07,seat_z+.19),(.38,.10,seat_z+.01,seat_z+.10)],p)
   d.poly([(.08,-.045,seat_z+.20),(.17,-.045,seat_z+.20),(.17,.045,seat_z+.20),(.08,.045,seat_z+.20)],'#8c9595',INK)
  # Forks rake rearward up to the steering head. Low bars establish sport riding posture.
- top_x=front-(.37 if cruiser else .18);fork_top=1.02 if cruiser else (.96 if sport else 1.10)
+ top_x=front-(.22 if m.get('cafe_style') else (.37 if cruiser else .18));fork_top=.99 if m.get('cafe_style') else (1.02 if cruiser else (.96 if sport else 1.10))
  for side in [-1,1]:d.line([(front,side*.07,r),(top_x,side*.07,fork_top)],CHROME,2)
- bar_z=.96 if sport else (1.14 if cruiser else 1.17)
+ bar_z=.96 if sport or m.get('cafe_style') else (1.14 if cruiser else 1.17)
  bar_x=top_x-.12 if sport else top_x-.10
  d.line([(top_x,0,fork_top),(bar_x,0,bar_z)],'#59646a',2)
  for side in [-1,1]:
@@ -157,7 +157,7 @@ def exotic(d,m,door=0):
  if wedge:sections=[(-L*.49,Y*.79,.30,.73),(-L*.34,Y,.24,.87),(-L*.07,Y*.91,.21,.71),(L*.23,Y*.90,.22,.69),(L*.36,Y*.96,.25,.73),(L*.49,Y*.70,.30,.52)]
  shell(d,sections,p)
  cab0=-L*.13 if mid else -L*.29;cab1=L*.28 if mid else L*.12
- canopy(d,cab0,cab1,Y*.75,.78,m['height'],'#222f37',.55,1)
+ if not m.get('open_top'):canopy(d,cab0,cab1,Y*.75,.78,m['height'],'#222f37',.55,1)
  for side in [-1,1]:
   y=side*Y
   d.line([(-L*.27,y,.34),(L*.29,y,.32)],'#202b33',2,.07)

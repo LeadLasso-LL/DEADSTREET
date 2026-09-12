@@ -27,7 +27,7 @@ func run():
 	panel.selected=["bastion"];panel.refresh_convoy()
 	panel.apply_button.pressed.emit();await process_frame
 	check(review.loadouts.attacker.vehicles==["bastion"],"selector updates actual attacker loadout")
-	for scenario in [{"name":"trc_armored","faction":"trc","vehicles":["aegis","watchdog"]},{"name":"nbpd_swat","faction":"nbpd","vehicles":["bulwark","warden"]},{"name":"mixed_exotics","faction":"ravicci","vehicles":["veloce","specter","nightjar"]},{"name":"authority_bikes","faction":"trc","vehicles":["outrider","marshal","outrider","marshal","outrider"]}]:
+	for scenario in [{"name":"trc_2034","faction":"trc","vehicles":["vigil","aegis"]},{"name":"nbpd_2034","faction":"nbpd","vehicles":["interceptor","bulwark"]},{"name":"raiders_2034","faction":"sand_raiders","vehicles":["lastlight","dustchapel"]},{"name":"exotics_2034","faction":"ravicci","vehicles":["solstice","halcyon","pulse"]},{"name":"utility_2034","faction":"wm_corp","vehicles":["torque","dunecat","obsidian"]},{"name":"heavy_2034","faction":"trc","vehicles":["relay","concierge"]}]:
 		review.loadouts.attacker.faction=scenario.faction
 		review.loadouts.attacker.vehicles=scenario.vehicles
 		await review.start_battle(false)
@@ -48,6 +48,6 @@ func run():
 		await process_frame;await process_frame
 	print("FLEET_NATIVE_VISUAL ",errors)
 	var report=FileAccess.open(output+"report.json",FileAccess.WRITE)
-	report.store_string(JSON.stringify({"engine":Engine.get_version_info().string,"scenarios":4,"errors":errors},"  "))
+	report.store_string(JSON.stringify({"engine":Engine.get_version_info().string,"scenarios":6,"errors":errors},"  "))
 	review.queue_free();await process_frame
 	quit(0 if errors.is_empty() else 1)

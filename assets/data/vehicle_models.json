@@ -1,5 +1,6 @@
 {
-  "version": 2,
+  "version": 3,
+  "setting_year": 2034,
   "classes": {
     "two_wheelers": {
       "name": "Two-Wheelers",
@@ -40,6 +41,7 @@
       "description": "Used steel-frame bicycle; almost free to run, painfully slow on long routes.",
       "cover": false,
       "doors": 0,
+      "design_era": "scavenged",
       "brand": "",
       "door_rows": []
     },
@@ -60,6 +62,7 @@
       "description": "Small step-through moped with a single saddle and front basket.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -80,6 +83,7 @@
       "description": "Retro city scooter with a proper pillion seat and leg shield.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -100,6 +104,7 @@
       "description": "Cobalt supersport with low clip-on bars, a solo tail, and clearly exposed wheels.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -120,6 +125,7 @@
       "description": "Scarlet-and-white superbike with a raked nose, low bars and a raised pillion pad.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -140,6 +146,7 @@
       "description": "Tall single-seat trail motorcycle with high mudguards.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -160,6 +167,7 @@
       "description": "Long, low cruiser with chrome pipes, wide bars, and a passenger pad.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -180,6 +188,7 @@
       "description": "Burgundy V-twin bagger with a swept tank, windshield and compact saddlebags.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": []
     },
@@ -200,6 +209,7 @@
       "description": "Black TRC reconnaissance motorcycle; green fairing, gold markings and exposed trail tires.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "trc",
       "door_rows": []
     },
@@ -220,7 +230,50 @@
       "description": "NBPD motor-patrol bike with green/white fairing, POLICE cases, screen and emergency lights.",
       "cover": false,
       "doors": 0,
+      "design_era": "contemporary_2034",
       "brand": "nbpd",
+      "door_rows": []
+    },
+    "pulse": {
+      "id": "pulse",
+      "name": "Pulse EX",
+      "vehicle_class": "two_wheelers",
+      "body": "electric_trail",
+      "unit_capacity": 1,
+      "movement_per_turn": 6.1,
+      "price": 8800,
+      "upkeep_per_turn": 9,
+      "resource_capacity": 0,
+      "length": 2.12,
+      "width": 0.82,
+      "height": 1.22,
+      "paint": "#66a593",
+      "description": "Mint-and-graphite electric trail bike: compact battery spine, exposed tires and a solo saddle.",
+      "cover": false,
+      "doors": 0,
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": []
+    },
+    "cinder": {
+      "id": "cinder",
+      "name": "Cinder 900",
+      "vehicle_class": "two_wheelers",
+      "body": "cafe",
+      "unit_capacity": 2,
+      "movement_per_turn": 5.6,
+      "price": 12500,
+      "upkeep_per_turn": 24,
+      "resource_capacity": 0,
+      "length": 2.3,
+      "width": 0.85,
+      "height": 1.13,
+      "paint": "#343e42",
+      "description": "Graphite cafe roadster with a copper tank, brown saddle and compact rear cowl.",
+      "cover": false,
+      "doors": 0,
+      "design_era": "contemporary_2034",
+      "brand": "",
       "door_rows": []
     },
     "rattleback": {
@@ -235,11 +288,12 @@
       "resource_capacity": 0,
       "length": 3.85,
       "width": 1.75,
-      "height": 1.48,
+      "height": 1.45,
       "paint": "#8e9584",
       "description": "Faded compact hatchback; inexpensive four-seat transport.",
       "cover": true,
       "doors": 4,
+      "design_era": "scavenged",
       "brand": "",
       "door_rows": [
         0.12,
@@ -258,11 +312,12 @@
       "resource_capacity": 0,
       "length": 5.15,
       "width": 2.1,
-      "height": 1.46,
+      "height": 1.44,
       "paint": "#68766c",
       "description": "Worn full-size sedan with a broad trunk and dependable road pace.",
       "cover": true,
       "doors": 4,
+      "design_era": "scavenged",
       "brand": "",
       "door_rows": [
         0.12,
@@ -281,11 +336,12 @@
       "resource_capacity": 0,
       "length": 4.35,
       "width": 1.8,
-      "height": 1.43,
+      "height": 1.4,
       "paint": "#bbb7a5",
       "description": "Clean, practical compact sedan; economical everyday transport.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -304,11 +360,12 @@
       "resource_capacity": 0,
       "length": 5.05,
       "width": 1.98,
-      "height": 1.52,
+      "height": 1.4,
       "paint": "#e1dfcd",
-      "description": "NBPD pursuit sedan: green/white paint, push bar, and roof lightbar.",
+      "description": "2034 NBPD pursuit sedan: low roof, long hood, sculpted shoulders and a slim emergency lightbar.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "nbpd",
       "door_rows": [
         0.12,
@@ -332,6 +389,8 @@
       "description": "Long vintage lowrider with chrome trim and cream roof.",
       "cover": true,
       "doors": 4,
+      "roof_color": "#c5bda5",
+      "design_era": "heritage",
       "brand": "",
       "door_rows": [
         0.12,
@@ -350,11 +409,12 @@
       "resource_capacity": 0,
       "length": 5.02,
       "width": 1.9,
-      "height": 1.46,
+      "height": 1.41,
       "paint": "#303a43",
       "description": "Understated dark executive sedan with a long hood.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -373,11 +433,13 @@
       "resource_capacity": 0,
       "length": 5.5,
       "width": 2.02,
-      "height": 1.57,
+      "height": 1.47,
       "paint": "#44314e",
-      "description": "Deep-plum and ivory luxury saloon with a formal chrome grille and sculpted shoulders.",
+      "description": "Plum-and-ivory luxury flagship with a lower crowned roof, long hood and formal modern grille.",
       "cover": true,
       "doors": 4,
+      "roof_color": "#c9c5b7",
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -396,11 +458,13 @@
       "resource_capacity": 0,
       "length": 5.55,
       "width": 2.02,
-      "height": 1.53,
+      "height": 1.45,
       "paint": "#b6a47c",
-      "description": "Champagne chauffeur sedan with a burgundy roof, restrained chrome and long rear doors.",
+      "description": "Champagne chauffeur saloon with a burgundy roof, raked pillars and generous hood and trunk.",
       "cover": true,
       "doors": 4,
+      "roof_color": "#55353c",
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -424,6 +488,7 @@
       "description": "Azure-blue grand tourer with a long sculpted hood, swept headlights and a black roof.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12
@@ -446,6 +511,7 @@
       "description": "Acid-lime mid-engine wedge with wide rear haunches, side intakes and a black canopy.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12
@@ -463,11 +529,12 @@
       "resource_capacity": 0,
       "length": 4.4,
       "width": 1.86,
-      "height": 1.36,
+      "height": 1.34,
       "paint": "#465a73",
-      "description": "Compact performance coupe with four seats and a modest rear wing.",
+      "description": "Modern blue performance coupe with a low greenhouse, wide wheel arches and a compact rear wing.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -491,6 +558,7 @@
       "description": "Restored old sedan with rounded fenders and bright chrome bumpers.",
       "cover": true,
       "doors": 4,
+      "design_era": "heritage",
       "brand": "",
       "door_rows": [
         0.12,
@@ -514,6 +582,7 @@
       "description": "Scarlet mid-engine exotic with rounded fenders, a teardrop canopy and deep side scoops.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12
@@ -531,15 +600,139 @@
       "resource_capacity": 0,
       "length": 5.02,
       "width": 1.94,
-      "height": 1.48,
+      "height": 1.39,
       "paint": "#212a2b",
-      "description": "Branded black TRC response sedan with a green side stripe and gold star-and-eye markings.",
+      "description": "2034 TRC response sedan: low swept cabin, long hood, black paint and green/gold markings.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "trc",
       "door_rows": [
         0.12,
         -0.075
+      ]
+    },
+    "aurelia": {
+      "id": "aurelia",
+      "name": "Aurelia E4",
+      "vehicle_class": "passenger_cars",
+      "body": "ev_fastback",
+      "unit_capacity": 4,
+      "movement_per_turn": 6.6,
+      "price": 61000,
+      "upkeep_per_turn": 58,
+      "resource_capacity": 0,
+      "length": 4.95,
+      "width": 1.98,
+      "height": 1.39,
+      "paint": "#70b3bb",
+      "description": "Ice-teal electric fastback with a black glass roof, swept cabin and continuous light signatures.",
+      "cover": true,
+      "doors": 4,
+      "roof_color": "#24363c",
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "solstice": {
+      "id": "solstice",
+      "name": "Solstice Spider",
+      "vehicle_class": "passenger_cars",
+      "body": "roadster",
+      "unit_capacity": 2,
+      "movement_per_turn": 7.0,
+      "price": 82000,
+      "upkeep_per_turn": 110,
+      "resource_capacity": 0,
+      "length": 4.42,
+      "width": 1.94,
+      "height": 1.16,
+      "paint": "#da773b",
+      "description": "Copper-orange open-top roadster with two tan seats, twin roll hoops and a low windscreen.",
+      "cover": true,
+      "doors": 2,
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12
+      ]
+    },
+    "mistral": {
+      "id": "mistral",
+      "name": "Mistral Estate",
+      "vehicle_class": "passenger_cars",
+      "body": "shooting_brake",
+      "unit_capacity": 4,
+      "movement_per_turn": 6.2,
+      "price": 58000,
+      "upkeep_per_turn": 76,
+      "resource_capacity": 0,
+      "length": 4.98,
+      "width": 1.96,
+      "height": 1.43,
+      "paint": "#285c4e",
+      "description": "Racing-green shooting brake: long sculpted hood, low wagon roof and bronze wheels.",
+      "cover": true,
+      "doors": 4,
+      "roof_color": "#243a36",
+      "rim_color": "#af9563",
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "kestrel": {
+      "id": "kestrel",
+      "name": "Kestrel RX",
+      "vehicle_class": "passenger_cars",
+      "body": "rally_hatch",
+      "unit_capacity": 4,
+      "movement_per_turn": 6.0,
+      "price": 18500,
+      "upkeep_per_turn": 44,
+      "resource_capacity": 0,
+      "length": 4.03,
+      "width": 1.86,
+      "height": 1.42,
+      "paint": "#7652a3",
+      "description": "Violet rally hatch with white door flashes, wide arches and a short roof spoiler.",
+      "cover": true,
+      "doors": 4,
+      "rim_color": "#c7c5b8",
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "halcyon": {
+      "id": "halcyon",
+      "name": "Halcyon H1",
+      "vehicle_class": "passenger_cars",
+      "body": "hypercar",
+      "unit_capacity": 2,
+      "movement_per_turn": 7.4,
+      "price": 148000,
+      "upkeep_per_turn": 168,
+      "resource_capacity": 0,
+      "length": 4.72,
+      "width": 2.04,
+      "height": 1.19,
+      "paint": "#67b3cb",
+      "description": "Glacier-blue hypercar with a black canopy, gold lower trim and a broad rear aero blade.",
+      "cover": true,
+      "doors": 2,
+      "rim_color": "#af9563",
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12
       ]
     },
     "workhorse": {
@@ -559,6 +752,7 @@
       "description": "Single-cab pickup with a three-place bench; bed is not troop seating.",
       "cover": true,
       "doors": 2,
+      "design_era": "heritage",
       "brand": "",
       "door_rows": [
         0.23
@@ -576,11 +770,12 @@
       "resource_capacity": 0,
       "length": 5.75,
       "width": 2.04,
-      "height": 1.85,
+      "height": 1.82,
       "paint": "#813f35",
       "description": "Four-door crew-cab pickup with five enclosed seats.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -599,11 +794,12 @@
       "resource_capacity": 0,
       "length": 5.85,
       "width": 2.12,
-      "height": 2.06,
+      "height": 1.99,
       "paint": "#696e51",
       "description": "Lifted crew-cab pickup, large tires and a short practical bed.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -622,11 +818,12 @@
       "resource_capacity": 0,
       "length": 5.35,
       "width": 2.04,
-      "height": 1.91,
+      "height": 1.84,
       "paint": "#b8ad8b",
       "description": "Full-size three-row SUV; useful seven-person transport.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -645,11 +842,14 @@
       "resource_capacity": 0,
       "length": 5.5,
       "width": 2.13,
-      "height": 1.98,
+      "height": 1.86,
       "paint": "#ded9c9",
-      "description": "Pearl-white luxury SUV with a black roof, bronze wheels and polished trim.",
+      "description": "Pearl-white luxury SUV with a lower black roof, sculpted body and bronze wheels.",
       "cover": true,
       "doors": 4,
+      "roof_color": "#26343b",
+      "rim_color": "#af9563",
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -668,11 +868,12 @@
       "resource_capacity": 0,
       "length": 4.68,
       "width": 1.86,
-      "height": 1.66,
+      "height": 1.61,
       "paint": "#7b8990",
       "description": "Everyday five-seat crossover with a compact footprint.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -691,11 +892,12 @@
       "resource_capacity": 0,
       "length": 5.08,
       "width": 2.02,
-      "height": 1.86,
+      "height": 1.77,
       "paint": "#dedccd",
-      "description": "NBPD patrol SUV with green/white livery and lightbar.",
+      "description": "Modern NBPD patrol SUV with a low glass line, broad hood, exposed wheels and green/white livery.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "nbpd",
       "door_rows": [
         0.12,
@@ -714,11 +916,12 @@
       "resource_capacity": 0,
       "length": 5.05,
       "width": 2.14,
-      "height": 1.98,
+      "height": 1.88,
       "paint": "#20282b",
-      "description": "Black TRC armored utility truck with sloped panels, protected glass and muted-gold markings.",
+      "description": "Black TRC armored utility truck with balanced hood/cabin height, broad wheels and gold markings.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
       "brand": "trc",
       "door_rows": [
         0.12,
@@ -742,6 +945,7 @@
       "description": "Aged Kurgan-style utility 4x4 with a spare tire and canvas rear roof.",
       "cover": true,
       "doors": 4,
+      "design_era": "heritage",
       "brand": "",
       "door_rows": [
         0.12,
@@ -765,6 +969,80 @@
       "description": "Boxy off-road wagon with roof rack and utilitarian steel wheels.",
       "cover": true,
       "doors": 4,
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "torque": {
+      "id": "torque",
+      "name": "Torque EV5",
+      "vehicle_class": "utility_vehicles",
+      "body": "ev_pickup",
+      "unit_capacity": 5,
+      "movement_per_turn": 5.4,
+      "price": 68000,
+      "upkeep_per_turn": 67,
+      "resource_capacity": 0,
+      "length": 5.54,
+      "width": 2.08,
+      "height": 1.82,
+      "paint": "#456e78",
+      "description": "Steel-teal electric crew pickup with a horizontal light bar and a recessed practical bed.",
+      "cover": true,
+      "doors": 4,
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "dunecat": {
+      "id": "dunecat",
+      "name": "Dunecat R",
+      "vehicle_class": "utility_vehicles",
+      "body": "prerunner",
+      "unit_capacity": 4,
+      "movement_per_turn": 5.1,
+      "price": 36500,
+      "upkeep_per_turn": 83,
+      "resource_capacity": 0,
+      "length": 5.62,
+      "width": 2.15,
+      "height": 1.95,
+      "paint": "#b28550",
+      "description": "Sand-orange desert pickup with broad arches, a braced rear bed and four enclosed seats.",
+      "cover": true,
+      "doors": 4,
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "obsidian": {
+      "id": "obsidian",
+      "name": "Obsidian X",
+      "vehicle_class": "utility_vehicles",
+      "body": "coupe_suv",
+      "unit_capacity": 5,
+      "movement_per_turn": 5.9,
+      "price": 92000,
+      "upkeep_per_turn": 121,
+      "resource_capacity": 0,
+      "length": 5.05,
+      "width": 2.08,
+      "height": 1.73,
+      "paint": "#514568",
+      "description": "Amethyst performance SUV with a falling roofline, broad stance and dark panoramic roof.",
+      "cover": true,
+      "doors": 4,
+      "roof_color": "#273139",
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.12,
@@ -783,11 +1061,12 @@
       "resource_capacity": 10,
       "length": 5.35,
       "width": 2.02,
-      "height": 2.28,
+      "height": 2.2,
       "paint": "#bbb6a5",
       "description": "Two cab seats and an enclosed cargo compartment; freight-focused.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.34
@@ -805,11 +1084,12 @@
       "resource_capacity": 2,
       "length": 5.92,
       "width": 2.1,
-      "height": 2.38,
+      "height": 2.28,
       "paint": "#acb4b1",
       "description": "Twelve proper seats; only a small luggage/resource compartment remains.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.34
@@ -827,11 +1107,12 @@
       "resource_capacity": 6,
       "length": 6.2,
       "width": 2.1,
-      "height": 2.68,
+      "height": 2.6,
       "paint": "#505d66",
       "description": "High-roof crew van with eight seats and a separated rear cargo bay.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.34
@@ -854,6 +1135,7 @@
       "description": "Approximately eleven-foot enclosed box behind a two-seat cab; no passengers in the box.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.34
@@ -876,6 +1158,7 @@
       "description": "Walk-in delivery van with a tall square body and broad cargo doors.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.34
@@ -898,6 +1181,7 @@
       "description": "Worn motorhome with six belted travel seats and limited storage; Sand Raider favorite.",
       "cover": true,
       "doors": 2,
+      "design_era": "scavenged",
       "brand": "",
       "door_rows": [
         0.34
@@ -920,6 +1204,7 @@
       "description": "Retired short bus: twelve retained seats, rear rows removed for supplies.",
       "cover": true,
       "doors": 2,
+      "design_era": "scavenged",
       "brand": "",
       "door_rows": [
         0.34
@@ -937,11 +1222,12 @@
       "resource_capacity": 12,
       "length": 7.4,
       "width": 2.45,
-      "height": 2.98,
+      "height": 2.92,
       "paint": "#506346",
-      "description": "TRC troop transporter with rear benches, covered load bed, and protected cab.",
+      "description": "TRC modern cab troop truck with covered benches and a separate supply section.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "trc",
       "door_rows": [
         0.34
@@ -964,6 +1250,7 @@
       "description": "Kurgan surplus six-wheel transporter; bench seats and a designated cargo section.",
       "cover": true,
       "doors": 2,
+      "design_era": "heritage",
       "brand": "",
       "door_rows": [
         0.34
@@ -986,6 +1273,7 @@
       "description": "Three-seat cab-over delivery truck with a large enclosed freight body.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "",
       "door_rows": [
         0.34
@@ -1003,11 +1291,12 @@
       "resource_capacity": 8,
       "length": 6.15,
       "width": 2.4,
-      "height": 2.65,
+      "height": 2.46,
       "paint": "#1e2529",
-      "description": "Black TRC armored truck: protected cabin, sloped armor, ten seats and a separate supply compartment.",
+      "description": "Modern black TRC armored transport with a substantial hood, protected windows, ten seats and eight cargo slots.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "trc",
       "door_rows": [
         0.2
@@ -1025,14 +1314,108 @@
       "resource_capacity": 6,
       "length": 6.0,
       "width": 2.38,
-      "height": 2.6,
+      "height": 2.42,
       "paint": "#293e38",
-      "description": "NBPD SWAT rescue truck with protected windows, POLICE/SWAT branding and a compact freight bay.",
+      "description": "Modern NBPD SWAT transport with a broad hood, low protected glazing, eight seats and six cargo slots.",
       "cover": true,
       "doors": 2,
+      "design_era": "contemporary_2034",
       "brand": "nbpd",
       "door_rows": [
         0.2
+      ]
+    },
+    "lastlight": {
+      "id": "lastlight",
+      "name": "Lastlight Prison Bus",
+      "vehicle_class": "heavy_transports",
+      "body": "raider_bus",
+      "unit_capacity": 12,
+      "movement_per_turn": 2.3,
+      "price": 13600,
+      "upkeep_per_turn": 122,
+      "resource_capacity": 12,
+      "length": 8.2,
+      "width": 2.43,
+      "height": 3.02,
+      "paint": "#807b59",
+      "description": "Raiders of the Sand prison bus: barred windows, patched panels, roof luggage and rear supply space.",
+      "cover": true,
+      "doors": 2,
+      "design_era": "scavenged",
+      "brand": "",
+      "door_rows": [
+        0.34
+      ]
+    },
+    "dustchapel": {
+      "id": "dustchapel",
+      "name": "Dustchapel RV",
+      "vehicle_class": "heavy_transports",
+      "body": "raider_rv",
+      "unit_capacity": 8,
+      "movement_per_turn": 2.9,
+      "price": 18800,
+      "upkeep_per_turn": 128,
+      "resource_capacity": 8,
+      "length": 7.6,
+      "width": 2.42,
+      "height": 3.0,
+      "paint": "#a38c67",
+      "description": "Raiders expedition motorhome with repaired siding, reclaimed solar panel, canvas rolls and a rear spare.",
+      "cover": true,
+      "doors": 2,
+      "design_era": "scavenged",
+      "brand": "",
+      "door_rows": [
+        0.34
+      ]
+    },
+    "relay": {
+      "id": "relay",
+      "name": "Relay TRC",
+      "vehicle_class": "heavy_transports",
+      "body": "command_van",
+      "unit_capacity": 6,
+      "movement_per_turn": 4.6,
+      "price": 118000,
+      "upkeep_per_turn": 145,
+      "resource_capacity": 4,
+      "length": 6.25,
+      "width": 2.12,
+      "height": 2.57,
+      "paint": "#243733",
+      "description": "Black-green TRC communications van with six seats, roof sensor equipment and a compact cargo bay.",
+      "cover": true,
+      "doors": 2,
+      "design_era": "contemporary_2034",
+      "brand": "trc",
+      "door_rows": [
+        0.34
+      ]
+    },
+    "concierge": {
+      "id": "concierge",
+      "name": "Concierge Lounge",
+      "vehicle_class": "heavy_transports",
+      "body": "luxury_shuttle",
+      "unit_capacity": 6,
+      "movement_per_turn": 4.9,
+      "price": 108000,
+      "upkeep_per_turn": 136,
+      "resource_capacity": 4,
+      "length": 5.92,
+      "width": 2.08,
+      "height": 2.17,
+      "paint": "#d0c7b5",
+      "description": "Champagne luxury shuttle with dark rear glazing, six travel seats and restrained gold trim.",
+      "cover": true,
+      "doors": 2,
+      "roof_color": "#283a40",
+      "design_era": "contemporary_2034",
+      "brand": "",
+      "door_rows": [
+        0.34
       ]
     }
   },
@@ -1049,7 +1432,7 @@
       "yardbird",
       "rattleback",
       "switchblade",
-      "civicline",
+      "kestrel",
       "mesa",
       "courier"
     ],
@@ -1064,18 +1447,18 @@
     "ventresca": [
       "regent",
       "blackwater",
-      "belvedere",
+      "mistral",
       "sentinel",
-      "meridian",
+      "concierge",
       "harbor"
     ],
     "ravicci": [
       "monarch",
       "veloce",
-      "specter",
-      "sentinel",
-      "meridian",
-      "harbor"
+      "halcyon",
+      "solstice",
+      "obsidian",
+      "concierge"
     ],
     "orlov": [
       "blackwater",
@@ -1087,16 +1470,16 @@
     ],
     "zangyaku": [
       "nightjar",
-      "switchblade",
+      "pulse",
       "kensei",
       "specter",
-      "blackwater",
+      "aurelia",
       "meridian"
     ],
     "bitian": [
       "vesper",
       "civicline",
-      "blackwater",
+      "aurelia",
       "crossway",
       "courier",
       "harbor"
@@ -1104,7 +1487,7 @@
     "stateline": [
       "ironhorse",
       "longhaul",
-      "badlands",
+      "cinder",
       "workhorse",
       "mesa",
       "shuttle"
@@ -1112,26 +1495,26 @@
     "sierra_roja": [
       "nightjar",
       "specter",
+      "obsidian",
+      "dunecat",
       "sentinel",
-      "backcountry",
-      "mesa",
       "meridian"
     ],
     "whittaker": [
       "badlands",
       "workhorse",
       "mesa",
-      "backcountry",
+      "dunecat",
       "outlander",
       "shortbox"
     ],
     "mcallister": [
-      "regent",
       "monarch",
+      "aurelia",
       "volta",
+      "mistral",
       "sentinel",
-      "rancher",
-      "meridian"
+      "concierge"
     ],
     "trc": [
       "outrider",
@@ -1139,7 +1522,7 @@
       "watchdog",
       "aegis",
       "bastion",
-      "meridian"
+      "relay"
     ],
     "nbpd": [
       "marshal",
@@ -1153,14 +1536,14 @@
       "yardbird",
       "switchblade",
       "cabrillo",
-      "kensei",
+      "kestrel",
       "rancher",
       "courier"
     ],
     "wm_corp": [
-      "regent",
       "monarch",
-      "mesa",
+      "aurelia",
+      "torque",
       "backcountry",
       "sentinel",
       "shortbox"
@@ -1176,18 +1559,18 @@
     "lombardia": [
       "monarch",
       "regent",
-      "blackwater",
+      "mistral",
       "sentinel",
-      "meridian",
+      "concierge",
       "harbor"
     ],
     "sand_raiders": [
       "yardbird",
       "badlands",
-      "rattleback",
       "workhorse",
-      "wayfarer",
-      "pilgrim"
+      "pilgrim",
+      "lastlight",
+      "dustchapel"
     ],
     "saffar": [
       "monarch",
@@ -1216,9 +1599,9 @@
     "blacktop": [
       "ironhorse",
       "longhaul",
-      "switchblade",
+      "cinder",
       "workhorse",
-      "mesa",
+      "dunecat",
       "wayfarer"
     ]
   },
@@ -1227,6 +1610,7 @@
     "movement": "Road distance units per campaign turn; convoys use the slowest vehicle. Not road top speed.",
     "resources": "Only Heavy Transports carry campaign resources. One abstract resource unit occupies one cargo slot; personal equipment is not freight.",
     "balance": "Prices, upkeep, and movement are initial game-balance values. Models and manufacturers are fictional.",
-    "preferences": "Suggestions only; the sandbox unlocks every model for every faction."
+    "preferences": "Suggestions only; the sandbox unlocks every model for every faction.",
+    "era": "2034 contemporary fleet with deliberate heritage and scavenged exceptions. Electric powertrains currently affect listed upkeep only; charging and fuel systems are not implemented."
   }
 }

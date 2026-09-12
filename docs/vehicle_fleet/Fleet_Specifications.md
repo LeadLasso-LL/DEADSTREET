@@ -1,6 +1,6 @@
 # Dead Street - Vehicle Fleet
 
-46 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
+60 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
 
 Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.
 
@@ -18,6 +18,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Longhaul Tourer | $17,800 | $32 | 2 | 5.2 | 0 | 2.65 x 1.05 |
 | Outrider TRC | $14,500 | $26 | 1 | 6.2 | 0 | 2.22 x 0.88 |
 | Marshal Police | $22,500 | $38 | 1 | 5.7 | 0 | 2.60 x 1.02 |
+| Pulse EX | $8,800 | $9 | 1 | 6.1 | 0 | 2.12 x 0.82 |
+| Cinder 900 | $12,500 | $24 | 2 | 5.6 | 0 | 2.30 x 0.85 |
 
 ## Passenger Cars
 
@@ -37,6 +39,11 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Belvedere Eight | $21,000 | $65 | 4 | 4.6 | 0 | 5.18 x 1.95 |
 | Veloce Rosso | $89,000 | $118 | 2 | 7.1 | 0 | 4.55 x 1.98 |
 | Vigil TRC | $52,000 | $88 | 4 | 5.8 | 0 | 5.02 x 1.94 |
+| Aurelia E4 | $61,000 | $58 | 4 | 6.6 | 0 | 4.95 x 1.98 |
+| Solstice Spider | $82,000 | $110 | 2 | 7.0 | 0 | 4.42 x 1.94 |
+| Mistral Estate | $58,000 | $76 | 4 | 6.2 | 0 | 4.98 x 1.96 |
+| Kestrel RX | $18,500 | $44 | 4 | 6.0 | 0 | 4.03 x 1.86 |
+| Halcyon H1 | $148,000 | $168 | 2 | 7.4 | 0 | 4.72 x 2.04 |
 
 ## Utility Vehicles
 
@@ -52,6 +59,9 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Watchdog Tactical | $92,000 | $150 | 5 | 4.5 | 0 | 5.05 x 2.14 |
 | Taiga 4x4 | $11,500 | $52 | 4 | 4.1 | 0 | 4.22 x 1.90 |
 | Outlander Wagon | $14,000 | $48 | 5 | 4.6 | 0 | 4.55 x 1.88 |
+| Torque EV5 | $68,000 | $67 | 5 | 5.4 | 0 | 5.54 x 2.08 |
+| Dunecat R | $36,500 | $83 | 4 | 5.1 | 0 | 5.62 x 2.15 |
+| Obsidian X | $92,000 | $121 | 5 | 5.9 | 0 | 5.05 x 2.08 |
 
 ## Heavy Transports
 
@@ -69,34 +79,38 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Harbor Cargo | $31,000 | $105 | 3 | 3.6 | 20 | 6.75 x 2.30 |
 | Aegis Armored TRC | $168,000 | $210 | 10 | 3.8 | 8 | 6.15 x 2.40 |
 | Bulwark SWAT | $118,000 | $175 | 8 | 3.9 | 6 | 6.00 x 2.38 |
+| Lastlight Prison Bus | $13,600 | $122 | 12 | 2.3 | 12 | 8.20 x 2.43 |
+| Dustchapel RV | $18,800 | $128 | 8 | 2.9 | 8 | 7.60 x 2.42 |
+| Relay TRC | $118,000 | $145 | 6 | 4.6 | 4 | 6.25 x 2.12 |
+| Concierge Lounge | $108,000 | $136 | 6 | 4.9 | 4 | 5.92 x 2.08 |
 
 ## Suggested faction fleets
 
 | Faction | Suggested models | Reason |
 |---|---|---|
 | Mercer Saints | Yardbird Bicycle, Putter 50, Bayou Sedan, Cabrillo Lowline, Rancher Seven, Courier Panel Van | Affordable street transport, older full-size cars, and a useful neighborhood van. |
-| Eastex 44’s | Yardbird Bicycle, Rattleback Hatch, Switchblade 600, Civicline DX, Mesa Crew, Courier Panel Van | Cheap compacts, a fast solo bike, and practical pickups as the faction grows. |
+| Eastex 44’s | Yardbird Bicycle, Rattleback Hatch, Switchblade 600, Kestrel RX, Mesa Crew, Courier Panel Van | Cheap compacts, a fast solo bike, and practical pickups as the faction grows. |
 | Calle Ocho | Vesper 150, Cabrillo Lowline, Belvedere Eight, Mesa Crew, Outlander Wagon, Courier Panel Van | Classic lowriders and old sedans alongside work pickups and delivery transport. |
-| Ventresca Family | Regent Town Car, Blackwater Executive, Belvedere Eight, Sentinel Luxe, Meridian Highroof, Harbor Cargo | Traditional executive cars, discreet luxury SUVs, and ordinary commercial freight. |
-| Ravicci Family | Monarch V12, Veloce Rosso, Specter S, Sentinel Luxe, Meridian Highroof, Harbor Cargo | Conspicuous luxury: formal saloons, scarlet and lime exotics, and premium crew transport. |
+| Ventresca Family | Regent Town Car, Blackwater Executive, Mistral Estate, Sentinel Luxe, Concierge Lounge, Harbor Cargo | Traditional executive cars, discreet luxury SUVs, and ordinary commercial freight. |
+| Ravicci Family | Monarch V12, Veloce Rosso, Halcyon H1, Solstice Spider, Obsidian X, Concierge Lounge | Conspicuous luxury: formal saloons, scarlet and lime exotics, and premium crew transport. |
 | Orlov Bratva | Blackwater Executive, Bayou Sedan, Taiga 4x4, Outlander Wagon, Courier Panel Van, Uralek 6x6 | Dark executive cars mixed with aged utility 4x4s and surplus heavy transport. |
-| Zangyaku | Nightjar RR, Switchblade 600, Kensei Turbo, Specter S, Blackwater Executive, Meridian Highroof | Fast street motorcycles, tuned coupes, and restrained executive support vehicles. |
-| Bìtiān | Vesper 150, Civicline DX, Blackwater Executive, Crossway AWD, Courier Panel Van, Harbor Cargo | City scooters, clean compact cars, executive sedans, and commercial cargo vehicles. |
-| Stateline Raiders MC | Ironhorse V-Twin, Longhaul Tourer, Badlands 400, Workhorse C10, Mesa Crew, Shuttle Twelve | V-twin cruisers and tourers, backed by pickups and a passenger shuttle. |
-| Cártel de Sierra Roja | Nightjar RR, Specter S, Sentinel Luxe, Backcountry XL, Mesa Crew, Meridian Highroof | Flashier civilian vehicles, lifted pickups, luxury SUVs, and versatile crew vans. |
-| Whittaker Oil & Land Co. | Badlands 400, Workhorse C10, Mesa Crew, Backcountry XL, Outlander Wagon, Shortbox 11 | Work trucks, trail bikes, weathered off-road wagons, and short box trucks. |
-| McAllister Holdings, Inc. | Regent Town Car, Monarch V12, Volta GT, Sentinel Luxe, Rancher Seven, Meridian Highroof | Formal cars and expensive SUVs, with a high-roof van for practical transport. |
-| Texas Recovery Coalition | Outrider TRC, Vigil TRC, Watchdog Tactical, Aegis Armored TRC, Bastion Personnel, Meridian Highroof | Branded recon motorcycles, response sedans, black armored utility/transport trucks, and troop logistics. |
+| Zangyaku | Nightjar RR, Pulse EX, Kensei Turbo, Specter S, Aurelia E4, Meridian Highroof | Fast street motorcycles, tuned coupes, and restrained executive support vehicles. |
+| Bìtiān | Vesper 150, Civicline DX, Aurelia E4, Crossway AWD, Courier Panel Van, Harbor Cargo | City scooters, clean compact cars, executive sedans, and commercial cargo vehicles. |
+| Stateline Raiders MC | Ironhorse V-Twin, Longhaul Tourer, Cinder 900, Workhorse C10, Mesa Crew, Shuttle Twelve | V-twin cruisers and tourers, backed by pickups and a passenger shuttle. |
+| Cártel de Sierra Roja | Nightjar RR, Specter S, Obsidian X, Dunecat R, Sentinel Luxe, Meridian Highroof | Flashier civilian vehicles, lifted pickups, luxury SUVs, and versatile crew vans. |
+| Whittaker Oil & Land Co. | Badlands 400, Workhorse C10, Mesa Crew, Dunecat R, Outlander Wagon, Shortbox 11 | Work trucks, trail bikes, weathered off-road wagons, and short box trucks. |
+| McAllister Holdings, Inc. | Monarch V12, Aurelia E4, Volta GT, Mistral Estate, Sentinel Luxe, Concierge Lounge | Formal cars and expensive SUVs, with a high-roof van for practical transport. |
+| Texas Recovery Coalition | Outrider TRC, Vigil TRC, Watchdog Tactical, Aegis Armored TRC, Bastion Personnel, Relay TRC | Branded recon motorcycles, response sedans, black armored utility/transport trucks, and troop logistics. |
 | New Briarport Police Department | Marshal Police, Interceptor P4, Warden Patrol, Bulwark SWAT, Shuttle Twelve, Meridian Highroof | Marked motor-patrol bikes, pursuit sedans, patrol SUVs, and a dedicated SWAT rescue transport. |
-| Mercer 44’s | Yardbird Bicycle, Switchblade 600, Cabrillo Lowline, Kensei Turbo, Rancher Seven, Courier Panel Van | Street bicycles and bikes, lowriders, tuned cars, and pooled SUV/van transport. |
-| Whittaker-McAllister Corporation | Regent Town Car, Monarch V12, Mesa Crew, Backcountry XL, Sentinel Luxe, Shortbox 11 | McAllister executive vehicles serving alongside Whittaker work trucks and freight haulers. |
+| Mercer 44’s | Yardbird Bicycle, Switchblade 600, Cabrillo Lowline, Kestrel RX, Rancher Seven, Courier Panel Van | Street bicycles and bikes, lowriders, tuned cars, and pooled SUV/van transport. |
+| Whittaker-McAllister Corporation | Monarch V12, Aurelia E4, Torque EV5, Backcountry XL, Sentinel Luxe, Shortbox 11 | McAllister executive vehicles serving alongside Whittaker work trucks and freight haulers. |
 | La Unión del Sur | Cabrillo Lowline, Switchblade 600, Mesa Crew, Backcountry XL, Meridian Highroof, Harbor Cargo | Street-style cars and motorcycles backed by capable pickups and commercial transports. |
-| L’Ordine di Lombardia | Monarch V12, Regent Town Car, Blackwater Executive, Sentinel Luxe, Meridian Highroof, Harbor Cargo | Formal Italian-American luxury supported by unremarkable crew vans and cargo trucks. |
-| Raiders of the Sand | Yardbird Bicycle, Badlands 400, Rattleback Hatch, Workhorse C10, Wayfarer RV, Pilgrim Bus | Scavenged bicycles, battered compacts, pickups, worn motorhomes, and retired buses. |
+| L’Ordine di Lombardia | Monarch V12, Regent Town Car, Mistral Estate, Sentinel Luxe, Concierge Lounge, Harbor Cargo | Formal Italian-American luxury supported by unremarkable crew vans and cargo trucks. |
+| Raiders of the Sand | Yardbird Bicycle, Badlands 400, Workhorse C10, Pilgrim Bus, Lastlight Prison Bus, Dustchapel RV | Scavenged transport, including a dedicated prison bus and expedition motorhome with usable freight space. |
 | Majmu’at al-Saffar | Monarch V12, Blackwater Executive, Outlander Wagon, Rancher Seven, Meridian Highroof, Harbor Cargo | A mixture of luxury sedans, practical off-road wagons, SUVs, and commercial transport. |
 | The Kurgan Group | Badlands 400, Taiga 4x4, Outlander Wagon, Workhorse C10, Uralek 6x6, Courier Panel Van | Surplus 4x4s, a six-wheel troop truck, trail bikes, and cheap practical support vehicles. |
 | The Ashford-Crane Collective | Vesper 150, Rattleback Hatch, Bayou Sedan, Regent Town Car, Courier Panel Van, Stepmaster Delivery | Ordinary-looking used vehicles and delivery vans suited to an inconspicuous fleet. |
-| Blacktop Apostles MC | Ironhorse V-Twin, Longhaul Tourer, Switchblade 600, Workhorse C10, Mesa Crew, Wayfarer RV | Cruisers and tourers first, with rough pickups and an old RV following the bikes. |
+| Blacktop Apostles MC | Ironhorse V-Twin, Longhaul Tourer, Cinder 900, Workhorse C10, Dunecat R, Wayfarer RV | Cruisers and tourers first, with rough pickups and an old RV following the bikes. |
 
 ## Rules and boundaries
 
@@ -105,8 +119,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 - **Heavy Transports carry all freight:** Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits.
 - **Real seats, realistic compromises:** Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.
 - **Parked vehicles and cover:** These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.
-- **Everything is available in the sandbox:** All 46 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
-- **Keep the campaign scope clear:** Catalog prices, upkeep, purchases, cargo transfer, save data, and road-speed hooks are prepared. Full campaign vehicle shopping, capture, repairs, and fuel logistics are later systems.
+- **Everything is available in the sandbox:** All 60 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
+- **2034, with intentional older vehicles:** Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems.
 
 ## Balance examples
 

@@ -9,6 +9,7 @@ import math,json,random,sys
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np
 from vehicle_detail_geometry import motorcycle,exotic,armored,shell,canopy,badge
+from fleet_2034_geometry import render as render_2034
 from PIL import Image,ImageDraw,ImageColor
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'assets/art/vehicles/fleet'
@@ -133,162 +134,13 @@ class Drawing:
   return image
 def bike(d,m):motorcycle(d,m)
 def vehicle(d,m,door=0):
- if m['vehicle_class']=='two_wheelers':bike(d,m);return
- if m['body'] in ['sportcoupe','grandtourer','exotic_curved']:exotic(d,m,door);return
- if m['body'] in ['tactical_utility','armored_transport']:armored(d,m,door);return
- L=m['length'];Y=m['width']/2;h=m['height'];p=m['paint'];b=m['body']
- heavy=m['vehicle_class']=='heavy_transports';utility=m['vehicle_class']=='utility_vehicles'
- r=.41 if heavy else (.43 if b=='lifted_pickup' else (.36 if utility else .30))
- bottom=.45 if heavy else .34;cab_h=min(h,2.18) if b in ['boxtruck','cabover','military_truck','surplus_truck'] else h;belt=cab_h*.57
- front=L*.31;rear=-L*.32
- for x in [rear,front]+([-L*.12] if b=='surplus_truck' else []):
-  for side in [-1,1]:d.wheel(x,side*(Y-.08),r,.24 if heavy else .20,b in ['luxury','towncar','lowrider','vintage','grandtourer'],6,'#a58a57' if b=='luxury_suv' else None)
- sports=b in ['sportcoupe','grandtourer']
- nose=.64 if sports else (.81 if b in ['compact','crossover','executive'] else .87)
- sections=[(-L*.49,Y*.78,bottom+.06,belt-.13),(-L*.44,Y*.92,bottom,belt-.025),(-L*.35,Y*.98,bottom,belt),(L*.24,Y*.98,bottom,belt),(L*.39,Y*.94,bottom,belt-.05),(L*.49,Y*nose,bottom+.06,belt-(.25 if sports else .12))]
- if b=='vintage':sections=[(-L*.49,Y*.68,bottom+.11,belt-.14),(-L*.43,Y*.9,bottom+.025,belt),(-L*.31,Y*.99,bottom,belt+.06),(L*.27,Y*.99,bottom,belt+.07),(L*.42,Y*.88,bottom+.05,belt-.02),(L*.49,Y*.66,bottom+.14,belt-.17)]
- rounded=b in ['luxury','towncar','executive','compact','crossover','luxury_suv','vintage']
- if rounded:shell(d,sections,p)
- else:d.hull(sections,p)
- # Long lower body facets, rocker trim, bumpers, and individual wheel arches.
- d.box(-L/2,L/2,-Y+.02,Y-.02,bottom+.02,bottom+.15,'#565d5b' if b in ['vintage','lowrider','towncar','luxury'] else '#2b3131')
- for side in [-1,1]:
-  y=side*Y
-  for x in [rear,front]+([-L*.12] if b=='surplus_truck' else []):
-   pts=[(x+math.cos(a)*r*1.12,y,r+math.sin(a)*r*1.1) for a in [i*math.pi/12 for i in range(13)]]
-   d.line(pts,shade(p,.67),3,.09)
-  d.line([(-L*.46,y,belt-.06),(L*.46,y,belt-.06)],shade(p,1.33),1,.03)
- cab0=-L*.28;cab1=L*.22;slant=.35;windows=2
- if b in ['hatch','crossover','suv','luxury_suv','police_suv','offroad','surplus_utility','tactical_utility']:cab0=-L*.41;windows=3;slant=.20
- if b in ['sportcoupe','grandtourer','tuner']:cab0=-L*.26;cab1=L*.18;slant=.52;windows=1 if b!='tuner' else 2
- if b=='sportcoupe':cab0=-L*.12;cab1=L*.31;slant=.57
- if b=='grandtourer':cab0=-L*.31;cab1=L*.11;slant=.45
- if b=='vintage':cab0=-L*.24;cab1=L*.20;slant=.44
- if b in ['luxury','towncar','executive']:cab0=-L*.32;cab1=L*.21;slant=.29
- if b in ['pickup','crew_pickup','lifted_pickup']:
-  cab0=-L*.04 if b=='pickup' else -L*.15;cab1=L*.29;slant=.15;windows=1 if b=='pickup' else 2
- if heavy:
-  cab0=L*.19;cab1=L*.47;slant=.13;windows=1
-  if b in ['panelvan','passengervan','highroof']:cab0=-L*.44;cab1=L*.36;slant=.17;windows=4 if b=='passengervan' else 1
-  if b in ['bus','rv','stepvan']:cab0=-L*.47;cab1=L*.44;slant=.07;windows=7 if b=='bus' else (3 if b=='rv' else 1)
- if rounded:
-  roof='#d3cfc0' if b=='luxury' else ('#5b2933' if b=='towncar' else ('#252c31' if b=='luxury_suv' else p))
-  canopy(d,cab0,cab1,Y*.92,belt,cab_h,roof,slant,windows)
- else:d.cabin(cab0,cab1,-Y*(.88 if sports else .96),Y*(.88 if sports else .96),belt,cab_h,p,slant,windows)
- if b in ['panelvan','highroof']:
-  # Opaque cargo side panels replace the broad rear glass region.
-  for side in [-1,1]:
-   y=side*Y*.96
-   d.poly([(-L*.40,y,belt+.02),(L*.06,y,belt+.02),(L*.06,y*.85,h-.09),(-L*.40,y*.85,h-.09)],shade(p,.94),shade(p,1.1),1,.065)
-   d.line([(-L*.18,y,belt+.04),(-L*.18,y*.85,h-.12)],shade(p,.64),1,.074)
- if b in ['boxtruck','cabover']:
-  d.box(-L*.48,L*.15,-Y,Y,bottom+.30,h, '#d4c9ac' if b=='boxtruck' else '#a9ada4')
-  for side in [-1,1]:
-   y=side*(Y+.005)
-   d.line([(-L*.45,y,bottom+.53),(L*.10,y,bottom+.53)],'#665d4d',2,.025)
-   for x in [-L*.43,L*.1]:d.line([(x,y,bottom+.4),(x,y,h-.1)],'#8c9086',2,.024)
-   if b=='boxtruck':d.poly([(-L*.44,y,h*.58),(L*.11,y,h*.58),(L*.11,y,h*.68),(-L*.44,y,h*.68)],'#a7733c',None,priority=.032)
-  for z in [bottom+.5+i*.18 for i in range(int((h-bottom-.55)/.18))]:d.line([(-L*.485,-Y*.9,z),(-L*.485,Y*.9,z)],'#8a8c82',1,.08)
- if b in ['military_truck','surplus_truck']:
-  d.box(-L*.47,L*.13,-Y,Y,bottom+.2,h*.52,shade(p,.85))
-  d.cabin(-L*.47,L*.13,-Y,Y,h*.52,h,shade(p,1.12),.12,0)
-  for side in [-1,1]:
-   y=side*(Y+.015)
-   for x in [-L*.4,-L*.22,-L*.04,L*.1]:d.line([(x,y,bottom+.3),(x,y,h*.51)],'#3e473b',2,.04)
-   d.line([(-L*.43,y,h*.55),(L*.1,y,h*.55)],'#393f34',2,.04)
- if b in ['pickup','crew_pickup','lifted_pickup']:
-  d.box(-L*.46,cab0-.06,-Y*.87,Y*.87,belt-.09,belt+.02,shade(p,.63))
-  for side in [-1,1]:d.box(-L*.47,cab0-.05,side*Y*.94-.055,side*Y*.94+.055,belt-.02,belt+.18,p)
-  d.box(-L*.47,-L*.44,-Y*.93,Y*.93,belt-.02,belt+.18,p)
-  for y in [-Y*.6,-Y*.3,0,Y*.3,Y*.6]:d.line([(-L*.44,y,belt+.025),(cab0-.10,y,belt+.025)],shade(p,.8),1,.02)
- if b=='rv':
-  for side in [-1,1]:
-   y=side*Y*.96
-   d.poly([(-L*.45,y,belt-.10),(L*.43,y,belt-.10),(L*.43,y,belt+.10),(-L*.45,y,belt+.10)],'#855642',None,priority=.035)
-  d.box(-.8,.3,-.48,.48,h,h+.15,'#a6a698')
- if b=='bus':
-  for side in [-1,1]:
-   y=side*Y*.98
-   for z in [belt-.28,belt-.12]:d.line([(-L*.47,y,z),(L*.44,y,z)],'#403e30',2,.04)
-  d.box(L*.38,L*.44,-Y*.85,Y*.85,h-.17,h-.10,'#4c4937')
- if b=='lowrider':d.poly([(cab0+slant,-Y*.82,h+.014),(cab1-slant,-Y*.82,h+.014),(cab1-slant,Y*.82,h+.014),(cab0+slant,Y*.82,h+.014)],'#bbb4a0' if b=='lowrider' else '#383b35')
- # Grille, separated headlights, tail lights, plate and recessed bumper detail.
- xf=L*.493;xb=-L*.493
- d.poly([(xf,-Y*.56,bottom+.19),(xf,Y*.56,bottom+.19),(xf,Y*.56,belt-.10),(xf,-Y*.56,belt-.10)],'#283133',CHROME)
- for y in [-Y*.40,-Y*.20,0,Y*.20,Y*.40]:d.line([(xf+.008,y,bottom+.23),(xf+.008,y,belt-.14)],'#8c948f',1,.028)
- for side in [-1,1]:
-  y=side*Y*.76
-  d.poly([(xf,y-.16,belt-.26),(xf,y+.16,belt-.26),(xf,y+.16,belt-.08),(xf,y-.16,belt-.08)],'#dad5b9',INK,1,.045)
-  d.poly([(xb,y-.13,belt-.22),(xb,y+.13,belt-.22),(xb,y+.13,belt-.08),(xb,y-.13,belt-.08)],'#944941',INK,1,.045)
- d.poly([(xf+.02,-.19,bottom+.13),(xf+.02,.19,bottom+.13),(xf+.02,.19,bottom+.23),(xf+.02,-.19,bottom+.23)],'#b5b29d',INK,1,.05)
- if sports:
-  d.poly([(xf+.03,-Y*.66,bottom+.07),(xf+.03,Y*.66,bottom+.07),(xf+.03,Y*.66,belt-.08),(xf+.03,-Y*.66,belt-.08)],p,None,priority=.065)
-  d.poly([(xf+.04,-Y*.4,bottom+.10),(xf+.04,Y*.4,bottom+.10),(xf+.04,Y*.32,bottom+.25),(xf+.04,-Y*.32,bottom+.25)],'#202a2e',INK,1,.07)
-  for side in [-1,1]:
-   y=side*Y*.58
-   d.poly([(xf+.045,y-.18,belt-.13),(xf+.045,y+.18,belt-.13),(L*.40,y+.18,belt-.028),(L*.40,y-.18,belt-.028)],'#bdc9c6',INK,1,.08)
-  if b=='sportcoupe':
-   for x in [-L*.41,-L*.37,-L*.33,-L*.29]:d.line([(x,-Y*.5,belt+.025),(x,Y*.5,belt+.025)],'#303637',2,.11)
-   for side in [-1,1]:d.poly([(-L*.21,side*Y*.99,bottom+.25),(-L*.06,side*Y*.99,bottom+.29),(-L*.03,side*Y*.99,belt-.03),(-L*.18,side*Y*.99,belt-.08)],'#243139',INK,1,.10)
- if b=='luxury':
-  d.poly([(xf+.025,-Y*.34,bottom+.15),(xf+.025,Y*.34,bottom+.15),(xf+.025,Y*.34,belt+.10),(xf+.025,-Y*.34,belt+.10)],'#495152',CHROME,2,.08)
-  for y in [-.5,-.4,-.3,-.2,-.1,0,.1,.2,.3,.4,.5]:d.line([(xf+.04,y,bottom+.21),(xf+.04,y,belt+.03)],CHROME,1,.09)
- for side in [-1,1]:
-  y=side*(Y+.025)
-  for x in ([L*.09,-L*.17] if m['doors']==4 else [L*.22]):
-   d.line([(x,y,bottom+.19),(x,y,belt-.03)],shade(p,.56),1,.05)
-   d.line([(x-.2,y,belt-.12),(x-.04,y,belt-.12)],CHROME,2,.055)
-  d.line([(cab1-.08,side*Y*.87,belt+.15),(cab1,side*(Y+.075),belt+.19)],'#252e30',2,.1)
-  d.box(cab1-.08,cab1+.08,side*(Y+.075)-.075,side*(Y+.075)+.075,belt+.15,belt+.24,p)
- if b in ['police_sedan','police_suv']:
-  d.box(-.12,.12,-Y*.67,Y*.67,h+.05,h+.16,'#4f6660')
-  d.box(-.12,.12,-Y*.67,-.04,h+.10,h+.20,'#586c8b');d.box(-.12,.12,.04,Y*.67,h+.10,h+.20,'#98605b')
-  for side in [-1,1]:
-   y=side*(Y+.032)
-   d.poly([(-L*.32,y,bottom+.20),(L*.30,y,bottom+.20),(L*.30,y,belt-.02),(-L*.32,y,belt-.02)],'#536b54',None,priority=.064)
-   d.marking('POLICE',-.25,y,bottom+.23,1.30,.23,'#e4dfc8')
-   badge(d,'nbpd',.66,y+.008*side,bottom+.38,.34)
-  for yy in [-Y*.57,Y*.57]:d.line([(xf+.12,yy,bottom+.1),(xf+.12,yy,belt+.08)],'#242a2b',3,.10)
- if m.get('brand')=='trc':
-  for side in [-1,1]:
-   y=side*(Y+.06)
-   d.poly([(-L*.30,y,bottom+.18),(L*.28,y,bottom+.18),(L*.28,y,belt-.06),(-L*.30,y,belt-.06)],'#284b3c',None,priority=.06)
-   d.marking('TRC',-.26,y,bottom+.23,.75,.24,'#b6a770')
-   badge(d,'trc',.55,y+.005*side,bottom+.37,.35)
- if b in ['offroad','luxury_suv','suv','tactical_utility','surplus_utility']:
-  for side in [-1,1]:d.line([(cab0+.25,side*Y*.74,h+.06),(cab1-.25,side*Y*.74,h+.06)],'#343c3b',2,.02)
- if b=='surplus_utility':
-  d.poly([(cab0+slant,-Y*.82,h+.026),(-L*.04,-Y*.82,h+.026),(-L*.04,Y*.82,h+.026),(cab0+slant,Y*.82,h+.026)],'#73725a',INK,1,.035)
-  # Rear-mounted spare, oriented across the tailgate.
-  for k in range(16):
-   a=k*math.tau/16;aa=(k+1)*math.tau/16
-   d.poly([(-L*.51,.36*math.cos(a),.9+.36*math.sin(a)),(-L*.51,.36*math.cos(aa),.9+.36*math.sin(aa)),(-L*.56,.36*math.cos(aa),.9+.36*math.sin(aa)),(-L*.56,.36*math.cos(a),.9+.36*math.sin(a))],RUBBER,RUBBER)
-  d.poly([(-L*.565,.36*math.cos(k*math.tau/16),.9+.36*math.sin(k*math.tau/16)) for k in range(16)],RUBBER,INK)
-  d.poly([(-L*.568,.17*math.cos(k*math.tau/12),.9+.17*math.sin(k*math.tau/12)) for k in range(12)],'#5c655b',INK)
- if b=='offroad':
-  for x in [cab0+.3,cab0+.7,cab0+1.1,cab0+1.5]:d.line([(x,-Y*.76,h+.08),(x,Y*.76,h+.08)],'#303837',2,.03)
- if b=='tuner':d.box(-L*.44,-L*.30,-Y*.84,Y*.84,belt+.28,belt+.33,shade(p,.7))
- if b in ['sportcoupe','grandtourer']:
-  for side in [-1,1]:d.line([(L*.20,side*Y*.5,belt+.017),(L*.41,side*Y*.5,belt+.017)],shade(p,.55),2,.04)
- # Localized dirt/scratches, consistent between angles and door states.
- rng=random.Random(m['id'])
- for _ in range(25 if m['price']<20000 else 9):
-  x=rng.uniform(-L*.42,L*.42);y=Y*rng.choice([-1,1]);z=rng.uniform(bottom+.18,belt-.06)
-  d.line([(x,y,z),(x+.10,y,z+.015)],shade(p,.76),1,.07)
- if door>0 and m['doors']:
-  for door_x in m['door_rows']:
-   x=L*door_x;width=.78
-   for side in [-1,1]:
-    hinge=(x,side*Y,bottom+.18);ang=door*math.pi*.42
-    tip=(x-width*math.cos(ang),side*(Y+width*math.sin(ang)),bottom+.18)
-    top0=(hinge[0],hinge[1],min(cab_h*.94,belt+.45));top1=(tip[0],tip[1],min(cab_h*.94,belt+.45))
-    d.poly([hinge,tip,top1,top0],p,INK,1,.12)
-    d.poly([mix(hinge,top0,.55),mix(tip,top1,.55),mix(tip,top1,.92),mix(hinge,top0,.92)],GLASS,shade(p,1.2),1,.13)
+ return render_2034(d,m,door)
+
 def build():
  data=json.loads((ROOT/'assets/data/vehicle_models.json').read_text())
  (OUT/'sprites').mkdir(parents=True,exist_ok=True);(OUT/'icons').mkdir(exist_ok=True)
  (OUT/'.gdignore').write_text('')
- manifest={'version':2,'pixels_per_unit':PPU,'size':[W,H],'origin':list(ORIGIN),'directions':list(ANGLES),'models':{}}
+ manifest={'version':3,'pixels_per_unit':PPU,'size':[W,H],'origin':list(ORIGIN),'directions':list(ANGLES),'models':{}}
  for id,m in data['models'].items():
   frames=[]
   for facing,angle in ANGLES.items():

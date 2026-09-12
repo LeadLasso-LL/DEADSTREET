@@ -1,0 +1,131 @@
+{
+  "models": 60,
+  "new_models": [
+    "aurelia",
+    "cinder",
+    "concierge",
+    "dunecat",
+    "dustchapel",
+    "halcyon",
+    "kestrel",
+    "lastlight",
+    "mistral",
+    "obsidian",
+    "pulse",
+    "relay",
+    "solstice",
+    "torque"
+  ],
+  "sheets": [
+    {
+      "path": "Fleet_2034_01.png",
+      "models": [
+        "yardbird",
+        "putter",
+        "vesper",
+        "switchblade",
+        "nightjar",
+        "pulse"
+      ]
+    },
+    {
+      "path": "Fleet_2034_02.png",
+      "models": [
+        "badlands",
+        "ironhorse",
+        "longhaul",
+        "cinder",
+        "outrider",
+        "marshal"
+      ]
+    },
+    {
+      "path": "Fleet_2034_03.png",
+      "models": [
+        "rattleback",
+        "bayou",
+        "civicline",
+        "cabrillo",
+        "belvedere",
+        "kensei",
+        "kestrel"
+      ]
+    },
+    {
+      "path": "Fleet_2034_04.png",
+      "models": [
+        "blackwater",
+        "monarch",
+        "regent",
+        "mistral",
+        "vigil",
+        "interceptor"
+      ]
+    },
+    {
+      "path": "Fleet_2034_05.png",
+      "models": [
+        "volta",
+        "specter",
+        "veloce",
+        "aurelia",
+        "solstice",
+        "halcyon"
+      ]
+    },
+    {
+      "path": "Fleet_2034_06.png",
+      "models": [
+        "workhorse",
+        "mesa",
+        "backcountry",
+        "taiga",
+        "outlander",
+        "torque",
+        "dunecat"
+      ]
+    },
+    {
+      "path": "Fleet_2034_07.png",
+      "models": [
+        "rancher",
+        "sentinel",
+        "crossway",
+        "obsidian",
+        "watchdog",
+        "warden"
+      ]
+    },
+    {
+      "path": "Fleet_2034_08.png",
+      "models": [
+        "courier",
+        "shuttle",
+        "meridian",
+        "shortbox",
+        "stepmaster",
+        "harbor"
+      ]
+    },
+    {
+      "path": "Fleet_2034_09.png",
+      "models": [
+        "bastion",
+        "uralek",
+        "aegis",
+        "bulwark",
+        "relay",
+        "concierge"
+      ]
+    },
+    {
+      "path": "Fleet_2034_10.png",
+      "models": [
+        "wayfarer",
+        "pilgrim",
+        "lastlight",
+        "dustchapel"
+      ]
+    }
+  ]
+}

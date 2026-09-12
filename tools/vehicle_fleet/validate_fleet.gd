@@ -18,7 +18,7 @@ func check(ok: bool,message: String):
 	checks+=1
 	if not ok:errors.append(message);printerr("FLEET_FAIL ",message)
 func run():
-	check(Models.all_ids().size()==46,"46 models")
+	check(Models.all_ids().size()==60,"60 models")
 	check(Models.data().faction_preferences.size()==23,"23 faction preferences")
 	for faction in Models.data().faction_preferences:
 		for id in Models.preferences(faction):check(Models.has_model(id),"preference "+str(id))

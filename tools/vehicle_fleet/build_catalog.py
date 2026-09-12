@@ -64,6 +64,41 @@ GROUPS['passenger_cars'] += [
 GROUPS['heavy_transports'] += [
  ('aegis','Aegis Armored TRC','armored_transport',10,3.8,168000,210,8,6.15,2.40,2.65,'1e2529','Black TRC armored truck: protected cabin, sloped armor, ten seats and a separate supply compartment.'),
  ('bulwark','Bulwark SWAT','armored_transport',8,3.9,118000,175,6,6.0,2.38,2.60,'293e38','NBPD SWAT rescue truck with protected windows, POLICE/SWAT branding and a compact freight bay.')]
+GROUPS['two_wheelers'] += [
+ ('pulse','Pulse EX','electric_trail',1,6.1,8800,9,0,2.12,.82,1.22,'66a593','Mint-and-graphite electric trail bike: compact battery spine, exposed tires and a solo saddle.'),
+ ('cinder','Cinder 900','cafe',2,5.6,12500,24,0,2.30,.85,1.13,'343e42','Graphite cafe roadster with a copper tank, brown saddle and compact rear cowl.')]
+GROUPS['passenger_cars'] += [
+ ('aurelia','Aurelia E4','ev_fastback',4,6.6,61000,58,0,4.95,1.98,1.39,'70b3bb','Ice-teal electric fastback with a black glass roof, swept cabin and continuous light signatures.'),
+ ('solstice','Solstice Spider','roadster',2,7.0,82000,110,0,4.42,1.94,1.16,'da773b','Copper-orange open-top roadster with two tan seats, twin roll hoops and a low windscreen.'),
+ ('mistral','Mistral Estate','shooting_brake',4,6.2,58000,76,0,4.98,1.96,1.43,'285c4e','Racing-green shooting brake: long sculpted hood, low wagon roof and bronze wheels.'),
+ ('kestrel','Kestrel RX','rally_hatch',4,6.0,18500,44,0,4.03,1.86,1.42,'7652a3','Violet rally hatch with white door flashes, wide arches and a short roof spoiler.'),
+ ('halcyon','Halcyon H1','hypercar',2,7.4,148000,168,0,4.72,2.04,1.19,'67b3cb','Glacier-blue hypercar with a black canopy, gold lower trim and a broad rear aero blade.')]
+GROUPS['utility_vehicles'] += [
+ ('torque','Torque EV5','ev_pickup',5,5.4,68000,67,0,5.54,2.08,1.82,'456e78','Steel-teal electric crew pickup with a horizontal light bar and a recessed practical bed.'),
+ ('dunecat','Dunecat R','prerunner',4,5.1,36500,83,0,5.62,2.15,1.95,'b28550','Sand-orange desert pickup with broad arches, a braced rear bed and four enclosed seats.'),
+ ('obsidian','Obsidian X','coupe_suv',5,5.9,92000,121,0,5.05,2.08,1.73,'514568','Amethyst performance SUV with a falling roofline, broad stance and dark panoramic roof.')]
+GROUPS['heavy_transports'] += [
+ ('lastlight','Lastlight Prison Bus','raider_bus',12,2.3,13600,122,12,8.20,2.43,3.02,'807b59','Raiders of the Sand prison bus: barred windows, patched panels, roof luggage and rear supply space.'),
+ ('dustchapel','Dustchapel RV','raider_rv',8,2.9,18800,128,8,7.60,2.42,3.00,'a38c67','Raiders expedition motorhome with repaired siding, reclaimed solar panel, canvas rolls and a rear spare.'),
+ ('relay','Relay TRC','command_van',6,4.6,118000,145,4,6.25,2.12,2.57,'243733','Black-green TRC communications van with six seats, roof sensor equipment and a compact cargo bay.'),
+ ('concierge','Concierge Lounge','luxury_shuttle',6,4.9,108000,136,4,5.92,2.08,2.17,'d0c7b5','Champagne luxury shuttle with dark rear glazing, six travel seats and restrained gold trim.')]
+
+# 2034 stance pass. Original economy/capacities stay intact; only the body heights
+# and presentation descriptors change. Older models remain intentional used stock.
+HEIGHTS={'interceptor':1.40,'vigil':1.39,'civicline':1.40,'blackwater':1.41,'monarch':1.47,'regent':1.45,'kensei':1.34,'bayou':1.44,'rattleback':1.45,'sentinel':1.86,'warden':1.77,'watchdog':1.88,'rancher':1.84,'crossway':1.61,'mesa':1.82,'backcountry':1.99,'aegis':2.46,'bulwark':2.42,'bastion':2.92,'courier':2.20,'shuttle':2.28,'meridian':2.60}
+ROOFS={'cabrillo':'#c5bda5','monarch':'#c9c5b7','regent':'#55353c','sentinel':'#26343b','aurelia':'#24363c','mistral':'#243a36','obsidian':'#273139','concierge':'#283a40'}
+DESCRIPTIONS={
+ 'interceptor':'2034 NBPD pursuit sedan: low roof, long hood, sculpted shoulders and a slim emergency lightbar.',
+ 'vigil':'2034 TRC response sedan: low swept cabin, long hood, black paint and green/gold markings.',
+ 'warden':'Modern NBPD patrol SUV with a low glass line, broad hood, exposed wheels and green/white livery.',
+ 'watchdog':'Black TRC armored utility truck with balanced hood/cabin height, broad wheels and gold markings.',
+ 'monarch':'Plum-and-ivory luxury flagship with a lower crowned roof, long hood and formal modern grille.',
+ 'regent':'Champagne chauffeur saloon with a burgundy roof, raked pillars and generous hood and trunk.',
+ 'sentinel':'Pearl-white luxury SUV with a lower black roof, sculpted body and bronze wheels.',
+ 'aegis':'Modern black TRC armored transport with a substantial hood, protected windows, ten seats and eight cargo slots.',
+ 'bulwark':'Modern NBPD SWAT transport with a broad hood, low protected glazing, eight seats and six cargo slots.',
+ 'bastion':'TRC modern cab troop truck with covered benches and a separate supply section.',
+ 'kensei':'Modern blue performance coupe with a low greenhouse, wide wheel arches and a compact rear wing.'}
 PREFERENCES={
  'mercer':['yardbird','putter','bayou','cabrillo','rancher','courier'],
  'eastex':['yardbird','rattleback','switchblade','civicline','mesa','courier'],
@@ -88,16 +123,36 @@ PREFERENCES={
  'kurgan':['badlands','taiga','outlander','workhorse','uralek','courier'],
  'ashford_crane':['vesper','rattleback','bayou','regent','courier','stepmaster'],
  'blacktop':['ironhorse','longhaul','switchblade','workhorse','mesa','wayfarer']}
+PREFERENCES.update({
+ 'eastex':['yardbird','rattleback','switchblade','kestrel','mesa','courier'],
+ 'ventresca':['regent','blackwater','mistral','sentinel','concierge','harbor'],
+ 'ravicci':['monarch','veloce','halcyon','solstice','obsidian','concierge'],
+ 'zangyaku':['nightjar','pulse','kensei','specter','aurelia','meridian'],
+ 'bitian':['vesper','civicline','aurelia','crossway','courier','harbor'],
+ 'stateline':['ironhorse','longhaul','cinder','workhorse','mesa','shuttle'],
+ 'sierra_roja':['nightjar','specter','obsidian','dunecat','sentinel','meridian'],
+ 'whittaker':['badlands','workhorse','mesa','dunecat','outlander','shortbox'],
+ 'mcallister':['monarch','aurelia','volta','mistral','sentinel','concierge'],
+ 'trc':['outrider','vigil','watchdog','aegis','bastion','relay'],
+ 'mercer44':['yardbird','switchblade','cabrillo','kestrel','rancher','courier'],
+ 'wm_corp':['monarch','aurelia','torque','backcountry','sentinel','shortbox'],
+ 'lombardia':['monarch','regent','mistral','sentinel','concierge','harbor'],
+ 'sand_raiders':['yardbird','badlands','workhorse','pilgrim','lastlight','dustchapel'],
+ 'blacktop':['ironhorse','longhaul','cinder','workhorse','dunecat','wayfarer']})
 def build():
  models={}
  for group,rows in GROUPS.items():
   for row in rows:
    id,name,body,seats,speed,price,upkeep,cargo,length,width,height,paint,desc=row
-   models[id]=dict(id=id,name=name,vehicle_class=group,body=body,unit_capacity=seats,movement_per_turn=speed,price=price,upkeep_per_turn=upkeep,resource_capacity=cargo,length=length,width=width,height=height,paint='#'+paint,description=desc,cover=group!='two_wheelers',doors=0 if group=='two_wheelers' else (2 if body in ['sportcoupe','grandtourer','exotic_curved','pickup','panelvan','passengervan','highroof','bus','rv','boxtruck','stepvan','cabover','military_truck','surplus_truck','armored_transport'] else 4))
+   models[id]=dict(id=id,name=name,vehicle_class=group,body=body,unit_capacity=seats,movement_per_turn=speed,price=price,upkeep_per_turn=upkeep,resource_capacity=cargo,length=length,width=width,height=HEIGHTS.get(id,height),paint='#'+paint,description=DESCRIPTIONS.get(id,desc),cover=group!='two_wheelers',doors=0 if group=='two_wheelers' else (2 if group=='heavy_transports' or body in ['sportcoupe','grandtourer','exotic_curved','hypercar','roadster','pickup'] else 4))
+   if id in ROOFS:models[id]['roof_color']=ROOFS[id]
+   if id in ['mistral','sentinel','halcyon']:models[id]['rim_color']='#af9563'
+   if id=='kestrel':models[id]['rim_color']='#c7c5b8'
+   models[id]['design_era']='heritage' if id in ['cabrillo','belvedere','workhorse','uralek','taiga'] else ('scavenged' if id in ['lastlight','dustchapel','pilgrim','wayfarer','rattleback','bayou','yardbird'] else 'contemporary_2034')
  for m in models.values():
-  m['brand']='trc' if m['id'] in ['outrider','vigil','watchdog','bastion','aegis'] else ('nbpd' if m['id'] in ['marshal','interceptor','warden','bulwark'] else '')
+  m['brand']='trc' if m['id'] in ['outrider','vigil','watchdog','bastion','aegis','relay'] else ('nbpd' if m['id'] in ['marshal','interceptor','warden','bulwark'] else '')
   m['door_rows']=[] if m['doors']==0 else ([.20] if m['body']=='armored_transport' else ([.34] if m['vehicle_class']=='heavy_transports' else ([.23] if m['body']=='pickup' else ([.12,-.075] if m['doors']==4 else [.12]))))
- data=dict(version=2,classes=CLASSES,models=models,faction_preferences=PREFERENCES,notes={'capacity':'Includes the driver; all occupants are units. Empty vehicles may exist in inventory.','movement':'Road distance units per campaign turn; convoys use the slowest vehicle. Not road top speed.','resources':'Only Heavy Transports carry campaign resources. One abstract resource unit occupies one cargo slot; personal equipment is not freight.','balance':'Prices, upkeep, and movement are initial game-balance values. Models and manufacturers are fictional.','preferences':'Suggestions only; the sandbox unlocks every model for every faction.'})
+ data=dict(version=3,setting_year=2034,classes=CLASSES,models=models,faction_preferences=PREFERENCES,notes={'capacity':'Includes the driver; all occupants are units. Empty vehicles may exist in inventory.','movement':'Road distance units per campaign turn; convoys use the slowest vehicle. Not road top speed.','resources':'Only Heavy Transports carry campaign resources. One abstract resource unit occupies one cargo slot; personal equipment is not freight.','balance':'Prices, upkeep, and movement are initial game-balance values. Models and manufacturers are fictional.','preferences':'Suggestions only; the sandbox unlocks every model for every faction.','era':'2034 contemporary fleet with deliberate heritage and scavenged exceptions. Electric powertrains currently affect listed upkeep only; charging and fuel systems are not implemented.'})
  (ROOT/'assets/data/vehicle_models.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print('FLEET_CATALOG',len(models),'models',len(PREFERENCES),'factions')
 if __name__=='__main__':build()

@@ -1,18 +1,26 @@
-# Dead Street vehicle fleet
+# Dead Street vehicle fleet - 2034 design pass
 
-## Fleet revision — 2026-09-12
+60 models: **12 Two-Wheelers, 19 Passenger Cars, 13 Utility Vehicles and 16 Heavy Transports**. All models are unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources; faction motor pools remain suggestions.
 
-46 models: **10 Two-Wheelers, 14 Passenger Cars, 10 Utility Vehicles and 12 Heavy Transports**. Every model is unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources. Models retain fictional names, prices, upkeep, movement rates, seat/cargo limits and physical footprints. Faction motor pools remain suggestions.
+## Art direction
 
-The revision exposes motorcycle tires and spoke/rim centers, replaces the long exhaust slabs with short silencers, distinguishes low-bar sportbikes from V-twin cruisers and touring motorcycles, and adds sculpted body sections and stronger luxury/exotic color choices. The six new models are Outrider TRC, Marshal Police, Veloce Rosso, Vigil TRC, Aegis Armored TRC and Bulwark SWAT. Both TRC and NBPD now have dedicated branded models in all four classes. Existing Watchdog is rebuilt as a black armored utility truck.
+The game is set in 2034. Contemporary vehicles use lower crowned roofs, shallower glass, raked pillars, fuller hood/deck proportions, sculpted shoulders, thin lighting signatures and visible wheel arches. Heritage models and scavenged vehicles remain intentional exceptions. The pass specifically corrects the high-cabin, short-hood appearance of the TRC and NBPD fleets.
 
-All 46 models share the campaign and sandbox catalog. Production artwork contains **944 sprites and 46 icons**: 36 four-wheel vehicles with eight facings and three door phases, and ten two-wheelers with eight facings. The illustrated guide has 19 pages, plus three phone-friendly revision sheets.
+The wheel openings are part of the body geometry. Pickup beds have recessed dark floors. Opaque van and armored panels suppress underlying glass. Open-top roadster seats and windscreen are modeled separately. Shared world dimensions and projection produce all eight facings and door phases.
 
-## Gameplay and boundaries
+Fourteen new models: Pulse EX, Cinder 900, Aurelia E4, Solstice Spider, Mistral Estate, Kestrel RX, Halcyon H1, Torque EV5, Dunecat R, Obsidian X, Lastlight Prison Bus, Dustchapel RV, Relay TRC and Concierge Lounge.
 
-Use **VEHICLE FLEET** in Arsenal Review to select a convoy with enough seats for the five attackers. At least one actual unit drives each vehicle; total vehicles cannot exceed unit count. The selected models persist through campaign forces, travel, arrival placement, troop assignment, parked collision/cover, disembark paths and save/load. Convoys move at their slowest member's campaign road speed.
+Lastlight and Dustchapel are dedicated Raiders of the Sand transports, with repaired body panels, roof storage, a ladder, spare wheels and model-specific scavenged equipment. Lastlight carries twelve units plus twelve resource slots; Dustchapel carries eight plus eight. Those limits are simultaneously usable.
 
-Two-wheelers still use parked arrivals. Riding, pedaling and mounted-passenger animations remain to be authored. This visual update adds no turrets or vehicle damage system; armored styling does not grant hidden combat or unit-health bonuses. Existing unit outfits and armor-as-HP-only behavior are retained. Full campaign shopping/loading, fuel, repair and salvage interfaces remain later work.
+## Gameplay and limits
+
+Use **VEHICLE FLEET** in Arsenal Review. Every convoy vehicle needs an actual unit to drive it, and combined seats must accommodate the attackers. Models feed campaign forces, movement, arrival placement, troop assignment, parked collision/cover, disembark paths and save/load. Convoys travel at their slowest member's road movement rate.
+
+Artwork contains **1,248 sprites and 60 icons**: 48 enclosed/four-wheel vehicles with eight facings and three door phases, plus twelve two-wheelers with eight facings. The complete guide contains 22 pages, ten complete-fleet phone sheets and two additional authority/Raiders close-ups.
+
+Two-wheelers continue to use parked arrivals. Riding, pedaling and mounted-passenger animations remain pending. Vehicle damage, turrets and campaign fuel/charging/repair interfaces are not part of this pass. Electric models currently use their listed upkeep values; they do not enable an unimplemented charging system. Vehicle styling adds no hidden unit armor or outfit overlays.
+
+Prices and movement are fictional game-balance values. Original models retain their capacities/economy; height corrections are presentation/physical-profile metadata. Models keep their stable save IDs.
 
 ## Rebuild
 
@@ -20,16 +28,16 @@ Two-wheelers still use parked arrivals. Riding, pedaling and mounted-passenger a
 python tools/vehicle_fleet/build_catalog.py
 python tools/vehicle_fleet/build_art.py
 python tools/vehicle_fleet/build_guide.py
-python tools/vehicle_fleet/build_revision_boards.py
+python tools/vehicle_fleet/build_2034_boards.py
 ```
 
-Requires Pillow, NumPy and ReportLab. `build_art.py` and `vehicle_detail_geometry.py` are the editable geometry masters. The embedded Windows Python runtime uses an explicit script-directory import path. Sprite canvases are 640×480 with ground origin (320,330), 40 pixels per world unit. Native PNGs load through VehicleModelCatalog and the roster export plugin.
+Requires Pillow, NumPy and ReportLab. `fleet_2034_geometry.py`, `vehicle_detail_geometry.py` and `build_art.py` are the editable geometry masters. The embedded Windows Python runtime uses an explicit script-directory import path. Canonical sprites remain 640x480, ground origin (320,330), 40 pixels per world unit. Native PNGs load through VehicleModelCatalog and the existing export plugin.
 
 ## Validation
 
-Windows Godot 4.7.2: **2876 model/gameplay checks and 43 mixed-convoy checks passed with zero errors**. This covers all 46 models, image loading/bounds, brand coverage in all four classes, ownership/funds, cargo exclusivity and overflow, save/load, driver/capacity limits, and real campaign-to-battle arrival/disembark paths. Script-load and selector/filter/add/remove/apply checks passed.
+Windows Godot 4.7.2: **3,730 model/gameplay checks and 43 mixed-convoy checks passed with zero errors**. Script-load and selector/filter/add/remove/apply checks passed. Coverage includes all 60 models, image loading/bounds, both authority brands in all four classes, economy/cargo limits, save compatibility, drivers, campaign travel, arrival placement and disembark paths.
 
-Native D3D12/Forward+ rendered checks passed four scenarios: TRC armored convoy, NBPD SWAT convoy, mixed exotic cars/superbike, and five authority motorcycles. Representative native captures were visually inspected. All 944 sprite bounds passed; every direction of the revised geometry and all 19 guide-page layouts were reviewed.
+Six D3D12/Forward+ scenarios passed: TRC 2034 response, NBPD 2034 response, both Raiders transports, new exotics/electric bike, new utility vehicles, and Relay/Concierge transports. Representative native captures were visually inspected. All eight closed facings, representative door phases, every sprite's bounds, all 22 guide pages and all twelve phone sheets were reviewed. Technical checks and internal visual review do not replace owner acceptance.
 
 ```bash
 godot --headless --path . --editor --quit
@@ -40,4 +48,4 @@ godot --headless --path . --script tools/vehicle_fleet/validate_panel.gd
 godot --path . --script tools/vehicle_fleet/review_native.gd
 ```
 
-Sources were applied to the authorized development repository with baseline guards, preserving unrelated work. Git history and remote confirmation record synchronization. Prices and movement remain game-balance values, not real-world quotes or mph.
+The development repository received baseline-guarded source changes. Unrelated work was preserved. Git history and remote confirmation record commit/push status. The completed battle sandbox remains the active objective.
