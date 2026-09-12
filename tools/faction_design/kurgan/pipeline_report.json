@@ -1,0 +1,21 @@
+{
+  "faction": "kurgan",
+  "full_review": true,
+  "roles": [
+    "pistol",
+    "smg",
+    "shotgun",
+    "rifle",
+    "sniper"
+  ],
+  "frames": 1080,
+  "failures": [],
+  "timings_seconds": {
+    "source_and_geometry": 10.168,
+    "render_and_bounds": 8.625,
+    "palette_and_review_sheets": 25.549,
+    "motion_and_armory_sheets": 0.213
+  },
+  "total_seconds": 44.556,
+  "visual_acceptance": "Requires visual review; automated checks do not assert acceptance."
+}

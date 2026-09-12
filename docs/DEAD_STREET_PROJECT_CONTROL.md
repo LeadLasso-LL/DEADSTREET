@@ -1,5 +1,9 @@
 # Dead Street — Project Control
 
+## Kurgan regular outfit review ? 2026-09-12
+
+Five regular outfits implemented on the accepted rig; full 1,080-frame geometry/render review and visual inspection. See KURGAN_UNIT_DESIGN.md. Review assets only; gameplay atlas binding and special units remain pending. Next: Ashford-Crane Collective, then Blacktop Apostles MC. Local checkpoint; no push claimed.
+
 ## Al-Saffar regular outfits - 2026-09-11
 
 Five regular outfit profiles and motion review assets completed; all 1,080 geometry/render checks passed, with standing shoulders, eight-direction aiming and motion samples visually inspected. See SAFFAR_UNIT_DESIGN.md and tools/faction_design/saffar/. Gameplay atlas integration remains pending; special units remain deferred. Next outfit faction: The Kurgan Group.
