@@ -5,6 +5,24 @@ ROOT=Path(__file__).resolve().parents[2]
 DEST=ROOT/'assets/art/equipment/armor'
 N='{http://www.w3.org/2000/svg}'
 E.register_namespace('',N[1:-1])
+# Equipment-card palettes only; armor never alters unit outfits or animation art.
+PALETTES={
+ 1:{'#1d252e':'#867760','#4c5863':'#c3b090','#333f4c':'#a99677',
+    '#303b47':'#ac9879','#222c38':'#8c7b62','#414d59':'#c6b292',
+    '#35404b':'#ae9979','#3b4652':'#cbb795','#56616b':'#e1d0ae',
+    '#25323e':'#a48e6c','#69757e':'#e3d5b9','#46535e':'#c2ae8c',
+    '#86919a':'#eee1c7','#4d5b68':'#dcccac','#273440':'#a18a69',
+    '#52606b':'#c4af8e','#27313b':'#ab9471','#bac3cb':'#f1e6ce'},
+ 3:{'#1d252e':'#121417','#4c5863':'#292c31','#333f4c':'#1c1f23',
+    '#131a23':'#0c0e11','#111923':'#0b0d10','#303b47':'#202328',
+    '#222c38':'#15171b','#414d59':'#2a2d32','#35404b':'#212429',
+    '#35414e':'#1b1e22','#56616b':'#34383e','#25323e':'#13161a',
+    '#69757e':'#535960','#53606c':'#2b2f35','#86919a':'#70767d',
+    '#141d27':'#0c0f12','#283744':'#13161a','#4a5763':'#262a30',
+    '#839098':'#626970','#263542':'#111418','#667785':'#454d55',
+    '#18252f':'#0e1114','#65717c':'#434b52','#1c2732':'#111418',
+    '#bac3cb':'#9a9fa5'}
+}
 def shape(g,d,fill,stroke='#10161d',width=1.5):
  return E.SubElement(g,N+'path',{'d':d,'fill':fill,'stroke':stroke,'stroke-width':str(width),'stroke-linejoin':'round'})
 def rect(g,x,y,w,h,c):return E.SubElement(g,N+'rect',dict(x=str(x),y=str(y),width=str(w),height=str(h),fill=c))
@@ -70,6 +88,11 @@ def make(name,tier):
   x=rng.randrange(60,131);y=rng.randrange(99,174)
   if (x-95)**2/1500+(y-130)**2/8000<1:
    E.SubElement(root,N+'rect',dict(x=str(x),y=str(y),width='1',height='1',fill='#bac3cb' if i%4==0 else '#111923',opacity='.10'))
+ palette=PALETTES.get(tier,{})
+ for element in root.iter():
+  for attribute in ['fill','stroke']:
+   color=element.get(attribute)
+   if color in palette:element.set(attribute,palette[color])
  DEST.mkdir(parents=True,exist_ok=True)
  (DEST/(name+'.svg')).write_bytes(E.tostring(root))
 for tier,name in enumerate(['patrol_vest','field_carrier','reinforced_carrier'],1):make(name,tier)
