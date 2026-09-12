@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "classes": {
     "two_wheelers": {
       "name": "Two-Wheelers",
@@ -40,6 +40,7 @@
       "description": "Used steel-frame bicycle; almost free to run, painfully slow on long routes.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "putter": {
@@ -59,6 +60,7 @@
       "description": "Small step-through moped with a single saddle and front basket.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "vesper": {
@@ -78,13 +80,14 @@
       "description": "Retro city scooter with a proper pillion seat and leg shield.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "switchblade": {
       "id": "switchblade",
       "name": "Switchblade 600",
       "vehicle_class": "two_wheelers",
-      "body": "streetbike",
+      "body": "sportbike",
       "unit_capacity": 1,
       "movement_per_turn": 6.8,
       "price": 5700,
@@ -93,10 +96,11 @@
       "length": 2.05,
       "width": 0.76,
       "height": 1.15,
-      "paint": "#383f46",
-      "description": "Stripped streetfighter with a solo seat and exposed engine.",
+      "paint": "#246cc1",
+      "description": "Cobalt supersport with low clip-on bars, a solo tail, and clearly exposed wheels.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "nightjar": {
@@ -112,10 +116,11 @@
       "length": 2.1,
       "width": 0.76,
       "height": 1.12,
-      "paint": "#8e3e37",
-      "description": "Fully faired sports motorcycle; quickest road option, little protection.",
+      "paint": "#d83b30",
+      "description": "Scarlet-and-white superbike with a raked nose, low bars and a raised pillion pad.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "badlands": {
@@ -135,6 +140,7 @@
       "description": "Tall single-seat trail motorcycle with high mudguards.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "ironhorse": {
@@ -154,6 +160,7 @@
       "description": "Long, low cruiser with chrome pipes, wide bars, and a passenger pad.",
       "cover": false,
       "doors": 0,
+      "brand": "",
       "door_rows": []
     },
     "longhaul": {
@@ -169,10 +176,51 @@
       "length": 2.65,
       "width": 1.05,
       "height": 1.35,
-      "paint": "#584338",
-      "description": "Heavy touring motorcycle with windshield and small personal panniers.",
+      "paint": "#71382d",
+      "description": "Burgundy V-twin bagger with a swept tank, windshield and compact saddlebags.",
       "cover": false,
       "doors": 0,
+      "brand": "",
+      "door_rows": []
+    },
+    "outrider": {
+      "id": "outrider",
+      "name": "Outrider TRC",
+      "vehicle_class": "two_wheelers",
+      "body": "dualsport",
+      "unit_capacity": 1,
+      "movement_per_turn": 6.2,
+      "price": 14500,
+      "upkeep_per_turn": 26,
+      "resource_capacity": 0,
+      "length": 2.22,
+      "width": 0.88,
+      "height": 1.3,
+      "paint": "#202a27",
+      "description": "Black TRC reconnaissance motorcycle; green fairing, gold markings and exposed trail tires.",
+      "cover": false,
+      "doors": 0,
+      "brand": "trc",
+      "door_rows": []
+    },
+    "marshal": {
+      "id": "marshal",
+      "name": "Marshal Police",
+      "vehicle_class": "two_wheelers",
+      "body": "tourer",
+      "unit_capacity": 1,
+      "movement_per_turn": 5.7,
+      "price": 22500,
+      "upkeep_per_turn": 38,
+      "resource_capacity": 0,
+      "length": 2.6,
+      "width": 1.02,
+      "height": 1.4,
+      "paint": "#e4e0d0",
+      "description": "NBPD motor-patrol bike with green/white fairing, POLICE cases, screen and emergency lights.",
+      "cover": false,
+      "doors": 0,
+      "brand": "nbpd",
       "door_rows": []
     },
     "rattleback": {
@@ -192,6 +240,7 @@
       "description": "Faded compact hatchback; inexpensive four-seat transport.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -214,6 +263,7 @@
       "description": "Worn full-size sedan with a broad trunk and dependable road pace.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -236,6 +286,7 @@
       "description": "Clean, practical compact sedan; economical everyday transport.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -258,6 +309,7 @@
       "description": "NBPD pursuit sedan: green/white paint, push bar, and roof lightbar.",
       "cover": true,
       "doors": 4,
+      "brand": "nbpd",
       "door_rows": [
         0.12,
         -0.075
@@ -280,6 +332,7 @@
       "description": "Long vintage lowrider with chrome trim and cream roof.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -302,6 +355,7 @@
       "description": "Understated dark executive sedan with a long hood.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -320,10 +374,11 @@
       "length": 5.5,
       "width": 2.02,
       "height": 1.57,
-      "paint": "#171d23",
-      "description": "Formal luxury saloon with a tall grille and substantial rear seating.",
+      "paint": "#44314e",
+      "description": "Deep-plum and ivory luxury saloon with a formal chrome grille and sculpted shoulders.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -342,10 +397,11 @@
       "length": 5.55,
       "width": 2.02,
       "height": 1.53,
-      "paint": "#242825",
-      "description": "Traditional chauffeur-style sedan, formal roofline and chrome grille.",
+      "paint": "#b6a47c",
+      "description": "Champagne chauffeur sedan with a burgundy roof, restrained chrome and long rear doors.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -364,10 +420,11 @@
       "length": 4.65,
       "width": 1.94,
       "height": 1.28,
-      "paint": "#9c9e93",
-      "description": "Low, long-hood grand tourer with two usable seats.",
+      "paint": "#187db0",
+      "description": "Azure-blue grand tourer with a long sculpted hood, swept headlights and a black roof.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.12
       ]
@@ -385,10 +442,11 @@
       "length": 4.48,
       "width": 1.96,
       "height": 1.2,
-      "paint": "#d2c7ae",
-      "description": "Mid-engine sports coupe: fastest car, high cost and two seats.",
+      "paint": "#a6cb26",
+      "description": "Acid-lime mid-engine wedge with wide rear haunches, side intakes and a black canopy.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.12
       ]
@@ -410,6 +468,7 @@
       "description": "Compact performance coupe with four seats and a modest rear wing.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -432,6 +491,52 @@
       "description": "Restored old sedan with rounded fenders and bright chrome bumpers.",
       "cover": true,
       "doors": 4,
+      "brand": "",
+      "door_rows": [
+        0.12,
+        -0.075
+      ]
+    },
+    "veloce": {
+      "id": "veloce",
+      "name": "Veloce Rosso",
+      "vehicle_class": "passenger_cars",
+      "body": "exotic_curved",
+      "unit_capacity": 2,
+      "movement_per_turn": 7.1,
+      "price": 89000,
+      "upkeep_per_turn": 118,
+      "resource_capacity": 0,
+      "length": 4.55,
+      "width": 1.98,
+      "height": 1.23,
+      "paint": "#d93026",
+      "description": "Scarlet mid-engine exotic with rounded fenders, a teardrop canopy and deep side scoops.",
+      "cover": true,
+      "doors": 2,
+      "brand": "",
+      "door_rows": [
+        0.12
+      ]
+    },
+    "vigil": {
+      "id": "vigil",
+      "name": "Vigil TRC",
+      "vehicle_class": "passenger_cars",
+      "body": "executive",
+      "unit_capacity": 4,
+      "movement_per_turn": 5.8,
+      "price": 52000,
+      "upkeep_per_turn": 88,
+      "resource_capacity": 0,
+      "length": 5.02,
+      "width": 1.94,
+      "height": 1.48,
+      "paint": "#212a2b",
+      "description": "Branded black TRC response sedan with a green side stripe and gold star-and-eye markings.",
+      "cover": true,
+      "doors": 4,
+      "brand": "trc",
       "door_rows": [
         0.12,
         -0.075
@@ -454,6 +559,7 @@
       "description": "Single-cab pickup with a three-place bench; bed is not troop seating.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.23
       ]
@@ -475,6 +581,7 @@
       "description": "Four-door crew-cab pickup with five enclosed seats.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -497,6 +604,7 @@
       "description": "Lifted crew-cab pickup, large tires and a short practical bed.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -519,6 +627,7 @@
       "description": "Full-size three-row SUV; useful seven-person transport.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -537,10 +646,11 @@
       "length": 5.5,
       "width": 2.13,
       "height": 1.98,
-      "paint": "#252c32",
-      "description": "Polished three-row luxury SUV with dark glass and bright grille.",
+      "paint": "#ded9c9",
+      "description": "Pearl-white luxury SUV with a black roof, bronze wheels and polished trim.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -563,6 +673,7 @@
       "description": "Everyday five-seat crossover with a compact footprint.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -585,6 +696,7 @@
       "description": "NBPD patrol SUV with green/white livery and lightbar.",
       "cover": true,
       "doors": 4,
+      "brand": "nbpd",
       "door_rows": [
         0.12,
         -0.075
@@ -603,10 +715,11 @@
       "length": 5.05,
       "width": 2.14,
       "height": 1.98,
-      "paint": "#536747",
-      "description": "TRC enclosed tactical utility truck; no turret or mounted gun.",
+      "paint": "#20282b",
+      "description": "Black TRC armored utility truck with sloped panels, protected glass and muted-gold markings.",
       "cover": true,
       "doors": 4,
+      "brand": "trc",
       "door_rows": [
         0.12,
         -0.075
@@ -629,6 +742,7 @@
       "description": "Aged Kurgan-style utility 4x4 with a spare tire and canvas rear roof.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -651,6 +765,7 @@
       "description": "Boxy off-road wagon with roof rack and utilitarian steel wheels.",
       "cover": true,
       "doors": 4,
+      "brand": "",
       "door_rows": [
         0.12,
         -0.075
@@ -673,6 +788,7 @@
       "description": "Two cab seats and an enclosed cargo compartment; freight-focused.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -694,6 +810,7 @@
       "description": "Twelve proper seats; only a small luggage/resource compartment remains.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -715,6 +832,7 @@
       "description": "High-roof crew van with eight seats and a separated rear cargo bay.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -736,6 +854,7 @@
       "description": "Approximately eleven-foot enclosed box behind a two-seat cab; no passengers in the box.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -757,6 +876,7 @@
       "description": "Walk-in delivery van with a tall square body and broad cargo doors.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -778,6 +898,7 @@
       "description": "Worn motorhome with six belted travel seats and limited storage; Sand Raider favorite.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -799,6 +920,7 @@
       "description": "Retired short bus: twelve retained seats, rear rows removed for supplies.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -820,6 +942,7 @@
       "description": "TRC troop transporter with rear benches, covered load bed, and protected cab.",
       "cover": true,
       "doors": 2,
+      "brand": "trc",
       "door_rows": [
         0.34
       ]
@@ -841,6 +964,7 @@
       "description": "Kurgan surplus six-wheel transporter; bench seats and a designated cargo section.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
       ]
@@ -862,8 +986,53 @@
       "description": "Three-seat cab-over delivery truck with a large enclosed freight body.",
       "cover": true,
       "doors": 2,
+      "brand": "",
       "door_rows": [
         0.34
+      ]
+    },
+    "aegis": {
+      "id": "aegis",
+      "name": "Aegis Armored TRC",
+      "vehicle_class": "heavy_transports",
+      "body": "armored_transport",
+      "unit_capacity": 10,
+      "movement_per_turn": 3.8,
+      "price": 168000,
+      "upkeep_per_turn": 210,
+      "resource_capacity": 8,
+      "length": 6.15,
+      "width": 2.4,
+      "height": 2.65,
+      "paint": "#1e2529",
+      "description": "Black TRC armored truck: protected cabin, sloped armor, ten seats and a separate supply compartment.",
+      "cover": true,
+      "doors": 2,
+      "brand": "trc",
+      "door_rows": [
+        0.2
+      ]
+    },
+    "bulwark": {
+      "id": "bulwark",
+      "name": "Bulwark SWAT",
+      "vehicle_class": "heavy_transports",
+      "body": "armored_transport",
+      "unit_capacity": 8,
+      "movement_per_turn": 3.9,
+      "price": 118000,
+      "upkeep_per_turn": 175,
+      "resource_capacity": 6,
+      "length": 6.0,
+      "width": 2.38,
+      "height": 2.6,
+      "paint": "#293e38",
+      "description": "NBPD SWAT rescue truck with protected windows, POLICE/SWAT branding and a compact freight bay.",
+      "cover": true,
+      "doors": 2,
+      "brand": "nbpd",
+      "door_rows": [
+        0.2
       ]
     }
   },
@@ -902,8 +1071,8 @@
     ],
     "ravicci": [
       "monarch",
-      "volta",
-      "regent",
+      "veloce",
+      "specter",
       "sentinel",
       "meridian",
       "harbor"
@@ -942,7 +1111,7 @@
     ],
     "sierra_roja": [
       "nightjar",
-      "cabrillo",
+      "specter",
       "sentinel",
       "backcountry",
       "mesa",
@@ -965,18 +1134,18 @@
       "meridian"
     ],
     "trc": [
-      "switchblade",
-      "blackwater",
+      "outrider",
+      "vigil",
       "watchdog",
-      "rancher",
-      "meridian",
-      "bastion"
+      "aegis",
+      "bastion",
+      "meridian"
     ],
     "nbpd": [
+      "marshal",
       "interceptor",
       "warden",
-      "longhaul",
-      "crossway",
+      "bulwark",
       "shuttle",
       "meridian"
     ],

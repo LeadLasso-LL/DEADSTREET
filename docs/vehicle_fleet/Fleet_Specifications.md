@@ -1,6 +1,6 @@
 # Dead Street - Vehicle Fleet
 
-40 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
+46 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
 
 Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.
 
@@ -16,6 +16,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Badlands 400 | $4,200 | $12 | 1 | 5.8 | 0 | 2.16 x 0.82 |
 | Ironhorse V-Twin | $9,800 | $23 | 2 | 5.5 | 0 | 2.50 x 0.94 |
 | Longhaul Tourer | $17,800 | $32 | 2 | 5.2 | 0 | 2.65 x 1.05 |
+| Outrider TRC | $14,500 | $26 | 1 | 6.2 | 0 | 2.22 x 0.88 |
+| Marshal Police | $22,500 | $38 | 1 | 5.7 | 0 | 2.60 x 1.02 |
 
 ## Passenger Cars
 
@@ -33,6 +35,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Specter S | $95,000 | $125 | 2 | 7.2 | 0 | 4.48 x 1.96 |
 | Kensei Turbo | $24,000 | $52 | 4 | 6.4 | 0 | 4.40 x 1.86 |
 | Belvedere Eight | $21,000 | $65 | 4 | 4.6 | 0 | 5.18 x 1.95 |
+| Veloce Rosso | $89,000 | $118 | 2 | 7.1 | 0 | 4.55 x 1.98 |
+| Vigil TRC | $52,000 | $88 | 4 | 5.8 | 0 | 5.02 x 1.94 |
 
 ## Utility Vehicles
 
@@ -63,6 +67,8 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Bastion Personnel | $135,000 | $185 | 12 | 3.5 | 12 | 7.40 x 2.45 |
 | Uralek 6x6 | $42,000 | $155 | 12 | 3.1 | 16 | 7.55 x 2.46 |
 | Harbor Cargo | $31,000 | $105 | 3 | 3.6 | 20 | 6.75 x 2.30 |
+| Aegis Armored TRC | $168,000 | $210 | 10 | 3.8 | 8 | 6.15 x 2.40 |
+| Bulwark SWAT | $118,000 | $175 | 8 | 3.9 | 6 | 6.00 x 2.38 |
 
 ## Suggested faction fleets
 
@@ -72,16 +78,16 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Eastex 44’s | Yardbird Bicycle, Rattleback Hatch, Switchblade 600, Civicline DX, Mesa Crew, Courier Panel Van | Cheap compacts, a fast solo bike, and practical pickups as the faction grows. |
 | Calle Ocho | Vesper 150, Cabrillo Lowline, Belvedere Eight, Mesa Crew, Outlander Wagon, Courier Panel Van | Classic lowriders and old sedans alongside work pickups and delivery transport. |
 | Ventresca Family | Regent Town Car, Blackwater Executive, Belvedere Eight, Sentinel Luxe, Meridian Highroof, Harbor Cargo | Traditional executive cars, discreet luxury SUVs, and ordinary commercial freight. |
-| Ravicci Family | Monarch V12, Volta GT, Regent Town Car, Sentinel Luxe, Meridian Highroof, Harbor Cargo | More conspicuous luxury: formal saloons, a grand tourer, and premium crew transport. |
+| Ravicci Family | Monarch V12, Veloce Rosso, Specter S, Sentinel Luxe, Meridian Highroof, Harbor Cargo | Conspicuous luxury: formal saloons, scarlet and lime exotics, and premium crew transport. |
 | Orlov Bratva | Blackwater Executive, Bayou Sedan, Taiga 4x4, Outlander Wagon, Courier Panel Van, Uralek 6x6 | Dark executive cars mixed with aged utility 4x4s and surplus heavy transport. |
 | Zangyaku | Nightjar RR, Switchblade 600, Kensei Turbo, Specter S, Blackwater Executive, Meridian Highroof | Fast street motorcycles, tuned coupes, and restrained executive support vehicles. |
 | Bìtiān | Vesper 150, Civicline DX, Blackwater Executive, Crossway AWD, Courier Panel Van, Harbor Cargo | City scooters, clean compact cars, executive sedans, and commercial cargo vehicles. |
 | Stateline Raiders MC | Ironhorse V-Twin, Longhaul Tourer, Badlands 400, Workhorse C10, Mesa Crew, Shuttle Twelve | V-twin cruisers and tourers, backed by pickups and a passenger shuttle. |
-| Cártel de Sierra Roja | Nightjar RR, Cabrillo Lowline, Sentinel Luxe, Backcountry XL, Mesa Crew, Meridian Highroof | Flashier civilian vehicles, lifted pickups, luxury SUVs, and versatile crew vans. |
+| Cártel de Sierra Roja | Nightjar RR, Specter S, Sentinel Luxe, Backcountry XL, Mesa Crew, Meridian Highroof | Flashier civilian vehicles, lifted pickups, luxury SUVs, and versatile crew vans. |
 | Whittaker Oil & Land Co. | Badlands 400, Workhorse C10, Mesa Crew, Backcountry XL, Outlander Wagon, Shortbox 11 | Work trucks, trail bikes, weathered off-road wagons, and short box trucks. |
 | McAllister Holdings, Inc. | Regent Town Car, Monarch V12, Volta GT, Sentinel Luxe, Rancher Seven, Meridian Highroof | Formal cars and expensive SUVs, with a high-roof van for practical transport. |
-| Texas Recovery Coalition | Switchblade 600, Blackwater Executive, Watchdog Tactical, Rancher Seven, Meridian Highroof, Bastion Personnel | Modern tactical utility and troop transport, supported by discreet executive vehicles. |
-| New Briarport Police Department | Interceptor P4, Warden Patrol, Longhaul Tourer, Crossway AWD, Shuttle Twelve, Meridian Highroof | Marked pursuit sedans and patrol SUVs, with touring bikes and passenger vans for support. |
+| Texas Recovery Coalition | Outrider TRC, Vigil TRC, Watchdog Tactical, Aegis Armored TRC, Bastion Personnel, Meridian Highroof | Branded recon motorcycles, response sedans, black armored utility/transport trucks, and troop logistics. |
+| New Briarport Police Department | Marshal Police, Interceptor P4, Warden Patrol, Bulwark SWAT, Shuttle Twelve, Meridian Highroof | Marked motor-patrol bikes, pursuit sedans, patrol SUVs, and a dedicated SWAT rescue transport. |
 | Mercer 44’s | Yardbird Bicycle, Switchblade 600, Cabrillo Lowline, Kensei Turbo, Rancher Seven, Courier Panel Van | Street bicycles and bikes, lowriders, tuned cars, and pooled SUV/van transport. |
 | Whittaker-McAllister Corporation | Regent Town Car, Monarch V12, Mesa Crew, Backcountry XL, Sentinel Luxe, Shortbox 11 | McAllister executive vehicles serving alongside Whittaker work trucks and freight haulers. |
 | La Unión del Sur | Cabrillo Lowline, Switchblade 600, Mesa Crew, Backcountry XL, Meridian Highroof, Harbor Cargo | Street-style cars and motorcycles backed by capable pickups and commercial transports. |
@@ -99,7 +105,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 - **Heavy Transports carry all freight:** Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits.
 - **Real seats, realistic compromises:** Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.
 - **Parked vehicles and cover:** These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.
-- **Everything is available in the sandbox:** All 40 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
+- **Everything is available in the sandbox:** All 46 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
 - **Keep the campaign scope clear:** Catalog prices, upkeep, purchases, cargo transfer, save data, and road-speed hooks are prepared. Full campaign vehicle shopping, capture, repairs, and fuel logistics are later systems.
 
 ## Balance examples
@@ -112,4 +118,4 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 
 ## Implementation status
 
-Catalog, artwork and sandbox integration are installed on the development PC. The 2,528 model/gameplay checks and 43 mixed-convoy checks passed on Linux Godot 4.5.1 and Windows Godot 4.7.2, plus selector and script-load checks. Four native D3D12/Forward+ arrival/battle scenarios passed; representative TRC, NBPD, Raiders and bicycle screenshots were inspected. Two-wheelers currently use parked tactical arrivals; riding, pedaling and mounted-passenger animations are not yet authored. Four-wheel vehicles use the existing arrival presentation with model-specific directional and door art. The destination approval block is resolved; repository history records the final commit and push.
+The catalog and artwork use the same model IDs as the sandbox fleet selector. Current validation results are recorded in tools/vehicle_fleet/validation.json, validation_mixed.json and native_review/report.json; see tools/vehicle_fleet/README.md for the reviewed milestone. Two-wheelers currently use parked tactical arrivals; riding, pedaling and mounted-passenger animations are not yet authored. Four-wheel vehicles use the existing arrival presentation with model-specific directional and door art. Repository history records commit and push status.

@@ -5,8 +5,10 @@ rotated flat side sprites, or changes to the soldier rig. Python geometry is the
 produces the canonical transparent PNG sprites.
 """
 from pathlib import Path
-import math,json,random
+import math,json,random,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np
+from vehicle_detail_geometry import motorcycle,exotic,armored,shell,canopy,badge
 from PIL import Image,ImageDraw,ImageColor
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'assets/art/vehicles/fleet'
@@ -70,6 +72,7 @@ class Drawing:
   self.poly([(top0,y0*.85,z1),(top1,y0*.85,z1),(top1,y1*.85,z1),(top0,y1*.85,z1)],shade(color,1.18),priority=.018)
  def marking(self,word,x,y,z,width,height,color):
   glyphs={'P':['11110','10001','10001','11110','10000','10000','10000'],'O':['01110','10001','10001','10001','10001','10001','01110'],'L':['10000','10000','10000','10000','10000','10000','11111'],'I':['11111','00100','00100','00100','00100','00100','11111'],'C':['01111','10000','10000','10000','10000','10000','01111'],'E':['11111','10000','10000','11110','10000','10000','11111'],'T':['11111','00100','00100','00100','00100','00100','00100'],'R':['11110','10001','10001','11110','10100','10010','10001']}
+  glyphs.update({'S':['01111','10000','10000','01110','00001','00001','11110'],'W':['10001','10001','10001','10101','10101','11011','10001'],'A':['01110','10001','10001','11111','10001','10001','10001']})
   dx=width/(len(word)*6-1);dz=height/7;direction=1 if y>0 else -1
   for n,char in enumerate(word):
    for row,bits in enumerate(glyphs[char]):
@@ -77,7 +80,7 @@ class Drawing:
      if bit!='1':continue
      xx=x+direction*((n*6+col)*dx-width/2);zz=z+(6-row)*dz
      self.poly([(xx,y,zz),(xx+dx*direction,y,zz),(xx+dx*direction,y,zz+dz),(xx,y,zz+dz)],color,None,priority=.13)
- def wheel(self,x,y,r=.34,width=.19,chrome=False,spokes=5):
+ def wheel(self,x,y,r=.34,width=.19,chrome=False,spokes=5,rim_color=None):
   # Cylindrical wheel, not a floating circle pasted onto the body.
   for k in range(16):
    a=k*math.tau/16;b=(k+1)*math.tau/16
@@ -85,7 +88,7 @@ class Drawing:
   for yy in [y-width/2,y+width/2]:
    self.poly([(x+r*math.cos(k*math.tau/16),yy,r+r*math.sin(k*math.tau/16)) for k in range(16)],RUBBER,INK,1,.003)
    ri=r*.53
-   self.poly([(x+ri*math.cos(k*math.tau/12),yy,r+ri*math.sin(k*math.tau/12)) for k in range(12)],'#929991' if chrome else '#545d5e',INK,1,.007)
+   self.poly([(x+ri*math.cos(k*math.tau/12),yy,r+ri*math.sin(k*math.tau/12)) for k in range(12)],rim_color or ('#929991' if chrome else '#545d5e'),INK,1,.007)
    for k in range(spokes):
     a=k*math.tau/spokes
     self.line([(x,yy,r),(x+ri*.8*math.cos(a),yy,r+ri*.8*math.sin(a))],CHROME if chrome else '#9a9f96',1,.014)
@@ -128,62 +131,25 @@ class Drawing:
   path.parent.mkdir(parents=True,exist_ok=True)
   image.save(path.with_suffix('.png'))
   return image
-def bike(d,m):
- b=m['body'];length=m['length'];paint=m['paint'];r=.34 if b in ['bicycle','dualsport'] else .28
- rear=-length*.35;front=length*.36
- d.wheel(rear,0,r,.09 if b=='bicycle' else .18,b in ['cruiser','tourer'],12 if b=='bicycle' else 5)
- d.wheel(front,0,r,.09 if b=='bicycle' else .18,b in ['cruiser','tourer'],12 if b=='bicycle' else 5)
- if b=='bicycle':
-  for pts in [[(rear,0,r),(-.25,0,.92),(front-.20,0,.92),(0,0,.30),(rear,0,r)],[(front-.20,0,.92),(front,0,r)],[(-.25,0,.92),(0,0,.30)]]:d.line(pts,paint,3)
-  d.line([(-.27,0,.84),(-.29,0,1.08)],CHROME,2);d.box(-.50,-.12,-.12,.12,1.02,1.09,'#343431')
-  d.line([(front,0,r),(front-.2,0,1.15),(front-.1,-.30,1.15)],CHROME,2)
-  d.line([(front-.2,0,1.15),(front-.1,.30,1.15)],CHROME,2)
-  for side in [-1,1]:d.line([(.03,0,.31),(.10,side*.18,.22),(.26,side*.18,.22)],CHROME,2)
-  return
- d.box(rear-.05,.34,-.14,.14,.38,.56,'#4e5353')
- d.line([(rear,0,r),(.2,0,.47),(front-.12,0,.89),(front,0,r)],CHROME,3)
- d.line([(front,.09,r),(front-.2,.09,1.02)],'#b2b7b0',3)
- seat_front=.05 if b in ['cruiser','tourer'] else .13
- d.box(rear*.8,seat_front,-.19,.19,.7,.80,'#272a29')
- if m['unit_capacity']==2:d.box(rear*.9,rear*.55,-.17,.17,.79,.87,'#343735')
- if b in ['moped','scooter']:
-  d.box(rear-.05,.12,-.22,.22,.36,.67,paint)
-  d.poly([(.13,-.25,.32),(.47,-.25,.4),(.40,-.23,.98),(.16,-.23,.99)],paint)
-  d.poly([(.13,.25,.32),(.47,.25,.4),(.40,.23,.98),(.16,.23,.99)],shade(paint,.85))
-  d.box(.18,.42,-.26,.26,.93,1.02,paint)
- else:
-  d.hull([(-.12,.13,.68,.77),(.02,.22,.67,.92),(.28,.20,.69,.94),(.43,.09,.72,.82)],paint)
-  for x in [-.02,.12]:
-   d.box(x,x+.12,-.19,.19,.40,.65,'#656b67')
-   for z in [.45,.51,.57,.63]:d.line([(x,-.2,z),(x+.13,-.2,z)],'#20272a',1)
-  d.line([(rear-.18,.25,.35),(.35,.25,.35),(.4,.2,.43)],CHROME,4)
- if b=='sportbike':
-  for side in [-1,1]:d.poly([(-.2,side*.18,.4),(.65,side*.23,.45),(.62,side*.27,.96),(.2,side*.25,1.03),(-.02,side*.2,.79)],paint)
-  d.box(.4,.65,-.20,.20,.94,1.04,GLASS)
- if b=='dualsport':d.box(.40,front+.10,-.11,.11,.78,.83,paint)
- bar_z=1.09 if b in ['cruiser','tourer'] else 1.0
- d.line([(front-.2,0,.9),(front-.27,0,bar_z),(front-.12,-m['width']/2,bar_z)],CHROME,3)
- d.line([(front-.27,0,bar_z),(front-.12,m['width']/2,bar_z)],CHROME,3)
- d.box(front-.14,front-.06,-.1,.1,.82,.94,'#e4dcc1')
- d.box(rear-.17,rear-.1,-.08,.08,.70,.75,'#9d4942')
- if b=='tourer':
-  for side in [-1,1]:d.box(rear-.17,rear+.46,side*.38-.11,side*.38+.11,.45,.80,paint)
-  d.poly([(.38,-.3,.93),(.38,.3,.93),(.3,.27,1.38),(.3,-.27,1.38)],'#789093','#b2b8ae')
- if b=='moped':d.box(front-.2,front+.12,-.17,.17,1.0,1.17,'#6b705d')
+def bike(d,m):motorcycle(d,m)
 def vehicle(d,m,door=0):
  if m['vehicle_class']=='two_wheelers':bike(d,m);return
+ if m['body'] in ['sportcoupe','grandtourer','exotic_curved']:exotic(d,m,door);return
+ if m['body'] in ['tactical_utility','armored_transport']:armored(d,m,door);return
  L=m['length'];Y=m['width']/2;h=m['height'];p=m['paint'];b=m['body']
  heavy=m['vehicle_class']=='heavy_transports';utility=m['vehicle_class']=='utility_vehicles'
  r=.41 if heavy else (.43 if b=='lifted_pickup' else (.36 if utility else .30))
  bottom=.45 if heavy else .34;cab_h=min(h,2.18) if b in ['boxtruck','cabover','military_truck','surplus_truck'] else h;belt=cab_h*.57
  front=L*.31;rear=-L*.32
  for x in [rear,front]+([-L*.12] if b=='surplus_truck' else []):
-  for side in [-1,1]:d.wheel(x,side*(Y-.08),r,.24 if heavy else .20,b in ['luxury','towncar','lowrider','vintage','grandtourer'],6)
+  for side in [-1,1]:d.wheel(x,side*(Y-.08),r,.24 if heavy else .20,b in ['luxury','towncar','lowrider','vintage','grandtourer'],6,'#a58a57' if b=='luxury_suv' else None)
  sports=b in ['sportcoupe','grandtourer']
  nose=.64 if sports else (.81 if b in ['compact','crossover','executive'] else .87)
  sections=[(-L*.49,Y*.78,bottom+.06,belt-.13),(-L*.44,Y*.92,bottom,belt-.025),(-L*.35,Y*.98,bottom,belt),(L*.24,Y*.98,bottom,belt),(L*.39,Y*.94,bottom,belt-.05),(L*.49,Y*nose,bottom+.06,belt-(.25 if sports else .12))]
  if b=='vintage':sections=[(-L*.49,Y*.68,bottom+.11,belt-.14),(-L*.43,Y*.9,bottom+.025,belt),(-L*.31,Y*.99,bottom,belt+.06),(L*.27,Y*.99,bottom,belt+.07),(L*.42,Y*.88,bottom+.05,belt-.02),(L*.49,Y*.66,bottom+.14,belt-.17)]
- d.hull(sections,p)
+ rounded=b in ['luxury','towncar','executive','compact','crossover','luxury_suv','vintage']
+ if rounded:shell(d,sections,p)
+ else:d.hull(sections,p)
  # Long lower body facets, rocker trim, bumpers, and individual wheel arches.
  d.box(-L/2,L/2,-Y+.02,Y-.02,bottom+.02,bottom+.15,'#565d5b' if b in ['vintage','lowrider','towncar','luxury'] else '#2b3131')
  for side in [-1,1]:
@@ -205,7 +171,10 @@ def vehicle(d,m,door=0):
   cab0=L*.19;cab1=L*.47;slant=.13;windows=1
   if b in ['panelvan','passengervan','highroof']:cab0=-L*.44;cab1=L*.36;slant=.17;windows=4 if b=='passengervan' else 1
   if b in ['bus','rv','stepvan']:cab0=-L*.47;cab1=L*.44;slant=.07;windows=7 if b=='bus' else (3 if b=='rv' else 1)
- d.cabin(cab0,cab1,-Y*(.88 if sports else .96),Y*(.88 if sports else .96),belt,cab_h,p,slant,windows)
+ if rounded:
+  roof='#d3cfc0' if b=='luxury' else ('#5b2933' if b=='towncar' else ('#252c31' if b=='luxury_suv' else p))
+  canopy(d,cab0,cab1,Y*.92,belt,cab_h,roof,slant,windows)
+ else:d.cabin(cab0,cab1,-Y*(.88 if sports else .96),Y*(.88 if sports else .96),belt,cab_h,p,slant,windows)
  if b in ['panelvan','highroof']:
   # Opaque cargo side panels replace the broad rear glass region.
   for side in [-1,1]:
@@ -242,7 +211,7 @@ def vehicle(d,m,door=0):
    y=side*Y*.98
    for z in [belt-.28,belt-.12]:d.line([(-L*.47,y,z),(L*.44,y,z)],'#403e30',2,.04)
   d.box(L*.38,L*.44,-Y*.85,Y*.85,h-.17,h-.10,'#4c4937')
- if b in ['towncar','lowrider']:d.poly([(cab0+slant,-Y*.82,h+.014),(cab1-slant,-Y*.82,h+.014),(cab1-slant,Y*.82,h+.014),(cab0+slant,Y*.82,h+.014)],'#bbb4a0' if b=='lowrider' else '#383b35')
+ if b=='lowrider':d.poly([(cab0+slant,-Y*.82,h+.014),(cab1-slant,-Y*.82,h+.014),(cab1-slant,Y*.82,h+.014),(cab0+slant,Y*.82,h+.014)],'#bbb4a0' if b=='lowrider' else '#383b35')
  # Grille, separated headlights, tail lights, plate and recessed bumper detail.
  xf=L*.493;xb=-L*.493
  d.poly([(xf,-Y*.56,bottom+.19),(xf,Y*.56,bottom+.19),(xf,Y*.56,belt-.10),(xf,-Y*.56,belt-.10)],'#283133',CHROME)
@@ -277,12 +246,15 @@ def vehicle(d,m,door=0):
   for side in [-1,1]:
    y=side*(Y+.032)
    d.poly([(-L*.32,y,bottom+.20),(L*.30,y,bottom+.20),(L*.30,y,belt-.02),(-L*.32,y,belt-.02)],'#536b54',None,priority=.064)
-   d.marking('POLICE',0,y,bottom+.23,1.72,.23,'#e4dfc8')
+   d.marking('POLICE',-.25,y,bottom+.23,1.30,.23,'#e4dfc8')
+   badge(d,'nbpd',.66,y+.008*side,bottom+.38,.34)
   for yy in [-Y*.57,Y*.57]:d.line([(xf+.12,yy,bottom+.1),(xf+.12,yy,belt+.08)],'#242a2b',3,.10)
- if b in ['tactical_utility','military_truck']:
+ if m.get('brand')=='trc':
   for side in [-1,1]:
    y=side*(Y+.06)
-   d.marking('TRC',L*.24,y,bottom+.23,.7,.24,'#b6a770')
+   d.poly([(-L*.30,y,bottom+.18),(L*.28,y,bottom+.18),(L*.28,y,belt-.06),(-L*.30,y,belt-.06)],'#284b3c',None,priority=.06)
+   d.marking('TRC',-.26,y,bottom+.23,.75,.24,'#b6a770')
+   badge(d,'trc',.55,y+.005*side,bottom+.37,.35)
  if b in ['offroad','luxury_suv','suv','tactical_utility','surplus_utility']:
   for side in [-1,1]:d.line([(cab0+.25,side*Y*.74,h+.06),(cab1-.25,side*Y*.74,h+.06)],'#343c3b',2,.02)
  if b=='surplus_utility':
@@ -316,7 +288,7 @@ def build():
  data=json.loads((ROOT/'assets/data/vehicle_models.json').read_text())
  (OUT/'sprites').mkdir(parents=True,exist_ok=True);(OUT/'icons').mkdir(exist_ok=True)
  (OUT/'.gdignore').write_text('')
- manifest={'version':1,'pixels_per_unit':PPU,'size':[W,H],'origin':list(ORIGIN),'directions':list(ANGLES),'models':{}}
+ manifest={'version':2,'pixels_per_unit':PPU,'size':[W,H],'origin':list(ORIGIN),'directions':list(ANGLES),'models':{}}
  for id,m in data['models'].items():
   frames=[]
   for facing,angle in ANGLES.items():
@@ -324,7 +296,7 @@ def build():
     drawing=Drawing(angle);vehicle(drawing,m,phase*.5)
     path=OUT/'sprites'/f'{id}_{facing}_{phase}.png'
     image=drawing.export(path);frames.append(path.name)
-    if facing=='se' and phase==0:
+    if facing==('e' if m['vehicle_class']=='two_wheelers' else 'se') and phase==0:
      bounds=image.getbbox();cropped=image.crop(bounds)
      # Unscaled crop keeps crisp native pixels and model-specific proportions.
      cropped.save(OUT/'icons'/f'{id}.png')

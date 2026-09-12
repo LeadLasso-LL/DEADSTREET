@@ -18,10 +18,17 @@ func check(ok: bool,message: String):
 	checks+=1
 	if not ok:errors.append(message);printerr("FLEET_FAIL ",message)
 func run():
-	check(Models.all_ids().size()==40,"40 models")
+	check(Models.all_ids().size()==46,"46 models")
 	check(Models.data().faction_preferences.size()==23,"23 faction preferences")
 	for faction in Models.data().faction_preferences:
 		for id in Models.preferences(faction):check(Models.has_model(id),"preference "+str(id))
+	for brand in ["trc","nbpd"]:
+		for category in Models.data().classes:
+			var covered=false
+			for id in Models.all_ids():
+				var candidate=Models.model(id)
+				if candidate.get("brand", "")==brand and candidate.vehicle_class==category:covered=true
+			check(covered,brand+" branded class "+category)
 	var manifest: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Models.ART+"manifest.json"))
 	for id: String in Models.all_ids():
 		var m=Models.model(id);var c: Dictionary=Models.data().classes[m.vehicle_class]

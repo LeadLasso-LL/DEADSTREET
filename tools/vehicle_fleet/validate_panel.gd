@@ -7,7 +7,7 @@ func run():
  root.size=Vector2i(1152,860)
  var panel=load("res://gameplay/vehicle_fleet_panel.gd").new();panel.faction_id="trc";root.add_child(panel)
  await process_frame;await process_frame
- for pair in [["two_wheelers",8],["passenger_cars",12],["utility_vehicles",10],["heavy_transports",10]]:
+ for pair in [["two_wheelers",10],["passenger_cars",14],["utility_vehicles",10],["heavy_transports",12]]:
   panel.class_buttons[pair[0]].pressed.emit();await process_frame
   check(panel.selected_class==pair[0],"class button capture "+pair[0])
   check(panel.grid.get_child_count()==pair[1],"model count "+pair[0])
@@ -22,7 +22,7 @@ func run():
  panel.convoy_row.get_child(0).pressed.emit();await process_frame
  check(panel.selected==["putter","shuttle"],"remove correct model")
  panel.preferred.button_pressed=true;await process_frame
- check(panel.grid.get_child_count()==2,"TRC suggestions filter")
+ check(panel.grid.get_child_count()==3,"TRC suggestions filter")
  check(panel.selected==["putter","shuttle"],"preferences do not restrict selected fleet")
  print("FLEET_PANEL ",errors)
  panel.queue_free();await process_frame

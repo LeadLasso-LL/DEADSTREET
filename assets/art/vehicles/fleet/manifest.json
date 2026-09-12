@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "pixels_per_unit": 40,
   "size": [
     640,
@@ -114,6 +114,30 @@
         "longhaul_nw_0.png",
         "longhaul_n_0.png",
         "longhaul_ne_0.png"
+      ]
+    },
+    "outrider": {
+      "frames": [
+        "outrider_e_0.png",
+        "outrider_se_0.png",
+        "outrider_s_0.png",
+        "outrider_sw_0.png",
+        "outrider_w_0.png",
+        "outrider_nw_0.png",
+        "outrider_n_0.png",
+        "outrider_ne_0.png"
+      ]
+    },
+    "marshal": {
+      "frames": [
+        "marshal_e_0.png",
+        "marshal_se_0.png",
+        "marshal_s_0.png",
+        "marshal_sw_0.png",
+        "marshal_w_0.png",
+        "marshal_nw_0.png",
+        "marshal_n_0.png",
+        "marshal_ne_0.png"
       ]
     },
     "rattleback": {
@@ -450,6 +474,62 @@
         "belvedere_ne_0.png",
         "belvedere_ne_1.png",
         "belvedere_ne_2.png"
+      ]
+    },
+    "veloce": {
+      "frames": [
+        "veloce_e_0.png",
+        "veloce_e_1.png",
+        "veloce_e_2.png",
+        "veloce_se_0.png",
+        "veloce_se_1.png",
+        "veloce_se_2.png",
+        "veloce_s_0.png",
+        "veloce_s_1.png",
+        "veloce_s_2.png",
+        "veloce_sw_0.png",
+        "veloce_sw_1.png",
+        "veloce_sw_2.png",
+        "veloce_w_0.png",
+        "veloce_w_1.png",
+        "veloce_w_2.png",
+        "veloce_nw_0.png",
+        "veloce_nw_1.png",
+        "veloce_nw_2.png",
+        "veloce_n_0.png",
+        "veloce_n_1.png",
+        "veloce_n_2.png",
+        "veloce_ne_0.png",
+        "veloce_ne_1.png",
+        "veloce_ne_2.png"
+      ]
+    },
+    "vigil": {
+      "frames": [
+        "vigil_e_0.png",
+        "vigil_e_1.png",
+        "vigil_e_2.png",
+        "vigil_se_0.png",
+        "vigil_se_1.png",
+        "vigil_se_2.png",
+        "vigil_s_0.png",
+        "vigil_s_1.png",
+        "vigil_s_2.png",
+        "vigil_sw_0.png",
+        "vigil_sw_1.png",
+        "vigil_sw_2.png",
+        "vigil_w_0.png",
+        "vigil_w_1.png",
+        "vigil_w_2.png",
+        "vigil_nw_0.png",
+        "vigil_nw_1.png",
+        "vigil_nw_2.png",
+        "vigil_n_0.png",
+        "vigil_n_1.png",
+        "vigil_n_2.png",
+        "vigil_ne_0.png",
+        "vigil_ne_1.png",
+        "vigil_ne_2.png"
       ]
     },
     "workhorse": {
@@ -1010,6 +1090,62 @@
         "harbor_ne_0.png",
         "harbor_ne_1.png",
         "harbor_ne_2.png"
+      ]
+    },
+    "aegis": {
+      "frames": [
+        "aegis_e_0.png",
+        "aegis_e_1.png",
+        "aegis_e_2.png",
+        "aegis_se_0.png",
+        "aegis_se_1.png",
+        "aegis_se_2.png",
+        "aegis_s_0.png",
+        "aegis_s_1.png",
+        "aegis_s_2.png",
+        "aegis_sw_0.png",
+        "aegis_sw_1.png",
+        "aegis_sw_2.png",
+        "aegis_w_0.png",
+        "aegis_w_1.png",
+        "aegis_w_2.png",
+        "aegis_nw_0.png",
+        "aegis_nw_1.png",
+        "aegis_nw_2.png",
+        "aegis_n_0.png",
+        "aegis_n_1.png",
+        "aegis_n_2.png",
+        "aegis_ne_0.png",
+        "aegis_ne_1.png",
+        "aegis_ne_2.png"
+      ]
+    },
+    "bulwark": {
+      "frames": [
+        "bulwark_e_0.png",
+        "bulwark_e_1.png",
+        "bulwark_e_2.png",
+        "bulwark_se_0.png",
+        "bulwark_se_1.png",
+        "bulwark_se_2.png",
+        "bulwark_s_0.png",
+        "bulwark_s_1.png",
+        "bulwark_s_2.png",
+        "bulwark_sw_0.png",
+        "bulwark_sw_1.png",
+        "bulwark_sw_2.png",
+        "bulwark_w_0.png",
+        "bulwark_w_1.png",
+        "bulwark_w_2.png",
+        "bulwark_nw_0.png",
+        "bulwark_nw_1.png",
+        "bulwark_nw_2.png",
+        "bulwark_n_0.png",
+        "bulwark_n_1.png",
+        "bulwark_n_2.png",
+        "bulwark_ne_0.png",
+        "bulwark_ne_1.png",
+        "bulwark_ne_2.png"
       ]
     }
   }

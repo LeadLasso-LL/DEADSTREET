@@ -27,7 +27,7 @@ func run():
 	panel.selected=["bastion"];panel.refresh_convoy()
 	panel.apply_button.pressed.emit();await process_frame
 	check(review.loadouts.attacker.vehicles==["bastion"],"selector updates actual attacker loadout")
-	for scenario in [{"name":"trc_bastion","faction":"trc","vehicles":["bastion"]},{"name":"nbpd_patrol","faction":"nbpd","vehicles":["interceptor","warden"]},{"name":"raiders_bus","faction":"sand_raiders","vehicles":["pilgrim"]},{"name":"bicycle_convoy","faction":"mercer","vehicles":["yardbird","yardbird","yardbird","yardbird","yardbird"]}]:
+	for scenario in [{"name":"trc_armored","faction":"trc","vehicles":["aegis","watchdog"]},{"name":"nbpd_swat","faction":"nbpd","vehicles":["bulwark","warden"]},{"name":"mixed_exotics","faction":"ravicci","vehicles":["veloce","specter","nightjar"]},{"name":"authority_bikes","faction":"trc","vehicles":["outrider","marshal","outrider","marshal","outrider"]}]:
 		review.loadouts.attacker.faction=scenario.faction
 		review.loadouts.attacker.vehicles=scenario.vehicles
 		await review.start_battle(false)
@@ -35,6 +35,7 @@ func run():
 		if review.battle==null:continue
 		await create_timer(6.).timeout
 		var view=review.runtime.get_node("TacticalBattleView")
+		view._dusk_zoom=.82;view._dusk_pan=Vector2.ZERO;view._frame_camera()
 		var presentation=view.battle_presentation
 		check(presentation.last_path_errors.is_empty(),scenario.name+" arrival paths")
 		check(view._dusk_vehicle_nodes.size()==scenario.vehicles.size(),scenario.name+" rendered vehicle count")

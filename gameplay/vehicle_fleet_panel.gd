@@ -20,7 +20,7 @@ func _ready():
 	var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#111b20")
 	label_at(Vector2(28,18),Vector2(890,38),"DEAD STREET / VEHICLE FLEET",26)
 	button_at(Vector2(1000,18),Vector2(120,35),"CLOSE",queue_free)
-	label_at(Vector2(28,58),Vector2(1090,38),"40 models · All unlocked · Seats include the driver · Only Heavy Transports carry resources",13)
+	label_at(Vector2(28,58),Vector2(1090,38),"%d models · All unlocked · Seats include the driver · Only Heavy Transports carry resources"%Models.all_ids().size(),13)
 	var i=0
 	for id in Models.data().classes:
 		var tab=button_at(Vector2(28+i*273,102),Vector2(260,34),Models.class_name_for(id),func():selected_class=id;refresh_models())

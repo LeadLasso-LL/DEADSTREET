@@ -1,3 +1,13 @@
+## Vehicle fleet expansion and visual revision — 2026-09-12
+
+**46 models; 944 directional/door sprites; 46 icons.** Ten Two-Wheelers, fourteen Passenger Cars, ten Utility Vehicles and twelve Heavy Transports. Motorcycle wheels are exposed and exhausts shortened; two low-bar sportbikes and two V-twin cruiser/tourer silhouettes are distinct. Scarlet, lime, azure, plum/ivory, champagne/burgundy and pearl/black finishes expand the sports/luxury range, with beveled fenders and sculpted body shapes.
+
+TRC and NBPD each have dedicated branded models in every class. New models: Outrider TRC, Marshal Police, Veloce Rosso, Vigil TRC, Aegis Armored TRC and Bulwark SWAT. Watchdog is now a black armored utility truck. All models remain unlocked and faction recommendations impose no restrictions. Only Heavy Transports carry resources; seats still include the driver.
+
+Windows Godot 4.7.2 passed 2876 model/gameplay checks and 43 mixed-convoy checks, plus selector and script-load tests. Four native D3D12/Forward+ scenarios passed: TRC armored, NBPD SWAT, mixed exotics and authority motorcycles. Representative captures were visually inspected. All revised facings and the 19-page guide were reviewed. Three phone-friendly sheets cover motorcycles, sports/luxury cars and authority class coverage.
+
+This is an artwork/catalog expansion within the battle-sandbox milestone. Two-wheelers still use parked arrivals; riding/pedaling animations remain pending. No turret, vehicle damage, hidden armor bonus or unit-outfit changes were added. Sources were applied to the authorized development folder with baseline guards; unrelated work was preserved. Git history records commit/push status.
+
 ## Vehicle fleet installed and validated - 2026-09-12
 
 **40 models installed on the development PC and validated on Windows Godot 4.7.2.** Four classes: eight Two-Wheelers (1–2 seats), twelve Passenger Cars (1–4), ten Utility Vehicles (1–7), and ten Heavy Transports (1–12). Only Heavy Transports carry campaign resources. Seats include the driver; every moving vehicle reserves one actual unit. Six suggested models for each of the 23 factions are recommendations, not restrictions. Every model is available in the battle sandbox fleet selector.
