@@ -1,0 +1,220 @@
+# Dead Street — decision and work journal
+
+Append meaningful events as work happens. Follow the
+[Hive Mind protocol](DEAD_STREET_HIVE_MIND.md).
+Historical seeds below identify their source and limits; they are not a claim
+that every original conversation has been recovered.
+Archive index: none yet.
+
+## 20260913-workflow-01 — shared project memory established
+
+- **Event/recovery date:** 2026-09-13. **Type:** WORKFLOW / USER DECISION.
+- **Status:** ADOPTED by explicit instruction in the receiving chat.
+- **Source:** Brandon asked to establish a document/workflow in this project that
+  future chats review, edit and use as a “hive mind,” recording everything needed
+  for continuity and clean handoffs.
+- **Decision and reason:** maintain project memory during meaningful work so a
+  maximum-length chat does not require the user to export/reconstruct its history.
+  The working assistant owns this maintenance.
+- **Implementation:** root AGENTS.md supplies startup/recording instructions;
+  DEAD_STREET_HIVE_MIND.md coordinates reading/ownership/next action; this journal
+  retains decisions, reasons, changes, failures and evidence. Existing Project
+  Control remains the milestone tracker. Topic documents remain authoritative
+  for their detailed rules.
+- **Scope:** these three documentation files only. The concurrently active bridge
+  optimization and existing project-control content are preserved.
+- **Validation:** check file contents, relative links, expected destination,
+  Git diff/scope and preservation of unrelated work. No game tests are needed for
+  this documentation-only change; no new gameplay validation is claimed.
+- **Checkpoint:** this entry travels with the documentation commit; obtain its
+  exact hash and push state from Git/remote verification rather than a self-
+  referential hardcoded hash. A reported save/push failure must remain explicit.
+- **Next:** apply this rule from now on; reconcile the active build pass when it ends.
+
+## 20260913-transfer-01 — active chat handoff remains pending
+
+- **Date:** 2026-09-13. **Type:** COORDINATION. **Status:** OPEN.
+- **Source:** direct statements by Brandon in this receiving chat.
+- **Sequence:** Resume Build Pass reached maximum length; building continued in
+  [[Idea Repository]], which was still working. Brandon will coordinate its finish
+  before the new chat takes over gameplay implementation.
+- **Reason:** preserve the active pass's work and include its final delta.
+- **Evidence:** live read-only audit found branch build/arsenal-checkpoint-20260911,
+  gameplay HEAD e2c9a1374c5f82336126c59becc9d59a9d5090d3, mixed dirty files and current
+  bridge-performance harnesses. Identity was rechecked at 09:49 EDT.
+- **Limit:** full transcripts were not retrieved. Current repository records give
+  substantial technical/product context; unrecorded conversations remain gaps.
+- **Next:** after completion, inspect latest HEAD, status, current docs, final
+  measurements and remaining work; update the Hive Mind's ownership and next action.
+
+## 20260913-scale-01 — convoy-sized battle ceiling
+
+- **Original discussion:** latest visible Idea Repository context; exact event
+  time unavailable. **Recovered:** 2026-09-13.
+- **Type:** PRODUCT DIRECTION. **Status:** TARGET ESTABLISHED; DETAILS PROPOSED.
+- **Sources:** visible user context and
+  [bridge V3 report](../tools/bridge_map/v3_results/BRIDGE_REVISION_2026-09-13.md).
+- **Direction:** maximum intended battle size is two maximum legal convoys.
+  Hundreds of simultaneous units are not the intended target.
+- **Proposal:** at most three vehicles per convoy, with composition constraints
+  that make personnel capacity bounded. Exact combinations and cap remain open.
+- **Reason:** define realistic battle scale through transport capacity.
+- **Not approved:** transport-plus-two-escorts is a report example; sandbox
+  1–12/side is an implementation limit, not the final campaign rule.
+- **Next:** retain the open decision; measure the final legal ceiling when defined.
+
+## 20260913-performance-01 — bridge performance is unfinished
+
+- **Evidence recovered:** 2026-09-13. **Type:** FINDING / ACTIVE WORK. **Status:** OPEN.
+- **Sources:** bridge V3 report, tools/bridge_perf/defender24.json and
+  tools/bridge_perf/checks_defender.json; read-only defender-position diff.
+- **Finding:** bridge traffic/geometry and combat simulation have substantial
+  cost. Existing optimization includes cheap cover rejection and spatial queries.
+  The inspected defender diff avoids necessarily out-of-range searches, moves
+  range checks before expensive tests, and uses point-local obstacle queries.
+- **Reason for current work:** user reported unacceptable performance and asked
+  whether parked-car handling and defender decision workload could be reduced.
+- **Product boundary:** defenders generally hold/pivot but can exploit an
+  advantage. Do not remove contextual counterattacks merely to reduce work.
+- **Evidence limits:** V3 final 16-actor snapshots were 19–25 FPS. A later stored
+  24-actor/30-second report has mean update 36.75229 ms, P95 61.951 ms, snapshots
+  12–31 FPS, and 1,062 focused checks reported separately with no errors.
+  Different layouts/fixtures are not a valid matched performance comparison.
+  These reports were read, not rerun by the receiving chat.
+- **Correction to retain:** V3 explicitly retracts an unsupported earlier
+  assurance about hundreds of units. Harness throughput is not production FPS.
+- **Next:** await and inspect the active pass's final evidence and unresolved cost.
+
+## 20260913-bridge-01 — scale, traffic and map-specific arrivals
+
+- **Recovered:** 2026-09-13. **Type:** PRODUCT / IMPLEMENTATION. **Status:** BUILT
+  REVISION; FINAL OWNER ACCEPTANCE NOT RECOVERED.
+- **Sources:** user context, current Project Control, bridge README and V3 report.
+- **Intent:** elevated left-to-right suspension-bridge battle; defender blockade
+  and stopped traffic; close cover movement and long rifle/sniper lanes.
+- **Decisions:** arrival choices depend on the map; close/middle/far is not
+  universal. Civilian pre-fight animation is after the sandbox. Campaign route
+  reopening is desired but not connected by the isolated bridge sandbox.
+- **Latest recorded revision:** 39 civilian cars; upper traffic west/lower east;
+  civilian art/chassis scale 1.6, units remain 1.48; median gaps and selected
+  defender faction preserved. Rotated chassis use conservative axis-aligned
+  slabs; civilian open doors remain visual. V3 diagonal attacker placement
+  supersedes the intermediate lengthwise-arrival README entry.
+- **Reason for scale correction:** people looked too large relative to vehicle
+  length/width. The request was not to make sports cars taller than humans.
+- **Next:** review final live revision and owner acceptance; preserve these distinctions.
+
+## 20260913-standards-01 — preserve accepted visual baseline
+
+- **Historical events:** Harold approval 2026-09-10; unit standard 2026-09-11.
+  **Recovered:** 2026-09-13. **Type:** ACCEPTED STANDARD / CORRECTIONS.
+- **Sources:** [Map standard](MAP_BUILDING_STANDARD.md),
+  [unit art standard](UNIT_ART_STANDARD.md).
+- **Accepted:** Harold through 139d10c is the reusable map visual baseline.
+  Drawn gritty pixel art and elevated tactical perspective are current.
+- **Corrections:** clothing must not distort accepted anatomy; shoulders/hips
+  remain joined; weapons/grips keep identity across facings. Use believable
+  thickness, materials, ground contact, small signs, worn graffiti and solid
+  full-height Harold stoop sides. Appearance and physical cover must agree.
+- **Reason:** repeated visual feedback established these as production criteria.
+  Assistant inspection must catch visible defects before presenting work.
+- **Limit:** neither numerical checks nor an existing asset imply new owner approval.
+- **Next:** use the linked standards and actual accepted references for relevant work.
+
+## 20260913-sandbox-01 — current scope and model distinctions
+
+- **Historical milestones:** 2026-09-12–13. **Recovered:** 2026-09-13.
+- **Type:** IMPLEMENTED STATE. **Status:** DOCUMENTED; LIVE ACCEPTANCE VARIES.
+- **Sources:** current Project Control, sandbox README and fleet README.
+- **State:** regular roster 23 factions / 115 outfits; five fixed classes;
+  30 models within classes; guide pairings illustrative. Unit tiers are independent
+  of weapon tiers. Armor modifies HP by 15/30/50% and leaves outfits unchanged.
+  Current fleet count is 75; earlier 40/46/60/73 counts are history.
+- **Rules:** seats include actual drivers; ordinary resource cargo belongs to
+  Heavy Transports. Faction recommendations impose no sandbox restrictions.
+- **Scope boundary:** isolated battle sandbox/Encounter Lab functionality does
+  not imply full campaign dispatch, economy, battle-outcome or route integration.
+  Two-wheeler riding and Whittaker Estate remain recorded follow-ups.
+- **Next:** finish current sandbox priorities; do not reopen older completed
+  roster integration or introduce deferred systems without current direction.
+
+## 20260913-combat-01 — combat outcomes, authority and regression caveat
+
+- **Historical evidence:** 2026-09-10–11. **Recovered:** 2026-09-13.
+- **Type:** BEHAVIOR CONTRACT / VALIDATION LIMIT. **Status:** RETAIN; RECHECK GATES.
+- **Sources:** arsenal production report, attacker-tactics follow-up and
+  relative-strength AI document.
+- **Contracts:** continuous real-time combat; no elapsed-time winner. Test
+  observation cutoffs are not defeat conditions. Player orders retain authority.
+  Defender pushes respond to assessed advantage; they are not a timed script.
+  Sniper damage follows quality/trauma/vitality, not automatic second-wound death.
+- **Reason:** owner wanted better attacker chances and contextual combat without
+  fabricated outcomes; documented tactical fixes avoid attacker-only stat bonuses.
+- **Validation gap:** historical arsenal notes list 166 core assertion failures
+  versus 120 before that checkpoint; later resolution was not established by the
+  recovery. Do not call these fresh current failures or claim all current gates green.
+- **Next:** inspect latest relevant evidence when taking over. Broaden testing
+  only to resolve a concrete risk or required gate.
+
+## 20260913-workflow-02 — prompt completion and explicit push approval
+
+- **Date/type/status:** 2026-09-13; USER INSTRUCTION; ADOPTED.
+- **Source:** Brandon in this chat: finish work and report as soon as possible
+  without compromising it; explicit approval to commit/push to LeadLasso GitHub.
+- **Reason:** prolonged cleanup after completion reports caused frustration.
+- **Rule:** acknowledge new notes/status questions promptly, update at least
+  every minute when control is available, report blockers immediately, and stop
+  optional checks once the concrete risk is covered. Distinguish work, tests,
+  commit and push status.
+- **Scope:** the pending startup/Hive Mind/journal files, the attached handoff
+  archived in this repository, and the two referenced bridge reports.
+  Bridge/performance source and unrelated working-tree changes are excluded.
+- **Authorization:** verified origin https://github.com/LeadLasso-LL/DEADSTREET.git,
+  branch build/arsenal-checkpoint-20260911. The prior automatic review rejected
+  commit/push because it could not verify destination authorization; this direct
+  approval supersedes that gap. No need to request the same approval again.
+- **Validation/checkpoint:** documentation links and scoped whitespace checks
+  precede commit; no gameplay tests are needed or claimed. Exact commit and push
+  state are verified from Git and the remote branch, not a self-referential hash.
+
+## 20260913-transfer-02 — final Idea Repository handoff received
+
+- **Date/type/status:** 2026-09-13; COORDINATION / REVIEWED EVIDENCE; TRANSFERRED.
+- **Source:** Brandon's attached handoff, preserved at
+  [handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md](handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md);
+  live performance and bridge V3 reports were also read.
+- **Supersedes:** pending ownership in 20260913-transfer-01 and intermediate
+  performance numbers in 20260913-performance-01.
+- **Live state:** gameplay HEAD e2c9a1374c5f82336126c59becc9d59a9d5090d3 on
+  build/arsenal-checkpoint-20260911; bridge/performance source remains uncommitted.
+  The handoff reports no further build operation intentionally running.
+  Continuation ownership transfers here.
+- **Prior evidence:** 16-unit mean simulation update 29.67 → 12.80 ms. Normal
+  playable 24-unit run averaged 34.46 FPS, P95 frame 43.44 ms, max 231.07 ms.
+  Simulation pause raised the scene to 60.42 FPS. 1,434 focused assertions passed
+  in the prior pass. Reviewed, not rerun here; stable 60 FPS, full-project
+  validation and final bridge-art acceptance remain open.
+- **Preserve:** static civilian-car art plus cover/collision; defender position
+  search pacing with immediate context triggers; existing shotgun/SMG staged
+  advances. Precomputed multi-hop routes and fixed-rate/interpolated simulation
+  remain unimplemented.
+- **Next:** one measured simulation bottleneck in the normal 24-unit bridge battle,
+  existing relevant checks and matched playable comparison, then prompt report.
+
+## 20260913-creative-01 — creative context preserved from final handoff
+
+- **Date/type/status:** recovered 2026-09-13; HISTORICAL DECISIONS / CONCEPTS.
+- **Source:** archived handoff section 12; accepted assets not re-audited here.
+- **Reported accepted:** Silvio Ventresca unit and portrait; age 63, gray hair with
+  white streaks, trimmed mustache, compact smoky gold-framed sunglasses, open
+  brown blazer and cream shirt. Preserve corrected arms, folds and neck.
+- **Portrait direction:** rough drawn/pixel identity, candid evidence photos,
+  white borders and handwritten names, varied faction-specific settings.
+  Authority leaders use official department plaques/portraits; TRC is military
+  styled. Do not infer that every generated asset is present or inspected.
+- **Concepts:** end-turn helicopter zoom-out with subtle rotors, staticky pilot
+  gibberish and possible police-camera treatment; implementation unverified.
+  Player-created factions are later work; detailed customization rules were
+  not recovered and must not be invented.
+- **Next:** locate accepted assets/topic notes when relevant; these concepts do
+  not displace the immediate performance priority.
