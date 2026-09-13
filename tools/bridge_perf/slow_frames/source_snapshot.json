@@ -1,0 +1,10 @@
+{
+  "baseline_head": "16405fbb057e8390fa0c0e864e879e461494232e",
+  "source_file": "battle/combat/battle_target_selection_service.gd",
+  "source_sha256": "2016965f33abaf757378a8216b5504b8c89d37b10945ee6d59eb0a97d6f9a3fe",
+  "base_snapshot": "../headroom/release_source_snapshot.json",
+  "fixed_state_matches": true,
+  "production_changed_files": [
+    "battle/combat/battle_target_selection_service.gd"
+  ]
+}

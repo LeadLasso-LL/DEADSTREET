@@ -271,10 +271,16 @@ static func _assault_target(b: BattleState, source: BattleParticipant, ids: Arra
 	var definition = Weapons.for_participant(source)
 	if definition == null:
 		return ""
+	# Range is constant for this scan. Cull impossible candidates before ranking,
+	# while preserving the original distance calculation and stable tie order.
+	var max_range_squared: float = definition.max_range * definition.max_range
+	if not is_finite(max_range_squared): return ""
 	var ordered: Array = []
 	for index in range(ids.size()):
 		var id: String = ids[index]
 		var candidate: BattleParticipant = b.get_participant(id)
+		var distance_squared: float = source.battle_position.distance_squared_to(candidate.battle_position)
+		if not is_finite(distance_squared) or distance_squared > max_range_squared: continue
 		var distance: float = source.battle_position.distance_to(candidate.battle_position)
 		if id == source.target_participant_id: distance *= 0.85
 		if distance < INF:
@@ -283,7 +289,6 @@ static func _assault_target(b: BattleState, source: BattleParticipant, ids: Arra
 	for row: Array in ordered:
 		var candidate: BattleParticipant = row[3]
 		if not FireControl._target_rejection_code(b, source, candidate).is_empty(): continue
-		if not FireControl._is_target_in_range(source, candidate, definition): continue
 		var sight = LOS.check_participant_to_participant(b, source.participant_id, row[2])
 		if sight != null and sight.success and sight.has_line_of_sight:
 			return row[2]

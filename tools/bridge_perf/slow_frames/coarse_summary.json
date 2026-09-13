@@ -1,0 +1,74 @@
+{
+  "battle_adaptive_tactics.advance": {
+    "calls": 1931,
+    "inclusive_ms": 0.04056728778467909,
+    "exclusive_ms": 0.006212732919254659,
+    "max_ms": 1.865
+  },
+  "battle_combat_behavior_service.advance": {
+    "calls": 1931,
+    "inclusive_ms": 4.116595238095238,
+    "exclusive_ms": 4.116595238095238,
+    "max_ms": 22.152
+  },
+  "battle_combat_pressure_service.refresh": {
+    "calls": 1931,
+    "inclusive_ms": 0.6356475155279503,
+    "exclusive_ms": 0.6356475155279503,
+    "max_ms": 1.254
+  },
+  "battle_fire_control_service.advance_weapon_state": {
+    "calls": 1931,
+    "inclusive_ms": 0.9608302277432712,
+    "exclusive_ms": 0.9608302277432712,
+    "max_ms": 1.899
+  },
+  "battle_movement_service.advance": {
+    "calls": 1931,
+    "inclusive_ms": 0.8220398550724638,
+    "exclusive_ms": 0.8220398550724638,
+    "max_ms": 2.239
+  },
+  "battle_path_follow_service.advance": {
+    "calls": 1931,
+    "inclusive_ms": 0.06999534161490684,
+    "exclusive_ms": 0.06999534161490684,
+    "max_ms": 0.158
+  },
+  "battle_relative_strength.refresh": {
+    "calls": 3862,
+    "inclusive_ms": 0.03680538302277433,
+    "exclusive_ms": 0.03680538302277433,
+    "max_ms": 1.826
+  },
+  "battle_runtime_service.advance": {
+    "calls": 1931,
+    "inclusive_ms": 9.084906314699793,
+    "exclusive_ms": 0.8610010351966874,
+    "max_ms": 28.21
+  },
+  "battle_target_selection_service.advance": {
+    "calls": 1931,
+    "inclusive_ms": 1.5757789855072464,
+    "exclusive_ms": 1.5757789855072464,
+    "max_ms": 3.236
+  },
+  "tactical_actor_presenter.sync_dynamic": {
+    "calls": 1931,
+    "inclusive_ms": 1.3504528985507245,
+    "exclusive_ms": 1.3504528985507245,
+    "max_ms": 2.649
+  },
+  "tactical_battle_view._process": {
+    "calls": 1931,
+    "inclusive_ms": 1.4963447204968945,
+    "exclusive_ms": 0.14589182194616976,
+    "max_ms": 2.881
+  },
+  "tactical_battle_view.paint_dynamic_battlefield": {
+    "calls": 1932,
+    "inclusive_ms": 0.28056469979296067,
+    "exclusive_ms": 0.28056469979296067,
+    "max_ms": 1.296
+  }
+}

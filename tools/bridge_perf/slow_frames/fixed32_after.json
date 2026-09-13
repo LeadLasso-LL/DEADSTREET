@@ -1,0 +1,71 @@
+{
+  "build": {
+    "debug": false,
+    "editor": false,
+    "version": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    }
+  },
+  "bulwarks": true,
+  "damage": 21.085,
+  "display": {
+    "max_fps": 0,
+    "refresh_hz": 59.9992141723633,
+    "vsync_mode": 0
+  },
+  "final_state": "[3940654652, \"active\", [\"sandbox_attacker_unit_01\", false, 0.0, Vector2(116.132164, 37.351994), \"\", 12], [\"sandbox_attacker_unit_02\", true, 1.7249999999999999, Vector2(127.248886, 38.004875), \"sandbox_defender_unit_03\", 30], [\"sandbox_attacker_unit_03\", false, 0.0, Vector2(134.04063, 29.669403), \"\", 5], [\"sandbox_attacker_unit_04\", false, 0.0, Vector2(117.316284, 29.402155), \"\", 19], [\"sandbox_attacker_unit_05\", true, 1.5, Vector2(76.290215, 19.950216), \"sandbox_defender_unit_02\", 4], [\"sandbox_attacker_unit_06\", false, 0.0, Vector2(132.406, 35.38), \"\", 11], [\"sandbox_attacker_unit_07\", false, 0.0, Vector2(135.06824, 11.924884), \"\", 19], [\"sandbox_attacker_unit_08\", true, 2.08, Vector2(127.19716, 30.548042), \"sandbox_defender_unit_07\", 6], [\"sandbox_attacker_unit_09\", true, 1.5, Vector2(114.25633, 31.426506), \"sandbox_defender_unit_01\", 12], [\"sandbox_attacker_unit_10\", true, 1.7249999999999999, Vector2(83.53, 22.18), \"sandbox_defender_unit_02\", 5], [\"sandbox_attacker_unit_11\", false, 0.0, Vector2(120.07, 15.32), \"\", 12], [\"sandbox_attacker_unit_12\", false, 0.0, Vector2(104.259895, 18.697582), \"\", 30], [\"sandbox_attacker_unit_13\", true, 1.5, Vector2(110.4212, 40.9067), \"sandbox_defender_unit_03\", 6], [\"sandbox_attacker_unit_14\", false, 0.0, Vector2(106.134, 21.82), \"\", 20], [\"sandbox_attacker_unit_15\", true, 1.9500000000000002, Vector2(95.11, 22.38), \"sandbox_defender_unit_02\", 5], [\"sandbox_attacker_unit_16\", true, 1.82, Vector2(128.58182, 12.060676), \"sandbox_defender_unit_08\", 9], [\"sandbox_defender_unit_01\", true, 0.9750000000000001, Vector2(148.31, 19.5), \"sandbox_attacker_unit_16\", 12], [\"sandbox_defender_unit_02\", true, 1.7249999999999999, Vector2(149.75, 26.15), \"sandbox_attacker_unit_08\", 30], [\"sandbox_defender_unit_03\", true, 1.9500000000000002, Vector2(148.41, 38), \"sandbox_attacker_unit_02\", 6], [\"sandbox_defender_unit_04\", true, 2.25, Vector2(165.97, 15.5), \"sandbox_attacker_unit_16\", 18], [\"sandbox_defender_unit_05\", true, 1.5, Vector2(178.33, 15.5), \"sandbox_attacker_unit_16\", 1], [\"sandbox_defender_unit_06\", true, 1.7249999999999999, Vector2(159.41, 38), \"sandbox_attacker_unit_02\", 7], [\"sandbox_defender_unit_07\", true, 1.9500000000000002, Vector2(147.06104, 26.949757), \"sandbox_attacker_unit_08\", 30], [\"sandbox_defender_unit_08\", true, 1.1349999999999998, Vector2(146.65, 11.15), \"sandbox_attacker_unit_16\", 6], [\"sandbox_defender_unit_09\", true, 1.5, Vector2(167.33882, 12.600373), \"sandbox_attacker_unit_16\", 19], [\"sandbox_defender_unit_10\", true, 1.7249999999999999, Vector2(172.594, 22), \"sandbox_attacker_unit_16\", 1], [\"sandbox_defender_unit_11\", false, 0.0, Vector2(142.85, 29.5), \"\", 7], [\"sandbox_defender_unit_12\", true, 2.155, Vector2(152.5625, 30.30463), \"sandbox_attacker_unit_08\", 11], [\"sandbox_defender_unit_13\", false, 0.0, Vector2(140.13, 22.18), \"\", 6], [\"sandbox_defender_unit_14\", true, 1.7249999999999999, Vector2(166.4375, 32), \"sandbox_attacker_unit_08\", 16], [\"sandbox_defender_unit_15\", true, 1.9500000000000002, Vector2(175.6875, 44), \"sandbox_attacker_unit_02\", 4], [\"sandbox_defender_unit_16\", true, 2.25, Vector2(157.1875, 38.38865), \"sandbox_attacker_unit_02\", 11]]",
+  "fixed_steps": 1800,
+  "fps": 65.9660074964504,
+  "full_roster_frames": 1213,
+  "late_paused_fps": 144.326278137128,
+  "living": 22,
+  "los_cache_entries": 1579,
+  "max_frame_ms": 32.888,
+  "nav_cache_entries": 522,
+  "over_100ms": 0,
+  "over_33ms": 0,
+  "p95_frame_ms": 18.4,
+  "p99_frame_ms": 23.509,
+  "rendered": 32,
+  "setup_ms": 22121.446,
+  "sim_seconds": 29.9999999999996,
+  "simulation_ms_per_step": 8.78061111111111,
+  "uncapped": true,
+  "units": 32,
+  "wall_seconds": 27.286781,
+  "windows": [
+    {
+      "fps": 69.9819586510598,
+      "sim_seconds": 5.83333333333332,
+      "wall_seconds": 5.001289
+    },
+    {
+      "fps": 72.0971462112151,
+      "sim_seconds": 11.8500000000002,
+      "wall_seconds": 10.008422
+    },
+    {
+      "fps": 68.0094511198524,
+      "sim_seconds": 17.5333333333336,
+      "wall_seconds": 15.022431
+    },
+    {
+      "fps": 63.9446750671319,
+      "sim_seconds": 22.8666666666666,
+      "wall_seconds": 20.026757
+    },
+    {
+      "fps": 58.7314955835513,
+      "sim_seconds": 27.7666666666664,
+      "wall_seconds": 25.032589
+    }
+  ]
+}

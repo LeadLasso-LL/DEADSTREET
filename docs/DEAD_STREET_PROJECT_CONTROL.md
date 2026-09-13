@@ -1,3 +1,16 @@
+## Current milestone — controlled targeting optimization — 2026-09-13
+
+Assault targeting now culls impossible ranges before sorting candidate rows.
+9,820 focused/exact replay checks passed. A matched 32-unit rendered battle
+improved from 61.06 to 65.97 FPS, simulation 9.73 to 8.78 ms/step, with identical
+recorded battle state. P95 remains about 18.4 ms; P99 did not improve.
+Normal variable-step results remain inconsistent (48.15–64.66 FPS).
+**Steady 60 FPS and expansion headroom remain open.** This is a narrow CPU
+optimization and stronger benchmark control, not normal-play acceptance.
+
+See [evidence and reproduction](../tools/bridge_perf/slow_frames/README.md).
+Next: Use the fixed-step rendered benchmark to isolate the remaining combat/cover validation cost and frame-time tails, then verify gains in the normal variable-step game. Steady 60 FPS and larger-battle headroom remain open.
+
 ## Current milestone — release-runtime comparison — 2026-09-13
 
 Approved official Godot 4.7.2 release runtime downloaded, verified and tested.
@@ -311,9 +324,9 @@ See [BATTLE_SHOWCASE_2026-09-10.md](BATTLE_SHOWCASE_2026-09-10.md) for the facti
 
 > **2026-09-08 current-state correction (supersedes the older next-gate text below):** V1.3 post-processing is insufficient; no static style accepted. SOURCE_2 alpha16 preview bounds are contaminated and 96/80/64 labels are not gameplay screen heights. Integrity diagnostics proved the carbine is present but occluded in HYBRID_B. Direct remote arm probes now demonstrate rifle visibility at the same camera, but fail support-hand placement. Follow-up weapon-local contact solving produced `G_NEUTRAL_FORWARD50`: a readable across-body carry with repeatable joints/camera and support-hand target residuals about 1.9/2.3 DAZ units. This is an unaccepted posture candidate, not collision-free production proof. The owner authorized G_NEUTRAL_FORWARD50 as a temporary test pose without seeing the comparison (image delivery failed). This is authorization to continue testing, NOT visual acceptance of the pose or style. Next: bounded grip refinement and V1.4 graphic reconstruction; ensure review images are actually accessible before asking for visual judgment. Camera and HYBRID_B remain provisional; catalog remains unbound. HEAD is still `5a7d3bd`; integrity/probe tooling and reports are uncommitted. See [arm probe evidence](CHARACTER_FACTORY_V14_ARM_PROBE.md).
 
-**Canonical living development tracker.**  
-Last audit: **2026-09-07**.  
-Last product-state correction: **2026-09-07** — Human Generator trial insufficient; DAZ Studio / Genesis 9 is the capability-vetted source pipeline.  
+**Canonical living development tracker.**
+Last audit: **2026-09-07**.
+Last product-state correction: **2026-09-07** — Human Generator trial insufficient; DAZ Studio / Genesis 9 is the capability-vetted source pipeline.
 Last implementation milestone: **2026-09-07** — Character Factory V1.3 style-conversion 3×3 generated on the V1.2 baseline (56° + HYBRID_B). **No style accepted.** Look remains **not** accepted.
 Cleanup checkpoint: **product owner accepted M7F cleanup without an additional manual F5 baseline test.** That is **not** visual acceptance of any new character art.
 
@@ -326,7 +339,7 @@ This file is not a game design document, not a player encyclopedia, and not a vi
 | The Git repository | What **exists** in code and assets |
 | Product owner F5 / play acceptance | What is **accepted** |
 
-A class existing does not mean a feature is production-ready.  
+A class existing does not mean a feature is production-ready.
 A CORE VALIDATION PASS does not mean the game looks or feels right.
 
 ---
@@ -821,86 +834,86 @@ Specific models, faction allocations and numerical specs remain open for collabo
 
 ### PHASE A — Foundation / persistent world core — ✅ / 🟢 DONE
 
-**Objective:** One `GameState` owns a geographic campaign.  
-**Delivered:** IDs, factions (MajorGang), locations, neighborhoods, regions, serialization API, CORE VALIDATION.  
+**Objective:** One `GameState` owns a geographic campaign.
+**Delivered:** IDs, factions (MajorGang), locations, neighborhoods, regions, serialization API, CORE VALIDATION.
 **Deferred:** Disk save, calendar month/year tick, non-gang faction types.
 
 ### PHASE B — Campaign movement / forces / vehicles — 🟢 MOSTLY DONE (proving scale)
 
-**Objective:** Forces occupy roads; travel time and convoy speed matter.  
-**Delivered:** Road graph, `TravelingForce`, soldiers, vehicles, Stronghold deploy, mission lifecycle, turn advance.  
-**Still open:** Return trips, live economy, city-sized graph, exposure.  
+**Objective:** Forces occupy roads; travel time and convoy speed matter.
+**Delivered:** Road graph, `TravelingForce`, soldiers, vehicles, Stronghold deploy, mission lifecycle, turn advance.
+**Still open:** Return trips, live economy, city-sized graph, exposure.
 **Content:** Still 2 nodes.
 
 ### PHASE C — Tactical battle foundation — ✅ DONE (real-time)
 
-**Objective:** Continuous firefight from an HQ mission.  
-**Delivered:** Setup, geometry, nav, LOS, weapons, fire, attack, AI, vitality, victory.  
+**Objective:** Continuous firefight from an HQ mission.
+**Delivered:** Setup, geometry, nav, LOS, weapons, fire, attack, AI, vitality, victory.
 **Rejected:** Tactical turns.
 
 ### PHASE D — Tactical intelligence / player control — 🟢 MOSTLY DONE
 
-**Objective:** Hybrid control.  
-**Delivered:** Directional cover, wounded behavior, MOVE / TARGET / COVER, sticky player cover, unit HUD, attacker deploy.  
-**Partial:** Force-command HUD; defender mouse deploy (correctly waiting).  
+**Objective:** Hybrid control.
+**Delivered:** Directional cover, wounded behavior, MOVE / TARGET / COVER, sticky player cover, unit HUD, attacker deploy.
+**Partial:** Force-command HUD; defender mouse deploy (correctly waiting).
 **Deferred:** Flee/withdraw.
 
 ### PHASE E — Tactical presentation vertical slice — 🔵 CURRENT
 
-**Objective:** The proving-ground street and its people look like Dead Street.  
-**Delivered (keep):** Asset-backed environment blocks, vehicles/props, identity foundation, `TacticalActorPresenter`, catalog/facing contract, sim/presentation split, procedural fallback, simulation-authoritative hit-testing.  
-**Rejected as current character result:** MPFB `look_calib_01` — technical PASS, product-visual REJECTED, **retired from the active tree 2026-09-07**. Generic presenter/catalog/identity/fallback **kept**.  
-**Current source experiment:** DAZ Studio / Genesis 9 Character Factory — capability-vetted; V1–V1.2 unbound rifleman proof + camera/pose/silhouette calibration; **56° + HYBRID_B provisional continuation only**; **look not accepted**. Human Generator trial is no longer active.  
-**Runtime baseline:** procedural soldier fallback (temporary safe state, not the final visual strategy).  
-**Success:** One convincing gang-member vertical slice through the **existing** 2D architecture + product-accepted look + camera recalibrated on that source.  
+**Objective:** The proving-ground street and its people look like Dead Street.
+**Delivered (keep):** Asset-backed environment blocks, vehicles/props, identity foundation, `TacticalActorPresenter`, catalog/facing contract, sim/presentation split, procedural fallback, simulation-authoritative hit-testing.
+**Rejected as current character result:** MPFB `look_calib_01` — technical PASS, product-visual REJECTED, **retired from the active tree 2026-09-07**. Generic presenter/catalog/identity/fallback **kept**.
+**Current source experiment:** DAZ Studio / Genesis 9 Character Factory — capability-vetted; V1–V1.2 unbound rifleman proof + camera/pose/silhouette calibration; **56° + HYBRID_B provisional continuation only**; **look not accepted**. Human Generator trial is no longer active.
+**Runtime baseline:** procedural soldier fallback (temporary safe state, not the final visual strategy).
+**Success:** One convincing gang-member vertical slice through the **existing** 2D architecture + product-accepted look + camera recalibrated on that source.
 **Explicitly deferred:** Walk-cycle proof and Godot movement integration until a static style is selected and proven across 8 directions. Full animation set, extra characters, campaign map art, binding factory PNGs, treating 56° as canon. Blender is not required for the core source pipeline.
 
 ### PHASE F — Complete campaign ↔ tactical loop — 🟡 NEXT AFTER LOOK
 
-**Objective:** The fight changes the city, and the city still has those people and cars on the road.  
-**Prerequisites:** Look language locked enough that we are not rebuilding the battlefield every week.  
-**Deliverables (after ❓ decisions):** casualty write-back policy implemented; garrison fate; visiting-force composition; force return or disband; no teleport; maybe defender vehicles.  
-**Validation:** CORE VALIDATION + a manual campaign loop (launch → travel turns → deploy → fight → see campaign result).  
+**Objective:** The fight changes the city, and the city still has those people and cars on the road.
+**Prerequisites:** Look language locked enough that we are not rebuilding the battlefield every week.
+**Deliverables (after ❓ decisions):** casualty write-back policy implemented; garrison fate; visiting-force composition; force return or disband; no teleport; maybe defender vehicles.
+**Validation:** CORE VALIDATION + a manual campaign loop (launch → travel turns → deploy → fight → see campaign result).
 **Deferred:** New mission types beyond HQ/raid library.
 
 ### PHASE G — Strategic economy / businesses / resources — ⚪ AFTER F
 
-**Objective:** Money, goods, upkeep, and businesses exist in **live** turns.  
-**Prerequisites:** Loop F so capturing a hood has economic meaning.  
-**Deliverables:** Seed businesses, pass catalog into `TurnManager`, claim/transfer ❓, production/upkeep visible.  
+**Objective:** Money, goods, upkeep, and businesses exist in **live** turns.
+**Prerequisites:** Loop F so capturing a hood has economic meaning.
+**Deliverables:** Seed businesses, pass catalog into `TurnManager`, claim/transfer ❓, production/upkeep visible.
 **Deferred:** Deep industry web.
 
 ### PHASE H — Living city AI / gang behavior — ⚪ AFTER G
 
-**Objective:** Rivals act on the same map (raids, retaliation, movement) without being scripted debug keys.  
-**Prerequisites:** Forces, missions, economy.  
+**Objective:** Rivals act on the same map (raids, retaliation, movement) without being scripted debug keys.
+**Prerequisites:** Forces, missions, economy.
 **Deferred:** Full New Briarport population.
 
 ### PHASE I — Neighborhood / Fear / Intelligence / crews — ⚪ AFTER H
 
-**Objective:** Territory is not the only power.  
+**Objective:** Territory is not the only power.
 **Prerequisites:** Persistent people and local events that can be remembered.
 
 ### PHASE J — Police / arrest / jail / escalation — ⚪ AFTER I
 
-**Objective:** Road exposure and institutional pressure.  
-**Prerequisites:** Travel that matters; Fear/Intel hooks.  
+**Objective:** Road exposure and institutional pressure.
+**Prerequisites:** Travel that matters; Fear/Intel hooks.
 **Do not** start from the empty `PoliceRegion` shell alone.
 
 ### PHASE K — Politics / elections / TRC — ⚪ AFTER J
 
-**Objective:** City Hall as a path to dominance.  
+**Objective:** City Hall as a path to dominance.
 **Prerequisites:** A city worth capturing politically, not a 2-node graph with a politics menu.
 
 ### PHASE L — Content / city expansion / visual polish — ⚪ PARALLEL AFTER E, HEAVY AFTER F
 
-**Objective:** New Briarport as a large continuous readable city.  
-**Prerequisites:** Locked character camera/language; working loop.  
+**Objective:** New Briarport as a large continuous readable city.
+**Prerequisites:** Locked character camera/language; working loop.
 **Includes:** Ambush battlefields that match the road; more HQ variants; campaign map that is not debug tint.
 
 ### PHASE M — Endgame / balance / full campaign — ⚪ LAST
 
-**Objective:** Long-term dominance and post-victory sandbox.  
+**Objective:** Long-term dominance and post-victory sandbox.
 **Prerequisites:** K + L. Weapon/economy tuning belongs here more than in Phase E.
 
 ---
@@ -945,7 +958,7 @@ The next meaningful milestones. Unrelated exciting features do not jump the queu
 
 ## 13. Idea / feature backlog
 
-**The backlog is not the roadmap.**  
+**The backlog is not the roadmap.**
 An idea entering this list does **not** gain priority. It waits until the near-term plan says so.
 
 ### NOW
@@ -1009,7 +1022,7 @@ Godot 4.7 headless, from the repo root:
 godot --headless --path <repo> --quit-after 2 res://validation/core_validation_runner.tscn
 ```
 
-Must **not** replace the main scene (`gameplay_runtime.tscn`).  
+Must **not** replace the main scene (`gameplay_runtime.tscn`).
 Optional: `--dump-checks` or `DUMP_ALL_CHECKS` in `validation/core_validation_runner.gd`.
 
 **Last run:** 2026-09-07 — `DEAD STREET CORE VALIDATION: PASS` after Character Factory V1.3 style-conversion 3×3. Headless prints expected `!is_inside_tree()` camera noise during nested vispasses; the suite still reports PASS.
@@ -1064,7 +1077,7 @@ Intended discipline:
 7. Update **this file** in the same accepted checkpoint when possible.
 8. Do not commit huge local caches (`mpfb_packs/`, `.blend` rebuildables, installer zips). See `tools/character_pipeline/SOURCES.md` and `.gitignore`.
 
-**M7F cleanup checkpoint:** product owner accepted without an additional manual F5 baseline test.  
+**M7F cleanup checkpoint:** product owner accepted without an additional manual F5 baseline test.
 This is not visual acceptance of any new character art. Do not resurrect `look_calib_01`.
 
 ---

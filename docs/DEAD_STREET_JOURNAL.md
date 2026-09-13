@@ -305,3 +305,17 @@ Archive index: none yet.
 - This entry/evidence belong to the scoped release-comparison checkpoint; Git
   records its exact commit and remote state under standing push authorization.
 - **Next:** Profile the 32-unit release battle during its slow windows, isolate the remaining simulation cost from system-load variation, and remove that cost while preserving combat behavior. Judge the next change by frame-time tails and full-roster windows, not the overall average alone.
+
+### 20260913-slowframes-01 — 32-unit release frame costs
+- Source/status: Brandon requested continuation. IN PROGRESS; receiving chat owns this pass.
+- Reusing the approved official release runtime/data pack. Test-only source overlays instrument coarse runtime and presentation phases; production files remain unchanged during measurement.
+- Capture frame timing with live actor counts to avoid treating casualty-reduced averages as full-roster capacity. Next: measured bottleneck, behavior checks and matched uninstrumented samples.
+
+### 20260913-slowframes-02 — controlled release targeting checkpoint
+- Source: Brandon requested continuation toward 60 FPS plus battle expansion headroom; standing GitHub authorization applies.
+- Measured: combat behavior dominates simulation (4.117 ms/frame); targeting contributes 1.576 ms. Initial wrapper loading failures and idle trace were rejected; final coarse trace is valid.
+- Changed: range culling before assault-target ranking, preserving target priorities and cadence. First eligibility-hoisting trial was revised after worse native results.
+- Verified: 8,605 focused + 1,215 exact replay checks; 600-step simulation 3479.594 to 3349.690 ms. Identical rendered 32-unit battle 61.062 to 65.966 FPS, simulation 9.726 to 8.781 ms/step; same recorded final state and 1213 full-roster frames.
+- Limits: P95 stayed about 18.4 ms and P99 worsened. Normal variable-step runs varied from 64.660 to 48.154 FPS. The narrow CPU improvement is accepted; stable 60 and normal-game variability are NOT resolved.
+- Preserved unrelated working changes. Added reproducible fixed-rendered comparison and retained failed/slow evidence. See tools/bridge_perf/slow_frames/README.md.
+- Next: Use the fixed-step rendered benchmark to isolate the remaining combat/cover validation cost and frame-time tails, then verify gains in the normal variable-step game. Steady 60 FPS and larger-battle headroom remain open.
