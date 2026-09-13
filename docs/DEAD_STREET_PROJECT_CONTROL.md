@@ -1,3 +1,17 @@
+## Current milestone — flexible faction battle setup — 2026-09-13
+
+Active scope is the completed battle sandbox. The owner clarified that setup is **faction vs faction**: one faction per side, adding only that faction’s five regular unit classes. Individual units independently choose any weapon within their class, unit tier 1–3 and optional armor. Guide weapon choices are illustrative. Armor is still an HP modifier and never changes outfits.
+
+The new Custom Battle Setup supports 1–12 units on each side in Harold Avenue, duplicate classes, uneven forces, scrollable rosters, faction emblems and actual outfit portraits. Convoy selection checks the real attacking force size and driver requirements; Auto-Fit Seats is explicit. Defenders start on foot. The HUD pages through all participants; results scroll through both full forces. Continue/Escape retains the setup for another run. Existing quick 5v5 and Encounter Lab fixtures remain available.
+
+Baseline checkpoint: `a8a1aa95c58e6732eb9f584d58dca2a936707107` on `build/arsenal-checkpoint-20260911`, confirmed pushed to `LeadLasso-LL/DEADSTREET`. The earlier automatic push-review block mentioned in historical entries below has been resolved. Standing commit/push authorization remains valid. Unrelated existing working-tree changes are preserved. Git history and the milestone receipt record the new checkpoint.
+
+Validation and native review are reproducible through `tools/sandbox_setup/README.md`; reports/captures live in `tools/sandbox_setup/results`. Rules checks exercise 1v1, 7v3, 3v9 and 12v12 through actual deployment and battle services. Native review covers both uneven and full forces, exact selected outfits/equipment, paging and all 24 results cards. The results test deliberately supplies a terminal state after live combat. Technical/visual review does not substitute for owner acceptance of the new setup experience.
+
+Next sandbox work: owner review of flexible setup; the bridge/blockade and Whittaker Estate maps; outstanding vehicle riding/dismount presentation; then scenario/playability review across the three maps. The 12-unit bound is a Harold sandbox constraint, not a global campaign limit. Campaign logistics/economy/outcome integration remains deferred. Helicopters are tabled; ships and new wealth systems are concepts, not active implementation.
+
+Historical status tables and plans below remain preserved; this dated milestone supersedes their older active-work descriptions.
+
 ## Blockade support vehicles - 2026-09-13
 
 Roadwarden Lockdown and Bloodhound Pursuit bring the fleet to 75 models and 1,560 directional/door sprites. All are unlocked in the battle sandbox. The Nocturne's approved gloss-black revision is retained. Roadwarden: 8 seats, 6 cargo slots, 4.2 movement, $940,000, $1,700/turn. Bloodhound: 5 seats, zero cargo, 6.6 movement, $385,000, $680/turn.

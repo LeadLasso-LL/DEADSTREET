@@ -1,0 +1,30 @@
+{
+  "checks": 285,
+  "errors": [],
+  "scenarios": [
+    {
+      "attacker": 1,
+      "defender": 1,
+      "participants": 2,
+      "vehicles": 1
+    },
+    {
+      "attacker": 7,
+      "defender": 3,
+      "participants": 10,
+      "vehicles": 2
+    },
+    {
+      "attacker": 12,
+      "defender": 12,
+      "participants": 24,
+      "vehicles": 3
+    },
+    {
+      "attacker": 3,
+      "defender": 9,
+      "participants": 12,
+      "vehicles": 1
+    }
+  ]
+}

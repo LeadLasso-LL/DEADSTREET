@@ -25,6 +25,12 @@ var command_label: Label
 var battle_label: Label
 var font: SystemFont
 var normal_style: StyleBoxFlat
+var page_index=0
+var last_selected=""
+var roster_pages=1
+var page_label: Label
+var page_back: Button
+var page_next: Button
 var active_style: StyleBoxFlat
 
 func setup(p_view: Node) -> void:
@@ -46,6 +52,13 @@ func setup(p_view: Node) -> void:
  for i in range(5):
   cards[i]=Card.build(surface,Vector2(28+i*151,34),font)
   cards[i].root.pressed.connect(select_card.bind(i))
+ page_label=label(surface,Vector2(255,159),Vector2(150,18),"",10,Color("#b9c2b1"));page_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+ page_back=Button.new();surface.add_child(page_back);page_back.position=Vector2(211,158);page_back.size=Vector2(38,20);page_back.text="‹";page_back.pressed.connect(func():set_roster_page(page_index-1))
+ page_next=Button.new();surface.add_child(page_next);page_next.position=Vector2(411,158);page_next.size=Vector2(38,20);page_next.text="›";page_next.pressed.connect(func():set_roster_page(page_index+1))
+ for control in [page_back,page_next]:
+  control.add_theme_font_size_override("font_size",11)
+  var small=style(Color("#243136"),Color("#60706a"));small.content_margin_top=0.;small.content_margin_bottom=0.;small.content_margin_left=2.;small.content_margin_right=2.
+  control.add_theme_stylebox_override("normal",small);control.add_theme_stylebox_override("hover",small);control.add_theme_stylebox_override("pressed",small);control.add_theme_stylebox_override("disabled",small)
  var command_ids=["push","hold","fall_back","focus_left","focus_right"]
  for i in range(command_ids.size()):
   var id: String=command_ids[i]
@@ -79,7 +92,7 @@ func _process(_delta: float) -> void:
  var viewport_size=get_viewport_rect().size
  var factor=viewport_size.x/1152.0
  surface.scale=Vector2.ONE*factor;surface.position=Vector2(0,viewport_size.y-HEIGHT*factor);surface.size=Vector2(1152,HEIGHT)
- if strength_battle_id!=battle.get_instance_id():strength_battle_id=battle.get_instance_id();strength_value=.5
+ if strength_battle_id!=battle.get_instance_id():strength_battle_id=battle.get_instance_id();strength_value=.5;page_index=0;last_selected=""
  if not battle.strength_snapshot.is_empty():
   var share=float(battle.strength_snapshot.shares.get(Query.player_side_id(battle),.5))
   strength_value=move_toward(strength_value,share,maxf(0.,_delta)*.5)
@@ -87,18 +100,29 @@ func _process(_delta: float) -> void:
   strength_label.text="RELATIVE STRENGTH  /  "+("ADVANTAGE" if share>.55 else ("DISADVANTAGE" if share<.45 else "EVEN"))
  var selected: String=view._selected_participant_id()
  var units: Array=Query.friendly_cards(battle,selected)
- units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
+ units.sort_custom(func(a,b):return a.participant_id<b.participant_id if a.weapon_type==b.weapon_type else ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
+ roster_pages=maxi(1,ceili(float(units.size())/5.));page_index=clampi(page_index,0,roster_pages-1)
+ if selected!=last_selected:
+  last_selected=selected
+  for index in range(units.size()):
+   if units[index].participant_id==selected:page_index=index/5;break
+ page_back.visible=roster_pages>1;page_next.visible=roster_pages>1;page_label.visible=roster_pages>1
+ page_back.disabled=page_index==0;page_next.disabled=page_index==roster_pages-1
+ page_label.text="UNITS %d–%d / %d"%[page_index*5+1,mini((page_index+1)*5,units.size()),units.size()]
  var alive=0
+ for unit in units:
+  if unit.is_alive:alive+=1
  for i in range(5):
-  var widgets: Dictionary=cards[i];widgets.root.visible=i<units.size()
+  var unit_index=page_index*5+i
+  var widgets: Dictionary=cards[i];widgets.root.visible=unit_index<units.size()
   var compact: bool=units.size()>4
   widgets.root.position.x=28+i*(120 if compact else 151)
   widgets.root.scale=Vector2(.81 if compact else 1.,1.)
-  if i>=units.size():continue
-  var c: Dictionary=units[i];var p=battle.get_participant(c.participant_id)
+  if unit_index>=units.size():continue
+  var c: Dictionary=units[unit_index];var p=battle.get_participant(c.participant_id)
   widgets.id=c.participant_id
   Card.update(widgets,p,selected)
-  if c.is_alive:alive+=1
+  widgets.root.tooltip_text="OPERATIVE %02d\n"%(unit_index+1)+widgets.root.tooltip_text
  var faction="ATTACKERS"
  if not units.is_empty():
   var p=battle.get_participant(units[0].participant_id)
@@ -130,6 +154,12 @@ func issue_command(id: String) -> void:
  for force_id in battle.get_sorted_tactical_force_ids():
   var force=battle.get_tactical_force(force_id)
   if force.side_id==Query.player_side_id(battle):Commands.set_command(battle,force_id,id)
+
+func set_roster_page(index: int) -> void:
+ # Refresh card IDs with the page change, before another input can select one.
+ _process(0.)
+ page_index=clampi(index,0,roster_pages-1)
+ _process(0.)
 
 func select_card(index: int) -> void:
  if view.orders_controller!=null:view.orders_controller.select_participant(str(cards[index].id))

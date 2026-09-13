@@ -8,6 +8,7 @@ var faction_id="mercer"
 var selected: Array=["bayou","bayou"]
 var selected_class="two_wheelers"
 var required_units=5
+var allow_encounter_lab=true
 var grid: GridContainer
 var convoy_row: HBoxContainer
 var status: Label
@@ -20,7 +21,7 @@ func _ready():
 	font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
 	var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#111b20")
 	label_at(Vector2(28,18),Vector2(890,38),"DEAD STREET / VEHICLE FLEET",26)
-	button_at(Vector2(810,18),Vector2(178,35),"ENCOUNTER LAB",open_encounter_lab)
+	if allow_encounter_lab:button_at(Vector2(810,18),Vector2(178,35),"ENCOUNTER LAB",open_encounter_lab)
 	button_at(Vector2(1000,18),Vector2(120,35),"CLOSE",queue_free)
 	label_at(Vector2(28,58),Vector2(1090,38),"%d models · All unlocked · Seats include the driver · Only Heavy Transports carry resources"%Models.all_ids().size(),13)
 	var i=0
@@ -36,7 +37,8 @@ func _ready():
 	grid=GridContainer.new();scroll.add_child(grid);grid.columns=3;grid.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation",12);grid.add_theme_constant_override("v_separation",12)
 	label_at(Vector2(28,621),Vector2(1090,30),"ATTACKING CONVOY / %d units to transport"%required_units,17)
-	convoy_row=HBoxContainer.new();add_child(convoy_row);convoy_row.position=Vector2(28,658);convoy_row.add_theme_constant_override("separation",8)
+	var convoy_scroll=ScrollContainer.new();add_child(convoy_scroll);convoy_scroll.position=Vector2(28,658);convoy_scroll.size=Vector2(1096,52);convoy_scroll.vertical_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+	convoy_row=HBoxContainer.new();convoy_scroll.add_child(convoy_row);convoy_row.add_theme_constant_override("separation",8)
 	status=label_at(Vector2(28,713),Vector2(1096,58),"",14);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	button_at(Vector2(28,795),Vector2(150,35),"CLEAR CONVOY",func():selected=[];refresh_convoy())
 	apply_button=button_at(Vector2(850,795),Vector2(270,35),"USE THIS CONVOY",func():convoy_selected.emit(selected.duplicate());queue_free())

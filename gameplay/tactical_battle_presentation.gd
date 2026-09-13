@@ -214,16 +214,20 @@ func build_results():
   var win=side==winner;var color=Color("#8abb91") if win else Color("#d26d75")
   var panel=Panel.new();result_root.add_child(panel);panel.position=Vector2(column*532,0);panel.size=Vector2(508,390);panel.add_theme_stylebox_override("panel",Card.style(Color("#111b20"),Color("#465c50") if win else Color("#64444c")))
   var emblem=TextureRect.new();panel.add_child(emblem);emblem.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;emblem.texture=faction.emblem;emblem.position=Vector2(24,20);emblem.size=Vector2(62,62);emblem.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS;Factions.style_emblem(emblem)
-  Card.label(panel,Vector2(104,23),Vector2(382,27),faction.name,22,Color("#e1e1d5"),font)
+  var title_points=22
+  while title_points>10 and font.get_string_size(faction.name,HORIZONTAL_ALIGNMENT_LEFT,-1,title_points).x>382:title_points-=1
+  Card.label(panel,Vector2(104,23),Vector2(382,27),faction.name,title_points,Color("#e1e1d5"),font)
   Card.label(panel,Vector2(104,55),Vector2(375,24),"VICTORY" if win else ("DEFEAT" if not winner.is_empty() else "DRAW"),16,color,font)
   var units=[]
   for p in battle.participants.values():
    if p.side_id==side:units.append(p)
   units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
   result_snapshot[side]=[]
+  var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(16,102);scroll.size=Vector2(476,272);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+  var grid=GridContainer.new();scroll.add_child(grid);grid.columns=3 if units.size()>4 else 2;grid.add_theme_constant_override("h_separation",10);grid.add_theme_constant_override("v_separation",10)
   for i in range(units.size()):
-   var columns: int=3 if units.size()>4 else 2
-   var card=Card.build(panel,Vector2((30 if columns==3 else 99)+(i%columns)*156,102+(i/columns)*135),font);Card.update(card,units[i],"",false);result_cards[units[i].participant_id]=card
+   var holder=Control.new();grid.add_child(holder);holder.custom_minimum_size=Vector2(144,126)
+   var card=Card.build(holder,Vector2.ZERO,font);Card.update(card,units[i],"",false);result_cards[units[i].participant_id]=card
    result_snapshot[side].append({"id":units[i].participant_id,"state":card.status.text,"health_width":card.health.size.x,"role":card.role.text,"weapon":card.gun.text,"tint":str(card.portrait.modulate)})
  var done=Button.new();result_root.add_child(done);done.text="CONTINUE";done.position=Vector2(426,410);done.size=Vector2(188,36);done.focus_mode=Control.FOCUS_NONE
  done.add_theme_font_override("font",font);done.add_theme_font_size_override("font_size",12);done.add_theme_stylebox_override("normal",Card.style(Color("#273a32"),Color("#77927c")))

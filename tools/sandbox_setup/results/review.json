@@ -1,0 +1,18 @@
+{
+  "battles": [
+    {
+      "participants": 10,
+      "scenario": "7v3",
+      "shots": 12
+    },
+    {
+      "participants": 24,
+      "scenario": "12v12",
+      "shots": 12,
+      "variants": 24
+    }
+  ],
+  "checks": 62,
+  "errors": [],
+  "terminal_results_fixture": true
+}

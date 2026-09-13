@@ -42,6 +42,8 @@ var runtime: Node
 var battle
 var ready_started=false
 var battle_clock=0.
+var custom_loadouts: Dictionary={}
+var custom_battle=false
 var seed_value=4101
 func _ready():
  font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
@@ -53,6 +55,7 @@ func _ready():
  note=text(Vector2(28,58),Vector2(1100,25),"23 factions · 115 outfits · 30 weapons · All factions, weapons, training and armor unlocked",13)
  for i in range(CLASSES.size()):button(surface,Vector2(28+i*184,95),Vector2(172,35),CLASSES[i].to_upper(),show_class.bind(CLASSES[i]))
  button(surface,Vector2(948,95),Vector2(172,35),"ARMOR",open_armor_catalog)
+ button(surface,Vector2(680,16),Vector2(222,37),"CUSTOM BATTLE SETUP",open_force_builder)
  button(surface,Vector2(914,16),Vector2(206,37),"VEHICLE FLEET",open_vehicle_fleet)
  grid=GridContainer.new();surface.add_child(grid);grid.position=Vector2(28,148);grid.columns=2;grid.add_theme_constant_override("h_separation",12);grid.add_theme_constant_override("v_separation",12)
  name_label=text(Vector2(658,146),Vector2(470,30),"",22)
@@ -168,13 +171,18 @@ func refresh():
 func play_report():
  var path="res://assets/audio/weapons/"+selected+"_0.wav"
  if ResourceLoader.exists(path):sound.stream=load(path);sound.play()
-func start_battle(snipers: bool):
+func start_battle(snipers: bool,config: Dictionary={}):
  if runtime!=null:return
  runtime=load("res://gameplay/gameplay_runtime.tscn").instantiate();add_child(runtime)
  await get_tree().process_frame
- var result=Fixture.setup(runtime,loadouts,snipers,seed_value,true);seed_value+=1
+ var selected_loadouts=loadouts if config.is_empty() else config
+ custom_battle=not config.is_empty()
+ var result=Fixture.setup(runtime,selected_loadouts,snipers,seed_value,true);seed_value+=1
  if not result.has("battle"):
-  note.text="Test could not start: "+str(result);runtime.queue_free();runtime=null;return
+  var message="Test could not start: "+str(result.get("error",result))
+  note.text=message
+  if surface.has_node("ForceBuilder"):surface.get_node("ForceBuilder").show_error(message)
+  runtime.queue_free();runtime=null;return
  battle=result.battle;ready_started=false;battle_clock=0.;ui.visible=false
 func _process(delta: float):
  if surface!=null:
@@ -188,12 +196,14 @@ func _process(delta: float):
     for force_id in battle.get_sorted_tactical_force_ids():
      if battle.get_tactical_force(force_id).side_id==battle.attacker_side_id:preload("res://battle/core/battle_force_command_service.gd").set_command(battle,force_id,"push")
   return
+ if custom_battle and runtime.get_node("TacticalBattleView").battle_presentation.results_acknowledged:
+  return_to_setup();return
  if battle.battle_phase=="active":
   battle_clock+=delta
   Runtime.advance(battle,minf(delta,.1))
 func _input(event: InputEvent):
  if event is InputEventKey and event.pressed and event.keycode==KEY_ESCAPE and runtime!=null:
-  runtime.queue_free();runtime=null;battle=null;ui.visible=true;get_viewport().set_input_as_handled()
+  return_to_setup();get_viewport().set_input_as_handled()
 
 func faction_option(at: Vector2,sz: Vector2,chosen: String) -> OptionButton:
  var option=OptionButton.new();surface.add_child(option);option.position=at;option.size=sz;option.fit_to_longest_item=false;option.clip_text=true;option.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS;option.add_theme_font_size_override("font_size",11)
@@ -234,3 +244,15 @@ func start_blockade_battle(context: Dictionary):
  loadouts.attacker["vehicles"]=context.get("attacker_models",["bloodhound"])
  await start_battle(false)
  loadouts=original
+
+func open_force_builder():
+ if surface.has_node("ForceBuilder"):return
+ var panel=preload("res://gameplay/sandbox_force_builder.gd").new();panel.name="ForceBuilder"
+ panel.config=(preload("res://gameplay/sandbox_force_config.gd").from_legacy(loadouts) if custom_loadouts.is_empty() else custom_loadouts.duplicate(true))
+ panel.setup_changed.connect(func(config):custom_loadouts=config.duplicate(true))
+ panel.launch_requested.connect(func(config):custom_loadouts=config.duplicate(true);start_battle(false,config))
+ surface.add_child(panel)
+
+func return_to_setup():
+ if runtime!=null:runtime.queue_free()
+ runtime=null;battle=null;ready_started=false;custom_battle=false;ui.visible=true
