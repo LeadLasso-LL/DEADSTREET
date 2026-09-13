@@ -1,3 +1,15 @@
+## Blockade support vehicles - 2026-09-13
+
+Roadwarden Lockdown and Bloodhound Pursuit bring the fleet to 75 models and 1,560 directional/door sprites. All are unlocked in the battle sandbox. The Nocturne's approved gloss-black revision is retained. Roadwarden: 8 seats, 6 cargo slots, 4.2 movement, $940,000, $1,700/turn. Bloodhound: 5 seats, zero cargo, 6.6 movement, $385,000, $680/turn.
+
+Lockdown needs an active owned checkpoint, the truck physically stationed there, and at least two crew. Setup spends one movement point. Its two portable tactical barriers are ordinary cover with collision; the fortified checkpoint stops automatic light-blockade breaches. Losing or withdrawing its support removes the bonus. Withdrawal ends movement until next turn. Fortification never wins a battle automatically.
+
+Pursuit Net requires a crewed Bloodhound stationed at an owned checkpoint. Once per vehicle per turn, it can intercept a hostile convoy together at one directly road-connected node within its remaining movement. It pays the edge distance, leaves the checkpoint, and holds both sides for a normal battle. Invalid targets have no side effects. Save/load and explicit battle-result settlement preserve usage, movement and actual survivors; no automatic loot or capture is awarded.
+
+The Encounter Lab provides deploy/withdraw/counter-test scenarios and a Play Encounter Battle button for both vehicles. Lockdown constructs a physical Roadwarden plus two steel cover screens in the existing Harold test map. Pursuit opens a normal battle with Bloodhound arrivals. These are controlled five-versus-five fixtures using sandbox outfits and weapons; automatic campaign encounter generation, participant mapping for arbitrary campaign forces and campaign outcome dispatch remain pending. Battle results are not automatically written back to campaign or lab state.
+
+Validation evidence is recorded in tools/vehicle_fleet/validation_blockades.json, validation_blockade_fleet.json and blockade_review/report.json. Git history is authoritative for local commit status; the earlier automatic push review remains unresolved. The active milestone is the completed battle sandbox, not campaign completion.
+
 ## 2034 fleet proportions and expansion - 2026-09-12
 
 **Built and validated; new art awaits product review. 60 models, 1,248 directional/door sprites and 60 icons.** Twelve Two-Wheelers, nineteen Passenger Cars, thirteen Utility Vehicles and sixteen Heavy Transports. The 2034 setting now guides contemporary silhouettes: lower cabins, fuller hood/deck proportions, raked glazing, sculpted bodywork and visible wheel openings. The TRC and NBPD retain branded options in every class. Intentional heritage/scavenged vehicles preserve faction character.

@@ -19,7 +19,7 @@ func check(ok: bool,message: String):
 	checks+=1
 	if not ok:errors.append(message);printerr("FLEET_FAIL ",message)
 func run():
-	check(Models.all_ids().size()==73,"73 models")
+	check(Models.all_ids().size()==75,"75 models")
 	check(Models.data().faction_preferences.size()==23,"23 faction preferences")
 	for faction in Models.data().faction_preferences:
 		for id in Models.preferences(faction):check(Models.has_model(id),"preference "+str(id))
@@ -90,7 +90,7 @@ func run():
 		print("FLEET_MODEL_TEST ",id,flush_stdout())
 		runtime.free();await process_frame
 	print("FLEET_VALIDATION checks=",checks," errors=",errors)
-	var report_path="res://tools/vehicle_fleet/validation.json" if selected_models.is_empty() else "res://tools/vehicle_fleet/validation_driveby_fleet.json"
+	var report_path="res://tools/vehicle_fleet/validation.json" if selected_models.is_empty() else "res://tools/vehicle_fleet/validation_blockade_fleet.json"
 	var file=FileAccess.open(report_path,FileAccess.WRITE)
 	file.store_string(JSON.stringify({"checks":checks,"errors":errors,"models_tested":Models.all_ids() if selected_models.is_empty() else selected_models,"catalog_models":Models.all_ids().size()},"  "))
 	quit(0 if errors.is_empty() else 1)

@@ -4270,9 +4270,11 @@ func _sync_dusk_art() -> void:
 
 # Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
 
+var _dusk_blockade_nodes: Dictionary = {}
 var _dusk_vehicle_nodes: Dictionary = {}
 func _sync_dusk_vehicles() -> void:
 	var state = _battle_state()
+	_sync_blockade_barriers(state)
 	if not _is_dusk_street() or state == null:
 		for n in _dusk_vehicle_nodes.values():
 			if is_instance_valid(n): n.queue_free()
@@ -4319,3 +4321,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		_dusk_pan = Vector2.ZERO
 		_frame_camera()
 		get_viewport().set_input_as_handled()
+
+func _sync_blockade_barriers(state) -> void:
+	var wanted={}
+	if _is_dusk_street() and state!=null and state.battlefield_geometry!=null:
+		for id in state.battlefield_geometry.obstacles:
+			if str(id).begins_with("roadwarden_screen_"):wanted[id]=state.battlefield_geometry.obstacles[id]
+	for id in _dusk_blockade_nodes.keys():
+		if not wanted.has(id):
+			if is_instance_valid(_dusk_blockade_nodes[id]):_dusk_blockade_nodes[id].queue_free()
+			_dusk_blockade_nodes.erase(id)
+	for id in wanted:
+		if not _dusk_blockade_nodes.has(id):
+			var node=preload("res://gameplay/blockade_barrier_art.gd").new()
+			var center=wanted[id].bounds.get_center();node.position=Vector2(center.x*8,center.y*6)
+			dynamic_unit_root.add_child(node);_dusk_blockade_nodes[id]=node

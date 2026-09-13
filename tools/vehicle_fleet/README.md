@@ -1,3 +1,13 @@
+## Blockade support extension
+
+75 models / 1,560 directional and door sprites / 75 icons. Two additional vehicles: Roadwarden Lockdown (Heavy) and Bloodhound Pursuit (Utility). Native palette and geometry are in `blockade_catalog.py` and `blockade_geometry.py`; the phone sheet is built with `build_blockade_sheet.py`.
+
+`vehicle_blockade_rules.gd` owns stationing, derived fortification, pursuit charges, battle holds and explicit survivor settlement. `vehicle_encounter_service.gd` exposes these rules and migrates old snapshots. `blockade_battle_setup.gd` constructs the controlled tactical checkpoint geometry before deployment. All rules are independent of weapon-guide recommendations and impose no faction unlock restrictions.
+
+Run `validate_blockades.gd` for owned-post, crew, withdrawal, movement, topology, repeat-use, pending-battle, save and survivor checks plus controlled battle setup. Run `validate_fleet.gd -- roadwarden bloodhound` for the two new models; `validate_panel.gd` covers selector counts. `review_blockades.gd` presses the actual lab battle button and captures both native battles. Existing `validate_encounters.gd` and `validate_driveby.gd` remain regression gates.
+
+Current scope: the lab launches isolated five-versus-five battles using the existing sandbox loadouts. Automatic campaign events and arbitrary campaign-force/result dispatch are not integrated. Native battle outcomes are not written back to the lab; Reset All starts another controlled scenario. `finish_pursuit` accepts explicit per-vehicle survivor manifests, rejects duplicate/missing/unknown survivors, and never grants cargo automatically. No road guns, invulnerability, hidden unit armor or faction-exclusive access.
+
 # Dead Street vehicle fleet - endgame expansion
 
 73 models: **15 Two-Wheelers, 22 Passenger Cars, 15 Utility Vehicles and 21 Heavy Transports**. All models are unlocked in the battle sandbox. Seats include the driver. Only Heavy Transports carry campaign resources; faction motor pools remain suggestions.

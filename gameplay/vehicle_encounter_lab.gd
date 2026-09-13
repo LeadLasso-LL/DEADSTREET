@@ -2,6 +2,8 @@ extends Control
 const Scenarios=preload("res://gameplay/vehicle_encounter_scenarios.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const Card=preload("res://gameplay/tactical_unit_card.gd")
+signal battle_requested(context: Dictionary)
+var play_button: Button
 var scenarios=Scenarios.new()
 var picker: OptionButton
 var brief: Label
@@ -26,6 +28,9 @@ func _ready():
  button_at(Vector2(263,350),Vector2(260,42),"COUNTER-TEST / INTERCEPT",func():execute(true))
  button_at(Vector2(538,350),Vector2(170,42),"ADVANCE TURN",func():
   var paid=scenarios.service.advance_turn();outcome.text="Turn advanced. Cargo claims paid: %d"%paid.size();refresh())
+ play_button=button_at(Vector2(740,350),Vector2(245,42),"PLAY ENCOUNTER BATTLE",func():
+  var context=scenarios.battle_context(picker.selected)
+  if not context.is_empty():battle_requested.emit(context))
  outcome=label_at(Vector2(28,413),Vector2(1090,88),"Choose a vehicle and run its encounter.",18);outcome.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
  state_label=label_at(Vector2(28,520),Vector2(1090,240),"",17)
  button_at(Vector2(28,795),Vector2(170,38),"RESET ALL",func():scenarios.reset();outcome.text="Fresh test state.";refresh())
@@ -41,11 +46,12 @@ func button_at(at: Vector2,sz: Vector2,text: String,action: Callable) -> Button:
 func execute(counter: bool):
  var result=scenarios.run(picker.selected,counter)
  outcome.text=("SUCCESS · " if result.success else "STOPPED · ")+result.message
- if result.has("blockade"):outcome.text+="\nRoad ahead: %s blockade · %d units · %d vehicles"%[result.blockade,result.units,result.vehicles]
+ if result.has("blockade") and result.has("units"):outcome.text+="\nRoad ahead: %s blockade · %d units · %d vehicles"%[result.blockade,result.units,result.vehicles]
  if result.has("movement_remaining"):outcome.text+="\n%.1f road units remaining. Turn %d."%[float(result.movement_remaining),scenarios.service.data.turn]
  if result.has("freed"):outcome.text+="\n%d survivors return to their original factions. No automatic recruitment."%result.freed.size()
  refresh()
 func refresh():
+ play_button.disabled=scenarios.battle_context(picker.selected).is_empty()
  var id=Scenarios.IDS[picker.selected];brief.text=Scenarios.BRIEFS[picker.selected];icon.texture=Models.icon(id);state_label.text=scenarios.state_text(picker.selected)
 func load_snapshot():
  var raw=JSON.parse_string(FileAccess.get_file_as_string("user://vehicle_encounter_lab.json")) if FileAccess.file_exists("user://vehicle_encounter_lab.json") else null

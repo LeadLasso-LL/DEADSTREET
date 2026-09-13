@@ -69,6 +69,7 @@ static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_v
   if not Tiers.set_for_setup(b,p,tier):return {"error":"invalid unit tier"}
   var id: String=str(loadouts.get(side,{}).get(p.weapon_type,Weapons.default_model(p.weapon_type)))
   if not Weapons.equip_for_setup(b,p,id):return {"error":"review equip "+id}
+ if not preload("res://gameplay/blockade_battle_setup.gd").apply(b,loadouts.get("blockade_encounter",{})):return {"error":"invalid checkpoint battle geometry"}
  var controller=runtime.tactical_deployment_controller
  controller.choose_arrival("far")
  if not controller.place_unplaced_in_cover():

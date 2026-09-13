@@ -1,8 +1,9 @@
 class_name VehicleEncounterService
 extends RefCounted
 ## Stateful encounter rules used by the sandbox lab. World event generation is separate.
+const Blockades=preload("res://campaign/vehicles/vehicle_blockade_rules.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
-var data: Dictionary={"version":1,"turn":0,"journeys":{},"claims":{},"resources":{},"cash":{},"accounts":{},"locations":{},"prisons":{},"heat":{},"battle_uses":{},"driveby_uses":{},"roads":[]}
+var data: Dictionary={"version":1,"turn":0,"journeys":{},"claims":{},"resources":{},"cash":{},"accounts":{},"locations":{},"prisons":{},"heat":{},"battle_uses":{},"driveby_uses":{},"roads":[],"blockades":{},"pursuit_uses":{},"blockade_encounters":{}}
 func to_dict() -> Dictionary:return data.duplicate(true)
 func from_dict(saved: Dictionary) -> bool:
 	if int(saved.get("version",0))!=1:return false
@@ -10,7 +11,11 @@ func from_dict(saved: Dictionary) -> bool:
 		if not saved.get(key) is Dictionary:return false
 	if int(saved.get("turn",-1))<0:return false
 	if not saved.get("driveby_uses",{}) is Dictionary or not saved.get("roads",[]) is Array:return false
-	data=saved.duplicate(true);data.turn=int(data.turn);data["driveby_uses"]=data.get("driveby_uses",{});data["roads"]=data.get("roads",[]);return true
+	for key in ["blockades","pursuit_uses","blockade_encounters"]:
+		if not saved.get(key,{}) is Dictionary:return false
+	data=saved.duplicate(true)
+	for key in ["blockades","pursuit_uses","blockade_encounters"]:data[key]=data.get(key,{})
+	data.turn=int(data.turn);data["driveby_uses"]=data.get("driveby_uses",{});data["roads"]=data.get("roads",[]);return true
 func result(ok: bool,message: String,extra: Dictionary={}) -> Dictionary:
 	var r={"success":ok,"message":message};r.merge(extra,true);return r
 func start_journey(id: String,owner: String,vehicles: Array) -> Dictionary:
@@ -32,10 +37,10 @@ func vehicle(journey: String,id: String,ability: String="") -> Dictionary:
 	var j=data.journeys.get(journey,{})
 	if j.is_empty() or j.get("closed",false):return {}
 	var v=j.vehicles.get(id,{})
-	if v.is_empty() or (not ability.is_empty() and Models.model(v.model).get("ability_id","")!=ability):return {}
+	if v.is_empty() or not v.get("available",true) or (not ability.is_empty() and Models.model(v.model).get("ability_id","")!=ability):return {}
 	return v
 func can_move(journey: String,id: String) -> bool:
-	var v=vehicle(journey,id);return not v.is_empty() and int(v.ended_turn)!=int(data.turn) and float(v.get("movement_left",Models.model(v.model).movement_per_turn))>0.
+	var v=vehicle(journey,id);return not v.is_empty() and str(v.get("post","")).is_empty() and str(v.get("encounter","")).is_empty() and int(v.ended_turn)!=int(data.turn) and float(v.get("movement_left",Models.model(v.model).movement_per_turn))>0.
 func once(journey: String,key: String) -> bool:
 	if data.journeys[journey].used.has(key):return false
 	data.journeys[journey].used[key]=true;return true
@@ -174,3 +179,11 @@ func drive_by(journey: String,id: String,target_id: String) -> Dictionary:
 	data.driveby_uses[use_key]=target_id;target.status="destroyed";target.hp=0;target.income_active=false;target.production_active=false
 	data.heat[owner]=float(data.heat.get(owner,0))+float(m.drive_by_heat)
 	return result(true,"Undefended target destroyed. Remaining movement retained.",{"target":target_id,"movement_remaining":remaining,"heat_added":int(m.drive_by_heat),"loot":{},"territory_captured":false,"turn_ended":false})
+
+func station_blockade(j: String,id: String,post: String) -> Dictionary:return Blockades.station(self,j,id,post)
+func withdraw_blockade(j: String,id: String) -> Dictionary:return Blockades.withdraw(self,j,id)
+func blockade_strength(post: String) -> String:return Blockades.strength(self,post)
+func blockade_cover_count(post: String) -> int:return Blockades.cover_count(self,post)
+func stop_at_blockade(j: String,id: String,post: String) -> Dictionary:return Blockades.stop_at(self,j,id,post)
+func pursue_convoy(j: String,id: String,target: String) -> Dictionary:return Blockades.pursue(self,j,id,target)
+func finish_pursuit(id: String,winner: String,survivors: Dictionary) -> Dictionary:return Blockades.finish_pursuit(self,id,winner,survivors)

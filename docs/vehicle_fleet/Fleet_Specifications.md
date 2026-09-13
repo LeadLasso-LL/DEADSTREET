@@ -1,6 +1,6 @@
 # Dead Street - Vehicle Fleet
 
-73 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
+75 fictional vehicle models across four classes. Initial balance values; all models unlocked in the battle sandbox.
 
 Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy Transports carry campaign resources. Convoy road speed is its slowest vehicle.
 
@@ -70,6 +70,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Obsidian X | $92,000 | $121 | 5 | 5.9 | 0 | 5.05 x 2.08 |
 | Nomad Sovereign 6x6 | $445,000 | $775 | 6 | 5.3 | 0 | 6.30 x 2.30 |
 | Archangel Recovery | $520,000 | $925 | 5 | 5.6 | 0 | 5.70 x 2.18 |
+| Bloodhound Pursuit | $385,000 | $680 | 5 | 6.6 | 0 | 5.25 x 2.10 |
 
 ## Heavy Transports
 
@@ -96,6 +97,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 | Sterling CIT-4 | $86,000 | $120 | 3 | 4.5 | 0 | 5.50 x 2.20 |
 | Sterling Bastion Reserve | $165,000 | $230 | 4 | 3.6 | 0 | 6.55 x 2.38 |
 | Custodian P8 | $68,000 | $140 | 3 | 3.8 | 0 | 6.50 x 2.26 |
+| Roadwarden Lockdown | $940,000 | $1700 | 8 | 4.2 | 6 | 6.90 x 2.45 |
 
 ## Suggested faction fleets
 
@@ -132,7 +134,7 @@ Seats include the driver. One unit is reserved to drive each vehicle. Only Heavy
 - **Heavy Transports carry all freight:** Only this class can load campaign resources. Cargo is counted in abstract resource slots. Passenger capacity and cargo capacity are separate, simultaneously usable limits. Independent cash trucks and prison carriers use dedicated manifests instead of general freight.
 - **Real seats, realistic compromises:** Pickup beds are not troop seats. The Shortbox 11 has two cab seats and 24 cargo slots. The Shuttle Twelve has twelve seats but just two cargo slots.
 - **Parked vehicles and cover:** These are arrival vehicles with parked physical footprints. Two-wheelers provide no vehicle cover. No turrets, mounted guns, hidden unit armor, or vehicle-driven outfit changes are added.
-- **Everything is available in the sandbox:** All 73 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
+- **Everything is available in the sandbox:** All 75 models are unlocked. The faction lists are suggestions, not restrictions. The current sandbox convoy builder carries the five attacking units; defenders occupy the existing objective.
 - **2034, with intentional older vehicles:** Modern vehicles have lower glass, sculpted bodywork and contemporary lighting. Heritage cars and scavenged transports remain where they suit the faction. Fuel, charging and repair interfaces are later systems. Flagship abilities are playable in Encounter Lab; campaign event generation is not connected yet.
 
 ## Balance examples
@@ -149,7 +151,7 @@ The catalog and artwork use the same model IDs as the sandbox fleet selector. Cu
 
 ## Endgame abilities
 
-Ten premium vehicles have encounter rules. The Encounter Lab is available from the fleet selector. Automatic campaign events and battle ability triggers remain future integration work.
+Twelve premium vehicles have encounter rules. The Encounter Lab is available from the fleet selector. Roadwarden and Bloodhound can launch controlled tactical battles from the lab. Automatic campaign event generation remains future integration work.
 
 | Vehicle | Ability | Effect | Limits |
 |---|---|---|---|
@@ -161,7 +163,9 @@ Ten premium vehicles have encounter rules. The Encounter Lab is available from t
 | Nocturne RS | Drive-By | Destroy an undefended roadside business or building and retain remaining movement. | Once per vehicle per turn. Driver plus passenger required. Adds 30 heat; no free travel, capture or loot. Defended targets block the ability. |
 | Nomad Sovereign 6x6 | Cross-Country | Take designated dirt and wilderness connections. | The vehicle must split from companions that cannot use the route. No water, walls or unmarked shortcuts. |
 | Archangel Recovery | Life Support | Recover one critically wounded occupant per battle. | Requires reaching a secure extraction zone alive. The survivor remains wounded and unavailable until recovery. |
+| Bloodhound Pursuit | Pursuit Net | Intercept one hostile convoy per turn on an adjacent connected road. | Requires a crewed post. Pays road movement, leaves the post and triggers a normal battle. No automatic victory, capture or loot; no stacking against a pending convoy. |
 | Leviathan Breacher | Breach Charge | Force through one light blockade per journey. | Fortified checkpoints still require combat. A breach adds 25 heat and protects only its own occupants. |
 | Palisade Escrow | Bonded Cargo | Lost cargo is replaced at its departure location after two turns. | Captured cargo never becomes enemy loot. Claims wait in escrow if the origin is lost. Truck and crew remain at risk. |
+| Roadwarden Lockdown | Lockdown | Fortify an owned light blockade and deploy two tactical cover barriers. | Requires a stationed, crewed truck. Automatic light-blockade breaches are stopped; normal battles still work. Leaving or losing the post removes the bonus. |
 
 Independent services: Sterling CIT-4 carries $75,000 with 3 crew; Sterling Bastion Reserve carries $300,000 with 4 crew; Custodian P8 carries 3 guards plus 8 prisoners. Cash debits source on dispatch and credits one destination or victorious captor exactly once. Prisoner rescue preserves original allegiance. These three are unlocked for sandbox encounters but excluded from faction purchasing.

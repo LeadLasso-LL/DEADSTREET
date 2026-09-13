@@ -3,6 +3,7 @@ const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const Factions=preload("res://battle/identity/faction_unit_catalog.gd")
 const Card=preload("res://gameplay/tactical_unit_card.gd")
 signal convoy_selected(models: Array)
+signal blockade_battle_requested(context: Dictionary)
 var faction_id="mercer"
 var selected: Array=["bayou","bayou"]
 var selected_class="two_wheelers"
@@ -80,4 +81,4 @@ func refresh_convoy():
 
 func open_encounter_lab():
 	if has_node("EncounterLab"):return
-	var lab=load("res://gameplay/vehicle_encounter_lab.gd").new();lab.name="EncounterLab";add_child(lab)
+	var lab=load("res://gameplay/vehicle_encounter_lab.gd").new();lab.name="EncounterLab";lab.battle_requested.connect(func(context):blockade_battle_requested.emit(context));add_child(lab)

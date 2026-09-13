@@ -224,4 +224,13 @@ func open_vehicle_fleet() -> void:
  panel.faction_id=str(loadouts.attacker.faction)
  panel.selected=loadouts.attacker.get("vehicles",["bayou","bayou"]).duplicate()
  panel.convoy_selected.connect(func(models):loadouts.attacker["vehicles"]=models)
+ panel.blockade_battle_requested.connect(start_blockade_battle)
  surface.add_child(panel)
+
+func start_blockade_battle(context: Dictionary):
+ if runtime!=null:return
+ var original=loadouts.duplicate(true)
+ loadouts["blockade_encounter"]=context.duplicate(true)
+ loadouts.attacker["vehicles"]=context.get("attacker_models",["bloodhound"])
+ await start_battle(false)
+ loadouts=original

@@ -3,6 +3,7 @@ from pathlib import Path
 import json,sys
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from endgame_catalog import extend, apply
+from blockade_catalog import extend as extend_blockade, apply as apply_blockade
 from driveby_catalog import extend as extend_driveby, apply as apply_driveby
 ROOT=Path(__file__).resolve().parents[2]
 CLASSES={
@@ -144,6 +145,7 @@ PREFERENCES.update({
  'blacktop':['ironhorse','longhaul','cinder','workhorse','dunecat','wayfarer']})
 extend(GROUPS)
 extend_driveby(GROUPS)
+extend_blockade(GROUPS)
 
 def build():
  models={}
@@ -160,6 +162,7 @@ def build():
   m['door_rows']=[] if m['doors']==0 else ([.20] if m['body']=='armored_transport' else ([.34] if m['vehicle_class']=='heavy_transports' else ([.23] if m['body']=='pickup' else ([.12,-.075] if m['doors']==4 else [.12]))))
  apply(models)
  apply_driveby(models)
+ apply_blockade(models)
  data=dict(version=5,setting_year=2034,classes=CLASSES,models=models,faction_preferences=PREFERENCES,notes={'capacity':'Includes the driver; all occupants are units. Empty vehicles may exist in inventory.','movement':'Road distance units per campaign turn; convoys use the slowest vehicle. Not road top speed.','resources':'Only Heavy Transports carry campaign resources. One abstract resource unit occupies one cargo slot; personal equipment is not freight.','balance':'Prices, upkeep, and movement are initial game-balance values. Models and manufacturers are fictional.','preferences':'Suggestions only; the sandbox unlocks every model for every faction.','era':'2034 contemporary fleet with deliberate heritage and scavenged exceptions. Electric powertrains currently affect listed upkeep only; charging and fuel systems are not implemented.'})
  (ROOT/'assets/data/vehicle_models.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print('FLEET_CATALOG',len(models),'models',len(PREFERENCES),'factions')

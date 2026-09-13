@@ -1236,6 +1236,34 @@
         "archangel_ne_2.png"
       ]
     },
+    "bloodhound": {
+      "frames": [
+        "bloodhound_e_0.png",
+        "bloodhound_e_1.png",
+        "bloodhound_e_2.png",
+        "bloodhound_se_0.png",
+        "bloodhound_se_1.png",
+        "bloodhound_se_2.png",
+        "bloodhound_s_0.png",
+        "bloodhound_s_1.png",
+        "bloodhound_s_2.png",
+        "bloodhound_sw_0.png",
+        "bloodhound_sw_1.png",
+        "bloodhound_sw_2.png",
+        "bloodhound_w_0.png",
+        "bloodhound_w_1.png",
+        "bloodhound_w_2.png",
+        "bloodhound_nw_0.png",
+        "bloodhound_nw_1.png",
+        "bloodhound_nw_2.png",
+        "bloodhound_n_0.png",
+        "bloodhound_n_1.png",
+        "bloodhound_n_2.png",
+        "bloodhound_ne_0.png",
+        "bloodhound_ne_1.png",
+        "bloodhound_ne_2.png"
+      ]
+    },
     "courier": {
       "frames": [
         "courier_e_0.png",
@@ -1822,6 +1850,34 @@
         "custodian_ne_0.png",
         "custodian_ne_1.png",
         "custodian_ne_2.png"
+      ]
+    },
+    "roadwarden": {
+      "frames": [
+        "roadwarden_e_0.png",
+        "roadwarden_e_1.png",
+        "roadwarden_e_2.png",
+        "roadwarden_se_0.png",
+        "roadwarden_se_1.png",
+        "roadwarden_se_2.png",
+        "roadwarden_s_0.png",
+        "roadwarden_s_1.png",
+        "roadwarden_s_2.png",
+        "roadwarden_sw_0.png",
+        "roadwarden_sw_1.png",
+        "roadwarden_sw_2.png",
+        "roadwarden_w_0.png",
+        "roadwarden_w_1.png",
+        "roadwarden_w_2.png",
+        "roadwarden_nw_0.png",
+        "roadwarden_nw_1.png",
+        "roadwarden_nw_2.png",
+        "roadwarden_n_0.png",
+        "roadwarden_n_1.png",
+        "roadwarden_n_2.png",
+        "roadwarden_ne_0.png",
+        "roadwarden_ne_1.png",
+        "roadwarden_ne_2.png"
       ]
     }
   }

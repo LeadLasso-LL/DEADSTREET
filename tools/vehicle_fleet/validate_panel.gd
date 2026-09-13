@@ -7,7 +7,7 @@ func run():
  root.size=Vector2i(1152,860)
  var panel=load("res://gameplay/vehicle_fleet_panel.gd").new();panel.faction_id="trc";root.add_child(panel)
  await process_frame;await process_frame
- for pair in [["two_wheelers",15],["passenger_cars",22],["utility_vehicles",15],["heavy_transports",21]]:
+ for pair in [["two_wheelers",15],["passenger_cars",22],["utility_vehicles",16],["heavy_transports",22]]:
   panel.class_buttons[pair[0]].pressed.emit();await process_frame
   check(panel.selected_class==pair[0],"class button capture "+pair[0])
   check(panel.grid.get_child_count()==pair[1],"model count "+pair[0])
