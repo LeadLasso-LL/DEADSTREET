@@ -1,9 +1,9 @@
 {
-  "brief_smoke_fps": 59.9146814935532,
-  "checks": 39,
+  "brief_smoke_fps": 59.7976678909523,
+  "checks": 146,
   "debug": false,
   "errors": [],
   "rendered": 24,
-  "sim_seconds": 5.38962966666665,
+  "sim_seconds": 5.40082627777777,
   "units": 24
 }

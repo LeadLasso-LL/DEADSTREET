@@ -203,11 +203,12 @@ func update_markers():
   if not view.actor_presenter._unit_nodes.has(id):continue
   var node=view.actor_presenter._unit_nodes[id]
   if not markers.has(id):
-   var badge=TextureRect.new();surface.add_child(badge);badge.mouse_filter=Control.MOUSE_FILTER_IGNORE;badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-   badge.texture=Factions.for_side(battle,p.side_id).emblem;Factions.style_emblem(badge);markers[id]=badge
+   var badge=preload("res://gameplay/tactical_emblem_marker.gd").new();surface.add_child(badge)
+   badge.emblem.texture=Factions.for_side(battle,p.side_id).emblem;Factions.style_emblem(badge.emblem);markers[id]=badge
   var badge=markers[id];badge.visible=identifiers_enabled and p.is_alive and node.visible and stage!="deployment" and not results_visible()
-  var lift=-29. if p.is_alive else -8.
-  if p.is_alive and (p.has_occupied_cover_slot() or p.is_wounded):lift=-21.
+  badge.set_selected(view.orders_controller!=null and view.orders_controller.is_selected(id))
+  var lift=-26. if p.is_alive else -8.
+  if p.is_alive and (p.has_occupied_cover_slot() or p.is_wounded):lift=-19.
   var at=node.get_global_transform_with_canvas()*Vector2(0,lift)
   badge.position=at/surface.scale.x-Vector2(8,17);badge.size=Vector2(16,16);badge.modulate.a=1. if p.is_alive else .55
 func build_results():

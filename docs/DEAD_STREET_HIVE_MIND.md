@@ -83,7 +83,7 @@ The receiving chat owns continuation.
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
-| HUD and player battle controls | This receiving chat | Implemented: full roster, selection, per-unit orders, pause/speeds. 63 order + 39 native checks passed; owner review next. |
+| HUD and player battle controls | This receiving chat | Second HUD review implemented; shared fleet/traffic scale corrected. 146 native UI/vehicle checks passed; owner review next. |
 | Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
 
 **Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -97,7 +97,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the new HUD and battle controls in-game; make requested refinements before Whittaker Estate. See [control rules and evidence](TACTICAL_CONTROLS_2026-09-13.md). Dedicated performance work stays parked.
+**Immediate next task:** Brandon reviews the revised HUD, lower selected emblems and corrected fleet scale. Apply any requested refinements before Whittaker Estate. See [control rules and evidence](TACTICAL_CONTROLS_2026-09-13.md). Dedicated performance work stays parked.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

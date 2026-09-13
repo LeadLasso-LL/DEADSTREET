@@ -7,8 +7,8 @@ const TYPE_CAR := "car"
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 
 # Match the authored curb sedans; the same body drives art, navigation and cover.
-const CAR_LENGTH := 5.15
-const CAR_WIDTH := 2.1
+const CAR_LENGTH := 5.15 * Models.TACTICAL_SCALE
+const CAR_WIDTH := 2.1 * Models.TACTICAL_SCALE
 
 
 static func get_profile(vehicle_type_id: String) -> BattleVehiclePhysicalProfile:
@@ -25,7 +25,7 @@ static func has_profile(vehicle_type_id: String) -> bool:
 static func _make_profile(vehicle_type_id: String) -> BattleVehiclePhysicalProfile:
 	if Models.has_model(vehicle_type_id):
 		var m=Models.model(vehicle_type_id)
-		return BattleVehiclePhysicalProfile.new(vehicle_type_id,float(m.length),float(m.width))
+		return BattleVehiclePhysicalProfile.new(vehicle_type_id,float(m.length)*Models.TACTICAL_SCALE,float(m.width)*Models.TACTICAL_SCALE)
 	match vehicle_type_id:
 		TYPE_CAR:
 			return BattleVehiclePhysicalProfile.new(TYPE_CAR, CAR_LENGTH, CAR_WIDTH)
@@ -47,8 +47,8 @@ static func _get_collision_profile(vehicle_type_id: String) -> BattleVehiclePhys
 	var width: float = CAR_WIDTH
 	if Models.has_model(vehicle_type_id):
 		var model: Dictionary = Models.model(vehicle_type_id)
-		length = float(model.length)
-		width = float(model.width)
+		length = float(model.length)*Models.TACTICAL_SCALE
+		width = float(model.width)*Models.TACTICAL_SCALE
 	if not is_finite(length) or not is_finite(width) or length <= 0.0 or width <= 0.0:
 		return null
 	var cached: BattleVehiclePhysicalProfile = _collision_profiles.get(vehicle_type_id)

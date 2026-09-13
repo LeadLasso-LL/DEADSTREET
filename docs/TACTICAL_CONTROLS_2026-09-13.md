@@ -28,7 +28,7 @@ is deferred until this control pass is reviewed. Dedicated optimization remains 
   per-unit command ownership. Individual ground/cover orders clear only the
   recipients' badges; clearing, interruption and elimination remove them too.
   A target priority can coexist with a group positioning order and its badge.
-- Selected units show routes, destination/cover and priority-target feedback.
+- Selected units show routes and priority-target lines; ground selection, destination and target circles are removed.
   Unavailable cover, unreachable destinations, range and blocked shots are visible.
 - Reload, aiming, firing and cover posture remain automatic. Formation choices,
   cover, timing, target priorities and retreats provide player influence.
@@ -53,3 +53,41 @@ No new broad performance/32-unit campaign was run. A brief interactive smoke
 averaged 59.91 FPS; its commanded scenario is not comparable to prior benchmarks.
 Next: Brandon's in-game HUD/control review and requested refinements, before
 resuming Whittaker Estate.
+
+## Owner review corrections — 2026-09-13
+
+Approved in Brandon’s screenshot review; IMPLEMENTED / VALIDATED; owner visual acceptance pending.
+Selected floating emblems use a yellow ring and soft glow. Their anchors move modestly
+from -29 to -26 above standing actors, and -21 to -19 above wounded/cover actors.
+Unselected badges retain their normal appearance; the Emblems toggle controls all.
+
+Transport controls use drawn geometry rather than font-dependent glyphs, left to
+right: pause bars, double left triangles (0.5×), right triangle (1×), double right
+triangles (1.5×), Emblems, Audio. Pause explicitly pauses; Space still toggles pause.
+The active button outline carries the state. Selection/manual instructions and the
+separate pause/speed label are removed. Contextual failed orders, blocked shots,
+out-of-range targets and wounded status remain available.
+
+Roster header: active and eliminated counts only, with green/red numbers and neutral
+words. Faction emblem and name sit immediately left of relative strength. The pistol
+icon is a side-profile handgun with a distinct slide, angled grip and open trigger guard.
+
+Vehicle correction: the accepted bridge traffic used 1.6× dimensions; fleet art and
+bodies remained at 1×. A shared VehicleModelCatalog.TACTICAL_SCALE now governs fleet
+art, physical profiles/collision cache, bridge traffic, door panels and exit offsets.
+Body cover/placement already derives from profiles. All 75 fleet models use this
+shared path. Campaign capacity, price, upkeep, speed and source art stay unchanged.
+The existing road traffic size remains unchanged. Evidence below is a representative
+convoy validation, not an exhaustive playtest of every vehicle combination/map.
+
+Revision validation: 146 native checks passed in official Godot 4.7.2 release with
+zero engine/script errors. The 12-v-12 bridge fixture used three transports per side:
+Aegis/Vigil/Aegis versus Bulwark/Interceptor/Bulwark. Enlarged fleet body corners agree
+with equivalent static road footprints, collision cache agrees with placement,
+vehicles do not overlap, and all 12 attacking units have a disembark route. Native
+GUI input verified class/all/card selection, selected-emblem ownership/clearing,
+emblem toggle, pause/speeds, Clear Orders, camera movement and projected ground orders.
+All 12 friendly cards fit; 24 actors rendered. Evidence: `tools/tactical_controls/native.json`,
+`native.log`, `hud_revision_full_force.png` and `hud_revision_orders.png`.
+The earlier 63 core checks were not rerun; this pass did not change order authority.
+No new performance benchmark campaign was run.

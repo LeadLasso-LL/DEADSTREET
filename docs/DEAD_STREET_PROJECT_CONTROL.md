@@ -1276,3 +1276,13 @@ priority and do not reorder the deck. 63 order/runtime + 39 native UI/input chec
 passed in official release, with clean error gates. See
 [the authoritative control rules and limits](TACTICAL_CONTROLS_2026-09-13.md).
 Next: owner HUD/control review; Whittaker Estate remains deferred.
+
+## 2026-09-13 — HUD review refinements and fleet scale
+
+IMPLEMENTED / VALIDATED (146 native checks, no errors); owner review pending. Applied Brandon’s leaner
+header/control layout, recognizable playback symbols and pistol icon, selected-emblem
+yellow ring/glow, modestly lower badge anchors, and removal of ground selection/order
+circles. Fleet art and physical geometry now share the accepted road traffic’s 1.6×
+scale, including door/cover geometry. See [control rules](TACTICAL_CONTROLS_2026-09-13.md)
+for exact behavior, evidence and remaining limits. Next: revised screenshot and owner
+HUD/control review; Whittaker Estate stays deferred and performance work parked.

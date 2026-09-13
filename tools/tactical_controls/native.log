@@ -23,4 +23,4 @@ TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover sandbox
 TacticalDeploymentController: attacker side attacker committed
 TacticalDeploymentController: defender AI deployed and committed side defender posture=even
 GameplayRuntime: mode=tactical_active pending=
-CONTROLS_NATIVE {"brief_smoke_fps":59.9146814935532,"checks":39,"debug":false,"errors":[],"rendered":24,"sim_seconds":5.38962966666665,"units":24}
+CONTROLS_NATIVE {"brief_smoke_fps":59.7976678909523,"checks":146,"debug":false,"errors":[],"rendered":24,"sim_seconds":5.40082627777777,"units":24}

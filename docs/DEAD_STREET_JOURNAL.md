@@ -366,3 +366,29 @@ Preserve pre-existing participant/view and unrelated work; this checkpoint owns
 only its source hunks, new HUD/test files and records. Scoped commit/push follows
 under standing authorization; Git records the exact checkpoint.
 Next: Brandon's HUD/control playtest and requested changes, before Whittaker Estate.
+
+## 2026-09-13 — Owner HUD review, second pass (IMPLEMENTED / VALIDATED)
+
+Source: Brandon's review of the mobile screenshot and follow-up emblem spacing note.
+Approved changes: remove selection/destination/target ground circles; selected floating
+emblems get a yellow ring and glow. Bring badges modestly closer to heads. Transport
+buttons become fixed pause bars, double left triangles, play triangle, double right
+triangles, with both Emblems and Audio toggles to their right. Remove persistent
+selection/manual hints and redundant pause/speed text. Show counts only at the left
+of the roster header (green active number, red eliminated number, neutral words);
+move faction name and emblem immediately left of relative strength. Redraw pistol
+silhouette. Existing living-first roster and group-order marker rules remain accepted.
+
+Found: static bridge traffic uses 1.6× art and geometry, while fleet art/body profiles
+still use 1×. Correct the shared fleet tactical scale, including body/door/cover
+consistency; retain the already approved traffic size and campaign stats.
+146 native GUI/vehicle checks passed in official Godot 4.7.2 release, no errors.
+Fixture: 12-v-12 bridge, Aegis/Vigil/Aegis versus Bulwark/Interceptor/Bulwark.
+Checks include shared fleet/road footprints, collision-cache consistency, nonoverlap,
+all attacker disembark routes, selection-emblem ownership and clearing, toggles,
+GUI playback/selection/order input, pause and camera. All 12 friendly cards fit.
+See tools/tactical_controls/native.json, native.log and hud_revision_*.png.
+No broad optimization or benchmark pass; original core order checks not rerun.
+Owner visual/playtest acceptance remains pending. Dedicated performance work stays parked.
+Scoped commit/push uses existing authorization; unrelated working changes are preserved.
+Next: Brandon reviews the revised HUD, emblem spacing and fleet size before Whittaker Estate.

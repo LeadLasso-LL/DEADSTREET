@@ -2721,7 +2721,7 @@ func _draw_soldier(battle_state: BattleState, participant: BattleParticipant) ->
 	var claimed: bool = _participant_uses_retained_visual(participant.participant_id)
 	if not claimed:
 		_draw_soldier_ground(view_pos, battle_state, participant)
-	if _selected_participant_id() == participant.participant_id:
+	if not _is_dusk_street() and _selected_participant_id() == participant.participant_id:
 		_draw_soldier_selection(view_pos)
 	if claimed:
 		return
@@ -4368,7 +4368,6 @@ func _draw_player_order_overlays(battle_state: BattleState) -> void:
 	if orders_controller == null or battle_state.battle_phase != "active":
 		return
 	var canvas = _paint_canvas()
-	var color = Color("#e1d7a1")
 	var zoom = _camera.zoom.x if _camera != null else 1.0
 	var width = 1.5 / maxf(zoom, .1)
 	for id in orders_controller.selected_participant_ids:
@@ -4376,24 +4375,13 @@ func _draw_player_order_overlays(battle_state: BattleState) -> void:
 		if p == null or not p.is_alive:
 			continue
 		var at = _to_view(p.battle_position)
-		canvas.draw_arc(at, 7.0, 0, TAU, 24, color, width, true)
 		var points = PackedVector2Array([at])
 		for i in range(p.navigation_waypoint_index, p.navigation_waypoints.size()):
 			points.append(_to_view(p.navigation_waypoints[i]))
 		if points.size() > 1:
 			canvas.draw_polyline(points, Color(.87, .83, .65, .6), width, true)
-		var destination = p.player_order_position
-		var show_destination = p.has_player_order_position
-		if p.has_player_cover_intent() and battle_state.battlefield_geometry != null:
-			var slot = battle_state.battlefield_geometry.get_cover_slot(p.player_cover_slot_id)
-			if slot != null:
-				destination = slot.position
-				show_destination = true
-		if show_destination:
-			canvas.draw_arc(_to_view(destination), 4.0, 0, TAU, 20, color, width, true)
 		if not p.player_priority_target_id.is_empty():
 			var target = battle_state.get_participant(p.player_priority_target_id)
 			if target != null and target.is_alive:
 				var to = _to_view(target.battle_position)
 				canvas.draw_dashed_line(at, to, Color(.83, .39, .35, .7), width, 5.0)
-				canvas.draw_arc(to, 8.0, 0, TAU, 24, Color("#db7569"), width, true)

@@ -10,7 +10,7 @@ static func route(b,vehicle,destination: Vector2) -> Dictionary:
  if rows.is_empty():rows=[0.,-.25,.25]
  for row in rows:
   for side in [-1.,1.]:
-   candidates.append(Body.local_to_world(Vector2(profile.length*float(row)-.35,side*(profile.half_width()+1.)),vehicle.battle_position,vehicle.facing_direction))
+   candidates.append(Body.local_to_world(Vector2(profile.length*float(row)-.35*Models.TACTICAL_SCALE,side*(profile.half_width()+1.)),vehicle.battle_position,vehicle.facing_direction))
  for side in [-1.,1.]:
   candidates.append(Body.local_to_world(Vector2(-profile.half_length()-.8,side*.4),vehicle.battle_position,vehicle.facing_direction))
   candidates.append(Body.local_to_world(Vector2(profile.half_length()+.8,side*.4),vehicle.battle_position,vehicle.facing_direction))

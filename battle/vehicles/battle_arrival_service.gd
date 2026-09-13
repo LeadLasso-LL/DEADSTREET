@@ -3,6 +3,9 @@ extends RefCounted
 const Catalog=preload("res://battle/geometry/harold_street_catalog.gd")
 const Area=preload("res://battle/geometry/battle_deployment_area.gd")
 const Pocket=preload("res://battle/geometry/battle_deployment_pocket.gd")
+const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
+const DOOR_WIDTH=.36*Models.TACTICAL_SCALE
+const DOOR_DEPTH=.8*Models.TACTICAL_SCALE
 const Body=preload("res://battle/vehicles/battle_vehicle_body_service.gd")
 const Cover=preload("res://battle/vehicles/battle_vehicle_cover_service.gd")
 const CoverService=preload("res://battle/geometry/battle_cover_service.gd")
@@ -79,16 +82,16 @@ static func door_specs(v) -> Array:
    # Keep that envelope outside the body so an open door cannot invalidate
    # its own vehicle's otherwise legal deployment pose.
    var f: Vector2=v.facing_direction;var outward=Vector2(-f.y,f.x)
-   var proxy_size=Vector2(absf(f.x)*.36+absf(f.y)*.8,absf(f.y)*.36+absf(f.x)*.8)
-   var offset=maxf(.50,proxy_size.dot(outward.abs())*.5+.06)
+   var proxy_size=Vector2(absf(f.x)*DOOR_WIDTH+absf(f.y)*DOOR_DEPTH,absf(f.y)*DOOR_WIDTH+absf(f.x)*DOOR_DEPTH)
+   var offset=maxf(.50*Models.TACTICAL_SCALE,proxy_size.dot(outward.abs())*.5+.06)
    var local=Vector2(profile.length*float(rows[row]),side*(profile.half_width()+offset))
    var at=Body.local_to_world(local,v.battle_position,v.facing_direction)
    var facing=v.facing_direction
-   specs.append({"id":id,"at":at,"slot":at-facing*.70,"facing":facing})
+   specs.append({"id":id,"at":at,"slot":at-facing*(.70*Models.TACTICAL_SCALE),"facing":facing})
  return specs
 static func door_rect(spec) -> Rect2:
  var facing: Vector2=spec.facing
- var size=Vector2(absf(facing.x)*.36+absf(facing.y)*.8,absf(facing.y)*.36+absf(facing.x)*.8)
+ var size=Vector2(absf(facing.x)*DOOR_WIDTH+absf(facing.y)*DOOR_DEPTH,absf(facing.y)*DOOR_WIDTH+absf(facing.x)*DOOR_DEPTH)
  return Rect2(spec.at-size*.5,size)
 static func ensure_doors(b,v) -> void:
  if not Body.has_usable_pose(v):return

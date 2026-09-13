@@ -39,6 +39,25 @@ func run():
 		quit(1)
 		return
 	var view = scene.runtime.get_node("TacticalBattleView")
+	var bodies = load("res://battle/vehicles/battle_vehicle_body_service.gd")
+	var profiles = load("res://battle/vehicles/battle_vehicle_physical_catalog.gd")
+	var traffic = load("res://battle/geometry/river_bridge_catalog.gd")
+	var exits = load("res://battle/vehicles/battle_vehicle_exit_service.gd")
+	for vehicle in b.vehicles.values():
+		var profile = profiles.get_profile(vehicle.vehicle_type_id)
+		var footprint = traffic.traffic_bounds(vehicle.battle_position, vehicle.vehicle_type_id, vehicle.facing_direction)
+		for corner in bodies.world_corners(vehicle):
+			check(footprint.grow(.001).has_point(corner), "fleet body matches equivalent road vehicle")
+		var cached = profiles._get_collision_profile(vehicle.vehicle_type_id)
+		check(cached.length == profile.length and cached.width == profile.width, "cached collision agrees with placement body")
+		for other in b.vehicles.values():
+			if vehicle.battle_vehicle_id < other.battle_vehicle_id:
+				check(not bodies.bodies_intersect(vehicle, other), "enlarged convoy bodies do not overlap")
+	for unit in b.participants.values():
+		if not unit.transport_vehicle_id.is_empty():
+			var vehicle = b.get_vehicle(unit.transport_vehicle_id)
+			var exit_route = exits.route(b, vehicle, unit.battle_position)
+			check(not exit_route.is_empty(), "unit has route from enlarged transport")
 	view.battle_presentation.skip_to_ready()
 	await create_timer(.3).timeout
 	var begin = load("res://gameplay/arsenal_battle_fixture.gd").begin_review(scene.runtime,b)
@@ -63,13 +82,25 @@ func run():
 	for id in orders.selected_participant_ids:
 		check(b.get_participant(id).current_player_group_command() == "hold","native hold badge")
 	await process_frame
+	for id in view.battle_presentation.markers:
+		var marker = view.battle_presentation.markers[id]
+		check(marker.selected == orders.is_selected(id), "emblem selection follows actual selected unit")
 	await RenderingServer.frame_post_draw
-	root.get_texture().get_image().save_png("C:/Users/brand/OneDrive/Documents/dead-street/tools/tactical_controls/hud_paused_full_force.png")
+	root.get_texture().get_image().save_png("C:/Users/brand/OneDrive/Documents/dead-street/tools/tactical_controls/hud_revision_full_force.png")
 	var first = hud.roster[0]
 	await click(hud.cards[first])
 	check(orders.selected_participant_ids == [first],"card selects only clicked unit")
 	await click(hud.buttons["clear"])
 	check(b.get_participant(first).current_player_group_command().is_empty(),"native Clear Orders badge removed")
+	await process_frame
+	for id in view.battle_presentation.markers:
+		check(view.battle_presentation.markers[id].selected == (id == first), "single selection clears other emblem rings")
+	for toggle in hud.playback.get_children():
+		if toggle is CheckButton and toggle.text == "EMBLEMS":
+			await click(toggle)
+			check(not view.battle_presentation.identifiers_enabled, "emblem toggle handles GUI input")
+			await click(toggle)
+			check(view.battle_presentation.identifiers_enabled, "emblem toggle restores identifiers")
 	var p = b.get_participant(first)
 	var point = Vector2.ZERO
 	var target = p.battle_position
@@ -112,7 +143,7 @@ func run():
 	check(b.elapsed_time_seconds > sim_start + 3.5,"native resumed battle advances")
 	await click(hud.playback_buttons[0])
 	await RenderingServer.frame_post_draw
-	root.get_texture().get_image().save_png("C:/Users/brand/OneDrive/Documents/dead-street/tools/tactical_controls/hud_orders.png")
+	root.get_texture().get_image().save_png("C:/Users/brand/OneDrive/Documents/dead-street/tools/tactical_controls/hud_revision_orders.png")
 	var report = {"checks":checks,"errors":errors,"brief_smoke_fps":fps,"units":b.participants.size(),"rendered":view.actor_presenter._unit_nodes.size(),"sim_seconds":b.elapsed_time_seconds,"debug":OS.has_feature("debug")}
 	FileAccess.open("C:/Users/brand/OneDrive/Documents/dead-street/tools/tactical_controls/native.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
 	print("CONTROLS_NATIVE ",JSON.stringify(report))

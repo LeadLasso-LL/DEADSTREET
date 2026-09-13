@@ -21,8 +21,12 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, size / Vector2(40, 36))
 	match weapon_type:
 		"pistol":
-			polygon([[3,9],[35,9],[35,17],[19,17],[17,29],[7,29],[11,17],[3,17]])
-			draw_rect(Rect2(21,18,8,6),ink,false,2)
+			# Side-profile handgun: distinct slide, angled grip and open trigger guard.
+			polygon([[7,9],[34,9],[36,11],[36,16],[21,16],[17,19],[13,31],[5,29],[9,18],[5,17],[5,13],[7,13]])
+			draw_rect(Rect2(9,7,3,2),ink)
+			draw_rect(Rect2(30,7,2,2),ink)
+			draw_polyline(PackedVector2Array([Vector2(21,17),Vector2(25,17),Vector2(24,23),Vector2(16,23)]),ink,2.2,true)
+			draw_line(Vector2(20,18),Vector2(19,21),ink,1.7,true)
 		"smg":
 			for i in range(3):
 				var x = 6.0 + i * 12.0

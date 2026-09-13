@@ -2,6 +2,8 @@ class_name VehicleModelCatalog
 extends RefCounted
 const PATH="res://assets/data/vehicle_models.json"
 const ART="res://assets/art/vehicles/fleet/"
+# Shared tactical scale: fleet art, bodies, door exits and static bridge traffic.
+const TACTICAL_SCALE=1.6
 const DIRECTIONS=["e","se","s","sw","w","nw","n","ne"]
 static var _data: Dictionary={}
 static var _textures: Dictionary={}
