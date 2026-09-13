@@ -1286,3 +1286,15 @@ circles. Fleet art and physical geometry now share the accepted road traffic’s
 scale, including door/cover geometry. See [control rules](TACTICAL_CONTROLS_2026-09-13.md)
 for exact behavior, evidence and remaining limits. Next: revised screenshot and owner
 HUD/control review; Whittaker Estate stays deferred and performance work parked.
+
+## 2026-09-13 — Aligned faction and strength header (IMPLEMENTED / VISUALLY CHECKED)
+
+Source: Brandon liked the revised HUD and requested the faction emblem/name and
+relative strength to fill the upper-right space after the Sniper selector as two
+aligned fields, with a thin white divider. Faction emblem grows from 26 to 38;
+name uses larger wrapping type. Strength label grows and its thicker meter sits
+lower. Both fields use the available header height without overlapping cards or
+class selectors. This changes layout only. Native screenshot reviewed at 1440×1000 in official Godot 4.7.2 release with
+zero script/engine errors: `tools/tactical_controls/hud_header.png` and
+`header_preview.log`. No combat/performance suite rerun for this layout change.
+Next: owner review before Whittaker Estate.

@@ -58,23 +58,34 @@ func setup(p_view: Node) -> void:
 	count_label.add_theme_color_override("default_color", Color("#c5c9bc"))
 	faction_emblem = TextureRect.new()
 	surface.add_child(faction_emblem)
-	faction_emblem.position = Vector2(568, 5)
-	faction_emblem.size = Vector2(26, 26)
+	faction_emblem.position = Vector2(671, 21)
+	faction_emblem.size = Vector2(38, 38)
 	faction_emblem.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	faction_emblem.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	faction_emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	Factions.style_emblem(faction_emblem)
-	faction_label = label(surface, Vector2(603, 10), Vector2(251, 18), "", 11)
-	strength_label = label(surface, Vector2(870, 7), Vector2(260, 14), "RELATIVE STRENGTH", 9)
+	# Two aligned fields fill the space after the class selectors.
+	faction_label = label(surface, Vector2(719, 12), Vector2(174, 52), "", 13)
+	faction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	faction_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var divider = ColorRect.new()
+	surface.add_child(divider)
+	divider.position = Vector2(906, 12)
+	divider.size = Vector2(1, 50)
+	divider.color = Color(1, 1, 1, .5)
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	strength_label = label(surface, Vector2(923, 12), Vector2(203, 32), "RELATIVE STRENGTH", 11)
+	strength_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	strength_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	var strength_bg = ColorRect.new()
 	surface.add_child(strength_bg)
-	strength_bg.position = Vector2(870, 24)
-	strength_bg.size = Vector2(256, 4)
+	strength_bg.position = Vector2(923, 49)
+	strength_bg.size = Vector2(203, 7)
 	strength_bg.color = Color("#86545b")
 	strength_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	strength_fill = ColorRect.new()
 	strength_bg.add_child(strength_fill)
-	strength_fill.size = Vector2(128, 4)
+	strength_fill.size = Vector2(101.5, 7)
 	strength_fill.color = Color("#83a38a")
 	strength_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var all = button(surface, "SELECT ALL", Vector2(24, 37), Vector2(118, 27))
@@ -227,7 +238,7 @@ func _process(delta: float) -> void:
 	faction_emblem.texture = faction.emblem
 	if not b.strength_snapshot.is_empty():
 		var share = float(b.strength_snapshot.shares.get(Query.player_side_id(b), .5))
-		strength_fill.size.x = 256 * share
+		strength_fill.size.x = 203 * share
 		strength_label.text = "RELATIVE STRENGTH / " + ("ADVANTAGE" if share > .55 else ("DISADVANTAGE" if share < .45 else "EVEN"))
 	var selected = 0 if c == null else c.selected_participant_ids.size()
 	for id in buttons:
