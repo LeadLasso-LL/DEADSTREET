@@ -17,6 +17,16 @@ const CARD_STATE_WOUNDED := "wounded"
 const CARD_STATE_DEAD := "dead"
 
 
+static func living_first_ids(battle_state: BattleState, roster: Array[String]) -> Array[String]:
+	var ordered: Array[String] = []
+	for alive in [true, false]:
+		for id in roster:
+			var p = battle_state.get_participant(id)
+			if p != null and p.is_alive == alive:
+				ordered.append(id)
+	return ordered
+
+
 static func friendly_cards(
 	battle_state: BattleState,
 	selected_participant_id: String
@@ -75,6 +85,7 @@ static func card_for(participant: BattleParticipant, selected_participant_id: St
 		state = CARD_STATE_DEAD
 	elif participant.is_wounded:
 		state = CARD_STATE_WOUNDED
+		can_select = true
 	else:
 		can_select = true
 	card["participant_id"] = participant.participant_id

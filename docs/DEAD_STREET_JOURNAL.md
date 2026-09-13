@@ -333,3 +333,36 @@ Archive index: none yet.
 - No additional 32-unit or broad actor/core suite. Prior larger-battle variability remains open. Preserve the already-dirty combat behavior and other unrelated working files; stage only this pass's two behavior hunks.
 - Evidence/reproduction: tools/bridge_perf/cover_close/README.md. Scoped commit/push under standing authorization follows; Git records the exact checkpoint.
 - Next: Return to the Whittaker Estate sandbox map: recover its agreed design brief and begin its first build pass. Keep remaining frame-pacing and expansion-headroom work on the backlog unless current-scale play regresses.
+
+## 2026-09-13 — HUD/control redesign approved; implementation started
+
+Source: Brandon, receiving build chat. OWNER-APPROVED DESIGN in
+[TACTICAL_CONTROLS_2026-09-13.md](TACTICAL_CONTROLS_2026-09-13.md).
+Approved all proposed controls, selected-group Clear Orders, stable living-first
+roster, class/Select All shortcuts and ownership-derived filled order badges.
+Whittaker Estate deferred; dedicated performance work remains parked.
+This chat owns HUD, player orders and required runtime/view integration. Existing
+unrelated participant/view hunks and asset/tool work will be preserved.
+Implementation and native validation are pending; no acceptance claim.
+
+## 2026-09-13 — HUD/control implementation and release validation
+
+IMPLEMENTED / VALIDATED, owner playtest acceptance pending. Full friendly deck,
+stable living-first order, approved monochrome class icons, class/Select All,
+Shift/box selection, selected Hold/Push/Fall Back/Clear Orders, independent target
+and positioning intent, explicit position persistence, order badges and overlays,
+battle-local pause/0.5×/1×/1.5× beside audio. Fixed projected ground coordinates.
+Wounded units remain visible/selectable; their established survival behavior
+interrupts explicit commands. No force-cap or performance setting changes.
+
+Evidence: tools/tactical_controls — 63 order/runtime checks and 39 native UI/input
+checks passed in official release Godot 4.7.2, zero script/engine errors. All 24
+actors rendered, all 12 friendly cards visible at 1440×1000. Initial Button property
+collision fixed; test event coordinates corrected for viewport/window stretch.
+Five-second commanded smoke was 59.91 FPS, not a comparable benchmark or sustained
+performance acceptance. No new broad suite or 32-unit campaign.
+
+Preserve pre-existing participant/view and unrelated work; this checkpoint owns
+only its source hunks, new HUD/test files and records. Scoped commit/push follows
+under standing authorization; Git records the exact checkpoint.
+Next: Brandon's HUD/control playtest and requested changes, before Whittaker Estate.

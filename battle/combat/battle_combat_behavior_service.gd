@@ -150,6 +150,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			continue
 		participants_considered += 1
 		if not participant.is_alive:
+			participant.clear_player_tactical_intent()
 			continue
 		if not _is_positioned(participant):
 			continue
@@ -160,7 +161,23 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		# dead/inactive already skipped; wounded overrides player intent;
 		# healthy player COVER outranks Defend/Hold/Push/Fall Back and role AI.
 		if participant.is_wounded:
+			if not participant.current_player_intent().is_empty():
+				participant.player_order_feedback = "Wounded — survival behavior interrupted orders"
+				if participant.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL:
+					participant.clear_navigation_path()
 			participant.clear_player_tactical_intent()
+		elif participant.current_player_intent() in [BattleParticipant.PLAYER_INTENT_MOVE, BattleParticipant.PLAYER_INTENT_HOLD]:
+			# Explicit positioning outranks role/force movement, including inherited Push.
+			if participant.current_player_intent() == BattleParticipant.PLAYER_INTENT_HOLD:
+				participant.clear_navigation_path()
+				participant.clear_movement_intent()
+				participant.velocity = Vector2.ZERO
+			_update_occupied_cover_posture(battle_state, participant, delta_seconds, execute_autonomous_attacks)
+			if execute_autonomous_attacks:
+				var ordered_shot: BattleAttackEvent = _try_execute_shot(battle_state, participant)
+				if ordered_shot != null:
+					attack_events.append(ordered_shot)
+			continue
 		elif participant.has_player_cover_intent():
 			var player_cover_action: String = _update_player_cover_behavior(
 				battle_state,
@@ -3170,7 +3187,7 @@ static func _sync_player_tactical_intent(participant: BattleParticipant) -> void
 		return
 	if participant.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL:
 		return
-	participant.clear_player_tactical_intent()
+	participant.finish_player_move()
 
 
 static func _update_player_cover_behavior(

@@ -1262,3 +1262,17 @@ Eight named abilities are implemented as stateful rules in the playable Vehicle 
 ## Drive-by vehicles — 2026-09-12
 
 Added premium Revenant R2 motorcycle and Nocturne RS car; fleet total 73. Drive-By destroys an undefended enemy business/building without ending the turn or resetting remaining movement. Normal road costs still apply. Initial balance: once per vehicle per turn, at least two occupants, +30 heat, no loot or territory capture. A single defender blocks the ability. Destruction disables income and production. The interactive lab demonstrates approach, destruction and continuation; production campaign event hooks remain pending. Native vehicle arrivals are available in the battle sandbox.
+
+
+
+## 2026-09-13 — Tactical HUD and player controls
+
+IMPLEMENTED / VALIDATED; owner acceptance pending. Full compact roster with
+monochrome class icons, stable living-before-eliminated ordering, multi/class/all
+selection, per-unit positioning and independent target priority, selected Hold /
+Push / Fall Back / Clear Orders, current-order badges, route/target feedback, and
+tactical pause / 0.5× / 1× / 1.5× grouped beside audio. Wounds retain survival
+priority and do not reorder the deck. 63 order/runtime + 39 native UI/input checks
+passed in official release, with clean error gates. See
+[the authoritative control rules and limits](TACTICAL_CONTROLS_2026-09-13.md).
+Next: owner HUD/control review; Whittaker Estate remains deferred.

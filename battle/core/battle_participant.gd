@@ -11,6 +11,7 @@ const PLAYER_INTENT_NONE := ""
 const PLAYER_INTENT_MOVE := "move"
 const PLAYER_INTENT_COVER := "cover"
 const PLAYER_INTENT_TARGET := "target"
+const PLAYER_INTENT_HOLD := "hold"
 
 const Armor := preload("res://campaign/equipment/armor_catalog.gd")
 var armor_id: String = ""
@@ -80,6 +81,36 @@ var player_priority_target_id: String = ""
 var player_tactical_intent: String = ""
 var player_cover_object_id: String = ""
 var player_cover_slot_id: String = ""
+var player_group_command_id: String = ""
+var player_order_position: Vector2 = Vector2.ZERO
+var has_player_order_position: bool = false
+var player_order_feedback: String = ""
+
+func current_player_group_command() -> String:
+	if not is_alive or is_wounded or player_tactical_intent.is_empty():
+		return ""
+	return player_group_command_id
+
+func clear_player_group_command() -> void:
+	player_group_command_id = ""
+
+func set_player_hold_intent() -> void:
+	player_tactical_intent = PLAYER_INTENT_HOLD
+	player_order_position = battle_position
+	has_player_order_position = true
+	clear_navigation_path()
+	clear_movement_intent()
+	velocity = Vector2.ZERO
+
+func finish_player_move() -> void:
+	# Arrival retains the assigned position and any independent target priority.
+	if player_tactical_intent == PLAYER_INTENT_MOVE:
+		if has_player_order_position and battle_position.distance_to(player_order_position) > 0.8:
+			player_order_feedback = "Route interrupted — orders released"
+			clear_player_tactical_intent()
+			return
+		set_player_hold_intent()
+
 var pending_deployment_cover_object_id: String = ""
 var pending_deployment_cover_slot_id: String = ""
 var identity: TacticalIdentitySnapshot = null
@@ -255,20 +286,20 @@ func set_player_cover_intent(cover_object_id: String, cover_slot_id: String = ""
 	player_tactical_intent = PLAYER_INTENT_COVER
 	player_cover_object_id = cover_object_id
 	player_cover_slot_id = cover_slot_id
-	player_priority_target_id = ""
 
 
 func set_player_move_intent() -> void:
 	player_tactical_intent = PLAYER_INTENT_MOVE
 	player_cover_object_id = ""
 	player_cover_slot_id = ""
-	player_priority_target_id = ""
+	player_order_position = navigation_destination
+	has_player_order_position = has_navigation_destination
 
 
 func set_player_target_intent(hostile_id: String) -> void:
-	player_tactical_intent = PLAYER_INTENT_TARGET
-	player_cover_object_id = ""
-	player_cover_slot_id = ""
+	# Priority is independent of movement/cover. It never initiates a chase.
+	if player_tactical_intent.is_empty() or player_tactical_intent == PLAYER_INTENT_TARGET:
+		set_player_hold_intent()
 	player_priority_target_id = hostile_id
 
 
@@ -277,6 +308,8 @@ func clear_player_cover_intent() -> void:
 	player_cover_slot_id = ""
 	if player_tactical_intent == PLAYER_INTENT_COVER:
 		player_tactical_intent = PLAYER_INTENT_NONE
+		clear_player_group_command()
+		has_player_order_position = false
 
 
 func clear_player_tactical_intent() -> void:
@@ -284,6 +317,8 @@ func clear_player_tactical_intent() -> void:
 	player_cover_object_id = ""
 	player_cover_slot_id = ""
 	player_priority_target_id = ""
+	clear_player_group_command()
+	has_player_order_position = false
 
 
 func has_pending_deployment_cover() -> bool:

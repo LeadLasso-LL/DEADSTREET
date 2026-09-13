@@ -1,6 +1,16 @@
 class_name BattleState
 extends RefCounted
 
+# Battle-local playback. UI/camera use real time; only runtime consumes this rate.
+var tactical_paused: bool = false
+var tactical_speed: float = 1.0
+
+func set_tactical_speed(value: float) -> void:
+	if value in [0.5, 1.0, 1.5]:
+		tactical_speed = value
+		tactical_paused = false
+
+
 const BattleSide := preload("res://battle/core/battle_side.gd")
 const BattleParticipant := preload("res://battle/core/battle_participant.gd")
 const BattleVehicle := preload("res://battle/core/battle_vehicle.gd")

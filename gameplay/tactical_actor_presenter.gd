@@ -280,6 +280,9 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	else:
 		node.modulate = Color.WHITE
 	var id: String = participant.participant_id
+	if battle_state.battle_phase == "active" and battle_state.tactical_paused and _motion.has(id):
+		# Order previews may change while paused; actors retain their last rendered pose.
+		return
 	var now: float = battle_state.elapsed_time_seconds
 	var state: Dictionary = _motion.get(id, {"clip":"", "start":now, "time":now, "distance":0.0, "shot":-100.0, "sequence":0, "position":participant.battle_position})
 	var dt: float = maxf(0.0, now - float(state["time"]))

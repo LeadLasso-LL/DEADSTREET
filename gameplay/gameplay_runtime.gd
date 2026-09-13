@@ -79,10 +79,32 @@ func _process(delta: float) -> void:
 	_log_mode_if_changed()
 
 
+func _input(event: InputEvent) -> void:
+	# A drag that ends over the HUD must still release, without clicking through it.
+	if tactical_orders_controller == null or not tactical_orders_controller.dragging:
+		return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+		var view = get_node_or_null("TacticalBattleView")
+		if view == null:
+			return
+		var layer = view.get_node_or_null("CommandHudLayer")
+		if layer == null:
+			return
+		var hud = layer.get_child(0)
+		if hud.visible and hud.surface.get_global_rect().has_point(event.position):
+			tactical_orders_controller.dragging = false
+			get_viewport().set_input_as_handled()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if armor_surface != null and armor_surface.has_node("ArmorStore"):
 		if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE: armor_surface.get_node("ArmorStore").queue_free()
 		return
+	if get_current_mode() == GameFlowController.MODE_TACTICAL_ACTIVE and event is InputEventKey:
+		var view = get_node_or_null("TacticalBattleView")
+		if tactical_orders_controller != null and view != null and tactical_orders_controller.handle_input(view, event):
+			get_viewport().set_input_as_handled()
+			return
 	if event is InputEventKey:
 		var key_event: InputEventKey = event as InputEventKey
 		if not key_event.pressed or key_event.echo:
@@ -217,64 +239,20 @@ func _route_tactical_pointer_input(event: InputEvent) -> void:
 
 
 func _route_tactical_orders_input(event: InputEvent) -> void:
-	if tactical_orders_controller == null:
-		return
-	if not (event is InputEventMouseButton):
-		return
-	var mouse: InputEventMouseButton = event as InputEventMouseButton
-	if not mouse.pressed:
-		return
-	if mouse.button_index == MOUSE_BUTTON_RIGHT:
-		tactical_orders_controller.clear_selection()
-		return
-	if mouse.button_index != MOUSE_BUTTON_LEFT:
-		return
-	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
-	if tactical_view == null:
-		return
-	var local_pos: Vector2 = tactical_view.viewport_to_local_position(mouse.position)
-	tactical_view.set_pointer_local_position(local_pos)
-	_handle_tactical_orders_local_click(local_pos, mouse.button_index)
+	var view = get_node_or_null("TacticalBattleView")
+	if tactical_orders_controller != null and view != null:
+		if tactical_orders_controller.handle_input(view, event):
+			get_viewport().set_input_as_handled()
 
 
 func _handle_tactical_orders_local_click(local_pos: Vector2, button_index: MouseButton) -> void:
-	if tactical_orders_controller == null:
-		return
-	var tactical_view: TacticalBattleView = get_node_or_null("TacticalBattleView") as TacticalBattleView
-	if tactical_view == null:
+	var view = get_node_or_null("TacticalBattleView")
+	if tactical_orders_controller == null or view == null:
 		return
 	if button_index == MOUSE_BUTTON_RIGHT:
 		tactical_orders_controller.clear_selection()
-		return
-	if button_index != MOUSE_BUTTON_LEFT:
-		return
-	var hud_hit: Dictionary = tactical_view.hit_test_unit_hud(local_pos)
-	if not hud_hit.is_empty():
-		var hud_id: String = str(hud_hit.get("id", ""))
-		if bool(hud_hit.get("can_select", false)):
-			tactical_orders_controller.select_participant(hud_id)
-		return
-	var friendly_id: String = tactical_view.hit_test_live_friendly_soldier(local_pos)
-	if not friendly_id.is_empty():
-		tactical_orders_controller.select_participant(friendly_id)
-		return
-	if not tactical_view.hit_test_inactive_friendly_soldier(local_pos).is_empty():
-		return
-	if tactical_orders_controller.selected_participant_id.is_empty():
-		return
-	var cover_mode_active: bool = tactical_orders_controller.selected_has_player_cover()
-	var hostile_id: String = tactical_view.hit_test_hostile_soldier(local_pos)
-	if not hostile_id.is_empty():
-		tactical_orders_controller.issue_target(hostile_id)
-		return
-	var cover_object_id: String = tactical_view.hit_test_cover_object(local_pos)
-	if not cover_object_id.is_empty():
-		tactical_orders_controller.issue_cover(cover_object_id)
-		return
-	if cover_mode_active:
-		tactical_orders_controller.release_cover()
-		return
-	tactical_orders_controller.issue_move(local_pos / TacticalBattleView.TACTICAL_PIXELS_PER_UNIT)
+	elif button_index == MOUSE_BUTTON_LEFT:
+		tactical_orders_controller.click_world(view, view.get_global_transform_with_canvas() * local_pos)
 
 
 func _route_tactical_deployment_escape() -> void:

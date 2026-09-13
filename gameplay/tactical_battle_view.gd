@@ -259,6 +259,7 @@ var _paint: CanvasItem = null
 
 func _ready() -> void:
 	var hud_layer=CanvasLayer.new()
+	hud_layer.name="CommandHudLayer"
 	hud_layer.layer=30
 	add_child(hud_layer)
 	var command_hud=preload("res://gameplay/tactical_command_hud.gd").new()
@@ -363,7 +364,8 @@ func hit_test_live_friendly_soldier(local_position: Vector2) -> String:
 	var battle_state: BattleState = _battle_state()
 	if battle_state == null or battle_state.battle_phase != "active":
 		return ""
-	return _hit_test_side_soldier(local_position, battle_state.attacker_side_id, true, true, false)
+	var healthy = _hit_test_side_soldier(local_position, battle_state.attacker_side_id, true, true, false)
+	return healthy if not healthy.is_empty() else _hit_test_side_soldier(local_position, battle_state.attacker_side_id, false, true, false)
 
 
 func hit_test_inactive_friendly_soldier(local_position: Vector2) -> String:
@@ -377,7 +379,8 @@ func hit_test_hostile_soldier(local_position: Vector2) -> String:
 	var battle_state: BattleState = _battle_state()
 	if battle_state == null or battle_state.battle_phase != "active":
 		return ""
-	return _hit_test_side_soldier(local_position, battle_state.defender_side_id, true, true, false)
+	var healthy = _hit_test_side_soldier(local_position, battle_state.defender_side_id, true, true, false)
+	return healthy if not healthy.is_empty() else _hit_test_side_soldier(local_position, battle_state.defender_side_id, false, true, false)
 
 
 func hit_test_cover_object(local_position: Vector2) -> String:
@@ -508,6 +511,7 @@ func paint_dynamic_battlefield(canvas: CanvasItem) -> void:
 	_draw_combat_feedback(battle_state)
 	_draw_overlay()
 	_draw_unit_hud(battle_state)
+	_draw_player_order_overlays(battle_state)
 	_paint = null
 
 
@@ -4357,3 +4361,39 @@ func _sync_blockade_barriers(state) -> void:
 			var node=preload("res://gameplay/blockade_barrier_art.gd").new()
 			var center=wanted[id].bounds.get_center();node.position=Vector2(center.x*8,center.y*6)
 			dynamic_unit_root.add_child(node);_dusk_blockade_nodes[id]=node
+
+
+
+func _draw_player_order_overlays(battle_state: BattleState) -> void:
+	if orders_controller == null or battle_state.battle_phase != "active":
+		return
+	var canvas = _paint_canvas()
+	var color = Color("#e1d7a1")
+	var zoom = _camera.zoom.x if _camera != null else 1.0
+	var width = 1.5 / maxf(zoom, .1)
+	for id in orders_controller.selected_participant_ids:
+		var p = battle_state.get_participant(id)
+		if p == null or not p.is_alive:
+			continue
+		var at = _to_view(p.battle_position)
+		canvas.draw_arc(at, 7.0, 0, TAU, 24, color, width, true)
+		var points = PackedVector2Array([at])
+		for i in range(p.navigation_waypoint_index, p.navigation_waypoints.size()):
+			points.append(_to_view(p.navigation_waypoints[i]))
+		if points.size() > 1:
+			canvas.draw_polyline(points, Color(.87, .83, .65, .6), width, true)
+		var destination = p.player_order_position
+		var show_destination = p.has_player_order_position
+		if p.has_player_cover_intent() and battle_state.battlefield_geometry != null:
+			var slot = battle_state.battlefield_geometry.get_cover_slot(p.player_cover_slot_id)
+			if slot != null:
+				destination = slot.position
+				show_destination = true
+		if show_destination:
+			canvas.draw_arc(_to_view(destination), 4.0, 0, TAU, 20, color, width, true)
+		if not p.player_priority_target_id.is_empty():
+			var target = battle_state.get_participant(p.player_priority_target_id)
+			if target != null and target.is_alive:
+				var to = _to_view(target.battle_position)
+				canvas.draw_dashed_line(at, to, Color(.83, .39, .35, .7), width, 5.0)
+				canvas.draw_arc(to, 8.0, 0, TAU, 24, Color("#db7569"), width, true)

@@ -27,6 +27,9 @@ const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRuntimeResult:
 	if battle_state == null or battle_state.battle_phase != "active" or not is_finite(delta_seconds) or delta_seconds < 0.0 or not is_finite(battle_state.elapsed_time_seconds) or battle_state.elapsed_time_seconds < 0.0:
 		return _advance_validated(battle_state, delta_seconds)
+	if battle_state.tactical_paused:
+		return BattleRuntimeResult.succeeded(0.0, battle_state.elapsed_time_seconds, battle_state.elapsed_time_seconds)
+	delta_seconds *= battle_state.tactical_speed
 	battle_state.begin_geometry_validation_scope()
 	var previous_profiles: Dictionary = WeaponProfiles.begin_runtime_profile_scope(battle_state.participants)
 	var previous_roles: Dictionary = RoleProfiles.begin_runtime_profile_scope(battle_state.participants)

@@ -20,6 +20,7 @@ const APARTMENT_BASE_GAIN_DB=-13.5
 const RESULTS_MUSIC_BOOST_DB=5.0
 var apartment_gain_db=APARTMENT_BASE_GAIN_DB
 var results_music_mix=0.
+var playback_rate=1.
 func setup(p_view):
  view=p_view
  for name in ["city","apartment_beat","engine","door","reload","impact","start"]:
@@ -41,7 +42,7 @@ func looping(name: String):
  var s=streams[name].duplicate();s.loop_mode=AudioStreamWAV.LOOP_FORWARD;s.loop_begin=0;s.loop_end=s.data.size()/(4 if s.stereo else 2);return s
 func play(name: String,at: Vector2,gain: float=-10.,variation: int=0):
  if not enabled or not streams.has(name):return
- var v=voices[cursor%voices.size()];cursor+=1;v.stop();v.stream=streams[name];v.position=at*Vector2(8,6);v.volume_db=gain;v.pitch_scale=1.+float(variation%7-3)*.012;v.play()
+ var v=voices[cursor%voices.size()];cursor+=1;v.stop();v.stream=streams[name];v.position=at*Vector2(8,6);v.volume_db=gain;v.pitch_scale=playback_rate*(1.+float(variation%7-3)*.012);v.play()
 func set_engine(at: Vector2,running: bool,pitch: float=1.):
  engine.position=at*Vector2(8,6);engine.pitch_scale=pitch
  if running and enabled:
@@ -59,6 +60,11 @@ func _process(_delta):
   if b!=null:
    for e in b.combat_feedback_events:seen[e.sequence_id]=true
   return
+ var frozen=b.battle_phase=="active" and b.tactical_paused
+ playback_rate=b.tactical_speed if b.battle_phase=="active" else 1.
+ for voice in voices:voice.stream_paused=frozen
+ engine.stream_paused=frozen
+ if frozen:return
  if not city.playing:city.play()
  if not music.playing:music.play()
  if battle_id!=b.get_instance_id():battle_id=b.get_instance_id();seen={};positions={};foot_distance={};reloads={};shots_played=0

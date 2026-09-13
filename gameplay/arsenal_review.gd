@@ -203,7 +203,11 @@ func _process(delta: float):
   Runtime.advance(battle,minf(delta,.1))
 func _input(event: InputEvent):
  if event is InputEventKey and event.pressed and event.keycode==KEY_ESCAPE and runtime!=null:
-  return_to_setup();get_viewport().set_input_as_handled()
+  var orders=runtime.tactical_orders_controller
+  if orders!=null and (not orders.selected_participant_ids.is_empty() or not orders.pending_command_id.is_empty()):
+   orders.handle_input(runtime.get_node("TacticalBattleView"),event)
+  else:return_to_setup()
+  get_viewport().set_input_as_handled()
 
 func faction_option(at: Vector2,sz: Vector2,chosen: String) -> OptionButton:
  var option=OptionButton.new();surface.add_child(option);option.position=at;option.size=sz;option.fit_to_longest_item=false;option.clip_text=true;option.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS;option.add_theme_font_size_override("font_size",11)
