@@ -1,4 +1,3 @@
-class_name BattleCombatBehaviorService
 extends RefCounted
 
 const AdaptiveTactics = preload("res://battle/ai/battle_adaptive_tactics.gd")
@@ -1196,8 +1195,18 @@ static func _cheap_closing_slot_still_valid(
 		return false
 	if not _is_valid_navigation_destination(battle_state, slot.position):
 		return false
-	# Retaining this route needs legal directional cover, not a firing solution.
-	if not BattleCombatCoverEvaluationService.slot_is_legal_and_protective(participant, slot, hostile):
+	var evaluation: BattleCombatCoverEvaluation = BattleCombatCoverEvaluationService.evaluate_slot(
+		battle_state,
+		participant,
+		slot,
+		hostile,
+		false,
+		false,
+		INF
+	)
+	if evaluation == null or not evaluation.legal:
+		return false
+	if not evaluation.has_useful_direction:
 		return false
 	var slot_range: float = slot.position.distance_to(hostile.battle_position)
 	if not is_finite(slot_range):
@@ -1836,6 +1845,13 @@ static func _healthy_keep_no_role_cover_decision(
 		return false
 	if participant.combat_no_role_cover_key.is_empty():
 		return false
+	if participant.combat_no_role_cover_key != _healthy_no_role_cover_key(
+		battle_state,
+		participant,
+		target,
+		weapon_type_id
+	):
+		return false
 	var self_drift: float = participant.battle_position.distance_to(
 		participant.combat_no_role_cover_self_position
 	)
@@ -1845,14 +1861,6 @@ static func _healthy_keep_no_role_cover_decision(
 		participant.combat_no_role_cover_target_position
 	)
 	if not is_finite(target_drift) or target_drift > BattleCombatBehaviorCatalog.REPLAN_DISTANCE_EPSILON:
-		return false
-	# Movement already invalidates the decision; only then compare its expensive key.
-	if participant.combat_no_role_cover_key != _healthy_no_role_cover_key(
-		battle_state,
-		participant,
-		target,
-		weapon_type_id
-	):
 		return false
 	return true
 

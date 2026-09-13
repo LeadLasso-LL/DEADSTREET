@@ -1,3 +1,15 @@
+## Current milestone — performance parked; sandbox resumes — 2026-09-13
+
+Brandon explicitly wants to move on from performance. The final bounded cover
+pass removes unused LOS/range work from retained-cover checks and rejects stale
+movement decisions before expensive key construction. All 4,545 focused/exact
+replay checks passed. Normal 24-unit release averaged 59.67 FPS (P95 17.028 ms,
+max 33.297 ms); minor dips remain. This supports returning to sandbox development.
+Steady frame pacing and expansion headroom remain unresolved backlog items.
+
+See [bounded results and reproduction](../tools/bridge_perf/cover_close/README.md).
+Next: Return to the Whittaker Estate sandbox map: recover its agreed design brief and begin its first build pass. Keep remaining frame-pacing and expansion-headroom work on the backlog unless current-scale play regresses.
+
 ## Current milestone — controlled targeting optimization — 2026-09-13
 
 Assault targeting now culls impossible ranges before sorting candidate rows.

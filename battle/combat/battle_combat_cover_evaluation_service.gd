@@ -152,6 +152,21 @@ static func occupied_cover_is_suitable(
 	return true
 
 
+# Equivalent to evaluate_slot(...).legal && .has_useful_direction.
+# Route retention does not consume LOS, weapon range, movement or reachability.
+static func slot_is_legal_and_protective(
+	participant: BattleParticipant,
+	slot: BattleCoverSlot,
+	hostile: BattleParticipant
+) -> bool:
+	if not _slot_is_legal_for_participant(participant, slot) or not _is_positioned(hostile):
+		return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
+		slot, hostile.battle_position
+	)
+	return protection != null and protection.has_applicable_cover and is_useful_protection_factor(protection.protection_factor)
+
+
 static func occupied_cover_still_protects(
 	battle_state: BattleState,
 	participant: BattleParticipant,

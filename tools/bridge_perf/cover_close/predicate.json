@@ -1,0 +1,6 @@
+{
+  "checks": 3330,
+  "errors": [],
+  "full_query_ms": 78.775,
+  "predicate_ms": 19.31
+}

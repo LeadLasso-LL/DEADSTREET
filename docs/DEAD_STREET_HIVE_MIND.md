@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-13, after the controlled targeting checkpoint.
+Coordination last reconciled: 2026-09-13, after the bounded cover/performance pass.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -74,28 +74,29 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Objective:** 60 FPS at the current battle scale, with room for larger battles.
-The receiving chat owns continuation. The headroom optimization pass is verified;
-steady 60 FPS and expansion headroom remain unfinished.
+**Active objective:** Resume unfinished sandbox features. Brandon explicitly
+wants to move on from performance; dedicated optimization is parked. Steady
+60 FPS and room for larger battles remain goals, not completed acceptance gates.
+The receiving chat owns continuation.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
-| Collision, targets, navigation, cover, visibility and actor preparation | This receiving chat | Implemented and checked; see current report and Git checkpoint. |
-| Shared records and reproducible benchmarks | This receiving chat | Updated with progression, failures, validation and remaining limits. |
-| Release-runtime capacity comparison | This receiving chat | Completed with matched package controls and a bounded repeat; frame consistency/headroom remains open. |
+| Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
+| Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
+| Whittaker Estate sandbox map | This receiving chat | Next: recover agreed brief, then first build pass. |
 
-**Latest evidence:** The targeting optimization passed 9,820 focused/exact
-replay checks. Identical rendered 32-unit battles measured 61.06 → 65.97 FPS;
-simulation 9.73 → 8.78 ms/step. P95 remains about 18.4 ms. Normal variable-step
-runs remain inconsistent (48.15–64.66 FPS), so steady 60/headroom are unfinished.
-The fixed-step result is controlled throughput, not normal gameplay capacity.
+**Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
+max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
+The cover shortcut passed 4,545 predicate/replay checks. Current-scale play is
+sufficient to resume development; frame dips and larger-battle variability remain.
 
-Read [the slow-frame report](../tools/bridge_perf/slow_frames/README.md) for
-raw evidence, rejected attempts and reproduction. The earlier
-[release/headroom report](../tools/bridge_perf/HEADROOM_2026-09-13.md) remains
-historical evidence. Official release and commit/push approvals are resolved.
+Read [the bounded cover report](../tools/bridge_perf/cover_close/README.md)
+for source ownership, results and reproduction. The earlier
+[32-unit report](../tools/bridge_perf/slow_frames/README.md) remains evidence
+of unresolved expansion capacity. Revisit performance if current-scale play
+regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Use the fixed-step rendered benchmark to isolate the remaining combat/cover validation cost and frame-time tails, then verify gains in the normal variable-step game. Steady 60 FPS and larger-battle headroom remain open.
+**Immediate next task:** Return to the Whittaker Estate sandbox map: recover its agreed design brief and begin its first build pass. Keep remaining frame-pacing and expansion-headroom work on the backlog unless current-scale play regresses.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

@@ -319,3 +319,17 @@ Archive index: none yet.
 - Limits: P95 stayed about 18.4 ms and P99 worsened. Normal variable-step runs varied from 64.660 to 48.154 FPS. The narrow CPU improvement is accepted; stable 60 and normal-game variability are NOT resolved.
 - Preserved unrelated working changes. Added reproducible fixed-rendered comparison and retained failed/slow evidence. See tools/bridge_perf/slow_frames/README.md.
 - Next: Use the fixed-step rendered benchmark to isolate the remaining combat/cover validation cost and frame-time tails, then verify gains in the normal variable-step game. Steady 60 FPS and larger-battle headroom remain open.
+
+### 20260913-cover-close-01 — bounded pass before returning to sandbox
+- Source: Brandon approved continuation and explicitly wants to move on from performance.
+- Receiving chat owns a bounded combat/cover optimization plus a normal current-scale play check. Do not turn this into another open-ended expansion benchmark campaign.
+- Identified a retained-closing-cover check that computes full LOS/weapon-range data but consumes only legality and directional protection. Preserve behavior while eliminating unused queries; document any remaining frame-time limitation before returning to sandbox work.
+
+### 20260913-cover-close-02 — performance parked; sandbox resumes
+- Source: Brandon's explicit preference to move on from performance. Dedicated optimization is PARKED after this bounded pass; steady 60 FPS/expansion headroom are not claimed complete.
+- Implemented: cheap legality/protection predicate for retained closing cover; movement invalidation precedes no-role-cover context/LOS key construction. No cadence or art changes.
+- Validated: 3,330 predicate comparisons + 1,215 exact replay checks (4,545 total), zero errors. Isolated query 78.775 to 19.310 ms for 3,000 calls; same-state 600-step simulation 3430.850 to 3348.143 ms.
+- Normal 24-unit release: 59.670 FPS; P95 17.028 ms, P99 21.596, max 33.297; zero frames over 33.333/100 ms. One five-second window was 57.90 FPS. This is usable development evidence, not perfect frame-pacing acceptance.
+- No additional 32-unit or broad actor/core suite. Prior larger-battle variability remains open. Preserve the already-dirty combat behavior and other unrelated working files; stage only this pass's two behavior hunks.
+- Evidence/reproduction: tools/bridge_perf/cover_close/README.md. Scoped commit/push under standing authorization follows; Git records the exact checkpoint.
+- Next: Return to the Whittaker Estate sandbox map: recover its agreed design brief and begin its first build pass. Keep remaining frame-pacing and expansion-headroom work on the backlog unless current-scale play regresses.

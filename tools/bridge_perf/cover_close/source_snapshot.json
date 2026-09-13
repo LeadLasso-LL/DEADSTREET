@@ -1,0 +1,8 @@
+{
+  "baseline_head": "0ab7d8a89afcd2856addaa43d9cba978e2eb6d98",
+  "behavior_before_sha256": "1d6e85003ad79589eb6fa0b5da2e98dd782010db8c5a2725108d99d63eff2411",
+  "behavior_after_sha256": "acf603614f4e93637faf5e8e42474103ae591365507e85424787a461c1bed958",
+  "cover_source_sha256": "fcf465e81439c9e954138a97c07e30e9a3412d818ced503fd722982ce139a9e2",
+  "preexisting_behavior_changes_preserved": true,
+  "owned_behavior_patch": "owned_behavior.patch"
+}
