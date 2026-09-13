@@ -42,7 +42,7 @@ static func _advance_validated(battle_state: BattleState, delta_seconds: float) 
 			delta_seconds,
 			0.0
 		)
-	battle_state.clear_los_cache()
+	battle_state.prepare_los_cache_for_tick()
 	var elapsed_before: float = battle_state.elapsed_time_seconds
 	if battle_state.battle_phase != "active":
 		return BattleRuntimeResult.failed(

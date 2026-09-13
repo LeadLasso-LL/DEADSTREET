@@ -72,6 +72,10 @@ static func _component_labels(graph: BattleNavigationGraph) -> Array:
 
 
 static func _point_components(battle_state: BattleState,graph: BattleNavigationGraph,labels: Array,point: Vector2) -> Dictionary:
+	# The cache belongs to this exact topology and uses unrounded endpoints.
+	var cache: Dictionary = graph.get_meta("point_components", {})
+	if cache.has(point):
+		return cache[point]
 	var found: Dictionary = {}
 	var count: int = int(graph.get_meta("component_count",0))
 	for index in range(graph.nodes.size()):
@@ -81,6 +85,10 @@ static func _point_components(battle_state: BattleState,graph: BattleNavigationG
 			found[labels[index]] = true
 			if found.size() == count:
 				break
+	if cache.size() >= 1024:
+		cache.clear()
+	cache[point] = found
+	graph.set_meta("point_components", cache)
 	return found
 
 
@@ -325,63 +333,72 @@ static func _has_equivalent_point(points: Array[Vector2], candidate: Vector2) ->
 	return false
 
 
+# The immutable visibility graph is shared. Only the two query endpoints are
+# attached temporarily; shortest-path work runs in Godot's native AStar2D.
+# All graph edges retain their original Euclidean costs and clearance checks.
 static func _query_shortest_route(
 	battle_state: BattleState,
 	graph: BattleNavigationGraph,
 	start_position: Vector2,
 	destination: Vector2
 ) -> Array[Vector2]:
-	var nodes: Array[Vector2] = []
-	nodes.append(start_position)
-	nodes.append(destination)
-	var static_to_query: Array[int] = []
-	static_to_query.resize(graph.nodes.size())
-	var static_index: int = 0
-	while static_index < graph.nodes.size():
-		var static_point: Vector2 = graph.nodes[static_index]
-		if (
-			static_point.is_equal_approx(start_position)
-			or static_point.is_equal_approx(destination)
-		):
-			static_to_query[static_index] = -1
-			static_index += 1
-			continue
-		static_to_query[static_index] = nodes.size()
-		nodes.append(static_point)
-		static_index += 1
-	var adjacency: Array = _empty_adjacency(nodes.size())
-	var i: int = 0
-	while i < graph.nodes.size():
-		var qi: int = static_to_query[i]
-		if qi < 0:
-			i += 1
-			continue
-		var from_map: Dictionary = graph.adjacency[i]
-		var neighbor_ids: Array = from_map.keys()
-		for neighbor_value: Variant in neighbor_ids:
-			var j: int = int(neighbor_value)
-			if j < 0 or j >= static_to_query.size():
-				continue
-			var qj: int = static_to_query[j]
-			if qj < 0:
-				continue
-			adjacency[qi][qj] = from_map[j]
-		i += 1
-	var query_index: int = 2
-	while query_index < nodes.size():
-		var static_point: Vector2 = nodes[query_index]
-		if _segment_open(battle_state, graph.blocking_rects, start_position, static_point):
-			var start_weight: float = start_position.distance_to(static_point)
-			if is_finite(start_weight) and start_weight >= 0.0:
-				adjacency[0][query_index] = start_weight
-				adjacency[query_index][0] = start_weight
-		if _segment_open(battle_state, graph.blocking_rects, destination, static_point):
-			var dest_weight: float = destination.distance_to(static_point)
-			if is_finite(dest_weight) and dest_weight >= 0.0:
-				adjacency[1][query_index] = dest_weight
-				adjacency[query_index][1] = dest_weight
-		query_index += 1
-	return _shortest_route(nodes, adjacency)
+	var native: AStar2D
+	if graph.has_meta("native_routes"):
+		native = graph.get_meta("native_routes")
+	else:
+		native = AStar2D.new()
+		native.reserve_space(graph.nodes.size() + 2)
+		for index in range(graph.nodes.size()):
+			native.add_point(index, graph.nodes[index])
+		for index in range(graph.nodes.size()):
+			var neighbors: Array = graph.adjacency[index].keys()
+			neighbors.sort()
+			for neighbor in neighbors:
+				if int(neighbor) > index:
+					native.connect_points(index, int(neighbor))
+		graph.set_meta("native_routes", native)
+	var start_id: int = graph.nodes.size()
+	var end_id: int = start_id + 1
+	native.add_point(start_id, start_position)
+	native.add_point(end_id, destination)
+	# The previous query graph omitted static points coincident with either end.
+	var excluded: Array[int] = []
+	for index in range(graph.nodes.size()):
+		if graph.nodes[index].is_equal_approx(start_position) or graph.nodes[index].is_equal_approx(destination):
+			excluded.append(index)
+			native.set_point_disabled(index, true)
+	for index in _endpoint_connections(battle_state, graph, start_position):
+		if not native.is_point_disabled(index):
+			native.connect_points(start_id, index)
+	for index in _endpoint_connections(battle_state, graph, destination):
+		if not native.is_point_disabled(index):
+			native.connect_points(end_id, index)
+	var route: Array[Vector2] = []
+	for point in native.get_point_path(start_id, end_id):
+		route.append(point)
+	native.remove_point(start_id)
+	native.remove_point(end_id)
+	for index in excluded:
+		native.set_point_disabled(index, false)
+	return route
+
+
+# Exact endpoints only: no rounding of moving actors into cached positions.
+# Stored on the topology-specific graph, so obstacle/vehicle changes discard it.
+static func _endpoint_connections(battle_state: BattleState, graph: BattleNavigationGraph, point: Vector2) -> Array[int]:
+	var cache: Dictionary = graph.get_meta("endpoint_connections", {})
+	if cache.has(point):
+		return cache[point]
+	var connections: Array[int] = []
+	for index in range(graph.nodes.size()):
+		if _segment_open(battle_state, graph.blocking_rects, point, graph.nodes[index]):
+			connections.append(index)
+	# Bound memory during long battles with many distinct moving endpoints.
+	if cache.size() >= 512:
+		cache.clear()
+	cache[point] = connections
+	graph.set_meta("endpoint_connections", cache)
+	return connections
 
 
 static func _empty_adjacency(node_count: int) -> Array:
@@ -470,7 +487,10 @@ static func _segment_open(
 	var displacement: Vector2 = destination - start_position
 	if not BattlefieldGeometry.is_finite_point(displacement):
 		return false
+	var segment_bounds: Rect2 = Rect2(start_position.min(destination), displacement.abs()).grow(NAVIGATION_CLEARANCE_EPSILON)
 	for rect: Rect2 in blocking_rects:
+		if not rect.intersects(segment_bounds, true):
+			continue
 		if _segment_hits_rect(start_position, displacement, rect):
 			return false
 	if battle_state == null:
@@ -595,11 +615,4 @@ static func _route_uses_detour(waypoints: Array[Vector2], destination: Vector2) 
 
 
 static func _blocking_obstacle_id(geometry: BattlefieldGeometry, point: Vector2) -> String:
-	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
-	for obstacle_id: String in obstacle_ids:
-		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
-		if obstacle == null or not obstacle.blocks_movement:
-			continue
-		if obstacle.contains_point(point):
-			return obstacle_id
-	return ""
+	return geometry.get_movement_blocking_obstacle_id_at(point)

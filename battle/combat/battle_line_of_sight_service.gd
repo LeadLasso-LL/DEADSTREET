@@ -185,12 +185,15 @@ static func _trace_segment(
 			target_participant_id,
 			""
 		)
+	var segment_bounds: Rect2 = Rect2(start_position.min(end_position), displacement.abs()).grow(LINE_OF_SIGHT_EPSILON)
 	var best_t: float = INF
 	var best_obstacle_id: String = ""
-	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
+	var obstacle_ids: Array[String] = geometry.get_obstacle_ids_in_rect(segment_bounds)
 	for obstacle_id: String in obstacle_ids:
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
 		if obstacle == null or not obstacle.blocks_line_of_sight:
+			continue
+		if not obstacle.bounds.intersects(segment_bounds, true):
 			continue
 		if not obstacle.bounds_are_usable():
 			continue

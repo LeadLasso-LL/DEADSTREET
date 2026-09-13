@@ -16,15 +16,17 @@ static func refresh(battle_state: BattleState) -> BattleCombatPressureResult:
 			"null_battle_state",
 			"Battle combat pressure failed: battle_state is null."
 		)
+	var participant_ids: Array[String] = _sorted_participant_ids(battle_state)
+	var candidates: Array[BattleParticipant] = _positioned_pressure_candidates(battle_state, participant_ids)
 	var next_snapshots: Dictionary[String, BattleCombatPressureSnapshot] = {}
 	var participants_considered: int = 0
 	var snapshots_updated: int = 0
-	for participant_id: String in _sorted_participant_ids(battle_state):
+	for participant_id: String in participant_ids:
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
 		if participant == null:
 			continue
 		participants_considered += 1
-		var snapshot: BattleCombatPressureSnapshot = evaluate_participant(battle_state, participant_id)
+		var snapshot: BattleCombatPressureSnapshot = _evaluate_participant(battle_state, participant_id, candidates)
 		if snapshot == null:
 			continue
 		next_snapshots[participant_id] = snapshot
@@ -36,6 +38,30 @@ static func refresh(battle_state: BattleState) -> BattleCombatPressureResult:
 static func evaluate_participant(
 	battle_state: BattleState,
 	participant_id: String
+) -> BattleCombatPressureSnapshot:
+	return _evaluate_participant(battle_state, participant_id, _positioned_pressure_candidates(battle_state, _sorted_participant_ids(battle_state)))
+
+
+# The roster is stable during this synchronous observation pass. Validate and
+# order candidates once; all positions, life/wound state and sides are live.
+static func _positioned_pressure_candidates(battle_state: BattleState, ids: Array[String]) -> Array[BattleParticipant]:
+	var candidates: Array[BattleParticipant] = []
+	if battle_state == null:
+		return candidates
+	for id: String in ids:
+		var candidate: BattleParticipant = battle_state.get_participant(id)
+		if not _is_positioned(candidate):
+			continue
+		if candidate.side_id.is_empty() or not battle_state.has_side(candidate.side_id):
+			continue
+		candidates.append(candidate)
+	return candidates
+
+
+static func _evaluate_participant(
+	battle_state: BattleState,
+	participant_id: String,
+	candidates: Array[BattleParticipant]
 ) -> BattleCombatPressureSnapshot:
 	if battle_state == null or participant_id.is_empty():
 		return null
@@ -55,33 +81,34 @@ static func evaluate_participant(
 	var pressure_radius: float = BattleCombatPressureCatalog.PRESSURE_RADIUS
 	var isolation_radius: float = BattleCombatPressureCatalog.ISOLATION_RADIUS
 	var support_radius: float = BattleCombatPressureCatalog.FRIENDLY_SUPPORT_RADIUS
-	for candidate_id: String in _sorted_participant_ids(battle_state):
-		var candidate: BattleParticipant = battle_state.get_participant(candidate_id)
-		if candidate == null:
-			continue
+	var pressure_radius_sq: float = pressure_radius * pressure_radius
+	var isolation_radius_sq: float = isolation_radius * isolation_radius
+	var support_radius_sq: float = support_radius * support_radius
+	var pressure_usable: bool = is_finite(pressure_radius) and pressure_radius >= 0.0 and is_finite(pressure_radius_sq)
+	var isolation_usable: bool = is_finite(isolation_radius) and isolation_radius >= 0.0 and is_finite(isolation_radius_sq)
+	var support_usable: bool = is_finite(support_radius) and support_radius >= 0.0 and is_finite(support_radius_sq)
+	for candidate: BattleParticipant in candidates:
 		if candidate.participant_id == source.participant_id:
 			continue
-		if not _is_positioned(candidate):
+		var distance_sq: float = source.battle_position.distance_squared_to(candidate.battle_position)
+		if not is_finite(distance_sq):
 			continue
-		if _are_tactical_allies(battle_state, source, candidate):
+		var within_pressure: bool = pressure_usable and distance_sq <= pressure_radius_sq
+		if source.side_id == candidate.side_id:
 			if not candidate.is_alive:
-				if _is_within_radius(source.battle_position, candidate.battle_position, pressure_radius):
+				if within_pressure:
 					nearby_dead_allies += 1
 				continue
-			if _is_within_radius(source.battle_position, candidate.battle_position, pressure_radius):
+			if within_pressure:
 				nearby_living_allies += 1
 				if candidate.is_wounded:
 					nearby_wounded_allies += 1
-			if _is_within_radius(source.battle_position, candidate.battle_position, isolation_radius):
+			if isolation_usable and distance_sq <= isolation_radius_sq:
 				isolation_ally_present = true
-			if _is_within_radius(source.battle_position, candidate.battle_position, support_radius):
+			if support_usable and distance_sq <= support_radius_sq:
 				support_living_allies += 1
 			continue
-		if not candidate.is_alive:
-			continue
-		if not _are_tactical_hostiles(battle_state, source, candidate):
-			continue
-		if not _is_within_radius(source.battle_position, candidate.battle_position, pressure_radius):
+		if not candidate.is_alive or not within_pressure:
 			continue
 		nearby_hostiles += 1
 		var distance: float = source.battle_position.distance_to(candidate.battle_position)

@@ -53,6 +53,14 @@ static func select_best_local_cover_slot(
 	var origin: Vector2 = defend_anchor(participant)
 	if not BattlefieldGeometry.is_finite_point(origin):
 		return null
+	# If even the nearest point in the allowed radius cannot reach the target,
+	# the existing range-filtered cover search is necessarily empty.
+	if hostile != null and _is_positioned(hostile):
+		var weapon: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(participant)
+		if weapon != null and weapon.is_valid() and participant.battle_position.distance_to(hostile.battle_position) > weapon.max_range:
+			var minimum_range: float = origin.distance_to(hostile.battle_position) - BattleCombatBehaviorCatalog.DEFEND_POSITION_RADIUS
+			if minimum_range > weapon.max_range and not is_equal_approx(minimum_range, weapon.max_range):
+				return null
 	var ranked: Array[BattleCombatCoverEvaluation] = (
 		BattleCombatCoverEvaluationService.rank_combat_usable_within_radius(
 			battle_state,
@@ -201,11 +209,11 @@ static func _sample_is_legal(
 		return false
 	if not is_within_defend_radius(origin, point):
 		return false
+	if not _point_is_in_weapon_max_range(participant, point, hostile):
+		return false
 	if not _is_valid_destination(battle_state, point):
 		return false
 	if not _point_has_los_to_hostile(battle_state, point, hostile):
-		return false
-	if not _point_is_in_weapon_max_range(participant, point, hostile):
 		return false
 	if participant == null or not _is_positioned(participant):
 		return false
@@ -264,7 +272,7 @@ static func _is_valid_destination(battle_state: BattleState, point: Vector2) -> 
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if not geometry.contains_point(point):
 		return false
-	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+	for obstacle_id: String in geometry.get_obstacle_ids_at_point(point):
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
 		if obstacle == null or not obstacle.blocks_movement:
 			continue

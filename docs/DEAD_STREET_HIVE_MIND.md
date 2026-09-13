@@ -2,8 +2,8 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-13, after receipt of the final Idea Repository handoff.
-Gameplay evidence: final handoff and live reports; repository identity rechecked for this checkpoint.
+Coordination last reconciled: 2026-09-13, after the receiving-chat runtime cleanup.
+Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
 ## The rule
@@ -74,44 +74,41 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Objective:** finish the real-time battle sandbox. Bridge performance remains
-unfinished. The final [[Idea Repository]] handoff has been received and reviewed.
+**Objective:** finish the real-time battle sandbox. This receiving chat owns
+continuation. The bridge runtime cleanup is implemented and verified; steady
+60 FPS remains unfinished.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
-| Bridge performance and gameplay revision | This receiving chat | Transferred from [[Idea Repository]]; its final pass is implemented and previously tested, with source still uncommitted. |
-| Shared workflow and recovery | This receiving chat | Documentation checkpoint: startup instructions, Hive Mind, journal, archived handoff and two bridge reports. |
-| Full build continuation | This receiving chat | Ready to continue from the current working tree after this documentation checkpoint. |
+| Bridge/performance source | This receiving chat | Inherited revisions and current cleanup included in this performance checkpoint; use Git for the exact commit. |
+| Shared records | This receiving chat | Hive Mind, journal, Project Control and current performance report updated. |
+| Next build task | This receiving chat | Remaining combat/target-selection work and worst-frame spikes. |
 
-**Immediate next task:** identify and optimize one measured simulation bottleneck
-in normal 24-unit bridge gameplay; use existing relevant checks and a matched
-playable run to assess the change. Preserve art, quick contextual defender
-reactions and shotgun/SMG staged cover advances.
+**Latest evidence:** fresh 24-unit gameplay improved from 30.15 to 42.34 FPS.
+P95 frame fell 52.977 to 31.842 ms, but maximum frame rose from 248.724 to
+292.985 ms. Do not describe stutters as solved. Matched fixed-step mean update
+fell 22.706 to 16.745 ms with unchanged recorded outcomes. 5,947 focused checks
+and 1,215 exact full-runtime replay checks passed, including the deciding kill.
+Final native/test logs contain zero script errors. Earlier assertions had missed
+an empty-obstacle-cell runtime error, now fixed.
 
-**Latest evidence:** the prior pass reports 1,434 passing assertions and normal
-24-unit gameplay averaging 34.46 FPS, P95 frame 43.44 ms, maximum 231.07 ms.
-Pausing simulation raised the same scene to 60.42 FPS, supporting simulation as
-the main remaining cost. These are reviewed prior results, not new tests here.
-See the [performance report](../tools/bridge_perf/PERFORMANCE_2026-09-13.md)
-and [archived handoff](handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md).
-The handoff is a historical source; this file remains the current entry point.
+Read [the current cleanup report](../tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md).
+The [archived handoff](handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md) and prior
+reports remain historical sources. Run checks through tools/bridge_perf/run_checked.py
+so script errors fail even when Godot exits zero.
 
-Brandon explicitly authorized committing and pushing this documentation to
-LeadLasso-LL/DEADSTREET on 2026-09-13. The earlier blocked documentation checkpoint
-is superseded by this direct authorization; see the journal.
+**Immediate next task:** measure and reduce remaining combat/target-selection
+cost and worst-frame spikes in the normal 24-unit bridge battle, preserving
+contextual reactions, player orders, cover advances and visual quality.
 
 **Known gaps:**
-- Resume Build Pass → [[Idea Repository]] → this chat is the continuation.
-  Full transcripts were not recovered; the final handoff and live reports were
-  reviewed. Do not claim every exchange was read.
-- The battle ceiling is two maximum legal convoys. Three vehicles per convoy
-  and exact legal combinations/personnel cap remain undecided. The present
-  sandbox limit of 1–12 units/side is not a final convoy rule.
-- Stable 60 FPS and final bridge-art acceptance remain open.
-- Legacy core-regression status was not resolved by this documentation task.
-- The mixed working tree retains uncommitted bridge/performance source, older
-  character-factory changes, outputs and imports. No blanket stage or cleanup.
-- The September 7 attached Project Control is historical; the live tracker is newer.
+- Two maximum legal convoys remain the battle ceiling. Three vehicles per
+  convoy, legal combinations and final personnel cap are undecided.
+- Stable 60 FPS, worst-frame stability and final bridge-art acceptance remain open.
+- Legacy whole-project core-regression status was not re-established here.
+- Older character-factory/dusk work, scratch outputs and imports remain outside
+  this checkpoint. Preserve that mixed working tree.
+- Full original chat transcripts were not recovered; do not claim otherwise.
 
 ## Required documentation rhythm
 
@@ -182,6 +179,6 @@ durable reference. Reports should link to the actual evidence and its fixture.
 | Current bridge revisions | [Bridge README](../tools/bridge_map/README.md), [V3 report](../tools/bridge_map/v3_results/BRIDGE_REVISION_2026-09-13.md) |
 | Active performance evidence | tools/bridge_perf/ — inspect timestamps, fixture and source revision; do not assume every report describes latest code |
 
-Some current bridge/performance evidence was untracked at setup. Its presence on
-the development PC does not imply it was committed or pushed. Finalizing that
-active pass must retain the necessary source and reports.
+Historical evidence retains its original dates and limits. Current source, required
+diagnostics and reports are included in the performance checkpoint; verify Git
+and its remote before making a new synchronization claim.

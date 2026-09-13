@@ -255,10 +255,12 @@ static func _assault_target(b: BattleState, source: BattleParticipant, ids: Arra
 	var best_distance: float = INF
 	for id: String in ids:
 		var candidate: BattleParticipant = b.get_participant(id)
-		if not FireControl.is_spatial_fire_engagement(b, source, candidate): continue
 		var distance: float = source.battle_position.distance_to(candidate.battle_position)
 		# Avoid restarting acquisition for small changes in relative distance.
 		if id == source.target_participant_id: distance *= 0.85
+		# A candidate that cannot beat the incumbent needs no visibility query.
+		if not distance < best_distance: continue
+		if not FireControl.is_spatial_fire_engagement(b, source, candidate): continue
 		if distance < best_distance:
 			best_distance = distance
 			best_id = id

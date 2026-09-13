@@ -74,7 +74,14 @@ static func door_specs(v) -> Array:
  for row in range(rows.size()):
   for side in [-1.,1.]:
    var id=v.battle_vehicle_id+"__door_"+str(row)+("_north" if side<0 else "_south")
-   var local=Vector2(profile.length*float(rows[row]),side*(profile.half_width()+.50))
+   # Project the axis-aligned door proxy onto the vehicle's local side.
+   # At diagonal headings its envelope is wider than the panel itself.
+   # Keep that envelope outside the body so an open door cannot invalidate
+   # its own vehicle's otherwise legal deployment pose.
+   var f: Vector2=v.facing_direction;var outward=Vector2(-f.y,f.x)
+   var proxy_size=Vector2(absf(f.x)*.36+absf(f.y)*.8,absf(f.y)*.36+absf(f.x)*.8)
+   var offset=maxf(.50,proxy_size.dot(outward.abs())*.5+.06)
+   var local=Vector2(profile.length*float(rows[row]),side*(profile.half_width()+offset))
    var at=Body.local_to_world(local,v.battle_position,v.facing_direction)
    var facing=v.facing_direction
    specs.append({"id":id,"at":at,"slot":at-facing*.70,"facing":facing})

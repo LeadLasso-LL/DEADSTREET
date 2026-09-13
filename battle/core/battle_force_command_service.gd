@@ -262,7 +262,7 @@ static func initialize_assault_frames_from_geometry(battle_state: BattleState) -
 	if battle_state == null or battle_state.battlefield_geometry == null:
 		return
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	if not geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return
 	initialize_assault_frames(
 		battle_state,

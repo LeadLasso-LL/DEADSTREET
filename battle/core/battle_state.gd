@@ -45,8 +45,8 @@ var tactical_result: BattleVictoryResult = null
 var requires_deployment_commitments: bool = false
 var combat_feedback_events: Array[BattleAttackEvent] = []
 var combat_feedback_next_sequence: int = 1
-# Per-tick LOS cache. Cleared at the start of each BattleRuntimeService.advance()
-# and whenever authored geometry content_revision changes.
+# Exact-endpoint LOS cache. Geometry is checked at each runtime update and
+# on authored revisions; moving endpoints naturally use different keys.
 # Key: Vector4(from.x, from.y, to.x, to.y) — exact float equality.
 # Value: Dictionary {has_los: bool, blocking_obstacle_id: String}.
 var _los_cache: Dictionary = {}
@@ -851,6 +851,7 @@ func _zone_is_spatially_ready(
 # Validity is shared only during one synchronous runtime update. No validity
 # survives a tick: direct authored edits between updates are always rechecked.
 var _geometry_validation_scope: bool = false
+var _obstacle_query_geometry: BattlefieldGeometry = null
 var _validated_geometry: BattlefieldGeometry = null
 var _validated_content_revision: int = -1
 var _validated_cover_revision: int = -1
@@ -859,16 +860,21 @@ var _geometry_valid: bool = false
 func begin_geometry_validation_scope() -> void:
 	_geometry_validation_scope = true
 	_validated_geometry = null
+	_sync_obstacle_query_geometry()
 
 func end_geometry_validation_scope() -> void:
 	_geometry_validation_scope = false
 	_validated_geometry = null
+	if _obstacle_query_geometry != null:
+		_obstacle_query_geometry.end_obstacle_query_scope()
+	_obstacle_query_geometry = null
 
 func has_valid_geometry() -> bool:
 	if battlefield_geometry == null:
 		return false
 	if not _geometry_validation_scope:
 		return battlefield_geometry.is_valid()
+	_sync_obstacle_query_geometry()
 	if (
 		_validated_geometry != battlefield_geometry
 		or _validated_content_revision != battlefield_geometry.content_revision
@@ -883,3 +889,33 @@ func has_valid_geometry() -> bool:
 var arrival_choice: String = "medium"
 
 var cover_recovery: Dictionary = {}
+
+func _sync_obstacle_query_geometry() -> void:
+	if _obstacle_query_geometry == battlefield_geometry:
+		return
+	if _obstacle_query_geometry != null:
+		_obstacle_query_geometry.end_obstacle_query_scope()
+	_obstacle_query_geometry = battlefield_geometry
+	if _obstacle_query_geometry != null:
+		_obstacle_query_geometry.begin_obstacle_query_scope()
+
+# Cache only geometry-dependent traces; eligibility, aiming, cover posture and
+# weapon range remain live. The snapshot also detects direct unversioned edits
+# between ticks, preserving the previous per-tick-clear behavior in that case.
+var _los_obstacle_snapshot: Array = []
+const MAX_PERSISTENT_LOS_ENTRIES := 4096
+
+func prepare_los_cache_for_tick() -> void:
+	_sync_los_cache_stamp()
+	var snapshot: Array = []
+	if battlefield_geometry != null:
+		snapshot.append(battlefield_geometry.get_instance_id())
+		for id: String in battlefield_geometry.get_sorted_obstacle_ids():
+			var obstacle = battlefield_geometry.get_obstacle(id)
+			if obstacle == null:
+				snapshot.append([id, null])
+			else:
+				snapshot.append([id, obstacle.bounds, obstacle.blocks_line_of_sight])
+	if snapshot != _los_obstacle_snapshot or _los_cache.size() > MAX_PERSISTENT_LOS_ENTRIES:
+		_los_cache.clear()
+	_los_obstacle_snapshot = snapshot

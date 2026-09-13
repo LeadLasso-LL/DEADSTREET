@@ -1,0 +1,38 @@
+{
+  "live_before": {
+    "script_errors": 813,
+    "log_bytes": 886664
+  },
+  "bench_before": {
+    "script_errors": 1259,
+    "log_bytes": 2722842
+  },
+  "checks": {
+    "script_errors": 424,
+    "log_bytes": 359745
+  },
+  "bench_after": {
+    "script_errors": 1258,
+    "log_bytes": 1361057
+  },
+  "live_after": {
+    "script_errors": 1047,
+    "log_bytes": 1143896
+  },
+  "checks_final": {
+    "script_errors": 0,
+    "log_bytes": 2029
+  },
+  "replay": {
+    "script_errors": 0,
+    "log_bytes": 7632
+  },
+  "bench_victory": {
+    "script_errors": 0,
+    "log_bytes": 4251
+  },
+  "live_victory": {
+    "script_errors": 0,
+    "log_bytes": 3921
+  }
+}

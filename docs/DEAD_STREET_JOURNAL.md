@@ -218,3 +218,25 @@ Archive index: none yet.
   not recovered and must not be invented.
 - **Next:** locate accepted assets/topic notes when relevant; these concepts do
   not displace the immediate performance priority.
+
+## 20260913-performance-02 — remove redundant collision and connectivity work
+
+- User authorized implementation now after discussing inefficient prototype wiring.
+- Fresh normal 24-unit baseline: 30.15 FPS, P95 52.98 ms, max 248.72 ms.
+- Scope: internal vehicle collision profile reuse with live dimension checks, conservative segment rejection, exact-point navigation component reuse. Public profile ownership and exact collision tests retained.
+- Validation and matched before/after evidence are being saved under tools/bridge_perf/next_pass. This entry records work in progress; final results follow.
+
+- Follow-up finding: first native before/after did not establish an FPS improvement; same-process collision comparisons were 62.2-64.0 ms original versus 39.7-40.5 ms optimized with identical hits.
+- Discovered pre-existing untyped empty-array assignment in obstacle grid queries. Assertions passed despite script errors; runner now rejects script errors in logs. Fixed typed empty-cell return and added explicit empty-cell tests.
+- Pressure observation now prepares its valid roster once per refresh and reuses pair distance checks without pacing or changing pressure formulas. Exact snapshot comparisons cover immediate position, life/wound, side and deployment changes.
+
+- Further measured cleanup: terminal checks inside every unit iteration repeat full side/deployment assignment validation. Combat now rechecks before the first actor and after every executed shot, before another actor acts. Force-frame initialization reuses the existing scoped geometry validation. Full deterministic replay and immediate-terminal-stop comparison are required before accepting this change.
+
+## 20260913-performance-03 — verified cleanup and continuation
+
+- Supersedes the in-progress status in performance-02. Final fresh native result: 30.15 -> 42.34 FPS; P95 frame 52.977 -> 31.842 ms; worst frame 248.724 -> 292.985 ms. Stable 60 FPS and severe hitches remain open.
+- Fixed-step mean: 22.706 -> 16.745 ms (26.3% less simulation time); identical 19 survivors, 13.392 damage, 18 moved and 13 occupied covers.
+- 5,947 scoped checks and 1,215 exact replay checks passed; the 24-unit replay matched 600 updates and the terminal fixture resolved on the same sixth update without an extra action. Final test/native logs contain zero script errors.
+- The initial native trial did not improve FPS; it remains recorded. Same-process collision and pressure comparisons isolated real savings. A pre-existing empty-cell typed-array error was then found and fixed; prior assertions alone missed engine errors. The persistent run_checked.py gate rejects them.
+- Source/records checkpoint includes inherited bridge/performance changes plus this pass, excluding older character-factory/dusk work and unrelated imports. Standing authorization in PROJECT_WORKFLOW_AUTHORIZATION.md applies. Exact commit/push status is verified from Git.
+- Next: remaining combat/target selection and worst-frame spikes in normal 24-unit gameplay. Details/evidence: tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md. No claim of full core-suite acceptance, final art acceptance or final convoy-cap approval.

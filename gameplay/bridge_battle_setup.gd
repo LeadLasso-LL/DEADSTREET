@@ -25,15 +25,19 @@ static func apply(b,config: Dictionary) -> Dictionary:
   vs.sort_custom(func(a,c):return Body.profile_for_vehicle(a).length>Body.profile_for_vehicle(c).length)
   var candidates=[]
   if side_id==b.attacker_side_id:
+   # Lead vehicles stop diagonally across BOTH carriageways. Additional
+   # vehicles backfill the same approach with checked body/door clearance.
    for x in [34.,22.,10.]:
-    for y in Catalog.LANES:candidates.append(Vector2(x,y))
+    for y in [18.5,38.]:candidates.append(Vector2(x,y))
+   for x in [34.,22.,10.]:
+    for y in [12.8,24.,32.8,44.5]:candidates.append(Vector2(x,y))
   else:
    for x in [150.,161.,173.]:
     for y in [19.,38.,12.8,45.7]:candidates.append(Vector2(x,y))
   for v in vs:
    var placed=false
    for at in candidates:
-    var facing=Vector2.RIGHT if side_id==b.attacker_side_id else Vector2.DOWN
+    var facing=Vector2(1,1 if at.y<29 else -1).normalized() if side_id==b.attacker_side_id else Vector2.DOWN
     var attempt=Placement.place_vehicle(b,v.battle_vehicle_id,at,facing)
     if attempt!=null and attempt.success:placed=true;break
    if not placed:return {"error":"This convoy does not fit the bridge approach. Choose fewer vehicles."}

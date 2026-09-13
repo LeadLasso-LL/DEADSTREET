@@ -137,9 +137,14 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 		"defend": 0,
 		"nav": 0,
 	}
+	# Within this synchronous pass, only an executed attack can change which
+	# sides survive. Recheck after every shot, before another unit can act.
+	var checked_attack_count: int = -1
 	for participant_id: String in _sorted_participant_ids(battle_state):
-		if BattleVictoryService.is_terminal_state(battle_state):
-			break
+		if checked_attack_count != attack_events.size():
+			if BattleVictoryService.is_terminal_state(battle_state):
+				break
+			checked_attack_count = attack_events.size()
 		var participant: BattleParticipant = battle_state.get_participant(participant_id)
 		if participant == null:
 			continue
@@ -495,6 +500,9 @@ static func _update_defend_position_behavior(
 		_bind_combat_decision(battle_state, participant, _combat_context_id(target))
 		_ensure_combat_movement_speed(participant)
 		return DEFEND_REPOSITION
+	if not _defender_search_due(battle_state, participant, target, exposed_cover):
+		_clear_owned_combat_navigation(participant)
+		return DEFEND_HOLD
 	_increment_search(search_counts, "defend")
 	var cover_slot: BattleCoverSlot = BattleDefendPositionService.select_best_local_cover_slot(
 		battle_state,
@@ -3038,7 +3046,7 @@ static func _is_valid_navigation_destination(battle_state: BattleState, point: V
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
 	if not geometry.contains_point(point):
 		return false
-	for obstacle_id: String in geometry.get_sorted_obstacle_ids():
+	for obstacle_id: String in geometry.get_obstacle_ids_at_point(point):
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
 		if obstacle == null or not obstacle.blocks_movement:
 			continue
@@ -3413,3 +3421,42 @@ static func _recover_stalled_cover(b, p, searches: Dictionary) -> String:
 	if b.strength_events.size()>128:b.strength_events.pop_front()
 	if _navigate_to_cover(b,p,best,"recover_cover",target.participant_id,searches):return HEALTHY_SEEK_COVER
 	return ""
+
+# Holding defenders still evaluate firing, aiming, current cover safety and an
+# existing path every update. Only expensive new-position searches are paced.
+# Changes in orders, threat sector/range, cover safety or authored geometry
+# trigger an immediate search. Active push/focus commands bypass this pacing.
+static func _defender_search_due(battle_state: BattleState, participant: BattleParticipant, target: BattleParticipant, exposed_cover: bool) -> bool:
+	if battle_state == null or participant == null or target == null:
+		return true
+	var command: String = _participant_force_command_id(battle_state, participant)
+	if command in ["push", "focus_left", "focus_right"]:
+		return true
+	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
+	if geometry == null:
+		return true
+	var delta: Vector2 = target.battle_position - participant.battle_position
+	var distance: float = delta.length()
+	var weapon: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(participant)
+	var max_range: float = weapon.max_range if weapon != null else 0.0
+	var context: Array = [target.participant_id, command, exposed_cover,
+		participant.is_wounded, participant.occupied_cover_slot_id,
+		participant.reserved_cover_slot_id, participant.weapon_type,
+		participant.weapon_model_id, participant.unit_tier, max_range,
+		participant.defend_position_anchor, geometry.get_instance_id(),
+		geometry.content_revision, geometry.cover_slot_revision,
+		posmod(roundi(delta.angle() / (PI / 8.0)), 16),
+		distance <= max_range, distance <= 8.0]
+	var previous: Dictionary = participant.get_meta("defender_position_search", {})
+	var now: float = battle_state.elapsed_time_seconds
+	if not previous.is_empty() and previous.context == context:
+		if now >= float(previous.time) and now < float(previous.next):
+			if participant.battle_position.distance_squared_to(previous.self_position) < 1.0 and target.battle_position.distance_squared_to(previous.target_position) < 4.0:
+				return false
+	# Stable per-unit spacing avoids synchronizing every defender's next search.
+	var interval: float = 0.25 + float(posmod(participant.participant_id.hash(), 5)) * 0.035
+	participant.set_meta("defender_position_search", {"context": context,
+		"time": now, "next": now + interval,
+		"self_position": participant.battle_position,
+		"target_position": target.battle_position})
+	return true

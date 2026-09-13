@@ -1,5 +1,5 @@
 extends Node2D
-## Native authored scenery shares the exact 8×6 ground projection with Harold and units.
+## Native authored scenery shares the exact 8Ã—6 ground projection with Harold and units.
 const C=preload("res://battle/geometry/river_bridge_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const INK=Color("#172226")
@@ -50,8 +50,8 @@ func _draw():
   return
  var kind=prop[2]
  if kind=="traffic":
-  var texture=Models.sprite(prop[3],prop[4],0.)
-  if texture!=null:draw_texture_rect(texture,Rect2(Vector2(-64,-66),Vector2(128,96)),false,Color("#b2b7b0"))
+  var texture=Models.sprite(prop[3],prop[4],float(prop[5]) if prop.size()>5 else 0.)
+  if texture!=null:draw_texture_rect(texture,Rect2(Vector2(-64,-66)*C.TRAFFIC_SCALE,Vector2(128,96)*C.TRAFFIC_SCALE),false,Color("#b2b7b0"))
   return
  if kind=="cables":cables(47.7,.48);return
  var box: Rect2=prop[1];var q=p(box.position);var sz=box.size*Vector2(8,6)
@@ -59,6 +59,8 @@ func _draw():
   "tower":tower(q,sz,box.get_center().y)
   "cabinet":cabinet(q,sz)
   "barrier":barrier(q,sz)
+  "divider":divider(q,sz)
+  "checkpoint_sign":checkpoint_sign(q,sz)
 func ground():
  r(Rect2(-2200,-1200,6000,2600),Color("#26373d"))
  # River depth: broad subdued bands, sparse broken highlights and distant shore haze.
@@ -113,6 +115,15 @@ func ground():
  for y in [77.,145.,191.,259.]:l(Vector2(-750,y),Vector2(2250,y),Color("#a89456"),1.)
  for x in range(-500,1900,185):
   for lane in range(4):arrow(Vector2(x+lane*17,C.LANES[lane]*6),-1 if lane<2 else 1)
+ # A worn transverse stop line and taper lead into the east checkpoint.
+ for band in [Rect2(143.0*8,12.*6,2,13.*6),Rect2(143.0*8,31.*6,2,13.*6)]:
+  r(band,Color("#c0bca0"))
+ for cy in [12.5,24.3,31.5,43.3]:
+  for cx in [140.5,143.5]:
+   var cone=Vector2(cx*8,cy*6)
+   r(Rect2(cone+Vector2(-3,0),Vector2(6,2)),Color("#283b37"))
+   poly([cone+Vector2(-2,0),cone+Vector2(2,0),cone+Vector2(0,-6)],Color("#b77f48"))
+   l(cone+Vector2(-1,-2),cone+Vector2(1,-2),Color("#d9ceb1"),1.)
  # Expansion joints span the entire deck at the main pylons and intermediate bays.
  for x in [21.,60.,96.,132.,170.]:
   var px=x*8
@@ -196,10 +207,40 @@ func cabinet(q: Vector2,sz: Vector2):
  for i in range(4):l(q+Vector2(2,sz.y-10+i*2),q+Vector2(sz.x-3,sz.y-10+i*2),Color("#3c534c"),1.)
  r(Rect2(q+Vector2(sz.x-4,sz.y-4),Vector2(1,2)),Color("#cad0b4"))
  poly([q+Vector2(4,0),q+Vector2(2,4),q+Vector2(6,4)],Color("#c8b26d"))
+func divider(q: Vector2,sz: Vector2):
+ # Low Jersey profile, with a broad foot and narrow sunlit cap.
+ var h=10.
+ poly([q+Vector2(-1,sz.y+1),q+Vector2(sz.x+2,sz.y+1),q+Vector2(sz.x+5,sz.y+4),q+Vector2(2,sz.y+4)],Color(0.06,.09,.09,.35))
+ poly([q,q+Vector2(sz.x,0),q+Vector2(sz.x,sz.y),q+Vector2(0,sz.y)],Color("#4f5752"))
+ poly([q+Vector2(0,sz.y),q+Vector2(sz.x,sz.y),q+Vector2(sz.x-1,-h),q+Vector2(1,-h)],Color("#858779"))
+ poly([q+Vector2(0,sz.y),q+Vector2(sz.x,sz.y),q+Vector2(sz.x-1,sz.y-3),q+Vector2(1,sz.y-3)],Color("#666f66"))
+ poly([q+Vector2(1,-h),q+Vector2(sz.x-1,-h),q+Vector2(sz.x-2,-h-2),q+Vector2(2,-h-2)],Color("#b3b09a"))
+ l(q+Vector2(1,-h),q+Vector2(sz.x-1,-h),Color("#cbc5ac"),1.)
+ for x in range(24,int(sz.x)-2,24):l(q+Vector2(x,-h+1),q+Vector2(x,sz.y-1),Color("#58625b"),1.)
+ for x in [4.,sz.x-6.]:
+  r(Rect2(q+Vector2(x,-7),Vector2(3,2)),Color("#c2b273"))
+ for i in range(int(sz.x)*2):
+  var at=q+Vector2(rng.randf_range(2,sz.x-2),rng.randf_range(-8,sz.y-1))
+  r(Rect2(at,Vector2(1,1)),Color(.2,.25,.23,.17))
 func barrier(q: Vector2,sz: Vector2):
- poly([q+Vector2(-1,sz.y),q+Vector2(sz.x+1,sz.y),q+Vector2(sz.x-1,-6),q+Vector2(1,-6)],Color("#8b8d7c"))
- l(q+Vector2(1,-6),q+Vector2(sz.x-1,-6),Color("#d0c8aa"),1.)
- for i in range(3):l(q+Vector2(1,i*6),q+Vector2(sz.x-1,i*6-3),Color("#4e5851"),2.)
+ # Portable checkpoint blocks run across the carriageway, clearly obstructing cars.
+ var h=10.
+ poly([q+Vector2(-1,sz.y+1),q+Vector2(sz.x+1,sz.y+1),q+Vector2(sz.x+4,sz.y+4),q+Vector2(2,sz.y+4)],Color(0.06,.09,.09,.4))
+ r(Rect2(q-Vector2(0,h),sz+Vector2(0,h)),Color("#49564f"))
+ poly([q+Vector2(-1,sz.y),q+Vector2(sz.x+1,sz.y),q+Vector2(sz.x-1,-h),q+Vector2(1,-h)],Color("#9b9c85"))
+ l(q+Vector2(1,-h),q+Vector2(sz.x-1,-h),Color("#ddd2ae"),1.)
+ for y in range(-6,int(sz.y)-2,7):
+  l(q+Vector2(1,y+3),q+Vector2(sz.x-1,y),Color("#45544e"),3.)
+ r(Rect2(q+Vector2(2,-9),Vector2(3,2)),Color("#d7b761"))
+func checkpoint_sign(q: Vector2,sz: Vector2):
+ var c=q+sz*.5
+ for dx in [-6.,6.]:
+  l(c+Vector2(dx,1),c+Vector2(dx,-20),Color("#66766b"),1.5)
+  l(c+Vector2(dx-3,2),c+Vector2(dx+3,2),Color("#303e3b"),2.)
+ r(Rect2(c+Vector2(-20,-27),Vector2(40,17)),Color("#243430"))
+ r(Rect2(c+Vector2(-19,-26),Vector2(38,15)),Color("#b5ac87"))
+ draw_string(lettering,c+Vector2(-17,-20),"ROAD",HORIZONTAL_ALIGNMENT_CENTER,34,6,Color("#283633"))
+ draw_string(lettering,c+Vector2(-17,-13),"CLOSED",HORIZONTAL_ALIGNMENT_CENTER,34,6,Color("#283633"))
 func lamp(q: Vector2,front: bool):
  l(q,q-Vector2(0,43),Color("#253a3c"),2.)
  l(q-Vector2(0,43),q+Vector2(10,-43),Color("#8a9a89"),1.)

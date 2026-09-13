@@ -109,7 +109,7 @@ static func corners_for_pose(
 static func contains_point(vehicle: BattleVehicle, point: Vector2) -> bool:
 	if not has_usable_pose(vehicle):
 		return false
-	var profile: BattleVehiclePhysicalProfile = profile_for_vehicle(vehicle)
+	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog._get_collision_profile(vehicle.vehicle_type_id)
 	if profile == null:
 		return false
 	return pose_contains_point(vehicle.battle_position, vehicle.facing_direction, profile, point)
@@ -211,12 +211,21 @@ static func segment_entry_t(
 ) -> float:
 	if not has_usable_pose(vehicle):
 		return NO_HIT
-	var profile: BattleVehiclePhysicalProfile = profile_for_vehicle(vehicle)
+	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog._get_collision_profile(vehicle.vehicle_type_id)
 	if profile == null:
 		return NO_HIT
 	if not BattlefieldGeometry.is_finite_point(start_position):
 		return NO_HIT
 	if not BattlefieldGeometry.is_finite_point(displacement):
+		return NO_HIT
+	# A conservative square contains every orientation of this body. Reject
+	# distant segments before rotations and the exact local-space slab test.
+	var radius: float = (profile.length + profile.width) * 0.5 + PROJECTION_EPSILON
+	var end_position: Vector2 = start_position + displacement
+	var center: Vector2 = vehicle.battle_position
+	if maxf(start_position.x, end_position.x) < center.x - radius or minf(start_position.x, end_position.x) > center.x + radius:
+		return NO_HIT
+	if maxf(start_position.y, end_position.y) < center.y - radius or minf(start_position.y, end_position.y) > center.y + radius:
 		return NO_HIT
 	var facing: Vector2 = vehicle.facing_direction
 	var local_start: Vector2 = world_to_local(start_position, vehicle.battle_position, facing)

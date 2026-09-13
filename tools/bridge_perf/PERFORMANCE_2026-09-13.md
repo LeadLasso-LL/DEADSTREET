@@ -1,5 +1,7 @@
 # Bridge battle performance — 13 September 2026
 
+Historical first-pass report. Superseded for current results and commit scope by [the receiving-chat cleanup](RUNTIME_CLEANUP_2026-09-13.md).
+
 ## Status
 
 Implemented and regression checked. The 16-unit bridge battle is substantially faster. The 24-unit battle still has late-combat frame-rate drops; this is not a claim of stable 60 FPS or a final battle-cap decision.

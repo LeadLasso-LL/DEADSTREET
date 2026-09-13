@@ -35,3 +35,27 @@ static func _make_profile(vehicle_type_id: String) -> BattleVehiclePhysicalProfi
 			if vehicle_type_id.is_empty():
 				return null
 			return BattleVehiclePhysicalProfile.new(vehicle_type_id, CAR_LENGTH, CAR_WIDTH)
+
+# Internal collision queries reuse profiles. Public get_profile still returns
+# an independent object. Authored model dimension edits are observed immediately.
+static var _collision_profiles: Dictionary = {}
+
+static func _get_collision_profile(vehicle_type_id: String) -> BattleVehiclePhysicalProfile:
+	if vehicle_type_id.is_empty():
+		return null
+	var length: float = CAR_LENGTH
+	var width: float = CAR_WIDTH
+	if Models.has_model(vehicle_type_id):
+		var model: Dictionary = Models.model(vehicle_type_id)
+		length = float(model.length)
+		width = float(model.width)
+	if not is_finite(length) or not is_finite(width) or length <= 0.0 or width <= 0.0:
+		return null
+	var cached: BattleVehiclePhysicalProfile = _collision_profiles.get(vehicle_type_id)
+	if cached != null and cached.vehicle_type_id == vehicle_type_id and cached.length == length and cached.width == width:
+		return cached
+	var profile := BattleVehiclePhysicalProfile.new(vehicle_type_id, length, width)
+	if _collision_profiles.size() >= 128:
+		_collision_profiles.clear()
+	_collision_profiles[vehicle_type_id] = profile
+	return profile

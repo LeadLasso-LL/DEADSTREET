@@ -59,7 +59,7 @@ func is_valid() -> bool:
 			return false
 		if not surface.is_valid():
 			return false
-	var movement_bounds: Array[Rect2] = []
+	var movement_bounds: Dictionary = {}
 	for obstacle_id: String in obstacles:
 		var obstacle: BattleObstacle = obstacles[obstacle_id]
 		if obstacle == null or obstacle.obstacle_id != obstacle_id:
@@ -67,7 +67,16 @@ func is_valid() -> bool:
 		if not obstacle.is_valid():
 			return false
 		if obstacle.blocks_movement:
-			movement_bounds.append(obstacle.bounds)
+			# This validation index is rebuilt from live bounds on every call.
+			# Direct edits remain detectable without testing each slot against
+			# every obstacle on the entire battlefield.
+			var a: Vector2i = Vector2i((obstacle.bounds.position / OBSTACLE_QUERY_CELL_SIZE).floor())
+			var z: Vector2i = Vector2i((obstacle.bounds.end / OBSTACLE_QUERY_CELL_SIZE).floor())
+			for x in range(a.x, z.x + 1):
+				for y in range(a.y, z.y + 1):
+					var cell: Vector2i = Vector2i(x, y)
+					if not movement_bounds.has(cell):movement_bounds[cell] = []
+					movement_bounds[cell].append(obstacle.bounds)
 	for cover_object_id: String in cover_objects:
 		var cover_object: BattleCoverObject = cover_objects[cover_object_id]
 		if cover_object == null or cover_object.cover_object_id != cover_object_id:
@@ -93,7 +102,7 @@ func is_valid() -> bool:
 			return false
 		# Bounds were validated above. Avoid revalidating each obstacle for every
 		# cover slot. Keep the same inclusive edges as rect_contains_point.
-		for blocker: Rect2 in movement_bounds:
+		for blocker: Rect2 in movement_bounds.get(Vector2i((point / OBSTACLE_QUERY_CELL_SIZE).floor()), []):
 			if point.x >= blocker.position.x and point.x <= blocker.end.x and point.y >= blocker.position.y and point.y <= blocker.end.y:
 				return false
 	return true
@@ -247,14 +256,11 @@ func clear_deployment_pockets() -> void:
 
 
 func get_movement_blocking_obstacle_id_at(point: Vector2) -> String:
-	for obstacle_id: String in get_sorted_obstacle_ids():
+	for obstacle_id: String in get_obstacle_ids_at_point(point):
 		var obstacle: BattleObstacle = get_obstacle(obstacle_id)
-		if obstacle == null or not obstacle.blocks_movement:
-			continue
-		if obstacle.contains_point(point):
+		if obstacle != null and obstacle.blocks_movement and obstacle.contains_point(point):
 			return obstacle_id
 	return ""
-
 
 func bounds() -> Rect2:
 	return Rect2(0.0, 0.0, width, height)
@@ -503,3 +509,103 @@ func _area_is_within_battlefield(area: BattleDeploymentArea) -> bool:
 			if not contains_point(point):
 				return false
 	return true
+
+
+# Spatial lookup for local cover decisions. Occupancy is checked live by the
+# caller; this index stores positions only and rebuilds on structural edits.
+const COVER_CELL_SIZE := 12.0
+var _cover_grid: Dictionary = {}
+var _cover_grid_revision: int = -1
+var _cover_grid_content_revision: int = -1
+var _cover_grid_count: int = -1
+
+func get_cover_slot_ids_in_radius(origin: Vector2, radius: float) -> Array[String]:
+	if not is_finite(radius):return get_sorted_cover_slot_ids()
+	var ids: Array[String] = []
+	if radius < 0.0 or not is_finite_point(origin):return ids
+	if _cover_grid_revision != cover_slot_revision or _cover_grid_content_revision != content_revision or _cover_grid_count != cover_slots.size():
+		_cover_grid.clear()
+		for id: String in cover_slots:
+			var slot: BattleCoverSlot = cover_slots[id]
+			if slot == null or not is_finite_point(slot.position):continue
+			var cell := Vector2i(floori(slot.position.x/COVER_CELL_SIZE),floori(slot.position.y/COVER_CELL_SIZE))
+			if not _cover_grid.has(cell):_cover_grid[cell]=[]
+			_cover_grid[cell].append(id)
+		_cover_grid_revision=cover_slot_revision
+		_cover_grid_content_revision=content_revision
+		_cover_grid_count=cover_slots.size()
+	# Include the tolerance used by existing is_equal_approx distance checks.
+	var reach := radius + maxf(0.00002,absf(radius)*0.00002)
+	var low := Vector2i(floori((origin.x-reach)/COVER_CELL_SIZE),floori((origin.y-reach)/COVER_CELL_SIZE))
+	var high := Vector2i(floori((origin.x+reach)/COVER_CELL_SIZE),floori((origin.y+reach)/COVER_CELL_SIZE))
+	for x in range(low.x,high.x+1):
+		for y in range(low.y,high.y+1):
+			for id: String in _cover_grid.get(Vector2i(x,y),[]):
+				var slot: BattleCoverSlot=cover_slots[id]
+				if origin.distance_squared_to(slot.position)<=reach*reach:ids.append(id)
+	ids.sort()
+	return ids
+
+# Scoped spatial broad phase: rebuilt at each runtime/navigation scope and on
+# authored revisions. Outside a scope, public queries still read all live data.
+# This preserves direct edits between queries without a persistent stale cache.
+const OBSTACLE_QUERY_CELL_SIZE := 8.0
+var _obstacle_query_scope: bool = false
+var _obstacle_query_revision: int = -1
+var _obstacle_query_count: int = -1
+var _obstacle_query_grid: Dictionary = {}
+
+func begin_obstacle_query_scope() -> void:
+	_obstacle_query_scope = true
+	_obstacle_query_revision = -1
+
+func end_obstacle_query_scope() -> void:
+	_obstacle_query_scope = false
+
+func get_obstacle_ids_at_point(point: Vector2) -> Array[String]:
+	if not _obstacle_query_scope or not is_finite_point(point):
+		return get_sorted_obstacle_ids()
+	if _obstacle_query_revision != content_revision or _obstacle_query_count != obstacles.size():
+		_obstacle_query_grid.clear()
+		for id: String in get_sorted_obstacle_ids():
+			var obstacle: BattleObstacle = obstacles[id]
+			if obstacle == null or not obstacle.bounds_are_usable():
+				continue
+			var a: Vector2i = Vector2i((obstacle.bounds.position / OBSTACLE_QUERY_CELL_SIZE).floor())
+			var z: Vector2i = Vector2i((obstacle.bounds.end / OBSTACLE_QUERY_CELL_SIZE).floor())
+			for x in range(a.x, z.x + 1):
+				for y in range(a.y, z.y + 1):
+					var cell: Vector2i = Vector2i(x, y)
+					if not _obstacle_query_grid.has(cell):
+						var ids: Array[String] = []
+						_obstacle_query_grid[cell] = ids
+					_obstacle_query_grid[cell].append(id)
+		_obstacle_query_revision = content_revision
+		_obstacle_query_count = obstacles.size()
+	var cell: Vector2i = Vector2i((point / OBSTACLE_QUERY_CELL_SIZE).floor())
+	if _obstacle_query_grid.has(cell):
+		return _obstacle_query_grid[cell]
+	return []
+
+# Conservative candidates for finite segments. Exact collision/LOS tests remain
+# with their callers. Long queries use the full list to bound grid traversal.
+func get_obstacle_ids_in_rect(query: Rect2) -> Array[String]:
+	if not _obstacle_query_scope or not is_finite_point(query.position) or not is_finite_point(query.end):
+		return get_sorted_obstacle_ids()
+	var area: Rect2 = query.abs()
+	var a: Vector2i = Vector2i((area.position / OBSTACLE_QUERY_CELL_SIZE).floor())
+	var z: Vector2i = Vector2i((area.end / OBSTACLE_QUERY_CELL_SIZE).floor())
+	if (z.x - a.x + 1) * (z.y - a.y + 1) > 64:
+		return get_sorted_obstacle_ids()
+	# Reuse the scoped index and its revision handling.
+	get_obstacle_ids_at_point(area.position)
+	var unique: Dictionary = {}
+	for x in range(a.x, z.x + 1):
+		for y in range(a.y, z.y + 1):
+			for id: String in _obstacle_query_grid.get(Vector2i(x, y), []):
+				unique[id] = true
+	var ids: Array[String] = []
+	for id: String in unique:
+		ids.append(id)
+	ids.sort()
+	return ids

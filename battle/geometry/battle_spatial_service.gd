@@ -196,7 +196,7 @@ static func is_open_segment(
 	var displacement: Vector2 = destination - start_position
 	if not BattlefieldGeometry.is_finite_point(displacement):
 		return false
-	for obstacle_id: String in geometry.obstacles:
+	for obstacle_id: String in geometry.get_obstacle_ids_in_rect(Rect2(start_position.min(destination), displacement.abs()).grow(COLLISION_EPSILON)):
 		var obstacle: BattleObstacle = geometry.obstacles[obstacle_id]
 		if obstacle == null or not obstacle.blocks_movement:
 			continue
@@ -242,7 +242,7 @@ static func _resolve_legal_translation(
 	if boundary_t < 1.0:
 		best_t = boundary_t
 		blocked_by_boundary = true
-	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
+	var obstacle_ids: Array[String] = geometry.get_obstacle_ids_in_rect(Rect2(start_position.min(requested_end), requested_displacement.abs()).grow(COLLISION_EPSILON))
 	for obstacle_id: String in obstacle_ids:
 		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
 		if obstacle == null or not obstacle.blocks_movement:
@@ -393,6 +393,9 @@ static func _segment_rect_entry_t(
 	displacement: Vector2,
 	rect: Rect2
 ) -> float:
+	var segment_bounds: Rect2 = Rect2(start_position.min(start_position + displacement), displacement.abs()).grow(COLLISION_EPSILON)
+	if not rect.intersects(segment_bounds, true):
+		return NO_HIT
 	var overlap: Vector2 = segment_aabb_overlap_t(start_position, displacement, rect)
 	var t_enter: float = overlap.x
 	var t_exit: float = overlap.y
@@ -408,15 +411,7 @@ static func _segment_rect_entry_t(
 
 
 static func _blocking_obstacle_at(geometry: BattlefieldGeometry, point: Vector2) -> String:
-	var obstacle_ids: Array[String] = geometry.get_sorted_obstacle_ids()
-	for obstacle_id: String in obstacle_ids:
-		var obstacle: BattleObstacle = geometry.get_obstacle(obstacle_id)
-		if obstacle == null or not obstacle.blocks_movement:
-			continue
-		if obstacle.contains_point(point):
-			return obstacle_id
-	return ""
-
+	return geometry.get_movement_blocking_obstacle_id_at(point)
 
 static func _clamp_to_battlefield(geometry: BattlefieldGeometry, point: Vector2) -> Vector2:
 	if not BattlefieldGeometry.is_finite_point(point):

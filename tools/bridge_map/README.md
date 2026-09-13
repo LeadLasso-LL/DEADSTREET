@@ -27,3 +27,19 @@ The 8v8 native review recorded 17 FPS on the GTX 1650 test PC. The first layout 
 ## Scope
 
 This is a first playable art pass awaiting owner review and balance playtesting. Civilian pre-fight animation is explicitly deferred until after the sandbox. Campaign road reopening and encounter integration remain future work; this isolated sandbox never settles results into a live campaign. Whittaker Estate is still the other pending map. Helicopters remain tabled.
+
+
+## Owner-requested revision — 2026-09-13
+
+- Attacker vehicles now queue lengthwise within one lane before filling another, separating their arrival from the defenders' roadblock.
+- The eastern defending checkpoint has four striped concrete road blocks, a stop line, cones and a portable ROAD CLOSED board, backed by the selected defending convoy. Infantry gaps remain traversable.
+- Six low concrete median sections provide physical movement obstruction and cover slots, with gaps for crossing between carriageways. Geometry and artwork share the same footprints.
+- Revised native capture shows both the advancing attackers and their defending target; `revision_results/bridge_blockade.png` provides the closer checkpoint view.
+- Run `--headless --script tools/bridge_map/validate_revision.gd` and `--script tools/bridge_map/review_revision.gd` to reproduce. Compile passed; 259 rules/navigation checks and 42 native checks passed; all eight attackers moved in the 8v8 review.
+- Native review measured 15 FPS. The previously documented live-combat performance work remains outstanding.
+- These source changes and review captures await visual acceptance and have not been committed or pushed by this revision pass.
+
+
+## Bridge revision 2026-09-13
+
+See [the revision report](v3_results/BRIDGE_REVISION_2026-09-13.md) for traffic, scale, cover-query changes, verification, and measured performance. The current design target is two maximum legal convoys; a three-vehicle convoy limit with composition restrictions is proposed, with exact capacities still undecided. No new production cap was imposed.

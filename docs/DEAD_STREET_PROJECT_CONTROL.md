@@ -1,3 +1,19 @@
+## Current milestone — bridge runtime cleanup — 2026-09-13
+
+The receiving chat owns continuation. The fresh native 24-unit battle improved
+from 30.15 to 42.34 FPS; matched fixed-step simulation fell 22.706 to 16.745 ms.
+Fixed repeated empty-obstacle-cell script errors and removed redundant collision,
+pressure, connectivity, termination and full-map validation work. 5,947 scoped
+checks and 1,215 deterministic replay checks passed; final runs have zero script
+errors. Stable 60 FPS remains unfinished: the worst playable frame was 292.985 ms.
+
+See [the runtime cleanup report](../tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md)
+for evidence, limitations, reproducible error-sensitive checks and integration
+scope. The checkpoint includes the previously uncommitted bridge/performance
+source. No unit/art reduction, balance change or new convoy cap was made.
+Next: remaining combat/target selection costs and worst-frame spikes, then a
+matched normal playable comparison. The following milestones remain history.
+
 ## Current milestone — river suspension bridge first pass — 2026-09-13
 
 The owner approved a first playable pass of the larger suspension bridge: elevated side view, left-to-right battle, four lanes (two each direction), traversable central strip, tall structural cover, stopped traffic and the defending faction’s actual vehicles blocking the road. Close/middle/far arrival choices are not universal. The bridge uses its west approach; defenders are already at the blockade. Civilian pre-fight animation is explicitly deferred until after the sandbox.

@@ -207,7 +207,7 @@ static func rank_combat_usable_within_radius(
 		return ranked
 	if battle_state == null or participant == null or battle_state.battlefield_geometry == null:
 		return ranked
-	for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+	for slot_id: String in battle_state.battlefield_geometry.get_cover_slot_ids_in_radius(origin, radius):
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot == null or not slot.is_valid():
 			continue
@@ -239,7 +239,7 @@ static func rank_combat_usable(
 	max_move_distance: float = INF
 ) -> Array[BattleCombatCoverEvaluation]:
 	var ranked: Array[BattleCombatCoverEvaluation] = []
-	for evaluation: BattleCombatCoverEvaluation in evaluate_all(
+	for evaluation: BattleCombatCoverEvaluation in _evaluate_rank_candidates(
 		battle_state,
 		participant,
 		hostile,
@@ -266,7 +266,7 @@ static func rank_healthy_role(
 		or weapon_type_id == BattleWeaponCatalog.WEAPON_SNIPER
 	)
 	var ranked: Array[BattleCombatCoverEvaluation] = []
-	for evaluation: BattleCombatCoverEvaluation in evaluate_all(
+	for evaluation: BattleCombatCoverEvaluation in _evaluate_rank_candidates(
 		battle_state,
 		participant,
 		hostile,
@@ -316,9 +316,11 @@ static func rank_closing_cover(
 	if profile != null:
 		preferred_min = profile.preferred_min_distance
 	var progress_epsilon: float = BattleCombatBehaviorCatalog.CLOSING_PROGRESS_EPSILON
-	for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+	for slot_id: String in battle_state.battlefield_geometry.get_cover_slot_ids_in_radius(participant.battle_position, max_move_distance):
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot == null or not slot.is_valid():
+			continue
+		if not _rank_candidate_allowed(participant, slot, hostile, max_move_distance):
 			continue
 		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
 			battle_state,
@@ -369,7 +371,7 @@ static func rank_short_range_in_useful_range(
 	max_move_distance: float
 ) -> Array[BattleCombatCoverEvaluation]:
 	var ranked: Array[BattleCombatCoverEvaluation] = []
-	for evaluation: BattleCombatCoverEvaluation in evaluate_all(
+	for evaluation: BattleCombatCoverEvaluation in _evaluate_rank_candidates(
 		battle_state,
 		participant,
 		hostile,
@@ -393,7 +395,7 @@ static func rank_short_range_nearby_useful(
 	max_move_distance: float
 ) -> Array[BattleCombatCoverEvaluation]:
 	var ranked: Array[BattleCombatCoverEvaluation] = []
-	for evaluation: BattleCombatCoverEvaluation in evaluate_all(
+	for evaluation: BattleCombatCoverEvaluation in _evaluate_rank_candidates(
 		battle_state,
 		participant,
 		hostile,
@@ -431,9 +433,11 @@ static func rank_short_range_out_of_range_staging(
 	if profile != null:
 		preferred_min = profile.preferred_min_distance
 	var progress_epsilon: float = BattleCombatBehaviorCatalog.CLOSING_PROGRESS_EPSILON
-	for slot_id: String in battle_state.battlefield_geometry.get_sorted_cover_slot_ids():
+	for slot_id: String in battle_state.battlefield_geometry.get_cover_slot_ids_in_radius(participant.battle_position, max_move_distance):
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot == null or not slot.is_valid():
+			continue
+		if not _rank_candidate_allowed(participant, slot, hostile, max_move_distance):
 			continue
 		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
 			battle_state,
@@ -825,3 +829,49 @@ static func _is_positioned(participant: BattleParticipant) -> bool:
 	if not participant.has_battle_position:
 		return false
 	return BattlefieldGeometry.is_finite_point(participant.battle_position)
+
+
+static func _evaluate_rank_candidates(
+	battle_state: BattleState,
+	participant: BattleParticipant,
+	hostile: BattleParticipant,
+	require_reachable: bool,
+	require_weapon_range: bool,
+	max_move_distance: float = INF
+) -> Array[BattleCombatCoverEvaluation]:
+	var evaluations: Array[BattleCombatCoverEvaluation] = []
+	if battle_state == null or participant == null or battle_state.battlefield_geometry == null:
+		return evaluations
+	for slot_id: String in battle_state.battlefield_geometry.get_cover_slot_ids_in_radius(participant.battle_position, max_move_distance):
+		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
+		if not _rank_candidate_allowed(participant, slot, hostile, max_move_distance):
+			continue
+		evaluations.append(
+			evaluate_slot(
+				battle_state,
+				participant,
+				slot,
+				hostile,
+				require_reachable,
+				require_weapon_range,
+				max_move_distance
+			)
+		)
+	return evaluations
+
+
+# These are necessary conditions already enforced by each ranking function.
+# Keep evaluate_slot/evaluate_all complete for callers inspecting rejected slots.
+static func _rank_candidate_allowed(
+	participant: BattleParticipant, slot: BattleCoverSlot,
+	hostile: BattleParticipant, max_move_distance: float
+) -> bool:
+	if participant == null or slot == null or not slot.is_valid():return false
+	if not _slot_is_legal_for_participant(participant,slot):return false
+	if is_finite(max_move_distance):
+		if not _is_positioned(participant):return false
+		var distance: float = participant.battle_position.distance_to(slot.position)
+		if not is_finite(distance) or (distance > max_move_distance and not is_equal_approx(distance,max_move_distance)):return false
+	if hostile == null or not _is_positioned(hostile):return false
+	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(slot,hostile.battle_position)
+	return protection != null and protection.has_applicable_cover and is_useful_protection_factor(protection.protection_factor)
