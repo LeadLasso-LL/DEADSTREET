@@ -278,7 +278,28 @@ static func _make_profile(weapon_type_id: String) -> BattleCombatBehaviorProfile
 
 
 # Model ranges scale the role's tactical band, without changing role identity.
+# Equipment and tier are stable throughout a synchronous combat update.
+# Standalone/public calls still return independent profile instances.
+static var _runtime_profiles: Dictionary = {}
+
+static func begin_runtime_profile_scope(participants: Dictionary) -> Dictionary:
+	var previous: Dictionary = _runtime_profiles
+	_runtime_profiles = {}
+	for key in participants:
+		var participant = participants[key]
+		if participant != null:
+			_runtime_profiles[participant] = _resolve_participant_profile(participant)
+	return previous
+
+static func end_runtime_profile_scope(previous: Dictionary) -> void:
+	_runtime_profiles = previous
+
 static func for_participant(p) -> BattleCombatBehaviorProfile:
+	if p != null and _runtime_profiles.has(p):
+		return _runtime_profiles[p]
+	return _resolve_participant_profile(p)
+
+static func _resolve_participant_profile(p) -> BattleCombatBehaviorProfile:
 	if p == null: return null
 	var profile: BattleCombatBehaviorProfile = get_profile(p.weapon_type)
 	var model: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(p)

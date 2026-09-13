@@ -261,7 +261,7 @@ static func _advance_participant_weapon(
 		state.cooldown_remaining_seconds = 0.0
 	if state.reload_remaining_seconds < 0.0:
 		state.reload_remaining_seconds = 0.0
-	var definition: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(participant)
+	var definition: BattleWeaponDefinition = equipped
 	if definition != null and state.ammo_in_magazine == 0 and not state.is_reloading:
 		_start_reload(state, definition)
 	if state.is_reloading:
@@ -403,12 +403,12 @@ static func is_spatial_fire_engagement(
 ) -> bool:
 	if battle_state == null or source == null or target == null:
 		return false
-	if not _source_identity_rejection_code(battle_state, source).is_empty():
-		return false
-	if not _target_rejection_code(battle_state, source, target).is_empty():
-		return false
 	var definition: BattleWeaponDefinition = BattleWeaponCatalog.for_participant(source)
 	if definition == null:
+		return false
+	if not _source_identity_rejection_code(battle_state, source, definition).is_empty():
+		return false
+	if not _target_rejection_code(battle_state, source, target).is_empty():
 		return false
 	if not _is_target_in_range(source, target, definition):
 		return false
@@ -499,7 +499,8 @@ static func _is_target_tucked_protected(
 
 static func _source_identity_rejection_code(
 	battle_state: BattleState,
-	participant: BattleParticipant
+	participant: BattleParticipant,
+	prepared_definition: BattleWeaponDefinition = null
 ) -> String:
 	if participant == null:
 		return "source_not_eligible"
@@ -518,7 +519,7 @@ static func _source_identity_rejection_code(
 		return "invalid_weapon_state"
 	if not participant.weapon_type.is_empty() and participant.weapon_type != state.weapon_type_id:
 		return "weapon_type_mismatch"
-	if BattleWeaponCatalog.for_participant(participant) == null:
+	if prepared_definition == null and BattleWeaponCatalog.for_participant(participant) == null:
 		return "invalid_weapon_state"
 	if state.ammo_in_magazine < 0:
 		return "invalid_weapon_state"

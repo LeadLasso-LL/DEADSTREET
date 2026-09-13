@@ -32,6 +32,12 @@ static func advance(battle_state: BattleState) -> BattleTargetSelectionResult:
 			"Battle target selection failed: battlefield geometry is invalid."
 		)
 	var participant_ids: Array[String] = _sorted_participant_ids(battle_state)
+	# Eligibility fields do not change while this synchronous selection pass runs.
+	var eligible_rows: Array = []
+	for candidate_id: String in participant_ids:
+		var candidate: BattleParticipant = battle_state.get_participant(candidate_id)
+		if _is_eligible_source(battle_state, candidate):
+			eligible_rows.append([candidate_id, candidate])
 	var participants_considered: int = 0
 	var participants_with_hostiles: int = 0
 	var participants_with_targets: int = 0
@@ -55,7 +61,7 @@ static func advance(battle_state: BattleState) -> BattleTargetSelectionResult:
 					participant.clear_player_priority_target()
 			else:
 				participant.clear_player_priority_target()
-				var hostile_ids: Array[String] = _sorted_eligible_hostile_ids(battle_state, participant)
+				var hostile_ids: Array[String] = _prepared_hostile_ids(participant, eligible_rows)
 				if hostile_ids.is_empty():
 					participant.clear_target_participant()
 				else:
@@ -222,25 +228,33 @@ static func _sniper_target(b: BattleState, source: BattleParticipant, ids: Array
 	if d == null: return ""
 	var urgent: String = ""
 	var urgent_distance: float = INF
-	var distant: String = ""
-	var farthest: float = -1.0
+	var distant: Array = []
 	var retained: bool = false
-	for id: String in ids:
+	for index in range(ids.size()):
+		var id: String = ids[index]
 		var p: BattleParticipant = b.get_participant(id)
 		var distance: float = source.battle_position.distance_to(p.battle_position)
 		if distance > d.max_range: continue
-		var sight = LOS.check_participant_to_participant(b, source.participant_id, id)
-		if sight == null or not sight.success or not sight.has_line_of_sight: continue
-		if distance < 12.0 and distance < urgent_distance:
-			urgent = id
-			urgent_distance = distance
 		if id == source.target_participant_id: retained = true
-		if distance > farthest:
-			distant = id
-			farthest = distance
+		if distance < 12.0 and distance < urgent_distance:
+			var sight = LOS.check_participant_to_participant(b, source.participant_id, id)
+			if sight != null and sight.success and sight.has_line_of_sight:
+				urgent = id
+				urgent_distance = distance
+		distant.append([distance,index,id])
 	if not urgent.is_empty(): return urgent
-	if retained: return source.target_participant_id
-	return distant
+	if retained:
+		var sight = LOS.check_participant_to_participant(b,source.participant_id,source.target_participant_id)
+		if sight != null and sight.success and sight.has_line_of_sight:
+			return source.target_participant_id
+	# Once no close threat or retained target wins, only the farthest visible
+	# candidate matters. Original roster order still breaks equal-distance ties.
+	distant.sort_custom(func(a: Array,c: Array):return a[0]>c[0] if a[0]!=c[0] else a[1]<c[1])
+	for row: Array in distant:
+		var sight = LOS.check_participant_to_participant(b,source.participant_id,row[2])
+		if sight != null and sight.success and sight.has_line_of_sight:
+			return row[2]
+	return ""
 
 
 # Advancing units engage visible threats instead of tracking a blocked enemy.
@@ -251,17 +265,36 @@ static func _uses_assault_targeting(b: BattleState, source: BattleParticipant) -
 
 
 static func _assault_target(b: BattleState, source: BattleParticipant, ids: Array[String]) -> String:
-	var best_id: String = ""
-	var best_distance: float = INF
-	for id: String in ids:
+	# Source identity and equipment are constant throughout this candidate scan.
+	if not FireControl._source_identity_rejection_code(b, source).is_empty():
+		return ""
+	var definition = Weapons.for_participant(source)
+	if definition == null:
+		return ""
+	var ordered: Array = []
+	for index in range(ids.size()):
+		var id: String = ids[index]
 		var candidate: BattleParticipant = b.get_participant(id)
 		var distance: float = source.battle_position.distance_to(candidate.battle_position)
-		# Avoid restarting acquisition for small changes in relative distance.
 		if id == source.target_participant_id: distance *= 0.85
-		# A candidate that cannot beat the incumbent needs no visibility query.
-		if not distance < best_distance: continue
-		if not FireControl.is_spatial_fire_engagement(b, source, candidate): continue
-		if distance < best_distance:
-			best_distance = distance
-			best_id = id
-	return best_id
+		if distance < INF:
+			ordered.append([distance,index,id,candidate])
+	ordered.sort_custom(func(a: Array,c: Array):return a[0]<c[0] if a[0]!=c[0] else a[1]<c[1])
+	for row: Array in ordered:
+		var candidate: BattleParticipant = row[3]
+		if not FireControl._target_rejection_code(b, source, candidate).is_empty(): continue
+		if not FireControl._is_target_in_range(source, candidate, definition): continue
+		var sight = LOS.check_participant_to_participant(b, source.participant_id, row[2])
+		if sight != null and sight.success and sight.has_line_of_sight:
+			return row[2]
+	return ""
+
+
+# Keep registry order and identity exclusions, including malformed alias entries.
+static func _prepared_hostile_ids(source: BattleParticipant, rows: Array) -> Array[String]:
+	var ids: Array[String] = []
+	for row: Array in rows:
+		var candidate: BattleParticipant = row[1]
+		if candidate.side_id != source.side_id and candidate.participant_id != source.participant_id:
+			ids.append(row[0])
+	return ids

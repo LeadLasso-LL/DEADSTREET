@@ -1,3 +1,27 @@
+## Current milestone — runtime headroom pass — 2026-09-13
+
+Verified improvement; 60 FPS plus expansion headroom is still unfinished.
+Normal native 24-unit performance is 59.05 FPS, P95 19.143 ms,
+max 46.517 ms. The 32-unit stress fixture records 48.55 FPS,
+P95 24.651 ms, max 58.916 ms. Both latest samples
+have zero frames over 100 ms. All actors remain rendered. 11,022 focused,
+runtime-replay and actor checks passed without final script errors.
+
+Changes remove redundant targeting/profile/collision work, prune navigation and
+cover/visibility searches, bound moving-endpoint caches, and prepare wound assets
+before combat. No simulation cadence, art, balance or production force limit was
+reduced. Setup preparation has a measurable cost; see the report.
+
+The matching release-runtime benchmark is blocked by automatic approval review
+because downloading/running the executable was not explicitly authorized.
+Release performance is unknown. Commit/push authorization remains valid.
+Next: authorized release-runtime comparison, then remaining measured costs until
+steady 60 FPS and larger-battle reserve are established.
+
+See [the headroom report](../tools/bridge_perf/HEADROOM_2026-09-13.md)
+and [reproduction instructions](../tools/bridge_perf/headroom/README.md).
+The following milestones remain history.
+
 ## Current milestone — bridge runtime cleanup — 2026-09-13
 
 The receiving chat owns continuation. The fresh native 24-unit battle improved

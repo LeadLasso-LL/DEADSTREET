@@ -1,5 +1,8 @@
 class_name BattleRuntimeService
 extends RefCounted
+const CollisionShapes := preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const RoleProfiles = preload("res://battle/combat/battle_combat_behavior_catalog.gd")
+const WeaponProfiles := preload("res://battle/combat/battle_weapon_catalog.gd")
 
 const Strength = preload("res://battle/ai/battle_relative_strength.gd")
 const Tactics = preload("res://battle/ai/battle_adaptive_tactics.gd")
@@ -22,10 +25,18 @@ const BattleVictoryResult := preload("res://battle/core/battle_victory_result.gd
 
 
 static func advance(battle_state: BattleState, delta_seconds: float) -> BattleRuntimeResult:
-	if battle_state == null:
+	if battle_state == null or battle_state.battle_phase != "active" or not is_finite(delta_seconds) or delta_seconds < 0.0 or not is_finite(battle_state.elapsed_time_seconds) or battle_state.elapsed_time_seconds < 0.0:
 		return _advance_validated(battle_state, delta_seconds)
 	battle_state.begin_geometry_validation_scope()
+	var previous_profiles: Dictionary = WeaponProfiles.begin_runtime_profile_scope(battle_state.participants)
+	var previous_roles: Dictionary = RoleProfiles.begin_runtime_profile_scope(battle_state.participants)
+	var previous_collision: Array = CollisionShapes.begin_runtime_collision_scope(battle_state)
+	var previous_readiness: Array = battle_state.begin_runtime_readiness_scope()
 	var result: BattleRuntimeResult = _advance_validated(battle_state, delta_seconds)
+	CollisionShapes.end_runtime_collision_scope(previous_collision)
+	battle_state.end_runtime_readiness_scope(previous_readiness)
+	RoleProfiles.end_runtime_profile_scope(previous_roles)
+	WeaponProfiles.end_runtime_profile_scope(previous_profiles)
 	battle_state.end_geometry_validation_scope()
 	return result
 

@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-13, after the receiving-chat runtime cleanup.
+Coordination last reconciled: 2026-09-13, after the receiving-chat headroom pass.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -74,41 +74,42 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Objective:** finish the real-time battle sandbox. This receiving chat owns
-continuation. The bridge runtime cleanup is implemented and verified; steady
-60 FPS remains unfinished.
+**Objective:** 60 FPS at the current battle scale, with room for larger battles.
+The receiving chat owns continuation. The headroom optimization pass is verified;
+steady 60 FPS and expansion headroom remain unfinished.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
-| Bridge/performance source | This receiving chat | Inherited revisions and current cleanup included in this performance checkpoint; use Git for the exact commit. |
-| Shared records | This receiving chat | Hive Mind, journal, Project Control and current performance report updated. |
-| Next build task | This receiving chat | Remaining combat/target-selection work and worst-frame spikes. |
+| Collision, targets, navigation, cover, visibility and actor preparation | This receiving chat | Implemented and checked; see current report and Git checkpoint. |
+| Shared records and reproducible benchmarks | This receiving chat | Updated with progression, failures, validation and remaining limits. |
+| Release-runtime capacity comparison | This receiving chat | Blocked by automatic approval review: executable download/run needs explicit authorization. |
 
-**Latest evidence:** fresh 24-unit gameplay improved from 30.15 to 42.34 FPS.
-P95 frame fell 52.977 to 31.842 ms, but maximum frame rose from 248.724 to
-292.985 ms. Do not describe stutters as solved. Matched fixed-step mean update
-fell 22.706 to 16.745 ms with unchanged recorded outcomes. 5,947 focused checks
-and 1,215 exact full-runtime replay checks passed, including the deciding kill.
-Final native/test logs contain zero script errors. Earlier assertions had missed
-an empty-obstacle-cell runtime error, now fixed.
+**Latest evidence:** normal native 24-unit 59.05 FPS, P95
+19.143 ms, worst 46.517 ms;
+32-unit 48.55 FPS, P95 24.651 ms,
+worst 58.916 ms. Both samples had zero frames over 100 ms.
+Uncapped 24-unit throughput was 61.31 FPS, still with budget misses.
+11,022 focused/replay/actor checks passed; final logs have zero script errors.
+These are development-executable measurements. Release performance is unknown.
 
-Read [the current cleanup report](../tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md).
-The [archived handoff](handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md) and prior
-reports remain historical sources. Run checks through tools/bridge_perf/run_checked.py
-so script errors fail even when Godot exits zero.
+Read [the headroom report](../tools/bridge_perf/HEADROOM_2026-09-13.md)
+and [reproduction instructions](../tools/bridge_perf/headroom/README.md).
+The [previous cleanup report](../tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md)
+and [archived handoff](handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md) are historical.
 
-**Immediate next task:** measure and reduce remaining combat/target-selection
-cost and worst-frame spikes in the normal 24-unit bridge battle, preserving
-contextual reactions, player orders, cover advances and visual quality.
+**Immediate next task:** obtain explicit authorization to download/run the
+matching official Godot release runtime, compare 24 and 32 units, then optimize
+the remaining measured costs until steady 60 FPS and headroom are demonstrated.
+Do not claim a release-runtime change is a proven fix before measuring it.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
   convoy, legal combinations and final personnel cap are undecided.
-- Stable 60 FPS, worst-frame stability and final bridge-art acceptance remain open.
-- Legacy whole-project core-regression status was not re-established here.
-- Older character-factory/dusk work, scratch outputs and imports remain outside
-  this checkpoint. Preserve that mixed working tree.
-- Full original chat transcripts were not recovered; do not claim otherwise.
+- Production remains 12 units per side; larger test fixtures do not change it.
+- Stable 60 FPS, expansion headroom and final bridge-art acceptance remain open.
+- Legacy whole-project core-regression status was not re-established.
+- Preserve unrelated character-factory/dusk/source-recovery work.
+- Full original chat transcripts were not recovered.
 
 ## Required documentation rhythm
 

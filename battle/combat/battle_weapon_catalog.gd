@@ -239,7 +239,27 @@ static func get_model(id: String) -> BattleWeaponDefinition:
 	_model_cache[id] = d
 	return d
 
+# Combat equipment is immutable during one synchronous runtime advance.
+# The scope ends before input, setup edits, or another battle update can run.
+static var _runtime_profiles: Dictionary = {}
+
+static func begin_runtime_profile_scope(participants: Dictionary) -> Dictionary:
+	var previous: Dictionary = _runtime_profiles
+	_runtime_profiles = {}
+	for p in participants.values():
+		if p != null:
+			_runtime_profiles[p] = _resolve_participant_profile(p)
+	return previous
+
+static func end_runtime_profile_scope(previous: Dictionary) -> void:
+	_runtime_profiles = previous
+
 static func for_participant(p) -> BattleWeaponDefinition:
+	if _runtime_profiles.has(p):
+		return _runtime_profiles[p]
+	return _resolve_participant_profile(p)
+
+static func _resolve_participant_profile(p) -> BattleWeaponDefinition:
 	if p == null: return null
 	var id: String = p.weapon_model_id
 	if id.is_empty():

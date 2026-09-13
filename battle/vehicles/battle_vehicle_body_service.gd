@@ -107,10 +107,17 @@ static func corners_for_pose(
 
 
 static func contains_point(vehicle: BattleVehicle, point: Vector2) -> bool:
+	if _runtime_poses.has(vehicle):
+		return _prepared_contains(_runtime_poses[vehicle], point)
 	if not has_usable_pose(vehicle):
 		return false
 	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog._get_collision_profile(vehicle.vehicle_type_id)
 	if profile == null:
+		return false
+	# Conservative broad phase; the original oriented test owns boundary semantics.
+	var radius: float = (profile.length + profile.width) * 0.5 + PROJECTION_EPSILON
+	var offset: Vector2 = point - vehicle.battle_position
+	if absf(offset.x) > radius or absf(offset.y) > radius:
 		return false
 	return pose_contains_point(vehicle.battle_position, vehicle.facing_direction, profile, point)
 
@@ -209,6 +216,8 @@ static func segment_entry_t(
 	start_position: Vector2,
 	displacement: Vector2
 ) -> float:
+	if _runtime_poses.has(vehicle):
+		return _prepared_segment_entry(_runtime_poses[vehicle],start_position,displacement)
 	if not has_usable_pose(vehicle):
 		return NO_HIT
 	var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog._get_collision_profile(vehicle.vehicle_type_id)
@@ -237,7 +246,8 @@ static func segment_entry_t(
 static func blocking_vehicle_id_at(battle_state: BattleState, point: Vector2) -> String:
 	if battle_state == null or not BattlefieldGeometry.is_finite_point(point):
 		return ""
-	for vehicle_id: String in _sorted_vehicle_ids(battle_state):
+	var ids: Array[String] = _runtime_vehicle_ids if _runtime_battle == battle_state else _sorted_vehicle_ids(battle_state)
+	for vehicle_id: String in ids:
 		var vehicle: BattleVehicle = battle_state.get_vehicle(vehicle_id)
 		if contains_point(vehicle, point):
 			return vehicle_id
@@ -475,3 +485,57 @@ static func _sorted_participant_ids(battle_state: BattleState) -> Array[String]:
 		ids.append(participant_id)
 	ids.sort()
 	return ids
+
+# Vehicle poses and chassis dimensions do not change during synchronous infantry
+# simulation/navigation. Standalone calls retain live validation and ownership.
+static var _runtime_poses: Dictionary = {}
+static var _runtime_battle: BattleState = null
+static var _runtime_vehicle_ids: Array[String] = []
+
+static func begin_runtime_collision_scope(battle_state: BattleState) -> Array:
+	var previous: Array = [_runtime_poses,_runtime_battle,_runtime_vehicle_ids]
+	_runtime_poses = {}
+	_runtime_battle = battle_state
+	_runtime_vehicle_ids = _sorted_vehicle_ids(battle_state)
+	for id: String in _runtime_vehicle_ids:
+		var vehicle: BattleVehicle = battle_state.get_vehicle(id)
+		if vehicle == null:
+			continue
+		var pose: Array = []
+		if has_usable_pose(vehicle):
+			var profile: BattleVehiclePhysicalProfile = BattleVehiclePhysicalCatalog._get_collision_profile(vehicle.vehicle_type_id)
+			if profile != null:
+				pose = [vehicle.battle_position,-vehicle.facing_direction.angle(),local_aabb(profile),(profile.length+profile.width)*0.5+PROJECTION_EPSILON]
+		_runtime_poses[vehicle] = pose
+	return previous
+
+static func end_runtime_collision_scope(previous: Array) -> void:
+	_runtime_poses = previous[0]
+	_runtime_battle = previous[1]
+	_runtime_vehicle_ids = previous[2]
+
+static func _prepared_contains(pose: Array, point: Vector2) -> bool:
+	if pose.is_empty() or not BattlefieldGeometry.is_finite_point(point):
+		return false
+	var center: Vector2 = pose[0]
+	var radius: float = pose[3]
+	var offset: Vector2 = point-center
+	if absf(offset.x)>radius or absf(offset.y)>radius:
+		return false
+	var local: Vector2 = offset.rotated(pose[1])
+	var bounds: Rect2 = pose[2]
+	return local.x>=bounds.position.x and local.y>=bounds.position.y and local.x<=bounds.position.x+bounds.size.x and local.y<=bounds.position.y+bounds.size.y
+
+static func _prepared_segment_entry(pose: Array, start: Vector2, displacement: Vector2) -> float:
+	if pose.is_empty() or not BattlefieldGeometry.is_finite_point(start) or not BattlefieldGeometry.is_finite_point(displacement):
+		return NO_HIT
+	var center: Vector2 = pose[0]
+	var radius: float = pose[3]
+	var finish: Vector2 = start+displacement
+	if maxf(start.x,finish.x)<center.x-radius or minf(start.x,finish.x)>center.x+radius:
+		return NO_HIT
+	if maxf(start.y,finish.y)<center.y-radius or minf(start.y,finish.y)>center.y+radius:
+		return NO_HIT
+	var local_start: Vector2 = (start-center).rotated(pose[1])
+	var local_end: Vector2 = (finish-center).rotated(pose[1])
+	return _local_aabb_entry_t(local_start,local_end-local_start,pose[2])

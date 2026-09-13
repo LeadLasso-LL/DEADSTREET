@@ -180,6 +180,7 @@ func has_combat_pressure_snapshot(participant_id: String) -> bool:
 
 func clear_los_cache() -> void:
 	_los_cache.clear()
+	_los_cache_previous.clear()
 	_los_cache_stamp = _current_los_cache_stamp()
 
 
@@ -188,6 +189,10 @@ func los_cache_lookup(from_pos: Vector2, to_pos: Vector2) -> Variant:
 	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
 	if _los_cache.has(key):
 		return _los_cache[key]
+	if _los_cache_previous.has(key):
+		var row: Dictionary = _los_cache_previous[key]
+		_remember_los_query(key,row)
+		return row
 	return null
 
 
@@ -199,10 +204,10 @@ func los_cache_store(
 ) -> void:
 	_sync_los_cache_stamp()
 	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
-	_los_cache[key] = {
+	_remember_los_query(key,{
 		"has_los": has_los,
 		"blocking_obstacle_id": blocking_obstacle_id,
-	}
+	})
 
 
 func _current_los_cache_stamp() -> String:
@@ -216,6 +221,7 @@ func _sync_los_cache_stamp() -> void:
 	if _los_cache_stamp == stamp:
 		return
 	_los_cache.clear()
+	_los_cache_previous.clear()
 	_los_cache_stamp = stamp
 
 
@@ -224,18 +230,26 @@ func nav_cache_lookup(from_pos: Vector2, to_pos: Vector2) -> int:
 	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
 	if _nav_cache.has(key):
 		return 1 if _nav_cache[key] else 0
+	if _nav_cache_previous.has(key):
+		var reachable: bool = _nav_cache_previous[key]
+		_remember_nav_query(key,reachable)
+		return 1 if reachable else 0
 	return -1
 
 
 func nav_cache_store(from_pos: Vector2, to_pos: Vector2, reachable: bool) -> void:
 	_sync_nav_cache_stamp()
 	var key: Vector4 = Vector4(from_pos.x, from_pos.y, to_pos.x, to_pos.y)
-	_nav_cache[key] = reachable
+	_remember_nav_query(key,reachable)
 
 
 func _current_nav_cache_stamp() -> String:
+	var geometry_stamp: String = _current_los_cache_stamp()
+	var vehicle_stamp: String = _runtime_nav_vehicle_stamp if _runtime_readiness_scope else _current_nav_vehicle_stamp()
+	return geometry_stamp if vehicle_stamp.is_empty() else geometry_stamp + "|" + vehicle_stamp
+
+func _current_nav_vehicle_stamp() -> String:
 	var parts: PackedStringArray = PackedStringArray()
-	parts.append(_current_los_cache_stamp())
 	var vehicle_ids: Array = vehicles.keys()
 	vehicle_ids.sort()
 	for vehicle_id: Variant in vehicle_ids:
@@ -262,6 +276,7 @@ func _sync_nav_cache_stamp() -> void:
 	if _nav_cache_stamp == stamp:
 		return
 	_nav_cache.clear()
+	_nav_cache_previous.clear()
 	_nav_cache_stamp = stamp
 
 
@@ -663,7 +678,30 @@ func is_side_ready(side_id: String) -> bool:
 	return true
 
 
+# Deployment membership/commitments do not mutate during synchronous combat.
+# Living-side evaluation remains live after every shot; only readiness is shared.
+var _runtime_readiness_scope: bool = false
+var _runtime_readiness: bool = false
+var _runtime_nav_vehicle_stamp: String = ""
+
+func begin_runtime_readiness_scope() -> Array:
+	var previous: Array = [_runtime_readiness_scope,_runtime_readiness,_runtime_nav_vehicle_stamp]
+	_runtime_nav_vehicle_stamp = _current_nav_vehicle_stamp()
+	_runtime_readiness = _battle_ready_uncached()
+	_runtime_readiness_scope = true
+	return previous
+
+func end_runtime_readiness_scope(previous: Array) -> void:
+	_runtime_readiness_scope = previous[0]
+	_runtime_readiness = previous[1]
+	_runtime_nav_vehicle_stamp = previous[2]
+
 func is_battle_ready() -> bool:
+	if _runtime_readiness_scope:
+		return _runtime_readiness
+	return _battle_ready_uncached()
+
+func _battle_ready_uncached() -> bool:
 	if attacker_side_id.is_empty() or defender_side_id.is_empty():
 		return false
 	if not has_side(attacker_side_id) or not has_side(defender_side_id):
@@ -918,4 +956,22 @@ func prepare_los_cache_for_tick() -> void:
 				snapshot.append([id, obstacle.bounds, obstacle.blocks_line_of_sight])
 	if snapshot != _los_obstacle_snapshot or _los_cache.size() > MAX_PERSISTENT_LOS_ENTRIES:
 		_los_cache.clear()
+	_los_cache_previous.clear()
 	_los_obstacle_snapshot = snapshot
+
+const LOS_CACHE_GENERATION_LIMIT: int = 8192
+const NAV_CACHE_GENERATION_LIMIT: int = 4096
+var _los_cache_previous: Dictionary = {}
+var _nav_cache_previous: Dictionary = {}
+
+func _remember_los_query(key: Vector4,row: Dictionary) -> void:
+	if not _los_cache.has(key) and _los_cache.size() >= LOS_CACHE_GENERATION_LIMIT:
+		_los_cache_previous = _los_cache
+		_los_cache = {}
+	_los_cache[key] = row
+
+func _remember_nav_query(key: Vector4,reachable: bool) -> void:
+	if not _nav_cache.has(key) and _nav_cache.size() >= NAV_CACHE_GENERATION_LIMIT:
+		_nav_cache_previous = _nav_cache
+		_nav_cache = {}
+	_nav_cache[key] = reachable

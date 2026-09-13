@@ -1,0 +1,898 @@
+{
+  "baseline": "613bbabb4d7d642bdaeb008e4ad272530ff53fd5",
+  "native_runs": {
+    "native_initial": {
+      "damage": 17.988,
+      "fps": 48.6489843824764,
+      "late_paused_fps": 60.567632657108,
+      "living": 18,
+      "max_frame_ms": 345.083,
+      "p95_frame_ms": 30.813,
+      "rendered": 24,
+      "sim_seconds": 29.3322934126986,
+      "units": 24,
+      "wall_seconds": 30.010904,
+      "windows": [
+        {
+          "fps": 51.4421138641282,
+          "sim_seconds": 4.94582288888889,
+          "wall_seconds": 5.015346
+        },
+        {
+          "fps": 55.7358814419891,
+          "sim_seconds": 9.95483200000005,
+          "wall_seconds": 10.021098
+        },
+        {
+          "fps": 52.4123010674174,
+          "sim_seconds": 14.9687500000001,
+          "wall_seconds": 15.039004
+        },
+        {
+          "fps": 53.5340674425378,
+          "sim_seconds": 19.9833333333335,
+          "wall_seconds": 20.045162
+        },
+        {
+          "fps": 38.686630555177,
+          "sim_seconds": 24.5694020793653,
+          "wall_seconds": 25.085663
+        }
+      ]
+    },
+    "native_scope": {
+      "damage": 18.246,
+      "fps": 49.0346192739965,
+      "late_paused_fps": 60.5277419816223,
+      "living": 16,
+      "max_frame_ms": 271.057,
+      "over_100ms": 7,
+      "over_33ms": 70,
+      "p95_frame_ms": 32.666,
+      "p99_frame_ms": 50.665,
+      "rendered": 24,
+      "sim_seconds": 29.3108946666666,
+      "units": 24,
+      "wall_seconds": 30.019607,
+      "windows": [
+        {
+          "fps": 52.8471449180391,
+          "sim_seconds": 4.95039233333334,
+          "wall_seconds": 5.014462
+        },
+        {
+          "fps": 54.3563844371277,
+          "sim_seconds": 9.96468000000005,
+          "wall_seconds": 10.018474
+        },
+        {
+          "fps": 51.1164348523035,
+          "sim_seconds": 14.9791323333334,
+          "wall_seconds": 15.026648
+        },
+        {
+          "fps": 53.0934626578308,
+          "sim_seconds": 19.9676886666667,
+          "wall_seconds": 20.036681
+        },
+        {
+          "fps": 42.1431741439843,
+          "sim_seconds": 24.7658757407408,
+          "wall_seconds": 25.043423
+        }
+      ]
+    },
+    "native_routes": {
+      "damage": 22.365,
+      "fps": 54.8632395429699,
+      "late_paused_fps": 60.0325452183679,
+      "living": 15,
+      "max_frame_ms": 78.383,
+      "over_100ms": 0,
+      "over_33ms": 5,
+      "p95_frame_ms": 23.664,
+      "p99_frame_ms": 27.285,
+      "rendered": 24,
+      "sim_seconds": 30.0856806666668,
+      "units": 24,
+      "wall_seconds": 30.001874,
+      "windows": [
+        {
+          "fps": 53.993391208916,
+          "sim_seconds": 5.07692575757577,
+          "wall_seconds": 5.000612
+        },
+        {
+          "fps": 58.1047662880539,
+          "sim_seconds": 10.0929450000001,
+          "wall_seconds": 10.008807
+        },
+        {
+          "fps": 56.6676357364468,
+          "sim_seconds": 15.1072983333335,
+          "wall_seconds": 15.020486
+        },
+        {
+          "fps": 55.0373097124899,
+          "sim_seconds": 20.1139001428574,
+          "wall_seconds": 20.035266
+        },
+        {
+          "fps": 48.5214340939151,
+          "sim_seconds": 25.1326193333335,
+          "wall_seconds": 25.043362
+        }
+      ]
+    },
+    "native_target": {
+      "damage": 12.598,
+      "fps": 57.1830376049451,
+      "late_paused_fps": 60.5557458609248,
+      "living": 19,
+      "max_frame_ms": 127.931,
+      "over_100ms": 1,
+      "over_33ms": 1,
+      "p95_frame_ms": 21.923,
+      "p99_frame_ms": 25.483,
+      "rendered": 24,
+      "sim_seconds": 30.0633059999999,
+      "units": 24,
+      "wall_seconds": 30.008899,
+      "windows": [
+        {
+          "fps": 53.9165479670566,
+          "sim_seconds": 5.0583988888889,
+          "wall_seconds": 5.007739
+        },
+        {
+          "fps": 57.7894707584278,
+          "sim_seconds": 10.0623856666668,
+          "wall_seconds": 10.00865
+        },
+        {
+          "fps": 57.3622212410906,
+          "sim_seconds": 15.0669010000002,
+          "wall_seconds": 15.011943
+        },
+        {
+          "fps": 59.1237067687856,
+          "sim_seconds": 20.0756946666667,
+          "wall_seconds": 20.018395
+        },
+        {
+          "fps": 58.6411060590225,
+          "sim_seconds": 25.0814119999999,
+          "wall_seconds": 25.031943
+        }
+      ]
+    },
+    "native_collision": {
+      "damage": 12.129,
+      "fps": 58.2937509099025,
+      "late_paused_fps": 60.0073404328064,
+      "living": 20,
+      "max_frame_ms": 83.461,
+      "over_100ms": 0,
+      "over_33ms": 9,
+      "p95_frame_ms": 22.116,
+      "p99_frame_ms": 27.53,
+      "rendered": 24,
+      "sim_seconds": 30.0811956666664,
+      "units": 24,
+      "wall_seconds": 30.003216,
+      "windows": [
+        {
+          "fps": 58.6923464980533,
+          "sim_seconds": 5.09722222222222,
+          "wall_seconds": 5.009171
+        },
+        {
+          "fps": 60.2413003184411,
+          "sim_seconds": 10.1038020000001,
+          "wall_seconds": 10.022343
+        },
+        {
+          "fps": 59.0379526276277,
+          "sim_seconds": 15.1204420000002,
+          "wall_seconds": 15.036067
+        },
+        {
+          "fps": 59.9987280269658,
+          "sim_seconds": 20.120387,
+          "wall_seconds": 20.036173
+        },
+        {
+          "fps": 55.3250345781466,
+          "sim_seconds": 25.1194943333331,
+          "wall_seconds": 25.042948
+        }
+      ]
+    },
+    "native_reach": {
+      "damage": 12.739,
+      "fps": 54.5346584577958,
+      "late_paused_fps": 60.6277686348621,
+      "living": 20,
+      "max_frame_ms": 84.785,
+      "over_100ms": 0,
+      "over_33ms": 13,
+      "p95_frame_ms": 25.874,
+      "p99_frame_ms": 32.858,
+      "rendered": 24,
+      "sim_seconds": 30.0922454814814,
+      "units": 24,
+      "wall_seconds": 30.017608,
+      "windows": [
+        {
+          "fps": 56.2516980233313,
+          "sim_seconds": 5.10141333333333,
+          "wall_seconds": 5.013182
+        },
+        {
+          "fps": 58.7338304665963,
+          "sim_seconds": 10.1088396666667,
+          "wall_seconds": 10.018815
+        },
+        {
+          "fps": 58.8775934831485,
+          "sim_seconds": 15.1177673333335,
+          "wall_seconds": 15.02921
+        },
+        {
+          "fps": 59.9646088878344,
+          "sim_seconds": 20.1199390000001,
+          "wall_seconds": 20.032161
+        },
+        {
+          "fps": 48.9618787986506,
+          "sim_seconds": 25.1380323333334,
+          "wall_seconds": 25.056478
+        }
+      ]
+    },
+    "native_roles": {
+      "damage": 18.8319196648849,
+      "fps": 58.6894124299976,
+      "late_paused_fps": 60.00427804587,
+      "living": 17,
+      "max_frame_ms": 52.749,
+      "over_100ms": 0,
+      "over_33ms": 1,
+      "p95_frame_ms": 20.853,
+      "p99_frame_ms": 24.008,
+      "rendered": 24,
+      "sim_seconds": 30.0920393333331,
+      "units": 24,
+      "wall_seconds": 30.005412,
+      "windows": [
+        {
+          "fps": 58.1418349083577,
+          "sim_seconds": 5.09075066666666,
+          "wall_seconds": 5.005002
+        },
+        {
+          "fps": 60.3976082547131,
+          "sim_seconds": 10.0916470000001,
+          "wall_seconds": 10.0052
+        },
+        {
+          "fps": 54.976217288401,
+          "sim_seconds": 15.1019246666668,
+          "wall_seconds": 15.007363
+        },
+        {
+          "fps": 60.1752318745604,
+          "sim_seconds": 20.0919626666667,
+          "wall_seconds": 20.009421
+        },
+        {
+          "fps": 58.1782297064439,
+          "sim_seconds": 25.0935463333332,
+          "wall_seconds": 25.011292
+        }
+      ]
+    },
+    "native_cover": {
+      "damage": 16.172,
+      "fps": 57.9770005238922,
+      "late_paused_fps": 60.007842885512,
+      "living": 18,
+      "max_frame_ms": 51.505,
+      "over_100ms": 0,
+      "over_33ms": 3,
+      "p95_frame_ms": 21.295,
+      "p99_frame_ms": 24.348,
+      "rendered": 24,
+      "sim_seconds": 30.1001723333333,
+      "units": 24,
+      "wall_seconds": 30.011901,
+      "windows": [
+        {
+          "fps": 56.7742472014694,
+          "sim_seconds": 5.09071966666666,
+          "wall_seconds": 5.002268
+        },
+        {
+          "fps": 59.5762052636177,
+          "sim_seconds": 10.0888276666667,
+          "wall_seconds": 10.004265
+        },
+        {
+          "fps": 59.6936378760325,
+          "sim_seconds": 15.1031384444446,
+          "wall_seconds": 15.013174
+        },
+        {
+          "fps": 59.9996013315526,
+          "sim_seconds": 20.1072853333335,
+          "wall_seconds": 20.029874
+        },
+        {
+          "fps": 51.2435329963489,
+          "sim_seconds": 25.1383610000001,
+          "wall_seconds": 25.045141
+        }
+      ]
+    },
+    "native_order": {
+      "damage": 16.605,
+      "fps": 59.3942249015321,
+      "late_paused_fps": 60.006610695052,
+      "living": 16,
+      "max_frame_ms": 46.426,
+      "over_100ms": 0,
+      "over_33ms": 1,
+      "p95_frame_ms": 19.031,
+      "p99_frame_ms": 23.078,
+      "rendered": 24,
+      "sim_seconds": 30.1048120000002,
+      "units": 24,
+      "wall_seconds": 30.002917,
+      "windows": [
+        {
+          "fps": 58.9600486710205,
+          "sim_seconds": 5.09149522222221,
+          "wall_seconds": 5.003388
+        },
+        {
+          "fps": 60.0113004668122,
+          "sim_seconds": 10.108161888889,
+          "wall_seconds": 10.01911
+        },
+        {
+          "fps": 59.9879544187527,
+          "sim_seconds": 15.1081618888892,
+          "wall_seconds": 15.020114
+        },
+        {
+          "fps": 59.9933047471902,
+          "sim_seconds": 20.1342986666668,
+          "wall_seconds": 20.020672
+        },
+        {
+          "fps": 57.0275486927531,
+          "sim_seconds": 25.0997705555555,
+          "wall_seconds": 25.035792
+        }
+      ]
+    },
+    "native_spatial": {
+      "damage": 17.595,
+      "fps": 59.0530077059843,
+      "late_paused_fps": 60.5307890957479,
+      "living": 17,
+      "max_frame_ms": 46.517,
+      "over_100ms": 0,
+      "over_33ms": 1,
+      "p95_frame_ms": 19.143,
+      "p99_frame_ms": 23.418,
+      "rendered": 24,
+      "sim_seconds": 30.0846683333332,
+      "units": 24,
+      "wall_seconds": 30.006939,
+      "windows": [
+        {
+          "fps": 58.8485121599977,
+          "sim_seconds": 5.10490866666665,
+          "wall_seconds": 5.012871
+        },
+        {
+          "fps": 59.9961722442108,
+          "sim_seconds": 10.1049813333334,
+          "wall_seconds": 10.01319
+        },
+        {
+          "fps": 59.9943365346311,
+          "sim_seconds": 15.1114283333337,
+          "wall_seconds": 15.013662
+        },
+        {
+          "fps": 59.2315218592236,
+          "sim_seconds": 20.1000000000001,
+          "wall_seconds": 20.027884
+        },
+        {
+          "fps": 57.3558818556766,
+          "sim_seconds": 25.1105966666667,
+          "wall_seconds": 25.03173
+        }
+      ]
+    },
+    "native32_scope": {
+      "damage": 1.5,
+      "fps": 35.5158213493245,
+      "late_paused_fps": 60.6428017293572,
+      "living": 31,
+      "max_frame_ms": 414.549,
+      "over_100ms": 2,
+      "over_33ms": 158,
+      "p95_frame_ms": 46.297,
+      "p99_frame_ms": 64.508,
+      "rendered": 32,
+      "sim_seconds": 19.5759735714286,
+      "units": 32,
+      "wall_seconds": 20.019247,
+      "windows": [
+        {
+          "fps": 39.7781061303858,
+          "sim_seconds": 4.89796266666666,
+          "wall_seconds": 5.002752
+        },
+        {
+          "fps": 41.7609201309415,
+          "sim_seconds": 9.89692490909091,
+          "wall_seconds": 10.007431
+        },
+        {
+          "fps": 39.3649179850917,
+          "sim_seconds": 14.8651706666667,
+          "wall_seconds": 15.011887
+        },
+        {
+          "fps": 21.1692749143893,
+          "sim_seconds": 19.5759735714286,
+          "wall_seconds": 20.019144
+        }
+      ]
+    },
+    "native32_routes": {
+      "damage": 19.995,
+      "fps": 36.7170040577287,
+      "late_paused_fps": 60.6264628128445,
+      "living": 25,
+      "max_frame_ms": 92.925,
+      "over_100ms": 0,
+      "over_33ms": 134,
+      "p95_frame_ms": 36.539,
+      "p99_frame_ms": 45.239,
+      "rendered": 32,
+      "sim_seconds": 30.0886684444444,
+      "units": 32,
+      "wall_seconds": 30.013342,
+      "windows": [
+        {
+          "fps": 40.9944701245834,
+          "sim_seconds": 5.10355271428571,
+          "wall_seconds": 5.025068
+        },
+        {
+          "fps": 31.3821811975161,
+          "sim_seconds": 10.1121153333333,
+          "wall_seconds": 10.027907
+        },
+        {
+          "fps": 44.3965725845965,
+          "sim_seconds": 15.0958333333333,
+          "wall_seconds": 15.028293
+        },
+        {
+          "fps": 34.5015670292655,
+          "sim_seconds": 20.1196283333332,
+          "wall_seconds": 20.042558
+        },
+        {
+          "fps": 33.1625925955522,
+          "sim_seconds": 25.1086296666666,
+          "wall_seconds": 25.048198
+        }
+      ]
+    },
+    "native32_reach": {
+      "damage": 19.743,
+      "fps": 44.115634140916,
+      "late_paused_fps": 60.6564262390921,
+      "living": 22,
+      "max_frame_ms": 79.039,
+      "over_100ms": 0,
+      "over_33ms": 14,
+      "p95_frame_ms": 28.63,
+      "p99_frame_ms": 32.768,
+      "rendered": 32,
+      "sim_seconds": 30.096735,
+      "units": 32,
+      "wall_seconds": 30.012036,
+      "windows": [
+        {
+          "fps": 44.6884665252463,
+          "sim_seconds": 5.07850177777777,
+          "wall_seconds": 5.012479
+        },
+        {
+          "fps": 46.3929482718627,
+          "sim_seconds": 10.0916083333333,
+          "wall_seconds": 10.013239
+        },
+        {
+          "fps": 45.7614091648961,
+          "sim_seconds": 15.1097962222223,
+          "wall_seconds": 15.039308
+        },
+        {
+          "fps": 39.7902338452148,
+          "sim_seconds": 20.1439143333334,
+          "wall_seconds": 20.065667
+        },
+        {
+          "fps": 41.8353777884026,
+          "sim_seconds": 25.1680693333333,
+          "wall_seconds": 25.085342
+        }
+      ]
+    },
+    "native32_roles": {
+      "damage": 18.078,
+      "fps": 45.4085523726851,
+      "late_paused_fps": 60.0060843378538,
+      "living": 26,
+      "max_frame_ms": 68.393,
+      "over_100ms": 0,
+      "over_33ms": 22,
+      "p95_frame_ms": 28.775,
+      "p99_frame_ms": 34.875,
+      "rendered": 32,
+      "sim_seconds": 30.1032623333334,
+      "units": 32,
+      "wall_seconds": 30.016372,
+      "windows": [
+        {
+          "fps": 44.8662805374861,
+          "sim_seconds": 5.08787878787878,
+          "wall_seconds": 5.014902
+        },
+        {
+          "fps": 45.8193982598191,
+          "sim_seconds": 10.123842,
+          "wall_seconds": 10.03461
+        },
+        {
+          "fps": 36.9921280751456,
+          "sim_seconds": 15.1071783333333,
+          "wall_seconds": 15.035674
+        },
+        {
+          "fps": 43.5564087461269,
+          "sim_seconds": 20.126114,
+          "wall_seconds": 20.040678
+        },
+        {
+          "fps": 45.4437462229869,
+          "sim_seconds": 25.1492020000001,
+          "wall_seconds": 25.05787
+        }
+      ]
+    },
+    "native32_cover": {
+      "damage": 20.241,
+      "fps": 42.9092984049868,
+      "late_paused_fps": 60.5618097227888,
+      "living": 24,
+      "max_frame_ms": 62.35,
+      "over_100ms": 0,
+      "over_33ms": 30,
+      "p95_frame_ms": 29.835,
+      "p99_frame_ms": 36.535,
+      "rendered": 32,
+      "sim_seconds": 30.1006163333332,
+      "units": 32,
+      "wall_seconds": 30.016804,
+      "windows": [
+        {
+          "fps": 46.1231035617419,
+          "sim_seconds": 5.08119352380952,
+          "wall_seconds": 5.008336
+        },
+        {
+          "fps": 39.0656610049362,
+          "sim_seconds": 10.1046923333333,
+          "wall_seconds": 10.02553
+        },
+        {
+          "fps": 38.0516139263329,
+          "sim_seconds": 15.1106064444445,
+          "wall_seconds": 15.045028
+        },
+        {
+          "fps": 42.3415263521077,
+          "sim_seconds": 20.1297427777778,
+          "wall_seconds": 20.051933
+        },
+        {
+          "fps": 44.7760537664457,
+          "sim_seconds": 25.1279846666666,
+          "wall_seconds": 25.054607
+        }
+      ]
+    },
+    "native32_order": {
+      "damage": 18.351,
+      "fps": 47.442134339,
+      "late_paused_fps": 60.6154260277455,
+      "living": 24,
+      "max_frame_ms": 64.175,
+      "over_100ms": 0,
+      "over_33ms": 2,
+      "p95_frame_ms": 24.289,
+      "p99_frame_ms": 27.659,
+      "rendered": 32,
+      "sim_seconds": 30.0873744848485,
+      "units": 32,
+      "wall_seconds": 30.015513,
+      "windows": [
+        {
+          "fps": 47.3711888429457,
+          "sim_seconds": 5.07355955555556,
+          "wall_seconds": 5.003041
+        },
+        {
+          "fps": 48.5875615842344,
+          "sim_seconds": 10.0898143333334,
+          "wall_seconds": 10.004321
+        },
+        {
+          "fps": 48.420495538938,
+          "sim_seconds": 15.0955797575758,
+          "wall_seconds": 15.022857
+        },
+        {
+          "fps": 44.7926092194788,
+          "sim_seconds": 20.0933628888889,
+          "wall_seconds": 20.023682
+        },
+        {
+          "fps": 45.8345281863417,
+          "sim_seconds": 25.1231483333334,
+          "wall_seconds": 25.041733
+        }
+      ]
+    },
+    "native32_spatial": {
+      "damage": 18.7786207118329,
+      "fps": 48.5546720441827,
+      "late_paused_fps": 60.0062278889012,
+      "living": 24,
+      "max_frame_ms": 58.916,
+      "over_100ms": 0,
+      "over_33ms": 3,
+      "p95_frame_ms": 24.651,
+      "p99_frame_ms": 27.764,
+      "rendered": 32,
+      "sim_seconds": 30.1573893333331,
+      "units": 32,
+      "wall_seconds": 30.007411,
+      "windows": [
+        {
+          "fps": 48.3294679744381,
+          "sim_seconds": 5.09935137037035,
+          "wall_seconds": 5.007297
+        },
+        {
+          "fps": 49.9946805659878,
+          "sim_seconds": 10.0993513703702,
+          "wall_seconds": 10.007829
+        },
+        {
+          "fps": 49.0335018411482,
+          "sim_seconds": 15.0977777777776,
+          "wall_seconds": 15.024807
+        },
+        {
+          "fps": 43.962262793618,
+          "sim_seconds": 20.1038755555554,
+          "wall_seconds": 20.029099
+        },
+        {
+          "fps": 43.9054189465054,
+          "sim_seconds": 25.1161616161615,
+          "wall_seconds": 25.03987
+        }
+      ]
+    },
+    "native24_capacity": {
+      "bulwarks": false,
+      "damage": 20.007,
+      "fps": 61.3118496612121,
+      "late_paused_fps": 139.117948234132,
+      "living": 17,
+      "los_cache_entries": 2588,
+      "max_frame_ms": 41.732,
+      "nav_cache_entries": 138,
+      "over_100ms": 0,
+      "over_33ms": 1,
+      "p95_frame_ms": 19.419,
+      "p99_frame_ms": 23.004,
+      "rendered": 24,
+      "setup_ms": 20895.251,
+      "sim_seconds": 30.0855876296297,
+      "uncapped": true,
+      "units": 24,
+      "wall_seconds": 30.010512,
+      "windows": [
+        {
+          "fps": 65.1479858480989,
+          "sim_seconds": 5.088548,
+          "wall_seconds": 5.003992
+        },
+        {
+          "fps": 61.3863844999179,
+          "sim_seconds": 10.0869450000001,
+          "wall_seconds": 10.005101
+        },
+        {
+          "fps": 60.8163346692987,
+          "sim_seconds": 15.1020910000002,
+          "wall_seconds": 15.020201
+        },
+        {
+          "fps": 60.6223039028001,
+          "sim_seconds": 20.1253743333335,
+          "wall_seconds": 20.034857
+        },
+        {
+          "fps": 58.5398327598894,
+          "sim_seconds": 25.121642,
+          "wall_seconds": 25.039996
+        }
+      ]
+    },
+    "native24_bulwarks": {
+      "bulwarks": true,
+      "damage": 19.087,
+      "fps": 59.030141770335,
+      "late_paused_fps": 60.0075677317977,
+      "living": 17,
+      "los_cache_entries": 2923,
+      "max_frame_ms": 48.512,
+      "nav_cache_entries": 195,
+      "over_100ms": 0,
+      "over_33ms": 6,
+      "p95_frame_ms": 19.249,
+      "p99_frame_ms": 21.9,
+      "rendered": 24,
+      "setup_ms": 22050.405,
+      "sim_seconds": 30.1162619999994,
+      "uncapped": false,
+      "units": 24,
+      "wall_seconds": 30.001622,
+      "windows": [
+        {
+          "fps": 56.2875487351369,
+          "sim_seconds": 5.10649199999999,
+          "wall_seconds": 5.009989
+        },
+        {
+          "fps": 60.2279408186692,
+          "sim_seconds": 10.1060016666667,
+          "wall_seconds": 10.024273
+        },
+        {
+          "fps": 57.2358818324337,
+          "sim_seconds": 15.1276913333335,
+          "wall_seconds": 15.03861
+        },
+        {
+          "fps": 60.0655612607861,
+          "sim_seconds": 20.1329286666667,
+          "wall_seconds": 20.049801
+        },
+        {
+          "fps": 60.382114817591,
+          "sim_seconds": 25.1662619999997,
+          "wall_seconds": 25.051282
+        }
+      ]
+    },
+    "native32_capacity": {
+      "bulwarks": true,
+      "damage": 18.838,
+      "fps": 55.0278837385804,
+      "late_paused_fps": 152.472807184247,
+      "living": 22,
+      "los_cache_entries": 2214,
+      "max_frame_ms": 56.259,
+      "nav_cache_entries": 699,
+      "over_100ms": 0,
+      "over_33ms": 2,
+      "p95_frame_ms": 21.397,
+      "p99_frame_ms": 24.587,
+      "rendered": 32,
+      "setup_ms": 28573.462,
+      "sim_seconds": 30.0960221111113,
+      "uncapped": true,
+      "units": 32,
+      "wall_seconds": 30.002971,
+      "windows": [
+        {
+          "fps": 49.0548173625338,
+          "sim_seconds": 5.08769066666664,
+          "wall_seconds": 5.014798
+        },
+        {
+          "fps": 49.710173716095,
+          "sim_seconds": 10.1087121212121,
+          "wall_seconds": 10.023833
+        },
+        {
+          "fps": 60.0597484753603,
+          "sim_seconds": 15.1148148148148,
+          "wall_seconds": 15.035509
+        },
+        {
+          "fps": 55.8396731305077,
+          "sim_seconds": 20.1277114444445,
+          "wall_seconds": 20.049865
+        },
+        {
+          "fps": 56.6146436566681,
+          "sim_seconds": 25.1516666666667,
+          "wall_seconds": 25.066235
+        }
+      ]
+    }
+  },
+  "validation": {
+    "focused": {
+      "checks": 8605,
+      "errors": []
+    },
+    "replay_collision": {
+      "cases": [
+        {
+          "new_runtime_ms": 5409.228,
+          "old_runtime_ms": 8370.499,
+          "phase": "active",
+          "steps": 600,
+          "terminal_fixture": false
+        },
+        {
+          "new_runtime_ms": 18.291,
+          "old_runtime_ms": 18.647,
+          "phase": "resolved",
+          "steps": 6,
+          "terminal_fixture": true
+        }
+      ],
+      "checks": 1215,
+      "errors": []
+    },
+    "visual_checks": {
+      "actors": 24,
+      "checks": 1202,
+      "clips_observed": [
+        "walk",
+        "aim",
+        "cover_tucked_idle",
+        "cover_popout",
+        "cover_exposed_idle",
+        "cover_tuck",
+        "cover_fire",
+        "hit",
+        "wounded_walk",
+        "death",
+        "death_back"
+      ],
+      "errors": [],
+      "prepared_masks": 24
+    }
+  },
+  "release_runtime": "not downloaded or executed; automatic approval review rejected the action for missing explicit executable-install authorization"
+}

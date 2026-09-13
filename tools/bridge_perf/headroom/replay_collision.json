@@ -1,0 +1,20 @@
+{
+  "cases": [
+    {
+      "new_runtime_ms": 5409.228,
+      "old_runtime_ms": 8370.499,
+      "phase": "active",
+      "steps": 600,
+      "terminal_fixture": false
+    },
+    {
+      "new_runtime_ms": 18.291,
+      "old_runtime_ms": 18.647,
+      "phase": "resolved",
+      "steps": 6,
+      "terminal_fixture": true
+    }
+  ],
+  "checks": 1215,
+  "errors": []
+}

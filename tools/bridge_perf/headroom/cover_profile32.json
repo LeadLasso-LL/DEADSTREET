@@ -1,0 +1,1506 @@
+[
+  {
+    "functions": {
+      "battle_combat_behavior_service._active_hostile": [
+        121,
+        36214,
+        10022,
+        471
+      ],
+      "battle_combat_behavior_service._anchor_and_halt_occupied_cover": [
+        3824,
+        44235,
+        25960,
+        137
+      ],
+      "battle_combat_behavior_service._anchor_to_occupied_slot": [
+        3824,
+        10366,
+        10366,
+        54
+      ],
+      "battle_combat_behavior_service._approach_movement_status": [
+        1663,
+        1338,
+        1338,
+        2
+      ],
+      "battle_combat_behavior_service._best_closing_cover_slot": [
+        209,
+        307463,
+        2042,
+        5642
+      ],
+      "battle_combat_behavior_service._best_healthy_role_cover_slot": [
+        647,
+        958177,
+        7019,
+        5197
+      ],
+      "battle_combat_behavior_service._bind_closing_staging_hold": [
+        49,
+        2596,
+        285,
+        82
+      ],
+      "battle_combat_behavior_service._bind_combat_decision": [
+        7258,
+        66705,
+        21190,
+        89
+      ],
+      "battle_combat_behavior_service._bind_no_role_cover_decision": [
+        643,
+        53768,
+        2644,
+        411
+      ],
+      "battle_combat_behavior_service._cheap_closing_slot_still_valid": [
+        2529,
+        253179,
+        49759,
+        570
+      ],
+      "battle_combat_behavior_service._cheap_cover_decision_still_valid": [
+        241,
+        17564,
+        1731,
+        125
+      ],
+      "battle_combat_behavior_service._clear_acquire_reaction": [
+        9518,
+        9013,
+        9013,
+        20
+      ],
+      "battle_combat_behavior_service._clear_closing_pursuit": [
+        359,
+        415,
+        415,
+        2
+      ],
+      "battle_combat_behavior_service._clear_no_role_cover_decision": [
+        381,
+        464,
+        464,
+        3
+      ],
+      "battle_combat_behavior_service._clear_owned_combat_navigation": [
+        8887,
+        9453,
+        9453,
+        15
+      ],
+      "battle_combat_behavior_service._closing_command_permits": [
+        380,
+        2161,
+        1184,
+        20
+      ],
+      "battle_combat_behavior_service._closing_staging_hold_is_current": [
+        91,
+        4403,
+        518,
+        100
+      ],
+      "battle_combat_behavior_service._closing_staging_key": [
+        133,
+        5755,
+        5047,
+        86
+      ],
+      "battle_combat_behavior_service._combat_context_id": [
+        2779,
+        2485,
+        2485,
+        26
+      ],
+      "battle_combat_behavior_service._combat_decision_key_for": [
+        11665,
+        73135,
+        42160,
+        81
+      ],
+      "battle_combat_behavior_service._combat_decision_matches": [
+        4407,
+        41379,
+        13759,
+        51
+      ],
+      "battle_combat_behavior_service._complete_successful_cover_occupation": [
+        49,
+        4194,
+        433,
+        127
+      ],
+      "battle_combat_behavior_service._continue_closing_from_occupied": [
+        52,
+        133721,
+        808,
+        6532
+      ],
+      "battle_combat_behavior_service._cover_availability_stamp": [
+        2957,
+        7412,
+        7412,
+        108
+      ],
+      "battle_combat_behavior_service._defend_can_fire": [
+        3900,
+        58811,
+        58811,
+        116
+      ],
+      "battle_combat_behavior_service._defend_keep_current_path": [
+        6900,
+        6746,
+        6746,
+        15
+      ],
+      "battle_combat_behavior_service._defend_los_blocks_fire": [
+        3900,
+        48670,
+        48670,
+        93
+      ],
+      "battle_combat_behavior_service._defender_search_due": [
+        2100,
+        24638,
+        18688,
+        66
+      ],
+      "battle_combat_behavior_service._desired_move_mode": [
+        1863,
+        52039,
+        52039,
+        96
+      ],
+      "battle_combat_behavior_service._ensure_combat_movement_speed": [
+        4488,
+        5114,
+        5114,
+        70
+      ],
+      "battle_combat_behavior_service._ensure_cover_reservation": [
+        58,
+        1071,
+        1071,
+        36
+      ],
+      "battle_combat_behavior_service._fall_back_applies": [
+        121,
+        683,
+        396,
+        9
+      ],
+      "battle_combat_behavior_service._find_combat_navigation_path": [
+        113,
+        94215,
+        94071,
+        3496
+      ],
+      "battle_combat_behavior_service._first_reservable_ranked_slot": [
+        856,
+        94676,
+        3534,
+        4240
+      ],
+      "battle_combat_behavior_service._halt_stand_motion": [
+        3824,
+        4010,
+        4010,
+        17
+      ],
+      "battle_combat_behavior_service._has_external_navigation": [
+        14288,
+        12542,
+        12542,
+        17
+      ],
+      "battle_combat_behavior_service._has_valid_occupancy": [
+        12486,
+        33564,
+        33564,
+        49
+      ],
+      "battle_combat_behavior_service._has_valid_reservation": [
+        3437,
+        8986,
+        8986,
+        18
+      ],
+      "battle_combat_behavior_service._healthy_current_target": [
+        18084,
+        131025,
+        70709,
+        95
+      ],
+      "battle_combat_behavior_service._healthy_keep_closing_cover_decision": [
+        380,
+        672,
+        672,
+        4
+      ],
+      "battle_combat_behavior_service._healthy_keep_current_cover_decision": [
+        2088,
+        32893,
+        6689,
+        213
+      ],
+      "battle_combat_behavior_service._healthy_keep_no_role_cover_decision": [
+        2227,
+        304371,
+        9373,
+        724
+      ],
+      "battle_combat_behavior_service._healthy_no_role_cover_key": [
+        2824,
+        346122,
+        323438,
+        717
+      ],
+      "battle_combat_behavior_service._healthy_occupied_cover_should_persist": [
+        125,
+        50863,
+        3271,
+        704
+      ],
+      "battle_combat_behavior_service._healthy_role_requires_weapon_range": [
+        241,
+        2148,
+        862,
+        13
+      ],
+      "battle_combat_behavior_service._hold_suppresses_target_approach": [
+        1984,
+        12235,
+        6581,
+        25
+      ],
+      "battle_combat_behavior_service._increment_search": [
+        1284,
+        1683,
+        1683,
+        7
+      ],
+      "battle_combat_behavior_service._is_defender_side": [
+        501,
+        636,
+        636,
+        3
+      ],
+      "battle_combat_behavior_service._is_eligible_threat": [
+        3872,
+        25161,
+        13529,
+        125
+      ],
+      "battle_combat_behavior_service._is_finite_vector": [
+        38252,
+        29465,
+        29465,
+        17
+      ],
+      "battle_combat_behavior_service._is_positioned": [
+        33421,
+        113946,
+        88213,
+        113
+      ],
+      "battle_combat_behavior_service._is_too_far_for_preferred_band": [
+        359,
+        5445,
+        5445,
+        37
+      ],
+      "battle_combat_behavior_service._is_valid_navigation_destination": [
+        5176,
+        78536,
+        78536,
+        335
+      ],
+      "battle_combat_behavior_service._navigate_to_cover": [
+        2825,
+        90214,
+        25968,
+        2207
+      ],
+      "battle_combat_behavior_service._occupied_cover_is_unsafe_from_close_threat": [
+        121,
+        36694,
+        480,
+        476
+      ],
+      "battle_combat_behavior_service._participant_force_command_id": [
+        29261,
+        79944,
+        79944,
+        28
+      ],
+      "battle_combat_behavior_service._participant_weapon_type_id": [
+        16216,
+        20525,
+        20525,
+        33
+      ],
+      "battle_combat_behavior_service._preferred_band_stand_off": [
+        1484,
+        34763,
+        15595,
+        141
+      ],
+      "battle_combat_behavior_service._pursue_closing_cover": [
+        2582,
+        128910,
+        22612,
+        2231
+      ],
+      "battle_combat_behavior_service._pursue_healthy_role_cover": [
+        245,
+        11808,
+        2057,
+        1168
+      ],
+      "battle_combat_behavior_service._push_applies": [
+        2725,
+        14997,
+        8152,
+        27
+      ],
+      "battle_combat_behavior_service._push_approach_destination": [
+        1863,
+        70616,
+        31855,
+        208
+      ],
+      "battle_combat_behavior_service._push_uses_controlled_advance": [
+        1863,
+        1599,
+        1599,
+        15
+      ],
+      "battle_combat_behavior_service._reconcile_cover_state": [
+        9663,
+        27660,
+        27660,
+        88
+      ],
+      "battle_combat_behavior_service._recover_stalled_cover": [
+        4800,
+        99421,
+        48140,
+        598
+      ],
+      "battle_combat_behavior_service._release_owned_reservation": [
+        779,
+        897,
+        897,
+        13
+      ],
+      "battle_combat_behavior_service._reserved_cover_slot": [
+        3057,
+        19134,
+        10550,
+        23
+      ],
+      "battle_combat_behavior_service._short_range_closing_applies": [
+        380,
+        15438,
+        2985,
+        91
+      ],
+      "battle_combat_behavior_service._short_range_exposed_threat_urgency": [
+        2824,
+        6835,
+        6569,
+        16
+      ],
+      "battle_combat_behavior_service._short_range_still_needs_to_close": [
+        535,
+        12658,
+        3540,
+        56
+      ],
+      "battle_combat_behavior_service._should_keep_combat_path": [
+        1663,
+        22917,
+        6853,
+        38
+      ],
+      "battle_combat_behavior_service._should_keep_cover_path": [
+        3066,
+        5866,
+        5866,
+        17
+      ],
+      "battle_combat_behavior_service._should_suppress_autonomous_aggressive_approach": [
+        1863,
+        4035,
+        4035,
+        70
+      ],
+      "battle_combat_behavior_service._sorted_participant_ids": [
+        421,
+        3446,
+        3446,
+        20
+      ],
+      "battle_combat_behavior_service._sync_player_tactical_intent": [
+        9600,
+        10813,
+        10813,
+        101
+      ],
+      "battle_combat_behavior_service._try_execute_shot": [
+        9600,
+        146430,
+        146430,
+        71
+      ],
+      "battle_combat_behavior_service._try_occupy_arrived_defend_cover": [
+        4800,
+        5849,
+        5849,
+        18
+      ],
+      "battle_combat_behavior_service._update_acquire_reaction": [
+        9600,
+        98972,
+        89959,
+        64
+      ],
+      "battle_combat_behavior_service._update_combat_movement": [
+        1863,
+        320349,
+        52725,
+        3647
+      ],
+      "battle_combat_behavior_service._update_defend_position_behavior": [
+        4800,
+        379618,
+        107627,
+        317
+      ],
+      "battle_combat_behavior_service._update_healthy_role_cover_behavior": [
+        4800,
+        2480108,
+        115320,
+        7054
+      ],
+      "battle_combat_behavior_service._update_occupied_cover_posture": [
+        9600,
+        88474,
+        88474,
+        178
+      ],
+      "battle_combat_behavior_service._update_short_range_closing_behavior": [
+        380,
+        280152,
+        5743,
+        5729
+      ],
+      "battle_combat_behavior_service._update_sniper_aim": [
+        9600,
+        50518,
+        38183,
+        92
+      ],
+      "battle_combat_behavior_service._vacate_owned_cover": [
+        63,
+        1617,
+        1432,
+        45
+      ],
+      "battle_combat_behavior_service.advance": [
+        300,
+        3870995,
+        201253,
+        69744
+      ],
+      "battle_combat_cover_evaluation_service._closing_rank_less": [
+        28,
+        34,
+        34,
+        2
+      ],
+      "battle_combat_cover_evaluation_service._evaluate_rank_candidates": [
+        647,
+        930672,
+        127840,
+        5131
+      ],
+      "battle_combat_cover_evaluation_service._insert_closing_ranked": [
+        38,
+        183,
+        149,
+        10
+      ],
+      "battle_combat_cover_evaluation_service._insert_ranked": [
+        4,
+        11,
+        11,
+        3
+      ],
+      "battle_combat_cover_evaluation_service._insert_staging_ranked": [
+        68,
+        330,
+        270,
+        13
+      ],
+      "battle_combat_cover_evaluation_service._is_positioned": [
+        109188,
+        106494,
+        106494,
+        105
+      ],
+      "battle_combat_cover_evaluation_service._participant_weapon_type_id": [
+        8882,
+        12067,
+        12067,
+        40
+      ],
+      "battle_combat_cover_evaluation_service._rank_candidate_allowed": [
+        39353,
+        656085,
+        502054,
+        155
+      ],
+      "battle_combat_cover_evaluation_service._slot_is_legal_for_participant": [
+        48235,
+        75703,
+        75703,
+        85
+      ],
+      "battle_combat_cover_evaluation_service._slot_is_reachable": [
+        57,
+        89424,
+        89361,
+        4230
+      ],
+      "battle_combat_cover_evaluation_service._slot_is_within_weapon_max_range": [
+        8882,
+        122904,
+        113552,
+        134
+      ],
+      "battle_combat_cover_evaluation_service._staging_rank_less": [
+        57,
+        60,
+        60,
+        2
+      ],
+      "battle_combat_cover_evaluation_service.evaluate_slot": [
+        8882,
+        487309,
+        303591,
+        394
+      ],
+      "battle_combat_cover_evaluation_service.first_reachable_ranked_slot": [
+        856,
+        91142,
+        1718,
+        4236
+      ],
+      "battle_combat_cover_evaluation_service.is_useful_protection_factor": [
+        47353,
+        37494,
+        37494,
+        25
+      ],
+      "battle_combat_cover_evaluation_service.occupied_cover_is_suitable": [
+        26,
+        2079,
+        207,
+        181
+      ],
+      "battle_combat_cover_evaluation_service.occupied_cover_still_protects": [
+        3787,
+        50968,
+        43962,
+        96
+      ],
+      "battle_combat_cover_evaluation_service.rank_closing_cover": [
+        142,
+        121652,
+        23312,
+        1387
+      ],
+      "battle_combat_cover_evaluation_service.rank_healthy_role": [
+        621,
+        922001,
+        6549,
+        5164
+      ],
+      "battle_combat_cover_evaluation_service.rank_short_range_in_useful_range": [
+        26,
+        15414,
+        178,
+        1075
+      ],
+      "battle_combat_cover_evaluation_service.rank_short_range_out_of_range_staging": [
+        67,
+        99243,
+        16941,
+        2692
+      ],
+      "battle_defend_position_service._is_positioned": [
+        315,
+        409,
+        409,
+        7
+      ],
+      "battle_defend_position_service.defend_anchor": [
+        315,
+        455,
+        455,
+        5
+      ],
+      "battle_defend_position_service.select_best_local_cover_slot": [
+        315,
+        3461,
+        2597,
+        47
+      ]
+    },
+    "step": 300
+  },
+  {
+    "functions": {
+      "battle_combat_behavior_service._active_hostile": [
+        1494,
+        413629,
+        119817,
+        660
+      ],
+      "battle_combat_behavior_service._anchor_and_halt_occupied_cover": [
+        5999,
+        69803,
+        40620,
+        117
+      ],
+      "battle_combat_behavior_service._anchor_to_occupied_slot": [
+        5999,
+        16860,
+        16860,
+        43
+      ],
+      "battle_combat_behavior_service._approach_movement_status": [
+        251,
+        255,
+        255,
+        5
+      ],
+      "battle_combat_behavior_service._best_closing_cover_slot": [
+        359,
+        889635,
+        4024,
+        8400
+      ],
+      "battle_combat_behavior_service._best_healthy_role_cover_slot": [
+        250,
+        196773,
+        2515,
+        4461
+      ],
+      "battle_combat_behavior_service._bind_closing_staging_hold": [
+        46,
+        2537,
+        261,
+        73
+      ],
+      "battle_combat_behavior_service._bind_combat_decision": [
+        5224,
+        49010,
+        15421,
+        211
+      ],
+      "battle_combat_behavior_service._bind_no_role_cover_decision": [
+        243,
+        21068,
+        942,
+        222
+      ],
+      "battle_combat_behavior_service._cheap_closing_slot_still_valid": [
+        1754,
+        153049,
+        35093,
+        284
+      ],
+      "battle_combat_behavior_service._cheap_cover_decision_still_valid": [
+        615,
+        45991,
+        4551,
+        229
+      ],
+      "battle_combat_behavior_service._clear_acquire_reaction": [
+        5581,
+        5397,
+        5397,
+        17
+      ],
+      "battle_combat_behavior_service._clear_closing_pursuit": [
+        298,
+        406,
+        362,
+        35
+      ],
+      "battle_combat_behavior_service._clear_no_role_cover_decision": [
+        2183,
+        2437,
+        2437,
+        10
+      ],
+      "battle_combat_behavior_service._clear_owned_combat_navigation": [
+        10623,
+        11284,
+        11284,
+        22
+      ],
+      "battle_combat_behavior_service._closing_command_permits": [
+        518,
+        2889,
+        1569,
+        22
+      ],
+      "battle_combat_behavior_service._closing_staging_hold_is_current": [
+        45,
+        2455,
+        227,
+        140
+      ],
+      "battle_combat_behavior_service._closing_staging_key": [
+        91,
+        4293,
+        3772,
+        132
+      ],
+      "battle_combat_behavior_service._combat_context_id": [
+        2996,
+        2811,
+        2811,
+        50
+      ],
+      "battle_combat_behavior_service._combat_decision_key_for": [
+        8449,
+        53428,
+        30719,
+        190
+      ],
+      "battle_combat_behavior_service._combat_decision_matches": [
+        3225,
+        29805,
+        9966,
+        48
+      ],
+      "battle_combat_behavior_service._commit_wounded_cover_slot": [
+        94,
+        7249,
+        869,
+        1114
+      ],
+      "battle_combat_behavior_service._complete_successful_cover_occupation": [
+        46,
+        3915,
+        388,
+        116
+      ],
+      "battle_combat_behavior_service._continue_closing_from_occupied": [
+        36,
+        81798,
+        603,
+        7300
+      ],
+      "battle_combat_behavior_service._cover_availability_stamp": [
+        726,
+        1829,
+        1829,
+        8
+      ],
+      "battle_combat_behavior_service._defend_can_fire": [
+        3769,
+        63931,
+        63931,
+        68
+      ],
+      "battle_combat_behavior_service._defend_keep_current_path": [
+        6098,
+        24997,
+        7623,
+        154
+      ],
+      "battle_combat_behavior_service._defend_los_blocks_fire": [
+        3359,
+        42868,
+        42868,
+        50
+      ],
+      "battle_combat_behavior_service._defender_search_due": [
+        1384,
+        16847,
+        12881,
+        72
+      ],
+      "battle_combat_behavior_service._desired_move_mode": [
+        308,
+        9955,
+        9955,
+        211
+      ],
+      "battle_combat_behavior_service._ensure_combat_movement_speed": [
+        3071,
+        3834,
+        3704,
+        16
+      ],
+      "battle_combat_behavior_service._ensure_cover_reservation": [
+        339,
+        5027,
+        5027,
+        48
+      ],
+      "battle_combat_behavior_service._ensure_wounded_combat_movement_speed": [
+        94,
+        130,
+        130,
+        6
+      ],
+      "battle_combat_behavior_service._fall_back_applies": [
+        1339,
+        7050,
+        3861,
+        22
+      ],
+      "battle_combat_behavior_service._find_combat_navigation_path": [
+        271,
+        134283,
+        133942,
+        1885
+      ],
+      "battle_combat_behavior_service._first_reservable_ranked_slot": [
+        661,
+        426782,
+        2747,
+        6924
+      ],
+      "battle_combat_behavior_service._halt_stand_motion": [
+        6044,
+        6160,
+        6160,
+        12
+      ],
+      "battle_combat_behavior_service._halt_wounded_stand_motion": [
+        45,
+        194,
+        131,
+        7
+      ],
+      "battle_combat_behavior_service._has_external_navigation": [
+        11829,
+        10476,
+        10476,
+        15
+      ],
+      "battle_combat_behavior_service._has_los_to_nearest_hostile": [
+        47,
+        12816,
+        785,
+        385
+      ],
+      "battle_combat_behavior_service._has_valid_occupancy": [
+        13330,
+        38523,
+        38523,
+        62
+      ],
+      "battle_combat_behavior_service._has_valid_reservation": [
+        3916,
+        10359,
+        10359,
+        36
+      ],
+      "battle_combat_behavior_service._healthy_current_target": [
+        16280,
+        117982,
+        63673,
+        76
+      ],
+      "battle_combat_behavior_service._healthy_keep_closing_cover_decision": [
+        331,
+        4868,
+        1788,
+        42
+      ],
+      "battle_combat_behavior_service._healthy_keep_current_cover_decision": [
+        804,
+        66334,
+        8602,
+        395
+      ],
+      "battle_combat_behavior_service._healthy_keep_no_role_cover_decision": [
+        607,
+        41611,
+        1792,
+        229
+      ],
+      "battle_combat_behavior_service._healthy_no_role_cover_key": [
+        635,
+        59945,
+        50974,
+        222
+      ],
+      "battle_combat_behavior_service._healthy_occupied_cover_should_persist": [
+        1282,
+        439908,
+        38403,
+        787
+      ],
+      "battle_combat_behavior_service._healthy_role_requires_weapon_range": [
+        528,
+        4382,
+        1919,
+        25
+      ],
+      "battle_combat_behavior_service._hold_suppresses_target_approach": [
+        1533,
+        8839,
+        4696,
+        26
+      ],
+      "battle_combat_behavior_service._increment_search": [
+        1158,
+        1534,
+        1534,
+        16
+      ],
+      "battle_combat_behavior_service._is_defender_side": [
+        1795,
+        2125,
+        2125,
+        20
+      ],
+      "battle_combat_behavior_service._is_eligible_threat": [
+        52288,
+        308270,
+        168364,
+        169
+      ],
+      "battle_combat_behavior_service._is_finite_vector": [
+        71129,
+        50268,
+        50268,
+        21
+      ],
+      "battle_combat_behavior_service._is_positioned": [
+        70780,
+        228183,
+        178197,
+        97
+      ],
+      "battle_combat_behavior_service._is_too_far_for_preferred_band": [
+        131,
+        2000,
+        2000,
+        39
+      ],
+      "battle_combat_behavior_service._is_valid_navigation_destination": [
+        2707,
+        22752,
+        22752,
+        121
+      ],
+      "battle_combat_behavior_service._living_count_on_side": [
+        25,
+        585,
+        585,
+        35
+      ],
+      "battle_combat_behavior_service._navigate_to_cover": [
+        2597,
+        184721,
+        26137,
+        1124
+      ],
+      "battle_combat_behavior_service._navigate_to_defend_point": [
+        7,
+        4918,
+        162,
+        1943
+      ],
+      "battle_combat_behavior_service._nearest_hostile_distance_sq": [
+        140,
+        38497,
+        11327,
+        536
+      ],
+      "battle_combat_behavior_service._occupied_cover_is_unsafe_from_close_threat": [
+        1282,
+        360291,
+        4295,
+        665
+      ],
+      "battle_combat_behavior_service._participant_force_command_id": [
+        20786,
+        56509,
+        56509,
+        116
+      ],
+      "battle_combat_behavior_service._participant_weapon_type_id": [
+        13434,
+        17297,
+        17297,
+        13
+      ],
+      "battle_combat_behavior_service._preferred_band_stand_off": [
+        49,
+        1207,
+        527,
+        39
+      ],
+      "battle_combat_behavior_service._pursue_closing_cover": [
+        1983,
+        194799,
+        17381,
+        1130
+      ],
+      "battle_combat_behavior_service._pursue_defend_cover": [
+        9,
+        5736,
+        121,
+        1166
+      ],
+      "battle_combat_behavior_service._pursue_healthy_role_cover": [
+        535,
+        23836,
+        4510,
+        1131
+      ],
+      "battle_combat_behavior_service._push_applies": [
+        842,
+        4648,
+        2544,
+        26
+      ],
+      "battle_combat_behavior_service._push_approach_destination": [
+        251,
+        3942,
+        2168,
+        75
+      ],
+      "battle_combat_behavior_service._push_uses_controlled_advance": [
+        251,
+        231,
+        231,
+        3
+      ],
+      "battle_combat_behavior_service._reconcile_cover_state": [
+        8986,
+        30335,
+        30335,
+        81
+      ],
+      "battle_combat_behavior_service._recover_stalled_cover": [
+        4064,
+        84968,
+        41728,
+        1363
+      ],
+      "battle_combat_behavior_service._release_owned_reservation": [
+        419,
+        609,
+        609,
+        21
+      ],
+      "battle_combat_behavior_service._reserved_cover_slot": [
+        3584,
+        22026,
+        12320,
+        116
+      ],
+      "battle_combat_behavior_service._short_range_closing_applies": [
+        513,
+        15841,
+        3917,
+        95
+      ],
+      "battle_combat_behavior_service._short_range_exposed_threat_urgency": [
+        635,
+        5441,
+        4977,
+        49
+      ],
+      "battle_combat_behavior_service._short_range_still_needs_to_close": [
+        598,
+        10109,
+        3879,
+        75
+      ],
+      "battle_combat_behavior_service._should_continue_closing_after_shot": [
+        16,
+        463,
+        93,
+        50
+      ],
+      "battle_combat_behavior_service._should_keep_combat_path": [
+        251,
+        3340,
+        1040,
+        29
+      ],
+      "battle_combat_behavior_service._should_keep_cover_path": [
+        3408,
+        6424,
+        6424,
+        12
+      ],
+      "battle_combat_behavior_service._should_suppress_autonomous_aggressive_approach": [
+        251,
+        614,
+        614,
+        6
+      ],
+      "battle_combat_behavior_service._should_withhold_out_of_band_shot": [
+        195,
+        1106,
+        770,
+        37
+      ],
+      "battle_combat_behavior_service._sorted_participant_ids": [
+        1934,
+        15114,
+        15114,
+        54
+      ],
+      "battle_combat_behavior_service._sync_player_tactical_intent": [
+        8942,
+        9937,
+        9937,
+        55
+      ],
+      "battle_combat_behavior_service._try_execute_shot": [
+        8616,
+        160077,
+        158971,
+        303
+      ],
+      "battle_combat_behavior_service._try_occupy_arrived_defend_cover": [
+        5124,
+        7033,
+        6869,
+        109
+      ],
+      "battle_combat_behavior_service._update_acquire_reaction": [
+        8942,
+        151207,
+        145810,
+        148
+      ],
+      "battle_combat_behavior_service._update_combat_movement": [
+        310,
+        42136,
+        8903,
+        1272
+      ],
+      "battle_combat_behavior_service._update_defend_position_behavior": [
+        4714,
+        604919,
+        101926,
+        9901
+      ],
+      "battle_combat_behavior_service._update_healthy_role_cover_behavior": [
+        4064,
+        2379710,
+        96656,
+        9252
+      ],
+      "battle_combat_behavior_service._update_occupied_cover_posture": [
+        8942,
+        80986,
+        80986,
+        125
+      ],
+      "battle_combat_behavior_service._update_short_range_closing_behavior": [
+        332,
+        973118,
+        7624,
+        9177
+      ],
+      "battle_combat_behavior_service._update_sniper_aim": [
+        8942,
+        65025,
+        53310,
+        114
+      ],
+      "battle_combat_behavior_service._update_wounded_cover_behavior": [
+        164,
+        395078,
+        4306,
+        9729
+      ],
+      "battle_combat_behavior_service._vacate_owned_cover": [
+        38,
+        956,
+        847,
+        41
+      ],
+      "battle_combat_behavior_service._wounded_keep_current_cover_decision": [
+        139,
+        36291,
+        1973,
+        730
+      ],
+      "battle_combat_behavior_service._wounded_keep_reenter_decision": [
+        164,
+        213,
+        213,
+        3
+      ],
+      "battle_combat_behavior_service._wounded_occupied_cover_is_suitable": [
+        26,
+        9585,
+        151,
+        690
+      ],
+      "battle_combat_behavior_service._wounded_should_break_stalemate": [
+        25,
+        810,
+        151,
+        51
+      ],
+      "battle_combat_behavior_service.advance": [
+        300,
+        4188897,
+        196864,
+        46524
+      ],
+      "battle_combat_cover_evaluation_service._closing_rank_less": [
+        8,
+        11,
+        11,
+        2
+      ],
+      "battle_combat_cover_evaluation_service._evaluate_rank_candidates": [
+        302,
+        422859,
+        53207,
+        7954
+      ],
+      "battle_combat_cover_evaluation_service._insert_closing_ranked": [
+        23,
+        80,
+        69,
+        8
+      ],
+      "battle_combat_cover_evaluation_service._insert_near_first_ranked": [
+        2,
+        5,
+        5,
+        3
+      ],
+      "battle_combat_cover_evaluation_service._insert_ranked": [
+        902,
+        14407,
+        10108,
+        68
+      ],
+      "battle_combat_cover_evaluation_service._insert_staging_ranked": [
+        949,
+        5434,
+        4183,
+        22
+      ],
+      "battle_combat_cover_evaluation_service._is_positioned": [
+        94131,
+        93104,
+        93104,
+        44
+      ],
+      "battle_combat_cover_evaluation_service._participant_weapon_type_id": [
+        9077,
+        12770,
+        12770,
+        33
+      ],
+      "battle_combat_cover_evaluation_service._rank_candidate_allowed": [
+        29781,
+        498202,
+        381384,
+        185
+      ],
+      "battle_combat_cover_evaluation_service._rank_less": [
+        4951,
+        4299,
+        4299,
+        16
+      ],
+      "battle_combat_cover_evaluation_service._slot_is_legal_for_participant": [
+        38858,
+        61550,
+        61550,
+        32
+      ],
+      "battle_combat_cover_evaluation_service._slot_is_reachable": [
+        296,
+        427371,
+        427054,
+        6913
+      ],
+      "battle_combat_cover_evaluation_service._slot_is_within_weapon_max_range": [
+        9077,
+        125914,
+        116090,
+        118
+      ],
+      "battle_combat_cover_evaluation_service._staging_rank_less": [
+        1215,
+        1251,
+        1251,
+        5
+      ],
+      "battle_combat_cover_evaluation_service.evaluate_slot": [
+        9077,
+        562485,
+        373578,
+        244
+      ],
+      "battle_combat_cover_evaluation_service.first_reachable_ranked_slot": [
+        770,
+        430280,
+        2909,
+        6920
+      ],
+      "battle_combat_cover_evaluation_service.is_useful_protection_factor": [
+        39811,
+        32039,
+        32039,
+        89
+      ],
+      "battle_combat_cover_evaluation_service.occupied_cover_is_suitable": [
+        37,
+        2399,
+        300,
+        107
+      ],
+      "battle_combat_cover_evaluation_service.occupied_cover_still_protects": [
+        4713,
+        64062,
+        55374,
+        127
+      ],
+      "battle_combat_cover_evaluation_service.rank_closing_cover": [
+        108,
+        78531,
+        15940,
+        1424
+      ],
+      "battle_combat_cover_evaluation_service.rank_combat_usable": [
+        52,
+        256434,
+        2459,
+        8409
+      ],
+      "battle_combat_cover_evaluation_service.rank_combat_usable_within_radius": [
+        212,
+        177583,
+        16290,
+        2351
+      ],
+      "battle_combat_cover_evaluation_service.rank_healthy_role": [
+        138,
+        137090,
+        1414,
+        3548
+      ],
+      "battle_combat_cover_evaluation_service.rank_short_range_in_useful_range": [
+        112,
+        48218,
+        648,
+        719
+      ],
+      "battle_combat_cover_evaluation_service.rank_short_range_out_of_range_staging": [
+        251,
+        402424,
+        70538,
+        3155
+      ],
+      "battle_defend_position_service._compare_defend_samples": [
+        79,
+        307,
+        245,
+        12
+      ],
+      "battle_defend_position_service._is_positioned": [
+        2202,
+        2334,
+        2334,
+        6
+      ],
+      "battle_defend_position_service._is_valid_destination": [
+        563,
+        3479,
+        3479,
+        14
+      ],
+      "battle_defend_position_service._point_has_los_to_hostile": [
+        536,
+        18302,
+        17773,
+        107
+      ],
+      "battle_defend_position_service._point_is_in_weapon_max_range": [
+        928,
+        5340,
+        4431,
+        11
+      ],
+      "battle_defend_position_service._sample_is_legal": [
+        932,
+        36703,
+        8053,
+        132
+      ],
+      "battle_defend_position_service._sample_radii": [
+        11,
+        23,
+        23,
+        3
+      ],
+      "battle_defend_position_service._sample_ranks_better": [
+        79,
+        62,
+        62,
+        2
+      ],
+      "battle_defend_position_service.defend_anchor": [
+        465,
+        630,
+        630,
+        3
+      ],
+      "battle_defend_position_service.destination_still_valid": [
+        228,
+        14884,
+        1757,
+        126
+      ],
+      "battle_defend_position_service.is_within_defend_radius": [
+        928,
+        1215,
+        1215,
+        3
+      ],
+      "battle_defend_position_service.select_best_local_cover_slot": [
+        226,
+        187681,
+        3232,
+        4003
+      ],
+      "battle_defend_position_service.select_best_local_los_point": [
+        11,
+        29693,
+        5196,
+        4797
+      ]
+    },
+    "step": 600
+  }
+]

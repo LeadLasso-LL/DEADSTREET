@@ -1,0 +1,118 @@
+{
+  "damage": 1.316,
+  "fps": 45.0627083557002,
+  "late_paused_fps": 60.4882660749064,
+  "living": 32,
+  "max_frame_ms": 59.357,
+  "over_100ms": 0,
+  "over_33ms": 14,
+  "p95_frame_ms": 28.724,
+  "p99_frame_ms": 37.022,
+  "profiles": {
+    "battle_runtime_service.advance": [
+      901,
+      12768473,
+      12768473,
+      43649
+    ],
+    "tactical_actor_presenter._apply_unit_transform": [
+      28832,
+      1108360,
+      1108360,
+      770
+    ],
+    "tactical_actor_presenter._ensure_unit_node": [
+      28832,
+      345529,
+      345529,
+      476
+    ],
+    "tactical_actor_presenter._sync_units": [
+      901,
+      1709215,
+      255326,
+      4679
+    ],
+    "tactical_actor_presenter.sync_dynamic": [
+      901,
+      1749630,
+      40415,
+      4785
+    ],
+    "tactical_battle_view._draw_combat_feedback": [
+      902,
+      9545,
+      9475,
+      333
+    ],
+    "tactical_battle_view._draw_overlay": [
+      902,
+      2642,
+      2642,
+      17
+    ],
+    "tactical_battle_view._draw_participants": [
+      902,
+      230685,
+      230685,
+      757
+    ],
+    "tactical_battle_view._draw_unit_hud": [
+      902,
+      4341,
+      4341,
+      37
+    ],
+    "tactical_battle_view._paint_canvas": [
+      56,
+      70,
+      70,
+      2
+    ],
+    "tactical_battle_view._process": [
+      901,
+      1930751,
+      20870,
+      5263
+    ],
+    "tactical_battle_view._static_geometry_stamp": [
+      901,
+      6793,
+      6793,
+      63
+    ],
+    "tactical_battle_view._sync_actor_presenter": [
+      901,
+      1903088,
+      153458,
+      5185
+    ],
+    "tactical_battle_view.paint_dynamic_battlefield": [
+      902,
+      274530,
+      27317,
+      881
+    ]
+  },
+  "rendered": 32,
+  "sim_seconds": 20.0888766666668,
+  "units": 32,
+  "wall_seconds": 20.016551,
+  "windows": [
+    {
+      "fps": 44.5282471824901,
+      "sim_seconds": 5.08906166666667,
+      "wall_seconds": 5.008057
+    },
+    {
+      "fps": 49.1165509798852,
+      "sim_seconds": 10.1015861904762,
+      "wall_seconds": 10.016552
+    },
+    {
+      "fps": 44.5894841275371,
+      "sim_seconds": 15.110854,
+      "wall_seconds": 15.040158
+    }
+  ]
+}

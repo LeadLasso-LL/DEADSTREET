@@ -240,3 +240,40 @@ Archive index: none yet.
 - The initial native trial did not improve FPS; it remains recorded. Same-process collision and pressure comparisons isolated real savings. A pre-existing empty-cell typed-array error was then found and fixed; prior assertions alone missed engine errors. The persistent run_checked.py gate rejects them.
 - Source/records checkpoint includes inherited bridge/performance changes plus this pass, excluding older character-factory/dusk work and unrelated imports. Standing authorization in PROJECT_WORKFLOW_AUTHORIZATION.md applies. Exact commit/push status is verified from Git.
 - Next: remaining combat/target selection and worst-frame spikes in normal 24-unit gameplay. Details/evidence: tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md. No claim of full core-suite acceptance, final art acceptance or final convoy-cap approval.
+
+
+## 20260913-headroom-01 ? steady FPS and expansion headroom
+
+- **Source/status:** Brandon explicitly requested proceeding on 2026-09-13. APPROVED technical goal.
+- Reach steady 60 FPS for the existing battle and identify scaling bottlenecks so larger battles remain possible. This does not approve a specific new convoy/personnel cap.
+- Starting checkpoint: 613bbabb4d7d642bdaeb008e4ad272530ff53fd5, pushed. Last measured native 24-unit average 42.34 FPS, worst frame 292.985 ms.
+- Current work: receiving chat traces frame stalls and per-function cost, then checks unchanged combat behavior and measured headroom.
+
+- Profiling finding: new path endpoints caused the largest traced stall; repeated source/equipment/eligibility queries consumed routine work. Initial prepared-target/BVH/broad-phase pass matched 1,215 replay checks and measured 48.65 FPS, but worst frame was still 345.083 ms. This is an intermediate result, not steady-60 acceptance. Weapon definitions are now prepared once per synchronous runtime update; a separate test-only fixture permits larger-roster measurements while production MAX_UNITS stays 12 per side.
+
+- Low-overhead trace separated pathfinding spikes from presentation stalls: several 150-245 ms frames had only 11-25 ms simulation work. Renderer comparison was slower (Compatibility 44.75 FPS), so renderer/settings remain unchanged. Found synchronous wound-anchor/blood-mask loading in the actor presenter. Preparing selected actors\u2019 assets and known navigation endpoints before combat; route queries now use a legal upper bound to prune provably unnecessary endpoint visibility checks, with full-search fallback. Per-actor shot-history scans are consolidated per refresh. Validation pending.
+
+- Route/asset pass: native 24-unit 54.86 FPS, max 78.383 ms; native 32-unit 36.72 FPS, max 92.925 ms; both had zero >100 ms frames in those samples. Further target ordering/readiness reuse reached 57.18 FPS at 24 units, max 127.931 ms (one >100 ms frame). 4,049 focused checks including uncached route comparisons and 1,215 replay checks passed. The 60 FPS/headroom objective remains open. Current follow-up prepares vehicle transforms once per synchronous update; no lower simulation/AI update rate is introduced.
+
+- Reachability now reuses prepared connectivity/endpoints (4,526 focused and 1,215 replay checks passed; actor comparison passed 1,202 checks across 11 observed clips). Native 24-unit sample varied down to 54.53 FPS despite the fixed-work speedup; steady 60 is not established. Further inspection found repeated vehicle-pose string formatting and fresh combat role/weapon-baseline allocations. These are now prepared per synchronous update with standalone ownership and between-update invalidation retained. Validation pending.
+
+- Native presentation profile (32 units): runtime about 14.2 ms/update, actor presentation plus dynamic drawing about 2.5 ms/frame. Cover candidates now fail unchanged range/progress rules before expensive evaluation. Latest 24-unit sample 59.39 FPS, P95 19.031 ms, max 46.426 ms: close to 60 but not steady. Adding a conservative LOS rectangle index (exact hit tests retained) and bounded two-generation LOS/reachability caches; the prior caches grew without limit as units moved. Validation pending.
+
+### 20260913-headroom-02 — verified checkpoint; release comparison blocked
+- Status: implemented/validated performance gains, overall 60 FPS/headroom goal open.
+- Source: current receiving chat; owner explicitly requested 60 FPS and expansion room.
+- Normal native results: 24 units 59.05 FPS / P95 19.143 ms / max 46.517 ms;
+  32 units 48.55 FPS / P95 24.651 ms / max 58.916 ms.
+  Neither sample exceeded 100 ms. Uncapped 24 units 61.31 FPS, 32 units 55.03 FPS.
+  Matching 24-unit Bulwark convoy sample 59.03 FPS.
+- 11,022 focused/replay/actor checks passed; reference reconstruction matches tested oracles.
+  See tools/bridge_perf/HEADROOM_2026-09-13.md and headroom/results.json.
+- Automatic approval review rejected downloading/running the official matching release
+  executable: externally sourced binary/supply-chain risk, no explicit authorization.
+  Nothing was downloaded or executed by that rejected action. Existing Git push approval remains valid.
+- Owner reported a stale “preparing vehicle collision cache” status for 20+ minutes.
+  Corrected the visible plan: collision caching was already complete. Keep task status current
+  and do not label substantive work complete while measured performance goals remain open.
+- Next: explicit release-runtime download/execution authorization, then 24/32 capacity
+  comparison and remaining frame-cost work. No promised release-build FPS result.
+- Scoped checkpoint/push follows under existing authorization; preserve unrelated work.

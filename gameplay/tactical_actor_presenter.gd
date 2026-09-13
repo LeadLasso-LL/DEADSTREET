@@ -35,6 +35,7 @@ var _unit_anims: Dictionary = {}
 var _unit_clips: Dictionary = {}
 var _unit_cooldowns: Dictionary = {}
 var _motion: Dictionary = {}
+var _latest_shots: Dictionary = {}
 var _muzzles: Dictionary = {}
 var _abdomen: Dictionary = {}
 var _blood_masks: Dictionary = {}
@@ -138,6 +139,14 @@ func sync_dynamic(battle_state: BattleState) -> void:
 
 
 func _sync_units(battle_state: BattleState) -> void:
+	# One history scan per presentation refresh, rather than one per actor.
+	_latest_shots.clear()
+	for event in battle_state.combat_feedback_events:
+		if event == null:
+			continue
+		var previous = _latest_shots.get(event.source_participant_id)
+		if previous == null or event.sequence_id > previous.sequence_id:
+			_latest_shots[event.source_participant_id] = event
 	var wanted_units: Dictionary = {}
 	if (not UNIT_VISUALS_ENABLED) or unit_root == null:
 		_prune_unwanted_units(wanted_units)
@@ -219,11 +228,13 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 		if existing != null and is_instance_valid(existing):
 			var current := existing.get_node("body") as AnimatedSprite2D
 			if current.sprite_frames != frames:
+				_prepare_unit_auxiliary_assets(variant)
 				current.sprite_frames = frames
 				current.set_meta("variant", variant)
 				current.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 				_motion.erase(participant.participant_id)
 			return true
+	_prepare_unit_auxiliary_assets(variant)
 	var art_ppu: float = TacticalUnitAnimationCatalog.art_pixels_per_unit()
 	if art_ppu <= 0.0 or pixels_per_unit <= 0.0:
 		return false
@@ -277,11 +288,11 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	state["time"] = now
 	state["distance"] = float(state["distance"]) + participant.battle_position.distance_to(state["position"])
 	state["position"] = participant.battle_position
-	for event in battle_state.combat_feedback_events:
-		if event.source_participant_id == id and event.sequence_id > int(state["sequence"]):
-			state["sequence"] = event.sequence_id
-			state["shot"] = event.elapsed_time_seconds
-			state["weapon_hand"] = event.weapon_hand
+	var latest = _latest_shots.get(id)
+	if latest != null and latest.sequence_id > int(state["sequence"]):
+		state["sequence"] = latest.sequence_id
+		state["shot"] = latest.elapsed_time_seconds
+		state["weapon_hand"] = latest.weapon_hand
 	var shot_age: float = now - float(state["shot"])
 	if battle_state.battle_phase != "active":
 		shot_age = 100.0
@@ -453,3 +464,17 @@ func _ensure_faction_anchors(variant: String, kind: String, target: Dictionary) 
 		if data is Dictionary:
 			target.merge(data.get(kind, {}), true)
 			_faction_anchor_keys[key] = true
+
+# Retain the selected actors' wound assets during setup. First injury should
+# not synchronously parse anchor JSON or load a clothing texture mid-battle.
+func _prepare_unit_auxiliary_assets(variant: String) -> void:
+	if _muzzles.is_empty():
+		_muzzles = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/muzzles.json"))
+		_merge_arsenal_anchors(_muzzles,"muzzles")
+	if _abdomen.is_empty():
+		_abdomen = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/units/pixel_v1/abdomen.json"))
+		_merge_arsenal_anchors(_abdomen,"abdomen")
+	_ensure_faction_anchors(variant,"muzzles",_muzzles)
+	_ensure_faction_anchors(variant,"abdomen",_abdomen)
+	if not _blood_masks.has(variant):
+		_blood_masks[variant] = TacticalUnitAnimationCatalog._load_texture(TacticalUnitAnimationCatalog.blood_mask_path(variant))

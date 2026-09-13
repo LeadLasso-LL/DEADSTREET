@@ -320,28 +320,6 @@ static func rank_closing_cover(
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot == null or not slot.is_valid():
 			continue
-		if not _rank_candidate_allowed(participant, slot, hostile, max_move_distance):
-			continue
-		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
-			battle_state,
-			participant,
-			slot,
-			hostile,
-			false,
-			false,
-			max_move_distance
-		)
-		if evaluation == null or not evaluation.legal:
-			continue
-		if not is_finite(evaluation.move_distance):
-			continue
-		if (
-			evaluation.move_distance > max_move_distance
-			and not is_equal_approx(evaluation.move_distance, max_move_distance)
-		):
-			continue
-		if not evaluation.has_useful_direction:
-			continue
 		var slot_range: float = slot.position.distance_to(hostile.battle_position)
 		if not is_finite(slot_range):
 			continue
@@ -356,6 +334,30 @@ static func rank_closing_cover(
 		if not is_finite(progress):
 			continue
 		if progress < progress_epsilon and not is_equal_approx(progress, progress_epsilon):
+			continue
+		var prepared: BattleCoverProtectionResult = _rank_candidate_protection(participant,slot,hostile,max_move_distance)
+		if prepared == null:
+			continue
+		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
+			battle_state,
+			participant,
+			slot,
+			hostile,
+			false,
+			false,
+			max_move_distance,
+			prepared
+		)
+		if evaluation == null or not evaluation.legal:
+			continue
+		if not is_finite(evaluation.move_distance):
+			continue
+		if (
+			evaluation.move_distance > max_move_distance
+			and not is_equal_approx(evaluation.move_distance, max_move_distance)
+		):
+			continue
+		if not evaluation.has_useful_direction:
 			continue
 		evaluation.closing_progress = progress
 		_insert_closing_ranked(ranked, evaluation)
@@ -437,28 +439,6 @@ static func rank_short_range_out_of_range_staging(
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
 		if slot == null or not slot.is_valid():
 			continue
-		if not _rank_candidate_allowed(participant, slot, hostile, max_move_distance):
-			continue
-		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
-			battle_state,
-			participant,
-			slot,
-			hostile,
-			false,
-			false,
-			max_move_distance
-		)
-		if evaluation == null or not evaluation.legal:
-			continue
-		if not is_finite(evaluation.move_distance):
-			continue
-		if (
-			evaluation.move_distance > max_move_distance
-			and not is_equal_approx(evaluation.move_distance, max_move_distance)
-		):
-			continue
-		if not evaluation.has_useful_direction:
-			continue
 		var slot_range: float = slot.position.distance_to(hostile.battle_position)
 		if not is_finite(slot_range):
 			continue
@@ -473,6 +453,30 @@ static func rank_short_range_out_of_range_staging(
 		if not is_finite(progress):
 			continue
 		if progress < progress_epsilon and not is_equal_approx(progress, progress_epsilon):
+			continue
+		var prepared: BattleCoverProtectionResult = _rank_candidate_protection(participant,slot,hostile,max_move_distance)
+		if prepared == null:
+			continue
+		var evaluation: BattleCombatCoverEvaluation = evaluate_slot(
+			battle_state,
+			participant,
+			slot,
+			hostile,
+			false,
+			false,
+			max_move_distance,
+			prepared
+		)
+		if evaluation == null or not evaluation.legal:
+			continue
+		if not is_finite(evaluation.move_distance):
+			continue
+		if (
+			evaluation.move_distance > max_move_distance
+			and not is_equal_approx(evaluation.move_distance, max_move_distance)
+		):
+			continue
+		if not evaluation.has_useful_direction:
 			continue
 		evaluation.closing_progress = progress
 		_insert_staging_ranked(ranked, evaluation)
@@ -515,7 +519,8 @@ static func evaluate_slot(
 	hostile: BattleParticipant,
 	require_reachable: bool,
 	require_weapon_range: bool,
-	max_move_distance: float = INF
+	max_move_distance: float = INF,
+	prepared_protection: BattleCoverProtectionResult = null
 ) -> BattleCombatCoverEvaluation:
 	var evaluation: BattleCombatCoverEvaluation = BattleCombatCoverEvaluation.new()
 	if slot != null:
@@ -536,10 +541,9 @@ static func evaluate_slot(
 			)
 		)
 	if hostile != null and _is_positioned(hostile):
-		var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(
-			slot,
-			hostile.battle_position
-		)
+		var protection: BattleCoverProtectionResult = prepared_protection
+		if protection == null:
+			protection = BattleCoverProtectionService.query_slot_protection(slot,hostile.battle_position)
 		if protection != null and protection.has_applicable_cover:
 			evaluation.protection_factor = protection.protection_factor
 			evaluation.alignment_dot = protection.alignment_dot
@@ -842,9 +846,22 @@ static func _evaluate_rank_candidates(
 	var evaluations: Array[BattleCombatCoverEvaluation] = []
 	if battle_state == null or participant == null or battle_state.battlefield_geometry == null:
 		return evaluations
+	var range_limit: float = INF
+	if require_weapon_range:
+		var definition: BattleWeaponDefinition = BattleWeaponCatalog.get_definition(_participant_weapon_type_id(participant))
+		if definition == null or not definition.is_valid() or hostile == null or not _is_positioned(hostile):
+			return evaluations
+		range_limit = definition.max_range
 	for slot_id: String in battle_state.battlefield_geometry.get_cover_slot_ids_in_radius(participant.battle_position, max_move_distance):
 		var slot: BattleCoverSlot = battle_state.battlefield_geometry.get_cover_slot(slot_id)
-		if not _rank_candidate_allowed(participant, slot, hostile, max_move_distance):
+		if require_weapon_range:
+			if slot == null:
+				continue
+			var distance: float = slot.position.distance_to(hostile.battle_position)
+			if not is_finite(distance) or (distance > range_limit and not is_equal_approx(distance,range_limit)):
+				continue
+		var prepared: BattleCoverProtectionResult = _rank_candidate_protection(participant,slot,hostile,max_move_distance)
+		if prepared == null:
 			continue
 		evaluations.append(
 			evaluate_slot(
@@ -854,7 +871,8 @@ static func _evaluate_rank_candidates(
 				hostile,
 				require_reachable,
 				require_weapon_range,
-				max_move_distance
+				max_move_distance,
+				prepared
 			)
 		)
 	return evaluations
@@ -866,12 +884,22 @@ static func _rank_candidate_allowed(
 	participant: BattleParticipant, slot: BattleCoverSlot,
 	hostile: BattleParticipant, max_move_distance: float
 ) -> bool:
-	if participant == null or slot == null or not slot.is_valid():return false
-	if not _slot_is_legal_for_participant(participant,slot):return false
+	return _rank_candidate_protection(participant,slot,hostile,max_move_distance) != null
+
+static func _rank_candidate_protection(
+	participant: BattleParticipant, slot: BattleCoverSlot,
+	hostile: BattleParticipant, max_move_distance: float
+) -> BattleCoverProtectionResult:
+	if participant == null or slot == null or not slot.is_valid():return null
+	if not _slot_is_legal_for_participant(participant,slot):return null
 	if is_finite(max_move_distance):
-		if not _is_positioned(participant):return false
+		if not _is_positioned(participant):return null
 		var distance: float = participant.battle_position.distance_to(slot.position)
-		if not is_finite(distance) or (distance > max_move_distance and not is_equal_approx(distance,max_move_distance)):return false
-	if hostile == null or not _is_positioned(hostile):return false
+		if not is_finite(distance) or (distance > max_move_distance and not is_equal_approx(distance,max_move_distance)):return null
+	if hostile == null or not _is_positioned(hostile):return null
+	# A slot facing away cannot meet the positive useful-cover threshold.
+	# This rejects it before allocating a protection result.
+	if slot.facing_direction.dot(hostile.battle_position-slot.position) < 0.0:
+		return null
 	var protection: BattleCoverProtectionResult = BattleCoverProtectionService.query_slot_protection(slot,hostile.battle_position)
-	return protection != null and protection.has_applicable_cover and is_useful_protection_factor(protection.protection_factor)
+	return protection if protection != null and protection.has_applicable_cover and is_useful_protection_factor(protection.protection_factor) else null

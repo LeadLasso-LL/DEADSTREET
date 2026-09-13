@@ -1,5 +1,6 @@
 class_name BattlefieldGeometry
 extends RefCounted
+const RectangleQueryIndex = preload("res://battle/geometry/battle_rectangle_query_index.gd")
 
 const BattleObstacle := preload("res://battle/geometry/battle_obstacle.gd")
 const BattleCoverObject := preload("res://battle/geometry/battle_cover_object.gd")
@@ -556,6 +557,7 @@ var _obstacle_query_count: int = -1
 var _obstacle_query_grid: Dictionary = {}
 
 func begin_obstacle_query_scope() -> void:
+	_segment_index_checked = false
 	_obstacle_query_scope = true
 	_obstacle_query_revision = -1
 
@@ -609,3 +611,28 @@ func get_obstacle_ids_in_rect(query: Rect2) -> Array[String]:
 		ids.append(id)
 	ids.sort()
 	return ids
+
+# Compare the live LOS geometry once per synchronous scope, retaining the tree
+# when it is identical. Direct edits between scopes remain observable.
+var _segment_index_checked: bool = false
+var _segment_index_revision: int = -1
+var _segment_index_count: int = -1
+var _segment_index_rows: Array = []
+var _segment_index_tree: Array = []
+
+func get_obstacle_ids_for_segment(start: Vector2,end: Vector2) -> Array[String]:
+	if not _obstacle_query_scope:
+		return get_sorted_obstacle_ids()
+	if not _segment_index_checked or _segment_index_revision != content_revision or _segment_index_count != obstacles.size():
+		var rows: Array = []
+		for id: String in get_sorted_obstacle_ids():
+			var obstacle: BattleObstacle = obstacles[id]
+			if obstacle != null and obstacle.blocks_line_of_sight and obstacle.bounds_are_usable():
+				rows.append([obstacle.bounds,id])
+		if rows != _segment_index_rows:
+			_segment_index_rows = rows
+			_segment_index_tree = RectangleQueryIndex.build(rows)
+		_segment_index_checked = true
+		_segment_index_revision = content_revision
+		_segment_index_count = obstacles.size()
+	return RectangleQueryIndex.query(_segment_index_tree,start,end)

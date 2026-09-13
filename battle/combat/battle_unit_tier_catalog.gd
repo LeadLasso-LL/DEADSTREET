@@ -21,9 +21,11 @@ static func profile(base: Definition, tier: int) -> Definition:
 	if base == null or tier <= 1:
 		return base
 	var rank: int = clampi(tier, 1, 3)-1
-	var key := "%s:%d" % [base.get_instance_id(), rank]
-	if _profiles.has(key):
-		return _profiles[key]
+	# Key by the definition itself and integer rank; avoid formatting strings
+	# on every combat query while retaining the existing profile ownership.
+	var ranks: Dictionary = _profiles.get(base, {})
+	if ranks.has(rank):
+		return ranks[rank]
 	var result := Definition.new()
 	for field: String in FIELDS:
 		result.set(field, base.get(field))
@@ -36,7 +38,8 @@ static func profile(base: Definition, tier: int) -> Definition:
 	result.recoil_per_shot *= 1.0-0.10*rank
 	result.recoil_recovery *= 1.0+0.10*rank
 	assert(result.has_valid_combat_profile())
-	_profiles[key] = result
+	ranks[rank] = result
+	_profiles[base] = ranks
 	return result
 
 static func set_for_setup(battle, participant, tier: int) -> bool:
