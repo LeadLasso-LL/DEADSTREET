@@ -17,6 +17,8 @@ func build(b,entrance: Vector2):
   else:fallen.append(p)
  winners.sort_custom(func(a,c):return a.participant_id<c.participant_id)
  kind="enter_objective" if winning==b.attacker_side_id else ("check_comrades" if not fallen.is_empty() else "regroup")
+ var bridge=b.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
+ if bridge and winning==b.attacker_side_id:kind="secure_crossing"
  var assigned={};var occupied=[];var guard_index=0
  for i in range(winners.size()):
   var p=winners[i];var target=entrance+Vector2(0,.35);var action="enter";var facing=Vector2.UP
@@ -44,6 +46,9 @@ func build(b,entrance: Vector2):
    # The landing is between the full-height stair walls; face outward down the street.
    target=entrance+Vector2(-1.1+(guard_index%2)*2.2,1.6+floorf(guard_index/2.)*1.9)
    facing=Vector2(-.35+(guard_index%2)*.7,1).normalized();action="guard";guard_index+=1
+  if bridge and kind!="check_comrades":
+   # Hold reachable individual positions; nobody fades through a nonexistent doorway.
+   target=p.battle_position;action="guard";facing=Vector2.RIGHT if winning==b.attacker_side_id else Vector2.LEFT
   var plan=Nav.find_path(b,p.battle_position,target)
   var points: Array[Vector2]=[p.battle_position]
   if plan.success:points.append_array(plan.waypoints)

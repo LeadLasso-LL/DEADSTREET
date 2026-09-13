@@ -17,27 +17,88 @@ const BattleNavigationGraph := preload("res://battle/navigation/battle_navigatio
 const NAVIGATION_CLEARANCE_EPSILON := 0.0001
 
 
-static func is_reachable(
-	battle_state: BattleState,
-	start_position: Vector2,
-	destination: Vector2
-) -> bool:
+# Reachability needs graph connectivity, not a copied graph and shortest route
+# for every candidate cover slot. Actual movement still uses find_path.
+static func is_reachable(battle_state: BattleState,start_position: Vector2,destination: Vector2) -> bool:
 	if battle_state == null:
 		return false
-	var cached: int = battle_state.nav_cache_lookup(start_position, destination)
+	var own_scope: bool = not battle_state._geometry_validation_scope
+	if own_scope:
+		battle_state.begin_geometry_validation_scope()
+	var reachable: bool = _query_reachability(battle_state,start_position,destination)
+	if own_scope:
+		battle_state.end_geometry_validation_scope()
+	return reachable
+
+
+static func _query_reachability(battle_state: BattleState,start_position: Vector2,destination: Vector2) -> bool:
+	if not battle_state.has_valid_geometry() or not _is_legal_candidate(battle_state,start_position) or not _is_legal_candidate(battle_state,destination):
+		return false
+	var cached: int = battle_state.nav_cache_lookup(start_position,destination)
 	if cached >= 0:
 		return cached == 1
-	var result: BattleNavigationResult = find_path(battle_state, start_position, destination)
-	var reachable: bool = result != null and result.success
-	battle_state.nav_cache_store(start_position, destination, reachable)
+	var reachable: bool = BattleSpatialService.is_translation_clear(battle_state,start_position,destination)
+	if not reachable:
+		var graph: BattleNavigationGraph = _ensure_static_graph(battle_state)
+		if graph != null:
+			var labels: Array = _component_labels(graph)
+			var from_components: Dictionary = _point_components(battle_state,graph,labels,start_position)
+			var to_components: Dictionary = _point_components(battle_state,graph,labels,destination)
+			for component in from_components:
+				if to_components.has(component):
+					reachable = true
+					break
+	battle_state.nav_cache_store(start_position,destination,reachable)
 	return reachable
+
+
+static func _component_labels(graph: BattleNavigationGraph) -> Array:
+	if graph.has_meta("components"):
+		return graph.get_meta("components")
+	var labels: Array = [];labels.resize(graph.nodes.size());labels.fill(-1)
+	var component: int = 0
+	for index in range(labels.size()):
+		if labels[index] >= 0:
+			continue
+		var pending: Array = [index];labels[index] = component
+		while not pending.is_empty():
+			var current: int = int(pending.pop_back())
+			for neighbor in graph.adjacency[current]:
+				if labels[int(neighbor)] < 0:
+					labels[int(neighbor)] = component;pending.append(int(neighbor))
+		component += 1
+	graph.set_meta("components",labels);graph.set_meta("component_count",component)
+	return labels
+
+
+static func _point_components(battle_state: BattleState,graph: BattleNavigationGraph,labels: Array,point: Vector2) -> Dictionary:
+	var found: Dictionary = {}
+	var count: int = int(graph.get_meta("component_count",0))
+	for index in range(graph.nodes.size()):
+		if found.has(labels[index]):
+			continue
+		if point.is_equal_approx(graph.nodes[index]) or _segment_open(battle_state,graph.blocking_rects,point,graph.nodes[index]):
+			found[labels[index]] = true
+			if found.size() == count:
+				break
+	return found
 
 
 static func prewarm(battle_state: BattleState) -> void:
 	_ensure_static_graph(battle_state)
 
 
-static func find_path(
+# A synchronous navigation query shares validation across all visibility edges.
+# Standalone calls still revalidate; no cache survives the call or runtime tick.
+static func find_path(battle_state: BattleState,start_position: Vector2,destination: Vector2) -> BattleNavigationResult:
+	var own_scope: bool=battle_state!=null and not battle_state._geometry_validation_scope
+	if own_scope:battle_state.begin_geometry_validation_scope()
+	var result: BattleNavigationResult=_find_path(battle_state,start_position,destination)
+	if own_scope:battle_state.end_geometry_validation_scope()
+	return result
+
+
+static func _find_path(
 	battle_state: BattleState,
 	start_position: Vector2,
 	destination: Vector2
@@ -57,7 +118,7 @@ static func find_path(
 			destination
 		)
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	if not geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleNavigationResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle navigation failed: battlefield geometry is invalid.",

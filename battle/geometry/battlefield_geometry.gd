@@ -59,12 +59,15 @@ func is_valid() -> bool:
 			return false
 		if not surface.is_valid():
 			return false
+	var movement_bounds: Array[Rect2] = []
 	for obstacle_id: String in obstacles:
 		var obstacle: BattleObstacle = obstacles[obstacle_id]
 		if obstacle == null or obstacle.obstacle_id != obstacle_id:
 			return false
 		if not obstacle.is_valid():
 			return false
+		if obstacle.blocks_movement:
+			movement_bounds.append(obstacle.bounds)
 	for cover_object_id: String in cover_objects:
 		var cover_object: BattleCoverObject = cover_objects[cover_object_id]
 		if cover_object == null or cover_object.cover_object_id != cover_object_id:
@@ -85,8 +88,14 @@ func is_valid() -> bool:
 			return false
 		if not cover_objects.has(cover_slot.cover_object_id):
 			return false
-		if not _cover_slot_position_is_legal(cover_slot.position):
+		var point: Vector2 = cover_slot.position
+		if not contains_point(point):
 			return false
+		# Bounds were validated above. Avoid revalidating each obstacle for every
+		# cover slot. Keep the same inclusive edges as rect_contains_point.
+		for blocker: Rect2 in movement_bounds:
+			if point.x >= blocker.position.x and point.x <= blocker.end.x and point.y >= blocker.position.y and point.y <= blocker.end.y:
+				return false
 	return true
 
 

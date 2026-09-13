@@ -34,7 +34,7 @@ static func resolve_translation(
 			requested_displacement
 		)
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	if not geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return BattleSpatialResult.failed(
 			"invalid_battlefield_geometry",
 			"Battle spatial resolution failed: battlefield geometry is invalid.",
@@ -181,7 +181,7 @@ static func is_open_segment(
 	if not BattlefieldGeometry.is_finite_point(destination):
 		return false
 	var geometry: BattlefieldGeometry = battle_state.battlefield_geometry
-	if not geometry.is_valid():
+	if not battle_state.has_valid_geometry():
 		return false
 	if not assume_legal_endpoints:
 		if not geometry.contains_point(start_position) or not geometry.contains_point(destination):

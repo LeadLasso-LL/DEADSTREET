@@ -1,0 +1,26 @@
+{
+  "checks": 243,
+  "errors": [],
+  "scenarios": [
+    {
+      "covers": 216,
+      "units": 10,
+      "vehicles": 4
+    },
+    {
+      "covers": 204,
+      "units": 24,
+      "vehicles": 3
+    },
+    {
+      "covers": 184,
+      "units": 2,
+      "vehicles": 2
+    },
+    {
+      "covers": 208,
+      "units": 24,
+      "vehicles": 15
+    }
+  ]
+}

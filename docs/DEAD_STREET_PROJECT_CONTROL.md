@@ -1,3 +1,17 @@
+## Current milestone — river suspension bridge first pass — 2026-09-13
+
+The owner approved a first playable pass of the larger suspension bridge: elevated side view, left-to-right battle, four lanes (two each direction), traversable central strip, tall structural cover, stopped traffic and the defending faction’s actual vehicles blocking the road. Close/middle/far arrival choices are not universal. The bridge uses its west approach; defenders are already at the blockade. Civilian pre-fight animation is explicitly deferred until after the sandbox.
+
+Custom Battle Setup now selects Harold Avenue or River Suspension Bridge. Both factions retain their own units and individual class weapons, training tiers and HP-only armor. Bridge setup includes both convoys and checks actual seating and drivers. The 180 × 58 crossing contains 36 existing fleet vehicles, matched physical footprints, tower plinths, service cabinets, cover slots and non-traversable river boundaries. Normal battle rules and HUD apply. Bridge aftermath stays on the crossing; campaign travel reopening is not yet connected.
+
+The native map shares the accepted unit scale and ground projection. Upper tower sections fade when they obscure living units. Static river/deck/scenery drawing is reproducibly baked from its GDScript source, while vehicles, actors, structural occlusion and cover remain separate. Navigation and deployment queries share synchronous geometry validation, and geometry checks reuse already validated obstacle bounds. Collision and cover edge semantics are preserved.
+
+The native 8v8 review recorded 17 FPS on the GTX 1650 test PC. Geometry validation and static rendering costs were reduced, but active-combat performance still requires further work before sandbox completion. This limitation is not an art-acceptance gate.
+
+This is a first art/playability pass for owner review, not owner-approved final artwork or a declaration that the sandbox is finished. Reproduction, validation reports, performance measurements and native screenshots are under `tools/bridge_map`. The remaining map is Whittaker Estate; vehicle riding/dismount and later cross-map balance review remain on the sandbox list. Helicopters remain tabled; ships and additional wealth systems are deferred concepts. Git history and the bridge receipt record commit/push status; standing authorization remains valid and unrelated working changes are preserved.
+
+The earlier dated milestones below remain as project history.
+
 ## Current milestone — flexible faction battle setup — 2026-09-13
 
 Active scope is the completed battle sandbox. The owner clarified that setup is **faction vs faction**: one faction per side, adding only that faction’s five regular unit classes. Individual units independently choose any weapon within their class, unit tier 1–3 and optional armor. Guide weapon choices are illustrative. Armor is still an HP modifier and never changes outfits.

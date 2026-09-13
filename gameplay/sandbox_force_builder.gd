@@ -20,6 +20,9 @@ var status: Label
 var convoy_label: Label
 var font: SystemFont
 var error_override=""
+var map_option: OptionButton
+var map_description: Label
+var defender_controls=[]
 
 func _ready():
  size=Vector2(1152,860);mouse_filter=Control.MOUSE_FILTER_STOP
@@ -27,15 +30,21 @@ func _ready():
  font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
  var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#121c20")
  label_at(self,Vector2(28,20),Vector2(920,36),"DEAD STREET / BATTLE SETUP",26)
- label_at(self,Vector2(28,62),Vector2(1096,24),"HAROLD AVENUE   /   1–12 units per side   /   Every faction, class, weapon, tier and armor unlocked",13)
+ map_option=option(self,Vector2(28,62),Vector2(310,33))
+ map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge")
+ map_option.select(1 if config.get("map_id","harold")=="river_bridge" else 0)
+ map_option.item_selected.connect(func(i):choose_map("river_bridge" if i==1 else "harold"))
+ map_description=label_at(self,Vector2(356,66),Vector2(768,28),"1–12 units per side / All factions and equipment unlocked",12)
  button_at(self,Vector2(992,20),Vector2(132,36),"ARSENAL",queue_free)
  for side_index in range(2):build_side("attacker" if side_index==0 else "defender",28+side_index*564)
- convoy_label=label_at(self,Vector2(28,720),Vector2(720,36),"",13)
+ convoy_label=label_at(self,Vector2(28,720),Vector2(720,65),"",13)
  convoy_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
- button_at(self,Vector2(768,718),Vector2(190,36),"CHOOSE VEHICLES",open_fleet)
+ button_at(self,Vector2(768,718),Vector2(190,36),"ATTACKING VEHICLES",open_fleet)
  button_at(self,Vector2(972,718),Vector2(152,36),"AUTO-FIT SEATS",auto_fit)
- status=label_at(self,Vector2(28,785),Vector2(744,55),"",13);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
- start_button=button_at(self,Vector2(808,787),Vector2(316,44),"START BATTLE",launch)
+ defender_controls.append(button_at(self,Vector2(768,758),Vector2(190,33),"DEFENDING VEHICLES",func():open_fleet("defender")))
+ defender_controls.append(button_at(self,Vector2(972,758),Vector2(152,33),"AUTO-FIT DEFENDERS",func():auto_fit("defender")))
+ status=label_at(self,Vector2(28,807),Vector2(744,55),"",13);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+ start_button=button_at(self,Vector2(808,808),Vector2(316,36),"START BATTLE",launch)
  refresh_status()
 
 func label_at(parent,at,sz,value,points=13):return Card.label(parent,at,sz,value,points,Color("#d5ddcf"),font)
@@ -120,8 +129,8 @@ func remove_unit(side: String,index: int):
  config[side].units.remove_at(index);refresh_side(side)
 func set_balanced(side: String):
  config[side].units=Config.balanced();refresh_side(side)
-func auto_fit():
- config.attacker.vehicles=Config.auto_convoy(config.attacker.units.size());changed()
+func auto_fit(side: String="attacker"):
+ config[side].vehicles=Config.auto_convoy(config[side].units.size());changed()
 func changed():
  error_override="";refresh_status();setup_changed.emit(config.duplicate(true))
 func refresh_status():
@@ -130,14 +139,24 @@ func refresh_status():
  start_button.disabled=not check.valid
  start_button.text="START %d vs %d"%[config.attacker.units.size(),config.defender.units.size()]
  var summary=Config.Models.convoy(config.attacker.vehicles)
+ for control in defender_controls:control.visible=config.get("map_id","harold")=="river_bridge"
  convoy_label.text="ATTACKING CONVOY  /  %d vehicles  /  %d seats for %d units\nDefenders begin on foot at Harold Apartments."%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size()]
- status.text=error_override if not error_override.is_empty() else ("Ready. Every vehicle uses one of your attackers as its driver.\nEsc returns here after a battle; your setup is retained." if check.valid else check.error)
+ if config.get("map_id","harold")=="river_bridge":
+  var defense=Config.Models.convoy(config.defender.get("vehicles",[]))
+  convoy_label.text="WEST APPROACH  /  %d vehicles  /  %d seats for %d attackers\nEAST BLOCKADE  /  %d vehicles  /  %d seats for %d defenders"%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size(),config.defender.get("vehicles",[]).size(),defense.get("units",0),config.defender.units.size()]
+ status.text=error_override if not error_override.is_empty() else ("Ready. Each convoy uses its own units as drivers.\nEsc returns here after a battle; your setup is retained." if check.valid else check.error)
  status.add_theme_color_override("font_color",Color("#d68c87") if not error_override.is_empty() or not check.valid else Color("#acb9a8"))
 func show_error(message: String):error_override=message;refresh_status()
 func launch():
  if Config.validate(config).valid:launch_requested.emit(config.duplicate(true))
-func open_fleet():
+func open_fleet(side: String="attacker"):
  if has_node("VehicleFleet"):return
- var fleet=FleetPanel.new();fleet.name="VehicleFleet";fleet.required_units=config.attacker.units.size();fleet.faction_id=config.attacker.faction;fleet.selected=config.attacker.vehicles.duplicate();fleet.allow_encounter_lab=false
- fleet.convoy_selected.connect(func(models):config.attacker.vehicles=models.duplicate();changed())
+ var fleet=FleetPanel.new();fleet.name="VehicleFleet";fleet.required_units=config[side].units.size();fleet.faction_id=config[side].faction;fleet.selected=config[side].get("vehicles",[]).duplicate();fleet.allow_encounter_lab=false
+ fleet.convoy_selected.connect(func(models):config[side].vehicles=models.duplicate();changed())
  add_child(fleet)
+
+func choose_map(id: String):
+ config.map_id=id
+ if id=="river_bridge" and not config.defender.has("vehicles"):
+  config.defender.vehicles=Config.auto_convoy(config.defender.units.size())
+ changed()

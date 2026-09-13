@@ -1,0 +1,41 @@
+{
+  "active": {
+    "draw_calls": 346.0,
+    "fps": 18.0,
+    "objects": 2932.0,
+    "process_ms": 137.062
+  },
+  "hidden_art": {
+    "draw_calls": 11.0,
+    "fps": 60.0,
+    "objects": 91.0,
+    "process_ms": 16.878
+  },
+  "paused": {
+    "draw_calls": 271.0,
+    "fps": 59.0,
+    "objects": 2655.0,
+    "process_ms": 32.405
+  },
+  "runtime_max_ms": 266.346,
+  "runtime_mean_ms": 47.3790666666667,
+  "runtime_p95_ms": 90.74,
+  "stage_counts": {
+    "combat": 60,
+    "movement": 60,
+    "path_follow": 60,
+    "pressure": 60,
+    "tactics": 60,
+    "targets": 60,
+    "weapon": 60
+  },
+  "stage_totals_ms": {
+    "combat": 2157.83,
+    "movement": 318.127,
+    "path_follow": 13.451,
+    "pressure": 107.271,
+    "tactics": 3.913,
+    "targets": 108.504,
+    "weapon": 127.448
+  }
+}

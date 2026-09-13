@@ -35,7 +35,16 @@ const SAMPLE_INSET := 1.0
 const TOWARD_EPSILON_SQ := 0.0001
 
 
-static func plan_side_deployment(
+# Candidate scores repeatedly query identical authored geometry during one plan.
+static func plan_side_deployment(battle_state: BattleState,side_id: String,opposing_side_id: String) -> BattleDeploymentPlan:
+	var own_scope: bool=battle_state!=null and not battle_state._geometry_validation_scope
+	if own_scope:battle_state.begin_geometry_validation_scope()
+	var result: BattleDeploymentPlan=_plan_side_deployment(battle_state,side_id,opposing_side_id)
+	if own_scope:battle_state.end_geometry_validation_scope()
+	return result
+
+
+static func _plan_side_deployment(
 	battle_state: BattleState,
 	side_id: String,
 	opposing_side_id: String

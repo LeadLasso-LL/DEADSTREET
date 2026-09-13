@@ -81,6 +81,7 @@ func results_visible() -> bool:return stage=="ending" and end_clock>=outro.durat
 func skip_to_ready():
  if battle==null and view._battle_state()!=null:reset(view._battle_state())
  stage="ready";clock=intro_duration;routes={};apply_poses()
+func is_bridge() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
 func begin_arrival():
  stage="arrival";clock=0.;routes={};last_path_errors=[];original_zoom=view._dusk_zoom;original_pan=view._dusk_pan
  if view.deployment_controller!=null:view.deployment_controller.apply_pending_cover_to_live()
@@ -93,6 +94,7 @@ func begin_arrival():
   var p=battle.get_participant(id);var n=int(counts[p.side_id]);counts[p.side_id]=n+1
   var attacking=p.side_id==battle.attacker_side_id
   var origin=arrival+Vector2(-.35 if n<2 else 1.05,1.95 if n%2==0 else -1.95) if attacking else Vector2(25.,15.3)
+  if is_bridge() and not attacking:origin=p.battle_position
   var planned=Nav.find_path(battle,origin,p.battle_position)
   if attacking and not p.transport_vehicle_id.is_empty():
    var vehicle=battle.get_vehicle(p.transport_vehicle_id)
@@ -107,7 +109,7 @@ func begin_arrival():
    points=[p.battle_position];last_path_errors.append(id)
   var length=0.
   for i in range(1,points.size()):length+=points[i-1].distance_to(points[i])
-  var start=5.8+n*.35 if attacking else 3.4+n*.45
+  var start=5.8+n*.35 if attacking else (0. if is_bridge() else 3.4+n*.45)
   var duration=maxf(.35,length/5.0)
   routes[id]={"points":points,"length":length,"start":start,"duration":duration,"attacking":attacking,"distance":0.}
   intro_duration=maxf(intro_duration,start+duration+.6)
@@ -120,15 +122,17 @@ func _process(delta):
  var size=view.get_viewport_rect().size;var factor=size.x/1152.;surface.scale=Vector2.ONE*factor;surface.size=size/factor;shade.size=surface.size
  deployment_panel.visible=stage=="deployment" and not all_committed()
  for choice in arrival_buttons:
+  arrival_buttons[choice].visible=not is_bridge()
   arrival_buttons[choice].set_pressed_no_signal(b.arrival_choice==choice)
   arrival_buttons[choice].disabled=b.is_side_deployment_committed(b.attacker_side_id)
  arrival_status.text={"close":"Closer contact. Less room before the first exchange.","medium":"Balanced approach with nearby street cover.","far":"More space to organize. A longer advance to contact."}.get(b.arrival_choice,"")
+ if is_bridge():arrival_status.text="WEST APPROACH / Convoy stops behind the traffic queue."
  if stage=="deployment" and b.battle_phase=="deployment" and all_committed():begin_arrival()
  if b.battle_phase=="active" and stage!="active":
   stage="active";routes={};sound.set_engine(Vector2.ZERO,false)
   if not start_played:sound.play("start",Vector2(32,28),-19.);start_played=true
  if b.battle_phase=="resolved" and stage!="ending":
-  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)
+  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)
  if stage=="arrival":
   clock+=delta
   if clock>=5.4 and not door_played:
@@ -159,9 +163,9 @@ func apply_poses():
   var node=view._dusk_vehicle_nodes[id];var v=battle.get_vehicle(id)
   if v==null:continue
   node.door_open=1.;node.visible=true
-  if stage in ["arrival","ready"] and str(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(v.vehicle_type_id).get("vehicle_class",""))!="two_wheelers":
+  if stage in ["arrival","ready"] and (not is_bridge() or v.side_id==battle.attacker_side_id) and str(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(v.vehicle_type_id).get("vehicle_class",""))!="two_wheelers":
    var progress=smoothstep(2.2,5.3,clock)
-   var offset=Vector2((1.-progress)*38*8,0)
+   var offset=Vector2((1.-progress)*38*8*(-1. if is_bridge() else 1.),0)
    var visual_bounds: Rect2=node.prop[1];visual_bounds.position.x+=offset.x/8.;node.prop[1]=visual_bounds
    node.position+=offset;node.door_open=smoothstep(5.35,5.9,clock)
    if stage=="arrival" and v.vehicle_type_id!="yardbird":sound.set_engine(v.battle_position+Vector2(offset.x/8,0),clock>2.1 and clock<5.85,lerpf(1.35,.75,progress))
@@ -250,10 +254,10 @@ class Context extends Control:
   if p.attacker.emblem!=null:draw_emblem(p.attacker.emblem,left)
   if p.defender.emblem!=null:draw_emblem(p.defender.emblem,right)
   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
-  draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),"MERCER HEIGHTS  /  HAROLD AVE.",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
+  draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE."),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
   draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),str(p.attacker.get("short_name",p.attacker.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.attacker.get("short_name",p.attacker.name)),t,155.),ink)
   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),str(p.defender.get("short_name",p.defender.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.defender.get("short_name",p.defender.name)),t,126.),ink)
-  draw_string(p.font,Vector2(60,65).lerp(Vector2(155,147),t),"HAROLD APARTMENTS",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,17,t)),muted)
+  draw_string(p.font,Vector2(60,65).lerp(Vector2(155,147),t),("ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS"),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,17,t)),muted)
   draw_string(p.font,Vector2(343,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   draw_string(p.font,Vector2(219,45).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
 

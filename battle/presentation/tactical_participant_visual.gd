@@ -75,7 +75,7 @@ static func view_origin(
 	if participant == null or not participant.has_battle_position:
 		return Vector2.ZERO
 	var view_pos: Vector2 = participant.battle_position * pixels_per_unit
-	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
+	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1"]:
 		view_pos.y *= 0.75
 	if not participant.has_occupied_cover_slot():
 		return view_pos

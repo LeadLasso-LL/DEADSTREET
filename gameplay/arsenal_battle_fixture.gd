@@ -85,6 +85,7 @@ static func setup(runtime: Node, loadouts: Dictionary, sniper_test: bool, seed_v
    var other=b.defender_side_id if side==b.attacker_side_id else b.attacker_side_id
    var placed=AI.apply_and_commit_side(b,side,other)
    if placed==null or not placed.success:return {"error":"review defender placement"}
+ runtime._sync_armor_store()
  runtime.set_process(false)
  var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=1.30;view._dusk_pan=Vector2(-5,-30);view._frame_camera()
  return {"battle":b}
@@ -148,12 +149,18 @@ static func setup_flexible(runtime: Node,loadouts: Dictionary,seed_value: int) -
   if not Tiers.set_for_setup(b,p,tier):return {"error":"invalid unit tier"}
   var id: String=str(chosen.weapon)
   if not Weapons.equip_for_setup(b,p,id):return {"error":"review equip "+id}
+ var bridge=loadouts.get("map_id","harold")=="river_bridge"
+ if bridge:
+  var bridge_result=preload("res://gameplay/bridge_battle_setup.gd").apply(b,loadouts)
+  if bridge_result.has("error"):return bridge_result
  if not preload("res://gameplay/blockade_battle_setup.gd").apply(b,loadouts.get("blockade_encounter",{})):return {"error":"invalid checkpoint battle geometry"}
  var controller=runtime.tactical_deployment_controller
- controller.choose_arrival("far")
+ if not bridge:controller.choose_arrival("far")
  for v in b.vehicles.values():
   if not v.has_battle_position:return {"error":"This convoy cannot fit the street arrival area. Choose fewer or smaller vehicles."}
- if not controller.place_unplaced_in_cover():
+ var covered=controller.place_unplaced_in_cover()
+ if not covered and bridge:covered=preload("res://gameplay/bridge_battle_setup.gd").deploy_remaining_attackers(b)
+ if not covered:
   var fallback=AI.apply_and_commit_side(b,b.attacker_side_id,b.defender_side_id)
   if fallback==null or not fallback.success:return {"error":"review deployment: "+("no result" if fallback==null else fallback.error_code)}
  var committed=controller.try_commit_attacker() if not b.is_side_deployment_committed(b.attacker_side_id) else preload("res://battle/core/battle_deployment_commit_result.gd").succeeded(b.attacker_side_id)
@@ -163,6 +170,7 @@ static func setup_flexible(runtime: Node,loadouts: Dictionary,seed_value: int) -
    var other=b.defender_side_id if side==b.attacker_side_id else b.attacker_side_id
    var placed=AI.apply_and_commit_side(b,side,other)
    if placed==null or not placed.success:return {"error":"review defender placement"}
+ runtime._sync_armor_store()
  runtime.set_process(false)
- var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=1.30;view._dusk_pan=Vector2(-5,-30);view._frame_camera()
+ var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=2.4 if bridge else 1.30;view._dusk_pan=Vector2(-360,-22) if bridge else Vector2(-5,-30);view._frame_camera()
  return {"battle":b,"counts":check.counts}

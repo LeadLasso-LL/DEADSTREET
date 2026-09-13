@@ -4228,9 +4228,12 @@ func _unit_hud_max_row_width() -> float:
 
 
 var _dusk_nodes: Array[Node] = []
+var _dusk_layout_id=""
+func _is_river_bridge() -> bool:
+	return _geometry()!=null and _geometry().authored_layout_id=="river_suspension_bridge_v1"
 func _is_dusk_street() -> bool:
 	var g = _geometry()
-	return g != null and g.authored_layout_id == "dead_street_dusk_v1"
+	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1"]
 func _street_projection() -> Vector2:
 	return Vector2(1,0.75) if _is_dusk_street() else Vector2.ONE
 func _sync_dusk_art() -> void:
@@ -4239,6 +4242,10 @@ func _sync_dusk_art() -> void:
 			if is_instance_valid(n): n.queue_free()
 		_dusk_nodes.clear()
 		return
+	if _dusk_layout_id!=_geometry().authored_layout_id:
+		for n in _dusk_nodes:
+			if is_instance_valid(n):n.queue_free()
+		_dusk_nodes.clear();_dusk_layout_id=_geometry().authored_layout_id
 	# Geometry changes (arrival distance / doors) rebuild the surface presenter.
 	# Recreate authored scenery if its ground node was removed by that rebuild.
 	if not _dusk_nodes.is_empty() and (not is_instance_valid(_dusk_nodes[0]) or _dusk_nodes[0].is_queued_for_deletion()):
@@ -4246,6 +4253,8 @@ func _sync_dusk_art() -> void:
 			if is_instance_valid(n) and not n.is_queued_for_deletion():n.queue_free()
 		_dusk_nodes.clear()
 	if not _dusk_nodes.is_empty(): return
+	if _is_river_bridge():
+		_spawn_bridge_art();return
 	var art = preload("res://gameplay/harold_street_art.gd")
 	var ground = art.new()
 	static_surface_root.add_child(ground)
@@ -4267,6 +4276,18 @@ func _sync_dusk_art() -> void:
 		lamp.position = Vector2(spot.x*8,spot.y*6)
 		dynamic_unit_root.add_child(lamp)
 		_dusk_nodes.append(lamp)
+
+func _spawn_bridge_art() -> void:
+	var art=preload("res://gameplay/river_bridge_art.gd")
+	var ground=art.new();static_surface_root.add_child(ground);_dusk_nodes.append(ground)
+	dynamic_unit_root.y_sort_enabled=true
+	for row in preload("res://battle/geometry/river_bridge_catalog.gd").props():
+		var item=art.new();item.prop=row;item.view=self
+		var bounds: Rect2=row[1]
+		item.position=bounds.get_center()*Vector2(8,6) if row[2]=="traffic" else Vector2(bounds.get_center().x*8,bounds.end.y*6)
+		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
+	var cables=art.new();cables.prop=["cables",Rect2(),"cables"];cables.z_index=2
+	static_surface_root.add_child(cables);_dusk_nodes.append(cables)
 
 # Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
 
@@ -4309,7 +4330,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			var factor: float = 1.15 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.15
-			_dusk_zoom = clampf(_dusk_zoom*factor,0.8,2.5)
+			_dusk_zoom = clampf(_dusk_zoom*factor,0.65 if _is_river_bridge() else 0.8,4.0 if _is_river_bridge() else 2.5)
 			_frame_camera()
 			get_viewport().set_input_as_handled()
 	if event is InputEventMouseMotion and event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:

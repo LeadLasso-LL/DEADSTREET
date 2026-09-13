@@ -11,7 +11,7 @@ static func unit(kind: String="rifle") -> Dictionary:
  return {"class":kind,"weapon":Weapons.default_model(kind),"tier":1,"armor":"","specialist":""}
 
 static func from_legacy(source: Dictionary) -> Dictionary:
- var result={}
+ var result={"map_id":"harold"}
  for side in ["attacker","defender"]:
   var old: Dictionary=source.get(side,{})
   var team={"faction":old.get("faction","orlov" if side=="attacker" else "mercer"),"units":[]}
@@ -36,6 +36,7 @@ static func auto_convoy(count: int) -> Array:
 
 static func validate(config: Dictionary) -> Dictionary:
  var counts={}
+ if config.get("map_id","harold") not in ["harold","river_bridge"]:return {"valid":false,"error":"Choose an available battlefield."}
  for side in ["attacker","defender"]:
   if not config.get(side) is Dictionary:return {"valid":false,"error":"Choose both forces."}
   var team: Dictionary=config[side]
@@ -57,4 +58,11 @@ static func validate(config: Dictionary) -> Dictionary:
   if not model is String or not Models.has_model(model):return {"valid":false,"error":"Choose a valid convoy vehicle."}
  var convoy=Models.convoy(config.attacker.vehicles,counts.attacker)
  if not convoy.valid:return {"valid":false,"error":convoy.get("error","Choose transport for every attacker.")}
+ if config.get("map_id","harold")=="river_bridge":
+  var defender=config.defender.get("vehicles",[])
+  if not defender is Array:return {"valid":false,"error":"Choose defending vehicles."}
+  for id in defender:
+   if not id is String or not Models.has_model(id):return {"valid":false,"error":"Choose valid defending vehicles."}
+  var defense=Models.convoy(defender,counts.defender)
+  if not defense.valid:return {"valid":false,"error":"Defenders: "+defense.error}
  return {"valid":true,"counts":counts,"convoy":convoy,"error":""}
