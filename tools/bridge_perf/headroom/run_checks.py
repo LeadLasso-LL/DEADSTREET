@@ -30,7 +30,7 @@ for script in scripts:
     result = subprocess.run(command, cwd=ROOT, capture_output=True, timeout=240)
     output = (result.stdout + result.stderr).decode("utf-8", errors="replace")
     log = OUTPUT / (Path(script).stem + "_rerun.log")
-    log.write_text(output, encoding="utf-8")
+    log.write_bytes(("\n".join(line.rstrip() for line in output.splitlines()).rstrip("\n") + "\n").encode("utf-8"))
     errors = [line for line in output.splitlines()
               if "SCRIPT ERROR" in line or line.startswith("ERROR:")
               or "REPLAY_FAIL" in line]

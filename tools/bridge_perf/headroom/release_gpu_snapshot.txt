@@ -1,0 +1,2 @@
+name, temperature.gpu, utilization.gpu [%], clocks.current.graphics [MHz], clocks.current.memory [MHz], power.draw [W]
+NVIDIA GeForce GTX 1650 with Max-Q Design, 51, 42 %, 1740 MHz, 5000 MHz, 18.15 W

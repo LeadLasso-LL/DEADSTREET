@@ -43,6 +43,8 @@ func run():
   if p.is_alive:living+=1
  frames.sort()
  var report={"units":b.participants.size(),"rendered":view.actor_presenter._unit_nodes.size(),"wall_seconds":wall,"sim_seconds":b.elapsed_time_seconds,"fps":frames.size()/wall,"p95_frame_ms":frames[int(frames.size()*.95)-1],"p99_frame_ms":frames[int(frames.size()*.99)-1],"over_33ms":frames.filter(func(v):return v>33.333).size(),"over_100ms":frames.filter(func(v):return v>100.).size(),"max_frame_ms":frames.back(),"windows":windows,"living":living,"damage":health-remaining}
+ report["display"]={"vsync_mode":DisplayServer.window_get_vsync_mode(),"refresh_hz":DisplayServer.screen_get_refresh_rate(),"max_fps":Engine.max_fps}
+ report["build"]={"debug":OS.has_feature("debug"),"editor":OS.has_feature("editor"),"version":Engine.get_version_info()}
  report["uncapped"]=uncapped;report["bulwarks"]=bulwarks or n>12;report["setup_ms"]=setup_ms
  report["los_cache_entries"]=b._los_cache.size()+b._los_cache_previous.size();report["nav_cache_entries"]=b._nav_cache.size()+b._nav_cache_previous.size()
  var pause_start=Time.get_ticks_usec();var pause_frames=0

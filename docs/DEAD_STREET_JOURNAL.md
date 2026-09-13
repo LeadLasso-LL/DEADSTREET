@@ -277,3 +277,31 @@ Archive index: none yet.
 - Next: explicit release-runtime download/execution authorization, then 24/32 capacity
   comparison and remaining frame-cost work. No promised release-build FPS result.
 - Scoped checkpoint/push follows under existing authorization; preserve unrelated work.
+
+### 20260913-release-01 — executable approval and release comparison
+- Source/status: Brandon replied Approved to the explicit official release-runtime download/execution request. APPROVED; comparison IN PROGRESS.
+- Downloaded the matching official 4.7.2 template; ZIP integrity checked and SHA256 recorded in tools/bridge_perf/headroom/release_provenance.json. Runtime probe confirms official hash ed1daf0bf001b61586d9930840f2f1394092c079, debug=false and editor=false.
+- HTTP ranges failed with 501; full archive download succeeded. Official templates reject development path/script overrides, so the benchmark now launches through an adjacent PCK with existing code/imported assets. Production project settings are unchanged.
+- First packaged native sample failed validation on a missing root icon.svg. Corrected the lightweight launcher package; the failed run is not accepted as clean evidence.
+- Comparing both runtimes against the same package, including uncapped samples and display metadata. Results and final status follow; the 60 FPS/headroom objective remains open until measured.
+
+- **Final status:** release comparison and bounded stability repeat COMPLETE;
+  the overarching 60 FPS/headroom objective remains OPEN.
+- Clean release 24 normal 59.87 FPS; 32 normal
+  58.66 FPS, repeat 59.78 FPS. Same-package
+  uncapped 24 developer 73.33 versus release 85.59 FPS; variable
+  battle evolution prevents interpreting that as a precise causal speedup.
+- Later 32-unit uncapped samples deteriorated in active, paused and setup work.
+  Repeat release recovered to 63.64 FPS but P95 remained
+  19.185 ms. AC power/healthy GPU clocks and background sync
+  activity were sampled; the original slowdown's cause was not proven.
+- 11,022 explicit checks passed in release; no disabled-assert dependency.
+  Final selected native/check logs pass the script/engine-error gate. Preserved
+  both successful and unstable measurements in headroom/release_results.json.
+- Added two-stage package/comparison tools, bounded repeat telemetry and build/
+  display metadata. Fixed normalized log writing. No production game settings,
+  gameplay, art, cadence or force limits changed; inherited runtime/art work stays
+  outside this checkpoint. Source metadata documents the mixed working tree.
+- This entry/evidence belong to the scoped release-comparison checkpoint; Git
+  records its exact commit and remote state under standing push authorization.
+- **Next:** Profile the 32-unit release battle during its slow windows, isolate the remaining simulation cost from system-load variation, and remove that cost while preserving combat behavior. Judge the next change by frame-time tails and full-roster windows, not the overall average alone.

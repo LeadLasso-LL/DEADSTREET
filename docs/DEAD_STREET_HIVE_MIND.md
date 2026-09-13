@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-13, after the receiving-chat headroom pass.
+Coordination last reconciled: 2026-09-13, after the approved release-runtime comparison.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -82,25 +82,22 @@ steady 60 FPS and expansion headroom remain unfinished.
 | --- | --- | --- |
 | Collision, targets, navigation, cover, visibility and actor preparation | This receiving chat | Implemented and checked; see current report and Git checkpoint. |
 | Shared records and reproducible benchmarks | This receiving chat | Updated with progression, failures, validation and remaining limits. |
-| Release-runtime capacity comparison | This receiving chat | Blocked by automatic approval review: executable download/run needs explicit authorization. |
+| Release-runtime capacity comparison | This receiving chat | Completed with matched package controls and a bounded repeat; frame consistency/headroom remains open. |
 
-**Latest evidence:** normal native 24-unit 59.05 FPS, P95
-19.143 ms, worst 46.517 ms;
-32-unit 48.55 FPS, P95 24.651 ms,
-worst 58.916 ms. Both samples had zero frames over 100 ms.
-Uncapped 24-unit throughput was 61.31 FPS, still with budget misses.
-11,022 focused/replay/actor checks passed; final logs have zero script errors.
-These are development-executable measurements. Release performance is unknown.
+**Latest evidence:** release 24-unit normal 59.87 FPS;
+32-unit normal 58.66 FPS and repeat 59.78 FPS
+on a 60 Hz display. Uncapped release 24 averaged 85.59 FPS;
+32-unit repeat 63.64 FPS, P95 19.185 ms.
+An earlier later-batch 32-unit slowdown was not reproduced; retain it as
+unstable evidence, not the capacity estimate. All 11,022 checks passed in release.
+The official release download/run approval is resolved. The overall goal remains open.
 
 Read [the headroom report](../tools/bridge_perf/HEADROOM_2026-09-13.md)
 and [reproduction instructions](../tools/bridge_perf/headroom/README.md).
 The [previous cleanup report](../tools/bridge_perf/RUNTIME_CLEANUP_2026-09-13.md)
 and [archived handoff](handoffs/DEAD_STREET_BUILD_HANDOFF_2026-09-13.md) are historical.
 
-**Immediate next task:** obtain explicit authorization to download/run the
-matching official Godot release runtime, compare 24 and 32 units, then optimize
-the remaining measured costs until steady 60 FPS and headroom are demonstrated.
-Do not claim a release-runtime change is a proven fix before measuring it.
+**Immediate next task:** Profile the 32-unit release battle during its slow windows, isolate the remaining simulation cost from system-load variation, and remove that cost while preserving combat behavior. Judge the next change by frame-time tails and full-roster windows, not the overall average alone.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

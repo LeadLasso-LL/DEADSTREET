@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_02__door_0_north slot sandbox_transport_02__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__left
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__rear
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+LIVE_WINDOW { "wall_seconds": 5.015653, "fps": 59.6133743701967, "sim_seconds": 5.09708899999999 }
+LIVE_WINDOW { "wall_seconds": 10.032152, "fps": 60.0020053826384, "sim_seconds": 10.1138370000001 }
+LIVE_WINDOW { "wall_seconds": 15.032271, "fps": 59.9985720339856, "sim_seconds": 15.1141053333337 }
+LIVE_WINDOW { "wall_seconds": 20.038738, "fps": 59.5230129350698, "sim_seconds": 20.1716853333335 }
+LIVE_WINDOW { "wall_seconds": 25.049044, "fps": 60.0761709963423, "sim_seconds": 25.1881513333337 }
+LIVE_DONE {"build":{"debug":false,"editor":false,"version":{"build":"official","hash":"ed1daf0bf001b61586d9930840f2f1394092c079","hex":263938,"major":4,"minor":7,"patch":2,"status":"stable","string":"4.7.2-stable (official)","timestamp":0}},"bulwarks":false,"damage":16.234,"display":{"max_fps":0,"refresh_hz":59.9992141723633,"vsync_mode":1},"fps":59.8681641059339,"late_paused_fps":60.0046967131381,"living":18,"los_cache_entries":827,"max_frame_ms":40.125,"nav_cache_entries":146,"over_100ms":0,"over_33ms":1,"p95_frame_ms":16.91,"p99_frame_ms":19.678,"rendered":24,"setup_ms":20691.727,"sim_seconds":30.154619333334,"uncapped":false,"units":24,"wall_seconds":30.015953,"windows":[{"fps":59.6133743701967,"sim_seconds":5.09708899999999,"wall_seconds":5.015653},{"fps":60.0020053826384,"sim_seconds":10.1138370000001,"wall_seconds":10.032152},{"fps":59.9985720339856,"sim_seconds":15.1141053333337,"wall_seconds":15.032271},{"fps":59.5230129350698,"sim_seconds":20.1716853333335,"wall_seconds":20.038738},{"fps":60.0761709963423,"sim_seconds":25.1881513333337,"wall_seconds":25.049044}]}

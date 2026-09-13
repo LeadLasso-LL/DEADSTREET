@@ -1,0 +1,19 @@
+{
+  "actors": 24,
+  "checks": 1202,
+  "clips_observed": [
+    "walk",
+    "aim",
+    "cover_tucked_idle",
+    "cover_popout",
+    "cover_exposed_idle",
+    "cover_tuck",
+    "cover_fire",
+    "hit",
+    "wounded_walk",
+    "death",
+    "death_back"
+  ],
+  "errors": [],
+  "prepared_masks": 24
+}

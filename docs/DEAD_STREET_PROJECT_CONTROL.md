@@ -1,26 +1,25 @@
-## Current milestone — runtime headroom pass — 2026-09-13
+## Current milestone — release-runtime comparison — 2026-09-13
 
-Verified improvement; 60 FPS plus expansion headroom is still unfinished.
-Normal native 24-unit performance is 59.05 FPS, P95 19.143 ms,
-max 46.517 ms. The 32-unit stress fixture records 48.55 FPS,
-P95 24.651 ms, max 58.916 ms. Both latest samples
-have zero frames over 100 ms. All actors remain rendered. 11,022 focused,
-runtime-replay and actor checks passed without final script errors.
+Approved official Godot 4.7.2 release runtime downloaded, verified and tested.
+This pass adds benchmark packaging/evidence; it changes no production gameplay.
 
-Changes remove redundant targeting/profile/collision work, prune navigation and
-cover/visibility searches, bound moving-endpoint caches, and prepare wound assets
-before combat. No simulation cadence, art, balance or production force limit was
-reduced. Setup preparation has a measurable cost; see the report.
+Release normal: 24 units 59.87 FPS; 32 units
+58.66 FPS, repeat 59.78 FPS on the 60 Hz display.
+Uncapped release 24 averaged 85.59 FPS; 32 repeat 63.64 FPS,
+P95 19.185 ms. The much slower earlier 32-unit batch remains
+documented as unstable evidence. Its cause is not established; background sync
+activity was observed in repeat telemetry.
 
-The matching release-runtime benchmark is blocked by automatic approval review
-because downloading/running the executable was not explicitly authorized.
-Release performance is unknown. Commit/push authorization remains valid.
-Next: authorized release-runtime comparison, then remaining measured costs until
-steady 60 FPS and larger-battle reserve are established.
+All 11,022 focused/replay/actor checks passed in release with zero final
+script/engine errors. Full core-suite acceptance was not re-established.
+**Steady 60 FPS and expansion headroom remain open.** Production remains
+12 units per side; this does not approve final convoy/personnel caps.
 
-See [the headroom report](../tools/bridge_perf/HEADROOM_2026-09-13.md)
-and [reproduction instructions](../tools/bridge_perf/headroom/README.md).
-The following milestones remain history.
+Next: Profile the 32-unit release battle during its slow windows, isolate the remaining simulation cost from system-load variation, and remove that cost while preserving combat behavior. Judge the next change by frame-time tails and full-roster windows, not the overall average alone.
+
+See [the headroom report](../tools/bridge_perf/HEADROOM_2026-09-13.md) and
+[reproduction instructions](../tools/bridge_perf/headroom/README.md).
+Earlier milestones below remain history.
 
 ## Current milestone — bridge runtime cleanup — 2026-09-13
 

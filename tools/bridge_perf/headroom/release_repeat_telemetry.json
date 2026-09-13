@@ -1,0 +1,20 @@
+{
+  "before": {
+    "ac_line": 1,
+    "battery_percent": 100,
+    "gpu": "name, pstate, temperature.gpu, utilization.gpu [%], clocks.current.graphics [MHz], clocks.current.memory [MHz], power.draw [W]\nNVIDIA GeForce GTX 1650 with Max-Q Design, P8, 40, 0 %, 300 MHz, 405 MHz, 6.87 W\n",
+    "processes_cpu": "[{\"InstanceName\":\"system\",\"CookedValue\":9.332457990251438},{\"InstanceName\":\"securityservice\",\"CookedValue\":4.666228995125719},{\"InstanceName\":\"totalav\",\"CookedValue\":3.110819330083813},{\"InstanceName\":\"wmiprvse\",\"CookedValue\":3.110819330083813},{\"InstanceName\":\"steam\",\"CookedValue\":3.110819330083813},{\"InstanceName\":\"onedrive\",\"CookedValue\":1.5554096650419065},{\"InstanceName\":\"msedge\",\"CookedValue\":1.5554096650419065},{\"InstanceName\":\"svchost\",\"CookedValue\":1.5554096650419065}]\n"
+  },
+  "release_32_repeat_uncapped": {
+    "ac_line": 1,
+    "battery_percent": 100,
+    "gpu": "name, pstate, temperature.gpu, utilization.gpu [%], clocks.current.graphics [MHz], clocks.current.memory [MHz], power.draw [W]\nNVIDIA GeForce GTX 1650 with Max-Q Design, P0, 52, 58 %, 1740 MHz, 5000 MHz, 16.77 W\n",
+    "processes_cpu": "[{\"InstanceName\":\"onedrive.sync.service\",\"CookedValue\":63.453146741214759},{\"InstanceName\":\"system\",\"CookedValue\":23.214565880932231},{\"InstanceName\":\"msedge\",\"CookedValue\":18.571652704745787},{\"InstanceName\":\"onedrive\",\"CookedValue\":4.6429131761864468},{\"InstanceName\":\"wmiprvse\",\"CookedValue\":3.0952754507909641},{\"InstanceName\":\"securityservice\",\"CookedValue\":3.0952754507909641},{\"InstanceName\":\"wudfhost\",\"CookedValue\":1.5476377253954821},{\"InstanceName\":\"svchost\",\"CookedValue\":1.5476377253954821}]\n"
+  },
+  "release_32_repeat_normal": {
+    "ac_line": 1,
+    "battery_percent": 100,
+    "gpu": "name, pstate, temperature.gpu, utilization.gpu [%], clocks.current.graphics [MHz], clocks.current.memory [MHz], power.draw [W]\nNVIDIA GeForce GTX 1650 with Max-Q Design, P0, 53, 19 %, 1005 MHz, 5000 MHz, 12.98 W\n",
+    "processes_cpu": "[{\"InstanceName\":\"onedrive.sync.service\",\"CookedValue\":68.168705001837822},{\"InstanceName\":\"system\",\"CookedValue\":17.042176250459455},{\"InstanceName\":\"securityservice\",\"CookedValue\":10.845021250292382},{\"InstanceName\":\"powershell\",\"CookedValue\":3.0985775000835378},{\"InstanceName\":\"svchost\",\"CookedValue\":1.5492887500417689},{\"InstanceName\":\"totalav\",\"CookedValue\":1.5492887500417689},{\"InstanceName\":\"nvdisplay.container\",\"CookedValue\":1.5492887500417689},{\"InstanceName\":\"dptf_helper\",\"CookedValue\":1.5492887500417689}]\n"
+  }
+}

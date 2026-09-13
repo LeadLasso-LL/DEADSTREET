@@ -1,0 +1,67 @@
+{
+  "build": {
+    "debug": false,
+    "editor": false,
+    "version": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    }
+  },
+  "bulwarks": true,
+  "damage": 21.348,
+  "display": {
+    "max_fps": 0,
+    "refresh_hz": 59.9992141723633,
+    "vsync_mode": 1
+  },
+  "fps": 59.7781152320136,
+  "late_paused_fps": 60.0101279551499,
+  "living": 22,
+  "los_cache_entries": 1665,
+  "max_frame_ms": 40.182,
+  "nav_cache_entries": 520,
+  "over_100ms": 0,
+  "over_33ms": 3,
+  "p95_frame_ms": 17.031,
+  "p99_frame_ms": 20.918,
+  "rendered": 32,
+  "setup_ms": 22175.938,
+  "sim_seconds": 30.1245473333329,
+  "uncapped": false,
+  "units": 32,
+  "wall_seconds": 30.010983,
+  "windows": [
+    {
+      "fps": 58.680139946146,
+      "sim_seconds": 5.09168733333332,
+      "wall_seconds": 5.010213
+    },
+    {
+      "fps": 59.999661131482,
+      "sim_seconds": 10.1084136666667,
+      "wall_seconds": 10.026908
+    },
+    {
+      "fps": 59.6474099957489,
+      "sim_seconds": 15.1245473333337,
+      "wall_seconds": 15.039699
+    },
+    {
+      "fps": 60.3485347695485,
+      "sim_seconds": 20.1578806666668,
+      "wall_seconds": 20.043963
+    },
+    {
+      "fps": 59.9997687716552,
+      "sim_seconds": 25.1745473333332,
+      "wall_seconds": 25.060649
+    }
+  ]
+}

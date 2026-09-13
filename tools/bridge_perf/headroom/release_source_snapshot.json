@@ -1,0 +1,5 @@
+{
+  "head": "b97e3d907674dbb94afcd3f4db9e46ad7e45d638",
+  "working_tree_runtime_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "note": "Pre-existing runtime edits remain in the benchmark snapshot and outside this documentation/tool checkpoint; no production gameplay edit in this release comparison."
+}
