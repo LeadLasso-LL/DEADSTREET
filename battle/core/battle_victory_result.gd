@@ -15,6 +15,8 @@ var result_kind: String = RESULT_NONE
 var winning_side_id: String = ""
 var losing_side_ids: Array[String] = []
 var living_side_ids: Array[String] = []
+# Explicit terminal retreat outcome; local Fall Back movement never sets this.
+var retreated_side_ids: Array[String] = []
 var error_code: String = ""
 var error_message: String = ""
 
@@ -38,7 +40,8 @@ static func resolved_victory(
 	p_winning_side_id: String,
 	p_losing_side_ids: Array[String],
 	p_living_side_ids: Array[String],
-	p_resolved_this_call: bool
+	p_resolved_this_call: bool,
+	p_retreated_side_ids: Array[String] = []
 ) -> BattleVictoryResult:
 	var result := new()
 	result.success = true
@@ -49,6 +52,9 @@ static func resolved_victory(
 	result.winning_side_id = p_winning_side_id
 	result.losing_side_ids = _copy_ids(p_losing_side_ids)
 	result.living_side_ids = _copy_ids(p_living_side_ids)
+	for side_id in p_retreated_side_ids:
+		if result.losing_side_ids.has(side_id) and not result.retreated_side_ids.has(side_id):
+			result.retreated_side_ids.append(side_id)
 	result.error_code = ""
 	result.error_message = ""
 	return result
@@ -100,7 +106,8 @@ static func from_stored(stored: BattleVictoryResult) -> BattleVictoryResult:
 			stored.winning_side_id,
 			stored.losing_side_ids,
 			stored.living_side_ids,
-			false
+			false,
+			stored.retreated_side_ids
 		)
 	return ineligible(
 		"invalid_tactical_result",

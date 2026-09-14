@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-14, after original-audio Raiders-victory recording.
+Coordination last reconciled: 2026-09-14, after winning-faction outro and result/HUD recording.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -74,14 +74,14 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Deliver the revised Raiders-victory mobile recording for Brandon's review: sparse low sustained original guitar, explicit 14 dB radio fade into combat, and aligned attacker/defender context labels. Prior busy music and missing battle fade are superseded. Performance and Whittaker remain parked.
+**Active objective:** Deliver the final Raiders-victory recording with winner music takeover, five extra card seconds, survivor/retreat summaries, expanded-to-compact NBPD name, and actual weapon models on HUD cards. Global winner-audio direction is approved and recorded in the convoy README. Owner review is next; performance and Whittaker remain parked.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
 | HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
-| Scripted battle recording | This receiving chat | Revised sparse guitar, verified combat fade and aligned context roles; owner listening review next. |
+| Scripted battle recording | This receiving chat | Final winner-audio / result-count / equipped-model cut validated; owner review next. |
 | Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
 
 **Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -95,7 +95,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the revised recording's guitar, combat volume and context layout. [Convoy details](../tools/convoy_arrival/README.md).
+**Immediate next task:** Brandon reviews the final recording's outro music, result counts and HUD labels. [Battle audio and presentation rules](../tools/convoy_arrival/README.md). Future tactical flee execution must supply explicit retreat outcome metadata; do not infer it from survivors.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

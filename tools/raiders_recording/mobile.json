@@ -1,148 +1,148 @@
 {
   "filename": "Dead_Street_Raiders_Victory_Mobile.mp4",
-  "bytes": 13815336,
-  "sha256": "1ad5ab6d64e40239bff9500eba1030e3b3fef20416d5cf45ceb57eebd656fd2a",
-  "seconds": 93.36666666666667,
+  "bytes": 13830203,
+  "sha256": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93",
+  "seconds": 98.33666666666667,
   "width": 1280,
   "height": 720,
   "fps": 30,
-  "master_sha256": "4672d1e33bc5341a8298ebad06adb90362b85872b6b44e4914b8bb19066a6869",
+  "master_sha256": "23f8f7b35936187819e0c9b349845fb0b5523f165f68d9718bbec0c5553f9a4a",
   "audio": "AAC copied from verified master",
   "parts": [
     {
       "name": "part_000.txt",
       "bytes": 524288,
-      "sha256": "e4d3cef6c150858fe5c1b8bc532545b9e8fa5231091258694237c7a0e04e4d49"
+      "sha256": "e1a2280a4ac48a2cc652ed27b12c9ae94bd2696786a35f7266314194ac031d96"
     },
     {
       "name": "part_001.txt",
       "bytes": 524288,
-      "sha256": "dadbea5eba95eb0c53dc22dd69a661dce580a737a237b2e100789d82d75bd668"
+      "sha256": "aeffb65667256d38be66ae5491139c19d2a544cf3384dc625fbd45430f895c3e"
     },
     {
       "name": "part_002.txt",
       "bytes": 524288,
-      "sha256": "d487c6b29674ca9d215eb228ff5bbd9042d63a2ede6402a63c02afb346a926ec"
+      "sha256": "6fc685913a2f2f4912d0c9a78e780f5f6c1e9a43de28747e1b443f225303732c"
     },
     {
       "name": "part_003.txt",
       "bytes": 524288,
-      "sha256": "8b3adf44820a7abc7433bbba30c2ec7a844f19efe04e718843f0af99baed8459"
+      "sha256": "b05b4ba57afeacba31b1aeb4e57c112816b4eb1e42ccb46906d401e3f39764f9"
     },
     {
       "name": "part_004.txt",
       "bytes": 524288,
-      "sha256": "02db9be4421b37060895208153aed0ebf1dfef94e4431626ba21f70f3d191673"
+      "sha256": "60a8375b3cdb1f8c53495a1030a6fbaa290c65b849810830963b2cf2d41b2033"
     },
     {
       "name": "part_005.txt",
       "bytes": 524288,
-      "sha256": "4aa78f7f38dd82a5ab90378b9069da4ad46ec15c4dff755567db9c82541c73bd"
+      "sha256": "6f1c00c23790b0893f4bb4ba3c939c2ed8c7ecaf69d1d11cb76f7c70f423f8ff"
     },
     {
       "name": "part_006.txt",
       "bytes": 524288,
-      "sha256": "e2219635e94a79db37ab37bc5e26c095eb8fc2355b2434cadbc3e3e3c399391b"
+      "sha256": "7308c114f6bb90381730bb08bdab09b185cce30b2d9f33f436da2fd52af1b25e"
     },
     {
       "name": "part_007.txt",
       "bytes": 524288,
-      "sha256": "cee64f01559069a6c325b11be95fa8b9b8bead6af955dbe7b55a0caec043030e"
+      "sha256": "08c6a14938a6ccaff62e4e719bbbc03b398e66ab20a0922a5c5e063f6e4441ec"
     },
     {
       "name": "part_008.txt",
       "bytes": 524288,
-      "sha256": "1f1063c2dcee79513859695b9df26d8437880ae63b06e93cb99d9909ea1c85e6"
+      "sha256": "d649cb51550702f63b552bdc515cda57fc61cc4265f7395b0f32f10f1a9413f6"
     },
     {
       "name": "part_009.txt",
       "bytes": 524288,
-      "sha256": "13aa5ba549876fcce45fea67d9375366727a47c51830be182d2eb589c2303abd"
+      "sha256": "76c7acdcb01847db4dfd4c778fb7f1d6d2ec726697bb6f8700d70dd3774c021c"
     },
     {
       "name": "part_010.txt",
       "bytes": 524288,
-      "sha256": "dfd5498545f9a045a86f1307869fff4af2448fb6af8818d5d87f189b36f2c0e0"
+      "sha256": "441e487f186740e83c30098e20aa6cdea3461c2528c03f945205dc25b5e0d4cc"
     },
     {
       "name": "part_011.txt",
       "bytes": 524288,
-      "sha256": "bbd17aabeb7c33ff8da559682a5a475da88807d5e8eda81c72eb29e3d65d5eda"
+      "sha256": "700c1ed9a27fb747a061ead171d0390aa9fe5dc1f6c4fe5a9e82b0164f3310db"
     },
     {
       "name": "part_012.txt",
       "bytes": 524288,
-      "sha256": "8208a11e441dda95a78c55407bf3446b6044ad8514b91b1620f4d830349af4be"
+      "sha256": "300ca4e689eaf2dd0bcd6310df007bbd6402f2a4ee930d3cfa15f8d09cde2cda"
     },
     {
       "name": "part_013.txt",
       "bytes": 524288,
-      "sha256": "70b8757332ef367877bc40419b3131ea033b01bda8597c0ba07d14ebb5916539"
+      "sha256": "5c3e3f68686ea7471efabe47af9e74fe2d54b3a33f4163fdf47e178ef0851d6b"
     },
     {
       "name": "part_014.txt",
       "bytes": 524288,
-      "sha256": "5ff237942b9392143113a4b7a858747a048b05eb539372d582321670877f48fc"
+      "sha256": "76c559278534a86ec1014a83b61a36256602df9441db7eeff5e3a889bc8a740e"
     },
     {
       "name": "part_015.txt",
       "bytes": 524288,
-      "sha256": "e71a997d2c0a69d18244a6e3eba8d359aaac29d50c193f9138887c5c6d7944d9"
+      "sha256": "e23927ec53d249b0743d303c4a519a9369f1b6f8e2adfe815e707d71a77f98ad"
     },
     {
       "name": "part_016.txt",
       "bytes": 524288,
-      "sha256": "74bf91d44064eb0db6303d28c75f3bf1951c3a0b5c2ff6da5df38a28071a7861"
+      "sha256": "e527b3c0635ee047ee5f3cbdf67e7f5cf35ac80e5387dc116bf2264af9c6ec39"
     },
     {
       "name": "part_017.txt",
       "bytes": 524288,
-      "sha256": "d4966d810cd0a9bf9f9d1d485685e71fa00bf5eda013db7d144d89551ef1344d"
+      "sha256": "9cd1221024a7bff9f26ff1374550bbddaf16df90c13617dd8c44f61af7813fea"
     },
     {
       "name": "part_018.txt",
       "bytes": 524288,
-      "sha256": "074995a276aa3eb084bd44ccae298212e819c8c442dcb8c5f027351c335be16b"
+      "sha256": "ebe3f8ed5438a1811dd2012b5d58e9cb8a7d3c0ad66ad4ea8a1e9746ffb8344f"
     },
     {
       "name": "part_019.txt",
       "bytes": 524288,
-      "sha256": "7759447adb165c9986beb283b1a59453df14890e25920d24ba19a8cb4d573224"
+      "sha256": "95636f709f8762c2b1359ab6b34ea0ac8855c269c605b07b74ed80bb04579dc6"
     },
     {
       "name": "part_020.txt",
       "bytes": 524288,
-      "sha256": "af95e4d4600dd3ac06afb867114480ecd23aafc9cc7a526edac146947c857fc7"
+      "sha256": "5d0357e7b820214c87ec37cb6cafec162617537dc91563a1777cdc6c39e7d052"
     },
     {
       "name": "part_021.txt",
       "bytes": 524288,
-      "sha256": "3d77d25e15402f9cfbd813a5c300eb2aac78a6f385ebdf9d4db458250d6a95ec"
+      "sha256": "164099b28e1df431907a866a298302fca0c34be2a03fdbaecb05c49b54116476"
     },
     {
       "name": "part_022.txt",
       "bytes": 524288,
-      "sha256": "e34e5aab7890e93aed82b08f83fc9d5db3f049126f94f2f30105c6e308c5122e"
+      "sha256": "dd91a818d395f79cc355cb3496b765e9dbb79fbba182516bb63d1ca144006489"
     },
     {
       "name": "part_023.txt",
       "bytes": 524288,
-      "sha256": "7bc500e6956ff63d1a76b2cfb444682fa99aaa77a0848c8bebdc1bb2669ad626"
+      "sha256": "343f1ecb630a3c27aedd11892340f283b9fb4a64efa21c4335e3446b4fbd0148"
     },
     {
       "name": "part_024.txt",
       "bytes": 524288,
-      "sha256": "9d7b7ca0f98efaa5c8b8e93077852d5d09c51b9a0500b4b663158f56feb25f1d"
+      "sha256": "8fb63e356c74117529936c47f67689a44d6b5d2db8eb44c83adfe98b7e8b1271"
     },
     {
       "name": "part_025.txt",
       "bytes": 524288,
-      "sha256": "2fc6f97d297100ea9ac186ccaee946ee7b80003dd335a86544cbdfee0e50b3eb"
+      "sha256": "2c51dab908f9d204f6b13b9a711c1f98eecff2927fb8fb629ffbde7d3279a254"
     },
     {
       "name": "part_026.txt",
-      "bytes": 183848,
-      "sha256": "c5e690daafd7ec9ce883b65876572ed3d03e4e3f5ca16bdd37a2da21b58b8fd2"
+      "bytes": 198715,
+      "sha256": "8222476b83684674a4c98ad93890daef3f53abd2c2600d1d133fab047ec47e4d"
     }
   ]
 }

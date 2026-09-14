@@ -1,0 +1,19 @@
+{
+  "battle/core/battle_victory_result.gd": "99e645285a414ab987c143fadde786c842bf9a0cca05d83d9aeae02cc03c52b4",
+  "gameplay/battle_result_summary.gd": "ce336e88d60d81f6e8c63a8218efa0b9f0eb522c99553dacbbc8016dc628442d",
+  "gameplay/tactical_battle_presentation.gd": "787b519943c32e8ec765898cf4b6e0d6e0c9888269f73d3993bde42d3840e133",
+  "tools/tactical_controls/result_summary_checks.gd": "d3e7519eac8a59f0e4b0f3d6af2ea2f14a9b46cbebe7cef01137d7072ebe8f63",
+  "tools/tactical_controls/raiders_record.gd": "07de5a397af3a9246328ae8ee9a1f5780a69c0872af4e2741b6fc54dc862f99f",
+  "gameplay/tactical_convoy_audio.gd": "b21647896cf9755b7ab369e10361431d2fd88e2fbe2eb5619e1ab08f4275b149",
+  "tools/raiders_recording/video_delta.py": "d23dfd322a584d3d255d1296b5e5e293189b7587d18c2dbe17197c5db8204c6e",
+  "gameplay/tactical_compact_card.gd": "6c5ba2fdddbe36b3b0200c770ab9e5ff89a18d1879e5f46cb05fde23cb9eabe6",
+  "gameplay/tactical_command_hud.gd": "0da6018f5ed1967cb9fd4855d6d2d1265967f11e7e0ec748c629871e41b1cbc7",
+  "assets/audio/convoy/raiders_radio.wav": "3550e3f8b6231f6815c2383a94404255752456a21b603fcbd8724d54f1952981",
+  "assets/audio/convoy/police_siren.wav": "ac7c75350417533f4fa54a043227b6f2ef7a2e33b9374194caaf4033c6dc317d",
+  "gameplay/bridge_battle_setup.gd": "a2ef629c0a6dfd8b3390b107c88711ad282edd77c512e6196e76b0530705657d",
+  "gameplay/tactical_battle_view.gd": "2b0942a5c4db853b87eedde388716137d8447e2718aa33994650fa4bbf81858f",
+  "tools/tactical_controls/raiders_director.gd": "af513fda19ee393b9812ca84f9cd2164ca8b0627bd3c8e3b1c76217620b609a9",
+  "tools/raiders_recording/record_worker.py": "1fd9befadf1f163792267de68477a443b584e01a7d11b73181870e25b8a19269",
+  "tools/raiders_recording/encode.py": "63d9acbdf6fa56c904633225dece271f1b855ae2d30de5cc279e8fc92e852c94",
+  "tools/raiders_recording/mobile_export.py": "1220585c38a6d04aca40a2c9bcabe5e955f901f27936a131dd915b41ef477029"
+}

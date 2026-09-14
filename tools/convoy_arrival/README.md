@@ -40,7 +40,9 @@ or samples. Asset provenance and composition metadata are in
 `assets/audio/convoy/original_radio.json`.
 
 The radio's -18 dB arrival source fades another 14 dB over the final two arrival
-seconds and stays at -32 dB or lower through ready, active battle and outro.
+seconds and stays at -32 dB or lower through ready and active battle. At resolution,
+the winning radio returns to -18 dB and becomes centered foreground audio;
+losing/background emitters remain subdued.
 This explicit transition is independent of camera distance and first gunfire.
 NBPD sirens retain -29 dB source gain. Existing spatial falloff, mute and ducking
 remain. Recording telemetry stores native gains at 6, 10.5, 11.5, 13 and 20 seconds.
@@ -69,3 +71,27 @@ Native validation and final recording results are recorded in the accompanying
 JSON reports and project journal. Owner acceptance of the animation, mix and
 faction ability remains separate from those checks. Other factions' unique
 abilities are an open design topic; they are not invented by this change.
+
+
+## Battle audio and result presentation — owner approved 2026-09-14
+
+Every battle should establish the entering and defending factions through their
+music/ambience, lower the music during combat, and give the winner the foreground
+at the victory-card outro. Winner identity comes from the resolved side, not a
+hard-coded assumption that the attacker wins. Keep subdued battlefield ambience.
+The current convoy implementation fades the winning radio back to its arrival
+gain over ending seconds 0.35–1.8, removing spatial attenuation and panning while
+continuing the same riff. Sirens remain background sounds. Broader faction music
+assets and legacy building-emitter integration are still future work.
+
+Both result panels show X Units Remaining, counting living wounded survivors.
+Only an explicit terminal `BattleVictoryResult.retreated_side_ids` entry adds
+“Retreated from battle” to the defeated side. Tactical flee execution is not yet
+implemented; its eventual resolver must supply this field. Tactical Fall Back,
+a wounded unit moving rearward, and merely having survivors are not terminal retreats.
+
+The intro displays NEW BRIARPORT POLICE DEPARTMENT on two lines, transitioning to
+NBPD as the context card contracts. Compact battle HUD cards display their actual
+weapon model under the class, with room reserved for orders and wounded status.
+The final recording holds victory cards five seconds longer; continuation controls
+in gameplay are unchanged.

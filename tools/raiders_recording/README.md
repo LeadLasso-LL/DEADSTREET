@@ -62,3 +62,17 @@ and -32 dB or lower in combat. `heavy_radio_source_hashes.json` captures this
 revision's inputs. Same capture/export commands and Raiders-winning fixture.
 ATTACKING is under the attacker name; ROAD BLOCKADE is at the context top right.
 Owner listening approval remains pending; file/telemetry checks do not imply it.
+
+
+## Final winner-audio / result-label cut — 2026-09-14
+
+Current `Dead_Street_Raiders_Victory_Mobile.mp4` is about 98.37 seconds. The ending
+returns the winning radio to its -18 dB arrival gain, centered and unattenuated,
+with quieter sirens underneath. It holds result cards five extra seconds. Expanded
+NBPD intro, survivor counts, explicit retreat text and equipped HUD models are
+included. `record.json` has victory_audio_samples, result_summaries,
+result_summary_checks and hud_weapon_models. `victory_audio_source_hashes.json`
+records capture inputs. `video_delta.py OLD NEW OUTPUT_DIR` makes a verified delta
+for reconstructing the exact new MP4 against the prior delivered cut, reducing
+transfer volume when encoded segments match. The full native master/mobile files
+remain authoritative; delta transfer never alters or re-encodes footage.

@@ -37,6 +37,7 @@ var original_zoom=1.3
 var original_pan=Vector2.ZERO
 var last_path_errors=[]
 var result_snapshot={}
+var result_summaries={}
 var results_acknowledged=false
 var continue_button: Button
 var deployment_panel: Panel
@@ -175,6 +176,8 @@ func convoy_radio_battle_mix() -> float:
  # Keep that quieter mix throughout ready/combat/outro, independent of camera motion.
  if stage=="arrival":return smoothstep(maxf(0.,intro_duration-2.),intro_duration,clock)
  return 1.0 if stage in ["ready","active","ending"] else 0.0
+func convoy_victory_music_mix() -> float:
+ return smoothstep(.35,1.8,end_clock) if stage=="ending" else 0.0
 func apply_poses():
  if view==null or battle==null:return
  visual_vehicle_poses.clear()
@@ -193,7 +196,7 @@ func apply_poses():
     sound.set_engine(at,clock>1.5 and clock<stop+.8,lerpf(1.35,.75,progress));engine_set=true
   visual_vehicle_poses[id]=at
   node.queue_redraw()
- convoy_audio.sync(battle,visual_vehicle_poses,audio_enabled and visible,sound.gun_duck,sound.results_music_mix,convoy_radio_battle_mix())
+ convoy_audio.sync(battle,visual_vehicle_poses,audio_enabled and visible,sound.gun_duck,sound.results_music_mix,convoy_radio_battle_mix(),convoy_victory_music_mix())
  for id in convoy_riders:
   var rider=convoy_riders[id];var route=routes.get(id,{})
   rider.visible=stage=="arrival" and not route.is_empty() and clock<float(route.start)-.65
@@ -277,6 +280,7 @@ func update_markers():
   var at=node.get_global_transform_with_canvas()*Vector2(0,lift)
   badge.position=at/surface.scale.x-Vector2(8,17);badge.size=Vector2(16,16);badge.modulate.a=1. if p.is_alive else .55
 func build_results():
+ result_summaries={}
  result_root=Control.new();surface.add_child(result_root);result_root.mouse_filter=Control.MOUSE_FILTER_IGNORE;result_root.modulate.a=0.
  var winner=battle.get_winning_side_id()
  for column in range(2):
@@ -291,9 +295,12 @@ func build_results():
   var units=[]
   for p in battle.participants.values():
    if p.side_id==side:units.append(p)
+  var summary=preload("res://gameplay/battle_result_summary.gd").for_side(battle,side)
+  result_summaries[side]=summary
+  Card.label(panel,Vector2(104,83),Vector2(382,22),summary.text,11,Color("#c4c9bf"),font)
   units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
   result_snapshot[side]=[]
-  var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(16,102);scroll.size=Vector2(476,272);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+  var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(16,116);scroll.size=Vector2(476,258);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
   var grid=GridContainer.new();scroll.add_child(grid);grid.columns=3 if units.size()>4 else 2;grid.add_theme_constant_override("h_separation",10);grid.add_theme_constant_override("v_separation",10)
   for i in range(units.size()):
    var holder=Control.new();grid.add_child(holder);holder.custom_minimum_size=Vector2(144,126)
@@ -322,7 +329,18 @@ class Context extends Control:
   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
   draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE."),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
   draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),str(p.attacker.get("short_name",p.attacker.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.attacker.get("short_name",p.attacker.name)),t,155.),ink)
-  draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),str(p.defender.get("short_name",p.defender.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.defender.get("short_name",p.defender.name)),t,126.),ink)
+  var defender_short=str(p.defender.get("short_name",p.defender.name))
+  if defender_short=="NBPD":
+   var full_alpha=smoothstep(.65,.95,t)
+   var full_ink=ink;full_ink.a=full_alpha
+   var short_ink=ink;short_ink.a=1.-full_alpha
+   var full_points=int(lerpf(8,20,t))
+   while full_points>8 and p.font.get_string_size("POLICE DEPARTMENT",HORIZONTAL_ALIGNMENT_LEFT,-1,full_points).x>lerpf(126.,235.,t):full_points-=1
+   draw_string(p.font,Vector2(343,33).lerp(Vector2(775,74),t),"NEW BRIARPORT",HORIZONTAL_ALIGNMENT_LEFT,-1,full_points,full_ink)
+   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,100),t),"POLICE DEPARTMENT",HORIZONTAL_ALIGNMENT_LEFT,-1,full_points,full_ink)
+   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),defender_short,HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,defender_short,t,126.),short_ink)
+  else:
+   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),defender_short,HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,defender_short,t,126.),ink)
   draw_string(p.font,Vector2(60,65).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   draw_string(p.font,Vector2(343,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   var location="ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS"

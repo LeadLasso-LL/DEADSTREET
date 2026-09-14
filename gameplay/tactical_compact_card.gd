@@ -6,6 +6,8 @@ var participant_id: String = ""
 var portrait: TextureRect
 var weapon_symbol: Control
 var role: Label
+var weapon_model: Label
+var card_font: Font
 var status: Label
 var health: ColorRect
 var number: Label
@@ -16,8 +18,9 @@ var badge: String = ""
 var command_status: Label
 
 func setup(font: Font) -> void:
+	card_font = font
 	focus_mode = Control.FOCUS_NONE
-	size = Vector2(88, 84)
+	size = Vector2(88, 94)
 	add_theme_stylebox_override("normal", normal)
 	add_theme_stylebox_override("hover", chosen)
 	add_theme_stylebox_override("pressed", chosen)
@@ -33,14 +36,16 @@ func setup(font: Font) -> void:
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	role = Card.label(self, Vector2(6, 49), Vector2(76, 14), "", 10, Color("#dfdfd2"), font)
+	weapon_model = Card.label(self, Vector2(6, 62), Vector2(76, 12), "", 9, Color("#9caaa4"), font)
+	weapon_model.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	status = Card.label(self, Vector2(6, 37), Vector2(30, 11), "", 8, Color("#a5ada8"), font)
-	command_status = Card.label(self, Vector2(6, 64), Vector2(76, 12), "", 9, Color("#a8adb1"), font)
+	command_status = Card.label(self, Vector2(6, 76), Vector2(76, 12), "", 9, Color("#a8adb1"), font)
 	command_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	number = Card.label(self, Vector2(27, 38), Vector2(52, 10), "", 8, Color("#909b94"), font)
 	number.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	health = ColorRect.new()
 	add_child(health)
-	health.position = Vector2(6, 78)
+	health.position = Vector2(6, 90)
 	health.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func refresh(p, selected: bool, ordinal: int) -> void:
@@ -61,7 +66,7 @@ func refresh(p, selected: bool, ordinal: int) -> void:
 	role.text = p.weapon_type.to_upper()
 	role.size.x = size.x - 12
 	status.text = "ELIMINATED" if not p.is_alive else ("WOUNDED" if p.is_wounded else "%d%%" % c.vitality_percent)
-	status.position.y = 64 if p.is_wounded or not p.is_alive else 37
+	status.position.y = 76 if p.is_wounded or not p.is_alive else 37
 	status.size.x = size.x - 12 if p.is_wounded or not p.is_alive else 30
 	status.add_theme_color_override("font_color", Color("#d4a966") if p.is_wounded and p.is_alive else Color("#a5ada8"))
 	number.position.x = size.x - 51
@@ -70,6 +75,12 @@ func refresh(p, selected: bool, ordinal: int) -> void:
 	health.size = Vector2((size.x - 12) * c.vitality_ratio, 3)
 	health.color = Color("#c9a367") if p.is_wounded else Color("#84a78a")
 	var model = Card.Weapons.for_participant(p)
+	weapon_model.text = model.display_name.to_upper() if model != null else ""
+	weapon_model.size.x = size.x - 12
+	var model_points = 9
+	while model_points > 7 and card_font.get_string_size(weapon_model.text, HORIZONTAL_ALIGNMENT_LEFT, -1, model_points).x > weapon_model.size.x:
+		model_points -= 1
+	weapon_model.add_theme_font_size_override("font_size", model_points)
 	tooltip_text = role.text + " · Unit tier %d\n" % p.unit_tier
 	if model != null:
 		tooltip_text += model.display_name + " · Weapon tier %d\n" % model.tier

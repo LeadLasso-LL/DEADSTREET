@@ -215,7 +215,7 @@ func _process(delta: float) -> void:
 	var ordered: Array[String] = Query.living_first_ids(b, roster)
 	var columns = mini(12, maxi(1, ordered.size()))
 	var rows = ceili(float(ordered.size()) / columns)
-	height = 130.0 + rows * 86.0
+	height = 130.0 + rows * 96.0
 	var factor = get_viewport_rect().size.x / 1152.0
 	surface.scale = Vector2.ONE * factor
 	surface.position = Vector2(0, get_viewport_rect().size.y - height * factor)
@@ -230,8 +230,8 @@ func _process(delta: float) -> void:
 		var id = ordered[i]
 		var p = b.get_participant(id)
 		var widget = cards[id]
-		widget.position = Vector2(24 + (i % columns) * (width + 5), 71 + (i / columns) * 86)
-		widget.size = Vector2(width, 84)
+		widget.position = Vector2(24 + (i % columns) * (width + 5), 71 + (i / columns) * 96)
+		widget.size = Vector2(width, 94)
 		widget.refresh(p, c != null and c.is_selected(id), roster.find(id) + 1)
 		if p.is_alive:
 			living += 1

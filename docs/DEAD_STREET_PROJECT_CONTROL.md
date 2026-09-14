@@ -1,3 +1,20 @@
+## Current milestone — faction victory audio and final battle recording — 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner review pending. Raiders metal returns to its -18 dB
+intro level during the ending and becomes centered foreground music; sirens stay
+quiet beneath it. The mobile recording adds five seconds of victory cards and
+shows remaining survivor counts. Explicit retreat outcomes have dedicated wording;
+tactical flee execution remains future work. Intro NBPD name is expanded then
+abbreviated, and HUD cards show actual equipped weapon names below their class.
+
+Owner-approved rule for every future battle: both factions have their own audio
+presence, combat music recedes, and the winner takes over the victory-card outro.
+Current implementation covers existing convoy radio; broader assets/integration
+remain future work. Native audio/count/model checks and export checks passed.
+Details and exact validation limits are in the latest journal.
+
+Next: Brandon reviews the final recording. Performance and Whittaker remain parked.
+
 ## Current milestone — sparse heavy radio / combat fade / context roles — 2026-09-14
 
 IMPLEMENTED / VALIDATED; owner listening review pending. Prior 102 BPM music was

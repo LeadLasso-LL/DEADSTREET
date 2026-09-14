@@ -38,15 +38,25 @@ func rebuild(b):
    var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
    player.max_distance=900. if identity=="stateline" else 1050.;player.attenuation=.7;player.panning_strength=.75
    player.set_meta("base_gain",-18. if identity=="stateline" else -29.);player.set_meta("offset",count*2.35)
-   player.set_meta("is_radio",identity=="stateline")
+   player.set_meta("is_radio",identity=="stateline");player.set_meta("side_id",side)
    sources[v.battle_vehicle_id]=player;count+=1
-func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0):
+func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0,victory_mix: float=0.0):
  if b==null:return
  if battle_id!=b.get_instance_id():rebuild(b)
+ var winner=b.get_winning_side_id() if b.battle_phase=="resolved" else ""
  for id in sources:
   var player=sources[id];var v=b.get_vehicle(id)
   if not enabled or v==null:player.stop();continue
   player.position=poses.get(id,v.battle_position)*Vector2(8,6)
-  var radio_drop=14.*clampf(battle_mix,0.,1.) if bool(player.get_meta("is_radio",false)) else 0.
-  player.volume_db=float(player.get_meta("base_gain"))-radio_drop-duck*4.-ending*5.
+  var is_radio=bool(player.get_meta("is_radio",false))
+  var owns_victory=is_radio and not winner.is_empty() and str(player.get_meta("side_id",""))==winner
+  var foreground=clampf(victory_mix,0.,1.) if owns_victory else 0.
+  var radio_drop=14.*clampf(battle_mix,0.,1.)*(1.-foreground) if is_radio else 0.
+  player.volume_db=float(player.get_meta("base_gain"))-radio_drop-(duck*4.+ending*5.)*(1.-foreground)
+  # Continue the same playing riff as the winning faction takes the foreground.
+  # At full victory mix it is centered and retains its intro gain regardless of camera distance.
+  player.max_distance=lerpf(900.,100000.,foreground) if is_radio else 1050.
+  player.attenuation=lerpf(.7,0.,foreground)
+  player.panning_strength=.75*(1.-foreground)
+  player.set_meta("victory_foreground",foreground)
   if not player.playing:player.play(float(player.get_meta("offset",0.)))

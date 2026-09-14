@@ -80,7 +80,106 @@
     }
   ],
   "convoy_slots": 3,
-  "frames": 2800,
+  "extra_victory_card_seconds": 5,
+  "frames": 2949,
+  "hud_weapon_models": [
+    {
+      "card_height": 94.0,
+      "class": "pistol",
+      "expected": "GLOCK 17",
+      "id": "sandbox_attacker_unit_01",
+      "matches": true,
+      "model": "GLOCK 17"
+    },
+    {
+      "card_height": 94.0,
+      "class": "pistol",
+      "expected": "GLOCK 17",
+      "id": "sandbox_attacker_unit_02",
+      "matches": true,
+      "model": "GLOCK 17"
+    },
+    {
+      "card_height": 94.0,
+      "class": "smg",
+      "expected": "IMI UZI",
+      "id": "sandbox_attacker_unit_03",
+      "matches": true,
+      "model": "IMI UZI"
+    },
+    {
+      "card_height": 94.0,
+      "class": "smg",
+      "expected": "IMI UZI",
+      "id": "sandbox_attacker_unit_04",
+      "matches": true,
+      "model": "IMI UZI"
+    },
+    {
+      "card_height": 94.0,
+      "class": "smg",
+      "expected": "IMI UZI",
+      "id": "sandbox_attacker_unit_05",
+      "matches": true,
+      "model": "IMI UZI"
+    },
+    {
+      "card_height": 94.0,
+      "class": "rifle",
+      "expected": "AK-47",
+      "id": "sandbox_attacker_unit_08",
+      "matches": true,
+      "model": "AK-47"
+    },
+    {
+      "card_height": 94.0,
+      "class": "rifle",
+      "expected": "AK-47",
+      "id": "sandbox_attacker_unit_09",
+      "matches": true,
+      "model": "AK-47"
+    },
+    {
+      "card_height": 94.0,
+      "class": "rifle",
+      "expected": "AK-47",
+      "id": "sandbox_attacker_unit_10",
+      "matches": true,
+      "model": "AK-47"
+    },
+    {
+      "card_height": 94.0,
+      "class": "shotgun",
+      "expected": "REMINGTON 870",
+      "id": "sandbox_attacker_unit_06",
+      "matches": true,
+      "model": "REMINGTON 870"
+    },
+    {
+      "card_height": 94.0,
+      "class": "shotgun",
+      "expected": "REMINGTON 870",
+      "id": "sandbox_attacker_unit_07",
+      "matches": true,
+      "model": "REMINGTON 870"
+    },
+    {
+      "card_height": 94.0,
+      "class": "sniper",
+      "expected": "REMINGTON 700",
+      "id": "sandbox_attacker_unit_11",
+      "matches": true,
+      "model": "REMINGTON 700"
+    },
+    {
+      "card_height": 94.0,
+      "class": "sniper",
+      "expected": "REMINGTON 700",
+      "id": "sandbox_attacker_unit_12",
+      "matches": true,
+      "model": "REMINGTON 700"
+    }
+  ],
   "motorcycle_occupants": 7,
   "motorcycles": 6,
   "outro_errors": [],
@@ -149,6 +248,22 @@
     }
   ],
   "radio_origin": "Original composition; no recordings or samples",
+  "result_summaries": {
+    "attacker": {
+      "remaining": 4,
+      "retreated": false,
+      "text": "4 Units Remaining"
+    },
+    "defender": {
+      "remaining": 0,
+      "retreated": false,
+      "text": "0 Units Remaining"
+    }
+  },
+  "result_summary_checks": {
+    "checks": 9,
+    "errors": []
+  },
   "results": {
     "attacker": [
       {
@@ -347,7 +462,7 @@
       }
     ]
   },
-  "seconds": 93.3333333333333,
+  "seconds": 98.3,
   "seed": 9141,
   "showcase_loadout": {
     "attacker": {
@@ -575,5 +690,143 @@
     "map_id": "river_bridge"
   },
   "trim_frames": 1,
+  "victory_audio_samples": [
+    {
+      "cards_visible": false,
+      "end_clock": 0.1,
+      "levels": [
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -35.3333320617676,
+          "is_radio": true,
+          "panning": 0.75,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -32.3333320617676,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -32.3333320617676,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 81.4
+    },
+    {
+      "cards_visible": false,
+      "end_clock": 2.0,
+      "levels": [
+        {
+          "attenuation": 0.0,
+          "foreground": 1.0,
+          "gain_db": -18.0,
+          "is_radio": true,
+          "panning": 0.0,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -29.0,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -29.0,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 83.3
+    },
+    {
+      "cards_visible": true,
+      "end_clock": 8.03333333333332,
+      "levels": [
+        {
+          "attenuation": 0.0,
+          "foreground": 1.0,
+          "gain_db": -18.0,
+          "is_radio": true,
+          "panning": 0.0,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -34.0,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -34.0,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 89.3333333333333
+    },
+    {
+      "cards_visible": true,
+      "end_clock": 15.0333333333333,
+      "levels": [
+        {
+          "attenuation": 0.0,
+          "foreground": 1.0,
+          "gain_db": -18.0,
+          "is_radio": true,
+          "panning": 0.0,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -34.0,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        },
+        {
+          "attenuation": 0.699999988079071,
+          "foreground": 0.0,
+          "gain_db": -34.0,
+          "is_radio": false,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 96.3333333333333
+    }
+  ],
   "winner": "attacker"
 }
