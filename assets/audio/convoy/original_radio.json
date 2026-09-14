@@ -1,9 +1,21 @@
 {
   "origin": "Original procedural composition; no third-party recordings or samples",
-  "tempo_bpm": 102.0,
+  "tempo_bpm": 84.0,
+  "tuning": "Drop A, 55 Hz guitar root",
+  "guitar_attacks": 12,
+  "root_semitones": [
+    0,
+    1
+  ],
+  "note_lengths_beats": [
+    1.15,
+    1.65,
+    3.1
+  ],
+  "arrangement": "Sparse sustained power chords; half-time drums; no lead melody",
   "bars": 8,
-  "seconds": 18.823537414965987,
+  "seconds": 22.857142857142858,
   "peak_dbfs": -2.1581079461903916,
-  "rms_dbfs": -11.3510172648086,
-  "sha256": "88927d68c3fdcf4f9a39afb5043a85f17f0b83ba28978ec921ced51cc4d92043"
+  "rms_dbfs": -9.873300332891448,
+  "sha256": "3550e3f8b6231f6815c2383a94404255752456a21b603fcbd8724d54f1952981"
 }

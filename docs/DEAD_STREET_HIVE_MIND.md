@@ -74,14 +74,14 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Deliver the completed original-audio Raiders-victory mobile video and obtain Brandon's review. Correct road side, original heavy guitar, quieter sirens and hidden unit paths are implemented and validated. The third-party music attempt was rejected and removed; it is excluded from the final build and video. Performance and Whittaker remain parked.
+**Active objective:** Deliver the revised Raiders-victory mobile recording for Brandon's review: sparse low sustained original guitar, explicit 14 dB radio fade into combat, and aligned attacker/defender context labels. Prior busy music and missing battle fade are superseded. Performance and Whittaker remain parked.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
 | HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
-| Scripted battle recording | This receiving chat | Original-audio Raiders-victory video complete; corrected lane, hidden paths, quieter sirens; owner review next. |
+| Scripted battle recording | This receiving chat | Revised sparse guitar, verified combat fade and aligned context roles; owner listening review next. |
 | Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
 
 **Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -95,7 +95,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the completed Raiders-victory video with original audio. [Convoy details](../tools/convoy_arrival/README.md).
+**Immediate next task:** Brandon reviews the revised recording's guitar, combat volume and context layout. [Convoy details](../tools/convoy_arrival/README.md).
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

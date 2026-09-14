@@ -14,6 +14,8 @@ var snapshots={}
 var phase_changes=[]
 var last_phase=""
 var trim_frames=0
+var radio_gain_samples=[]
+var radio_sample_index=0
 func _initialize():call_deferred("start")
 func start():
  root.size=Vector2i(1920,1080)
@@ -36,6 +38,12 @@ func _process(delta):
  if not active:return false
  frames+=1
  var presentation=view.battle_presentation
+ var sample_times=[6.0,10.5,11.5,13.0,20.0]
+ if radio_sample_index<sample_times.size() and float(frames)/30.>=float(sample_times[radio_sample_index]):
+  for source in presentation.convoy_audio.sources.values():
+   if bool(source.get_meta("is_radio",false)):
+    radio_gain_samples.append({"movie_seconds":float(frames)/30.,"phase":presentation.stage,"arrival_clock":presentation.clock,"gain_db":source.volume_db,"battle_mix":presentation.convoy_radio_battle_mix()})
+  radio_sample_index+=1
  if presentation.stage!=last_phase:
   last_phase=presentation.stage
   phase_changes.append({"frame":frames,"phase":last_phase,"battle_time":b.elapsed_time_seconds})
@@ -86,7 +94,7 @@ func capture(key: String):
 func finish():
  active=false
  var p=view.battle_presentation
- var report={"radio_origin":"Original composition; no recordings or samples","radio_bpm":102,"showcase_loadout":Director.config(),"seed":9141,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"audio_shots":p.sound.shots_played,"convoy_slots":3,"motorcycles":6,"motorcycle_occupants":7,"pickup_occupants":5,"pickup_bed_occupants":2,"ambient_emitters":p.convoy_audio.sources.size()}
+ var report={"radio_origin":"Original composition; no recordings or samples","radio_bpm":84,"radio_gain_samples":radio_gain_samples,"showcase_loadout":Director.config(),"seed":9141,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"audio_shots":p.sound.shots_played,"convoy_slots":3,"motorcycles":6,"motorcycle_occupants":7,"pickup_occupants":5,"pickup_bed_occupants":2,"ambient_emitters":p.convoy_audio.sources.size()}
  FileAccess.open(out+"/record.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
  print("RECORD_COMPLETE ",JSON.stringify(report))
  scene.queue_free()

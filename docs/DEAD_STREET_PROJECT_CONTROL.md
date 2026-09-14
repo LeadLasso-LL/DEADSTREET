@@ -1,3 +1,16 @@
+## Current milestone — sparse heavy radio / combat fade / context roles — 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner listening review pending. Prior 102 BPM music was
+rejected as too busy and too loud in combat. Replacement: 84 BPM Drop-A, twelve
+sustained chord strikes over eight bars, and an explicit 14 dB fade before combat.
+ATTACKING now aligns beneath Raiders with DEFENDING beneath NBPD; ROAD BLOCKADE
+is at the context box top right. The replacement mobile recording retains the
+Raiders victory and accepted convoy/command visuals. Native gain telemetry verifies
+the fade; details and validation limits are in the latest journal.
+
+Next: Brandon reviews the revised recording. Performance and Whittaker remain parked.
+Earlier conflicting milestones are historical.
+
 ## Current milestone — original-audio Raiders victory video — 2026-09-14
 
 IMPLEMENTED / VALIDATED; owner review pending. Correct eastbound arrivals, hidden

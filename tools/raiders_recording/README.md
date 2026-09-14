@@ -51,3 +51,14 @@ The encoder requires a resolved attacker victory and clean arrival/outro routes.
 provenance. `original_source_hashes.json` records sources at capture. Lane/arrival
 validation has 102 checks; the final capture validates runtime/audio/export separately.
 No third-party music or credit overlay is part of this final recording.
+
+
+## Revised sparse radio and combat fade — 2026-09-14
+
+The current `Dead_Street_Raiders_Victory_Mobile.mp4` supersedes the earlier 102 BPM
+radio delivery. Current cue: 84 BPM Drop-A, twelve sustained chord attacks over
+eight bars. `record.json` includes `radio_gain_samples`, verifying -18 dB arrival
+and -32 dB or lower in combat. `heavy_radio_source_hashes.json` captures this
+revision's inputs. Same capture/export commands and Raiders-winning fixture.
+ATTACKING is under the attacker name; ROAD BLOCKADE is at the context top right.
+Owner listening approval remains pending; file/telemetry checks do not imply it.

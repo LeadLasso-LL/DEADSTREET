@@ -1,11 +1,11 @@
-"""Original Drop-C groove-metal radio cue. No recordings, samples or third-party music.
+"""Original sparse Drop-A heavy-metal radio cue. No recordings, samples or third-party music.
 Plucked-string waveguides -> driven amplifier -> cabinet -> distant vehicle radio.
 All guitar/bass/drum parts and excitation signals are authored/generated here.
 """
 from pathlib import Path
 import numpy as np
 import wave,hashlib,json,time
-SR=44100;BPM=102.;BEAT=60./BPM;BARS=8;N=round(BARS*4*BEAT*SR)
+SR=44100;BPM=84.;BEAT=60./BPM;BARS=8;N=round(BARS*4*BEAT*SR)
 def filter_audio(a,hz,high=False,order=2,sr=SR):
  f=np.fft.rfftfreq(len(a),1/sr);g=1/np.sqrt(1+(f/hz)**(2*order))
  if high:g=np.sqrt(np.maximum(0.,1-g*g))
@@ -13,33 +13,33 @@ def filter_audio(a,hz,high=False,order=2,sr=SR):
 def cabinet(a):
  f=np.fft.rfftfreq(len(a),1/SR)
  # Closed-back speaker response: chest, aggressive midrange, soft high-frequency rolloff.
- response=(1+.38*np.exp(-.5*((f-170)/75)**2)+.40*np.exp(-.5*((f-1450)/650)**2))
+ response=(1+.38*np.exp(-.5*((f-130)/65)**2)+.18*np.exp(-.5*((f-1050)/600)**2))
  response*=1-.34*np.exp(-.5*((f-3800)/430)**2)
- response*=1/np.sqrt(1+(f/4700)**8)
- response*=np.sqrt(1-1/(1+(f/78)**4))
+ response*=1/np.sqrt(1+(f/3900)**8)
+ response*=np.sqrt(1-1/(1+(f/48)**4))
  return np.fft.irfft(np.fft.rfft(a)*response,n=len(a))
 def string(freq,seconds,palm,rng):
  delay=round(SR/freq-.5);buf=rng.uniform(-1,1,delay)
  # Pick-position comb shapes the excitation, instead of an oscillator waveform.
  buf-=np.roll(buf,max(1,round(delay*.19)))*.65
  buf-=buf.mean();out=np.empty(round(seconds*SR));pos=0
- feedback=.990 if palm else .9988
+ feedback=.990 if palm else .9995
  for i in range(len(out)):
   sample=buf[pos];nxt=(pos+1)%delay
   buf[pos]=feedback*(.51*sample+.49*buf[nxt]);out[i]=sample;pos=nxt
  t=np.arange(len(out))/SR
  out*=np.minimum(t/.0015,1.)
- out*=np.exp(-t/(.14 if palm else 1.1))
+ out*=np.exp(-t/(.14 if palm else 3.2))
  return out
 
 def amplifier(raw):
- pre=filter_audio(raw,82,True)
+ pre=filter_audio(raw,45,True)
  pre+=.6*(filter_audio(pre,700)-filter_audio(pre,170))
  # Oversampled asymmetric clipping, interstage filtering and cabinet response.
  x=np.interp(np.arange(len(pre)*2)*.5,np.arange(len(pre)),pre)
- x=np.tanh(x*22.+.10)-np.tanh(.10)
+ x=np.tanh(x*10.+.10)-np.tanh(.10)
  x=filter_audio(x,6400,order=2,sr=SR*2)
- x=np.tanh(x*2.4)
+ x=np.tanh(x*1.8)
  x=filter_audio(x,6200,order=3,sr=SR*2)[::2]
  return cabinet(x)
 
@@ -51,11 +51,12 @@ def put(dst,a,start,gain=1.):
 
 def metal():
  rng=np.random.default_rng(2026091407);guitars=[]
- # Original syncopated low-C power-chord pattern; rests give the groove its weight.
- patterns=[[(0,0,.39,1),(.75,0,.20,1),(1.25,0,.25,1),(2,3,.58,0),(2.9,0,.20,1),(3.5,10,.44,0)],
- [(0,0,.32,1),(.5,0,.24,1),(1.3,0,.26,1),(2,6,.39,0),(2.75,5,.28,0),(3.35,3,.58,0)],
- [(0,0,.40,1),(.85,0,.19,1),(1.5,0,.22,1),(2.25,3,.43,0),(3,5,.43,0),(3.6,3,.28,0)],
- [(0,0,.30,1),(.55,0,.23,1),(1.25,0,.20,1),(2,10,.49,0),(2.85,6,.32,0),(3.45,0,.36,1)]]
+ # Twelve deliberate chord strikes over eight bars: long low sustains and rests.
+ # No lead melody or climbing run. A rare flat-second tension returns to low A.
+ patterns=[[(0,0,1.65,0),(2.5,0,1.15,0)],
+ [(0,0,3.10,0)],
+ [(0,0,1.65,0),(2.5,1,1.15,0)],
+ [(0,0,3.10,0)]]
  events=[]
  for bar in range(BARS):
   for beat,semitone,length,palm in patterns[bar%4]:events.append(((bar*4+beat)*BEAT,semitone,length*BEAT,bool(palm)))
@@ -64,9 +65,9 @@ def metal():
   for start,semitone,length,palm in events:
    key=(semitone,palm)
    if key not in cache:
-    chord=np.zeros(round(1.6*SR));f=65.4064*2**(semitone/12)*detune
-    for interval,weight,delay in [(1.,1.,0.),(1.4983,.73,.004),(2.,.34,.008)]:
-     put(chord,string(f*interval,1.5,palm,rng),delay,weight)
+    chord=np.zeros(round(3.5*SR));f=55.*2**(semitone/12)*detune
+    for interval,weight,delay in [(1.,1.,0.),(1.4983,.73,.004),(2.,.18,.008)]:
+     put(chord,string(f*interval,3.4,palm,rng),delay,weight)
     cache[key]=chord*.36
    clip=cache[key].copy();end=round((length+.065)*SR);clip=clip[:end]
    # A left-hand choke after the written duration prevents the amplifier from sustaining rests.
@@ -79,9 +80,9 @@ def metal():
   guitars.append(amp*gate)
  bass=np.zeros(N);drums=np.zeros(N)
  for start,semitone,length,palm in events:
-  t=np.arange(round((length+.07)*SR))/SR;f=32.7032*2**(semitone/12)
+  t=np.arange(round((length+.07)*SR))/SR;f=27.5*2**(semitone/12)
   a=np.sin(2*np.pi*f*t)+.33*np.sin(2*np.pi*f*2*t)+.13*np.sin(2*np.pi*f*3*t)
-  a=np.tanh(a*1.3)*np.exp(-t/(.19 if palm else .65))*np.minimum(t/.004,1.)
+  a=np.tanh(a*1.3)*np.exp(-t/(.19 if palm else 1.8))*np.minimum(t/.004,1.)
   a[-min(900,len(a)):]*=np.linspace(1.,0.,min(900,len(a)));put(bass,a,start,.62)
  def kick():
   t=np.arange(round(.40*SR))/SR
@@ -100,15 +101,16 @@ def metal():
   for freq in [431,613,881,1237,1789,2357]:a+=np.sign(np.sin(2*np.pi*freq*t+rng.uniform(0,6.28)))
   a=filter_audio(a+rng.normal(0,1,len(t)),5100,True)
   return a*np.exp(-t/(.20 if opened else .035))*.047
+ for start,semitone,length,palm in events:put(drums,kick(),start,1.0)
  for bar in range(BARS):
-  for beat in [0,.75,1.5,2.75,3.5] if bar%2==0 else [0,.5,1.5,2.5]:put(drums,kick(),(bar*4+beat)*BEAT,.95)
-  for beat in [1,3]:put(drums,snare(),(bar*4+beat)*BEAT+.006,1.)
-  for beat in np.arange(0,4,.5):put(drums,cymbal(bar%4==3 and beat==3.5),(bar*4+beat)*BEAT,.95 if beat%1==0 else .65)
-  if bar%4==0:put(drums,cymbal(True),(bar*4)*BEAT,1.3)
+  # Half-time snare and two low-level cymbal strokes leave room for the guitar.
+  put(drums,snare(),(bar*4+2)*BEAT+.006,.82)
+  for beat in [0,2]:put(drums,cymbal(False),(bar*4+beat)*BEAT,.40)
+  if bar%4==0:put(drums,cymbal(True),(bar*4)*BEAT,.80)
  # The guitar remains the dominant source. Drums provide a slow, heavy backbeat.
- dry=(guitars[0]+guitars[1])*.50+bass*.27+drums*.50
+ dry=(guitars[0]+guitars[1])*.50+bass*.32+drums*.44
  dry=np.tanh(dry*1.05)
- radio=filter_audio(filter_audio(dry,145,True,order=2),2850,order=2)
+ radio=filter_audio(filter_audio(dry,58,True,order=2),2200,order=2)
  radio/=max(float(np.max(np.abs(radio))),1e-9);radio*=.78
  return radio,dry
 
@@ -129,5 +131,5 @@ if __name__=='__main__':
  ap=argparse.ArgumentParser();ap.add_argument('--out');args=ap.parse_args()
  out=Path(args.out) if args.out else Path(__file__).resolve().parents[2]/'assets/audio/convoy'
  start=time.monotonic();radio,dry=metal();save(out/'raiders_radio.wav',radio);save(out/'police_siren.wav',siren())
- report={'origin':'Original procedural composition; no third-party recordings or samples','tempo_bpm':BPM,'bars':BARS,'seconds':len(radio)/SR,'peak_dbfs':20*np.log10(np.max(np.abs(radio))),'rms_dbfs':20*np.log10(np.sqrt(np.mean(radio**2))),'sha256':hashlib.sha256((out/'raiders_radio.wav').read_bytes()).hexdigest()}
+ report={'origin':'Original procedural composition; no third-party recordings or samples','tempo_bpm':BPM,'tuning':'Drop A, 55 Hz guitar root','guitar_attacks':12,'root_semitones':[0,1],'note_lengths_beats':[1.15,1.65,3.10],'arrangement':'Sparse sustained power chords; half-time drums; no lead melody','bars':BARS,'seconds':len(radio)/SR,'peak_dbfs':20*np.log10(np.max(np.abs(radio))),'rms_dbfs':20*np.log10(np.sqrt(np.mean(radio**2))),'sha256':hashlib.sha256((out/'raiders_radio.wav').read_bytes()).hexdigest()}
  (out/'original_radio.json').write_text(json.dumps(report,indent=2),encoding='utf-8');print('ORIGINAL_RADIO_READY',report,'build_seconds',time.monotonic()-start,flush=True)

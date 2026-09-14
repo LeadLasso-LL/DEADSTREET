@@ -573,3 +573,23 @@ Validation: the lane/arrival pass previously passed 102 native checks, including
 Mobile file: 93.37 seconds, 1280x720 at 30 FPS, H.264/AAC, 13.10 MiB. SHA256 5133f7fc34f9ecddf8cbd29f0fd06be7e7b7aae657b94984b452abd4d8ca4576. Original radio SHA256 88927d68c3fdcf4f9a39afb5043a85f17f0b83ba28978ec921ced51cc4d92043. Source hashes captured before recording are checked before this commit. Earlier recordings are superseded. Commit/push uses standing approval and excludes unrelated work. Delivery/save status is reported in chat.
 
 Next: Brandon reviews the completed original-audio Raiders-victory video. Performance and Whittaker Estate remain parked.
+
+
+## 2026-09-14 — Sparse heavy radio / battle fade / context alignment started
+
+Brandon rejected the previous 102 BPM radio as busy and arcade-like and the combat music as too loud. Implementing an original 84 BPM Drop-A arrangement with twelve sustained chord attacks over eight bars, fewer percussion hits, retained low end and no lead melody. Radio gain is -18 dB during arrival and explicitly fades down another 14 dB over the final two arrival seconds; sirens keep -29 dB. Requested context change: ATTACKING directly beneath Raiders, aligned with DEFENDING beneath NBPD, and ROAD BLOCKADE at the context box top right. Same Raider-winning fixture, arrival, orders and hidden unit paths. New capture will verify native radio gains and the adjusted context before delivery. Aesthetic acceptance remains pending.
+
+
+## 2026-09-14 — Sparse low guitar, combat radio fade and matched context roles (IMPLEMENTED / VALIDATED)
+
+Brandon rejected the previous 102 BPM cue as an arcade-like busy melody and reported that the music stayed too loud as the camera revealed combat. That cue and its mix are SUPERSEDED; prior numerical audio checks were not owner acceptance.
+
+The replacement is an original 84 BPM Drop-A composition: 12 chord strikes across eight bars (previously 48), sustained low power chords, two root pitches with no ascending lead melody, half-time percussion, less severe amplifier clipping and retained low body through a 58–2200 Hz radio filter. The longest written sustain is 3.1 beats (2.21 seconds). No outside recordings or samples. Radio starts at -18 dB source gain and fades another 14 dB during the final two seconds of arrival, then stays at -32 dB or lower during ready/combat/outro. Police sirens remain -29 dB. Spatial attenuation and gunfire ducking still apply.
+
+The battle context puts ATTACKING under Stateline Raiders on the same baseline as NBPD's DEFENDING. ROAD BLOCKADE is right aligned at the top of that box, in both compact and expanded layouts.
+
+Native capture validates the explicit fade, with samples: [{"arrival_clock": 5.99999999999999, "battle_mix": 0.0, "gain_db": -18.0, "movie_seconds": 6.0, "phase": "arrival"}, {"arrival_clock": 10.5, "battle_mix": 0.0758111102681216, "gain_db": -19.0613555908203, "movie_seconds": 10.5, "phase": "arrival"}, {"arrival_clock": 11.5, "battle_mix": 0.743501940722106, "gain_db": -28.4090270996094, "movie_seconds": 11.5, "phase": "arrival"}, {"arrival_clock": 12.1666666666666, "battle_mix": 1.0, "gain_db": -32.0, "movie_seconds": 13.0, "phase": "active"}, {"arrival_clock": 12.1666666666666, "battle_mix": 1.0, "gain_db": -32.0, "movie_seconds": 20.0, "phase": "active"}]. The same seed 9141 and disclosed veteran/armor showcase advantage yield a Raiders victory after 68.40 simulated seconds. There are 5 contextual commands and 230 shot events. Correct road-side entry, six bikes/pickup, pillion/bed riders, hidden movement paths and quieter sirens are preserved. Zero arrival/outro route errors and no capture script errors. Full master/mobile decode and finite, unclipped audio checks pass. Visual review of context and final result is performed for delivery; audio timbre remains subject to Brandon's listening approval. No additional performance or all-map regression campaign.
+
+Current mobile recording: 93.37 seconds, 1280x720/30 FPS H.264/AAC, 13.18 MiB; SHA256 1ad5ab6d64e40239bff9500eba1030e3b3fef20416d5cf45ceb57eebd656fd2a. Radio SHA256 3550e3f8b6231f6815c2383a94404255752456a21b603fcbd8724d54f1952981. Sources are guarded by heavy_radio_source_hashes.json. This replaces the previous delivered recording. Commit/push uses standing authorization and excludes unrelated work.
+
+Next: Brandon reviews the revised recording's guitar weight, quieter combat mix and context layout. Performance and Whittaker remain parked.

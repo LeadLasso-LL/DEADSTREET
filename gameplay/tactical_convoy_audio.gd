@@ -37,14 +37,16 @@ func rebuild(b):
    if clip==null:continue
    var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
    player.max_distance=900. if identity=="stateline" else 1050.;player.attenuation=.7;player.panning_strength=.75
-   player.set_meta("base_gain",-16. if identity=="stateline" else -29.);player.set_meta("offset",count*2.35)
+   player.set_meta("base_gain",-18. if identity=="stateline" else -29.);player.set_meta("offset",count*2.35)
+   player.set_meta("is_radio",identity=="stateline")
    sources[v.battle_vehicle_id]=player;count+=1
-func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float):
+func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0):
  if b==null:return
  if battle_id!=b.get_instance_id():rebuild(b)
  for id in sources:
   var player=sources[id];var v=b.get_vehicle(id)
   if not enabled or v==null:player.stop();continue
   player.position=poses.get(id,v.battle_position)*Vector2(8,6)
-  player.volume_db=float(player.get_meta("base_gain"))-duck*4.-ending*5.
+  var radio_drop=14.*clampf(battle_mix,0.,1.) if bool(player.get_meta("is_radio",false)) else 0.
+  player.volume_db=float(player.get_meta("base_gain"))-radio_drop-duck*4.-ending*5.
   if not player.playing:player.play(float(player.get_meta("offset",0.)))

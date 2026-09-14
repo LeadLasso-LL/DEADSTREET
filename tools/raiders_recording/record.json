@@ -110,7 +110,44 @@
   ],
   "pickup_bed_occupants": 2,
   "pickup_occupants": 5,
-  "radio_bpm": 102,
+  "radio_bpm": 84,
+  "radio_gain_samples": [
+    {
+      "arrival_clock": 5.99999999999999,
+      "battle_mix": 0.0,
+      "gain_db": -18.0,
+      "movie_seconds": 6.0,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 10.5,
+      "battle_mix": 0.0758111102681216,
+      "gain_db": -19.0613555908203,
+      "movie_seconds": 10.5,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 11.5,
+      "battle_mix": 0.743501940722106,
+      "gain_db": -28.4090270996094,
+      "movie_seconds": 11.5,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 12.1666666666666,
+      "battle_mix": 1.0,
+      "gain_db": -32.0,
+      "movie_seconds": 13.0,
+      "phase": "active"
+    },
+    {
+      "arrival_clock": 12.1666666666666,
+      "battle_mix": 1.0,
+      "gain_db": -32.0,
+      "movie_seconds": 20.0,
+      "phase": "active"
+    }
+  ],
   "radio_origin": "Original composition; no recordings or samples",
   "results": {
     "attacker": [

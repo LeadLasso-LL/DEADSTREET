@@ -170,6 +170,11 @@ func _process(delta):
  start_button.visible=stage=="ready";start_button.position=Vector2(471,surface.size.y-70)
  if result_root!=null:result_root.position=Vector2(56,118);result_root.visible=results_visible()
  apply_poses();update_markers()
+func convoy_radio_battle_mix() -> float:
+ # The convoy radio recedes during the final two arrival seconds, before combat.
+ # Keep that quieter mix throughout ready/combat/outro, independent of camera motion.
+ if stage=="arrival":return smoothstep(maxf(0.,intro_duration-2.),intro_duration,clock)
+ return 1.0 if stage in ["ready","active","ending"] else 0.0
 func apply_poses():
  if view==null or battle==null:return
  visual_vehicle_poses.clear()
@@ -188,7 +193,7 @@ func apply_poses():
     sound.set_engine(at,clock>1.5 and clock<stop+.8,lerpf(1.35,.75,progress));engine_set=true
   visual_vehicle_poses[id]=at
   node.queue_redraw()
- convoy_audio.sync(battle,visual_vehicle_poses,audio_enabled and visible,sound.gun_duck,sound.results_music_mix)
+ convoy_audio.sync(battle,visual_vehicle_poses,audio_enabled and visible,sound.gun_duck,sound.results_music_mix,convoy_radio_battle_mix())
  for id in convoy_riders:
   var rider=convoy_riders[id];var route=routes.get(id,{})
   rider.visible=stage=="arrival" and not route.is_empty() and clock<float(route.start)-.65
@@ -318,9 +323,13 @@ class Context extends Control:
   draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE."),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
   draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),str(p.attacker.get("short_name",p.attacker.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.attacker.get("short_name",p.attacker.name)),t,155.),ink)
   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),str(p.defender.get("short_name",p.defender.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.defender.get("short_name",p.defender.name)),t,126.),ink)
-  draw_string(p.font,Vector2(60,65).lerp(Vector2(155,147),t),("ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS"),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,17,t)),muted)
+  draw_string(p.font,Vector2(60,65).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   draw_string(p.font,Vector2(343,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
-  draw_string(p.font,Vector2(219,45).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+  var location="ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS"
+  var location_size=int(lerpf(8,12,t))
+  var location_width=p.font.get_string_size(location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size).x
+  draw_string(p.font,Vector2(size.x-lerpf(12.,30.,t)-location_width,lerpf(17.,29.,t)),location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size,muted)
+
 
  func draw_emblem(texture: Texture2D,area: Rect2) -> void:
   var points=PackedVector2Array();var uvs=PackedVector2Array()
