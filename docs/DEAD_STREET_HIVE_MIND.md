@@ -75,7 +75,7 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 **Active objective:** Pistol card anatomy pass implemented and validated: 138 regular portraits repaired, all SW/SE static views reviewed, unchanged dual specialist included in 139-entry native check. See journal pistol-portrait-03 and tools/pistol_portrait_20260914/README.md.
 
-**Checkpoint / publication:** Pistol portrait checkpoint prepared on build/arsenal-checkpoint-20260911 from verified 54b1597; scoped commit/push under standing authorization. Exact resulting SHA/remote verification will be saved in tools/pistol_portrait_20260914/checkpoint_receipt.json. The estate presentation remains the version-6 checkpoint.
+**Checkpoint / publication:** PUSHED / VERIFIED: pistol art/source checkpoint 6ebfd61a59562cb3fb2d6636dcf880a92e7186f0 on origin/build/arsenal-checkpoint-20260911. Publication receipt and documentation follow-up accompany this checkpoint. See tools/pistol_portrait_20260914/checkpoint_receipt.json and journal pistol-portrait-04. Estate presentation remains version 6.
 
 **Latest estate evidence:** 834 native HUD checks across bridge/estate and three viewports; 39707 actor-frame checks in final capture, zero presentation/route/HUD camera errors. Version-6 video 88.197s; native combat 48.30s with four Whittaker survivors. Exact accepted-battle comparison and 195 protected source hashes pass; see estate README.
 

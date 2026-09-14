@@ -1,0 +1,9 @@
+{
+  "art_commit": "6ebfd61a59562cb3fb2d6636dcf880a92e7186f0",
+  "verified_remote_art_commit": "6ebfd61a59562cb3fb2d6636dcf880a92e7186f0",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "portraits_fixed": 138,
+  "native_checks": 556,
+  "native_failures": 0,
+  "protected_files": 415
+}
