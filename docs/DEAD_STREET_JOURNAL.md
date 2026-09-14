@@ -536,3 +536,8 @@ The final recording uses the normal combat outcome and contextual player orders,
 Rules/source: [Convoy arrival](../tools/convoy_arrival/README.md); [recording reproduction](../tools/raiders_recording/README.md). Owner acceptance of animation, audio and ability balance remains pending. Next: deliver the MP4 and Brandon reviews the arrival, sound and command feel; Whittaker Estate and dedicated performance work remain deferred.
 
 Final movie: 112.64 seconds, combat 82.70 seconds, 312 shot events, 4 contextual orders; H.264/AAC 1920x1080 at 30 FPS; 74.43 MiB; audio peak -6.42 dBFS. SHA256 `08c755f8466de2b622b9d7e321f2d7360fba50be90ebfa9eb3b67277aff6c297`. Zero final arrival/outro route errors. Delivery/save status is reported in the conversation.
+
+
+## 2026-09-14 — Compact mobile battle export (VALIDATED)
+
+The full-HD master is 74.43 MiB, so a separate 1280x720 H.264 copy was made for phone sharing, preserving the complete 112.64-second recording and its AAC audio. Mobile export decoding passed; file size is 16,269,495 bytes (15.52 MiB); SHA256 `0c80ad890641dd67f6bebe0a62c93fe594caced1a18d10d473d40412f6c663b7`. The full-HD master is retained. Convoy/arrival/audio implementation and records were committed and pushed as `7638a0915f0e1b3f1542d716e9401f6ce0f25937`. Mobile export source/metadata are a separate scoped checkpoint. The next owner task is to review the delivered battle, particularly the arrival, audio and command feel.

@@ -33,3 +33,8 @@ optional diagnostic call; it was stopped before combat, corrected, and not deliv
 Run `python tools/raiders_recording/record_worker.py` for the bounded capture/encode job; it restores the normal preview launcher automatically.
 
 Next: Brandon reviews the video, arrival, audio and command feel. Whittaker Estate remains deferred.
+
+Phone sharing: `python tools/raiders_recording/mobile_export.py` creates the 1280×720
+H.264 copy with the verified AAC audio unchanged. `mobile.json` records its exact
+size/hash and the full-HD master hash. The September 14 recording is 112.64 seconds;
+the mobile copy is 15.52 MiB. Full-HD master retained on the build machine.
