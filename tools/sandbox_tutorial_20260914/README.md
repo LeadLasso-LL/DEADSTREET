@@ -34,3 +34,5 @@ This is a static tutorial, not a playable training mission. It reflects the pict
 `Dead_Street_Tutorial_Preview.mp4`: 37.1 seconds, 1440×1000, 30 fps, silent H.264, 1,418,470 bytes. SHA-256 `26f0ae3c8fc24f36effccc58b8c5ed381fb1eadfaf24e102158fa89cad5ab95f`. Full decode passed. Saved preview identity: `libfile_d56b156bea7c81919ef35265ee17c7a9`, version 0. `delivery.json` records encoding/transfer evidence.
 
 Next: Brandon reviews the tutorial. Coordinate any future native opening-menu integration with this existing Tutorial entry; preserve BUILD's faction-audio preview scope. Source publication is recorded in `checkpoint_receipt.json` and the journal.
+
+Publication: source checkpoint `04034d81fc1727bcefa3f261c59ee6bf91dac213` is pushed and verified on `origin/build/arsenal-checkpoint-20260911` after Brandon's direct approval. The previous automatic-approval block is resolved. Visual review remains pending.
