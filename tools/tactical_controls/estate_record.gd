@@ -14,6 +14,7 @@ var snapshots={}
 var phase_changes=[]
 var last_phase=""
 var trim_frames=0
+var arrival_manifest=[]
 var radio_gain_samples=[]
 var horn_gain_samples=[]
 var radio_sample_index=0
@@ -22,6 +23,7 @@ var victory_sample_index=0
 var summary_checks={}
 var safety_checks=0
 var safety_errors=[]
+var entered_objective={}
 var previous_nodes={}
 var max_outro_jump=0.
 var result_camera_jump=0.
@@ -63,8 +65,8 @@ func _process(delta):
   for source in presentation.convoy_audio.sources.values():
    if bool(source.get_meta("is_radio",false)):
     radio_gain_samples.append({"movie_seconds":float(frames)/30.,"phase":presentation.stage,"arrival_clock":presentation.clock,"gain_db":source.volume_db,"battle_mix":presentation.convoy_radio_battle_mix()})
-   elif bool(source.get_meta("is_trc_horn",false)):
-    horn_gain_samples.append({"movie_seconds":float(frames)/30.,"phase":presentation.stage,"gain_db":source.volume_db,"playing":source.playing,"position":str(source.position),"range":source.max_distance,"attenuation":source.attenuation})
+   elif bool(source.get_meta("is_trc_siren",false)):
+    horn_gain_samples.append({"movie_seconds":float(frames)/30.,"phase":presentation.stage,"gain_db":source.volume_db,"playing":source.playing,"position":str(source.position),"range":source.max_distance,"pitch_scale":source.pitch_scale,"attenuation":source.attenuation})
   radio_sample_index+=1
  if presentation.stage!=last_phase:
   last_phase=presentation.stage
@@ -80,6 +82,16 @@ func _process(delta):
   if presentation.clock>=6.0 and not snapshots.has("arrival"):
    snapshots.arrival=true;capture("arrival")
   if presentation.stage=="ready" and presentation.ready_clock>.7:
+   capture("opening_cover")
+   for vehicle in b.vehicles.values():
+    if vehicle.side_id!=b.attacker_side_id:continue
+    var passengers=[]
+    for unit in b.participants.values():
+     if unit.transport_vehicle_id!=vehicle.battle_vehicle_id:continue
+     var route=presentation.routes.get(unit.participant_id,{})
+     if route.is_empty():printerr("RECORD_ERROR missing passenger dismount");quit(1);return false
+     passengers.append({"id":unit.participant_id,"seat":unit.get_meta("transport_seat",-1),"route_start":str(route.points[0]),"route_end":str(route.points[-1]),"start_seconds":route.start,"covered":not unit.occupied_cover_slot_id.is_empty(),"flanker":unit.get_meta("estate_flanker",false)})
+    arrival_manifest.append({"vehicle":vehicle.vehicle_type_id,"count":passengers.size(),"passengers":passengers})
    var result=Fixture.begin_review(scene.runtime,b)
    if result==null or not result.success:printerr("RECORD_ERROR begin");quit(1);return false
    d.setup(b,view.orders_controller);started=true
@@ -131,7 +143,11 @@ func audit_frame():
  for id in view.actor_presenter._unit_nodes:
   var unit=b.get_participant(id);var node=view.actor_presenter._unit_nodes[id]
   if unit==null or not unit.is_alive:continue
-  if p.stage=="ending" and not node.visible and safety_errors.size()<20:safety_errors.append("Hidden survivor "+id)
+  if p.stage=="ending" and not node.visible:
+   var route=p.outro.routes.get(id,{})
+   var valid_entry=route.get("action","")=="enter" and p.end_clock>=float(route.get("start",INF))+float(route.get("travel",INF))+.6 and node.position.distance_to(route.points[-1]*Vector2(8,6))<.1
+   if valid_entry:entered_objective[id]=true
+   elif safety_errors.size()<20:safety_errors.append("Hidden survivor "+id)
   if not node.visible:continue
   var body=node.get_node("body");var texture=body.sprite_frames.get_frame_texture(body.animation,body.frame)
   var size=texture.get_size();var box=body.get_global_transform_with_canvas()*Rect2(body.offset-size*.5,size)
@@ -150,9 +166,9 @@ func finish():
   var unit=b.get_participant(id);var model=preload("res://battle/combat/battle_weapon_catalog.gd").for_participant(unit)
   var expected=model.display_name.to_upper() if model!=null else ""
   hud_models.append({"id":id,"class":unit.weapon_type,"model":hud.cards[id].weapon_model.text,"expected":expected,"matches":hud.cards[id].weapon_model.text==expected,"card_height":hud.cards[id].size.y})
- var report={"result_camera_jump_pixels":result_camera_jump,"max_simultaneous_voices":p.faction_voices.max_simultaneous,"faction_voice_events":p.faction_voices.played,"voice_clips_loaded":p.faction_voices.loaded_clips,"voice_missing":p.faction_voices.missing,"actor_frame_checks":safety_checks,"presentation_errors":safety_errors,"max_outro_jump_pixels":max_outro_jump,"camera_safety_frames":view.get_node("CameraSafety").checked_frames,"camera_safety_violations":view.get_node("CameraSafety").violations,"radio_origin":"Original composition; no recordings or samples","radio_bpm":106,"horn_gain_samples":horn_gain_samples,"radio_gain_samples":radio_gain_samples,"victory_audio_samples":victory_audio_samples,"extra_victory_card_seconds":5,"showcase_loadout":Director.config(),"seed":9146,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"result_summaries":p.result_summaries,"result_summary_checks":summary_checks,"hud_weapon_models":hud_models,"audio_shots":p.sound.shots_played,"convoy_slots":3,"attacking_units":16,"defending_units":16,"ambient_emitters":p.convoy_audio.sources.size()}
+ var report={"entered_objective":entered_objective.keys(),"arrival_manifest":arrival_manifest,"result_camera_jump_pixels":result_camera_jump,"faction_vocals_enabled":false,"max_simultaneous_voices":0,"faction_voice_events":[],"voice_clips_loaded":0,"voice_missing":[],"actor_frame_checks":safety_checks,"presentation_errors":safety_errors,"max_outro_jump_pixels":max_outro_jump,"camera_safety_frames":view.get_node("CameraSafety").checked_frames,"camera_safety_violations":view.get_node("CameraSafety").violations,"radio_origin":"Original composition; no recordings or samples","radio_bpm":106,"horn_gain_samples":horn_gain_samples,"radio_gain_samples":radio_gain_samples,"victory_audio_samples":victory_audio_samples,"extra_victory_card_seconds":5,"showcase_loadout":Director.config(),"seed":9146,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"result_summaries":p.result_summaries,"result_summary_checks":summary_checks,"hud_weapon_models":hud_models,"audio_shots":p.sound.shots_played,"convoy_slots":3,"attacking_units":16,"defending_units":16,"ambient_emitters":p.convoy_audio.sources.size()}
  FileAccess.open(out+"/record.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
  print("RECORD_COMPLETE ",JSON.stringify(report))
  scene.queue_free()
  await process_frame
- quit(0 if b.battle_phase=="resolved" else 1)
+ quit(0 if b.battle_phase=="resolved" and safety_errors.is_empty() and report.outro_errors.is_empty() and report.arrival_route_errors.is_empty() else 1)

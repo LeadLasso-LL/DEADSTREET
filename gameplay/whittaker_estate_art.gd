@@ -145,6 +145,19 @@ func ground():
    oval(at+Vector2(24,9),Vector2(31,12),Color(.10,.16,.09,.23))
  for spec in [[45.,8.],[47.,104.],[20.,15.],[173.,6.],[171.,102.]]:
   distant_tree(Vector2(spec[0]*8,spec[1]*6),1.2)
+ # Garage access apron continues through the lower gate to the outside track.
+ var apron=Rect2(80*8,96*6,20*8,16*6)
+ r(apron.grow(3),Color("#979078"));r(apron,Color("#78755e"));grain(apron,950)
+ var track=Rect2(18*8,109*6,85*8,4*6)
+ r(track,Color("#77735b"));grain(track,850)
+ for x in [80.,100.]:
+  var at=Vector2(x*8,102.6*6)
+  oval(at+Vector2(0,20),Vector2(4,3),Color(.1,.13,.08,.18))
+ # Short compressed turf marks follow the assault vehicles' final approach.
+ for pair in [[Vector2(23,63),Vector2(39,49)],[Vector2(23,89),Vector2(41,78)],[Vector2(22,111),Vector2(30,103)]]:
+  for offset in [-1.2,1.2]:
+   var side=(pair[1]-pair[0]).normalized().orthogonal()*offset
+   l((pair[0]+side)*Vector2(8,6),(pair[1]+side)*Vector2(8,6),Color(.25,.27,.16,.22),2.)
  # Main gate leaves are open inward, preserving the vehicle/infantry entrance.
  for y in [53.,73.]:
   var at=Vector2(400,y*6);var end=at+Vector2(40,-16 if y<60 else 16)

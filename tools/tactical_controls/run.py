@@ -31,9 +31,10 @@ for directory in ('battle', 'campaign', 'core', 'gameplay'):
         files[p.relative_to(repo).as_posix()] = str(p)
 # Raw generated ambience is loaded directly; no full asset-package re-export.
 for p in (repo/'assets/audio/convoy').glob('*.wav'):
+    if p.stem == 'trc_horn': continue
     files[p.relative_to(repo).as_posix()] = str(p)
-for p in (repo/"assets/audio/factions").rglob("*.ogg"):
-    files[p.relative_to(repo).as_posix()] = str(p)
+# Faction vocals are parked by owner decision; exclude any stale launcher entry.
+files = {k:v for k,v in files.items() if not k.startswith('assets/audio/factions/') and k != 'gameplay/tactical_faction_voices.gd'}
 for p in (repo/"assets/art/whittaker_estate").rglob("*.png"):
     files[p.relative_to(repo).as_posix()] = str(p)
 for p in out.glob('*.gd'):

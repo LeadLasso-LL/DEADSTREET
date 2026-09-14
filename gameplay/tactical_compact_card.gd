@@ -48,7 +48,7 @@ func setup(font: Font) -> void:
 	health.position = Vector2(6, 90)
 	health.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-func refresh(p, selected: bool, ordinal: int) -> void:
+func refresh(p, selected: bool, ordinal: int, condensed: bool = false) -> void:
 	var c = Query.card_for(p, p.participant_id if selected else "")
 	participant_id = p.participant_id
 	disabled = not p.is_alive
@@ -77,10 +77,7 @@ func refresh(p, selected: bool, ordinal: int) -> void:
 	var model = Card.Weapons.for_participant(p)
 	weapon_model.text = model.display_name.to_upper() if model != null else ""
 	weapon_model.size.x = size.x - 12
-	var model_points = 9
-	while model_points > 7 and card_font.get_string_size(weapon_model.text, HORIZONTAL_ALIGNMENT_LEFT, -1, model_points).x > weapon_model.size.x:
-		model_points -= 1
-	weapon_model.add_theme_font_size_override("font_size", model_points)
+
 	tooltip_text = role.text + " · Unit tier %d\n" % p.unit_tier
 	if model != null:
 		tooltip_text += model.display_name + " · Weapon tier %d\n" % model.tier
@@ -91,3 +88,35 @@ func refresh(p, selected: bool, ordinal: int) -> void:
 	command_status.size.x = size.x - 12
 	command_status.text = {"hold":"Holding", "push":"Pushing", "fall_back":"Falling Back"}.get(badge, "")
 	command_status.add_theme_color_override("font_color", {"hold":Color("#a8adb1"), "push":Color("#8eb798"), "fall_back":Color("#cc8987")}.get(badge, Color.WHITE))
+
+	# Keep the bridge panel fixed; compact each card inside its assigned row.
+	for field in [role, weapon_model, status, number, command_status]:
+		field.size.y = 14.0 if field == role else 12.0
+	role.visible = not condensed
+	portrait.visible = not condensed or size.x >= 116.0
+	weapon_symbol.position = Vector2(6, 3 if condensed else 5)
+	weapon_symbol.size = Vector2(26, 26) if condensed else Vector2(34, 32)
+	role.position = Vector2(6, 49)
+	weapon_model.position = Vector2(37, 4) if condensed else Vector2(6, 62)
+	weapon_model.size.x = size.x - (70 if portrait.visible else 43) if condensed else size.x - 12
+	if condensed:
+		portrait.position = Vector2(size.x - 29, 2)
+		portrait.size = Vector2(24, 27)
+		status.position = Vector2(6, 30)
+		status.size.x = size.x - 53
+		number.position = Vector2(size.x - 45, 30)
+		number.size.x = 39
+		number.text = "T%d·%02d" % [p.unit_tier, ordinal]
+		command_status.position = Vector2(37, 17)
+		command_status.size.x = weapon_model.size.x
+		health.position.y = 42
+	else:
+		status.position.x = 6
+		number.position.y = 38
+		command_status.position = Vector2(6, 76)
+		health.position.y = 90
+	command_status.add_theme_font_size_override("font_size", 8 if condensed else 9)
+	var model_points = 8 if condensed else 9
+	while model_points > 7 and card_font.get_string_size(weapon_model.text, HORIZONTAL_ALIGNMENT_LEFT, -1, model_points).x > weapon_model.size.x:
+		model_points -= 1
+	weapon_model.add_theme_font_size_override("font_size", model_points)

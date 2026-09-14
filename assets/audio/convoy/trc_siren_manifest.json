@@ -1,0 +1,10 @@
+{
+  "file": "trc_siren.wav",
+  "seconds": 12,
+  "sample_rate": 44100,
+  "peak": 0.72,
+  "rms": 0.28702455776925156,
+  "sha256": "b0ef1ce4d75c1a3559b9b84ad719e633dd441ed9d6940fa8bd278ee7e187bf94",
+  "source": "Original procedural synthesis; broken warning siren, no external samples or vocals",
+  "engine_changed": false
+}

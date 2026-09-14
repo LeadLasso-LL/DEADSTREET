@@ -1,0 +1,79 @@
+{
+  "checks": 786,
+  "errors": [],
+  "faction_vocals_enabled": false,
+  "samples": [
+    {
+      "card_height": 94.0,
+      "cards": 12,
+      "hud_fraction": 0.282499998472211,
+      "hud_height": 225.717498779297,
+      "map": "river_bridge",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 94.0,
+      "cards": 12,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "map": "river_bridge",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 94.0,
+      "cards": 12,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "map": "river_bridge",
+      "viewport": [
+        1280,
+        720
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 46.0,
+      "cards": 16,
+      "hud_fraction": 0.282499998472211,
+      "hud_height": 225.717498779297,
+      "map": "whittaker_estate",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 46.0,
+      "cards": 16,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "map": "whittaker_estate",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 46.0,
+      "cards": 16,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "map": "whittaker_estate",
+      "viewport": [
+        1280,
+        720
+      ],
+      "voices": 0
+    }
+  ]
+}

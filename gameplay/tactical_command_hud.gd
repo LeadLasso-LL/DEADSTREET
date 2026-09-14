@@ -28,7 +28,10 @@ var normal = Card.style(Color("#242d30"), Color("#4b5757"))
 var active = Card.style(Color("#42473b"), Color("#c9bf93"))
 var roster: Array[String] = []
 var battle_id: int = 0
-var height: float = 216.0
+const DESIGN_SIZE = Vector2(1152, 800)
+const PANEL_HEIGHT = 226.0
+const ROSTER_HEIGHT = 96.0
+var height: float = PANEL_HEIGHT
 var feedback_clock: float = 0.0
 
 func setup(p_view: Node) -> void:
@@ -216,11 +219,12 @@ func _process(delta: float) -> void:
 	var columns = mini(12, maxi(1, ordered.size()))
 	if ordered.size() > 12: columns = ceili(float(ordered.size()) / 2.0)
 	var rows = ceili(float(ordered.size()) / columns)
-	var row_step = 68.0 if rows > 1 else 96.0
-	height = 130.0 + rows * row_step
-	var factor = get_viewport_rect().size.x / 1152.0
+	var row_step = ROSTER_HEIGHT / rows
+	height = PANEL_HEIGHT
+	var viewport_size = get_viewport_rect().size
+	var factor = minf(viewport_size.x / DESIGN_SIZE.x, viewport_size.y / DESIGN_SIZE.y)
 	surface.scale = Vector2.ONE * factor
-	surface.position = Vector2(0, get_viewport_rect().size.y - height * factor)
+	surface.position = Vector2((viewport_size.x - DESIGN_SIZE.x * factor) * .5, viewport_size.y - height * factor)
 	surface.size = Vector2(1152, height)
 	background.size = Vector2(1128, height - 5)
 	command_row.position = Vector2(0, height - 57)
@@ -234,19 +238,7 @@ func _process(delta: float) -> void:
 		var widget = cards[id]
 		widget.position = Vector2(24 + (i % columns) * (width + 5), 71 + (i / columns) * row_step)
 		widget.size = Vector2(width, row_step - 2)
-		widget.refresh(p, c != null and c.is_selected(id), roster.find(id) + 1)
-		if rows > 1:
-			widget.weapon_symbol.position = Vector2(6, 3)
-			widget.weapon_symbol.size = Vector2(32, 27)
-			widget.portrait.position = Vector2(width - 35, 2)
-			widget.portrait.size = Vector2(29, 33)
-			widget.role.position = Vector2(43, 5)
-			widget.role.size = Vector2(width - 84, 14)
-			widget.weapon_model.position = Vector2(6, 39)
-			widget.status.position.y = 51 if p.is_wounded or not p.is_alive else 28
-			widget.number.position.y = 29
-			widget.command_status.position.y = 51
-			widget.health.position.y = 63
+		widget.refresh(p, c != null and c.is_selected(id), roster.find(id) + 1, rows > 1)
 		if p.is_alive:
 			living += 1
 	count_label.text = "[color=#8cb994]%d[/color] ACTIVE · [color=#d87572]%d[/color] ELIMINATED" % [living, roster.size() - living]

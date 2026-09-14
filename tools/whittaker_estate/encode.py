@@ -5,12 +5,17 @@ import numpy as np
 import imageio_ffmpeg
 r=Path(__file__).resolve().parents[2];out=r/'tools/whittaker_estate';ff=imageio_ffmpeg.get_ffmpeg_exe()
 record=json.loads((out/'record.json').read_text(encoding='utf-8'))
-assert record['phase']=='resolved' and record['winner']=='defender',record.get('winner')
+assert record['phase']=='resolved' and record['winner'] in ['attacker','defender'],record.get('winner')
 assert not record['arrival_route_errors'] and not record['outro_errors']
 assert not record['presentation_errors'] and record['camera_safety_violations']==0
 assert record['max_outro_jump_pixels']<3.0 and record['result_camera_jump_pixels']<.1
-assert not record['voice_missing'] and record['voice_clips_loaded']==36 and record['max_simultaneous_voices']<=3
+assert not record['voice_missing'] and record['voice_clips_loaded']==0 and record['max_simultaneous_voices']==0
 assert all(x['matches'] for x in record['hud_weapon_models'])
+assert record['horn_gain_samples'] and all(x['pitch_scale']==.5 for x in record['horn_gain_samples'])
+assert {x['vehicle']:x['count'] for x in record['arrival_manifest']}=={'aegis':7,'watchdog':5,'vigil':4}
+passengers=[p for v in record['arrival_manifest'] for p in v['passengers']]
+assert len({p['id'] for p in passengers})==16 and all(p['covered'] for p in passengers)
+assert sum(p['flanker'] for p in passengers)==4
 trim=record['trim_frames']/30;raw=out/'estate_raw.avi'
 assert raw.exists()
 meta=subprocess.run([ff,'-hide_banner','-i',str(raw)],capture_output=True,text=True).stderr

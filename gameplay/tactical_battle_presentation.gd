@@ -15,7 +15,6 @@ var result_cards={}
 var markers={}
 var sound: Node
 var convoy_audio=preload("res://gameplay/tactical_convoy_audio.gd").new()
-var faction_voices
 var convoy_riders={}
 var visual_vehicle_poses={}
 const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
@@ -71,7 +70,6 @@ func setup(p_view):
  )
  arrival_status=Card.label(deployment_panel,Vector2(14,68),Vector2(344,32),"",10,Color("#a6b1a5"),font)
  sound=preload("res://gameplay/tactical_battle_audio.gd").new();view.add_child(sound);sound.setup(view);convoy_audio.setup(view)
- faction_voices=preload("res://gameplay/tactical_faction_voices.gd").new();view.add_child(faction_voices);faction_voices.setup(view)
 func reset(b):
  for node in view.actor_presenter._unit_nodes.values():
   node.remove_meta("outro_owned")

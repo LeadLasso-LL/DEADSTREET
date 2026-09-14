@@ -15,12 +15,16 @@ var held=false
 var withdrawn=false
 var released=false
 var counterattack=false
+var flank_ids=[]
+var flank_paths=[]
+var flank_completed={}
 var deselect_at=-1.0
 const Armor=preload("res://campaign/equipment/armor_catalog.gd")
 static func config() -> Dictionary:
  var c={"map_id":"whittaker_estate","attacker":{"faction":"trc","vehicles":["aegis","watchdog","vigil"],"units":[]},"defender":{"faction":"whittaker","vehicles":["mesa","outlander","workhorse"],"units":[]}}
+ c["estate_flank_count"]=4
  c.attacker["vehicle_occupants"]=[{"units":7,"bed":0},{"units":5,"bed":0},{"units":4,"bed":0}]
- var attack=["pistol","pistol","smg","smg","smg","shotgun","shotgun","shotgun","rifle","rifle","rifle","rifle","rifle","rifle","sniper","sniper"]
+ var attack=["pistol","pistol","smg","smg","shotgun","shotgun","rifle","rifle","rifle","rifle","sniper","sniper","smg","shotgun","rifle","rifle"]
  var defense=["pistol","pistol","smg","smg","shotgun","shotgun","shotgun","shotgun","rifle","rifle","rifle","rifle","rifle","sniper","sniper","sniper"]
  var guns={"attacker":{"pistol":"glock_17","smg":"mp5","shotgun":"benelli_m4","rifle":"m4a1","sniper":"awm"},"defender":{"pistol":"m1911","smg":"mac10","shotgun":"rem870","rifle":"m4a1","sniper":"awm"}}
  for side in ["attacker","defender"]:
@@ -33,6 +37,25 @@ func setup(battle,controller):
  b=battle;orders=controller
  for id in b.get_sorted_tactical_force_ids():
   Force.set_command(b,id,"push" if b.get_tactical_force(id).side_id==b.attacker_side_id else "hold")
+ # The four-person flank is a showcase order using ordinary navigation.
+ # One external path is issued once, so later player input can replace it.
+ for p in b.participants.values():
+  if not bool(p.get_meta("estate_flanker",false)):continue
+  var n=flank_ids.size();flank_ids.append(p.participant_id)
+  var targets=[Vector2(85.+n*3.,110.5),Vector2(85.+n*3.,99.5)]
+  var from=p.battle_position;var points: Array[Vector2]=[];var valid=true
+  for target in targets:
+   var route=preload("res://battle/navigation/battle_navigation_service.gd").find_path(b,from,target)
+   if route==null or not route.success:valid=false;break
+   points.append_array(route.waypoints);from=target
+  if valid:
+   preload("res://battle/geometry/battle_cover_service.gd").release_all_for_participant(b,p.participant_id)
+   valid=p.set_navigation_path(from,points,preload("res://battle/core/battle_participant.gd").NAVIGATION_SOURCE_EXTERNAL)
+   if valid:
+    p.set_movement_speed(preload("res://battle/combat/battle_combat_behavior_catalog.gd").DEFAULT_COMBAT_MOVEMENT_SPEED)
+    p.set_player_move_intent()
+  flank_paths.append({"id":p.participant_id,"valid":valid,"waypoints":points.size(),"gate_goal":str(from)})
+ log.append({"time":0.,"event":"south_gate_flank","units":flank_paths.duplicate(true)})
 func healthy(side: String) -> Array:
  var units=[]
  for p in b.participants.values():
@@ -53,6 +76,13 @@ func stage(command: String,ids: Array,line: float,why: String):
   deselect_at=t+2.0
 func tick():
  var t=b.elapsed_time_seconds
+ for id in flank_ids:
+  var unit=b.get_participant(id)
+  if unit==null or not unit.is_alive or unit.is_wounded:continue
+  if not flank_completed.has(id) and unit.battle_position.y<101. and unit.battle_position.x>81.:
+   flank_completed[id]=true;log.append({"time":t,"event":"flanker_entered_gate","id":id,"position":str(unit.battle_position)})
+  if unit.current_player_intent()=="hold" and unit.current_player_group_command().is_empty() and unit.battle_position.y<101. and unit.has_player_order_position and unit.battle_position.distance_to(unit.player_order_position)<.8:
+   unit.clear_player_tactical_intent()
  for e in b.combat_feedback_events:
   if seen.has(e.sequence_id):continue
   seen[e.sequence_id]=true
@@ -108,7 +138,7 @@ func tick():
  if pushes<4:
   var movers=[];var x=0.0;var recent=-100.0
   for p in own:
-   if p.weapon_type in ["pistol","smg","shotgun"] and p.current_player_group_command().is_empty():
+   if p.weapon_type in ["pistol","smg","shotgun"] and p.current_player_group_command().is_empty() and p.participant_id not in flank_ids:
     movers.append(p.participant_id);x+=p.battle_position.x;recent=maxf(recent,float(last_shot.get(p.participant_id,-100.0)))
   if movers.size()>=2:
    x/=movers.size()

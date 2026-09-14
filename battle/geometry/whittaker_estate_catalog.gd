@@ -3,8 +3,9 @@ extends RefCounted
 const Base=preload("res://battle/geometry/harold_street_catalog.gd")
 const Fleet=preload("res://battle/geometry/river_bridge_catalog.gd")
 const ID="whittaker_estate_v1"
-const SIZE=Vector2(176,106)
-const ARRIVAL=Rect2(19,36,26,51)
+const SIZE=Vector2(176,118)
+const ARRIVAL=Rect2(19,35,31,79)
+const SOUTH_GATE=Rect2(80,101,20,9)
 const DEFENDERS=Rect2(53,21,76,75)
 const HOUSE=Rect2(145,20,70,73)
 const ENTRANCE=Vector2(141,63)
@@ -28,8 +29,12 @@ static func props() -> Array:
   rows.append(["front_fence_%d"%span[0],Rect2(49,span[0],.7,span[1]-span[0]),"fence",""])
  for y in [9.,24.,32.,52.,74.,86.,95.,102.]:
   rows.append(["gate_pier_%d"%y,Rect2(48.35,y-.65,2.,1.8),"pier",""])
- for spec in [[49.,9.,80.],[100.,102.,70.]]:
-  rows.append(["boundary_fence_%d"%spec[1],Rect2(spec[0],spec[1],spec[2],.6),"fence",""])
+ for spec in [[49.,9.,80.],[49.,102.,31.],[100.,102.,76.]]:
+  rows.append(["boundary_fence_%d_%d"%[spec[0],spec[1]],Rect2(spec[0],spec[1],spec[2],.6),"fence",""])
+ # South gate is aligned with the garage doors; leaves swing fully outward.
+ for x in [80.,100.]:
+  rows.append(["service_gate_pier_%d"%x,Rect2(x-.6,101.4,1.2,1.2),"pier",""])
+  rows.append(["service_gate_open_%d"%x,Rect2(x-.3,102.6,.6,5.4),"fence",""])
  # The fountain is a series of fitted strips, not one oversized square collider.
  for i in range(6):
   var height=11./6.;var y=-5.5+i*height;var half=sqrt(maxf(0.,30.25-pow(absf(y+height*.5),2)))
@@ -63,12 +68,12 @@ static func physical_rects(row: Array) -> Array:
  return [bounds] if bounds.has_area() else []
 static func build():
  var d=Base.Definition.new();d.definition_id=ID;d.width=SIZE.x;d.height=SIZE.y
- d.surfaces.append(Base.Surface.new("public_road",Base.Surface.KIND_ASPHALT,Rect2(2,0,15,106)))
+ d.surfaces.append(Base.Surface.new("public_road",Base.Surface.KIND_ASPHALT,Rect2(2,0,15,118)))
  d.surfaces.append(Base.Surface.new("estate_drive",Base.Surface.KIND_ASPHALT,Rect2(17,56,83,18)))
  d.surfaces.append(Base.Surface.new("fountain_court",Base.Surface.KIND_SIDEWALK,Rect2(82,43,48,44)))
  d.surfaces.append(Base.Surface.new("service_drive",Base.Surface.KIND_ALLEY,Rect2(50,87,79,8)))
  d.obstacles.append(Base.Obstacle.new("boundary_north",Rect2(0,0,176,5),true,false,"boundary"))
- d.obstacles.append(Base.Obstacle.new("boundary_south",Rect2(0,103,176,3),true,false,"boundary"))
+ d.obstacles.append(Base.Obstacle.new("boundary_south",Rect2(0,115,176,3),true,false,"boundary"))
  for row in props():
   if row[2]=="fountain":continue
   var tall=row[2] in ["house","wing","column","step_wall","gatehouse","garage","pier","crates"]
@@ -76,7 +81,7 @@ static func build():
   for i in range(bounds.size()):
    d.obstacles.append(Base.Obstacle.new(row[0]+("_%d"%i if architectural(row) else ""),bounds[i],true,tall,row[2]))
  for row in props():
-  if row[2] in ["house","wing","column","step_wall","garage","fountain_body","pier"] or str(row[0]).begins_with("boundary_fence"):continue
+  if row[2] in ["house","wing","column","step_wall","garage","fountain_body","pier"]:continue
   if row[2]=="tree" and (row[1].get_center().y<24 or row[1].get_center().x>130):continue
   var box: Rect2=row[1];var id="cover_"+row[0];var c=box.get_center()
   if row[2]=="fountain":
@@ -105,6 +110,7 @@ static func build():
     if obstacle.bounds.grow(.36).has_point(at):valid=false;break
    if valid:d.cover_slots.append(Base.Slot.new(id+"_"+str(n),id,at,points[n][1]))
  d.attacker_deployment_area.add_pocket(Base.Pocket.new("estate_approach",Base.rect_points(ARRIVAL)))
+ d.attacker_deployment_area.add_pocket(Base.Pocket.new("estate_south_approach",Base.rect_points(Rect2(49,103,58,11))))
  d.defender_deployment_area.add_pocket(Base.Pocket.new("estate_defense",Base.rect_points(DEFENDERS)))
  d.attacker_vehicle_placement_context=Base.VehicleContext.new(false,ARRIVAL.get_center(),true,Vector2.RIGHT)
  d.defender_vehicle_placement_context=Base.VehicleContext.new(false,DEFENDERS.get_center(),true,Vector2.LEFT)

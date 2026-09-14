@@ -38,7 +38,7 @@ func rebuild(b):
     sources["estate_porch_radio"]=player
   var count=0
   for v in candidates:
-   var name="trc_horn" if identity=="trc" else ("raiders_radio" if identity=="stateline" else "police_siren")
+   var name="trc_siren" if identity=="trc" else ("raiders_radio" if identity=="stateline" else "police_siren")
    if identity not in ["stateline","nbpd","trc"]:break
    if identity=="trc" and b.battlefield_geometry.authored_layout_id!="whittaker_estate_v1":break
    if identity=="nbpd" and b.battlefield_geometry.authored_layout_id!="river_suspension_bridge_v1":break
@@ -48,7 +48,8 @@ func rebuild(b):
    var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
    player.max_distance=900. if identity=="stateline" else 1050.;player.attenuation=.7;player.panning_strength=.75
    player.set_meta("base_gain",-18. if identity=="stateline" else (-13.5 if identity=="trc" else -29.));player.set_meta("offset",count*2.35)
-   player.set_meta("is_trc_horn",identity=="trc")
+   player.set_meta("is_trc_siren",identity=="trc")
+   player.pitch_scale=.5 if identity=="trc" else 1.
    player.set_meta("is_radio",identity=="stateline");player.set_meta("side_id",side)
    sources[v.battle_vehicle_id]=player;count+=1
 func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0,victory_mix: float=0.0):
@@ -71,8 +72,8 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
   player.max_distance=lerpf(float(player.get_meta("range",900.)),100000.,foreground) if is_radio else 1050.
   player.attenuation=lerpf(float(player.get_meta("attenuation",.7)),0.,foreground)
   player.panning_strength=.75*(1.-foreground)
-  if bool(player.get_meta("is_trc_horn",false)):
-   # A persistent warning source, not radio music. Retain mid harmonics and
+  if bool(player.get_meta("is_trc_siren",false)):
+   # A persistent warning source, not radio music. Use broken, wavering warning pulses and
    # enough distance reach to remain audible after the camera leaves the convoy.
    var victory_dip=clampf(victory_mix,0.,1.) if not winner.is_empty() and str(player.get_meta("side_id",""))!=winner else 0.
    player.volume_db=-13.5-6.0*clampf(battle_mix,0.,1.)-2.0*duck-3.0*ending-11.0*victory_dip

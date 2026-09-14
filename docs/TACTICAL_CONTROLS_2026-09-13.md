@@ -1,3 +1,7 @@
+## 2026-09-14 owner correction: uniform HUD footprint
+
+The complete combat HUD keeps the bridge baseline size across maps and roster sizes: 226 logical units in the 1152x800 reference frame, scaled to fit both viewport dimensions. More than twelve unit cards use two condensed 46-unit rows inside the same panel; the HUD must never grow taller to accommodate units. Bridge/estate native layout checks cover 12/16 cards at three viewport sizes, including card states and field containment.
+
 # Tactical HUD and player orders — 2026-09-13
 
 Status: IMPLEMENTED and VALIDATED through the 2026-09-14 line-command revision; owner playtest acceptance pending. Source: Brandon's

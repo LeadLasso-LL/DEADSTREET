@@ -1,0 +1,14 @@
+{
+  "captured_sources": "tools/whittaker_estate/record_source_hashes.json",
+  "post_capture_changes": [
+    {
+      "path": "tools\\tactical_controls\\estate_audit.gd",
+      "reason": "Removed one extra blank line at EOF from audit fixture; no runtime/capture behavior change",
+      "before_sha256": "07f3a7ace66a2f03241e8fc21c4dc3359ee1989188da5e4f73ae5ac72106a5d4",
+      "after_sha256": "f2a413572cb4241657ab03af281072d5340e01e12f5b2c73b4cb1f900be0427f"
+    }
+  ],
+  "video_version": 3,
+  "video_sha256": "4b3925d681c7c22d11e97571d903e332909718b3f146c2b448cfd8d92519bfbe",
+  "unrelated_work": "preserved"
+}

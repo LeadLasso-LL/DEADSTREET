@@ -58,8 +58,8 @@ Existing code does not automatically mean approved design.
 - Documented origin: https://github.com/LeadLasso-LL/DEADSTREET.git
 - Observed build branch: build/arsenal-checkpoint-20260911
 - Published gameplay checkpoint: 15c6bbc1292c745408869e545d5ae9dab31991cc.
-- Verified remote checkpoint: cd23759a82e0d7c2c5c1060ca9dd084cb1bab80c.
-- Approved source/handoff push completed; this later completion receipt is local.
+- Verified remote checkpoint: a493f38afd27802798d84159ee56ef3abc7221f7.
+- Approved source, handoff and completion receipt are published; owner video feedback next.
 - [Standing commit/push authorization](PROJECT_WORKFLOW_AUTHORIZATION.md) applies
   to the established work/destination. Preserve scope and unrelated changes.
 
@@ -73,18 +73,11 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Second Whittaker Estate correction completed and verified; owner visual/listening review next. See [current estate report](../tools/whittaker_estate/README.md).
+**Active objective:** Owner feedback implemented and validated: vocals parked; bridge-sized HUD; half-speed broken TRC siren; complete lower fence/gate; covered assault arrival with exact 7/5/4 passengers and four-person Vigil flank; white Workhorse on circle. Version-3 video saved. Active build chat is finishing the scoped checkpoint; owner review next. See journal active-resume-16.
 
-| Work | Owner | State / scope |
-| --- | --- | --- |
-| Estate architecture/projection/HUD/ending | Active continuation chat, 2026-09-14 | Implemented and validated; owner acceptance pending. |
-| Faction voices | Active continuation chat | 36 TRC/Whittaker pack-07 clips integrated; other 17 banks and pressure hook remain open. |
-| Mobile recording | Active continuation chat | 74.537 seconds, complete stereo export saved as version 2; four Whittaker survivors. |
-| Performance | Parked from broad optimization | Fresh estate 32-unit sample 44.42 FPS/p95 41.517 ms; remains unresolved. |
+**Checkpoint / publication:** PUSHED / VERIFIED, 2026-09-14: origin/build/arsenal-checkpoint-20260911 is verified at a493f38afd27802798d84159ee56ef3abc7221f7, including gameplay 15c6bbc, handoff cd23759 and completion receipt a493f38. Brandon explicitly approved publication of the receipt in the active chat. Both publication blocks are resolved. Owner video feedback and visual/listening acceptance remain pending. This local status update will accompany the next substantive build checkpoint; no further publication is needed for this approval turn.
 
-**Checkpoint / publication:** PUSHED / VERIFIED, 2026-09-14: gameplay checkpoint 15c6bbc1292c745408869e545d5ae9dab31991cc and handoff checkpoint cd23759a82e0d7c2c5c1060ca9dd084cb1bab80c are published to origin/build/arsenal-checkpoint-20260911. Brandon explicitly approved the push in the active chat and will review the video shortly, then provide feedback. Owner visual/listening acceptance remains pending. This completion receipt is a local documentation-only commit; automatic approval review separately blocked its publication as outside the originally approved two-commit payload.
-
-**Latest estate evidence:** 31,514 actor-frame checks, zero HUD/hidden-survivor/route errors, 0 px result-camera jump, current command checks 128/128 and native UI 43/43. Exact evidence and failed-trial details in estate report. The old projection omission was the major sprite displacement/phase-jump defect.
+**Latest estate evidence:** HUD 786 checks, assault/passengers 25081 checks, native line controls 43. Final capture 39707 actor-frame checks, zero HUD/hidden-survivor/route errors and zero result-camera jump. 88.197-second video version 3, native combat 48.30s, four Whittaker survivors. See estate report for bounded validation and failed trials.
 
 **Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
 max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
@@ -97,7 +90,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon will review shortly and provide feedback on the corrected estate video/map/audio. Record feedback before selecting another pass. Estate live performance and remaining voice banks remain explicit unfinished work; do not claim sandbox completion.
+**Immediate next task:** Finish scoped source checkpoint/publication, then Brandon reviews version 3. Apply further feedback without reopening parked vocals or broad performance work. Consult Git and local feedback checkpoint receipt for exact publication state.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

@@ -751,3 +751,81 @@ Fresh checks verified local cd23759, remote 2cf7e4a, exact established origin/br
 Automatic approval review separately rejected creating and publishing this additional documentation commit because the current approval covered the two previously identified commits. That action was rejected before execution. This completion receipt is saved and committed locally; its publication remains pending separate approval. A first local-only attempt had a command-line quoting error before execution; writing an explicit script file resolves the serialization issue. No further publication attempt was made. Unrelated dirty work is preserved, and no gameplay edits or new tests were needed.
 
 Next: receive and acknowledge Brandon video feedback, record decisions before dependent edits, then select the next correction. Estate performance 44.42 FPS, other 17 voice banks, the pressure hook, and owner visual/listening acceptance remain open. Source and prior handoff are on GitHub; this completion note is local until its publication is approved.
+
+
+## 20260914-active-resume-08 - Completion receipt approved and pushed
+
+Brandon replied approve to the explicit request to publish documentation-only receipt a493f38 to the established GitHub build branch. Fresh checks confirmed branch, origin and local HEAD. A normal push of exactly a493f38afd27802798d84159ee56ef3abc7221f7 succeeded; ls-remote verified equality. This resolves the separate documentation publication block recorded in entry 07. No new commit was created or included in this push, and no gameplay changes/tests were needed.
+
+The five local status records now reflect the verified result and will accompany the next substantive build checkpoint. Do not create recursive completion-note commits or request another approval merely to report this successful push. Existing unrelated work is preserved. Next: receive owner video feedback, acknowledge it promptly, record the decisions, then select the next correction.
+
+
+## 20260914-active-resume-09 - Owner rejects vocals; fixed HUD and broken TRC siren
+
+Source: Brandon in active build chat. He dislikes the faction vocals and directs parking the entire idea and removing them from battles; retain the built premise for possible future work. This supersedes pack-07 integration/listening-review and remaining-bank expansion as active tasks. Remove runtime playback and active asset loading, preserve recoverable source/history. No replacement voices.
+
+HUD direction: use the same size as the bridge across maps. Additional units may use two rows, but condense unit cards inside a fixed panel; the HUD must not grow toward half the screen. Existing no-unit-under-HUD rule still applies. Inspection found 226 logical units for the bridge single row versus 266 for two rows, plus width-only scaling that makes widescreen views disproportionately tall. Implement fixed bridge height and scaling bounded by both viewport dimensions; validate bridge and estate at the same resolutions.
+
+Follow-up: keep the driving/engine sound that Brandon likes. Replace only TRC foghorn with an original broken, wavering warning siren with a Purge-like feel, clearly distinct from engines. Keep contextual spatial emitter and battle/victory attenuation. Not a request for a film recording or new faction voices.
+
+State: implementation starting from a493f38 with existing local status updates and unrelated work preserved. Validation not yet run for these changes. Next: remove active voice path; condense HUD; create siren; run bounded native layout/audio checks and provide updated review evidence.
+
+
+## 20260914-active-resume-10 - Fence, assault arrival and three-person flank; first implementation
+
+Additional owner directions: finish the lower estate fence, leaving a garage-aligned opening with a visible open gate; arriving attackers must immediately occupy opening cover before combat. TRC vehicles should make an assault approach over grass with useful diagonal/sideways positions, using vehicles and front fencing as initial shelter. Brandon also suggested a three-person TRC flank to the new lower gate. Implement as this estate showcase order, not a forced rule for every battle; ordinary player movement can replace it.
+
+Current implementation pass: fixed 226-logical-unit bridge HUD with scale bounded by 1152x800 reference dimensions, condensed two-row cards; faction voice service/assets moved out of runtime into tools/parked_faction_voices; original archive/history retained. New procedural broken TRC warning siren replaces horn, engine and Whittaker music sources preserved. Complete lower fence and outward-open service gate, usable outside verge, oriented vehicle parking, legal occupied vehicle/fence cover for all attackers. Showcase carries three mixed-role flankers in rear transport and issues one replaceable navigation path through gate. No simulation teleport or forced winner. Native geometry/layout validation starting; no acceptance claimed yet.
+
+
+## 20260914-active-resume-11 - HUD/arrival validation and half-speed siren correction
+
+Brandon follow-up: lower/slower TRC siren, like a half-speed effect. Apply pitch_scale 0.5 only to the TRC siren emitter; engine and all other sound sources remain unchanged. The ongoing native audit had already loaded the preceding pitch, so final recording must repack and verify 0.5 in runtime audio samples.
+
+Native HUD validation passed 786 checks across bridge 12-card and estate 16-card layouts at 1440x1000, 1920x1080 and 1280x720, with identical panel size at matched viewport sizes and 28.25% maximum height share. Condensed cards are 46 logical units versus 94 for one row. All card fields enclosed; wounded/dead/selection checked; zero faction voice nodes. Retained default 23-unit label rectangles caused the first failure despite smaller fonts; explicit field heights fixed it. First height check mixed physical window dimensions with stretched logical viewport coordinates; corrected measurement uses the actual viewport.
+
+Assault validation passed 25037 checks: all 16 attackers occupy cover (10 fence/gate, 6 vehicle), every dismount route valid, exactly three flankers with valid paths through the garage gate, and sampled oriented vehicle arrivals have no scenery or intervehicle collisions. Initial collision fixture incorrectly counted each vehicle own hinged door as scenery; exclude only that attached self-geometry. Existing line_native 43 checks pass. Ground and 60 prop plates rebuilt. Full native battle audit is running; final video and owner acceptance pending.
+
+
+## 20260914-active-resume-12 - Passenger integrity, four-person flank and driveway truck
+
+Brandon requires correct real passenger counts per vehicle; four flankers are acceptable to keep the rear transport together. Configured convoy is Aegis 7, Watchdog 5, Vigil 4; all four Vigil passengers now flank. Explicit manifest/seat/unique participant checks added. The top vehicle in the trio east of the lower garage (parked Rancher at 119,88) moved to 116,74 on the paved circular driveway, avoiding the flower border.
+
+Native battle audit failed honestly at 180 simulation seconds: no result, no HUD overlap or arrival path errors. Headless diagnosis found flankers had valid external paths but inherited zero movement speed from covered deployment; order setup now initializes the standard combat movement speed. Added actual gate-entry events and release of completed showcase flank positioning back to ordinary assault AI. New simulation underway; do not call the previous cutoff a passing battle or alter casualties to force resolution.
+
+
+## 20260914-active-resume-13 - Flank movement and resolved simulation
+
+The new external flank order now initializes ordinary combat movement speed. Gate-entry events verify real movement. An intermediate probe reached the apron but then held because the completion tracker skipped its release check; corrected so completed original positioning returns to normal AI, while replacement group commands retain control. Latest deterministic seed 9146 headless probe resolves naturally at 47.1 seconds, Whittaker wins with two healthy survivors. No combat-health, RNG, victory-service or global movement changes.
+
+Passenger checks now verify 7 Aegis, 5 Watchdog, 4 Vigil; unique consecutive seats and exact agreement between convoy manifest and real participants; four Vigil passengers flank. Latest assault JSON passes, with 16 covered attackers (11 fence/gate, 5 vehicle). The native recording additionally captures every real dismount row and encode.py gates on the counts, 16 unique covered passengers, four flankers, zero faction vocals and TRC siren pitch 0.5. Native visual/end-state audit is running; final video/capture not yet complete.
+
+
+## 20260914-active-resume-14 - Native audit correction and exact truck identity
+
+Native resize run confirmed actual dismount counts 7/5/4, all 16 begin covered, four Vigil flankers, zero HUD overlap and TRC siren pitch 0.5. It resolved with TRC victory at 37.8 seconds, unlike the headless probe; final native capture is authoritative for its outcome. No forced defender winner: export gate now accepts either genuine resolved side. Native hidden-survivor check was defender-only: an attacker legally reached the mansion entrance and faded inside. Audit now accepts invisibility only for an enter-objective route after arrival/fade and within 0.1 rendered pixel of its real endpoint; any premature/unexplained disappearance still fails. Completion now returns failure for recorded presentation errors, not merely unresolved battles.
+
+Visual inspection corrected the vehicle identification: the offending upper truck in the trio is dynamic white Workhorse, not the neighboring static Rancher. Restored Rancher at 119,88; gave resident Workhorse preferred legal circle pose 116,74 and added exact-position check. This supersedes resume-12 identification. Native audit rerunning with the exact truck.
+
+
+## 20260914-active-resume-15 - Final native audit passed; capture starting
+
+Exact Workhorse placement verified at 116,74. Native audit after this move resolved with defender victory at 48.3 seconds. 39707 actor-frame checks, zero presentation/arrival/outro errors, zero HUD camera violations, result camera jump 0.0 px. TRC pitch 0.5 and actual 7/5/4 dismount rows verified; all 16 covered and four Vigil flankers. This replaces the preceding intermediate geometry/outcome evidence. Capture pipeline accepts either natural winner, never forces it. Previous version-2 raw AVI and metadata preserved in owner_feedback_20260914/prior_version2. Final movie capture starting; do not repack while capture is running.
+
+
+## 20260914-active-resume-16 - Final recording delivered and bounded validation complete
+
+ Brandon's review pending. This section supersedes all older vocal, HUD, horn, arrival and truck placement statuses below.
+All faction vocals are removed from active presentation and asset packaging. The premise, service and 36 clips remain recoverable under tools/parked_faction_voices; further voice-bank work is PARKED.
+Every combat HUD uses the bridge's 226-unit panel at the 1152x800 reference scale. Sixteen cards fit in two condensed 46-unit rows without increasing panel height. Maximum screen-height share is 28.25%; matched bridge/estate viewports have identical HUD size.
+TRC uses an original broken warning siren at pitch_scale 0.5 (half speed and lower pitch). Driving audio is unchanged. Quiet Whittaker porch music and victory foreground behavior remain.
+The lower estate fence is complete, with a garage-aligned opening and visible outward-open leaves. Assault vehicles cut across grass and stop at different diagonal angles. All 16 TRC occupy real fence/gate or vehicle cover before combat. Actual dismounts verify Aegis 7, Watchdog 5, Vigil 4, unique seats and passenger IDs. All four Vigil passengers form the replaceable lower-gate flank; ordinary combat movement resumes after the gate goal. Casualties may interrupt it. The white resident Workhorse is at (116,74), visibly on the circle; neighboring Rancher restored.
+Validation: 786 native HUD/card-state checks; 25081 geometry/assault/passenger checks; existing native line controls 43/43. Final recording: 39707 actor-frame checks, zero presentation/HUD/arrival/outro errors, zero camera violations, ending movement maximum 1.120px/frame, result-camera jump 0.0px. Runtime TRC pitch 0.5, zero faction vocals, all 16 equipped model labels and all passenger/cover counts verified.
+Final native combat resolves naturally at 48.30s, Whittaker victory with 4 survivors. No forced winner, health, RNG, victory-service or production-cap changes. Seed 9146 is a showcase fixture, not cross-mode determinism certification.
+Delivered video: 88.197s, 1280x720/30fps H.264/AAC, 7,531,779 bytes, full decode passed, stereo peak 0.597; SHA256 4b3925d681c7c22d11e97571d903e332909718b3f146c2b448cfd8d92519bfbe. Saved as version 3 of Dead_Street_Whittaker_Estate_Mobile.mp4 (libfile_5962de2d811081919c16f93b3f306b4c).
+Evidence: record.json, record_source_hashes.json, delivery.json, opening_cover.png; owner_feedback_20260914/record.json for resize audit; hud_fixed_20260914/{hud_layout,assault}.json for focused checks. Previous video/raw metadata retained in owner_feedback_20260914/prior_version2. Reproduce with run.py pack and --check=estate_assault_checks / hud_layout_review / estate_audit; record_worker.py and encode.py gate the full movie. Never repack during capture.
+Failed trials and fixes: journal active-resume-09 through -16. Zero-speed flank and apron hold were fixed in showcase order setup. An earlier defender-only audit incorrectly flagged a lawful attacker doorway entry; only verified endpoint entry is exempt, and all premature disappearance still fails. The initial Rancher identification was corrected to the exact Workhorse.
+Remaining: owner visual/listening acceptance; historical estate 44.42 FPS sample remains unresolved and was not remeasured. Broader performance, final convoy/personnel caps and riot-shield proposal remain open. Faction vocals are parked, not unfinished integration. Preserve unrelated character-factory/dusk/source-recovery and battle_victory_service work. Source publication is recorded by Git and the local feedback checkpoint receipt; no recursive receipt commit is required.
+
+
+Code/source hashes match the final recording snapshot. Video transfer hash verified independently and existing recording replaced as version 3. Technical success does not imply owner acceptance. Preparing only this feedback scope for commit/push under existing authorization; preserve every unrelated dirty/untracked item. No recursive receipt-only publication loop.
