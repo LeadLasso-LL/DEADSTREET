@@ -73,11 +73,11 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Owner driveway seam, full-width shared HUD and estate intro-surroundings refinements are implemented and validated; version-6 video saved. Original zoom and accepted battle are unchanged. Finishing scoped publication; then owner presentation review. See journal width-scenery-03.
+**Active objective:** Pistol card anatomy pass implemented and validated: 138 regular portraits repaired, all SW/SE static views reviewed, unchanged dual specialist included in 139-entry native check. See journal pistol-portrait-03 and tools/pistol_portrait_20260914/README.md.
 
-**Checkpoint / publication:** PUSHED / VERIFIED: 555d6925fbf1a965a3b8027bc2f5186fdd19d4bc on origin/build/arsenal-checkpoint-20260911. Siren/card refinement and records published; video version 4 saved. Local receipt: tools/whittaker_estate/siren_cards_20260914/checkpoint_receipt.json. Post-push notes accompany the next substantive checkpoint; no receipt-only publication loop.
+**Checkpoint / publication:** Pistol portrait checkpoint prepared on build/arsenal-checkpoint-20260911 from verified 54b1597; scoped commit/push under standing authorization. Exact resulting SHA/remote verification will be saved in tools/pistol_portrait_20260914/checkpoint_receipt.json. The estate presentation remains the version-6 checkpoint.
 
-**Latest estate evidence:** 834 native HUD checks across bridge/estate and three viewports; 39707 actor-frame checks in final capture, zero presentation/route/HUD camera errors. Version-5 video 88.197s; native combat 48.30s with four Whittaker survivors. Exact accepted-battle comparison and 195 protected source hashes pass; see estate README.
+**Latest estate evidence:** 834 native HUD checks across bridge/estate and three viewports; 39707 actor-frame checks in final capture, zero presentation/route/HUD camera errors. Version-6 video 88.197s; native combat 48.30s with four Whittaker survivors. Exact accepted-battle comparison and 195 protected source hashes pass; see estate README.
 
 **Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
 max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
@@ -90,7 +90,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Publish this validated presentation checkpoint, then Brandon reviews video version 6. Preserve accepted battle behavior, current siren/result ordering, parked vocals and unrelated work.
+**Immediate next task:** Owner reviews the repaired pistol cards. Preserve accepted battle/presentation and animation assets. Future atlas rebuilds must reapply the documented portrait finishing step. Native check passes 556 checks/zero failures; no render or repair task remains running.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

@@ -1,0 +1,2491 @@
+{
+  "profiles": 23,
+  "portraits": 138,
+  "directions_checked": 276,
+  "items": [
+    {
+      "variant": "0_pistol",
+      "portrait": "assets/art/units/pixel_v1/portraits/0_pistol.png",
+      "dimensions": [
+        64,
+        50
+      ],
+      "changed_pixels": 170,
+      "delta_bounds": [
+        16,
+        17,
+        49,
+        44
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "472ee4a1340cd8d7ce948dc88ac3ae4be9817a1d9ee67417085e30208c3de07b",
+      "candidate_sha256": "6468e0fa5654911b684fe7c120f5828738545a2c3b1a5ead29cda1c2e44c2987"
+    },
+    {
+      "variant": "arsenal_0_m1911",
+      "portrait": "assets/art/weapons/arsenal/portraits/0_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 167,
+      "delta_bounds": [
+        30,
+        36,
+        63,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1eef4686e255ccd2f90b9923fa245697a244e06d193a544427e07695aa38edb9",
+      "candidate_sha256": "692a83a4f79df0620885f5d9e6ac00ede0f55b20df1abf7609632639838d0f79"
+    },
+    {
+      "variant": "arsenal_0_usp",
+      "portrait": "assets/art/weapons/arsenal/portraits/0_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 166,
+      "delta_bounds": [
+        30,
+        36,
+        63,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "b9343d0d06fc1eb8bc3f0ef73b728da6002dea2041726ab9a559c11c02540502",
+      "candidate_sha256": "237dc5c31541dac6dff4596653d0efb0ba937595ac8cd13f389699ebd9aa9977"
+    },
+    {
+      "variant": "arsenal_0_cz75",
+      "portrait": "assets/art/weapons/arsenal/portraits/0_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 164,
+      "delta_bounds": [
+        30,
+        36,
+        63,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "7839df06595edf865ca57b64a2ef177c76c6ae666e7e4421d6acc09ded60b37b",
+      "candidate_sha256": "6faeb488e416d7120d507fd0851ce930300b9f3a7c3d70abd83581c105a409d0"
+    },
+    {
+      "variant": "arsenal_0_desert_eagle",
+      "portrait": "assets/art/weapons/arsenal/portraits/0_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 157,
+      "delta_bounds": [
+        30,
+        36,
+        63,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "3f4de83bc914650c3ead676ab46e98ee1ec1d97e387576204d52ce0993e91216",
+      "candidate_sha256": "405cc45daebab940b6be86be544fb0e4b529323b68324e7841b7d242ec3c944f"
+    },
+    {
+      "variant": "arsenal_0_five_seven",
+      "portrait": "assets/art/weapons/arsenal/portraits/0_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 168,
+      "delta_bounds": [
+        30,
+        36,
+        63,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "83652c61095e9554c180365204de61a2d5ddb8e8d17ec93dc4e3fc64572df378",
+      "candidate_sha256": "f097048bc973a3d5e7b9788bf6a4e0a346acea8caa6c68ad6659a2d6efbfb978"
+    },
+    {
+      "variant": "faction_eastex_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_eastex_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        32,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "534ce6d682f73179ecb612bb4cad8592608f890e4efd9c30a5d428f6fb57fbc7",
+      "candidate_sha256": "b202fa3997df2571b20fb5dd0bd2b8263c17f15594ebdf0550a5d6004524ace2"
+    },
+    {
+      "variant": "faction_eastex_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_eastex_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 61,
+      "delta_bounds": [
+        32,
+        51,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "b4336eaecceda03b654dcab52d2f78ce93dfec750b5d9fe32000982a9d83c74f",
+      "candidate_sha256": "45e6b28a58469b9504d851b2b1363b2094a5924a23e139f8b7535d402e23bd9f"
+    },
+    {
+      "variant": "faction_eastex_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_eastex_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 64,
+      "delta_bounds": [
+        32,
+        51,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "9612304be4f65fdc04093285cc382f419b3936ae257e49fe11062e8aea22f96d",
+      "candidate_sha256": "c5c1307c6f76d50b9bc7a40160288145ed45d83e9ddec7e43e7d721f19d04c85"
+    },
+    {
+      "variant": "faction_eastex_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_eastex_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 63,
+      "delta_bounds": [
+        32,
+        51,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "0c7792c5be17adbe2c968e56698dc422fb763666e5043a4d7c3b73a094ae7163",
+      "candidate_sha256": "10737b300745d4a4bb9840dbf7b31a5de35fcda1cb4165d22cbccbb5eacb03a3"
+    },
+    {
+      "variant": "faction_eastex_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_eastex_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 66,
+      "delta_bounds": [
+        31,
+        51,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "430f237d191d10411658531cb4efadb9ce89afff4dc219f2ca4a90bbdbc04a7f",
+      "candidate_sha256": "c21ac3261bebafe4c0ce4169934de5c63ec962c13a391cc1956ce73788313678"
+    },
+    {
+      "variant": "faction_eastex_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_eastex_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 62,
+      "delta_bounds": [
+        32,
+        51,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "92b5c624319fb0de903c20e2767bd331af55007ab16bd0164d0a51d774781479",
+      "candidate_sha256": "ceeda9eb6bfd0643464e59fb64654e9f5cd14f6ec1af3c2cab8cf50e26121fc7"
+    },
+    {
+      "variant": "faction_calle_ocho_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 79,
+      "delta_bounds": [
+        31,
+        49,
+        43,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "e960f52cbdff7327cac038a4743614f6cecaada17f44c561b6d87e068fb98815",
+      "candidate_sha256": "a619100ed1c15ff317b6eb99e21ac4e8fb8702f9bd8b11c98346fb6cea0bbf36"
+    },
+    {
+      "variant": "faction_calle_ocho_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 79,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "5032b2dea878a0c17f94c487ef86bacc1be762069027636036b8867a7300fb8b",
+      "candidate_sha256": "417e6514af2f5f651ba2c3eb74ddf97d3dc3bb1f45c2d0f6636b29762c2a3f73"
+    },
+    {
+      "variant": "faction_calle_ocho_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "4e52a243b1bac793aa4112321c039ba114266a2201726dd443afecee80eeee54",
+      "candidate_sha256": "45d10006a50ce2987e4030a96596a86aaf5d96d75ccfe2833a852f681517d302"
+    },
+    {
+      "variant": "faction_calle_ocho_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 79,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "c1bddc6541dbb667833bcf1caed625472ade351a87e62c3a5da0549763da38da",
+      "candidate_sha256": "36c1fe2896f333b10388398991e8d4cce1e1bf4deb7c5d773b894cea85e2204a"
+    },
+    {
+      "variant": "faction_calle_ocho_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 81,
+      "delta_bounds": [
+        30,
+        51,
+        46,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "473ae2f760d6aeb9fa8605a0cae2cb453a4757d8a2c6f6edc71ba07ee259cb2d",
+      "candidate_sha256": "6a33f144ee34566c3f75502b7f52d3264adb7b860c44a2f8a1720916e6b1878f"
+    },
+    {
+      "variant": "faction_calle_ocho_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "4957aa8c794a08d43020ec7f69676ddc641a8f7fa9c8cb03264f885c0bfaecda",
+      "candidate_sha256": "e6d945335a836416809e3938ea991f137582faa911c372e332db64c6a15de969"
+    },
+    {
+      "variant": "faction_ventresca_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_ventresca_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 58,
+      "delta_bounds": [
+        31,
+        51,
+        46,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "5d16d2cea024d1686749d563ca50895e9f5ad644874b4eb4dfff2fcb4adc40bf",
+      "candidate_sha256": "b25c26b7f2b1c678229d754611185af061af654d34af8c2d549ce51ba9cfd07d"
+    },
+    {
+      "variant": "faction_ventresca_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_ventresca_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 58,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "b80e7452465288412aaf2a41dea652c0f0c64c80f0c9204c0fb3eb18180427ef",
+      "candidate_sha256": "a7727318d88545fd573a9259e25998ed80ebba5393d72b4d25fbb37335726836"
+    },
+    {
+      "variant": "faction_ventresca_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_ventresca_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 60,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "096f32bf449426f9c7650f7baeab9468069e535a0fee0cb9491b6f0badf0c8d9",
+      "candidate_sha256": "4efc00a92550c8acc8a82bc4543348c06502208ef55e7675a7cfa315bbd93510"
+    },
+    {
+      "variant": "faction_ventresca_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_ventresca_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 58,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "d0c29dbf1913238b78c510268cb4ab4ac6024ed48a85d2c6e08ff16983778ef6",
+      "candidate_sha256": "cd7f8c427a6dc744be2d597bdef0f18cf390c7ad68d8bdf48891516035a64371"
+    },
+    {
+      "variant": "faction_ventresca_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_ventresca_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 57,
+      "delta_bounds": [
+        31,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "2e14fd226fee2d38d8f746a22e67a7d1130142b17efe11279fbb3e7d6638e926",
+      "candidate_sha256": "104ad4d9e7d9aa7e0e4d6c988bd61c700c1d6b85fac70313b91d4a833f1ae491"
+    },
+    {
+      "variant": "faction_ventresca_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_ventresca_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 58,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "d66d4abd43884d4d5c5f5ce11b123407f585e00dbadb1092b2ff3ea384a0aac5",
+      "candidate_sha256": "c2ba164e2cdb5245a268696c5a56088b269ff6a90046a6faedac7972d48307e0"
+    },
+    {
+      "variant": "faction_ravicci_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_ravicci_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        30,
+        50,
+        46,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "87c5296b0f75fc1d65da6f8d03b5330026b2fd8b8020fdfba7170774ed3cc95c",
+      "candidate_sha256": "e1578b7d09522b5118eb17082a71b947846869bc14a39174bf3649b3ed9d88fd"
+    },
+    {
+      "variant": "faction_ravicci_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_ravicci_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 61,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "2817815529e0363626ea134abae4edf58a5d3346c0a11194d282987e13894639",
+      "candidate_sha256": "dd9886ac4ac30d3e27b4929d27f77bda9baa14263439289decef7be87b502b26"
+    },
+    {
+      "variant": "faction_ravicci_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_ravicci_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 63,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "96ff330e01bde530801fe3401f1ea2eba5840b48973323a9e491bd1708a4c066",
+      "candidate_sha256": "c584b9ebd9dff141fdb095a11f27c2ce70b058e31cb29d41f1b3a3d251f3965a"
+    },
+    {
+      "variant": "faction_ravicci_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_ravicci_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 58,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1fcf63fa2e3416f379b8c397eab43223f276dab0c5f2f4aacd6ff54328db7ade",
+      "candidate_sha256": "a6df9b113348e0d06bb4cebf3fb00932631e620a1ca8256ac15509aff28b3e2a"
+    },
+    {
+      "variant": "faction_ravicci_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_ravicci_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 60,
+      "delta_bounds": [
+        31,
+        51,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "54a0f9a79910f6627c88fce7c5982d46f20388a194e506206bcbdcdeaea45561",
+      "candidate_sha256": "a40a50d47d5676b48a64fca8afaaffa595b0d4ae7f2b31907dc42feb1b7dddbc"
+    },
+    {
+      "variant": "faction_ravicci_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_ravicci_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 63,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "fb57904f82fa845460f75de4d2a6add538c0219893bb72e33f1d343ac58b9d4b",
+      "candidate_sha256": "3693dbe799fd0c076d8ec263d516a9e0252b0212a163247afdaec379a2523469"
+    },
+    {
+      "variant": "1_pistol",
+      "portrait": "assets/art/units/pixel_v1/portraits/1_pistol.png",
+      "dimensions": [
+        64,
+        50
+      ],
+      "changed_pixels": 148,
+      "delta_bounds": [
+        17,
+        18,
+        48,
+        43
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "89f95ec7a9e60644edac48b6a076368788c518bae8b09e7dad4e37fa47c19ea1",
+      "candidate_sha256": "90596b2ee56d2ab6208d09fbbecb043465faad6c9eb5c71f5854aa8c783dcf25"
+    },
+    {
+      "variant": "arsenal_1_m1911",
+      "portrait": "assets/art/weapons/arsenal/portraits/1_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 144,
+      "delta_bounds": [
+        31,
+        35,
+        62,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "2a5a8b0b364f291fdde444e1ff30ff89fb2aafa890ad67d0422962d7a96db373",
+      "candidate_sha256": "a10fd9b5b9813d8eaaacb6934e07aa5eb4ad0bfc5c07c9a078314a0112e7b406"
+    },
+    {
+      "variant": "arsenal_1_usp",
+      "portrait": "assets/art/weapons/arsenal/portraits/1_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 146,
+      "delta_bounds": [
+        31,
+        35,
+        62,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1eaad70b145cf3dd62ff629dbf2b7a0ca151389e29de1341cdd8d64c0eea4b3d",
+      "candidate_sha256": "690d845b1645ef7a1817e24499d6a78992576eb31fb79ed838d06dc8058d656b"
+    },
+    {
+      "variant": "arsenal_1_cz75",
+      "portrait": "assets/art/weapons/arsenal/portraits/1_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 141,
+      "delta_bounds": [
+        31,
+        35,
+        62,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "8aafe98c6017679e9f3dd3856a6cd42782c123b728324be03c14bd278e057bc7",
+      "candidate_sha256": "0f7ccd669b9b395c0380596fad7d0ac2d561bc1ecce1add54796bf4da7dbb3f1"
+    },
+    {
+      "variant": "arsenal_1_desert_eagle",
+      "portrait": "assets/art/weapons/arsenal/portraits/1_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 147,
+      "delta_bounds": [
+        30,
+        35,
+        62,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "4d07dd767896369729142367b817137e45db7eb8fddf8a0a9dbc2a73a05e6d9b",
+      "candidate_sha256": "90405cc53e81982f010b6b539d4efa08d3d1d383349be25a5fad5a380afe4306"
+    },
+    {
+      "variant": "arsenal_1_five_seven",
+      "portrait": "assets/art/weapons/arsenal/portraits/1_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 146,
+      "delta_bounds": [
+        31,
+        35,
+        62,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "e831df235b77d03e0da864af516d5c0faf19cfdf1ee7adf7a43276357d1f3e14",
+      "candidate_sha256": "572718800a28d266d6ea0058f13d552700f222c5805da869e79fb1a52a4b0ea8"
+    },
+    {
+      "variant": "faction_zangyaku_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_zangyaku_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 82,
+      "delta_bounds": [
+        31,
+        49,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ab38082060251c705aff55f4aba04b1070e31c88f4840482338f553c505f4d91",
+      "candidate_sha256": "12686d9e081870c5906da4c0ee5bde79c43393995937a48e1580420e57d7486a"
+    },
+    {
+      "variant": "faction_zangyaku_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_zangyaku_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 84,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1e0bba2f08e3afa384745ef64637713abea97902a09a38d26f5d193e649cee4a",
+      "candidate_sha256": "4e181b2509990f056d1404535549e71b79249292a2a4042a7092a555ba65c128"
+    },
+    {
+      "variant": "faction_zangyaku_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_zangyaku_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 83,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "5ba42bfb1bf508a7853d562e96d91410f5ede0834e01d93e0a732fdd2a2b5161",
+      "candidate_sha256": "74db9b3b6e25ffde03509010b4a12a311fad8b1e7dc1401a5ce34dc24fd1a2b5"
+    },
+    {
+      "variant": "faction_zangyaku_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_zangyaku_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 82,
+      "delta_bounds": [
+        31,
+        50,
+        46,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ce46cb2378b584b6ec3baa9ab1e392bf6288443af348407f7b6a41373dbde43c",
+      "candidate_sha256": "3defdfc8e55508de5083dee78f4215f7cdb756b327dbbcc741823e66d47f5817"
+    },
+    {
+      "variant": "faction_zangyaku_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_zangyaku_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 82,
+      "delta_bounds": [
+        31,
+        51,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "b41fbd6f025a3a233a4ed6984e33c469495f86ed9730bc9a251f5dfb68845058",
+      "candidate_sha256": "01b01dc451ddd16ab4f7e182906d108370109f5d9a05d0809b1e6276539845d9"
+    },
+    {
+      "variant": "faction_zangyaku_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_zangyaku_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 83,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "5772aaf16f8582c4f04c50f3c4a4a8654992fb425db6ea2d7e644cd4e417793d",
+      "candidate_sha256": "83c8ae777075930fca08d4fe2c216ecd231e4ed36dc8e4e222f67580a693a677"
+    },
+    {
+      "variant": "faction_bitian_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_bitian_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        31,
+        49,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "9698852a74199beb65046fc403df4d12e42c8ede5baf14ff02952d9824050795",
+      "candidate_sha256": "3d7d3c93c8766bc1ec7a676826811c23fe9c795df4453c83afe41873be961eda"
+    },
+    {
+      "variant": "faction_bitian_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_bitian_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "a6e4914bbb87f9e74fff55285b4734a17de58553b52f6f063e64a42fba16e48d",
+      "candidate_sha256": "eba4c59d441eb068bf0a4d274f6ee6d5f785d3ecb67b85bdcbfcb18f4b1c051a"
+    },
+    {
+      "variant": "faction_bitian_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_bitian_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "15832845cd90c7838a1fd2e2d8b88a6ba8099fabe3276c9819e695f292c4abb1",
+      "candidate_sha256": "44514c2b36eb985dbf713cee35f460456e3fa3e6fc7d3e64ba2e22ef8481c738"
+    },
+    {
+      "variant": "faction_bitian_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_bitian_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "33cb11f8e705b7d0e9c8146098f0c9b765771e912a4203adae0542d4d8082356",
+      "candidate_sha256": "553df135afe70404eaa82ec01b064a7b7108a4dfd9660079c5ecbacf5c259d41"
+    },
+    {
+      "variant": "faction_bitian_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_bitian_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 71,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "e77a378534f7bea00b94ada08c034f2e63f264e5bdf923feeb3a869180b8b31c",
+      "candidate_sha256": "c9f1cd6fe7d54e1588c90deb6769c2b9a4da7ab4c80d392602d389afdcb63b21"
+    },
+    {
+      "variant": "faction_bitian_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_bitian_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "480101833575310f0eb1f49dbb90efc93347315e927540899cf5251fb6b69c29",
+      "candidate_sha256": "79887297ea431da88856c9cc3911b58c82d27eac439e48b525bcf135bb00924e"
+    },
+    {
+      "variant": "faction_stateline_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_stateline_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        32,
+        49,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "320baa4a882e1d577a6085b5e6e8222f8a6361b24a184b6ad6ccd17b02225eb2",
+      "candidate_sha256": "ffa9de2d85e44bf13ad19fd51401fbdebebfcb9976c9f43c847ab45a06e7ee43"
+    },
+    {
+      "variant": "faction_stateline_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_stateline_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 75,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "de0e909a84f69cab111e882f95cf2f08187c68a86ab61c05d15ce08e4e084a1e",
+      "candidate_sha256": "08b50fdc4f26fe9867246b9ea7fda27d947877118ca2899db3999a9b14fc9bdd"
+    },
+    {
+      "variant": "faction_stateline_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_stateline_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "4cb21fda1d885b7fbcd6406e42ae6d1d8a187fca30b66097e509b8cc7b927d50",
+      "candidate_sha256": "f0c0faeb5adb4c28720e71d4c70f29758877b1582e5d8d7ac5b1f5a48e7495b1"
+    },
+    {
+      "variant": "faction_stateline_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_stateline_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "87e6af0353ece10ee6c2bb39e081fe0caa1b4ae78e95db79a35a8ec6cccf67df",
+      "candidate_sha256": "11d5072374de26721179ed106068ffa6d598ef2e93b8317e3f9ddcb87c48a2db"
+    },
+    {
+      "variant": "faction_stateline_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_stateline_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 77,
+      "delta_bounds": [
+        32,
+        49,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "bdd0ae2f7de417bb629b1aac54a9ba878aa76a3e351ddae93cb5e2bd8934b285",
+      "candidate_sha256": "211248cf2f32c4bd0db3a10dd13d1465b9ac9d2102fa391f9fcf6235b3ba9e3a"
+    },
+    {
+      "variant": "faction_stateline_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_stateline_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ae6f5ed1c55e2d6157c3a797def71403dc241f1670a2ff560d62dc9b52543952",
+      "candidate_sha256": "495d276e197137dff06bce5578063e34ec6f331872b8d3769ffb9e3da6e217bf"
+    },
+    {
+      "variant": "faction_sierra_roja_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 82,
+      "delta_bounds": [
+        31,
+        49,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "cf17a9cc3c4b7172704cde7ec88b705f78579c5530823081a03344df953d994c",
+      "candidate_sha256": "ad7bcea9cd04cf01f27cf23a8da7483e18787e5294df34d492c9c34cee17c2a8"
+    },
+    {
+      "variant": "faction_sierra_roja_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 77,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "51cb8763fab385b95acb4b297ade013bb2758fddb52f4178999f52207deaf9e3",
+      "candidate_sha256": "694a65a0728f7676c06359b25132df1eda5ea8ea2d585668d03743d3f396848b"
+    },
+    {
+      "variant": "faction_sierra_roja_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "647f3aa489e446c51882b601ffe4587c3f6c3ec24b0232a92cf123e85c517e03",
+      "candidate_sha256": "566c98983a5eeebf80b9b0765b0fb7e17258b3e6b338c91fefd4f65903d6f144"
+    },
+    {
+      "variant": "faction_sierra_roja_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1a93e5f4b5c5ac9d44c319cba2f245746ef3c8e4b5b6a2ea5465ed6b7d9d8b04",
+      "candidate_sha256": "f199d5f37b5163df3f234da632319b2ea3af627b9a60ce98d195fe08b0a5e65e"
+    },
+    {
+      "variant": "faction_sierra_roja_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "d44f5689ba561d1655f198822da38f83104a6c1e431cce9cd311c6a8d95fc66e",
+      "candidate_sha256": "1b12e402a9e90af5029f7ada0a0c66c514cc7969c2c74b0bd55bc1d5fb9b90c0"
+    },
+    {
+      "variant": "faction_sierra_roja_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "983461d72e2a646d297af14326ef01f290bee99f4d9ecee8bed02ebce2dc0c1b",
+      "candidate_sha256": "1f01257d70ba514f389d953e33e09ad94c9028237e2fb6784abc73ff6a64dc94"
+    },
+    {
+      "variant": "faction_whittaker_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_whittaker_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 85,
+      "delta_bounds": [
+        30,
+        49,
+        44,
+        63
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "6a441f093422464d7550ff288736118404513fbf9bed930139da19fe7bb5eed9",
+      "candidate_sha256": "6ea9974b5f4d80ac39825a463f45d47d30506eebbca402a7496d7a847b5452b7"
+    },
+    {
+      "variant": "faction_whittaker_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_whittaker_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 82,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        63
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "04b690c02c0075aae232bc38aabaf34f0005501c9c8b05512588e074304c7014",
+      "candidate_sha256": "5fd8550fad62807475a990d925bf5849f132d132659d0818c9d13dd52f706440"
+    },
+    {
+      "variant": "faction_whittaker_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_whittaker_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        63
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "bc8ecb9dfadf6d86faefb5d76c0a0a3970eafe3e6b036101c12224c4ba9092dd",
+      "candidate_sha256": "7d4756347da316ff803918d693c737a0057697dd4426ebf7ea0b695a934dc92f"
+    },
+    {
+      "variant": "faction_whittaker_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_whittaker_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 84,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        63
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "0368ae0a8a984f9e557ba410ebaae591b670315b0218a90147c97e45a48bae44",
+      "candidate_sha256": "4350a91ab0c915f683a1885ba4cd16c2834134cbefa9e806a6fd9ce585d9cecb"
+    },
+    {
+      "variant": "faction_whittaker_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_whittaker_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 84,
+      "delta_bounds": [
+        30,
+        49,
+        44,
+        63
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "b6856cfa1d76b7ae04cd713b76cbce7d8a5b1acbf531b09fdf495183289ff6c9",
+      "candidate_sha256": "2ea9d5d113752585e3d6b8fb017d443b405dd5fb3429991b44b9dfabe76b635f"
+    },
+    {
+      "variant": "faction_whittaker_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_whittaker_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 82,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        63
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "8e5aceb1c6d3a2c9a09437fff3aa05fd8723f2c87289d0ebb5e23356f2197eb2",
+      "candidate_sha256": "9331ea225ed483c363fdfd444dc8052e647132a485d0762486aa7397232fe814"
+    },
+    {
+      "variant": "faction_mcallister_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_mcallister_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 79,
+      "delta_bounds": [
+        30,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "c7bfa2bc0276fdee8454a99928d6fb82dd189211130e5a6fbf0ee72e75887044",
+      "candidate_sha256": "fcf765477b1667a4a6976c9fade5761f4e37bf7133d46d7df43b42bc1b5b0283"
+    },
+    {
+      "variant": "faction_mcallister_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_mcallister_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "092eaf6122126b3f2dba248f0a078893c0e94c0333c30282d7c814fbc2da0cbb",
+      "candidate_sha256": "8b6360ee823a48986a370e112e3a3f67989321029ac81eb14d5cf1764fb9558f"
+    },
+    {
+      "variant": "faction_mcallister_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_mcallister_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "6c8ccafe6662adb9fa917b449838b2d1f27441a7ff566961df5727ccb3edd675",
+      "candidate_sha256": "d234453d3a08ed96e4f08b8b2899e8096f763a609a2f550f01a80fa00ab7138a"
+    },
+    {
+      "variant": "faction_mcallister_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_mcallister_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "c6d856d7c2dcfbe693bdde4dfe27aa2055499b6770b2f7793d03f87696a8394f",
+      "candidate_sha256": "c16b48630fa8debe366448e8eae92dcc8c73d4acb51a777db6940b46686eff4a"
+    },
+    {
+      "variant": "faction_mcallister_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_mcallister_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "158a3156c956aa114ec8cf8402bd0122a7579e65d343ab68df0ce6e7a3a68307",
+      "candidate_sha256": "e554753d3da9a19978dee32e313a1a317cabdaa44846cd61eefc7a67bb836fd7"
+    },
+    {
+      "variant": "faction_mcallister_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_mcallister_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "10c644ec9809616801cb769f6fd9103292b29ae4dbcecc8231fe0f3727110aa8",
+      "candidate_sha256": "914f74246a8bad876d958d7cfaf75aa228ce15ae986737dc0042e4f90a4bc710"
+    },
+    {
+      "variant": "faction_trc_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_trc_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 63,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "178154678f38558c2e76f82cd7afbf32b59409377e25a38bd902d6b417579d83",
+      "candidate_sha256": "8051431f1c1e5c721cefe803148d94ee9340f98742ed93353b340bc38601fbdf"
+    },
+    {
+      "variant": "faction_trc_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_trc_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "9436ac8f31904ee1e990f5cf7b8e97cc55b0965788045001cfb360822b4a50e9",
+      "candidate_sha256": "ae49bbaa0a6212698580181c1e725c9bfe6df26be2f90c54dbd08d625a2760ef"
+    },
+    {
+      "variant": "faction_trc_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_trc_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        33,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "d14927e74c3ed248d179842be576eb093fd268559d8c1d6d13a92cc9f04fb46c",
+      "candidate_sha256": "511ddf41cc0662c30c0e8bf25c4bd65281d96594148bc7f2a80795c3e8a8c0fa"
+    },
+    {
+      "variant": "faction_trc_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_trc_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 70,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "cd0b0f03025903e5f785c79806234e9b6fecdb8ac8bb810dd81079f52c635592",
+      "candidate_sha256": "a277f8e04dbac4251cad12e0d60cff6902e9eecf05227781f5b2f674a178fd55"
+    },
+    {
+      "variant": "faction_trc_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_trc_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 66,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "3231e244563e34d9076765b8f570bf2ea95e7810a242933320ac4c1b8b095a84",
+      "candidate_sha256": "9510f0164635b2900dcca09bd6cd9ae11483d261819a775d20472e39d620c61b"
+    },
+    {
+      "variant": "faction_trc_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_trc_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 70,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "05a38cb8378922877d030e440ebc7efb0799b0f070e858da30078317d3c62b52",
+      "candidate_sha256": "246f02c5adf4f22ba42d62aadd78a88e6963eaf1d29490a8e90fe78c20bc6864"
+    },
+    {
+      "variant": "faction_nbpd_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_nbpd_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 79,
+      "delta_bounds": [
+        31,
+        49,
+        46,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "16339b88ecb66e6dfe0d7e17c07a4b941492313bb7fb044cf63c575b13def63f",
+      "candidate_sha256": "c4a528f9cf9debf50c89176416c2c4deebe987e7c41904c7dbb1f59d4839d107"
+    },
+    {
+      "variant": "faction_nbpd_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_nbpd_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "d45c61f1674795c8279c9e607563c3600b2c9f5c2b4d7b064d5dfe4a4f137e2d",
+      "candidate_sha256": "061a5beb98216bb6887375fa37621b254a57d25481942b3205ab52e73b1c853b"
+    },
+    {
+      "variant": "faction_nbpd_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_nbpd_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 75,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "b42b1dea75f825ce735898039712e10aba2544a9c6b18c6199bcd4508314aee8",
+      "candidate_sha256": "0769db76f747076f01d12ce83a92414e5bd00e623298de2f9abab6d889949dc8"
+    },
+    {
+      "variant": "faction_nbpd_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_nbpd_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1241ca117124b5d3ff523089f07d22ffacc4abe0ed813b83651a1cb1855c55a0",
+      "candidate_sha256": "a9478a59e3653d88f889d4453a3184ee92e98b50b46c6d35e943d3c703c7f1eb"
+    },
+    {
+      "variant": "faction_nbpd_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_nbpd_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 75,
+      "delta_bounds": [
+        31,
+        49,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "e0f17f00346efbb6b5797b682fe2ea7d7cc64f7ce875253c817702cb4235cf5e",
+      "candidate_sha256": "e2f06704806187f8e8aa654dd9b78889380ce8e7e4acb5e5af7e6f954ca5fb5c"
+    },
+    {
+      "variant": "faction_nbpd_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_nbpd_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1f584fb1091b9e339251b90e86b683e5c581fd7487cc3fbe8b8c740c1ae7c934",
+      "candidate_sha256": "4c55a02fae7b125bc487c21759870c9a16750eee388c558d182a94378dba3dbf"
+    },
+    {
+      "variant": "faction_mercer44_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_mercer44_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "8e1919a250784c1e9c5f82dc77d5930218d88dab8de9799923aacfe19e66a8f8",
+      "candidate_sha256": "6d9fd215be33c7c349d818591de5d934e43ca876007cb10a7f6975bf9170d6c6"
+    },
+    {
+      "variant": "faction_mercer44_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_mercer44_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 67,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "3f58bc2925ee017223628e50adbc5644a6ee9afea110dcad3daff99b461233a3",
+      "candidate_sha256": "7a22ca557dc29c476575ab09911febd2e512e2fe16a6098fdcbec67294de3f6e"
+    },
+    {
+      "variant": "faction_mercer44_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_mercer44_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "faec018d1b44206b32e553ad124a1075a1b58f034d14f969aedfe2c62bee6494",
+      "candidate_sha256": "1464bbd8bdd993f1d4654bf409f91107168d7d6b51fa3edeb8ccdf21fa4d3dc1"
+    },
+    {
+      "variant": "faction_mercer44_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_mercer44_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "24e73340a0b2c4de97a50efc6231b74736296eb9b23f29d8bde9a64fda8eeefb",
+      "candidate_sha256": "b61b172359913462a0b7e7cb932c19f56f90a5a62d1eeed91dbbd4e0efc66893"
+    },
+    {
+      "variant": "faction_mercer44_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_mercer44_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        31,
+        51,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "3ef032a5b6381d78af74e2d79c767dbf4573c5398b7ead23ae23a14f2139e9a5",
+      "candidate_sha256": "28b0b189df248e51bf2559677a2a4b17403bf4bbecad744852cf7301a53c2970"
+    },
+    {
+      "variant": "faction_mercer44_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_mercer44_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 67,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ebe145637dc7494d5674da4c3496a0983f780105208a7ee1c27d651fc5c0de77",
+      "candidate_sha256": "218231ba179f3f15dd5349f1380d08793e64cc0ffc757d69a6c9f4373c63c472"
+    },
+    {
+      "variant": "faction_wm_corp_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_wm_corp_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        31,
+        49,
+        46,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "e0ca0bb7403e7716fb0b26e84bd6d5c064875774662bb2bb692d70ada7099900",
+      "candidate_sha256": "f4a2497c2e0a756908f92240a4782308871557a648302a661ddb4a2461d450ef"
+    },
+    {
+      "variant": "faction_wm_corp_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_wm_corp_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "77b1096890c4f7392f1883784955f0d8da0f19c17189b13b73df7a53650324ed",
+      "candidate_sha256": "b025cd18360a7049b240a2c42bdcc4985474241b500654bf09ccafe52d17e59a"
+    },
+    {
+      "variant": "faction_wm_corp_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_wm_corp_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 75,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "83dd463469657bbc386be0e549b933d0228a226ad26bde800c7df677d486a39e",
+      "candidate_sha256": "17b18e450bb5adfa846a97c5a89923c345ee186b7529d55f8a171d10eb932a42"
+    },
+    {
+      "variant": "faction_wm_corp_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_wm_corp_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "83b5147a61b183207dff297510d6b690b0a97e5f877180ab838e53de8f075d55",
+      "candidate_sha256": "92687517d21a2b0223b487bc440de5d24aaeebd2b9875a92655b78e6d12052d3"
+    },
+    {
+      "variant": "faction_wm_corp_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_wm_corp_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 75,
+      "delta_bounds": [
+        31,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "f029525cd688baa9a85d7052d496a6ec4f63b16ed3ef96645d640f396ea7072c",
+      "candidate_sha256": "5c1be981c19f59aa75b4a4b2420d4c10c98a6860f815b4c15ba1a78fdc0d9d80"
+    },
+    {
+      "variant": "faction_wm_corp_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_wm_corp_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "acb6b50869b8588c3856e9c9150b078e8a572d59fd6111cc7a869a2e280779a7",
+      "candidate_sha256": "62c51795b954d30febd59991d812b5fda0eb65a9f0f6c478b89585243af25d4a"
+    },
+    {
+      "variant": "faction_union_sur_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_union_sur_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        31,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "7c1ab1db2bf9d8c38c2b3f8fd07b7d24a8b631d6ec7dff1f75b9f480a3d3f10a",
+      "candidate_sha256": "8c53f04e14fbac06d8f26ede03c15a17b9a9ce12895dc65b06886069870f49a0"
+    },
+    {
+      "variant": "faction_union_sur_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_union_sur_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "a274154bee6bbbcea37ade63324339d39f37fc553166734ec22a722e1dd27e05",
+      "candidate_sha256": "9757903ee590f22d712ff5e8fcaa3b3befcabda98f34dbec134885b13d2fd1bd"
+    },
+    {
+      "variant": "faction_union_sur_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_union_sur_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 75,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "3835fbc38d019aeb98f6ea41ad21a4dce09029108272756a30c80303bc580d83",
+      "candidate_sha256": "4a5ce62a5760a08cf843ce02a2c85a64486581cb76480a6ecf8ac768aec21dee"
+    },
+    {
+      "variant": "faction_union_sur_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_union_sur_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        31,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "9f864ce79f4982a5f2b6651909f25ef70194c0986a5ecdd559f4e9839add636f",
+      "candidate_sha256": "c3a46b0935fb6f41c782c9c0e1d2fe1c7ca2101d1d1a8b7998655e6281142ad9"
+    },
+    {
+      "variant": "faction_union_sur_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_union_sur_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 66,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "36adb9a0dde0916baad26d58e1ac4c78a5ad4ca13df68a1897ec75bcf5999f44",
+      "candidate_sha256": "a803de93a58c6daf31eec5efbed29f89ddb90b490f0420c069431a1d84ff017b"
+    },
+    {
+      "variant": "faction_union_sur_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_union_sur_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "79ca8b22ee614a837c09ff56deaf392c2471f0938e6c542252a85c22f4885e3c",
+      "candidate_sha256": "fc995ef719bcfa84c15706c17b009062efce47671e9684219db63ead314c5389"
+    },
+    {
+      "variant": "faction_lombardia_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_lombardia_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        31,
+        49,
+        46,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "97da10cb042b3a93c449293abe531e9fc445adf4cf1d61338d15e4af85d510fe",
+      "candidate_sha256": "1c7e320ff07767300f5bdc894d01159a8e1ef244a358c6a9ac49c522cc3843f1"
+    },
+    {
+      "variant": "faction_lombardia_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_lombardia_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ebb8a1b304fdecabf0baa135badd4e9d59fcc65d51d00bf40d42d3b884e81905",
+      "candidate_sha256": "ed7fda8fa71d1f0002b438f542575fc5d450ec513d7e6c76951c088fa3d9477d"
+    },
+    {
+      "variant": "faction_lombardia_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_lombardia_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 71,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "66270d29d070b64115f6a9ac8c1bcf4d6dd0097c66c722d5187f5097eb95798d",
+      "candidate_sha256": "c7504c487f7ad2bbfa5a5b18685117a35ffe10a80d6775284219861bc5217e46"
+    },
+    {
+      "variant": "faction_lombardia_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_lombardia_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "06fde240b37035d0ef362c973ab5f4afc947367b68a7efc66f1a767182bfa3aa",
+      "candidate_sha256": "236359789d1e2ece3be57dc04c428a8bbb38b9e17e864396d76aa84723bf551a"
+    },
+    {
+      "variant": "faction_lombardia_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_lombardia_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 66,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "bb5f1084f799a46adfb715c555906943fc89d29b2f116dafd7d5cf7fb08c5f4d",
+      "candidate_sha256": "d052732f3c7c59084772e6934d159ce000d051be6b8d6fcccc73803ba8ff9fca"
+    },
+    {
+      "variant": "faction_lombardia_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_lombardia_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 70,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "085f288e9a11d184dbb337f25f6be01f02a9476a9f0323329d1e49b946fc3256",
+      "candidate_sha256": "5f1c25d0182fd26abcf949fb51b6681eab0e889ea26a6f95a7b63f313bf5373e"
+    },
+    {
+      "variant": "faction_sand_raiders_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 76,
+      "delta_bounds": [
+        30,
+        50,
+        43,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "c46e32ca27041d7e5eb76a09004f32a587226b88a7a72a69db477be69b6785cb",
+      "candidate_sha256": "160cedcc1163f00578d6084cf89c22ce591513e8a2ef8e5782777f01e3b1f231"
+    },
+    {
+      "variant": "faction_sand_raiders_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ee293023ed049334daa21ada173e32e4cf3bf27ce6e9b29b3845bdf67ca9a72f",
+      "candidate_sha256": "552c0c9371aff14ccf318d99e463d0904bb4f8a034c84c8c1e2bfe5e2e664bf5"
+    },
+    {
+      "variant": "faction_sand_raiders_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 70,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "7f819f60ab2dcbf58d15e9e4391d88da385df23afdf718f8e5df8b6e2f1237da",
+      "candidate_sha256": "7ed5ae42f90ccfdb64a23c09dadffba404096f8ed31fbbd623fdf84bbed07b7d"
+    },
+    {
+      "variant": "faction_sand_raiders_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 71,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "a7dc7339fa13cbdd5718a7c0e3e3c91052eca80b2571dc7c44947757759ed796",
+      "candidate_sha256": "8e0764bc096151c3fd064ab3a9b509367668bb42aedc2b41e8dadfc69aec9142"
+    },
+    {
+      "variant": "faction_sand_raiders_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1d864c1c38e82c53caafeb56fe5386ca89b8f93fa4224f2187cf10dce111277c",
+      "candidate_sha256": "92346882898059d079c848d0152036e2b9e054ae6849c2b739ee33dbda5848fb"
+    },
+    {
+      "variant": "faction_sand_raiders_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        62
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "6ecea4f039e512f4ee924c1a3a3e9f4450b69d0552b804337192f67e44d808c3",
+      "candidate_sha256": "f4ff7fec7b700bcdabc7184bf1b9530221a05202b84e548a31b95523576ff7e2"
+    },
+    {
+      "variant": "faction_saffar_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_saffar_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 81,
+      "delta_bounds": [
+        30,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "85cae818ea6706e3db3e3151bf376fcee2a7dcc272514214ae5f134d824a300d",
+      "candidate_sha256": "f431ab8d078e000daa11ff3a42635f03cc5cd68a2d97188d0a96ef67d19e5d56"
+    },
+    {
+      "variant": "faction_saffar_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_saffar_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 77,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "0c90f4b0fc763cb0e34e8cc6619fd639dc07c97bede1b82dd33f96e62dfaa638",
+      "candidate_sha256": "cba4ba4ed658379ac3d6c201d980d47a4497feeffe2301918e1c019782e267c3"
+    },
+    {
+      "variant": "faction_saffar_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_saffar_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 77,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "64a77addf0bbab474709e6eafae49b0026009182a1988a8084383ea33bab3b1e",
+      "candidate_sha256": "9eeb9c1c7e7a79e8be2995425444852c0da1c269369590d8894c7f6213a92c1c"
+    },
+    {
+      "variant": "faction_saffar_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_saffar_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "50ecf3576230d26a06164d92a0b2e4f3df019ca907f61c7f06834269205b3f6f",
+      "candidate_sha256": "41d8cdd6acf6acb09657d1df2ef2ff0818d11d0e7de928ea376d987f66e6e0b8"
+    },
+    {
+      "variant": "faction_saffar_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_saffar_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        30,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "9044214bbe8ee1170ddf0c76974c6fb03519328fa0f8a6017ee4234df05a5266",
+      "candidate_sha256": "257459e403ec46615bc02b718f4363c1e8f409153bf276ffbb9b0260ada45dc7"
+    },
+    {
+      "variant": "faction_saffar_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_saffar_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 77,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "7ae427a65e3c5a91daa9e6564cc65864139bc0c338d0f22be476194e04b7aaf3",
+      "candidate_sha256": "a8e74a49e8466f15830181989b615644a77a8fbc93d2c9cc8744d5260150a075"
+    },
+    {
+      "variant": "faction_kurgan_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_kurgan_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 78,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "c0e69bf5186013bdff1cf26a11c78bbb77442453aa24a90a966fe228ce95f97d",
+      "candidate_sha256": "0f448e185f92e31e53b2c914a5686c310d609f8bf9ac57f70ea6455e130c22d7"
+    },
+    {
+      "variant": "faction_kurgan_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_kurgan_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 74,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "5dc6e747e4db0abaa0ffee6c57761853c4eb7e1de6958f3415005a8e049e5e98",
+      "candidate_sha256": "7ae08a0c541cae94674048e56cd81c33b77b6df715406cf6a152c02be082d30c"
+    },
+    {
+      "variant": "faction_kurgan_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_kurgan_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "5598679322cc3f7f98eb406d037cedf2889766a380385dc68fdef14d997b9395",
+      "candidate_sha256": "0335b8dddd8c0ef1f03a9366d98aa6a77538140d29765677a6da8b7fb7d13954"
+    },
+    {
+      "variant": "faction_kurgan_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_kurgan_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "39c1a20fc9dabcc80271d24a844bf47d137d43b16e6c233994794b1733e6a1b7",
+      "candidate_sha256": "19fdfe0b03036de85373f62152c40d1c86c1255b3fb1f7764934e5d24eb4b633"
+    },
+    {
+      "variant": "faction_kurgan_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_kurgan_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ba1a559a36ef14d3dbd8a843a4d9d6da07c9e0d75d1f1ae7d412d8bb6a6f0f7e",
+      "candidate_sha256": "c8358988710e48efef61faa11e0a365963902866a0a3f9e5a808263980f17538"
+    },
+    {
+      "variant": "faction_kurgan_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_kurgan_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        30,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "86faf1e8dcd14edcf88c2f89847e9768c292c1cbcd6029a3aa383157d02ee181",
+      "candidate_sha256": "5833f23aac90943aec216390b93d7a3fa9e940125c4ec911c905a7d1abb25523"
+    },
+    {
+      "variant": "faction_ashford_crane_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 63,
+      "delta_bounds": [
+        32,
+        49,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "daf060c6be4532361aa0770fffb905982e3d9b6753ad41e2c4e0082bd6fdb8ee",
+      "candidate_sha256": "f70947b98e5f009508c57269776ae5c753d3e5dde636bda205d6eabfaa85d7e2"
+    },
+    {
+      "variant": "faction_ashford_crane_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 67,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "583428c986bdbd83e4214431fe22356c61480af7e14f7f768ec3802d9184c197",
+      "candidate_sha256": "f4ee1fca881a3616c75fffcc857d750c0dbd4f185dfed64a0a73e63bc8fcdf14"
+    },
+    {
+      "variant": "faction_ashford_crane_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 65,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "53dde8cea10ec4d84408b5da8438f67694f1e49ef087035d1f86fc7bcb12c186",
+      "candidate_sha256": "4825a4ff7c30ea30e9f410877b4e12a19cc5bf4d4b2c2952524d4684ec0c5a04"
+    },
+    {
+      "variant": "faction_ashford_crane_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 68,
+      "delta_bounds": [
+        32,
+        49,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "bcbfc1378a33cd5dd74bb01d9c00cc41f1b2814299e264f4f0348c51234509ee",
+      "candidate_sha256": "fc19080f2c9de756fe84a39bb28e045e8521cc50b6cebb006dc80c560bb61d97"
+    },
+    {
+      "variant": "faction_ashford_crane_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 63,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "ac4f0510edd21367c02242d2916d79bf2d3dc8e0a5cdb8d1dc3314a8c4d9a2b0",
+      "candidate_sha256": "dbc96c4354b28db859fa6a918c6e713c7c719915fc46351377e3d70c5687c46f"
+    },
+    {
+      "variant": "faction_ashford_crane_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 65,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "a873f6b446120e2b9552b096f07c00c308329281363acb1965d60cce3a0075e5",
+      "candidate_sha256": "aca9e8c16814d4f983737766b6c336c3cf386d2227c7be24edc5aeca1fde3184"
+    },
+    {
+      "variant": "faction_blacktop_glock_17",
+      "portrait": "assets/art/units/factions/portraits/faction_blacktop_glock_17.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 77,
+      "delta_bounds": [
+        31,
+        49,
+        43,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "c2341e648b44201f986ad9b50bcfef651f71395e49d8c28e0df4917f5cc70447",
+      "candidate_sha256": "bb301d4ebcc0f152c7db6c084def29ff29f46d5fcb5fb3e299a67a0afec289de"
+    },
+    {
+      "variant": "faction_blacktop_m1911",
+      "portrait": "assets/art/units/factions/portraits/faction_blacktop_m1911.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 73,
+      "delta_bounds": [
+        32,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "76f3dcf8861755481ed45e19320e661f50a72985c478830b600e85ac3df007cc",
+      "candidate_sha256": "bc38b83caf7b2175a6d230482b38967d9c2edb732f5f37a0d8e32df533c71fe0"
+    },
+    {
+      "variant": "faction_blacktop_usp",
+      "portrait": "assets/art/units/factions/portraits/faction_blacktop_usp.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 70,
+      "delta_bounds": [
+        31,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "8cfa2113e69f13bd4422ba06b061881b4c4e5b27a8489dc129e5d277326d2387",
+      "candidate_sha256": "b3a67ccc6c6ab218d54577e053d2dcab5175e173b164966c6a78e0e443572b28"
+    },
+    {
+      "variant": "faction_blacktop_cz75",
+      "portrait": "assets/art/units/factions/portraits/faction_blacktop_cz75.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 72,
+      "delta_bounds": [
+        31,
+        50,
+        45,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "82e363eb87c64d05bf305996663327092fc4cad0a6b4203789a9f04005cc3ac6",
+      "candidate_sha256": "516884fa2f233d06d58e3b2641b0ba1b3eb22845ab56176788864e8f9132c101"
+    },
+    {
+      "variant": "faction_blacktop_desert_eagle",
+      "portrait": "assets/art/units/factions/portraits/faction_blacktop_desert_eagle.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 69,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "7c10ee0109751cb702c918cbbf777fa775155b1d0a58b2e260ee58f27098caee",
+      "candidate_sha256": "1be0ef49799e908171167cbd434edc75ff118af0dd9af8a4f0317631b85c9468"
+    },
+    {
+      "variant": "faction_blacktop_five_seven",
+      "portrait": "assets/art/units/factions/portraits/faction_blacktop_five_seven.png",
+      "dimensions": [
+        90,
+        80
+      ],
+      "changed_pixels": 71,
+      "delta_bounds": [
+        32,
+        50,
+        44,
+        61
+      ],
+      "baseline_mismatch": 0,
+      "before_sha256": "1e9836c88420a7c5bdab839c4faf532b919d497365a8c69c4ed5e9ac863c43af",
+      "candidate_sha256": "4e5137ed5af633f2f4cb3f0391189589f03e8db089f068298175340ae22a8dbe"
+    }
+  ]
+}

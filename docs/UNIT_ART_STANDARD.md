@@ -43,3 +43,8 @@ Technical-lead visual review: inspected both candidates' standing left shoulder,
 shoulder-to-torso continuity, hem/hip connection and front-view weapon proportions
 on the final review board. The body comparison uses a fixed canvas scale. Product
 owner acceptance of the revised art remains separate.
+
+
+## Pistol card forearm continuity — 2026-09-14
+
+SW/SE pistol card portraits must retain a visible continuous elbow-to-hand forearm connection and shoulders joined into the garment/torso. Preserve existing joints, body proportions, grip anchors and mirror convention. The card-only finishing pass is documented in [the pistol portrait report](../tools/pistol_portrait_20260914/README.md). Full atlas rebuilds must retain/reapply that finishing pass before publishing card crops; an uncorrected atlas crop is not the accepted card baseline. This standing-image correction does not certify unreviewed animation stances.

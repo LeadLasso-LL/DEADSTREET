@@ -1,0 +1,1253 @@
+[
+  {
+    "faction": "mercer",
+    "model": "glock_17",
+    "variant": "0_pistol",
+    "group": "base",
+    "file": "0_pistol",
+    "portrait": "assets/art/units/pixel_v1/portraits/0_pistol.png",
+    "atlas": "assets/art/units/pixel_v1/0_pistol.png"
+  },
+  {
+    "faction": "mercer",
+    "model": "m1911",
+    "variant": "arsenal_0_m1911",
+    "group": "arsenal",
+    "file": "0_m1911",
+    "portrait": "assets/art/weapons/arsenal/portraits/0_m1911.png",
+    "atlas": "assets/art/weapons/arsenal/units/0_m1911.png"
+  },
+  {
+    "faction": "mercer",
+    "model": "usp",
+    "variant": "arsenal_0_usp",
+    "group": "arsenal",
+    "file": "0_usp",
+    "portrait": "assets/art/weapons/arsenal/portraits/0_usp.png",
+    "atlas": "assets/art/weapons/arsenal/units/0_usp.png"
+  },
+  {
+    "faction": "mercer",
+    "model": "cz75",
+    "variant": "arsenal_0_cz75",
+    "group": "arsenal",
+    "file": "0_cz75",
+    "portrait": "assets/art/weapons/arsenal/portraits/0_cz75.png",
+    "atlas": "assets/art/weapons/arsenal/units/0_cz75.png"
+  },
+  {
+    "faction": "mercer",
+    "model": "desert_eagle",
+    "variant": "arsenal_0_desert_eagle",
+    "group": "arsenal",
+    "file": "0_desert_eagle",
+    "portrait": "assets/art/weapons/arsenal/portraits/0_desert_eagle.png",
+    "atlas": "assets/art/weapons/arsenal/units/0_desert_eagle.png"
+  },
+  {
+    "faction": "mercer",
+    "model": "five_seven",
+    "variant": "arsenal_0_five_seven",
+    "group": "arsenal",
+    "file": "0_five_seven",
+    "portrait": "assets/art/weapons/arsenal/portraits/0_five_seven.png",
+    "atlas": "assets/art/weapons/arsenal/units/0_five_seven.png"
+  },
+  {
+    "faction": "eastex",
+    "model": "glock_17",
+    "variant": "faction_eastex_glock_17",
+    "group": "factions",
+    "file": "faction_eastex_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_eastex_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_eastex_glock_17.png"
+  },
+  {
+    "faction": "eastex",
+    "model": "m1911",
+    "variant": "faction_eastex_m1911",
+    "group": "factions",
+    "file": "faction_eastex_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_eastex_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_eastex_m1911.png"
+  },
+  {
+    "faction": "eastex",
+    "model": "usp",
+    "variant": "faction_eastex_usp",
+    "group": "factions",
+    "file": "faction_eastex_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_eastex_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_eastex_usp.png"
+  },
+  {
+    "faction": "eastex",
+    "model": "cz75",
+    "variant": "faction_eastex_cz75",
+    "group": "factions",
+    "file": "faction_eastex_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_eastex_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_eastex_cz75.png"
+  },
+  {
+    "faction": "eastex",
+    "model": "desert_eagle",
+    "variant": "faction_eastex_desert_eagle",
+    "group": "factions",
+    "file": "faction_eastex_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_eastex_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_eastex_desert_eagle.png"
+  },
+  {
+    "faction": "eastex",
+    "model": "five_seven",
+    "variant": "faction_eastex_five_seven",
+    "group": "factions",
+    "file": "faction_eastex_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_eastex_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_eastex_five_seven.png"
+  },
+  {
+    "faction": "calle_ocho",
+    "model": "glock_17",
+    "variant": "faction_calle_ocho_glock_17",
+    "group": "factions",
+    "file": "faction_calle_ocho_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_calle_ocho_glock_17.png"
+  },
+  {
+    "faction": "calle_ocho",
+    "model": "m1911",
+    "variant": "faction_calle_ocho_m1911",
+    "group": "factions",
+    "file": "faction_calle_ocho_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_calle_ocho_m1911.png"
+  },
+  {
+    "faction": "calle_ocho",
+    "model": "usp",
+    "variant": "faction_calle_ocho_usp",
+    "group": "factions",
+    "file": "faction_calle_ocho_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_calle_ocho_usp.png"
+  },
+  {
+    "faction": "calle_ocho",
+    "model": "cz75",
+    "variant": "faction_calle_ocho_cz75",
+    "group": "factions",
+    "file": "faction_calle_ocho_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_calle_ocho_cz75.png"
+  },
+  {
+    "faction": "calle_ocho",
+    "model": "desert_eagle",
+    "variant": "faction_calle_ocho_desert_eagle",
+    "group": "factions",
+    "file": "faction_calle_ocho_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_calle_ocho_desert_eagle.png"
+  },
+  {
+    "faction": "calle_ocho",
+    "model": "five_seven",
+    "variant": "faction_calle_ocho_five_seven",
+    "group": "factions",
+    "file": "faction_calle_ocho_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_calle_ocho_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_calle_ocho_five_seven.png"
+  },
+  {
+    "faction": "ventresca",
+    "model": "glock_17",
+    "variant": "faction_ventresca_glock_17",
+    "group": "factions",
+    "file": "faction_ventresca_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_ventresca_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_ventresca_glock_17.png"
+  },
+  {
+    "faction": "ventresca",
+    "model": "m1911",
+    "variant": "faction_ventresca_m1911",
+    "group": "factions",
+    "file": "faction_ventresca_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_ventresca_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_ventresca_m1911.png"
+  },
+  {
+    "faction": "ventresca",
+    "model": "usp",
+    "variant": "faction_ventresca_usp",
+    "group": "factions",
+    "file": "faction_ventresca_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_ventresca_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_ventresca_usp.png"
+  },
+  {
+    "faction": "ventresca",
+    "model": "cz75",
+    "variant": "faction_ventresca_cz75",
+    "group": "factions",
+    "file": "faction_ventresca_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_ventresca_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_ventresca_cz75.png"
+  },
+  {
+    "faction": "ventresca",
+    "model": "desert_eagle",
+    "variant": "faction_ventresca_desert_eagle",
+    "group": "factions",
+    "file": "faction_ventresca_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_ventresca_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_ventresca_desert_eagle.png"
+  },
+  {
+    "faction": "ventresca",
+    "model": "five_seven",
+    "variant": "faction_ventresca_five_seven",
+    "group": "factions",
+    "file": "faction_ventresca_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_ventresca_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_ventresca_five_seven.png"
+  },
+  {
+    "faction": "ravicci",
+    "model": "glock_17",
+    "variant": "faction_ravicci_glock_17",
+    "group": "factions",
+    "file": "faction_ravicci_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_ravicci_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_ravicci_glock_17.png"
+  },
+  {
+    "faction": "ravicci",
+    "model": "m1911",
+    "variant": "faction_ravicci_m1911",
+    "group": "factions",
+    "file": "faction_ravicci_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_ravicci_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_ravicci_m1911.png"
+  },
+  {
+    "faction": "ravicci",
+    "model": "usp",
+    "variant": "faction_ravicci_usp",
+    "group": "factions",
+    "file": "faction_ravicci_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_ravicci_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_ravicci_usp.png"
+  },
+  {
+    "faction": "ravicci",
+    "model": "cz75",
+    "variant": "faction_ravicci_cz75",
+    "group": "factions",
+    "file": "faction_ravicci_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_ravicci_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_ravicci_cz75.png"
+  },
+  {
+    "faction": "ravicci",
+    "model": "desert_eagle",
+    "variant": "faction_ravicci_desert_eagle",
+    "group": "factions",
+    "file": "faction_ravicci_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_ravicci_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_ravicci_desert_eagle.png"
+  },
+  {
+    "faction": "ravicci",
+    "model": "five_seven",
+    "variant": "faction_ravicci_five_seven",
+    "group": "factions",
+    "file": "faction_ravicci_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_ravicci_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_ravicci_five_seven.png"
+  },
+  {
+    "faction": "orlov",
+    "model": "glock_17",
+    "variant": "1_pistol",
+    "group": "base",
+    "file": "1_pistol",
+    "portrait": "assets/art/units/pixel_v1/portraits/1_pistol.png",
+    "atlas": "assets/art/units/pixel_v1/1_pistol.png"
+  },
+  {
+    "faction": "orlov",
+    "model": "m1911",
+    "variant": "arsenal_1_m1911",
+    "group": "arsenal",
+    "file": "1_m1911",
+    "portrait": "assets/art/weapons/arsenal/portraits/1_m1911.png",
+    "atlas": "assets/art/weapons/arsenal/units/1_m1911.png"
+  },
+  {
+    "faction": "orlov",
+    "model": "usp",
+    "variant": "arsenal_1_usp",
+    "group": "arsenal",
+    "file": "1_usp",
+    "portrait": "assets/art/weapons/arsenal/portraits/1_usp.png",
+    "atlas": "assets/art/weapons/arsenal/units/1_usp.png"
+  },
+  {
+    "faction": "orlov",
+    "model": "cz75",
+    "variant": "arsenal_1_cz75",
+    "group": "arsenal",
+    "file": "1_cz75",
+    "portrait": "assets/art/weapons/arsenal/portraits/1_cz75.png",
+    "atlas": "assets/art/weapons/arsenal/units/1_cz75.png"
+  },
+  {
+    "faction": "orlov",
+    "model": "desert_eagle",
+    "variant": "arsenal_1_desert_eagle",
+    "group": "arsenal",
+    "file": "1_desert_eagle",
+    "portrait": "assets/art/weapons/arsenal/portraits/1_desert_eagle.png",
+    "atlas": "assets/art/weapons/arsenal/units/1_desert_eagle.png"
+  },
+  {
+    "faction": "orlov",
+    "model": "five_seven",
+    "variant": "arsenal_1_five_seven",
+    "group": "arsenal",
+    "file": "1_five_seven",
+    "portrait": "assets/art/weapons/arsenal/portraits/1_five_seven.png",
+    "atlas": "assets/art/weapons/arsenal/units/1_five_seven.png"
+  },
+  {
+    "faction": "zangyaku",
+    "model": "glock_17",
+    "variant": "faction_zangyaku_glock_17",
+    "group": "factions",
+    "file": "faction_zangyaku_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_zangyaku_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_zangyaku_glock_17.png"
+  },
+  {
+    "faction": "zangyaku",
+    "model": "m1911",
+    "variant": "faction_zangyaku_m1911",
+    "group": "factions",
+    "file": "faction_zangyaku_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_zangyaku_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_zangyaku_m1911.png"
+  },
+  {
+    "faction": "zangyaku",
+    "model": "usp",
+    "variant": "faction_zangyaku_usp",
+    "group": "factions",
+    "file": "faction_zangyaku_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_zangyaku_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_zangyaku_usp.png"
+  },
+  {
+    "faction": "zangyaku",
+    "model": "cz75",
+    "variant": "faction_zangyaku_cz75",
+    "group": "factions",
+    "file": "faction_zangyaku_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_zangyaku_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_zangyaku_cz75.png"
+  },
+  {
+    "faction": "zangyaku",
+    "model": "desert_eagle",
+    "variant": "faction_zangyaku_desert_eagle",
+    "group": "factions",
+    "file": "faction_zangyaku_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_zangyaku_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_zangyaku_desert_eagle.png"
+  },
+  {
+    "faction": "zangyaku",
+    "model": "five_seven",
+    "variant": "faction_zangyaku_five_seven",
+    "group": "factions",
+    "file": "faction_zangyaku_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_zangyaku_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_zangyaku_five_seven.png"
+  },
+  {
+    "faction": "bitian",
+    "model": "glock_17",
+    "variant": "faction_bitian_glock_17",
+    "group": "factions",
+    "file": "faction_bitian_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_bitian_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_bitian_glock_17.png"
+  },
+  {
+    "faction": "bitian",
+    "model": "m1911",
+    "variant": "faction_bitian_m1911",
+    "group": "factions",
+    "file": "faction_bitian_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_bitian_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_bitian_m1911.png"
+  },
+  {
+    "faction": "bitian",
+    "model": "usp",
+    "variant": "faction_bitian_usp",
+    "group": "factions",
+    "file": "faction_bitian_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_bitian_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_bitian_usp.png"
+  },
+  {
+    "faction": "bitian",
+    "model": "cz75",
+    "variant": "faction_bitian_cz75",
+    "group": "factions",
+    "file": "faction_bitian_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_bitian_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_bitian_cz75.png"
+  },
+  {
+    "faction": "bitian",
+    "model": "desert_eagle",
+    "variant": "faction_bitian_desert_eagle",
+    "group": "factions",
+    "file": "faction_bitian_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_bitian_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_bitian_desert_eagle.png"
+  },
+  {
+    "faction": "bitian",
+    "model": "five_seven",
+    "variant": "faction_bitian_five_seven",
+    "group": "factions",
+    "file": "faction_bitian_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_bitian_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_bitian_five_seven.png"
+  },
+  {
+    "faction": "stateline",
+    "model": "glock_17",
+    "variant": "faction_stateline_glock_17",
+    "group": "factions",
+    "file": "faction_stateline_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_stateline_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_stateline_glock_17.png"
+  },
+  {
+    "faction": "stateline",
+    "model": "m1911",
+    "variant": "faction_stateline_m1911",
+    "group": "factions",
+    "file": "faction_stateline_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_stateline_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_stateline_m1911.png"
+  },
+  {
+    "faction": "stateline",
+    "model": "usp",
+    "variant": "faction_stateline_usp",
+    "group": "factions",
+    "file": "faction_stateline_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_stateline_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_stateline_usp.png"
+  },
+  {
+    "faction": "stateline",
+    "model": "cz75",
+    "variant": "faction_stateline_cz75",
+    "group": "factions",
+    "file": "faction_stateline_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_stateline_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_stateline_cz75.png"
+  },
+  {
+    "faction": "stateline",
+    "model": "desert_eagle",
+    "variant": "faction_stateline_desert_eagle",
+    "group": "factions",
+    "file": "faction_stateline_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_stateline_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_stateline_desert_eagle.png"
+  },
+  {
+    "faction": "stateline",
+    "model": "five_seven",
+    "variant": "faction_stateline_five_seven",
+    "group": "factions",
+    "file": "faction_stateline_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_stateline_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_stateline_five_seven.png"
+  },
+  {
+    "faction": "sierra_roja",
+    "model": "glock_17",
+    "variant": "faction_sierra_roja_glock_17",
+    "group": "factions",
+    "file": "faction_sierra_roja_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_sierra_roja_glock_17.png"
+  },
+  {
+    "faction": "sierra_roja",
+    "model": "m1911",
+    "variant": "faction_sierra_roja_m1911",
+    "group": "factions",
+    "file": "faction_sierra_roja_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_sierra_roja_m1911.png"
+  },
+  {
+    "faction": "sierra_roja",
+    "model": "usp",
+    "variant": "faction_sierra_roja_usp",
+    "group": "factions",
+    "file": "faction_sierra_roja_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_sierra_roja_usp.png"
+  },
+  {
+    "faction": "sierra_roja",
+    "model": "cz75",
+    "variant": "faction_sierra_roja_cz75",
+    "group": "factions",
+    "file": "faction_sierra_roja_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_sierra_roja_cz75.png"
+  },
+  {
+    "faction": "sierra_roja",
+    "model": "desert_eagle",
+    "variant": "faction_sierra_roja_desert_eagle",
+    "group": "factions",
+    "file": "faction_sierra_roja_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_sierra_roja_desert_eagle.png"
+  },
+  {
+    "faction": "sierra_roja",
+    "model": "five_seven",
+    "variant": "faction_sierra_roja_five_seven",
+    "group": "factions",
+    "file": "faction_sierra_roja_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_sierra_roja_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_sierra_roja_five_seven.png"
+  },
+  {
+    "faction": "whittaker",
+    "model": "glock_17",
+    "variant": "faction_whittaker_glock_17",
+    "group": "factions",
+    "file": "faction_whittaker_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_whittaker_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_whittaker_glock_17.png"
+  },
+  {
+    "faction": "whittaker",
+    "model": "m1911",
+    "variant": "faction_whittaker_m1911",
+    "group": "factions",
+    "file": "faction_whittaker_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_whittaker_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_whittaker_m1911.png"
+  },
+  {
+    "faction": "whittaker",
+    "model": "usp",
+    "variant": "faction_whittaker_usp",
+    "group": "factions",
+    "file": "faction_whittaker_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_whittaker_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_whittaker_usp.png"
+  },
+  {
+    "faction": "whittaker",
+    "model": "cz75",
+    "variant": "faction_whittaker_cz75",
+    "group": "factions",
+    "file": "faction_whittaker_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_whittaker_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_whittaker_cz75.png"
+  },
+  {
+    "faction": "whittaker",
+    "model": "desert_eagle",
+    "variant": "faction_whittaker_desert_eagle",
+    "group": "factions",
+    "file": "faction_whittaker_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_whittaker_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_whittaker_desert_eagle.png"
+  },
+  {
+    "faction": "whittaker",
+    "model": "five_seven",
+    "variant": "faction_whittaker_five_seven",
+    "group": "factions",
+    "file": "faction_whittaker_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_whittaker_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_whittaker_five_seven.png"
+  },
+  {
+    "faction": "mcallister",
+    "model": "glock_17",
+    "variant": "faction_mcallister_glock_17",
+    "group": "factions",
+    "file": "faction_mcallister_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_mcallister_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_mcallister_glock_17.png"
+  },
+  {
+    "faction": "mcallister",
+    "model": "m1911",
+    "variant": "faction_mcallister_m1911",
+    "group": "factions",
+    "file": "faction_mcallister_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_mcallister_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_mcallister_m1911.png"
+  },
+  {
+    "faction": "mcallister",
+    "model": "usp",
+    "variant": "faction_mcallister_usp",
+    "group": "factions",
+    "file": "faction_mcallister_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_mcallister_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_mcallister_usp.png"
+  },
+  {
+    "faction": "mcallister",
+    "model": "cz75",
+    "variant": "faction_mcallister_cz75",
+    "group": "factions",
+    "file": "faction_mcallister_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_mcallister_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_mcallister_cz75.png"
+  },
+  {
+    "faction": "mcallister",
+    "model": "desert_eagle",
+    "variant": "faction_mcallister_desert_eagle",
+    "group": "factions",
+    "file": "faction_mcallister_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_mcallister_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_mcallister_desert_eagle.png"
+  },
+  {
+    "faction": "mcallister",
+    "model": "five_seven",
+    "variant": "faction_mcallister_five_seven",
+    "group": "factions",
+    "file": "faction_mcallister_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_mcallister_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_mcallister_five_seven.png"
+  },
+  {
+    "faction": "trc",
+    "model": "glock_17",
+    "variant": "faction_trc_glock_17",
+    "group": "factions",
+    "file": "faction_trc_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_trc_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_trc_glock_17.png"
+  },
+  {
+    "faction": "trc",
+    "model": "m1911",
+    "variant": "faction_trc_m1911",
+    "group": "factions",
+    "file": "faction_trc_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_trc_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_trc_m1911.png"
+  },
+  {
+    "faction": "trc",
+    "model": "usp",
+    "variant": "faction_trc_usp",
+    "group": "factions",
+    "file": "faction_trc_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_trc_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_trc_usp.png"
+  },
+  {
+    "faction": "trc",
+    "model": "cz75",
+    "variant": "faction_trc_cz75",
+    "group": "factions",
+    "file": "faction_trc_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_trc_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_trc_cz75.png"
+  },
+  {
+    "faction": "trc",
+    "model": "desert_eagle",
+    "variant": "faction_trc_desert_eagle",
+    "group": "factions",
+    "file": "faction_trc_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_trc_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_trc_desert_eagle.png"
+  },
+  {
+    "faction": "trc",
+    "model": "five_seven",
+    "variant": "faction_trc_five_seven",
+    "group": "factions",
+    "file": "faction_trc_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_trc_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_trc_five_seven.png"
+  },
+  {
+    "faction": "nbpd",
+    "model": "glock_17",
+    "variant": "faction_nbpd_glock_17",
+    "group": "factions",
+    "file": "faction_nbpd_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_nbpd_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_nbpd_glock_17.png"
+  },
+  {
+    "faction": "nbpd",
+    "model": "m1911",
+    "variant": "faction_nbpd_m1911",
+    "group": "factions",
+    "file": "faction_nbpd_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_nbpd_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_nbpd_m1911.png"
+  },
+  {
+    "faction": "nbpd",
+    "model": "usp",
+    "variant": "faction_nbpd_usp",
+    "group": "factions",
+    "file": "faction_nbpd_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_nbpd_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_nbpd_usp.png"
+  },
+  {
+    "faction": "nbpd",
+    "model": "cz75",
+    "variant": "faction_nbpd_cz75",
+    "group": "factions",
+    "file": "faction_nbpd_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_nbpd_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_nbpd_cz75.png"
+  },
+  {
+    "faction": "nbpd",
+    "model": "desert_eagle",
+    "variant": "faction_nbpd_desert_eagle",
+    "group": "factions",
+    "file": "faction_nbpd_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_nbpd_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_nbpd_desert_eagle.png"
+  },
+  {
+    "faction": "nbpd",
+    "model": "five_seven",
+    "variant": "faction_nbpd_five_seven",
+    "group": "factions",
+    "file": "faction_nbpd_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_nbpd_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_nbpd_five_seven.png"
+  },
+  {
+    "faction": "mercer44",
+    "model": "glock_17",
+    "variant": "faction_mercer44_glock_17",
+    "group": "factions",
+    "file": "faction_mercer44_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_mercer44_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_mercer44_glock_17.png"
+  },
+  {
+    "faction": "mercer44",
+    "model": "m1911",
+    "variant": "faction_mercer44_m1911",
+    "group": "factions",
+    "file": "faction_mercer44_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_mercer44_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_mercer44_m1911.png"
+  },
+  {
+    "faction": "mercer44",
+    "model": "usp",
+    "variant": "faction_mercer44_usp",
+    "group": "factions",
+    "file": "faction_mercer44_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_mercer44_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_mercer44_usp.png"
+  },
+  {
+    "faction": "mercer44",
+    "model": "cz75",
+    "variant": "faction_mercer44_cz75",
+    "group": "factions",
+    "file": "faction_mercer44_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_mercer44_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_mercer44_cz75.png"
+  },
+  {
+    "faction": "mercer44",
+    "model": "desert_eagle",
+    "variant": "faction_mercer44_desert_eagle",
+    "group": "factions",
+    "file": "faction_mercer44_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_mercer44_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_mercer44_desert_eagle.png"
+  },
+  {
+    "faction": "mercer44",
+    "model": "five_seven",
+    "variant": "faction_mercer44_five_seven",
+    "group": "factions",
+    "file": "faction_mercer44_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_mercer44_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_mercer44_five_seven.png"
+  },
+  {
+    "faction": "wm_corp",
+    "model": "glock_17",
+    "variant": "faction_wm_corp_glock_17",
+    "group": "factions",
+    "file": "faction_wm_corp_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_wm_corp_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_wm_corp_glock_17.png"
+  },
+  {
+    "faction": "wm_corp",
+    "model": "m1911",
+    "variant": "faction_wm_corp_m1911",
+    "group": "factions",
+    "file": "faction_wm_corp_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_wm_corp_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_wm_corp_m1911.png"
+  },
+  {
+    "faction": "wm_corp",
+    "model": "usp",
+    "variant": "faction_wm_corp_usp",
+    "group": "factions",
+    "file": "faction_wm_corp_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_wm_corp_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_wm_corp_usp.png"
+  },
+  {
+    "faction": "wm_corp",
+    "model": "cz75",
+    "variant": "faction_wm_corp_cz75",
+    "group": "factions",
+    "file": "faction_wm_corp_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_wm_corp_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_wm_corp_cz75.png"
+  },
+  {
+    "faction": "wm_corp",
+    "model": "desert_eagle",
+    "variant": "faction_wm_corp_desert_eagle",
+    "group": "factions",
+    "file": "faction_wm_corp_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_wm_corp_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_wm_corp_desert_eagle.png"
+  },
+  {
+    "faction": "wm_corp",
+    "model": "five_seven",
+    "variant": "faction_wm_corp_five_seven",
+    "group": "factions",
+    "file": "faction_wm_corp_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_wm_corp_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_wm_corp_five_seven.png"
+  },
+  {
+    "faction": "union_sur",
+    "model": "glock_17",
+    "variant": "faction_union_sur_glock_17",
+    "group": "factions",
+    "file": "faction_union_sur_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_union_sur_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_union_sur_glock_17.png"
+  },
+  {
+    "faction": "union_sur",
+    "model": "m1911",
+    "variant": "faction_union_sur_m1911",
+    "group": "factions",
+    "file": "faction_union_sur_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_union_sur_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_union_sur_m1911.png"
+  },
+  {
+    "faction": "union_sur",
+    "model": "usp",
+    "variant": "faction_union_sur_usp",
+    "group": "factions",
+    "file": "faction_union_sur_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_union_sur_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_union_sur_usp.png"
+  },
+  {
+    "faction": "union_sur",
+    "model": "cz75",
+    "variant": "faction_union_sur_cz75",
+    "group": "factions",
+    "file": "faction_union_sur_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_union_sur_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_union_sur_cz75.png"
+  },
+  {
+    "faction": "union_sur",
+    "model": "desert_eagle",
+    "variant": "faction_union_sur_desert_eagle",
+    "group": "factions",
+    "file": "faction_union_sur_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_union_sur_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_union_sur_desert_eagle.png"
+  },
+  {
+    "faction": "union_sur",
+    "model": "five_seven",
+    "variant": "faction_union_sur_five_seven",
+    "group": "factions",
+    "file": "faction_union_sur_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_union_sur_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_union_sur_five_seven.png"
+  },
+  {
+    "faction": "lombardia",
+    "model": "glock_17",
+    "variant": "faction_lombardia_glock_17",
+    "group": "factions",
+    "file": "faction_lombardia_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_lombardia_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_lombardia_glock_17.png"
+  },
+  {
+    "faction": "lombardia",
+    "model": "m1911",
+    "variant": "faction_lombardia_m1911",
+    "group": "factions",
+    "file": "faction_lombardia_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_lombardia_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_lombardia_m1911.png"
+  },
+  {
+    "faction": "lombardia",
+    "model": "usp",
+    "variant": "faction_lombardia_usp",
+    "group": "factions",
+    "file": "faction_lombardia_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_lombardia_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_lombardia_usp.png"
+  },
+  {
+    "faction": "lombardia",
+    "model": "cz75",
+    "variant": "faction_lombardia_cz75",
+    "group": "factions",
+    "file": "faction_lombardia_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_lombardia_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_lombardia_cz75.png"
+  },
+  {
+    "faction": "lombardia",
+    "model": "desert_eagle",
+    "variant": "faction_lombardia_desert_eagle",
+    "group": "factions",
+    "file": "faction_lombardia_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_lombardia_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_lombardia_desert_eagle.png"
+  },
+  {
+    "faction": "lombardia",
+    "model": "five_seven",
+    "variant": "faction_lombardia_five_seven",
+    "group": "factions",
+    "file": "faction_lombardia_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_lombardia_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_lombardia_five_seven.png"
+  },
+  {
+    "faction": "sand_raiders",
+    "model": "glock_17",
+    "variant": "faction_sand_raiders_glock_17",
+    "group": "factions",
+    "file": "faction_sand_raiders_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_sand_raiders_glock_17.png"
+  },
+  {
+    "faction": "sand_raiders",
+    "model": "m1911",
+    "variant": "faction_sand_raiders_m1911",
+    "group": "factions",
+    "file": "faction_sand_raiders_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_sand_raiders_m1911.png"
+  },
+  {
+    "faction": "sand_raiders",
+    "model": "usp",
+    "variant": "faction_sand_raiders_usp",
+    "group": "factions",
+    "file": "faction_sand_raiders_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_sand_raiders_usp.png"
+  },
+  {
+    "faction": "sand_raiders",
+    "model": "cz75",
+    "variant": "faction_sand_raiders_cz75",
+    "group": "factions",
+    "file": "faction_sand_raiders_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_sand_raiders_cz75.png"
+  },
+  {
+    "faction": "sand_raiders",
+    "model": "desert_eagle",
+    "variant": "faction_sand_raiders_desert_eagle",
+    "group": "factions",
+    "file": "faction_sand_raiders_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_sand_raiders_desert_eagle.png"
+  },
+  {
+    "faction": "sand_raiders",
+    "model": "five_seven",
+    "variant": "faction_sand_raiders_five_seven",
+    "group": "factions",
+    "file": "faction_sand_raiders_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_sand_raiders_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_sand_raiders_five_seven.png"
+  },
+  {
+    "faction": "saffar",
+    "model": "glock_17",
+    "variant": "faction_saffar_glock_17",
+    "group": "factions",
+    "file": "faction_saffar_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_saffar_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_saffar_glock_17.png"
+  },
+  {
+    "faction": "saffar",
+    "model": "m1911",
+    "variant": "faction_saffar_m1911",
+    "group": "factions",
+    "file": "faction_saffar_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_saffar_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_saffar_m1911.png"
+  },
+  {
+    "faction": "saffar",
+    "model": "usp",
+    "variant": "faction_saffar_usp",
+    "group": "factions",
+    "file": "faction_saffar_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_saffar_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_saffar_usp.png"
+  },
+  {
+    "faction": "saffar",
+    "model": "cz75",
+    "variant": "faction_saffar_cz75",
+    "group": "factions",
+    "file": "faction_saffar_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_saffar_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_saffar_cz75.png"
+  },
+  {
+    "faction": "saffar",
+    "model": "desert_eagle",
+    "variant": "faction_saffar_desert_eagle",
+    "group": "factions",
+    "file": "faction_saffar_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_saffar_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_saffar_desert_eagle.png"
+  },
+  {
+    "faction": "saffar",
+    "model": "five_seven",
+    "variant": "faction_saffar_five_seven",
+    "group": "factions",
+    "file": "faction_saffar_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_saffar_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_saffar_five_seven.png"
+  },
+  {
+    "faction": "kurgan",
+    "model": "glock_17",
+    "variant": "faction_kurgan_glock_17",
+    "group": "factions",
+    "file": "faction_kurgan_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_kurgan_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_kurgan_glock_17.png"
+  },
+  {
+    "faction": "kurgan",
+    "model": "m1911",
+    "variant": "faction_kurgan_m1911",
+    "group": "factions",
+    "file": "faction_kurgan_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_kurgan_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_kurgan_m1911.png"
+  },
+  {
+    "faction": "kurgan",
+    "model": "usp",
+    "variant": "faction_kurgan_usp",
+    "group": "factions",
+    "file": "faction_kurgan_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_kurgan_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_kurgan_usp.png"
+  },
+  {
+    "faction": "kurgan",
+    "model": "cz75",
+    "variant": "faction_kurgan_cz75",
+    "group": "factions",
+    "file": "faction_kurgan_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_kurgan_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_kurgan_cz75.png"
+  },
+  {
+    "faction": "kurgan",
+    "model": "desert_eagle",
+    "variant": "faction_kurgan_desert_eagle",
+    "group": "factions",
+    "file": "faction_kurgan_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_kurgan_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_kurgan_desert_eagle.png"
+  },
+  {
+    "faction": "kurgan",
+    "model": "five_seven",
+    "variant": "faction_kurgan_five_seven",
+    "group": "factions",
+    "file": "faction_kurgan_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_kurgan_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_kurgan_five_seven.png"
+  },
+  {
+    "faction": "ashford_crane",
+    "model": "glock_17",
+    "variant": "faction_ashford_crane_glock_17",
+    "group": "factions",
+    "file": "faction_ashford_crane_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_ashford_crane_glock_17.png"
+  },
+  {
+    "faction": "ashford_crane",
+    "model": "m1911",
+    "variant": "faction_ashford_crane_m1911",
+    "group": "factions",
+    "file": "faction_ashford_crane_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_ashford_crane_m1911.png"
+  },
+  {
+    "faction": "ashford_crane",
+    "model": "usp",
+    "variant": "faction_ashford_crane_usp",
+    "group": "factions",
+    "file": "faction_ashford_crane_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_ashford_crane_usp.png"
+  },
+  {
+    "faction": "ashford_crane",
+    "model": "cz75",
+    "variant": "faction_ashford_crane_cz75",
+    "group": "factions",
+    "file": "faction_ashford_crane_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_ashford_crane_cz75.png"
+  },
+  {
+    "faction": "ashford_crane",
+    "model": "desert_eagle",
+    "variant": "faction_ashford_crane_desert_eagle",
+    "group": "factions",
+    "file": "faction_ashford_crane_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_ashford_crane_desert_eagle.png"
+  },
+  {
+    "faction": "ashford_crane",
+    "model": "five_seven",
+    "variant": "faction_ashford_crane_five_seven",
+    "group": "factions",
+    "file": "faction_ashford_crane_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_ashford_crane_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_ashford_crane_five_seven.png"
+  },
+  {
+    "faction": "blacktop",
+    "model": "glock_17",
+    "variant": "faction_blacktop_glock_17",
+    "group": "factions",
+    "file": "faction_blacktop_glock_17",
+    "portrait": "assets/art/units/factions/portraits/faction_blacktop_glock_17.png",
+    "atlas": "assets/art/units/factions/units/faction_blacktop_glock_17.png"
+  },
+  {
+    "faction": "blacktop",
+    "model": "m1911",
+    "variant": "faction_blacktop_m1911",
+    "group": "factions",
+    "file": "faction_blacktop_m1911",
+    "portrait": "assets/art/units/factions/portraits/faction_blacktop_m1911.png",
+    "atlas": "assets/art/units/factions/units/faction_blacktop_m1911.png"
+  },
+  {
+    "faction": "blacktop",
+    "model": "usp",
+    "variant": "faction_blacktop_usp",
+    "group": "factions",
+    "file": "faction_blacktop_usp",
+    "portrait": "assets/art/units/factions/portraits/faction_blacktop_usp.png",
+    "atlas": "assets/art/units/factions/units/faction_blacktop_usp.png"
+  },
+  {
+    "faction": "blacktop",
+    "model": "cz75",
+    "variant": "faction_blacktop_cz75",
+    "group": "factions",
+    "file": "faction_blacktop_cz75",
+    "portrait": "assets/art/units/factions/portraits/faction_blacktop_cz75.png",
+    "atlas": "assets/art/units/factions/units/faction_blacktop_cz75.png"
+  },
+  {
+    "faction": "blacktop",
+    "model": "desert_eagle",
+    "variant": "faction_blacktop_desert_eagle",
+    "group": "factions",
+    "file": "faction_blacktop_desert_eagle",
+    "portrait": "assets/art/units/factions/portraits/faction_blacktop_desert_eagle.png",
+    "atlas": "assets/art/units/factions/units/faction_blacktop_desert_eagle.png"
+  },
+  {
+    "faction": "blacktop",
+    "model": "five_seven",
+    "variant": "faction_blacktop_five_seven",
+    "group": "factions",
+    "file": "faction_blacktop_five_seven",
+    "portrait": "assets/art/units/factions/portraits/faction_blacktop_five_seven.png",
+    "atlas": "assets/art/units/factions/units/faction_blacktop_five_seven.png"
+  },
+  {
+    "faction": "mercer_dual",
+    "model": "dual_glock",
+    "variant": "mercer_dual_glock",
+    "group": "mercer",
+    "file": "mercer_dual_glock",
+    "portrait": "assets/art/units/mercer/portraits/mercer_dual_glock.png",
+    "atlas": "assets/art/units/mercer/units/mercer_dual_glock.png"
+  }
+]

@@ -1397,3 +1397,8 @@ class selectors. This changes layout only. Native screenshot reviewed at 1440×1
 zero script/engine errors: `tools/tactical_controls/hud_header.png` and
 `header_preview.log`. No combat/performance suite rerun for this layout change.
 Next: owner review before Whittaker Estate.
+
+
+## 2026-09-14 — Pistol card anatomy pass (pistol-portrait-03)
+
+IMPLEMENTED / VALIDATED: all 138 regular pistol portraits across 23 factions repaired for visible SW far/right forearm continuity, with connected legacy Mercer/Orlov shoulders. SW/SE static views reviewed; unchanged dual specialist included in 139-entry native loading check (556 checks, zero failures). Preserve accepted battle and full animation assets. Owner visual acceptance pending. Evidence and required portrait finishing step: [pistol card README](../tools/pistol_portrait_20260914/README.md).
