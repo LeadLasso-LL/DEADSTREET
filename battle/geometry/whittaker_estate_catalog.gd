@@ -6,20 +6,20 @@ const ID="whittaker_estate_v1"
 const SIZE=Vector2(176,106)
 const ARRIVAL=Rect2(19,36,26,51)
 const DEFENDERS=Rect2(53,21,76,75)
-const HOUSE=Rect2(139,33,31,49)
-const ENTRANCE=Vector2(135.78,55.40)
-const FOUNTAIN=Vector2(108,66)
+const HOUSE=Rect2(145,20,70,73)
+const ENTRANCE=Vector2(141,63)
+const FOUNTAIN=Vector2(104,64)
 static var _props: Array=[]
 static func props() -> Array:
  if not _props.is_empty():return _props
  var rows=[]
  rows.append(["estate_house",HOUSE,"house",""])
- rows.append(["north_wing",Rect2(151,21,19,12),"wing",""])
- rows.append(["south_wing",Rect2(151,82,17,10),"wing",""])
+ rows.append(["north_wing",Rect2(164,9,40,11),"wing",""])
+ rows.append(["south_wing",Rect2(161,93,39,9),"wing",""])
  # West-facing porch: only columns and full-height step cheeks block movement.
- for y in [51.5,54.,62.,64.5]:
-  rows.append(["porch_column_%d"%y,Rect2(128.5,y-.5,1.,1.),"column",""])
- for y in [53.,62.]:rows.append(["step_cheek_%d"%y,Rect2(122,y,6.5,1.1),"step_wall",""])
+ for y in [55.,59.,67.,71.]:
+  rows.append(["porch_column_%d"%y,Rect2(139.5,y-.5,1.,1.),"column",""])
+ for y in [58.,67.]:rows.append(["step_cheek_%d"%y,Rect2(136,y,3.,.8),"step_wall",""])
  rows.append(["gatehouse",Rect2(54,43,10,8),"gatehouse",""])
  rows.append(["carriage_house",Rect2(80,84,20,12),"garage",""])
  # Open gate and two purposeful pedestrian/service openings. Ironwork sits
@@ -34,7 +34,9 @@ static func props() -> Array:
  for i in range(6):
   var height=11./6.;var y=-5.5+i*height;var half=sqrt(maxf(0.,30.25-pow(absf(y+height*.5),2)))
   rows.append(["fountain_body_%d"%i,Rect2(FOUNTAIN.x-half,FOUNTAIN.y+y,half*2.,height),"fountain_body",""])
- rows.append(["fountain_visual",Rect2(102.5,60.5,11,11),"fountain",""])
+ rows.append(["fountain_visual",Rect2(FOUNTAIN-Vector2(5.5,5.5),Vector2(11,11)),"fountain",""])
+ for spec in [[64.,25.,17.,2.],[87.,25.,22.,2.],[65.,40.,2.,10.],[73.,17.,25.,2.],[85.,78.,12.,2.],[134.,33.,2.,15.],[135.,80.,2.,15.],[56.,91.,2.,9.]]:
+  rows.append(["hedge_%d_%d"%[spec[0],spec[1]],Rect2(spec[0],spec[1],spec[2],spec[3]),"hedge",""])
  for spec in [[70.,37.,11.,1.8],[93.,34.,13.,1.8],[117.,40.,10.,1.8],[72.,75.,8.,1.7],[120.,86.,8.,1.7],[119.,33.,5.,1.7],[132.,78.,5.,1.7]]:
   rows.append(["planter_%d_%d"%[spec[0],spec[1]],Rect2(spec[0],spec[1],spec[2],spec[3]),"planter",""])
  # Prepared defense made from plausible estate materials, with openings for movement.
@@ -48,32 +50,17 @@ static func props() -> Array:
  for spec in [[37.,25.],[39.,92.],[66.,20.],[85.,18.],[122.,16.],[64.,96.],[118.,98.],[157.,92.],[146.,83.]]:
   rows.append(["tree_%d_%d"%[spec[0],spec[1]],Rect2(spec[0]-.65,spec[1]-.65,1.3,1.3),"tree",""])
  # Established fleet artwork and physical scale. These parked cars are real cover.
- for spec in [[119.,46.,"regent",Vector2.RIGHT],[113.,92.,"rancher",Vector2.LEFT],[69.,93.,"workhorse",Vector2.RIGHT],[122.,29.,"aurelia",Vector2.LEFT]]:
+ for spec in [[92.,45.,"regent",Vector2.RIGHT],[114.,46.,"aurelia",Vector2.LEFT],[125.,65.,"regent",Vector2.DOWN],[119.,88.,"rancher",Vector2.LEFT],[105.,91.,"outlander",Vector2.LEFT],[69.,93.,"workhorse",Vector2.RIGHT],[122.,29.,"aurelia",Vector2.LEFT]]:
   var at=Vector2(spec[0],spec[1]);rows.append(["parked_%d_%d"%[spec[0],spec[1]],Fleet.traffic_bounds(at,spec[2],spec[3]),"traffic",spec[2],spec[3],0.])
  _props=rows;return rows
 static func architecture_point(at: Vector2) -> Vector2:
- var d=at-Vector2(139,33)
- return Vector2(127,33)+Vector2(24./31.,-12./31.)*d.x+Vector2(21./49.,42./49.)*d.y
+ # Screen-left is west. Never skew the front toward the viewer for readability.
+ return at
 static func architectural(row: Array) -> bool:return row[2] in ["house","wing","column","step_wall"]
 static func physical_rects(row: Array) -> Array:
- if not architectural(row):return [row[1]]
- var b: Rect2=row[1]
- var polygon=[architecture_point(b.position),architecture_point(Vector2(b.end.x,b.position.y)),architecture_point(b.end),architecture_point(Vector2(b.position.x,b.end.y))]
- var top=INF;var bottom=-INF
- for p in polygon:top=minf(top,p.y);bottom=maxf(bottom,p.y)
- var result=[];var y=top
- # Conservative strips use the exact same plan projection as art. They keep
- # the existing rectangle-based collision system, with <=1 world-unit edge bias.
- while y<bottom-.001:
-  var end=minf(bottom,y+2.);var left=INF;var right=-INF
-  for yy in [y+.0001,end-.0001]:
-   for i in range(4):
-    var a: Vector2=polygon[i];var z: Vector2=polygon[(i+1)%4]
-    if yy>=minf(a.y,z.y) and yy<=maxf(a.y,z.y) and absf(z.y-a.y)>.00001:
-     var x=lerpf(a.x,z.x,(yy-a.y)/(z.y-a.y));left=minf(left,x);right=maxf(right,x)
-  if right>left:result.append(Rect2(left,y,right-left,end-y))
-  y=end
- return result
+ # Scenic mansion continues beyond the playable east edge; physics stops at it.
+ var bounds: Rect2=row[1].intersection(Rect2(Vector2.ZERO,SIZE))
+ return [bounds] if bounds.has_area() else []
 static func build():
  var d=Base.Definition.new();d.definition_id=ID;d.width=SIZE.x;d.height=SIZE.y
  d.surfaces.append(Base.Surface.new("public_road",Base.Surface.KIND_ASPHALT,Rect2(2,0,15,106)))
@@ -102,7 +89,7 @@ static func build():
     var normal=Vector2.from_angle(float(a)*TAU/8.);points.append([FOUNTAIN+normal*6.7,-normal])
   else:
    points=[[Vector2(c.x,box.position.y-.85),Vector2.DOWN],[Vector2(c.x,box.end.y+.85),Vector2.UP],[Vector2(box.position.x-.85,c.y),Vector2.RIGHT],[Vector2(box.end.x+.85,c.y),Vector2.LEFT]]
-   if row[2] in ["fence","sandbags","planter"]:
+   if row[2] in ["fence","sandbags","planter","hedge"]:
     if box.size.y>5:
      for y in range(int(box.position.y)+2,int(box.end.y)-1,6):
       points.append([Vector2(box.position.x-.9,y),Vector2.RIGHT]);points.append([Vector2(box.end.x+.9,y),Vector2.LEFT])

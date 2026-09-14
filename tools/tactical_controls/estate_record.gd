@@ -20,6 +20,16 @@ var radio_sample_index=0
 var victory_audio_samples=[]
 var victory_sample_index=0
 var summary_checks={}
+var safety_checks=0
+var safety_errors=[]
+var previous_nodes={}
+var max_outro_jump=0.
+var result_camera_jump=0.
+var last_camera_position=Vector2.ZERO
+var last_camera_zoom=Vector2.ONE
+var cards_seen=false
+var resized=false
+var validation_mode=false
 func _initialize():call_deferred("start")
 func start():
  summary_checks=preload("res://tools/tactical_controls/result_summary_checks.gd").run()
@@ -35,15 +45,18 @@ func start():
  b=scene.battle
  if b==null:printerr("RECORD_ERROR no battle");quit(1);return
  view=scene.runtime.get_node("TacticalBattleView")
- view._dusk_zoom=1.7;view._dusk_pan=Vector2(-475,92);view._frame_camera()
+ view._dusk_zoom=2.0;view._dusk_pan=Vector2(-445,88);view._frame_camera()
  view.battle_presentation.audio_enabled=true
  d=Director.new()
  trim_frames=Engine.get_process_frames()
  active=true
+ RenderingServer.frame_post_draw.connect(audit_frame)
  print("RECORD_READY")
 func _process(delta):
  if not active:return false
  frames+=1
+ if validation_mode and not resized and b.elapsed_time_seconds>10.:
+  resized=true;root.size=Vector2i(1280,720);DisplayServer.window_set_size(root.size)
  var presentation=view.battle_presentation
  var sample_times=[6.0,10.5,11.5,13.0,20.0]
  if radio_sample_index<sample_times.size() and float(frames)/30.>=float(sample_times[radio_sample_index]):
@@ -60,8 +73,8 @@ func _process(delta):
  if not started:
   # Follow the TRC road turn and dismount, then reveal the estate defense.
   var reveal=smoothstep(6.7,11.5,presentation.clock)
-  view._dusk_zoom=lerpf(1.7,1.04,reveal)
-  view._dusk_pan=Vector2(-475,92).lerp(Vector2(0,-34),reveal);view._frame_camera()
+  view._dusk_zoom=lerpf(2.0,1.55,reveal)
+  view._dusk_pan=Vector2(-445,88).lerp(Vector2(-120,-20),reveal);view._frame_camera()
   if presentation.clock>=1.5 and not snapshots.has("intro_full"):
    snapshots.intro_full=true;capture("intro_full")
   if presentation.clock>=6.0 and not snapshots.has("arrival"):
@@ -84,7 +97,7 @@ func _process(delta):
    ax/=own.size();ex/=enemy.size()
    var center=(ax+ex)*.5
    var target=Vector2((center-b.battlefield_geometry.width*.5)*8.,-30.)
-   var zoom=1.04 if b.elapsed_time_seconds<4.0 else clampf(98.0/maxf(ex-ax+58.,68.),1.12,1.42)
+   var zoom=clampf(130.0/maxf(ex-ax+42.,58.),1.55,1.95)
    view._dusk_zoom=lerpf(view._dusk_zoom,zoom,.018)
    view._dusk_pan=view._dusk_pan.lerp(target,.018)
    view._frame_camera()
@@ -94,7 +107,7 @@ func _process(delta):
   if frames%300==0:print("RECORD_PROGRESS ",frames/30.0," SIM ",b.elapsed_time_seconds," UNITS ",own.size()," / ",enemy.size())
   if b.elapsed_time_seconds>180.0:printerr("RECORD_ERROR unresolved cutoff");finish();return false
  else:
-  view._dusk_zoom=lerpf(view._dusk_zoom,1.10,.018)
+  view._dusk_zoom=lerpf(view._dusk_zoom,1.65,.018)
   view._dusk_pan=view._dusk_pan.lerp(Vector2(210,-20),.018);view._frame_camera()
   var victory_times=[.1,2.,presentation.outro.duration+2.,presentation.outro.duration+9.]
   if presentation.stage=="ending" and victory_sample_index<victory_times.size() and presentation.end_clock>=float(victory_times[victory_sample_index]):
@@ -107,6 +120,24 @@ func _process(delta):
   if presentation.results_visible() and presentation.end_clock>presentation.outro.duration+3.0 and not snapshots.has("results"):snapshots.results=true;capture("results")
   if presentation.end_clock>presentation.outro.duration+11.0:finish()
  return false
+func audit_frame():
+ if not active or view==null:return
+ var p=view.battle_presentation
+ var hud=view.get_node("CommandHudLayer").get_child(0)
+ if p.results_visible() and not cards_seen:
+  result_camera_jump=view._camera.position.distance_to(last_camera_position)*view._camera.zoom.x+(view._camera.zoom-last_camera_zoom).length()*root.size.y
+ cards_seen=p.results_visible();last_camera_position=view._camera.position;last_camera_zoom=view._camera.zoom
+ var boundary=hud.surface.get_global_transform_with_canvas().origin.y if hud.visible else root.size.y
+ for id in view.actor_presenter._unit_nodes:
+  var unit=b.get_participant(id);var node=view.actor_presenter._unit_nodes[id]
+  if unit==null or not unit.is_alive:continue
+  if p.stage=="ending" and not node.visible and safety_errors.size()<20:safety_errors.append("Hidden survivor "+id)
+  if not node.visible:continue
+  var body=node.get_node("body");var texture=body.sprite_frames.get_frame_texture(body.animation,body.frame)
+  var size=texture.get_size();var box=body.get_global_transform_with_canvas()*Rect2(body.offset-size*.5,size)
+  if hud.visible and box.end.y>boundary+.1 and safety_errors.size()<20:safety_errors.append("HUD overlap "+id+" "+str(box.end.y)+" > "+str(boundary))
+  if p.stage=="ending" and previous_nodes.has(id):max_outro_jump=maxf(max_outro_jump,node.position.distance_to(previous_nodes[id]))
+  previous_nodes[id]=node.position;safety_checks+=1
 func capture(key: String):
  await RenderingServer.frame_post_draw
  root.get_texture().get_image().save_png(out+"/"+key+".png")
@@ -119,7 +150,7 @@ func finish():
   var unit=b.get_participant(id);var model=preload("res://battle/combat/battle_weapon_catalog.gd").for_participant(unit)
   var expected=model.display_name.to_upper() if model!=null else ""
   hud_models.append({"id":id,"class":unit.weapon_type,"model":hud.cards[id].weapon_model.text,"expected":expected,"matches":hud.cards[id].weapon_model.text==expected,"card_height":hud.cards[id].size.y})
- var report={"radio_origin":"Original composition; no recordings or samples","radio_bpm":106,"horn_gain_samples":horn_gain_samples,"radio_gain_samples":radio_gain_samples,"victory_audio_samples":victory_audio_samples,"extra_victory_card_seconds":5,"showcase_loadout":Director.config(),"seed":9146,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"result_summaries":p.result_summaries,"result_summary_checks":summary_checks,"hud_weapon_models":hud_models,"audio_shots":p.sound.shots_played,"convoy_slots":3,"attacking_units":16,"defending_units":16,"ambient_emitters":p.convoy_audio.sources.size()}
+ var report={"result_camera_jump_pixels":result_camera_jump,"max_simultaneous_voices":p.faction_voices.max_simultaneous,"faction_voice_events":p.faction_voices.played,"voice_clips_loaded":p.faction_voices.loaded_clips,"voice_missing":p.faction_voices.missing,"actor_frame_checks":safety_checks,"presentation_errors":safety_errors,"max_outro_jump_pixels":max_outro_jump,"camera_safety_frames":view.get_node("CameraSafety").checked_frames,"camera_safety_violations":view.get_node("CameraSafety").violations,"radio_origin":"Original composition; no recordings or samples","radio_bpm":106,"horn_gain_samples":horn_gain_samples,"radio_gain_samples":radio_gain_samples,"victory_audio_samples":victory_audio_samples,"extra_victory_card_seconds":5,"showcase_loadout":Director.config(),"seed":9146,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"result_summaries":p.result_summaries,"result_summary_checks":summary_checks,"hud_weapon_models":hud_models,"audio_shots":p.sound.shots_played,"convoy_slots":3,"attacking_units":16,"defending_units":16,"ambient_emitters":p.convoy_audio.sources.size()}
  FileAccess.open(out+"/record.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
  print("RECORD_COMPLETE ",JSON.stringify(report))
  scene.queue_free()

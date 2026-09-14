@@ -74,17 +74,16 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Corrected Whittaker Estate map/audio and verified 16 v 16 mobile recording are implemented; owner visual/listening review next. See [estate report](../tools/whittaker_estate/README.md). Optional vocals remain paused.
+**Active objective:** Second Whittaker Estate correction completed and verified; owner visual/listening review next. See [current estate report](../tools/whittaker_estate/README.md).
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
-| Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
-| Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
-| HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
-| Scripted battle recording | This receiving chat | Corrected estate 16 v 16 / Whittaker-win mobile cut validated; owner review next. |
-| Whittaker Estate sandbox map | This receiving chat | First pass rejected; rebuilt perspective, property composition and original faction audio validated. Owner acceptance pending. |
+| Estate architecture/projection/HUD/ending | Active continuation chat, 2026-09-14 | Implemented and validated; owner acceptance pending. |
+| Faction voices | Active continuation chat | 36 TRC/Whittaker pack-07 clips integrated; other 17 banks and pressure hook remain open. |
+| Mobile recording | Active continuation chat | 74.537 seconds, complete stereo export saved as version 2; four Whittaker survivors. |
+| Performance | Parked from broad optimization | Fresh estate 32-unit sample 44.42 FPS/p95 41.517 ms; remains unresolved. |
 
-**Latest estate evidence:** 32 initial units; 55.53 FPS native sample, p95 20.37 ms. Routes, 16 HUD models and resolved Whittaker-win capture checked. See estate report; sustained 60 FPS remains unproven.
+**Latest estate evidence:** 31,514 actor-frame checks, zero HUD/hidden-survivor/route errors, 0 px result-camera jump, current command checks 128/128 and native UI 43/43. Exact evidence and failed-trial details in estate report. The old projection omission was the major sprite displacement/phase-jump defect.
 
 **Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
 max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
@@ -97,7 +96,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the revised estate perspective, property composition, TRC warning horn and Southern Whittaker music. Do not resume vocals or expand scope without resolving that review.
+**Immediate next task:** Brandon reviews the corrected estate video/map/audio. Record feedback before selecting another pass. Estate live performance and remaining voice banks remain explicit unfinished work; do not claim sandbox completion.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

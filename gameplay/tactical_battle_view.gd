@@ -268,6 +268,10 @@ func _ready() -> void:
 	battle_presentation=preload("res://gameplay/tactical_battle_presentation.gd").new()
 	add_child(battle_presentation)
 	battle_presentation.setup(self)
+	var safety=preload("res://gameplay/tactical_camera_safety.gd").new()
+	safety.name="CameraSafety"
+	add_child(safety)
+	safety.setup(self)
 	_ensure_layers()
 	_ensure_camera()
 	if _camera != null:

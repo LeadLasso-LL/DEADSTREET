@@ -11,7 +11,7 @@ func run():
  scene.set_process(false)
  if scene.battle==null:printerr("ESTATE_FAIL no battle");quit(1);return
  var view=scene.runtime.get_node("TacticalBattleView")
- view._dusk_zoom=1.02;view._dusk_pan=Vector2(0,-38);view._frame_camera()
+ view._dusk_zoom=1.5;view._dusk_pan=Vector2(125,-28);view._frame_camera()
  var presentation=view.battle_presentation
  presentation.audio_enabled=false
  presentation.skip_to_ready()
@@ -21,7 +21,7 @@ func run():
  for i in range(5):await process_frame
  await RenderingServer.frame_post_draw
  root.get_texture().get_image().save_png(out+"/estate_overview.png")
- view._dusk_zoom=1.75;view._dusk_pan=Vector2(460,-20);view._frame_camera()
+ view._dusk_zoom=1.85;view._dusk_pan=Vector2(438,-8);view._frame_camera()
  for i in range(4):await process_frame
  await RenderingServer.frame_post_draw
  root.get_texture().get_image().save_png(out+"/estate_house_detail.png")

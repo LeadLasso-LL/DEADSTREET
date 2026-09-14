@@ -7,7 +7,7 @@ var duration=6.0
 var errors=[]
 var kind=""
 var footsteps={}
-func build(b,entrance: Vector2):
+func build(b,entrance: Vector2,view=null):
  routes={};errors=[];footsteps={};duration=6.0
  var winners=[];var fallen=[]
  var winning=b.get_winning_side_id()
@@ -19,12 +19,25 @@ func build(b,entrance: Vector2):
  kind="enter_objective" if winning==b.attacker_side_id else ("check_comrades" if not fallen.is_empty() else "regroup")
  var bridge=b.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
  if bridge and winning==b.attacker_side_id:kind="secure_crossing"
+ var estate=b.battlefield_geometry.authored_layout_id=="whittaker_estate_v1"
  var assigned={};var occupied=[];var guard_index=0
  for i in range(winners.size()):
   var p=winners[i];var target=entrance+Vector2(0,.35);var action="enter";var facing=Vector2.UP
-  if kind=="check_comrades":
+  var snapshot={}
+  if view!=null and view.actor_presenter._unit_nodes.has(p.participant_id):
+   var node=view.actor_presenter._unit_nodes[p.participant_id];var body=node.get_node("body")
+   snapshot={"position":node.position,"animation":body.animation,"frame":body.frame,"rotation":body.rotation}
+   node.set_meta("outro_owned",true)
+  var local_comrade=false
+  if estate and winning==b.defender_side_id and not p.is_wounded:
+   for corpse in fallen:
+    if p.battle_position.distance_to(corpse.battle_position)<=8. and not assigned.has(corpse.participant_id):local_comrade=true;break
+  if estate and winning==b.defender_side_id and not local_comrade:
+   target=p.battle_position;action="guard";facing=Visual.presentation_facing(b,p)
+  elif kind=="check_comrades":
    var best=null;var cost=INF
    for corpse in fallen:
+    if estate and (p.battle_position.distance_to(corpse.battle_position)>8. or assigned.has(corpse.participant_id)):continue
     var score=p.battle_position.distance_to(corpse.battle_position)+float(assigned.get(corpse.participant_id,0))*20.
     if score<cost:best=corpse;cost=score
    var candidates=[]
@@ -45,6 +58,7 @@ func build(b,entrance: Vector2):
     var alternatives=fallen.duplicate()
     alternatives.sort_custom(func(a,c):return p.battle_position.distance_to(a.battle_position)+float(assigned.get(a.participant_id,0))*20.<p.battle_position.distance_to(c.battle_position)+float(assigned.get(c.participant_id,0))*20.)
     for corpse in alternatives:
+     if estate and (p.battle_position.distance_to(corpse.battle_position)>8. or assigned.has(corpse.participant_id)):continue
      for radius in [2.1,3.3]:
       for n in range(16):
        var point=corpse.battle_position+Vector2.from_angle(float(n)*TAU/16.)*radius
@@ -59,8 +73,10 @@ func build(b,entrance: Vector2):
    if selected!=Vector2.INF:
     target=selected
     assigned[best.participant_id]=int(assigned.get(best.participant_id,0))+1
-   else:target=p.battle_position;errors.append(p.participant_id+": no reachable comrade position")
-   facing=(best.battle_position-target).normalized();action="kneel";occupied.append(target)
+   else:
+    target=p.battle_position
+    if not estate:errors.append(p.participant_id+": no reachable comrade position")
+   facing=(best.battle_position-target).normalized();action="kneel" if selected!=Vector2.INF else "guard";occupied.append(target)
   elif kind=="regroup" and not p.is_wounded:
    # The landing is between the full-height stair walls; face outward down the street.
    target=entrance+Vector2(-1.1+(guard_index%2)*2.2,1.6+floorf(guard_index/2.)*1.9)
@@ -68,6 +84,7 @@ func build(b,entrance: Vector2):
   if bridge and kind!="check_comrades":
    # Hold reachable individual positions; nobody fades through a nonexistent doorway.
    target=p.battle_position;action="guard";facing=Vector2.RIGHT if winning==b.attacker_side_id else Vector2.LEFT
+  var stationary=target.is_equal_approx(p.battle_position)
   var plan=Nav.find_path(b,p.battle_position,target)
   var points: Array[Vector2]=[p.battle_position]
   if plan.success:points.append_array(plan.waypoints)
@@ -75,7 +92,7 @@ func build(b,entrance: Vector2):
   var length=0.
   for n in range(1,points.size()):length+=points[n-1].distance_to(points[n])
   var start=.9+i*.25;var travel=maxf(.25,length/(2.2 if p.is_wounded else 4.2))
-  routes[p.participant_id]={"points":points,"start":start,"travel":travel,"length":length,"action":action,"facing":facing,"wounded":p.is_wounded}
+  routes[p.participant_id]={"points":points,"start":start,"travel":travel,"length":length,"action":action,"facing":facing,"wounded":p.is_wounded,"snapshot":snapshot,"stationary":stationary}
   duration=maxf(duration,start+travel+(3.2 if action=="kneel" else 2.0))
 func apply(view,time: float):
  for id in routes:
@@ -96,8 +113,15 @@ func apply(view,time: float):
   footsteps[id]=foot
   if arrived:facing=r.facing
   node.position=point*Vector2(8,6);node.visible=true;node.modulate.a=1.
+  var snapshot=r.get("snapshot",{})
+  if not snapshot.is_empty():
+   if bool(r.get("stationary",false)):node.position=snapshot.position
+   else:node.position+=(snapshot.position-r.points[0]*Vector2(8,6))*(1.-smoothstep(float(r.start),float(r.start)+.35,time))
   var body=node.get_node("body");body.rotation=0.
-  var clip="idle"
+  if time<float(r.start) and not snapshot.is_empty():
+   body.animation=snapshot.animation;body.pause();body.frame=snapshot.frame;body.rotation=snapshot.rotation
+   continue
+  var clip="wounded_idle" if r.wounded else "idle"
   if time>=float(r.start) and not arrived:clip="wounded_walk" if r.wounded else "walk"
   elif arrived:
    match r.action:
@@ -106,7 +130,7 @@ func apply(view,time: float):
      clip="check_comrade"
      # Settle into a kneel and lean toward the fallen teammate.
      body.rotation=0.
-    "guard":clip="aim"
+    "guard":clip="wounded_idle" if r.wounded else "aim"
   var name=clip+"_"+Visual.implemented_direction_id(facing,"")
   if body.sprite_frames.has_animation(name):
    body.animation=name;body.pause()

@@ -247,7 +247,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	body.centered = true
 	body.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1"]:
+	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"]:
 		var finish := ShaderMaterial.new()
 		finish.shader = load("res://assets/art/street_detail/unit_finish.gdshader")
 		body.material = finish
@@ -271,9 +271,11 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	var node: Node2D = _unit_nodes[participant.participant_id] as Node2D
 	if node == null:
 		return
+	if battle_state.battle_phase == "resolved" and node.get_meta("outro_owned", false):
+		return
 	node.position = TacticalParticipantVisual.view_origin(battle_state, participant, pixels_per_unit)
 	node.rotation = 0.0
-	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1"] else 1.0)
+	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"] else 1.0)
 	unit_root.y_sort_enabled = true
 	if participant.is_wounded and participant.is_alive:
 		node.modulate = Color.WHITE

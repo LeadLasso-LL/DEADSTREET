@@ -1,6 +1,6 @@
 extends RefCounted
-## Upright elevations on a road-facing angled floor plan. The shared catalog
-## projects both the building footprint and its physical collision strips.
+## Strict west-facing estate. Elevation rises vertically; the entrance is seen
+## in profile. The long side and roof continue beyond the playable east edge.
 var a: Node2D
 const C=preload("res://battle/geometry/whittaker_estate_catalog.gd")
 const RISE=Vector2(0,-1.)
@@ -69,46 +69,37 @@ func column(at: Vector2,h: float):
   var q=pt(at,z);poly([q+Vector2(-6,-2),q+Vector2(6,-2),q+Vector2(6,2),q+Vector2(-6,2)],"#e9e6cf")
 func mansion(box: Rect2):
  var west=box.position;var south=Vector2(box.position.x,box.end.y)
- mass(box,92,31)
+ mass(box,112,38)
  # South elevation is a side return: windows, not an invented front door.
- for u in [3.,9.,15.,21.,27.]:
-  frame(south,Vector2.RIGHT,u,13,2.2,26);frame(south,Vector2.RIGHT,u,53,2.2,27)
- face(south,Vector2.RIGHT,0,46,box.size.x,3,"#f0ead3")
- for u in [3.,11.,35.,43.]:
-  frame(west,Vector2.DOWN,u,13,2.4,27);frame(west,Vector2.DOWN,u,53,2.4,27)
- # Door jamb, sidelights, transom, and double oak doors on the WEST wall.
- var door_u=23.
- face(west,Vector2.DOWN,door_u-1.1,6,5.,35,"#e3dfc8")
- face(west,Vector2.DOWN,door_u-.75,7,4.3,33,"#596957")
- face(west,Vector2.DOWN,door_u,7,2.8,30,"#594631")
- for du in [.25,1.65]:
-  face(west,Vector2.DOWN,door_u+du,10,.85,9,"#796044")
-  face(west,Vector2.DOWN,door_u+du,23,.85,9,"#415448")
- for du in [-.55,3.0]:face(west,Vector2.DOWN,door_u+du,11,.4,24,"#a4ac8d")
- frame(west,Vector2.DOWN,23.0,54,2.8,24)
- # Portico floor, step treads and full-height masonry cheek walls.
- var porch=Rect2(128,49.5,11,17)
+ for u in range(4,68,7):
+  frame(south,Vector2.RIGHT,u,14,2.8,31);frame(south,Vector2.RIGHT,u,65,2.8,31)
+ face(south,Vector2.RIGHT,0,54,box.size.x,4,"#f2ecda")
+ # Corner pilasters and a limestone base ground the white side elevation.
+ for u in [0.,box.size.x-1.2]:face(south,Vector2.RIGHT,u,6,1.2,100,"#f1ecd9")
+ # The front door is on the edge-on west wall, correctly occluded from this
+ # camera. Show the portico side, canopy, treads and columns, not a false facade.
+ var porch=Rect2(139,54,6,18)
  poly([pt(porch.position,4),pt(Vector2(porch.end.x,porch.position.y),4),pt(porch.end,4),pt(Vector2(porch.position.x,porch.end.y),4)],"#bbb9a1")
- for x in range(129,139,2):line(pt(Vector2(x,49.5),4),pt(Vector2(x,66.5),4),"#9da58f",.7)
+ for x in range(139,145,2):line(pt(Vector2(x,54),4),pt(Vector2(x,72),4),"#9da58f",.7)
  for i in range(6):
-  var x=122.+i
-  poly([pt(Vector2(x,54.2),i*.7),pt(Vector2(x+1,54.2),i*.7+.7),pt(Vector2(x+1,62),i*.7+.7),pt(Vector2(x,62),i*.7)],"#d2cbb2")
-  line(pt(Vector2(x,54.2),i*.7),pt(Vector2(x,62),i*.7),"#eae1c7",1.)
+  var x=136.+i*.5
+  poly([pt(Vector2(x,59),i*.7),pt(Vector2(x+.5,59),i*.7+.7),pt(Vector2(x+.5,67),i*.7+.7),pt(Vector2(x,67),i*.7)],"#d2cbb2")
+  line(pt(Vector2(x,59),i*.7),pt(Vector2(x,67),i*.7),"#eae1c7",1.)
  # Columns stand along the street-facing edge, not across the camera-facing side.
- for y in [51.5,54.,62.,64.5]:column(Vector2(129,y),91)
- var roof=Rect2(127.2,50.5,12.6,15)
+ for y in [55.,59.,67.,71.]:column(Vector2(140,y),101)
+ var roof=Rect2(138.4,53.5,7.4,19)
  var nw=roof.position;var sw=Vector2(roof.position.x,roof.end.y);var ne=Vector2(roof.end.x,roof.position.y);var se=roof.end
- poly([pt(nw,93),pt(sw,93),pt(se,99),pt(ne,99)],"#62746a")
- face(nw,Vector2.DOWN,0,87,roof.size.y,6,"#eff0d9")
- # Pediment triangular end points toward the road; side roof remains visible.
- poly([pt(Vector2(127.2,50.5),94),pt(Vector2(127.2,65.5),94),pt(Vector2(127.2,58),108)],"#dddcca")
- poly([pt(Vector2(127.2,52),96),pt(Vector2(127.2,64),96),pt(Vector2(127.2,58),104)],"#a4b39e")
- line(pt(Vector2(127.2,50.5),94),pt(Vector2(127.2,58),108),"#fbf0da",2.5)
- line(pt(Vector2(127.2,58),108),pt(Vector2(127.2,65.5),94),"#dfdfc8",2.5)
- for y in [38.,77.]:
-  var q=pt(Vector2(151,y),114)
-  poly([q,q+Vector2(12,0),q+Vector2(16,-24),q+Vector2(4,-24)],"#cdc8ad")
-  line(q+Vector2(2,-24),q+Vector2(18,-24),"#ede5c9",4.)
+ var ridge_w=Vector2(roof.position.x,63);var ridge_e=Vector2(roof.end.x,63)
+ poly([pt(nw,104),pt(ne,104),pt(ridge_e,122),pt(ridge_w,122)],"#465d50")
+ poly([pt(sw,104),pt(ridge_w,122),pt(ridge_e,122),pt(se,104)],"#7f8e7b")
+ face(sw,Vector2.RIGHT,0,98,roof.size.x,6,"#f4efdc")
+ line(pt(sw,104),pt(se,104),"#fff2dc",2.)
+ line(pt(ridge_w,122),pt(ridge_e,122),"#abb29b",2.)
+ for at in [Vector2(163,39),Vector2(190,70)]:
+  var q=pt(at,139)
+  poly([q,q+Vector2(15,0),q+Vector2(15,-30),q+Vector2(0,-30)],"#d1c9b0")
+  for y in range(5,29,6):line(q-Vector2(0,y),q+Vector2(15,-y),"#b4aa90",1.)
+  line(q+Vector2(-2,-30),q+Vector2(17,-30),"#ebe4cc",4.)
 func small_building(box: Rect2,kind: String):
  var h=53. if kind=="wing" else (40. if kind=="gatehouse" else 46.)
  mass(box,h,17.,kind!="garage")

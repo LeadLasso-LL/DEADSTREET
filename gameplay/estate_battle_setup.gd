@@ -70,15 +70,21 @@ static func deploy_defenders(b) -> bool:
  return b.commit_side_deployment(b.defender_side_id)
 static func deploy_attackers(b) -> bool:
  var ids=b.participants.keys();ids.sort()
+ var index=0
  for id in ids:
   var unit=b.get_participant(id)
   if unit.side_id!=b.attacker_side_id or unit.has_battle_position:continue
   var v=b.get_vehicle(unit.transport_vehicle_id)
   if v==null:return false
+  # Four spaced files form two assault teams and two supporting teams. Each
+  # soldier still uses the real transport exit route and legal placement checks.
+  var team=index/4;var file=index%4;index+=1
+  var goal=Vector2(40.-(file%2)*3.,42.+team*11.+(file/2)*3.)
+  unit.set_meta("estate_fireteam",int(team))
   var candidates=[]
   for x in range(20,45,2):
    for y in range(38,86,2):candidates.append(Vector2(x,y))
-  candidates.sort_custom(func(a,z):return a.distance_squared_to(v.battle_position)<z.distance_squared_to(v.battle_position))
+  candidates.sort_custom(func(a,z):return a.distance_squared_to(goal)<z.distance_squared_to(goal))
   var placed=false
   for at in candidates:
    if not b.get_deployment_position_error(b.attacker_side_id,at).is_empty():continue

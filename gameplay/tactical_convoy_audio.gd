@@ -32,8 +32,9 @@ func rebuild(b):
    if clip!=null:
     var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
     player.max_distance=1450.;player.attenuation=.6;player.panning_strength=.65
-    player.set_meta("base_gain",-18.);player.set_meta("offset",0.);player.set_meta("is_radio",true);player.set_meta("side_id",side)
-    player.set_meta("fixed_position",Vector2(135,58));player.set_meta("range",1800.)
+    player.set_meta("base_gain",-25.);player.set_meta("victory_gain",-18.);player.set_meta("battle_drop",6.)
+    player.set_meta("attenuation",1.2);player.set_meta("offset",0.);player.set_meta("is_radio",true);player.set_meta("side_id",side)
+    player.set_meta("fixed_position",preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE);player.set_meta("range",1100.)
     sources["estate_porch_radio"]=player
   var count=0
   for v in candidates:
@@ -62,12 +63,13 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
   var is_radio=bool(player.get_meta("is_radio",false))
   var owns_victory=is_radio and not winner.is_empty() and str(player.get_meta("side_id",""))==winner
   var foreground=clampf(victory_mix,0.,1.) if owns_victory else 0.
-  var radio_drop=14.*clampf(battle_mix,0.,1.)*(1.-foreground) if is_radio else 0.
-  player.volume_db=float(player.get_meta("base_gain"))-radio_drop-(duck*4.+ending*5.)*(1.-foreground)
+  var radio_drop=float(player.get_meta("battle_drop",14.))*clampf(battle_mix,0.,1.)*(1.-foreground) if is_radio else 0.
+  var base_gain=float(player.get_meta("base_gain"))
+  player.volume_db=lerpf(base_gain,float(player.get_meta("victory_gain",base_gain)),foreground)-radio_drop-(duck*4.+ending*5.)*(1.-foreground)
   # Continue the same playing riff as the winning faction takes the foreground.
   # At full victory mix it is centered and retains its intro gain regardless of camera distance.
   player.max_distance=lerpf(float(player.get_meta("range",900.)),100000.,foreground) if is_radio else 1050.
-  player.attenuation=lerpf(.7,0.,foreground)
+  player.attenuation=lerpf(float(player.get_meta("attenuation",.7)),0.,foreground)
   player.panning_strength=.75*(1.-foreground)
   if bool(player.get_meta("is_trc_horn",false)):
    # A persistent warning source, not radio music. Retain mid harmonics and

@@ -15,6 +15,7 @@ var result_cards={}
 var markers={}
 var sound: Node
 var convoy_audio=preload("res://gameplay/tactical_convoy_audio.gd").new()
+var faction_voices
 var convoy_riders={}
 var visual_vehicle_poses={}
 const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
@@ -70,7 +71,10 @@ func setup(p_view):
  )
  arrival_status=Card.label(deployment_panel,Vector2(14,68),Vector2(344,32),"",10,Color("#a6b1a5"),font)
  sound=preload("res://gameplay/tactical_battle_audio.gd").new();view.add_child(sound);sound.setup(view);convoy_audio.setup(view)
+ faction_voices=preload("res://gameplay/tactical_faction_voices.gd").new();view.add_child(faction_voices);faction_voices.setup(view)
 func reset(b):
+ for node in view.actor_presenter._unit_nodes.values():
+  node.remove_meta("outro_owned")
  for rider in convoy_riders.values():
   if is_instance_valid(rider):rider.queue_free()
  convoy_riders.clear();visual_vehicle_poses.clear()
@@ -149,7 +153,7 @@ func _process(delta):
   stage="active";routes={};sound.set_engine(Vector2.ZERO,false)
   if not start_played:sound.play("start",Vector2(32,28),-19.);start_played=true
  if b.battle_phase=="resolved" and stage!="ending":
-  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if is_estate() else (Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE))
+  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if is_estate() else (Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE),view)
  if stage=="arrival":
   clock+=delta
   if clock>=6.6 and not door_played:
@@ -334,26 +338,15 @@ class Context extends Control:
   var t=expansion
   draw_style_box(Card.style(Color(.055,.082,.094,.95),Color("#6c705e")),Rect2(Vector2.ZERO,size))
   var left=Rect2(Vector2(10,27).lerp(Vector2(30,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
-  var right=Rect2(Vector2(294,27).lerp(Vector2(650,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
+  var right=Rect2(Vector2(294,27).lerp(Vector2(550,53),t),Vector2(42,42).lerp(Vector2(104,104),t))
   if p.attacker.emblem!=null:draw_emblem(p.attacker.emblem,left)
   if p.defender.emblem!=null:draw_emblem(p.defender.emblem,right)
   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
   draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("CITY OUTSKIRTS  /  WHITTAKER ESTATE" if p.is_estate() else ("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE.")),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
-  draw_string(p.font,Vector2(60,45).lerp(Vector2(155,90),t),str(p.attacker.get("short_name",p.attacker.name)),HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,str(p.attacker.get("short_name",p.attacker.name)),t,155.),ink)
-  var defender_short=str(p.defender.get("short_name",p.defender.name))
-  if defender_short=="NBPD":
-   var full_alpha=smoothstep(.65,.95,t)
-   var full_ink=ink;full_ink.a=full_alpha
-   var short_ink=ink;short_ink.a=1.-full_alpha
-   var full_points=int(lerpf(8,20,t))
-   while full_points>8 and p.font.get_string_size("POLICE DEPARTMENT",HORIZONTAL_ALIGNMENT_LEFT,-1,full_points).x>lerpf(126.,235.,t):full_points-=1
-   draw_string(p.font,Vector2(343,33).lerp(Vector2(775,74),t),"NEW BRIARPORT",HORIZONTAL_ALIGNMENT_LEFT,-1,full_points,full_ink)
-   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,100),t),"POLICE DEPARTMENT",HORIZONTAL_ALIGNMENT_LEFT,-1,full_points,full_ink)
-   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),defender_short,HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,defender_short,t,126.),short_ink)
-  else:
-   draw_string(p.font,Vector2(343,45).lerp(Vector2(775,90),t),defender_short,HORIZONTAL_ALIGNMENT_LEFT,-1,title_size(p,defender_short,t,126.),ink)
-  draw_string(p.font,Vector2(60,65).lerp(Vector2(155,117),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
-  draw_string(p.font,Vector2(343,65).lerp(Vector2(775,117),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+  draw_faction_title(p,p.attacker,Vector2(60,45),Vector2(155,98),212.,t,ink)
+  draw_faction_title(p,p.defender,Vector2(343,45),Vector2(675,98),126.,t,ink)
+  draw_string(p.font,Vector2(60,65).lerp(Vector2(155,140),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+  draw_string(p.font,Vector2(343,65).lerp(Vector2(675,140),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   var location="ESTATE ASSAULT" if p.is_estate() else ("ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS")
   var location_size=int(lerpf(8,12,t))
   var location_width=p.font.get_string_size(location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size).x
@@ -367,10 +360,32 @@ class Context extends Control:
    points.append(area.get_center()+normal*area.size*.5)
    uvs.append(Vector2(.5,.5)+normal*.5)
   draw_polygon(points,PackedColorArray([Color.WHITE]),uvs,texture)
- func title_size(p,title: String,t: float,compact_width: float) -> int:
-  var points: int=int(lerpf(12,23,t));var width: float=lerpf(compact_width,390.,t)
-  while points>8 and p.font.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,points).x>width:points-=1
-  return points
+ func full_title_lines(p,title: String,points: int,width: float) -> Array:
+  var lines=[];var current=""
+  for word in title.split(" "):
+   var candidate=word if current.is_empty() else current+" "+word
+   if not current.is_empty() and p.font.get_string_size(candidate,HORIZONTAL_ALIGNMENT_LEFT,-1,points).x>width:
+    lines.append(current);current=word
+   else:current=candidate
+  if not current.is_empty():lines.append(current)
+  return lines
+ func draw_faction_title(p,faction: Dictionary,compact: Vector2,expanded: Vector2,width: float,t: float,ink: Color):
+  var title=str(faction.name);var full_alpha=smoothstep(.55,.90,t)
+  var origin=compact.lerp(expanded,t);var full_width=lerpf(width,335.,t)
+  var points=int(lerpf(10,23,t));var lines=full_title_lines(p,title,points,full_width)
+  while points>10 and lines.size()>2:
+   points-=1;lines=full_title_lines(p,title,points,full_width)
+  var color=ink;color.a=full_alpha
+  for i in range(lines.size()):
+   draw_string(p.font,origin+Vector2(0,(i-(lines.size()-1)*.5)*(points+4)),lines[i],HORIZONTAL_ALIGNMENT_LEFT,-1,points,color)
+  # Full names are universal on the large card. Abbreviate only when docking
+  # cannot accommodate that name at a readable compact size.
+  var label=title
+  if p.font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x>width:label=str(faction.get("short_name",title))
+  var small=int(lerpf(12,23,t));var short_width=lerpf(width,335.,t)
+  while small>8 and p.font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,small).x>short_width:small-=1
+  color.a=1.-full_alpha
+  draw_string(p.font,origin,label,HORIZONTAL_ALIGNMENT_LEFT,-1,small,color)
 
 func arrival_center() -> Vector2:
  if battle!=null:

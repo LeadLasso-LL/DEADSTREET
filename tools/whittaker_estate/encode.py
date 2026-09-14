@@ -7,6 +7,9 @@ r=Path(__file__).resolve().parents[2];out=r/'tools/whittaker_estate';ff=imageio_
 record=json.loads((out/'record.json').read_text(encoding='utf-8'))
 assert record['phase']=='resolved' and record['winner']=='defender',record.get('winner')
 assert not record['arrival_route_errors'] and not record['outro_errors']
+assert not record['presentation_errors'] and record['camera_safety_violations']==0
+assert record['max_outro_jump_pixels']<3.0 and record['result_camera_jump_pixels']<.1
+assert not record['voice_missing'] and record['voice_clips_loaded']==36 and record['max_simultaneous_voices']<=3
 assert all(x['matches'] for x in record['hud_weapon_models'])
 trim=record['trim_frames']/30;raw=out/'estate_raw.avi'
 assert raw.exists()
@@ -22,8 +25,8 @@ final=out/'Dead_Street_Whittaker_Estate_Mobile.mp4'
 subprocess.run(base+['-pass','2','-af',f'afade=t=in:st=0:d=0.25,afade=t=out:st={duration-.8}:d=0.8','-c:a','aac','-b:a','80k','-movflags','+faststart',str(final)],check=True,timeout=180)
 assert final.stat().st_size<8_000_000,final.stat().st_size
 subprocess.run([ff,'-v','error','-i',str(final),'-f','null','NUL'],check=True,timeout=120)
-audio=subprocess.run([ff,'-v','error','-i',str(final),'-vn','-ac','1','-ar','22050','-f','f32le','-'],capture_output=True,check=True).stdout
-a=np.frombuffer(audio,dtype='<f4');assert len(a)>duration*22050*.99 and np.isfinite(a).all()
+audio=subprocess.run([ff,'-v','error','-i',str(final),'-vn','-ac','2','-ar','22050','-f','f32le','-'],capture_output=True,check=True).stdout
+a=np.frombuffer(audio,dtype='<f4');assert len(a)>duration*22050*2*.99 and np.isfinite(a).all()
 assert .005<float(np.max(np.abs(a)))<=1.0
 summary={'file':str(final),'bytes':final.stat().st_size,'sha256':hashlib.sha256(final.read_bytes()).hexdigest(),'seconds':duration,'video_bitrate':video_rate,'decoded_to_end':True,'winner':record['winner']}
 (out/'delivery.json').write_text(json.dumps(summary,indent=2),encoding='utf-8')

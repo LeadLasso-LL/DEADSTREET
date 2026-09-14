@@ -578,7 +578,7 @@ func commit_line() -> Dictionary:
 
 func acknowledge(command: String, result: Dictionary) -> void:
 	feedback_sequence += 1
-	last_command_feedback = {"command":command, "accepted":result.accepted.size(), "failed":result.failed.size()}
+	last_command_feedback = {"command":command, "accepted":result.accepted.size(), "accepted_ids":result.accepted.duplicate(), "failed":result.failed.size()}
 	feedback = "" if result.failed.is_empty() else "Order unavailable for %d unit(s): no suitable reachable cover or valid advance" % result.failed.size()
 
 

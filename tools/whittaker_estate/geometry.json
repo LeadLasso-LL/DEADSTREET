@@ -1,5 +1,5 @@
 {
-  "cover_slots": 204,
+  "cover_slots": 282,
   "errors": [],
   "placed_units": 32,
   "route_checks": [
@@ -22,6 +22,16 @@
       "error": "",
       "reachable": true,
       "route": "south service"
+    },
+    {
+      "error": "",
+      "reachable": true,
+      "route": "forecourt from north"
+    },
+    {
+      "error": "",
+      "reachable": true,
+      "route": "forecourt from south"
     },
     {
       "error": "",

@@ -17,7 +17,7 @@ func run():
  var fixture=Fixture.setup(runtime,Director.config(),false,Director.SEED,true)
  if not fixture.has("battle"):printerr("ESTATE_FAIL ",fixture);quit(1);return
  var b=fixture.battle;var errors=[];var checks=[]
- for route in [["main gate",Vector2(45,68),Vector2(54,68)],["approach to court",Vector2(45,68),Vector2(96,66)],["north garden",Vector2(37,28),Vector2(73,28)],["south service",Vector2(42,99),Vector2(75,99)],["front steps",Vector2(95,78),preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE]]:
+ for route in [["main gate",Vector2(45,68),Vector2(54,68)],["approach to court",Vector2(45,68),Vector2(96,66)],["north garden",Vector2(37,28),Vector2(73,28)],["south service",Vector2(42,99),Vector2(75,99)],["forecourt from north",Vector2(129,51),Vector2(138,63)],["forecourt from south",Vector2(130,76),Vector2(138,63)],["front steps",Vector2(110,74),preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE]]:
   var path=Nav.find_path(b,route[1],route[2])
   checks.append({"route":route[0],"reachable":path!=null and path.success,"error":path.error_message if path!=null else "null result"})
   if path==null or not path.success:errors.append(route[0])

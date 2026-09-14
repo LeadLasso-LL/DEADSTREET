@@ -1,3 +1,7 @@
+# Current milestone - second estate correction - 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner review pending. Shared estate projection/scale fixed; measured HUD framing and continuous local aftermath; full intro names, quieter mansion-positioned music and 36 TRC/Whittaker pack-07 voice clips. Corrected 74.537-second video saved as existing recording version 2. 31,514 actor-frame checks, zero overlap/hidden-survivor/route errors, zero result-camera jump; current command 128 and native UI 43 checks passed. Fresh estate native sample 44.42 FPS/p95 41.517 ms: performance remains open. Other 17 voice profiles not installed; no pressure hook or shield mechanics added. See tools/whittaker_estate/README.md and journal for exact sources, reproduction, failed checks and limits. Next: Brandon reviews corrected video; earlier review-next claims below describe superseded deliveries.
+
 ## Current milestone — corrected Whittaker Estate — 2026-09-14
 
 IMPLEMENTED / VALIDATED; owner visual and listening review pending. Rebuilt road-facing mansion with upright volume, shared render/collision footprint, improved fountain court, gatehouse, service building, parking and landscaping. Original 106 BPM Southern-major guitar replaces the rejected dark cue; persistent TRC warning horn is louder on arrival, ducked in combat and subdued behind Whittaker victory music. Existing units/fleet/weapons reused. Verified 16 v 16 defender-win mobile recording, complete decode, survivor cards and HUD models. This fixture does not raise production caps.

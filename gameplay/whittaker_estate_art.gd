@@ -61,6 +61,7 @@ func _draw():
    draw_set_transform(p(C.FOUNTAIN),0,Vector2(.8,.8));fountain(Vector2.ZERO);draw_set_transform(Vector2.ZERO)
   "fountain_body":pass
   "planter":planter(q,sz)
+  "hedge":hedge(q,sz)
   "sandbags":sandbags(q,sz)
   "table":table(q,sz)
   "crates":crates(q,sz)
@@ -95,9 +96,9 @@ func ground():
  # Drive with a real circular turnaround and four narrow connector paths.
  var drive=Rect2(135,336,663,108);r(drive.grow(4),Color("#8d8971"));r(drive,Color("#767461"));grain(drive,2800)
  var center=C.FOUNTAIN*Vector2(8,6)
- oval(center,Vector2(218,153),Color("#aba48a"));oval(center,Vector2(211,147),Color("#7f7d69"))
+ oval(center,Vector2(208,145),Color("#aba48a"));oval(center,Vector2(201,139),Color("#7f7d69"))
  for n in range(28):
-  var a=n*TAU/28.;var point=center+Vector2(cos(a)*205,sin(a)*142)
+  var a=n*TAU/28.;var point=center+Vector2(cos(a)*197,sin(a)*135)
   l(point,point+Vector2(cos(a)*5,sin(a)*4),Color("#c9c0a0"),1.)
  oval(center,Vector2(69,50),Color("#b2a68a"));oval(center,Vector2(62,44),Color("#49553c"))
  for i in range(1000):
@@ -106,14 +107,19 @@ func ground():
   if distance<1.0 and distance>.46:r(Rect2(at,Vector2(1,1)),Color(.77,.74,.60,.1))
  r(Rect2(384,530,626,32),Color("#77745a"));grain(Rect2(384,530,626,32),1800)
  r(Rect2(419,151,476,16),Color("#aaa182"));grain(Rect2(419,151,476,16),800)
- # The court meets the west-facing steps; service paths do not run under walls.
- poly([Vector2(998,331),Vector2(1113,331),Vector2(1113,376),Vector2(1010,407)],Color("#b8af91"))
- for x in range(1004,1110,12):l(Vector2(x,334),Vector2(x,375),Color("#938e76"),.7)
+ # A separate paved forecourt bridges the ring and the recessed portico.
+ # The ring ends at x=130; steps begin at x=136, beyond the vehicle carriageway.
+ var court=Rect2(1032,312,80,138)
+ r(court.grow(3),Color("#d0c5a8"));r(court,Color("#b0a68c"))
+ for x in range(1032,1113,16):l(Vector2(x,312),Vector2(x,450),Color("#99917b"),.7)
+ for y in range(312,451,14):l(Vector2(1032,y),Vector2(1112,y),Color("#99917b"),.7)
+ # Tapered approach joins paving flush with the outer curb, not into the lane.
+ poly([Vector2(1018,350),Vector2(1034,350),Vector2(1034,417),Vector2(1018,417)],Color("#b0a68c"))
  # Parked vehicles now belong to inset gravel bays, not unrelated rectangles.
- for area in [Rect2(884,248,133,66),Rect2(905,134,125,67),Rect2(484,531,288,73),Rect2(844,527,131,67)]:
+ for area in [Rect2(673,244,121,51),Rect2(851,250,126,50),Rect2(976,340,42,100),Rect2(905,134,125,67),Rect2(484,531,288,73),Rect2(779,516,227,57)]:
   r(area.grow(3),Color("#9a947b"));r(area,Color("#7f8068"));grain(area,900)
  # Low clipped hedges and border beds turn the lawn into a managed estate.
- for area in [Rect2(515,71,395,17),Rect2(532,216,294,12),Rect2(736,481,250,14)]:
+ for area in [Rect2(515,71,395,17),Rect2(532,216,294,12),Rect2(736,481,250,14),Rect2(445,110,46,152),Rect2(1078,96,42,63),Rect2(1076,569,45,35)]:
   r(area.grow(4),Color("#756e50"));r(area,Color("#394e31"))
   for i in range(int(area.size.x/3)):
    var at=area.position+Vector2(rng.randf()*area.size.x,rng.randf()*area.size.y)
@@ -131,6 +137,9 @@ func ground():
    oval(q,Vector2(2,1),Color("#8c8d65") if i%3 else Color("#bbab7d"))
  # Patio, clipped shrubs and tree shadows follow their physical anchors.
  for row in C.props():
+  if row[2]=="hedge":
+   var bed: Rect2=Rect2(row[1].position*Vector2(8,6),row[1].size*Vector2(8,6)).grow(5)
+   r(bed,Color("#786e51"));grain(bed,150,true)
   if row[2]=="tree":
    var at=row[1].get_center()*Vector2(8,6)
    oval(at+Vector2(24,9),Vector2(31,12),Color(.10,.16,.09,.23))
@@ -182,6 +191,12 @@ func planter(q: Vector2,sz: Vector2):
  for i in range(int(sz.x*.5)):
   var at=q+Vector2(rng.randf_range(2,sz.x-2),rng.randf_range(-9,sz.y-4));oval(at,Vector2(3,2),Color("#626e46").lightened(rng.randf_range(0.,.14)))
  grain(Rect2(q+Vector2(0,sz.y-7),Vector2(sz.x,7)),int(sz.x),true)
+func hedge(q: Vector2,sz: Vector2):
+ shadow(q,sz,7.)
+ r(Rect2(q-Vector2(0,9),sz+Vector2(0,9)),Color("#30472e"))
+ for i in range(int(sz.x*sz.y/6)):
+  var at=q+Vector2(rng.randf()*sz.x,rng.randf()*sz.y)-Vector2(0,9)
+  oval(at,Vector2(3.5,2.5),Color("#607b43").lightened(rng.randf_range(-.13,.15)))
 func sandbags(q: Vector2,sz: Vector2):
  shadow(q,sz,5.)
  for layer in range(3):
