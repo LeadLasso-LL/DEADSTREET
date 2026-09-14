@@ -1402,3 +1402,7 @@ Next: owner review before Whittaker Estate.
 ## 2026-09-14 — Pistol card anatomy pass (pistol-portrait-03)
 
 IMPLEMENTED / VALIDATED: all 138 regular pistol portraits across 23 factions repaired for visible SW far/right forearm continuity, with connected legacy Mercer/Orlov shoulders. SW/SE static views reviewed; unchanged dual specialist included in 139-entry native loading check (556 checks, zero failures). Preserve accepted battle and full animation assets. Owner visual acceptance pending. Evidence and required portrait finishing step: [pistol card README](../tools/pistol_portrait_20260914/README.md).
+
+## 2026-09-14 - Sandbox Tutorial
+
+IMPLEMENTED / VALIDATED; owner review pending. New Tutorial entry in the current sandbox scene opens a frozen real Harold Apartments Mercer Saints vs Orlov Bratva fight with 126 HUD/map help regions, plain gameplay instructions and a tan hover outline/glow. Supports bounded popups, zoom/pan/fit, hotspot visibility, tap and keyboard browsing. Opening it creates no battle or campaign state. Native smoke/record each pass 73 checks across four viewports; desktop visual review completed. Saved 37.1-second MP4 preview: libfile_d56b156bea7c81919ef35265ee17c7a9 v0. [Tutorial details and evidence](../tools/sandbox_tutorial_20260914/README.md); journal sandbox-tutorial-01 through -03. Future release packaging must include both tutorial assets; shared runtime and parallel title/audio preview scopes preserved. Next: owner tutorial review and coordinated future opening-menu integration.

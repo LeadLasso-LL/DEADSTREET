@@ -1,0 +1,1526 @@
+{
+	"attacker": "mercer",
+	"battle_seconds": 13.0333333333333,
+	"defender": "orlov",
+	"map": "harold",
+	"phase": "active",
+	"regions": [
+		{
+			"id": "group_",
+			"priority": 40,
+			"rect": [
+				30.0,
+				763.75,
+				147.5,
+				33.75
+			],
+			"text": "Use these buttons to select all of your units for direct commands, or select units by weapon class. Hold Shift when choosing a weapon class to add it to your selection.",
+			"title": "SELECT YOUR UNITS"
+		},
+		{
+			"id": "group_pistol",
+			"priority": 40,
+			"rect": [
+				187.5,
+				763.75,
+				118.75,
+				33.75
+			],
+			"text": "Use these buttons to select all of your units for direct commands, or select units by weapon class. Hold Shift when choosing a weapon class to add it to your selection.",
+			"title": "SELECT YOUR UNITS"
+		},
+		{
+			"id": "group_smg",
+			"priority": 40,
+			"rect": [
+				315.0,
+				763.75,
+				118.75,
+				33.75
+			],
+			"text": "Use these buttons to select all of your units for direct commands, or select units by weapon class. Hold Shift when choosing a weapon class to add it to your selection.",
+			"title": "SELECT YOUR UNITS"
+		},
+		{
+			"id": "group_rifle",
+			"priority": 40,
+			"rect": [
+				442.5,
+				763.75,
+				118.75,
+				33.75
+			],
+			"text": "Use these buttons to select all of your units for direct commands, or select units by weapon class. Hold Shift when choosing a weapon class to add it to your selection.",
+			"title": "SELECT YOUR UNITS"
+		},
+		{
+			"id": "group_shotgun",
+			"priority": 40,
+			"rect": [
+				570.0,
+				763.75,
+				118.75,
+				33.75
+			],
+			"text": "Use these buttons to select all of your units for direct commands, or select units by weapon class. Hold Shift when choosing a weapon class to add it to your selection.",
+			"title": "SELECT YOUR UNITS"
+		},
+		{
+			"id": "group_sniper",
+			"priority": 40,
+			"rect": [
+				697.5,
+				763.75,
+				118.75,
+				33.75
+			],
+			"text": "Use these buttons to select all of your units for direct commands, or select units by weapon class. Hold Shift when choosing a weapon class to add it to your selection.",
+			"title": "SELECT YOUR UNITS"
+		},
+		{
+			"id": "hold",
+			"priority": 40,
+			"rect": [
+				30.0,
+				928.75,
+				102.5,
+				36.25
+			],
+			"text": "Select units, then click Hold. They move to nearby protective cover and stay there. They aim and fire automatically.",
+			"title": "HOLD"
+		},
+		{
+			"id": "push",
+			"priority": 40,
+			"rect": [
+				140.0,
+				928.75,
+				102.5,
+				36.25
+			],
+			"text": "Select units, then click Push. Move the pointer left or right to place an advance line on the map, then left-click to confirm. Units advance using cover and resume fighting on their own when they reach their positions. Right-click or press Esc to cancel the line.",
+			"title": "PUSH"
+		},
+		{
+			"id": "fall_back",
+			"priority": 40,
+			"rect": [
+				250.0,
+				928.75,
+				127.5,
+				36.25
+			],
+			"text": "Select units, then click Fall Back. Move the pointer left or right to place a retreat line, then left-click to confirm. Units seek cover on your side of the line and hold there. Right-click or press Esc to cancel the line.",
+			"title": "FALL BACK"
+		},
+		{
+			"id": "clear",
+			"priority": 40,
+			"rect": [
+				385.0,
+				928.75,
+				157.5,
+				36.25
+			],
+			"text": "Select units, then click Clear Orders to remove their movement, cover and target orders. They return to fighting on their own.",
+			"title": "CLEAR ORDERS"
+		},
+		{
+			"id": "playback_0",
+			"priority": 40,
+			"rect": [
+				887.5,
+				928.75,
+				62.5,
+				36.25
+			],
+			"text": "Pause the fight to inspect units and give orders. Press Space to pause or resume; choose a speed button to resume at that speed.",
+			"title": "PAUSE"
+		},
+		{
+			"id": "playback_1",
+			"priority": 40,
+			"rect": [
+				955.0,
+				928.75,
+				62.5,
+				36.25
+			],
+			"text": "Run the fight at half speed. You can still select units and give orders.",
+			"title": "SLOW MOTION"
+		},
+		{
+			"id": "playback_2",
+			"priority": 40,
+			"rect": [
+				1022.5,
+				928.75,
+				62.5,
+				36.25
+			],
+			"text": "Resume the fight at normal speed.",
+			"title": "NORMAL SPEED"
+		},
+		{
+			"id": "playback_3",
+			"priority": 40,
+			"rect": [
+				1090.0,
+				928.75,
+				62.5,
+				36.25
+			],
+			"text": "Run the fight at one and a half times normal speed.",
+			"title": "FAST FORWARD"
+		},
+		{
+			"id": "emblems",
+			"priority": 40,
+			"rect": [
+				1165.0,
+				928.75,
+				138.75,
+				36.25
+			],
+			"text": "Show or hide faction emblems above units. The highlighted emblem marks a selected unit.",
+			"title": "EMBLEMS"
+		},
+		{
+			"id": "audio",
+			"priority": 40,
+			"rect": [
+				1307.5,
+				928.75,
+				106.25,
+				36.25
+			],
+			"text": "Turn battle audio on or off.",
+			"title": "AUDIO"
+		},
+		{
+			"id": "count",
+			"priority": 40,
+			"rect": [
+				30.0,
+				727.5,
+				500.0,
+				27.5
+			],
+			"text": "Active counts your living units, including wounded units. Eliminated counts units you have lost. Their cards remain in the roster.",
+			"title": "YOUR ROSTER"
+		},
+		{
+			"id": "faction",
+			"priority": 40,
+			"rect": [
+				898.75,
+				732.5,
+				217.5,
+				65.0
+			],
+			"text": "This is the faction you command. The unit cards below belong to your side.",
+			"title": "YOUR FACTION"
+		},
+		{
+			"id": "faction_emblem",
+			"priority": 40,
+			"rect": [
+				838.75,
+				743.75,
+				47.5,
+				47.5
+			],
+			"text": "Look for this emblem above units to recognize your side.",
+			"title": "YOUR EMBLEM"
+		},
+		{
+			"id": "strength",
+			"priority": 40,
+			"rect": [
+				1153.75,
+				732.5,
+				253.75,
+				40.0
+			],
+			"text": "Compare the two forces here. Advantage, Even or Disadvantage gives a quick strength comparison; it does not guarantee the outcome.",
+			"title": "RELATIVE STRENGTH"
+		},
+		{
+			"id": "strength_bar",
+			"priority": 40,
+			"rect": [
+				1153.75,
+				778.75,
+				253.75,
+				8.75
+			],
+			"text": "Green is your side's share of the strength comparison; red is the enemy's share. More green means a stronger position.",
+			"title": "STRENGTH BAR"
+		},
+		{
+			"id": "feedback",
+			"priority": 40,
+			"rect": [
+				30.0,
+				972.5,
+				1375.0,
+				27.5
+			],
+			"text": "Check this message when an order cannot be carried out. A unit may be wounded, a cover position may be occupied, or no suitable route or protective position may be available.",
+			"title": "ORDER FEEDBACK"
+		},
+		{
+			"id": "card_sandbox_attacker_unit_01",
+			"priority": 30,
+			"rect": [
+				30.0,
+				806.25,
+				271.0,
+				117.5
+			],
+			"text": "Click a card to select that unit. Shift-click to add or remove it from your selection. Highlighted cards are selected. Eliminated units cannot receive orders.",
+			"title": "UNIT CARD"
+		},
+		{
+			"id": "portrait_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				249.75,
+				810.0,
+				43.75,
+				53.75
+			],
+			"text": "This picture identifies the unit. Click its card to select it; Shift-click to change a group selection.",
+			"title": "UNIT PORTRAIT"
+		},
+		{
+			"id": "weapon_icon_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				37.5,
+				812.5,
+				42.5,
+				40.0
+			],
+			"text": "This symbol identifies the unit's weapon class. Use the matching class button above to select units with that class.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "role_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				37.5,
+				867.5,
+				256.0,
+				17.5
+			],
+			"text": "The unit's weapon class. Units aim, fire and reload automatically while following your orders.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "weapon_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				37.5,
+				883.75,
+				256.0,
+				15.0
+			],
+			"text": "The weapon this unit is carrying. Its weapon affects how it fights, including range and rate of fire.",
+			"title": "EQUIPPED WEAPON"
+		},
+		{
+			"id": "tier_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				237.25,
+				853.75,
+				56.25,
+				15.0
+			],
+			"text": "T is the unit's tier. The number after it identifies this unit in your roster. Unit tier and weapon tier are separate.",
+			"title": "TIER AND UNIT NUMBER"
+		},
+		{
+			"id": "health_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				37.5,
+				852.5,
+				37.5,
+				15.0
+			],
+			"text": "The percentage shows remaining health. Wounded units prioritize survival and cannot follow new combat orders. Eliminated units are out of the fight.",
+			"title": "HEALTH AND STATUS"
+		},
+		{
+			"id": "health_bar_sandbox_attacker_unit_01",
+			"priority": 45,
+			"rect": [
+				37.5,
+				918.75,
+				256.0,
+				7.0
+			],
+			"text": "The bar shrinks as this unit loses health. Yellow indicates a wounded unit; an empty bar means the unit is eliminated.",
+			"title": "HEALTH BAR"
+		},
+		{
+			"id": "order_sandbox_attacker_unit_01",
+			"priority": 40,
+			"rect": [
+				37.5,
+				901.25,
+				256.0,
+				15.0
+			],
+			"text": "Holding, Pushing or Falling Back shows this unit's current group order. Choose another order to replace it, or use Clear Orders.",
+			"title": "CURRENT ORDER"
+		},
+		{
+			"id": "card_sandbox_attacker_unit_02",
+			"priority": 30,
+			"rect": [
+				1139.0,
+				806.25,
+				271.0,
+				117.5
+			],
+			"text": "Click a card to select that unit. Shift-click to add or remove it from your selection. Highlighted cards are selected. Eliminated units cannot receive orders.",
+			"title": "UNIT CARD"
+		},
+		{
+			"id": "portrait_sandbox_attacker_unit_02",
+			"priority": 40,
+			"rect": [
+				1358.75,
+				810.0,
+				43.75,
+				53.75
+			],
+			"text": "This picture identifies the unit. Click its card to select it; Shift-click to change a group selection.",
+			"title": "UNIT PORTRAIT"
+		},
+		{
+			"id": "weapon_icon_sandbox_attacker_unit_02",
+			"priority": 40,
+			"rect": [
+				1146.5,
+				812.5,
+				42.5,
+				40.0
+			],
+			"text": "This symbol identifies the unit's weapon class. Use the matching class button above to select units with that class.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "role_sandbox_attacker_unit_02",
+			"priority": 40,
+			"rect": [
+				1146.5,
+				867.5,
+				256.0,
+				17.5
+			],
+			"text": "The unit's weapon class. Units aim, fire and reload automatically while following your orders.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "weapon_sandbox_attacker_unit_02",
+			"priority": 40,
+			"rect": [
+				1146.5,
+				883.75,
+				256.0,
+				15.0
+			],
+			"text": "The weapon this unit is carrying. Its weapon affects how it fights, including range and rate of fire.",
+			"title": "EQUIPPED WEAPON"
+		},
+		{
+			"id": "tier_sandbox_attacker_unit_02",
+			"priority": 40,
+			"rect": [
+				1346.25,
+				853.75,
+				56.25,
+				15.0
+			],
+			"text": "T is the unit's tier. The number after it identifies this unit in your roster. Unit tier and weapon tier are separate.",
+			"title": "TIER AND UNIT NUMBER"
+		},
+		{
+			"id": "health_sandbox_attacker_unit_02",
+			"priority": 40,
+			"rect": [
+				1146.5,
+				901.25,
+				256.0,
+				15.0
+			],
+			"text": "The percentage shows remaining health. Wounded units prioritize survival and cannot follow new combat orders. Eliminated units are out of the fight.",
+			"title": "HEALTH AND STATUS"
+		},
+		{
+			"id": "health_bar_sandbox_attacker_unit_02",
+			"priority": 45,
+			"rect": [
+				1146.5,
+				918.75,
+				256.0,
+				7.0
+			],
+			"text": "The bar shrinks as this unit loses health. Yellow indicates a wounded unit; an empty bar means the unit is eliminated.",
+			"title": "HEALTH BAR"
+		},
+		{
+			"id": "card_sandbox_attacker_unit_04",
+			"priority": 30,
+			"rect": [
+				307.25,
+				806.25,
+				271.0,
+				117.5
+			],
+			"text": "Click a card to select that unit. Shift-click to add or remove it from your selection. Highlighted cards are selected. Eliminated units cannot receive orders.",
+			"title": "UNIT CARD"
+		},
+		{
+			"id": "portrait_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				527.0,
+				810.0,
+				43.75,
+				53.75
+			],
+			"text": "This picture identifies the unit. Click its card to select it; Shift-click to change a group selection.",
+			"title": "UNIT PORTRAIT"
+		},
+		{
+			"id": "weapon_icon_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				314.75,
+				812.5,
+				42.5,
+				40.0
+			],
+			"text": "This symbol identifies the unit's weapon class. Use the matching class button above to select units with that class.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "role_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				314.75,
+				867.5,
+				256.0,
+				17.5
+			],
+			"text": "The unit's weapon class. Units aim, fire and reload automatically while following your orders.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "weapon_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				314.75,
+				883.75,
+				256.0,
+				15.0
+			],
+			"text": "The weapon this unit is carrying. Its weapon affects how it fights, including range and rate of fire.",
+			"title": "EQUIPPED WEAPON"
+		},
+		{
+			"id": "tier_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				514.5,
+				853.75,
+				56.25,
+				15.0
+			],
+			"text": "T is the unit's tier. The number after it identifies this unit in your roster. Unit tier and weapon tier are separate.",
+			"title": "TIER AND UNIT NUMBER"
+		},
+		{
+			"id": "health_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				314.75,
+				852.5,
+				37.5,
+				15.0
+			],
+			"text": "The percentage shows remaining health. Wounded units prioritize survival and cannot follow new combat orders. Eliminated units are out of the fight.",
+			"title": "HEALTH AND STATUS"
+		},
+		{
+			"id": "health_bar_sandbox_attacker_unit_04",
+			"priority": 45,
+			"rect": [
+				314.75,
+				918.75,
+				256.0,
+				7.0
+			],
+			"text": "The bar shrinks as this unit loses health. Yellow indicates a wounded unit; an empty bar means the unit is eliminated.",
+			"title": "HEALTH BAR"
+		},
+		{
+			"id": "order_sandbox_attacker_unit_04",
+			"priority": 40,
+			"rect": [
+				314.75,
+				901.25,
+				256.0,
+				15.0
+			],
+			"text": "Holding, Pushing or Falling Back shows this unit's current group order. Choose another order to replace it, or use Clear Orders.",
+			"title": "CURRENT ORDER"
+		},
+		{
+			"id": "card_sandbox_attacker_unit_03",
+			"priority": 30,
+			"rect": [
+				584.5,
+				806.25,
+				271.0,
+				117.5
+			],
+			"text": "Click a card to select that unit. Shift-click to add or remove it from your selection. Highlighted cards are selected. Eliminated units cannot receive orders.",
+			"title": "UNIT CARD"
+		},
+		{
+			"id": "portrait_sandbox_attacker_unit_03",
+			"priority": 40,
+			"rect": [
+				804.25,
+				810.0,
+				43.75,
+				53.75
+			],
+			"text": "This picture identifies the unit. Click its card to select it; Shift-click to change a group selection.",
+			"title": "UNIT PORTRAIT"
+		},
+		{
+			"id": "weapon_icon_sandbox_attacker_unit_03",
+			"priority": 40,
+			"rect": [
+				592.0,
+				812.5,
+				42.5,
+				40.0
+			],
+			"text": "This symbol identifies the unit's weapon class. Use the matching class button above to select units with that class.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "role_sandbox_attacker_unit_03",
+			"priority": 40,
+			"rect": [
+				592.0,
+				867.5,
+				256.0,
+				17.5
+			],
+			"text": "The unit's weapon class. Units aim, fire and reload automatically while following your orders.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "weapon_sandbox_attacker_unit_03",
+			"priority": 40,
+			"rect": [
+				592.0,
+				883.75,
+				256.0,
+				15.0
+			],
+			"text": "The weapon this unit is carrying. Its weapon affects how it fights, including range and rate of fire.",
+			"title": "EQUIPPED WEAPON"
+		},
+		{
+			"id": "tier_sandbox_attacker_unit_03",
+			"priority": 40,
+			"rect": [
+				791.75,
+				853.75,
+				56.25,
+				15.0
+			],
+			"text": "T is the unit's tier. The number after it identifies this unit in your roster. Unit tier and weapon tier are separate.",
+			"title": "TIER AND UNIT NUMBER"
+		},
+		{
+			"id": "health_sandbox_attacker_unit_03",
+			"priority": 40,
+			"rect": [
+				592.0,
+				901.25,
+				256.0,
+				15.0
+			],
+			"text": "The percentage shows remaining health. Wounded units prioritize survival and cannot follow new combat orders. Eliminated units are out of the fight.",
+			"title": "HEALTH AND STATUS"
+		},
+		{
+			"id": "health_bar_sandbox_attacker_unit_03",
+			"priority": 45,
+			"rect": [
+				592.0,
+				918.75,
+				256.0,
+				7.0
+			],
+			"text": "The bar shrinks as this unit loses health. Yellow indicates a wounded unit; an empty bar means the unit is eliminated.",
+			"title": "HEALTH BAR"
+		},
+		{
+			"id": "card_sandbox_attacker_unit_05",
+			"priority": 30,
+			"rect": [
+				861.75,
+				806.25,
+				271.0,
+				117.5
+			],
+			"text": "Click a card to select that unit. Shift-click to add or remove it from your selection. Highlighted cards are selected. Eliminated units cannot receive orders.",
+			"title": "UNIT CARD"
+		},
+		{
+			"id": "portrait_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				1081.5,
+				810.0,
+				43.75,
+				53.75
+			],
+			"text": "This picture identifies the unit. Click its card to select it; Shift-click to change a group selection.",
+			"title": "UNIT PORTRAIT"
+		},
+		{
+			"id": "weapon_icon_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				869.25,
+				812.5,
+				42.5,
+				40.0
+			],
+			"text": "This symbol identifies the unit's weapon class. Use the matching class button above to select units with that class.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "role_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				869.25,
+				867.5,
+				256.0,
+				17.5
+			],
+			"text": "The unit's weapon class. Units aim, fire and reload automatically while following your orders.",
+			"title": "WEAPON CLASS"
+		},
+		{
+			"id": "weapon_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				869.25,
+				883.75,
+				256.0,
+				15.0
+			],
+			"text": "The weapon this unit is carrying. Its weapon affects how it fights, including range and rate of fire.",
+			"title": "EQUIPPED WEAPON"
+		},
+		{
+			"id": "tier_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				1069.0,
+				853.75,
+				56.25,
+				15.0
+			],
+			"text": "T is the unit's tier. The number after it identifies this unit in your roster. Unit tier and weapon tier are separate.",
+			"title": "TIER AND UNIT NUMBER"
+		},
+		{
+			"id": "health_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				869.25,
+				852.5,
+				37.5,
+				15.0
+			],
+			"text": "The percentage shows remaining health. Wounded units prioritize survival and cannot follow new combat orders. Eliminated units are out of the fight.",
+			"title": "HEALTH AND STATUS"
+		},
+		{
+			"id": "health_bar_sandbox_attacker_unit_05",
+			"priority": 45,
+			"rect": [
+				869.25,
+				918.75,
+				256.0,
+				7.0
+			],
+			"text": "The bar shrinks as this unit loses health. Yellow indicates a wounded unit; an empty bar means the unit is eliminated.",
+			"title": "HEALTH BAR"
+		},
+		{
+			"id": "order_sandbox_attacker_unit_05",
+			"priority": 40,
+			"rect": [
+				869.25,
+				901.25,
+				256.0,
+				15.0
+			],
+			"text": "Holding, Pushing or Falling Back shows this unit's current group order. Choose another order to replace it, or use Clear Orders.",
+			"title": "CURRENT ORDER"
+		},
+		{
+			"id": "building_mercer_market",
+			"priority": 5,
+			"rect": [
+				119.157341003418,
+				0.0,
+				296.067413330078,
+				283.005676269531
+			],
+			"text": "Buildings block movement and shots. Move around them to reach the other side. Use nearby cover objects for protective positions.",
+			"title": "BUILDING"
+		},
+		{
+			"id": "building_harold_apartments",
+			"priority": 5,
+			"rect": [
+				415.224761962891,
+				0.0,
+				278.651702880859,
+				283.005676269531
+			],
+			"text": "Buildings block movement and shots. Move around them to reach the other side. Use nearby cover objects for protective positions.",
+			"title": "BUILDING"
+		},
+		{
+			"id": "building_east_apartments",
+			"priority": 5,
+			"rect": [
+				798.370788574219,
+				0.0,
+				435.393249511719,
+				283.005676269531
+			],
+			"text": "Buildings block movement and shots. Move around them to reach the other side. Use nearby cover objects for protective positions.",
+			"title": "BUILDING"
+		},
+		{
+			"id": "building_south_west",
+			"priority": 5,
+			"rect": [
+				119.157341003418,
+				339.606750488281,
+				365.730316162109,
+				348.314575195313
+			],
+			"text": "Buildings block movement and shots. Move around them to reach the other side. Use nearby cover objects for protective positions.",
+			"title": "BUILDING"
+		},
+		{
+			"id": "building_south_middle",
+			"priority": 5,
+			"rect": [
+				484.887664794922,
+				339.606750488281,
+				383.146026611328,
+				348.314575195313
+			],
+			"text": "Buildings block movement and shots. Move around them to reach the other side. Use nearby cover objects for protective positions.",
+			"title": "BUILDING"
+		},
+		{
+			"id": "building_south_east",
+			"priority": 5,
+			"rect": [
+				868.03369140625,
+				339.606750488281,
+				365.730346679688,
+				348.314575195313
+			],
+			"text": "Buildings block movement and shots. Move around them to reach the other side. Use nearby cover objects for protective positions.",
+			"title": "BUILDING"
+		},
+		{
+			"id": "cover_cover_stoop_west",
+			"priority": 20,
+			"rect": [
+				492.507049560547,
+				257.970520019531,
+				35.2668762207031,
+				93.6095581054688
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_stoop_east",
+			"priority": 20,
+			"rect": [
+				581.327270507813,
+				257.970520019531,
+				35.266845703125,
+				93.6095581054688
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_east_stoop_west",
+			"priority": 20,
+			"rect": [
+				959.248596191406,
+				257.970520019531,
+				33.5252685546875,
+				85.7724609375
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_east_stoop_east",
+			"priority": 20,
+			"rect": [
+				1035.87780761719,
+				257.970520019531,
+				33.5252685546875,
+				85.7724609375
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_alley_dumpster",
+			"priority": 20,
+			"rect": [
+				700.842712402344,
+				192.008453369141,
+				78.3707885742188,
+				59.6488647460938
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_service_cabinet",
+			"priority": 20,
+			"rect": [
+				793.799133300781,
+				271.032318115234,
+				45.71630859375,
+				54.4241638183594
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_store_delivery",
+			"priority": 20,
+			"rect": [
+				126.776725769043,
+				276.257019042969,
+				59.6488723754883,
+				57.0365295410156
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_bin_west",
+			"priority": 20,
+			"rect": [
+				399.115203857422,
+				345.702239990234,
+				24.3820190429688,
+				38.75
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_bin_spilled",
+			"priority": 20,
+			"rect": [
+				444.396087646484,
+				353.103942871094,
+				33.0898742675781,
+				23.51123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_bin_east",
+			"priority": 20,
+			"rect": [
+				822.317443847656,
+				345.702239990234,
+				24.3820190429688,
+				38.75
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_bin_west",
+			"priority": 20,
+			"rect": [
+				282.429809570313,
+				530.526733398438,
+				24.3820190429688,
+				38.75
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_bin_spilled",
+			"priority": 20,
+			"rect": [
+				325.969116210938,
+				554.90869140625,
+				33.0898742675781,
+				23.51123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_bin_east",
+			"priority": 20,
+			"rect": [
+				794.452270507813,
+				534.445251464844,
+				24.3820190429688,
+				38.75
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_car_0",
+			"priority": 20,
+			"rect": [
+				144.192443847656,
+				371.608184814453,
+				106.671340942383,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_car_1",
+			"priority": 20,
+			"rect": [
+				283.518280029297,
+				371.608184814453,
+				109.283721923828,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_car_2",
+			"priority": 20,
+			"rect": [
+				440.259857177734,
+				371.608184814453,
+				111.896087646484,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_car_3",
+			"priority": 20,
+			"rect": [
+				579.585693359375,
+				371.608184814453,
+				106.671325683594,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_car_4",
+			"priority": 20,
+			"rect": [
+				858.237365722656,
+				371.608184814453,
+				109.28369140625,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_north_car_5",
+			"priority": 20,
+			"rect": [
+				1049.81042480469,
+				371.608184814453,
+				111.896118164063,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_car_0",
+			"priority": 20,
+			"rect": [
+				161.608184814453,
+				483.939575195313,
+				106.671356201172,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_car_1",
+			"priority": 20,
+			"rect": [
+				335.765472412109,
+				483.939575195313,
+				109.283721923828,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_car_2",
+			"priority": 20,
+			"rect": [
+				509.922790527344,
+				483.939575195313,
+				111.896057128906,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_car_3",
+			"priority": 20,
+			"rect": [
+				701.495788574219,
+				483.939575195313,
+				106.671325683594,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_car_4",
+			"priority": 20,
+			"rect": [
+				875.653076171875,
+				483.939575195313,
+				109.28369140625,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_cover_south_car_5",
+			"priority": 20,
+			"rect": [
+				1067.22607421875,
+				483.939575195313,
+				111.896118164063,
+				62.26123046875
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_00__body_cover",
+			"priority": 20,
+			"rect": [
+				1080.6796875,
+				442.185394287109,
+				157.438110351563,
+				57.8202209472656
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_00__door_0_north",
+			"priority": 20,
+			"rect": [
+				1127.36608886719,
+				470.094116210938,
+				29.6241455078125,
+				51.550537109375
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_00__door_0_south",
+			"priority": 20,
+			"rect": [
+				1127.36608886719,
+				405.3076171875,
+				29.6241455078125,
+				51.5505676269531
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_00__door_1_north",
+			"priority": 20,
+			"rect": [
+				1155.34973144531,
+				470.094116210938,
+				29.6241455078125,
+				51.550537109375
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_00__door_1_south",
+			"priority": 20,
+			"rect": [
+				1155.34973144531,
+				405.3076171875,
+				29.6241455078125,
+				51.5505676269531
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_01__body_cover",
+			"priority": 20,
+			"rect": [
+				907.706726074219,
+				447.366577148438,
+				157.438171386719,
+				57.8202209472656
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_01__door_0_north",
+			"priority": 20,
+			"rect": [
+				954.393127441406,
+				475.275299072266,
+				29.6241455078125,
+				51.5505676269531
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_01__door_0_south",
+			"priority": 20,
+			"rect": [
+				954.393127441406,
+				410.488800048828,
+				29.6241455078125,
+				51.5505676269531
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_01__door_1_north",
+			"priority": 20,
+			"rect": [
+				982.376708984375,
+				475.275299072266,
+				29.6241455078125,
+				51.5505676269531
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "cover_sandbox_transport_01__door_1_south",
+			"priority": 20,
+			"rect": [
+				982.376708984375,
+				410.488800048828,
+				29.6241455078125,
+				51.5505676269531
+			],
+			"text": "Select your units, then left-click this cover object to send them to available protective positions around it. Units need a reachable, unoccupied position. Cover protects from some directions, so watch for enemies moving around it.",
+			"title": "TAKE COVER"
+		},
+		{
+			"id": "unit_sandbox_attacker_unit_01",
+			"priority": 25,
+			"rect": [
+				939.626525878906,
+				343.440307617188,
+				52.2471923828125,
+				74.016845703125
+			],
+			"text": "Left-click a unit to select it. Shift-click to add or remove it from a group. Drag a box around friendly units to select several. Then click the map or use an order button.",
+			"title": "YOUR UNIT"
+		},
+		{
+			"id": "marker_sandbox_attacker_unit_01",
+			"priority": 28,
+			"rect": [
+				955.750122070313,
+				326.283020019531,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_attacker_unit_02",
+			"priority": 25,
+			"rect": [
+				787.050537109375,
+				457.380584716797,
+				52.2471923828125,
+				74.0168762207031
+			],
+			"text": "This unit is out of the fight and can no longer move or attack.",
+			"title": "ELIMINATED UNIT"
+		},
+		{
+			"id": "unit_sandbox_attacker_unit_03",
+			"priority": 25,
+			"rect": [
+				1128.6083984375,
+				372.945770263672,
+				52.2471923828125,
+				74.016845703125
+			],
+			"text": "This unit prioritizes survival and cannot follow new combat orders. Its card remains available for inspection.",
+			"title": "WOUNDED UNIT"
+		},
+		{
+			"id": "marker_sandbox_attacker_unit_03",
+			"priority": 28,
+			"rect": [
+				1144.73193359375,
+				355.788513183594,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_attacker_unit_04",
+			"priority": 25,
+			"rect": [
+				983.926452636719,
+				376.481079101563,
+				52.2471313476563,
+				74.016845703125
+			],
+			"text": "Left-click a unit to select it. Shift-click to add or remove it from a group. Drag a box around friendly units to select several. Then click the map or use an order button.",
+			"title": "YOUR UNIT"
+		},
+		{
+			"id": "marker_sandbox_attacker_unit_04",
+			"priority": 28,
+			"rect": [
+				1000.05004882813,
+				359.323791503906,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_attacker_unit_05",
+			"priority": 25,
+			"rect": [
+				955.623718261719,
+				443.558807373047,
+				52.2471923828125,
+				74.0168762207031
+			],
+			"text": "Left-click a unit to select it. Shift-click to add or remove it from a group. Drag a box around friendly units to select several. Then click the map or use an order button.",
+			"title": "YOUR UNIT"
+		},
+		{
+			"id": "marker_sandbox_attacker_unit_05",
+			"priority": 28,
+			"rect": [
+				971.747314453125,
+				426.401519775391,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_defender_unit_01",
+			"priority": 25,
+			"rect": [
+				555.421325683594,
+				345.049163818359,
+				52.2471923828125,
+				74.016845703125
+			],
+			"text": "With your units selected, left-click an enemy to make it their priority target. Your units fire when they have range and a clear shot; this order does not make them chase.",
+			"title": "ENEMY UNIT"
+		},
+		{
+			"id": "marker_sandbox_defender_unit_01",
+			"priority": 28,
+			"rect": [
+				571.544921875,
+				327.891876220703,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_defender_unit_02",
+			"priority": 25,
+			"rect": [
+				485.753265380859,
+				457.111663818359,
+				52.2471618652344,
+				74.0168762207031
+			],
+			"text": "With your units selected, left-click an enemy to make it their priority target. Your units fire when they have range and a clear shot; this order does not make them chase.",
+			"title": "ENEMY UNIT"
+		},
+		{
+			"id": "marker_sandbox_defender_unit_02",
+			"priority": 28,
+			"rect": [
+				501.876861572266,
+				439.954376220703,
+				19.9999694824219,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_defender_unit_03",
+			"priority": 25,
+			"rect": [
+				556.974609375,
+				276.124328613281,
+				52.2471923828125,
+				74.016845703125
+			],
+			"text": "With your units selected, left-click an enemy to make it their priority target. Your units fire when they have range and a clear shot; this order does not make them chase.",
+			"title": "ENEMY UNIT"
+		},
+		{
+			"id": "marker_sandbox_defender_unit_03",
+			"priority": 28,
+			"rect": [
+				573.098205566406,
+				258.967041015625,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_defender_unit_04",
+			"priority": 25,
+			"rect": [
+				311.598327636719,
+				457.182769775391,
+				52.2471923828125,
+				74.0168762207031
+			],
+			"text": "With your units selected, left-click an enemy to make it their priority target. Your units fire when they have range and a clear shot; this order does not make them chase.",
+			"title": "ENEMY UNIT"
+		},
+		{
+			"id": "marker_sandbox_defender_unit_04",
+			"priority": 28,
+			"rect": [
+				327.721923828125,
+				440.025482177734,
+				20.0,
+				20.0
+			],
+			"text": "The emblem identifies this unit's faction. A highlighted emblem shows a selected unit. Use the Emblems switch to hide or show these markers.",
+			"title": "FACTION EMBLEM"
+		},
+		{
+			"id": "unit_sandbox_defender_unit_05",
+			"priority": 25,
+			"rect": [
+				113.061828613281,
+				345.049163818359,
+				52.2471923828125,
+				74.016845703125
+			],
+			"text": "This unit is out of the fight and can no longer move or attack.",
+			"title": "ELIMINATED UNIT"
+		},
+		{
+			"id": "battle_context",
+			"priority": 50,
+			"rect": [
+				22.5,
+				22.5,
+				595.0,
+				97.5
+			],
+			"text": "This panel names the battlefield and shows which faction is attacking and which is defending.",
+			"title": "BATTLE LOCATION AND SIDES"
+		},
+		{
+			"id": "map",
+			"priority": 0,
+			"rect": [
+				0.0,
+				0.0,
+				1440.0,
+				717.5
+			],
+			"text": "With units selected, left-click open ground to move them there. Drag a box to select friendly units. Scroll to zoom, hold the middle mouse button and drag to pan, or press Home to fit the map. Right-click or press Esc to clear your selection.",
+			"title": "MOVE AND LOOK AROUND"
+		}
+	],
+	"schema_version": 1,
+	"size": [
+		1440,
+		1000
+	]
+}

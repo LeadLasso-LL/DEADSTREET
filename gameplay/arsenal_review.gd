@@ -55,6 +55,7 @@ func _ready():
  note=text(Vector2(28,58),Vector2(1100,25),"23 factions · 115 outfits · 30 weapons · All factions, weapons, training and armor unlocked",13)
  for i in range(CLASSES.size()):button(surface,Vector2(28+i*184,95),Vector2(172,35),CLASSES[i].to_upper(),show_class.bind(CLASSES[i]))
  button(surface,Vector2(948,95),Vector2(172,35),"ARMOR",open_armor_catalog)
+ button(surface,Vector2(530,16),Vector2(138,37),"TUTORIAL",open_tutorial).name="TutorialButton"
  button(surface,Vector2(680,16),Vector2(222,37),"CUSTOM BATTLE SETUP",open_force_builder)
  button(surface,Vector2(914,16),Vector2(206,37),"VEHICLE FLEET",open_vehicle_fleet)
  grid=GridContainer.new();surface.add_child(grid);grid.position=Vector2(28,148);grid.columns=2;grid.add_theme_constant_override("h_separation",12);grid.add_theme_constant_override("v_separation",12)
@@ -231,6 +232,11 @@ func open_armor_catalog() -> void:
   armor_preview_select.select(0 if id.is_empty() else Armor.IDS.find(id)+1)
   refresh())
  surface.add_child(panel)
+
+func open_tutorial() -> void:
+ if has_node("SandboxTutorial"):return
+ var panel=preload("res://gameplay/sandbox_tutorial_panel.gd").new()
+ panel.name="SandboxTutorial";add_child(panel)
 
 func open_vehicle_fleet() -> void:
  if surface.has_node("VehicleFleet"):return
