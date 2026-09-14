@@ -14,6 +14,10 @@ var result_root: Control
 var result_cards={}
 var markers={}
 var sound: Node
+var convoy_audio=preload("res://gameplay/tactical_convoy_audio.gd").new()
+var convoy_riders={}
+var visual_vehicle_poses={}
+const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 var font: SystemFont
 var identifiers_enabled=true
 var audio_enabled=true
@@ -64,8 +68,11 @@ func setup(p_view):
   if view.deployment_controller.place_unplaced_in_cover():view.deployment_controller.try_commit_attacker()
  )
  arrival_status=Card.label(deployment_panel,Vector2(14,68),Vector2(344,32),"",10,Color("#a6b1a5"),font)
- sound=preload("res://gameplay/tactical_battle_audio.gd").new();view.add_child(sound);sound.setup(view)
+ sound=preload("res://gameplay/tactical_battle_audio.gd").new();view.add_child(sound);sound.setup(view);convoy_audio.setup(view)
 func reset(b):
+ for rider in convoy_riders.values():
+  if is_instance_valid(rider):rider.queue_free()
+ convoy_riders.clear();visual_vehicle_poses.clear()
  sound.results_music_mix=0.
  battle=b;current_battle_id=b.get_instance_id();stage="deployment";clock=0.;end_clock=0.;intro_duration=10.;routes={};door_played=false;start_played=false;ready_clock=0.;result_snapshot={};results_acknowledged=false
  attacker=Factions.for_side(b,b.attacker_side_id);defender=Factions.for_side(b,b.defender_side_id)
@@ -98,7 +105,7 @@ func begin_arrival():
   var planned=Nav.find_path(battle,origin,p.battle_position)
   if attacking and not p.transport_vehicle_id.is_empty():
    var vehicle=battle.get_vehicle(p.transport_vehicle_id)
-   var exit=preload("res://battle/vehicles/battle_vehicle_exit_service.gd").route(battle,vehicle,p.battle_position)
+   var exit=preload("res://battle/vehicles/battle_vehicle_exit_service.gd").route(battle,vehicle,p.battle_position,bool(p.get_meta("transport_bed",false)))
    if not exit.is_empty():origin=exit.origin;planned=exit.path
    else:planned=null
   var points: Array[Vector2]=[origin]
@@ -110,14 +117,20 @@ func begin_arrival():
   var length=0.
   for i in range(1,points.size()):length+=points[i-1].distance_to(points[i])
   var start=5.8+n*.35 if attacking else (0. if is_bridge() else 3.4+n*.45)
+  if attacking:
+   var transport=battle.get_vehicle(p.transport_vehicle_id)
+   start=vehicle_stop_time(transport)+.7+float(p.get_meta("transport_seat",n))*.52
   var duration=maxf(.35,length/5.0)
   routes[id]={"points":points,"length":length,"start":start,"duration":duration,"attacking":attacking,"distance":0.}
   intro_duration=maxf(intro_duration,start+duration+.6)
+ prepare_riders()
 func _process(delta):
  if view==null:return
  var b=view._battle_state();visible=view.visible and view._is_dusk_street() and b!=null
  sound.enabled=visible and audio_enabled
- if not visible:return
+ if not visible:
+  convoy_audio.sync(b,{},false,0.,0.)
+  return
  if current_battle_id!=b.get_instance_id():reset(b)
  var size=view.get_viewport_rect().size;var factor=size.x/1152.;surface.scale=Vector2.ONE*factor;surface.size=size/factor;shade.size=surface.size
  deployment_panel.visible=stage=="deployment" and not all_committed()
@@ -135,7 +148,7 @@ func _process(delta):
   stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)
  if stage=="arrival":
   clock+=delta
-  if clock>=5.4 and not door_played:
+  if clock>=6.6 and not door_played:
    door_played=true
    for transport in battle.vehicles.values():
     if int(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(transport.vehicle_type_id).get("doors",4))>0:
@@ -159,17 +172,27 @@ func _process(delta):
  apply_poses();update_markers()
 func apply_poses():
  if view==null or battle==null:return
+ visual_vehicle_poses.clear()
+ var engine_set=false
  for id in view._dusk_vehicle_nodes:
   var node=view._dusk_vehicle_nodes[id];var v=battle.get_vehicle(id)
   if v==null:continue
   node.door_open=1.;node.visible=true
-  if stage in ["arrival","ready"] and (not is_bridge() or v.side_id==battle.attacker_side_id) and str(preload("res://campaign/vehicles/vehicle_model_catalog.gd").model(v.vehicle_type_id).get("vehicle_class",""))!="two_wheelers":
-   var progress=smoothstep(2.2,5.3,clock)
-   var offset=Vector2((1.-progress)*38*8*(-1. if is_bridge() else 1.),0)
-   var visual_bounds: Rect2=node.prop[1];visual_bounds.position.x+=offset.x/8.;node.prop[1]=visual_bounds
-   node.position+=offset;node.door_open=smoothstep(5.35,5.9,clock)
-   if stage=="arrival" and v.vehicle_type_id!="yardbird":sound.set_engine(v.battle_position+Vector2(offset.x/8,0),clock>2.1 and clock<5.85,lerpf(1.35,.75,progress))
+  var at=v.battle_position
+  if stage in ["arrival","ready"] and (not is_bridge() or v.side_id==battle.attacker_side_id):
+   var stop=vehicle_stop_time(v);var progress=smoothstep(1.6,stop,clock)
+   var offset=Vector2((1.-progress)*55.*(-1. if is_bridge() else 1.),0)
+   at+=offset;node.position=at*Vector2(8,6)
+   node.door_open=smoothstep(stop+.05,stop+.65,clock)
+   if stage=="arrival" and v.vehicle_type_id!="yardbird" and not engine_set:
+    sound.set_engine(at,clock>1.5 and clock<stop+.8,lerpf(1.35,.75,progress));engine_set=true
+  visual_vehicle_poses[id]=at
   node.queue_redraw()
+ convoy_audio.sync(battle,visual_vehicle_poses,audio_enabled and visible,sound.gun_duck,sound.results_music_mix)
+ for id in convoy_riders:
+  var rider=convoy_riders[id];var route=routes.get(id,{})
+  rider.visible=stage=="arrival" and not route.is_empty() and clock<float(route.start)-.65
+  rider.phase=clock;rider.riding=clock<6.5;rider.queue_redraw()
  if stage=="ending":
   outro.apply(view,end_clock)
   return
@@ -179,7 +202,21 @@ func apply_poses():
  for id in routes:
   if not view.actor_presenter._unit_nodes.has(id):continue
   var node=view.actor_presenter._unit_nodes[id];var route=routes[id];var p=battle.get_participant(id)
-  node.visible=clock>=float(route.start)
+  var dismount_start=float(route.start)-.65
+  node.visible=clock>=dismount_start
+  if bool(route.attacking) and clock>=dismount_start and clock<float(route.start):
+   var vehicle=battle.get_vehicle(p.transport_vehicle_id)
+   if vehicle!=null:
+    var t=clampf((clock-dismount_start)/.65,0.,1.)
+    var origin: Vector2=route.points[0]*Vector2(8,6)
+    var anchor=visual_vehicle_poses.get(vehicle.battle_vehicle_id,vehicle.battle_position)*Vector2(8,6)
+    if convoy_riders.has(id):anchor+=convoy_riders[id].position+Vector2(0,9.)
+    else:anchor=origin+Vector2(-3.,-1.)
+    node.position=anchor.lerp(origin,smoothstep(0.,1.,t));node.position.y-=sin(t*PI)*2.
+    var body=node.get_node("body");var dir=Visual.implemented_direction_id(vehicle.facing_direction,"")
+    var clip=("cover_tucked_idle_" if t<.55 else "walk_")+dir
+    if body.sprite_frames.has_animation(clip):body.animation=clip;body.pause();body.frame=0
+    continue
   var progress=clampf((clock-float(route.start))/float(route.duration),0.,1.)
   if progress>=1.:continue
   var target_distance=float(route.length)*progress
@@ -197,6 +234,29 @@ func apply_poses():
    body.animation=clip;body.pause();body.frame=int(target_distance/2.7*body.sprite_frames.get_frame_count(clip))%body.sprite_frames.get_frame_count(clip)
   if target_distance-float(route.distance)>.85:
    route.distance=target_distance;sound.play("step"+str(sound.cursor%4),point,-22.,sound.cursor)
+func vehicle_stop_time(vehicle) -> float:
+ return 6.5+float(vehicle.get_meta("convoy_slot",0))*.18 if vehicle!=null else 6.5
+func prepare_riders():
+ for id in routes:
+  var p=battle.get_participant(id)
+  if p.side_id!=battle.attacker_side_id:continue
+  var v=battle.get_vehicle(p.transport_vehicle_id)
+  if v==null or not view._dusk_vehicle_nodes.has(v.battle_vehicle_id) or not view.actor_presenter._unit_nodes.has(id):continue
+  var bike=Formation.motorcycle(v.vehicle_type_id);var bed=bool(p.get_meta("transport_bed",false))
+  if not bike and not bed:continue
+  var rider=preload("res://gameplay/tactical_convoy_rider.gd").new()
+  view._dusk_vehicle_nodes[v.battle_vehicle_id].add_child(rider)
+  var seat=int(p.get_meta("transport_seat",0))
+  rider.setup(view.actor_presenter._unit_nodes[id].get_node("body"),bike and seat>0,bed)
+  rider.heading=1. if v.facing_direction.x>=0. else -1.
+  if bed:
+   var bed_index=0
+   for previous in convoy_riders:
+    var q=battle.get_participant(previous)
+    if q.transport_vehicle_id==p.transport_vehicle_id and q.get_meta("transport_bed",false):bed_index+=1
+   rider.position=Vector2(-28.8+bed_index*9.6,-16.+bed_index*4.5)
+  else:rider.position=Vector2(-5.4 if seat>0 else 1.3,-8.)
+  rider.position.x*=rider.heading;rider.visible=false;convoy_riders[id]=rider
 func update_markers():
  for p in battle.participants.values():
   var id=p.participant_id

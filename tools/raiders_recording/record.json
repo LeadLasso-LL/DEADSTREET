@@ -1,0 +1,301 @@
+{
+  "ambient_emitters": 3,
+  "arrival_route_errors": [],
+  "audio_shots": 312,
+  "combat_seconds": 82.6999999999979,
+  "commands": [
+    {
+      "accepted": [
+        "sandbox_attacker_unit_01",
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04",
+        "sandbox_attacker_unit_05",
+        "sandbox_attacker_unit_06",
+        "sandbox_attacker_unit_07"
+      ],
+      "command": "push",
+      "failed": [],
+      "line": 59.3049973079136,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 3.06666666666667
+    },
+    {
+      "accepted": [
+        "sandbox_attacker_unit_01",
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04",
+        "sandbox_attacker_unit_06",
+        "sandbox_attacker_unit_07"
+      ],
+      "command": "push",
+      "failed": [
+        "sandbox_attacker_unit_05"
+      ],
+      "line": 117.389316013881,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 21.2666666666669
+    },
+    {
+      "command": "hold",
+      "feedback": {
+        "accepted": 2,
+        "command": "hold",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_09",
+        "sandbox_attacker_unit_12"
+      ],
+      "reason": "Firing support has established covered overwatch",
+      "time": 30.2000000000007
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_09"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 46.4333333333333
+    }
+  ],
+  "convoy_slots": 3,
+  "frames": 3378,
+  "motorcycle_occupants": 7,
+  "motorcycles": 6,
+  "outro_errors": [],
+  "outro_kind": "check_comrades",
+  "phase": "resolved",
+  "phases": [
+    {
+      "battle_time": 0.0,
+      "frame": 1,
+      "phase": "arrival"
+    },
+    {
+      "battle_time": 0.0,
+      "frame": 417,
+      "phase": "ready"
+    },
+    {
+      "battle_time": 0.0,
+      "frame": 440,
+      "phase": "active"
+    },
+    {
+      "battle_time": 82.6999999999979,
+      "frame": 2921,
+      "phase": "ending"
+    }
+  ],
+  "pickup_bed_occupants": 2,
+  "pickup_occupants": 5,
+  "results": {
+    "attacker": [
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_03",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_04",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_05",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_08",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AK-47 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_09",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AK-47 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_10",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AK-47 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_01",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_02",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_06",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_07",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_11",
+        "role": "SNIPER",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 700 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_12",
+        "role": "SNIPER",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 700 / T1"
+      }
+    ],
+    "defender": [
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_03",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_04",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_05",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "IMI UZI / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_08",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AK-47 / T1"
+      },
+      {
+        "health_width": 123.0,
+        "id": "sandbox_defender_unit_09",
+        "role": "RIFLE",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AK-47 / T1"
+      },
+      {
+        "health_width": 123.0,
+        "id": "sandbox_defender_unit_10",
+        "role": "RIFLE",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AK-47 / T1"
+      },
+      {
+        "health_width": 49.9843482971191,
+        "id": "sandbox_defender_unit_01",
+        "role": "PISTOL",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "GLOCK 17 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_02",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_06",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_07",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 21.2486953735352,
+        "id": "sandbox_defender_unit_11",
+        "role": "SNIPER",
+        "state": "WOUNDED",
+        "tint": "(1.0, 0.72, 0.72, 1.0)",
+        "weapon": "REMINGTON 700 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_12",
+        "role": "SNIPER",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 700 / T1"
+      }
+    ]
+  },
+  "seconds": 112.6,
+  "seed": 9141,
+  "trim_frames": 1,
+  "winner": "defender"
+}

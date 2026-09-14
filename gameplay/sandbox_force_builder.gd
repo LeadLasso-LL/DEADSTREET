@@ -130,7 +130,7 @@ func remove_unit(side: String,index: int):
 func set_balanced(side: String):
  config[side].units=Config.balanced();refresh_side(side)
 func auto_fit(side: String="attacker"):
- config[side].vehicles=Config.auto_convoy(config[side].units.size());changed()
+ config[side].vehicles=Config.auto_convoy(config[side].units.size());config[side].erase("vehicle_occupants");changed()
 func changed():
  error_override="";refresh_status();setup_changed.emit(config.duplicate(true))
 func refresh_status():
@@ -144,6 +144,8 @@ func refresh_status():
  if config.get("map_id","harold")=="river_bridge":
   var defense=Config.Models.convoy(config.defender.get("vehicles",[]))
   convoy_label.text="WEST APPROACH  /  %d vehicles  /  %d seats for %d attackers\nEAST BLOCKADE  /  %d vehicles  /  %d seats for %d defenders"%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size(),config.defender.get("vehicles",[]).size(),defense.get("units",0),config.defender.units.size()]
+ var slots=Config.Formation.slots(config.attacker.vehicles,config.attacker.faction).size()
+ convoy_label.text=convoy_label.text.replace("%d vehicles"%config.attacker.vehicles.size(),"%d slots / %d vehicles"%[slots,config.attacker.vehicles.size()])
  status.text=error_override if not error_override.is_empty() else ("Ready. Each convoy uses its own units as drivers.\nEsc returns here after a battle; your setup is retained." if check.valid else check.error)
  status.add_theme_color_override("font_color",Color("#d68c87") if not error_override.is_empty() or not check.valid else Color("#acb9a8"))
 func show_error(message: String):error_override=message;refresh_status()
@@ -152,7 +154,7 @@ func launch():
 func open_fleet(side: String="attacker"):
  if has_node("VehicleFleet"):return
  var fleet=FleetPanel.new();fleet.name="VehicleFleet";fleet.required_units=config[side].units.size();fleet.faction_id=config[side].faction;fleet.selected=config[side].get("vehicles",[]).duplicate();fleet.allow_encounter_lab=false
- fleet.convoy_selected.connect(func(models):config[side].vehicles=models.duplicate();changed())
+ fleet.convoy_selected.connect(func(models):config[side].vehicles=models.duplicate();config[side].erase("vehicle_occupants");changed())
  add_child(fleet)
 
 func choose_map(id: String):

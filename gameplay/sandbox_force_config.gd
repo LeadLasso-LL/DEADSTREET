@@ -6,6 +6,7 @@ const Armor=preload("res://campaign/equipment/armor_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const CLASSES=["pistol","smg","shotgun","rifle","sniper"]
 const MAX_UNITS=12
+const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 
 static func unit(kind: String="rifle") -> Dictionary:
  return {"class":kind,"weapon":Weapons.default_model(kind),"tier":1,"armor":"","specialist":""}
@@ -56,7 +57,11 @@ static func validate(config: Dictionary) -> Dictionary:
  if not config.attacker.get("vehicles") is Array:return {"valid":false,"error":"Choose an attacking convoy."}
  for model in config.attacker.vehicles:
   if not model is String or not Models.has_model(model):return {"valid":false,"error":"Choose a valid convoy vehicle."}
+ if not config.attacker.get("vehicle_occupants",[]) is Array:return {"valid":false,"error":"Choose a valid passenger manifest."}
+ var seating=Formation.manifest(config.attacker.vehicles,counts.attacker,config.attacker.get("vehicle_occupants",[]))
+ if not seating.valid:return {"valid":false,"error":seating.error}
  var convoy=Models.convoy(config.attacker.vehicles,counts.attacker)
+ convoy["slots"]=Formation.slots(config.attacker.vehicles,config.attacker.faction).size()
  if not convoy.valid:return {"valid":false,"error":convoy.get("error","Choose transport for every attacker.")}
  if config.get("map_id","harold")=="river_bridge":
   var defender=config.defender.get("vehicles",[])

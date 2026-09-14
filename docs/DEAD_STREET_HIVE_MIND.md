@@ -74,17 +74,14 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Owner playtest of the implemented [cover-aware line commands](TACTICAL_CONTROLS_2026-09-13.md). Brandon explicitly
-wants to move on from performance; dedicated optimization is parked. Steady
-60 FPS and room for larger battles remain goals, not completed acceptance gates.
-The receiving chat owns continuation.
+**Active objective:** Deliver the completed Stateline Raiders versus NBPD battle video and gather Brandon's review of the grouped motorcycle/pickup arrival, sound and battle commands. Convoy implementation and native validation are complete; owner acceptance remains pending. Performance and Whittaker Estate stay parked.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
 | HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
-| Scripted battle recording | This receiving chat | Explicitly on hold at Brandon’s request. |
+| Scripted battle recording | This receiving chat | Grouped Raiders arrival/audio implemented; 67 native checks passed; full natural battle recorded and encoded for sharing. |
 | Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
 
 **Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -98,11 +95,11 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon playtests cover-aware Hold, line-placement Push and Fall Back in battle; refine the feel from his feedback. See [current command rules and evidence](TACTICAL_CONTROLS_2026-09-13.md). Scripted recording, Whittaker Estate and dedicated performance work remain on hold.
+**Immediate next task:** Deliver the MP4, then Brandon reviews the arrival, audio and command feel. [Convoy rules and evidence](../tools/convoy_arrival/README.md).
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
-  convoy, legal combinations and final personnel cap are undecided.
+  convoy, legal combinations and final personnel cap are undecided. Raiders now pack up to three motorcycles per slot; this does not settle the global cap.
 - Production remains 12 units per side; larger test fixtures do not change it.
 - Stable 60 FPS, expansion headroom and final bridge-art acceptance remain open.
 - Legacy whole-project core-regression status was not re-established.

@@ -29,6 +29,9 @@ files = {x['path']: x['source'] for x in json.loads((base/'package/launcher_mani
 for directory in ('battle', 'campaign', 'core', 'gameplay'):
     for p in (repo/directory).rglob('*.gd'):
         files[p.relative_to(repo).as_posix()] = str(p)
+# Raw generated ambience is loaded directly; no full asset-package re-export.
+for p in (repo/'assets/audio/convoy').glob('*.wav'):
+    files[p.relative_to(repo).as_posix()] = str(p)
 for p in out.glob('*.gd'):
     files[p.relative_to(repo).as_posix()] = str(p)
 files['tools/sandbox_setup/scenarios.gd'] = str(repo/'tools/sandbox_setup/scenarios.gd')

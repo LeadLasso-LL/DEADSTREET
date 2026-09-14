@@ -489,3 +489,50 @@ commit/push uses the existing LeadLasso-LL/DEADSTREET authorization; Git history
 its receipt. Unrelated victory/character-factory/dusk/source-recovery work is preserved.
 Owner acceptance remains pending. Next: Brandon playtests the new battle commands;
 scripted recording and Whittaker Estate remain on hold.
+
+
+## 2026-09-14 — Stateline Raiders / NBPD recording (IN PROGRESS)
+
+Brandon resumed the scripted battle request: Stateline Raiders attacking NBPD; use
+commands only when tactically appropriate. Recording uses the existing bridge arrival,
+ordinary opposing AI/combat outcome and aftermath. Full 12-v-12; faction-preferred
+pickup convoy versus police/SWAT vehicles. A seeded pacing pass resolves naturally.
+No production balance or artwork changes are in scope. Deliver a mobile-shareable MP4.
+
+
+## 2026-09-14 — Raiders motorcycle convoy grouping (PROPOSED; RECORDING PAUSED)
+
+Source: Brandon interrupted delivery of the Stateline/NBPD video to discuss faction-specific abilities. Proposed Stateline Raiders ability: up to three motorcycles occupy one convoy slot. Desired 12-person arrival: three cruiser motorcycles, one pickup with six people, then three more cruiser motorcycles; six riders total plus six people in the truck, including its driver. This means three convoy slots but seven physical vehicles. Each motorcycle should retain its own cost, capacity, driver and physical footprint; grouping changes convoy slot accounting rather than merging bikes into one vehicle.
+
+Current fleet facts read during this recording pass: Ironhorse/Longhaul/Cinder motorcycles each have two-person capacity; Mesa Crew has five, Workhorse C10 three. The exact six-rider/six-truck-passenger split is not legal with those current pickups. A six-person pickup/bed-seating configuration is a proposal, not an approved capacity change. An existing-capacity alternative is five in the Mesa and seven across six two-seat bikes. Motorcycle arrivals currently use parked presentation; grouped moving/ridden arrivals and dismounting would require additional work. No convoy, capacity, animation or faction balance changes have been implemented.
+
+The original pickup-only battle has been captured; delivery/re-recording remains paused while this design is discussed. Next: settle grouped bike convoy behavior and seating, then implement the approved scope before producing the revised recording. Unique abilities for other factions remain an open design direction.
+
+
+## 2026-09-14 — Raiders arrival/audio direction (OWNER-APPROVED DESIGN; NOT IMPLEMENTED)
+
+Brandon confirmed one of the six motorcycles carries a passenger, giving seven people across the bikes and five in the Mesa pickup for this 12-v-12. He explicitly wants visible passengers in pickup beds and the convoy actually arriving in the proposed order: a clustered trio of biker-style motorcycles, pickup, second clustered trio. Suggested implementation allocation for this recording is three occupants in the cab including the driver and two in the bed, retaining five total pickup occupants. This does not authorize silently increasing all pickup model capacities. One bike visibly carries both its rider and passenger; all arrivals require coherent riding, stopping and dismount/climb-down presentation with individual cover routes.
+
+Approved audio direction: muffled heavy metal, particularly heavy distorted electric guitar, sounding like the Raiders convoy radios. Reference is the diegetic/muffled hip-hop already associated with Mercer Saints apartments. Add muffled police sirens localized to the NBPD blockade. Suggested mixing is source-positioned approach/falloff with restrained levels under combat reports and vocals. Exact riff and mix remain subject to listening review.
+
+This supersedes the prior six-person pickup requirement for this recording: the chosen split is seven motorcycle occupants plus five pickup occupants. Faction-specific three-motorcycles-per-convoy-slot grouping remains the design basis, with individual physical vehicles. The existing pickup-only video is retained but delivery remains on hold during this design discussion. Next implementation scope is grouped motorcycle convoy slots, the approved passenger arrangement, riding/bed-passenger arrival presentation and these audio layers, followed by a revised battle recording. No such implementation is claimed by this entry.
+
+
+## 2026-09-14 — Raiders convoy implementation started
+
+Brandon explicitly instructed implementation and delivery, no further confirmation. Scope: three motorcycles per Raiders convoy slot, six Ironhorse bikes in two staggered trios around one Mesa pickup; seven bike occupants (one pillion) and five truck occupants (three cab/two bed). Preserve every vehicle's individual capacity, cost and body. Build moving/ridden arrivals, dismounts and bed climb-down; original muffled guitar radio and NBPD-local sirens. Then re-record the natural 12-v-12 using tactically justified commands and deliver an audio MP4. Prior pickup-only video retained as superseded evidence. Performance and Whittaker remain parked. New shared manifest is implemented locally; native validation pending.
+
+
+## 2026-09-14 — Raiders grouped convoy, arrival and recording (IMPLEMENTED / VALIDATED)
+
+Brandon explicitly said to proceed without further confirmation. Implemented three consecutive motorcycles per Stateline convoy slot; distinct vehicles/costs/drivers/capacities remain. Six Ironhorse bikes form two staggered trios around a Mesa: seven motorcycle occupants, one pillion, five pickup occupants including two visibly in the bed. Every rider is an actual participant. Shared sandbox seating and grouped-slot UI are included; this does not impose a new global three-slot limit.
+
+Built moving motorcycle arrival, seated riders from faction heads and code-drawn bent limbs/vests, pillion and bed poses, rear pickup exits and individual navigation to cover. Original synthesized muffled guitar radio follows Raiders transport; two quieter NBPD sirens stay at police vehicles. Ambience honors audio toggle and gunfire ducking. The bridge no longer inherits Harold apartment music.
+
+67 native checks passed: faction-specific slot accounting, capacity/driver/bed validation, all 12 assignments, seven physical vehicle placements, nine visible seated riders, legal dismount paths, clean rider/actor handoff and three localized sound emitters. A headless live battle resolved naturally in 82.7 simulated seconds. Native visual inspection confirmed the formation, pillion and two bed occupants. The recorder camera was lowered to keep the top bike clear of the title banner, then pulls back before combat. No new broad performance campaign.
+
+The final recording uses the normal combat outcome and contextual player orders, not forced damage/winner or a command checklist. Runtime and media details below are the exact receipts. The prior pickup-only recording is superseded and retained locally. Remote command calls twice timed out after executing; read-only report checks confirmed success before proceeding, avoiding duplicate runs.
+
+Rules/source: [Convoy arrival](../tools/convoy_arrival/README.md); [recording reproduction](../tools/raiders_recording/README.md). Owner acceptance of animation, audio and ability balance remains pending. Next: deliver the MP4 and Brandon reviews the arrival, sound and command feel; Whittaker Estate and dedicated performance work remain deferred.
+
+Final movie: 112.64 seconds, combat 82.70 seconds, 312 shot events, 4 contextual orders; H.264/AAC 1920x1080 at 30 FPS; 74.43 MiB; audio peak -6.42 dBFS. SHA256 `08c755f8466de2b622b9d7e321f2d7360fba50be90ebfa9eb3b67277aff6c297`. Zero final arrival/outro route errors. Delivery/save status is reported in the conversation.

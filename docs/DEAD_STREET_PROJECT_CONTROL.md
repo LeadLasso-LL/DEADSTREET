@@ -1,3 +1,18 @@
+## Current milestone — Raiders convoy and battle recording — 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner acceptance pending. Stateline motorcycle trios count
+as one convoy slot each. The 12-person arrival has six bikes (seven occupants) and
+one Mesa pickup (five occupants, two in the bed). Moving/ridden arrival, pillion,
+rear bed exits and legal cover routes are implemented. Original muffled guitar
+radio and localized NBPD sirens support the arrival and combat. 67 native checks
+passed. The full natural battle has been recorded and encoded to mobile-shareable
+H.264/AAC MP4 with audio. Exact timing/hash and validation limits are in the journal
+and recording reports. This supersedes the earlier recording-on-hold status.
+
+Rules: [Convoy arrival](../tools/convoy_arrival/README.md). Next: deliver the video,
+then Brandon reviews arrival, audio and command feel. Performance and Whittaker
+Estate remain parked; other faction abilities and universal convoy limits are open.
+
 ## Current milestone — cover-aware battle commands — 2026-09-14
 
 IMPLEMENTED / VALIDATED; owner playtest acceptance pending. Hold now chooses nearby

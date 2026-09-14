@@ -1,0 +1,124 @@
+{
+  "commands": [
+    {
+      "accepted": [
+        "sandbox_attacker_unit_01",
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04",
+        "sandbox_attacker_unit_05",
+        "sandbox_attacker_unit_06",
+        "sandbox_attacker_unit_07"
+      ],
+      "command": "push",
+      "failed": [],
+      "line": 59.3049973079136,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 3.06666666666667
+    },
+    {
+      "accepted": [
+        "sandbox_attacker_unit_01",
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04",
+        "sandbox_attacker_unit_06",
+        "sandbox_attacker_unit_07"
+      ],
+      "command": "push",
+      "failed": [
+        "sandbox_attacker_unit_05"
+      ],
+      "line": 117.389316013881,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 21.2666666666669
+    },
+    {
+      "command": "hold",
+      "feedback": {
+        "accepted": 2,
+        "command": "hold",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_09",
+        "sandbox_attacker_unit_12"
+      ],
+      "reason": "Firing support has established covered overwatch",
+      "time": 30.2000000000007
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_09"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 46.4333333333333
+    }
+  ],
+  "duration": 82.6999999999979,
+  "phase": "resolved",
+  "seed": 9141,
+  "snapshots": [
+    {
+      "events": 0,
+      "nbpd": 12,
+      "raiders": 12,
+      "time": 0.0333333333333333
+    },
+    {
+      "events": 0,
+      "nbpd": 12,
+      "raiders": 12,
+      "time": 10.0333333333333
+    },
+    {
+      "events": 1,
+      "nbpd": 12,
+      "raiders": 12,
+      "time": 20.0333333333335
+    },
+    {
+      "events": 54,
+      "nbpd": 11,
+      "raiders": 10,
+      "time": 30.033333333334
+    },
+    {
+      "events": 158,
+      "nbpd": 8,
+      "raiders": 8,
+      "time": 40.0333333333336
+    },
+    {
+      "events": 232,
+      "nbpd": 6,
+      "raiders": 6,
+      "time": 50.0333333333331
+    },
+    {
+      "events": 269,
+      "nbpd": 5,
+      "raiders": 3,
+      "time": 60.0333333333325
+    },
+    {
+      "events": 289,
+      "nbpd": 4,
+      "raiders": 1,
+      "time": 70.0333333333319
+    },
+    {
+      "events": 304,
+      "nbpd": 3,
+      "raiders": 1,
+      "time": 80.0333333333314
+    }
+  ],
+  "winner": "defender"
+}

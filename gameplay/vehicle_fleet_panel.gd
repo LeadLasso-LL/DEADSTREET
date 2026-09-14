@@ -1,4 +1,5 @@
 extends Control
+const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const Factions=preload("res://battle/identity/faction_unit_catalog.gd")
 const Card=preload("res://gameplay/tactical_unit_card.gd")
@@ -39,7 +40,7 @@ func _ready():
 	label_at(Vector2(28,621),Vector2(1090,30),"ATTACKING CONVOY / %d units to transport"%required_units,17)
 	var convoy_scroll=ScrollContainer.new();add_child(convoy_scroll);convoy_scroll.position=Vector2(28,658);convoy_scroll.size=Vector2(1096,52);convoy_scroll.vertical_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
 	convoy_row=HBoxContainer.new();convoy_scroll.add_child(convoy_row);convoy_row.add_theme_constant_override("separation",8)
-	status=label_at(Vector2(28,713),Vector2(1096,58),"",14);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	status=label_at(Vector2(28,713),Vector2(1096,78),"",14);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	button_at(Vector2(28,795),Vector2(150,35),"CLEAR CONVOY",func():selected=[];refresh_convoy())
 	apply_button=button_at(Vector2(850,795),Vector2(270,35),"USE THIS CONVOY",func():convoy_selected.emit(selected.duplicate());queue_free())
 	refresh_models();refresh_convoy()
@@ -73,12 +74,18 @@ func refresh_models():
 			if selected.size()<required_units:selected.append(id);refresh_convoy())
 func refresh_convoy():
 	for child in convoy_row.get_children():convoy_row.remove_child(child);child.queue_free()
-	for index in range(selected.size()):
-		var b=Button.new();convoy_row.add_child(b);b.custom_minimum_size=Vector2(207,40);b.text=Models.model(selected[index]).name+" ×";b.add_theme_font_size_override("font_size",12)
-		b.pressed.connect(func():selected.remove_at(index);refresh_convoy())
+	var slots=Formation.slots(selected,faction_id)
+	for i in range(slots.size()):
+		var group=VBoxContainer.new();convoy_row.add_child(group);group.add_theme_constant_override("separation",1)
+		var title=Label.new();group.add_child(title);title.text="SLOT %d"%(i+1);title.add_theme_font_size_override("font_size",9)
+		var members=HBoxContainer.new();group.add_child(members)
+		for index in slots[i].indices:
+			var b=Button.new();members.add_child(b);b.custom_minimum_size=Vector2(92,29);b.text=Models.model(selected[index]).name.split(" ")[0]+" ×";b.add_theme_font_size_override("font_size",11);b.tooltip_text=Models.model(selected[index]).name
+			b.pressed.connect(func():selected.remove_at(index);refresh_convoy())
 	var summary=Models.convoy(selected,required_units)
 	apply_button.disabled=not summary.valid
-	status.text="%d/%d seats · %.1f road units/turn · %d resource slots · Fleet value $%d · Upkeep $%d/turn"%[summary.get("units",0),required_units,summary.get("movement",0.),summary.get("cargo",0),summary.get("price",0),summary.get("upkeep",0)]
+	status.text="%d convoy slots / %d vehicles · "%[slots.size(),selected.size()]+"%d/%d seats · %.1f road units/turn · %d resource slots · Fleet value $%d · Upkeep $%d/turn"%[summary.get("units",0),required_units,summary.get("movement",0.),summary.get("cargo",0),summary.get("price",0),summary.get("upkeep",0)]
+	if faction_id=="stateline":status.text+="\nRaiders: up to three consecutive motorcycles share a convoy slot."
 	status.text+="\nConvoys travel at their slowest vehicle's pace. "+("Ready for the sandbox." if summary.valid else summary.get("error","Choose a convoy."))
 
 func open_encounter_lab():

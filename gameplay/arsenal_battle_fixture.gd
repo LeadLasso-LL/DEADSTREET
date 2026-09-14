@@ -149,6 +149,8 @@ static func setup_flexible(runtime: Node,loadouts: Dictionary,seed_value: int) -
   if not Tiers.set_for_setup(b,p,tier):return {"error":"invalid unit tier"}
   var id: String=str(chosen.weapon)
   if not Weapons.equip_for_setup(b,p,id):return {"error":"review equip "+id}
+ var convoy_setup=preload("res://gameplay/tactical_convoy_setup.gd").apply(b,loadouts.attacker)
+ if convoy_setup.has("error"):return convoy_setup
  var bridge=loadouts.get("map_id","harold")=="river_bridge"
  if bridge:
   var bridge_result=preload("res://gameplay/bridge_battle_setup.gd").apply(b,loadouts)
