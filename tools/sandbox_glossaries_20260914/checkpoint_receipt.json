@@ -1,0 +1,31 @@
+{
+  "status": "PUSHED / VERIFIED",
+  "commit": "52c864752c2260048f1863d83929ae49420a6239",
+  "remote": "52c864752c2260048f1863d83929ae49420a6239",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "origin": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "files": [
+    "assets/data/faction_glossary.json",
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md",
+    "gameplay/arsenal_review.gd",
+    "gameplay/sandbox_force_builder.gd",
+    "gameplay/sandbox_glossary_panel.gd",
+    "gameplay/sandbox_menu_panels.gd",
+    "tools/sandbox_glossaries_20260914/README.md",
+    "tools/sandbox_glossaries_20260914/delivery.json",
+    "tools/sandbox_glossaries_20260914/encode_video.py",
+    "tools/sandbox_glossaries_20260914/library_receipt.json",
+    "tools/sandbox_glossaries_20260914/record.json",
+    "tools/sandbox_glossaries_20260914/run_capture.py",
+    "tools/sandbox_glossaries_20260914/smoke.json",
+    "tools/sandbox_glossaries_20260914/snapshot.json",
+    "tools/sandbox_glossaries_20260914/source_hashes.json",
+    "tools/sandbox_glossaries_20260914/validate.gd"
+  ],
+  "checks": 3684,
+  "errors": [],
+  "shared_release_runtime_modified": false,
+  "owner_visual_acceptance": "PENDING"
+}
