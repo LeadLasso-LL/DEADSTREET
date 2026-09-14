@@ -214,8 +214,10 @@ func _process(delta: float) -> void:
 			cards[unit.participant_id] = widget
 	var ordered: Array[String] = Query.living_first_ids(b, roster)
 	var columns = mini(12, maxi(1, ordered.size()))
+	if ordered.size() > 12: columns = ceili(float(ordered.size()) / 2.0)
 	var rows = ceili(float(ordered.size()) / columns)
-	height = 130.0 + rows * 96.0
+	var row_step = 68.0 if rows > 1 else 96.0
+	height = 130.0 + rows * row_step
 	var factor = get_viewport_rect().size.x / 1152.0
 	surface.scale = Vector2.ONE * factor
 	surface.position = Vector2(0, get_viewport_rect().size.y - height * factor)
@@ -230,9 +232,21 @@ func _process(delta: float) -> void:
 		var id = ordered[i]
 		var p = b.get_participant(id)
 		var widget = cards[id]
-		widget.position = Vector2(24 + (i % columns) * (width + 5), 71 + (i / columns) * 96)
-		widget.size = Vector2(width, 94)
+		widget.position = Vector2(24 + (i % columns) * (width + 5), 71 + (i / columns) * row_step)
+		widget.size = Vector2(width, row_step - 2)
 		widget.refresh(p, c != null and c.is_selected(id), roster.find(id) + 1)
+		if rows > 1:
+			widget.weapon_symbol.position = Vector2(6, 3)
+			widget.weapon_symbol.size = Vector2(32, 27)
+			widget.portrait.position = Vector2(width - 35, 2)
+			widget.portrait.size = Vector2(29, 33)
+			widget.role.position = Vector2(43, 5)
+			widget.role.size = Vector2(width - 84, 14)
+			widget.weapon_model.position = Vector2(6, 39)
+			widget.status.position.y = 51 if p.is_wounded or not p.is_alive else 28
+			widget.number.position.y = 29
+			widget.command_status.position.y = 51
+			widget.health.position.y = 63
 		if p.is_alive:
 			living += 1
 	count_label.text = "[color=#8cb994]%d[/color] ACTIVE · [color=#d87572]%d[/color] ELIMINATED" % [living, roster.size() - living]

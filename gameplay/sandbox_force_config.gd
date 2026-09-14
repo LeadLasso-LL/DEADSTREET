@@ -6,6 +6,7 @@ const Armor=preload("res://campaign/equipment/armor_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const CLASSES=["pistol","smg","shotgun","rifle","sniper"]
 const MAX_UNITS=12
+static func max_units(map_id: String) -> int:return 16 if map_id=="whittaker_estate" else MAX_UNITS
 const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 
 static func unit(kind: String="rifle") -> Dictionary:
@@ -37,14 +38,14 @@ static func auto_convoy(count: int) -> Array:
 
 static func validate(config: Dictionary) -> Dictionary:
  var counts={}
- if config.get("map_id","harold") not in ["harold","river_bridge"]:return {"valid":false,"error":"Choose an available battlefield."}
+ if config.get("map_id","harold") not in ["harold","river_bridge","whittaker_estate"]:return {"valid":false,"error":"Choose an available battlefield."}
  for side in ["attacker","defender"]:
   if not config.get(side) is Dictionary:return {"valid":false,"error":"Choose both forces."}
   var team: Dictionary=config[side]
   if not team.get("faction") is String or not Factions.all_ids().has(team.faction):return {"valid":false,"error":"Choose a valid "+side+" faction."}
   if not team.get("units") is Array:return {"valid":false,"error":"Choose the "+side+" units."}
   counts[side]=team.units.size()
-  if counts[side]<1 or counts[side]>MAX_UNITS:return {"valid":false,"error":"Each side needs 1–%d units for this sandbox map."%MAX_UNITS}
+  if counts[side]<1 or counts[side]>max_units(config.get("map_id","harold")):return {"valid":false,"error":"Each side needs 1–%d units for this sandbox map."%max_units(config.get("map_id","harold"))}
   for i in range(team.units.size()):
    var row=team.units[i];var label="%s unit %d: "%[side.capitalize(),i+1]
    if not row is Dictionary:return {"valid":false,"error":label+"invalid unit."}

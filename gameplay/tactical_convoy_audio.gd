@@ -27,17 +27,27 @@ func rebuild(b):
   for v in b.vehicles.values():
    if v.side_id==side:candidates.append(v)
   candidates.sort_custom(func(a,z):return int(Models.model(a.vehicle_type_id).unit_capacity)>int(Models.model(z.vehicle_type_id).unit_capacity))
+  if identity=="whittaker" and b.battlefield_geometry.authored_layout_id=="whittaker_estate_v1":
+   var clip=stream("whittaker_radio")
+   if clip!=null:
+    var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
+    player.max_distance=1450.;player.attenuation=.6;player.panning_strength=.65
+    player.set_meta("base_gain",-18.);player.set_meta("offset",0.);player.set_meta("is_radio",true);player.set_meta("side_id",side)
+    player.set_meta("fixed_position",Vector2(135,58));player.set_meta("range",1800.)
+    sources["estate_porch_radio"]=player
   var count=0
   for v in candidates:
-   var name="raiders_radio" if identity=="stateline" else "police_siren"
-   if identity not in ["stateline","nbpd"]:break
+   var name="trc_horn" if identity=="trc" else ("raiders_radio" if identity=="stateline" else "police_siren")
+   if identity not in ["stateline","nbpd","trc"]:break
+   if identity=="trc" and b.battlefield_geometry.authored_layout_id!="whittaker_estate_v1":break
    if identity=="nbpd" and b.battlefield_geometry.authored_layout_id!="river_suspension_bridge_v1":break
-   if count>=(1 if identity=="stateline" else 2):break
+   if count>=(2 if identity=="nbpd" else 1):break
    var clip=stream(name)
    if clip==null:continue
    var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
    player.max_distance=900. if identity=="stateline" else 1050.;player.attenuation=.7;player.panning_strength=.75
-   player.set_meta("base_gain",-18. if identity=="stateline" else -29.);player.set_meta("offset",count*2.35)
+   player.set_meta("base_gain",-18. if identity=="stateline" else (-13.5 if identity=="trc" else -29.));player.set_meta("offset",count*2.35)
+   player.set_meta("is_trc_horn",identity=="trc")
    player.set_meta("is_radio",identity=="stateline");player.set_meta("side_id",side)
    sources[v.battle_vehicle_id]=player;count+=1
 func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0,victory_mix: float=0.0):
@@ -46,8 +56,9 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
  var winner=b.get_winning_side_id() if b.battle_phase=="resolved" else ""
  for id in sources:
   var player=sources[id];var v=b.get_vehicle(id)
-  if not enabled or v==null:player.stop();continue
-  player.position=poses.get(id,v.battle_position)*Vector2(8,6)
+  if not enabled or (v==null and not player.has_meta("fixed_position")):player.stop();continue
+  var anchor: Vector2=player.get_meta("fixed_position") if player.has_meta("fixed_position") else poses.get(id,v.battle_position)
+  player.position=anchor*Vector2(8,6)
   var is_radio=bool(player.get_meta("is_radio",false))
   var owns_victory=is_radio and not winner.is_empty() and str(player.get_meta("side_id",""))==winner
   var foreground=clampf(victory_mix,0.,1.) if owns_victory else 0.
@@ -55,8 +66,14 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
   player.volume_db=float(player.get_meta("base_gain"))-radio_drop-(duck*4.+ending*5.)*(1.-foreground)
   # Continue the same playing riff as the winning faction takes the foreground.
   # At full victory mix it is centered and retains its intro gain regardless of camera distance.
-  player.max_distance=lerpf(900.,100000.,foreground) if is_radio else 1050.
+  player.max_distance=lerpf(float(player.get_meta("range",900.)),100000.,foreground) if is_radio else 1050.
   player.attenuation=lerpf(.7,0.,foreground)
   player.panning_strength=.75*(1.-foreground)
+  if bool(player.get_meta("is_trc_horn",false)):
+   # A persistent warning source, not radio music. Retain mid harmonics and
+   # enough distance reach to remain audible after the camera leaves the convoy.
+   var victory_dip=clampf(victory_mix,0.,1.) if not winner.is_empty() and str(player.get_meta("side_id",""))!=winner else 0.
+   player.volume_db=-13.5-6.0*clampf(battle_mix,0.,1.)-2.0*duck-3.0*ending-11.0*victory_dip
+   player.max_distance=2600.;player.attenuation=.22;player.panning_strength=.35
   player.set_meta("victory_foreground",foreground)
   if not player.playing:player.play(float(player.get_meta("offset",0.)))

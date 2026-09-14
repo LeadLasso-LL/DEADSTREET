@@ -1,0 +1,32 @@
+{
+  "cover_slots": 204,
+  "errors": [],
+  "placed_units": 32,
+  "route_checks": [
+    {
+      "error": "",
+      "reachable": true,
+      "route": "main gate"
+    },
+    {
+      "error": "",
+      "reachable": true,
+      "route": "approach to court"
+    },
+    {
+      "error": "",
+      "reachable": true,
+      "route": "north garden"
+    },
+    {
+      "error": "",
+      "reachable": true,
+      "route": "south service"
+    },
+    {
+      "error": "",
+      "reachable": true,
+      "route": "front steps"
+    }
+  ]
+}

@@ -27,7 +27,6 @@ func build(b,entrance: Vector2):
    for corpse in fallen:
     var score=p.battle_position.distance_to(corpse.battle_position)+float(assigned.get(corpse.participant_id,0))*20.
     if score<cost:best=corpse;cost=score
-   assigned[best.participant_id]=int(assigned.get(best.participant_id,0))+1
    var candidates=[]
    for angle in [0.,PI,.5*PI,1.5*PI,.25*PI,.75*PI,1.25*PI,1.75*PI]:
     candidates.append(best.battle_position+Vector2(cos(angle),sin(angle))*2.1)
@@ -39,7 +38,27 @@ func build(b,entrance: Vector2):
     if crowded:continue
     var path=Nav.find_path(b,p.battle_position,point)
     if path.success and p.battle_position.distance_to(point)<nearest:selected=point;nearest=p.battle_position.distance_to(point)
-   if selected!=Vector2.INF:target=selected
+   if selected==Vector2.INF:
+    # A fallen teammate can be hemmed in by cover or earlier helpers. Try a
+    # wider ring and other teammates before declaring the whole outro blocked.
+    # The normal nearest-comrade choice above remains unchanged when reachable.
+    var alternatives=fallen.duplicate()
+    alternatives.sort_custom(func(a,c):return p.battle_position.distance_to(a.battle_position)+float(assigned.get(a.participant_id,0))*20.<p.battle_position.distance_to(c.battle_position)+float(assigned.get(c.participant_id,0))*20.)
+    for corpse in alternatives:
+     for radius in [2.1,3.3]:
+      for n in range(16):
+       var point=corpse.battle_position+Vector2.from_angle(float(n)*TAU/16.)*radius
+       var crowded=false
+       for taken in occupied:
+        if point.distance_to(taken)<2.4:crowded=true;break
+       if crowded:continue
+       var path=Nav.find_path(b,p.battle_position,point)
+       if path.success and p.battle_position.distance_to(point)<nearest:selected=point;nearest=p.battle_position.distance_to(point);best=corpse
+      if selected!=Vector2.INF:break
+     if selected!=Vector2.INF:break
+   if selected!=Vector2.INF:
+    target=selected
+    assigned[best.participant_id]=int(assigned.get(best.participant_id,0))+1
    else:target=p.battle_position;errors.append(p.participant_id+": no reachable comrade position")
    facing=(best.battle_position-target).normalized();action="kneel";occupied.append(target)
   elif kind=="regroup" and not p.is_wounded:

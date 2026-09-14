@@ -1,0 +1,14 @@
+{
+  "average_fps": 55.527872269925,
+  "frames": 612,
+  "frames_over_16_67ms": 531,
+  "initial_units": 32,
+  "native_render": true,
+  "p95_frame_ms": 20.3703703703704,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "route_errors": [],
+  "seconds": 12.0176456435077
+}

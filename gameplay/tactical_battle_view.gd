@@ -731,7 +731,7 @@ func _frame_camera() -> void:
 	var hud_screen: float = 0.0
 	if _unit_hud_visible(_battle_state()):
 		hud_screen = UNIT_HUD_CARD_HEIGHT + UNIT_HUD_PAD * 2.0
-		if _is_dusk_street():hud_screen=180.0*viewport_size.x/1152.0
+		if _is_dusk_street():hud_screen=(266.0 if _geometry().authored_layout_id=="whittaker_estate_v1" else 180.0)*viewport_size.x/1152.0
 	var usable: Vector2 = Vector2(viewport_size.x, maxf(viewport_size.y - hud_screen, 1.0))
 	_camera.position = view_rect.get_center()
 	var zoom_x: float = usable.x / maxf(view_rect.size.x, 1.0)
@@ -4237,7 +4237,7 @@ func _is_river_bridge() -> bool:
 	return _geometry()!=null and _geometry().authored_layout_id=="river_suspension_bridge_v1"
 func _is_dusk_street() -> bool:
 	var g = _geometry()
-	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1"]
+	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1","whittaker_estate_v1"]
 func _street_projection() -> Vector2:
 	return Vector2(1,0.75) if _is_dusk_street() else Vector2.ONE
 func _sync_dusk_art() -> void:
@@ -4257,6 +4257,8 @@ func _sync_dusk_art() -> void:
 			if is_instance_valid(n) and not n.is_queued_for_deletion():n.queue_free()
 		_dusk_nodes.clear()
 	if not _dusk_nodes.is_empty(): return
+	if _geometry().authored_layout_id=="whittaker_estate_v1":
+		_spawn_estate_art();return
 	if _is_river_bridge():
 		_spawn_bridge_art();return
 	var art = preload("res://gameplay/harold_street_art.gd")
@@ -4292,6 +4294,17 @@ func _spawn_bridge_art() -> void:
 		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
 	var cables=art.new();cables.prop=["cables",Rect2(),"cables"];cables.z_index=2
 	static_surface_root.add_child(cables);_dusk_nodes.append(cables)
+
+func _spawn_estate_art() -> void:
+	var art=preload("res://gameplay/whittaker_estate_art.gd")
+	var ground=art.new();static_surface_root.add_child(ground);_dusk_nodes.append(ground)
+	dynamic_unit_root.y_sort_enabled=true
+	for row in preload("res://battle/geometry/whittaker_estate_catalog.gd").props():
+		if row[2]=="fountain_body":continue
+		var item=art.new();item.prop=row;item.view=self
+		var box: Rect2=row[1]
+		item.position=box.get_center()*Vector2(8,6) if row[2]=="traffic" else Vector2(box.get_center().x*8,box.end.y*6)
+		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
 
 # Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
 

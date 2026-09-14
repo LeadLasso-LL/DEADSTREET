@@ -31,9 +31,9 @@ func _ready():
  var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#121c20")
  label_at(self,Vector2(28,20),Vector2(920,36),"DEAD STREET / BATTLE SETUP",26)
  map_option=option(self,Vector2(28,62),Vector2(310,33))
- map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge")
- map_option.select(1 if config.get("map_id","harold")=="river_bridge" else 0)
- map_option.item_selected.connect(func(i):choose_map("river_bridge" if i==1 else "harold"))
+ map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge");map_option.add_item("Whittaker Estate")
+ map_option.select(["harold","river_bridge","whittaker_estate"].find(config.get("map_id","harold")))
+ map_option.item_selected.connect(func(i):choose_map(["harold","river_bridge","whittaker_estate"][i]))
  map_description=label_at(self,Vector2(356,66),Vector2(768,28),"1–12 units per side / All factions and equipment unlocked",12)
  button_at(self,Vector2(992,20),Vector2(132,36),"ARSENAL",queue_free)
  for side_index in range(2):build_side("attacker" if side_index==0 else "defender",28+side_index*564)
@@ -82,7 +82,7 @@ func refresh_side(side: String):
  row_widgets[side]=[]
  for i in range(config[side].units.size()):build_row(side,i,list)
  counters[side].text=side.to_upper()+"  /  %d UNITS"%config[side].units.size()
- add_buttons[side].disabled=config[side].units.size()>=Config.MAX_UNITS
+ add_buttons[side].disabled=config[side].units.size()>=Config.max_units(config.get("map_id","harold"))
  changed()
 
 func build_row(side: String,index: int,parent):
@@ -100,7 +100,7 @@ func build_row(side: String,index: int,parent):
   weapon.set_item_tooltip(weapon.item_count-1,Weapons.get_model(id).display_name)
   if id==row.weapon:weapon.select(weapon.item_count-1)
  weapon.item_selected.connect(func(i):row.weapon=str(weapon.get_item_metadata(i));row.specialist="";refresh_side(side))
- var duplicate=button_at(host,Vector2(395,5),Vector2(34,31),"+",func():duplicate_unit(side,index));duplicate.tooltip_text="Duplicate this unit and its equipment";duplicate.disabled=config[side].units.size()>=Config.MAX_UNITS
+ var duplicate=button_at(host,Vector2(395,5),Vector2(34,31),"+",func():duplicate_unit(side,index));duplicate.tooltip_text="Duplicate this unit and its equipment";duplicate.disabled=config[side].units.size()>=Config.max_units(config.get("map_id","harold"))
  var remove=button_at(host,Vector2(436,5),Vector2(34,31),"×",func():remove_unit(side,index));remove.tooltip_text="Remove this unit"
  var portrait=TextureRect.new();host.add_child(portrait);portrait.position=Vector2(8,37);portrait.size=Vector2(57,54);portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;portrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE
  var variant=Anim.variant_for(config[side].faction,row["class"],row.weapon,row.get("specialist",""))
@@ -120,10 +120,10 @@ func build_row(side: String,index: int,parent):
  row_widgets[side].append({"class":kind,"weapon":weapon,"tier":tier,"armor":armor,"duplicate":duplicate,"remove":remove,"root":shell})
 
 func add_unit(side: String,kind: String):
- if config[side].units.size()>=Config.MAX_UNITS:return
+ if config[side].units.size()>=Config.max_units(config.get("map_id","harold")):return
  config[side].units.append(Config.unit(kind));refresh_side(side)
 func duplicate_unit(side: String,index: int):
- if config[side].units.size()>=Config.MAX_UNITS:return
+ if config[side].units.size()>=Config.max_units(config.get("map_id","harold")):return
  config[side].units.insert(index+1,config[side].units[index].duplicate(true));refresh_side(side)
 func remove_unit(side: String,index: int):
  config[side].units.remove_at(index);refresh_side(side)
@@ -135,6 +135,7 @@ func changed():
  error_override="";refresh_status();setup_changed.emit(config.duplicate(true))
 func refresh_status():
  if status==null:return
+ map_description.text="1–%d units per side / All factions and equipment unlocked"%Config.max_units(config.get("map_id","harold"))
  var check=Config.validate(config)
  start_button.disabled=not check.valid
  start_button.text="START %d vs %d"%[config.attacker.units.size(),config.defender.units.size()]
@@ -144,6 +145,8 @@ func refresh_status():
  if config.get("map_id","harold")=="river_bridge":
   var defense=Config.Models.convoy(config.defender.get("vehicles",[]))
   convoy_label.text="WEST APPROACH  /  %d vehicles  /  %d seats for %d attackers\nEAST BLOCKADE  /  %d vehicles  /  %d seats for %d defenders"%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size(),config.defender.get("vehicles",[]).size(),defense.get("units",0),config.defender.units.size()]
+ if config.get("map_id","harold")=="whittaker_estate":
+  convoy_label.text="ESTATE APPROACH  /  %d vehicles  /  %d seats for %d attackers\nDefenders begin on the estate grounds with prepared cover."%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size()]
  var slots=Config.Formation.slots(config.attacker.vehicles,config.attacker.faction).size()
  convoy_label.text=convoy_label.text.replace("%d vehicles"%config.attacker.vehicles.size(),"%d slots / %d vehicles"%[slots,config.attacker.vehicles.size()])
  status.text=error_override if not error_override.is_empty() else ("Ready. Each convoy uses its own units as drivers.\nEsc returns here after a battle; your setup is retained." if check.valid else check.error)
@@ -159,6 +162,7 @@ func open_fleet(side: String="attacker"):
 
 func choose_map(id: String):
  config.map_id=id
+ for side in ["attacker","defender"]:refresh_side(side)
  if id=="river_bridge" and not config.defender.has("vehicles"):
   config.defender.vehicles=Config.auto_convoy(config.defender.units.size())
  changed()

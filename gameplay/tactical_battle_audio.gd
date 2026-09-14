@@ -66,7 +66,7 @@ func _process(_delta):
  engine.stream_paused=frozen
  if frozen:return
  if not city.playing:city.play()
- if b.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1":music.stop()
+ if b.battlefield_geometry.authored_layout_id in ["river_suspension_bridge_v1","whittaker_estate_v1"]:music.stop()
  elif not music.playing:music.play()
  if battle_id!=b.get_instance_id():battle_id=b.get_instance_id();seen={};positions={};foot_distance={};reloads={};shots_played=0
  for e in b.combat_feedback_events:

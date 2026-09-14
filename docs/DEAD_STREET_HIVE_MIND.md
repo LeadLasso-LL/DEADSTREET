@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-14, after winning-faction outro and result/HUD recording.
+Coordination last reconciled: 2026-09-14, after the corrected Whittaker Estate recording.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -74,17 +74,19 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Deliver the final Raiders-victory recording with winner music takeover, five extra card seconds, survivor/retreat summaries, expanded-to-compact NBPD name, and actual weapon models on HUD cards. Global winner-audio direction is approved and recorded in the convoy README. Owner review is next; performance and Whittaker remain parked.
+**Active objective:** Corrected Whittaker Estate map/audio and verified 16 v 16 mobile recording are implemented; owner visual/listening review next. See [estate report](../tools/whittaker_estate/README.md). Optional vocals remain paused.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
 | HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
-| Scripted battle recording | This receiving chat | Final winner-audio / result-count / equipped-model cut validated; owner review next. |
-| Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
+| Scripted battle recording | This receiving chat | Corrected estate 16 v 16 / Whittaker-win mobile cut validated; owner review next. |
+| Whittaker Estate sandbox map | This receiving chat | First pass rejected; rebuilt perspective, property composition and original faction audio validated. Owner acceptance pending. |
 
-**Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
+**Latest estate evidence:** 32 initial units; 55.53 FPS native sample, p95 20.37 ms. Routes, 16 HUD models and resolved Whittaker-win capture checked. See estate report; sustained 60 FPS remains unproven.
+
+**Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
 max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
 The cover shortcut passed 4,545 predicate/replay checks. Current-scale play is
 sufficient to resume development; frame dips and larger-battle variability remain.
@@ -95,7 +97,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the final recording's outro music, result counts and HUD labels. [Battle audio and presentation rules](../tools/convoy_arrival/README.md). Future tactical flee execution must supply explicit retreat outcome metadata; do not infer it from survivors.
+**Immediate next task:** Brandon reviews the revised estate perspective, property composition, TRC warning horn and Southern Whittaker music. Do not resume vocals or expand scope without resolving that review.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
@@ -180,5 +182,5 @@ diagnostics and reports are included in the performance checkpoint; verify Git
 and its remote before making a new synchronization claim.
 
 
-### Active owner correction — 2026-09-14
+### Historical Raiders correction — 2026-09-14 (superseded as active task)
 The delivered Raiders recording was rejected for wrong-side arrival, synthetic music and route-line clutter. Current task: eastbound lower-carriageway arrival, convincing recorded heavy guitar, sirens 3 dB quieter, no persistent unit paths, verified Raiders-victory mobile video. Preserve the 3-bike / pickup / 3-bike formation. This was completed by the original-audio revision above; owner review is next. Performance and Whittaker remain parked.

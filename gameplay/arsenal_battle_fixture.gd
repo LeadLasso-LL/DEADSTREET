@@ -109,7 +109,7 @@ static func setup_flexible(runtime: Node,loadouts: Dictionary,seed_value: int) -
   if not old.home_stronghold_id.is_empty():state.unassign_soldier_from_stronghold(id)
   if not old.garrison_hq_id.is_empty():state.unassign_soldier_from_neighborhood_hq(id)
   state.remove_soldier(id)
- state.get_map_location(Starter.HQ_ID).garrison_capacity=Flexible.MAX_UNITS
+ state.get_map_location(Starter.HQ_ID).garrison_capacity=Flexible.max_units(loadouts.get("map_id","harold"))
  var soldiers: Array[String]=[]
  var by_id={}
  for side in ["attacker","defender"]:
@@ -151,16 +151,20 @@ static func setup_flexible(runtime: Node,loadouts: Dictionary,seed_value: int) -
   if not Weapons.equip_for_setup(b,p,id):return {"error":"review equip "+id}
  var convoy_setup=preload("res://gameplay/tactical_convoy_setup.gd").apply(b,loadouts.attacker)
  if convoy_setup.has("error"):return convoy_setup
+ var estate=loadouts.get("map_id","harold")=="whittaker_estate"
+ if estate:
+  var estate_result=preload("res://gameplay/estate_battle_setup.gd").apply(b,loadouts)
+  if estate_result.has("error"):return estate_result
  var bridge=loadouts.get("map_id","harold")=="river_bridge"
  if bridge:
   var bridge_result=preload("res://gameplay/bridge_battle_setup.gd").apply(b,loadouts)
   if bridge_result.has("error"):return bridge_result
  if not preload("res://gameplay/blockade_battle_setup.gd").apply(b,loadouts.get("blockade_encounter",{})):return {"error":"invalid checkpoint battle geometry"}
  var controller=runtime.tactical_deployment_controller
- if not bridge:controller.choose_arrival("far")
+ if not bridge and not estate:controller.choose_arrival("far")
  for v in b.vehicles.values():
   if not v.has_battle_position:return {"error":"This convoy cannot fit the street arrival area. Choose fewer or smaller vehicles."}
- var covered=controller.place_unplaced_in_cover()
+ var covered=preload("res://gameplay/estate_battle_setup.gd").deploy_attackers(b) if estate else controller.place_unplaced_in_cover()
  if not covered and bridge:covered=preload("res://gameplay/bridge_battle_setup.gd").deploy_remaining_attackers(b)
  if not covered:
   var fallback=AI.apply_and_commit_side(b,b.attacker_side_id,b.defender_side_id)
@@ -174,5 +178,5 @@ static func setup_flexible(runtime: Node,loadouts: Dictionary,seed_value: int) -
    if placed==null or not placed.success:return {"error":"review defender placement"}
  runtime._sync_armor_store()
  runtime.set_process(false)
- var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=2.4 if bridge else 1.30;view._dusk_pan=Vector2(-360,-22) if bridge else Vector2(-5,-30);view._frame_camera()
+ var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=1.2 if estate else (2.4 if bridge else 1.30);view._dusk_pan=Vector2(0,-42) if estate else (Vector2(-360,-22) if bridge else Vector2(-5,-30));view._frame_camera()
  return {"battle":b,"counts":check.counts}

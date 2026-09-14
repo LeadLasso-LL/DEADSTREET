@@ -32,6 +32,8 @@ for directory in ('battle', 'campaign', 'core', 'gameplay'):
 # Raw generated ambience is loaded directly; no full asset-package re-export.
 for p in (repo/'assets/audio/convoy').glob('*.wav'):
     files[p.relative_to(repo).as_posix()] = str(p)
+for p in (repo/"assets/art/whittaker_estate").rglob("*.png"):
+    files[p.relative_to(repo).as_posix()] = str(p)
 for p in out.glob('*.gd'):
     files[p.relative_to(repo).as_posix()] = str(p)
 files['tools/sandbox_setup/scenarios.gd'] = str(repo/'tools/sandbox_setup/scenarios.gd')

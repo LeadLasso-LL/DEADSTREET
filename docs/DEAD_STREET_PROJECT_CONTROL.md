@@ -1,3 +1,9 @@
+## Current milestone — corrected Whittaker Estate — 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner visual and listening review pending. Rebuilt road-facing mansion with upright volume, shared render/collision footprint, improved fountain court, gatehouse, service building, parking and landscaping. Original 106 BPM Southern-major guitar replaces the rejected dark cue; persistent TRC warning horn is louder on arrival, ducked in combat and subdued behind Whittaker victory music. Existing units/fleet/weapons reused. Verified 16 v 16 defender-win mobile recording, complete decode, survivor cards and HUD models. This fixture does not raise production caps.
+
+See [estate report](../tools/whittaker_estate/README.md) and latest journal for exact evidence, failed/superseded attempts and limits. Native 32-unit sample remains below 60 FPS. Vocals integration is paused; riot shield remains a proposal. Next: Brandon reviews this corrected map and audio. All earlier conflicting next-step statements below are historical.
+
 ## Current milestone — faction victory audio and final battle recording — 2026-09-14
 
 IMPLEMENTED / VALIDATED; owner review pending. Raiders metal returns to its -18 dB
