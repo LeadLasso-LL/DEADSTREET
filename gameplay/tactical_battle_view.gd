@@ -4368,6 +4368,9 @@ func _draw_player_order_overlays(battle_state: BattleState) -> void:
 	if orders_controller == null or battle_state.battle_phase != "active":
 		return
 	var canvas = _paint_canvas()
+	_draw_command_cues(canvas)
+	if orders_controller.pending_command_id in ["push", "fall_back"]:
+		return
 	var zoom = _camera.zoom.x if _camera != null else 1.0
 	var width = 1.5 / maxf(zoom, .1)
 	for id in orders_controller.selected_participant_ids:
@@ -4385,3 +4388,37 @@ func _draw_player_order_overlays(battle_state: BattleState) -> void:
 			if target != null and target.is_alive:
 				var to = _to_view(target.battle_position)
 				canvas.draw_dashed_line(at, to, Color(.83, .39, .35, .7), width, 5.0)
+
+
+func _draw_command_cues(canvas: CanvasItem) -> void:
+	var c = orders_controller
+	var now = Time.get_ticks_msec()
+	var command = c.pending_command_id
+	var x: float = c.line_x
+	var spans: Array = c.line_spans
+	var alpha = .45
+	if command not in ["push", "fall_back"]:
+		if not c.confirmation.is_empty():
+			var age = (now - int(c.confirmation.time)) / 1000.0
+			if age < .55:
+				command = c.confirmation.command
+				x = c.confirmation.x
+				spans = c.confirmation.spans
+				alpha = .60 * (1.0 - smoothstep(.10, .55, age))
+			else:
+				c.confirmation = {}
+	if command in ["push", "fall_back"]:
+		var ink = Color("#80bc92") if command == "push" else Color("#ce7f7c")
+		ink.a = alpha
+		var width = 8.0 / maxf(_camera.zoom.x, .1)
+		for span in spans:
+			canvas.draw_line(_to_view(Vector2(x, span.x)), _to_view(Vector2(x, span.y)), ink, width, true)
+	for i in range(c.hold_pulses.size()-1, -1, -1):
+		var pulse = c.hold_pulses[i]
+		var age = (now - int(pulse.time)) / 1000.0
+		if age >= .55:
+			c.hold_pulses.remove_at(i)
+			continue
+		var ink = Color("#a8adb1")
+		ink.a = .45 * (1.0 - age / .55)
+		canvas.draw_arc(_to_view(pulse.at), 5.0 + age * 3.0, 0, TAU, 24, ink, 1.5 / maxf(_camera.zoom.x, .1), true)

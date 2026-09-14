@@ -1,6 +1,6 @@
 # Tactical HUD and player orders — 2026-09-13
 
-Status: IMPLEMENTED and VALIDATED; owner playtest acceptance pending. Source: Brandon's
+Status: IMPLEMENTED and VALIDATED through the 2026-09-14 line-command revision; owner playtest acceptance pending. Source: Brandon's
 HUD discussion and explicit approval in the receiving build chat. Whittaker Estate
 is deferred until this control pass is reviewed. Dedicated optimization remains parked.
 
@@ -18,17 +18,19 @@ is deferred until this control pass is reviewed. Dedicated optimization remains 
 - Ground move, cover occupation and enemy priority are contextual. Group ground
   destinations are spaced; cover reservations distribute available legal slots.
   Target priority coexists with positioning and never independently causes pursuit.
-- Hold fixes current positions. Push/Fall Back ask for a destination and prefer
-  usable cover near it. Clear Orders releases explicit movement and target orders
-  to normal role behavior. New positioning replaces old positioning. No queue.
-- Player-assigned positions persist on arrival until released/replaced or a
-  survival interruption. Routine role AI must not silently override them.
-- Group card badges: filled red right triangle for Push, filled red left triangle
-  for Fall Back, orange filled square for Hold. These are derived from current
-  per-unit command ownership. Individual ground/cover orders clear only the
-  recipients' badges; clearing, interruption and elimination remove them too.
-  A target priority can coexist with a group positioning order and its badge.
-- Selected units show routes and priority-target lines; ground selection, destination and target circles are removed.
+- Hold seeks nearby reachable cover protective against the relevant enemy, retaining
+  an existing useful slot. Push/Fall Back place a vertical tactical line; recipients
+  travel through cover where useful, keep firing logic, and complete individually.
+- Push uses role-appropriate advance destinations before the line; completion releases
+  positioning to normal AI. Fall Back reaches friendly-side cover and becomes Holding,
+  retaining the defensive boundary. Individual point/cover orders retain their existing
+  arrival rules. Clear Orders releases selected recipients. No order queue.
+- Card bottom-right text replaces triangle/square badges: Pushing (muted green),
+  Falling Back (muted red), Holding (gray). Replacement, release, wounds and death
+  clear each recipient's ownership. Target priority can coexist with positioning.
+- Selected units show routes and priority-target lines; these are hidden while placing
+  a group line. Persistent ground selection, destination and target circles are removed.
+  Hold has the specifically approved brief gray acknowledgement pulse.
   Unavailable cover, unreachable destinations, range and blocked shots are visible.
 - Reload, aiming, firing and cover posture remain automatic. Formation choices,
   cover, timing, target priorities and retreats provide player influence.
@@ -41,12 +43,9 @@ camera movement while paused and a projected world-ground click were exercised.
 Group cover used exclusive slots; individual replacements and Clear Orders were
 selection-scoped; wounded/eliminated badge and roster rules were checked.
 
-The retained-position behavior is deliberate: Push/Fall Back assign a destination
-and retain that assignment on arrival until replaced/released; Hold fixes the
-current location. Wounds interrupt explicit commands and use existing survival
-behavior. Wounded cards remain selectable for inspection, not forced overrides
-of that survival behavior. This is a reviewable first implementation, not owner
-acceptance of every interaction.
+The original fixed-position Hold and retained-position Push/Fall Back behavior was
+superseded by the line-command revision below. Wounds still interrupt explicit
+commands and use existing survival behavior; wounded cards allow inspection.
 
 Reproduction and evidence: [tools/tactical_controls](../tools/tactical_controls/README.md).
 No new broad performance/32-unit campaign was run. A brief interactive smoke
@@ -103,3 +102,82 @@ class selectors. This changes layout only. Native screenshot reviewed at 1440×1
 zero script/engine errors: `tools/tactical_controls/hud_header.png` and
 `header_preview.log`. No combat/performance suite rerun for this layout change.
 Next: owner review before Whittaker Estate.
+
+## 2026-09-13 ? Owner-approved asymmetric order completion (DESIGN APPROVED; NOT IMPLEMENTED)
+
+Source: Brandon's follow-up to the tactical command discussion. Fall Back becomes
+Holding per recipient after reaching a suitable position on the friendly/near side
+of the chosen line. Push ends after each unit completes a meaningful role-appropriate
+advance: close-range units seek suitable cover nearer the forward line, while snipers
+advance to an appropriate position farther behind it. Completed Push releases that
+unit to normal combat AI and removes its Pushing status. Completion is individual;
+there is no requirement to wait for every selected unit. This supersedes the assistant
+proposal that both movement commands should become Holding. Hold itself remains the
+approved next-design correction: seek useful directional cover rather than freeze
+exposed in place. These are design decisions, not claims of implemented behavior.
+
+Implication discussed: after Push completes, normal AI can advance beyond the former
+line when appropriate; the Push line constrains that active movement order, not all
+future autonomous movement. A sniper already behind the line must not immediately
+complete without the requested meaningful advance where a viable advance exists.
+Recording remains paused during this discussion. Next: finish command design agreement
+before implementing the revision or staging the requested battle recording.
+
+
+## 2026-09-14 — Cover-aware line commands (IMPLEMENTED / VALIDATED)
+
+Source: Brandon approved starting after the asymmetric completion discussion and
+explicitly put the scripted recording on hold. This section supersedes the earlier
+DESIGN APPROVED / NOT IMPLEMENTED snapshot and the original point-group command rules.
+
+- Hold keeps useful occupied cover or reserves a nearby reachable protective slot.
+  Candidate direction uses the existing relevant-threat/cover evaluator; this is
+  protection against a relevant threat, not a promise of safety from every firing angle.
+- Push/Fall Back enter a placement mode: move the pointer horizontally over the map,
+  then left-click to commit. Wheel remains camera zoom; right-click/Escape cancel.
+  Lines are green/red, 8 screen-space pixels before viewport stretch, 45% opacity,
+  segmented around impassable ground/vehicle bodies. Commit briefly brightens to
+  60%, then fades within 0.55 seconds, including while tactical time is paused.
+- Advance direction comes from stable friendly/enemy deployment geometry. Active
+  Push paths cannot cross the line. Role goals advance shotgun/SMG farther than
+  rifles/snipers, with at least a meaningful forward step where viable. On arrival
+  at the chosen final cover, only that recipient returns to ordinary role AI;
+  the former line no longer restricts subsequent autonomous movement.
+- Fall Back seeks cover on the friendly side, avoids forward path excursions, and
+  converts to Holding on arrival. Holding retains that boundary when replanning.
+  Long movements stage through useful intermediate cover when available, with a
+  short firing interval before the next leg. Existing aiming, firing, reload,
+  occupancy, navigation and wounded-survival systems remain authoritative.
+- Individual move/cover replacement removes that recipient from the group order.
+  Clear Orders, wounds and death release ownership. Independent target priority
+  can coexist. Labels derive from live per-unit ownership; old badges are replaced.
+- Hold briefly pulses a small gray ground ring at accepted recipients. A procedural
+  mechanical click/two-note radio receipt plays once per group, with distinct
+  order/failure tones, respecting Audio mute and tactical pause. No spoken faction
+  voice recordings were added. Tone/visual feel remains subject to owner review.
+- An impossible advance or unavailable protective cover reports failed recipients
+  and does not issue them a new order. Existing safe orders remain. An interrupted
+  route with no safe replacement reports waiting and retries instead of silently
+  restoring aggressive AI. Cover search is bounded (14-unit local Hold radius,
+  16-unit intermediate hops, at most 12 candidate path searches per decision).
+  Live protective-position re-evaluation is throttled to 1.25 seconds.
+
+Validation: official Godot 4.7.2 release, Windows D3D12 Forward+, 1440×1000 bridge,
+12-v-12, Aegis/Vigil/Aegis versus Bulwark/Interceptor/Bulwark. **125 command checks
+and 43 native UI checks passed**, zero final script/engine errors. This includes
+real runtime Push travel/completion and Fall Back travel/transition without position
+teleporting (weapons held on cooldown to isolate movement), plus pause, cover ownership,
+mirrored direction, individual completion/release, native mouse placement/cancel,
+labels, transient feedback, audible-player activity during pause and all 12 cards.
+
+Initial verification caught own occupied cover being rejected by reserve_slot;
+assignment now occupies an already-reached slot directly. A native retreat chosen
+behind all available start cover correctly failed; the corrected valid placement
+passed, and actual retreat travel is covered by the runtime check. Preview capture
+was initially off camera; final capture is framed and line contrast was increased.
+
+Evidence and reproduction: [line-command checks](../tools/tactical_controls/README.md).
+No new broad performance campaign, all-map exhaustive test, mobile-touch test or
+whole-core regression suite was run. Owner acceptance is pending. Immediate next:
+Brandon playtests Hold, Push and Fall Back; refine requested behavior/feel. Scripted
+recording, Whittaker Estate and dedicated performance work remain deferred.

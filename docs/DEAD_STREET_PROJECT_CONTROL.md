@@ -1,3 +1,19 @@
+## Current milestone — cover-aware battle commands — 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner playtest acceptance pending. Hold now chooses nearby
+protective cover. Push and Fall Back use directional map lines with transient visual
+and audio acknowledgement. Each Push recipient completes a role-appropriate advance
+and returns to normal AI; Fall Back reaches friendly-side cover and becomes Holding.
+Live card text reflects ownership and interruptions. All 125 command checks and
+43 native UI checks passed in official Godot 4.7.2 release with zero final errors.
+Real runtime advance/retreat completion was exercised; this is not a new performance
+or exhaustive all-map acceptance campaign.
+
+Rules and evidence: [Tactical controls](TACTICAL_CONTROLS_2026-09-13.md).
+Next: Brandon's in-game command playtest and refinements. Scripted recording is
+explicitly on hold; Whittaker Estate and dedicated optimization remain deferred.
+Earlier milestone next-step statements below are historical and are superseded here.
+
 ## Current milestone — performance parked; sandbox resumes — 2026-09-13
 
 Brandon explicitly wants to move on from performance. The final bounded cover

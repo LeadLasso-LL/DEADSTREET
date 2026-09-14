@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-13, after HUD/control implementation and native review.
+Coordination last reconciled: 2026-09-14, after cover-aware line commands and native review.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -74,7 +74,7 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Implement the approved [HUD and tactical controls](TACTICAL_CONTROLS_2026-09-13.md). Brandon explicitly
+**Active objective:** Owner playtest of the implemented [cover-aware line commands](TACTICAL_CONTROLS_2026-09-13.md). Brandon explicitly
 wants to move on from performance; dedicated optimization is parked. Steady
 60 FPS and room for larger battles remain goals, not completed acceptance gates.
 The receiving chat owns continuation.
@@ -83,7 +83,8 @@ The receiving chat owns continuation.
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
-| HUD and player battle controls | This receiving chat | Second HUD review implemented; shared fleet/traffic scale corrected. 146 native UI/vehicle checks passed; owner review next. |
+| HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
+| Scripted battle recording | This receiving chat | Explicitly on hold at Brandon’s request. |
 | Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
 
 **Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -97,7 +98,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the revised HUD, lower selected emblems and corrected fleet scale. Apply any requested refinements before Whittaker Estate. See [control rules and evidence](TACTICAL_CONTROLS_2026-09-13.md). Dedicated performance work stays parked.
+**Immediate next task:** Brandon playtests cover-aware Hold, line-placement Push and Fall Back in battle; refine the feel from his feedback. See [current command rules and evidence](TACTICAL_CONTROLS_2026-09-13.md). Scripted recording, Whittaker Estate and dedicated performance work remain on hold.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per

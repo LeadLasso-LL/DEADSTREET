@@ -13,6 +13,7 @@ var normal = Card.style(Color("#20282b"), Color("#485152"))
 var chosen = Card.style(Color("#383d35"), Color("#d5c995"))
 var eliminated = Card.style(Color("#1b2022"), Color("#343b3d"))
 var badge: String = ""
+var command_status: Label
 
 func setup(font: Font) -> void:
 	focus_mode = Control.FOCUS_NONE
@@ -32,7 +33,9 @@ func setup(font: Font) -> void:
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	role = Card.label(self, Vector2(6, 49), Vector2(76, 14), "", 10, Color("#dfdfd2"), font)
-	status = Card.label(self, Vector2(6, 64), Vector2(76, 11), "", 8, Color("#a5ada8"), font)
+	status = Card.label(self, Vector2(6, 37), Vector2(30, 11), "", 8, Color("#a5ada8"), font)
+	command_status = Card.label(self, Vector2(6, 64), Vector2(76, 12), "", 9, Color("#a8adb1"), font)
+	command_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	number = Card.label(self, Vector2(27, 38), Vector2(52, 10), "", 8, Color("#909b94"), font)
 	number.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	health = ColorRect.new()
@@ -57,7 +60,9 @@ func refresh(p, selected: bool, ordinal: int) -> void:
 		portrait.texture = Card.textures[variant]
 	role.text = p.weapon_type.to_upper()
 	role.size.x = size.x - 12
-	status.text = "ELIMINATED" if not p.is_alive else ("WOUNDED" if p.is_wounded else "%d%% HP" % c.vitality_percent)
+	status.text = "ELIMINATED" if not p.is_alive else ("WOUNDED" if p.is_wounded else "%d%%" % c.vitality_percent)
+	status.position.y = 64 if p.is_wounded or not p.is_alive else 37
+	status.size.x = size.x - 12 if p.is_wounded or not p.is_alive else 30
 	status.add_theme_color_override("font_color", Color("#d4a966") if p.is_wounded and p.is_alive else Color("#a5ada8"))
 	number.position.x = size.x - 51
 	number.size.x = 45
@@ -71,15 +76,7 @@ func refresh(p, selected: bool, ordinal: int) -> void:
 	tooltip_text += Card.Armor.label(p.armor_id) + "\n" + p.player_order_feedback
 	if p.is_wounded and p.is_alive:
 		tooltip_text += "\nWounded: survival behavior controls movement"
-	var next_badge: String = p.current_player_group_command()
-	if badge != next_badge:
-		badge = next_badge
-		queue_redraw()
-
-func _draw() -> void:
-	var at = Vector2(7, 38)
-	if badge == "hold":
-		draw_rect(Rect2(at, Vector2(9, 9)), Color("#df9b4b"))
-	elif badge in ["push", "fall_back"]:
-		var pts = PackedVector2Array([at, at + Vector2(0, 9), at + Vector2(9, 4.5)]) if badge == "push" else PackedVector2Array([at + Vector2(9, 0), at + Vector2(9, 9), at + Vector2(0, 4.5)])
-		draw_colored_polygon(pts, Color("#da655e"))
+	badge = p.current_player_group_command()
+	command_status.size.x = size.x - 12
+	command_status.text = {"hold":"Holding", "push":"Pushing", "fall_back":"Falling Back"}.get(badge, "")
+	command_status.add_theme_color_override("font_color", {"hold":Color("#a8adb1"), "push":Color("#8eb798"), "fall_back":Color("#cc8987")}.get(badge, Color.WHITE))

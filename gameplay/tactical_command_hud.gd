@@ -33,6 +33,9 @@ var feedback_clock: float = 0.0
 
 func setup(p_view: Node) -> void:
 	view = p_view
+	var order_audio = preload("res://gameplay/tactical_order_audio.gd").new()
+	order_audio.view = view
+	add_child(order_audio)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	font = SystemFont.new()
@@ -112,7 +115,7 @@ func setup(p_view: Node) -> void:
 		var b = button(command_row, row[1], Vector2(x, 0), Vector2(row[2], 29))
 		var id: String = row[0]
 		b.pressed.connect(func(): if controller() != null: controller().command_selected(id))
-		b.tooltip_text = {"hold":"Hold selected units at their current positions", "push":"Choose a forward destination; use available cover nearby", "fall_back":"Choose a safer destination; use available cover nearby", "clear":"Clear selected units' movement and target orders; resume automatic behavior"}[id]
+		b.tooltip_text = {"hold":"Find nearby protective cover and hold", "push":"Set an advance line; resume role behavior after advancing", "fall_back":"Set a retreat line; take cover on the friendly side and hold", "clear":"Clear selected units' movement and target orders; resume automatic behavior"}[id]
 		buttons[id] = b
 		x += row[2] + 6
 	playback = Control.new()
@@ -261,6 +264,8 @@ func _process(delta: float) -> void:
 		feedback_label.text = ""
 		# Only operational problems belong here; control instructions live in the manual.
 		if c != null:
+			if c.feedback.begins_with("Order unavailable"):
+				feedback_label.text = c.feedback
 			for problem in ["No route to destination", "Cover occupied or no reachable protective slot", "Target is no longer available"]:
 				if problem in c.feedback:
 					feedback_label.text = problem
@@ -273,6 +278,8 @@ func _process(delta: float) -> void:
 func unit_feedback(b, p) -> String:
 	if p == null:
 		return ""
+	if p.player_order_feedback.begins_with("Waiting"):
+		return p.player_order_feedback
 	if p.is_wounded:
 		return "WOUNDED · survival behavior active"
 	if not p.player_priority_target_id.is_empty():

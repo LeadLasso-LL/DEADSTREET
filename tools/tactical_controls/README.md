@@ -1,5 +1,34 @@
 # Tactical controls validation
 
+## Current line-command revision — 2026-09-14
+
+Approved rules: [Tactical controls](../../docs/TACTICAL_CONTROLS_2026-09-13.md).
+Run from the repository on the development PC:
+
+```powershell
+& 'C:\Users\brand\AppData\Local\DeadStreetTools\python\python.exe' tools/tactical_controls/run.py pack
+& 'C:\Users\brand\AppData\Local\DeadStreetTools\godot_release_4.7.2\godot.exe' --headless -- --check=line_checks
+& 'C:\Users\brand\AppData\Local\DeadStreetTools\godot_release_4.7.2\godot.exe' -- --check=line_native
+```
+
+- `line_checks.gd/json/log`: 125 checks, zero errors; protective Hold, exclusive cover,
+  mirrored direction, Push role progress/bounds, individual completion/interruption,
+  Fall Back to Holding, pause and real runtime navigation through both movement orders.
+  Travel-only fixture holds weapons on cooldown; other checks cover normal runtime.
+- `line_native.gd/json/log`: 43 checks, zero errors; actual arsenal scene and viewport
+  input, placement/commit/Escape, pause, live card labels, line/pulse expiry, order
+  AudioStreamPlayer active during pause, all 12 friendly cards visible, simulation resume.
+- `line_push_preview.png`, `line_fall_back_preview.png`, `line_command_cards.png`,
+  `line_commands_live.png`: native captures at 1440×1000, official 4.7.2 release.
+
+Bridge fixture: 12-v-12, Aegis/Vigil/Aegis versus Bulwark/Interceptor/Bulwark;
+Windows D3D12 Forward+, GTX 1650 Max-Q. No all-map/mobile-touch, broad core-regression
+or further performance acceptance campaign. Owner feel/visual/audio acceptance pending.
+Existing historical checks below contain superseded fixed-position group semantics;
+use the line-command checks above for the current command revision.
+
+## Historical HUD/fleet validation
+
 Approved design: [Tactical controls](../../docs/TACTICAL_CONTROLS_2026-09-13.md).
 
 Run on the development PC from the repository:

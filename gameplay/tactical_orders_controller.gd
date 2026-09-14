@@ -22,6 +22,8 @@ const BattleCombatCoverEvaluationService := preload(
 )
 const TacticalOrderResult := preload("res://gameplay/tactical_order_result.gd")
 
+const Commands = preload("res://battle/combat/battle_player_command_service.gd")
+
 const ORDER_MOVE := "move"
 const ORDER_TARGET := "target"
 const ORDER_COVER := "cover"
@@ -31,6 +33,12 @@ var selected_participant_id: String = ""
 var selected_participant_ids: Array[String] = []
 var pending_command_id: String = ""
 var feedback: String = "Select units to give orders"
+var line_x: float = 0.0
+var line_spans: Array = []
+var confirmation: Dictionary = {}
+var hold_pulses: Array = []
+var feedback_sequence: int = 0
+var last_command_feedback: Dictionary = {}
 var dragging: bool = false
 var drag_start: Vector2
 var drag_end: Vector2
@@ -490,10 +498,15 @@ func _battle_state() -> BattleState:
 
 
 func issue_move(destination: Vector2):
+	if pending_command_id in ["push", "fall_back"]:
+		set_line_x(destination.x, true)
+		var result = commit_line()
+		return TacticalOrderResult.succeeded(selected_participant_id, ORDER_MOVE) if not result.accepted.is_empty() else TacticalOrderResult.failed("order_unavailable", feedback, selected_participant_id, ORDER_MOVE)
 	return _issue_selected(ORDER_MOVE, destination)
 
 
 func issue_cover(cover_object_id: String):
+	pending_command_id = ""
 	return _issue_selected(ORDER_COVER, cover_object_id)
 
 
@@ -504,37 +517,69 @@ func issue_target(hostile_id: String):
 func command_selected(command_id: String) -> void:
 	sync_from_authority()
 	if selected_participant_ids.is_empty():
-		feedback = "Select units first"
 		return
 	if command_id in ["push", "fall_back"]:
 		pending_command_id = command_id
-		feedback = "Choose a %s destination or cover" % ("Push" if command_id == "push" else "Fall Back")
-		return
-	if command_id not in ["hold", "clear"]:
+		dragging = false
+		var total = 0.0
+		for id in selected_participant_ids:
+			total += _battle_state().get_participant(id).battle_position.x
+		var direction = Commands.advance_direction(_battle_state(), _battle_state().attacker_side_id)
+		set_line_x(total / selected_participant_ids.size() + direction * (14.0 if command_id == "push" else -10.0), true)
 		return
 	pending_command_id = ""
-	var count = 0
+	if command_id == "hold":
+		var result = Commands.issue(_battle_state(), selected_participant_ids, "hold")
+		acknowledge("hold", result)
+		var now = Time.get_ticks_msec()
+		for id in result.accepted:
+			hold_pulses.append({"at":_battle_state().get_participant(id).battle_position, "time":now})
+		return
+	if command_id != "clear":
+		return
+	var result = {"accepted":[], "failed":[]}
 	for id in selected_participant_ids:
 		var p = _controllable_participant(id)
 		if p == null:
 			continue
-		if command_id == "clear":
-			p.clear_player_tactical_intent()
-			p.clear_navigation_path()
-			p.clear_movement_intent()
-			p.velocity = Vector2.ZERO
-			BattleCoverService.release_reservation(_battle_state(), id)
-			p.player_order_feedback = "Orders cleared — automatic behavior"
-			count += 1
-		elif not p.is_wounded:
-			BattleCoverService.release_reservation(_battle_state(), id)
-			p.set_player_hold_intent()
-			p.player_group_command_id = "hold"
-			p.player_order_feedback = "Hold position"
-			count += 1
-	feedback = "%s · %d units" % ["Orders cleared" if command_id == "clear" else "Holding", count]
-	if count < selected_participant_ids.size():
-		feedback += " · wounded retain survival behavior"
+		p.clear_player_tactical_intent()
+		p.clear_navigation_path()
+		p.clear_movement_intent()
+		p.velocity = Vector2.ZERO
+		BattleCoverService.release_reservation(_battle_state(), id)
+		p.player_order_feedback = "Orders cleared"
+		result.accepted.append(id)
+	acknowledge("clear", result)
+
+
+func set_line_x(value: float, force: bool = false) -> void:
+	var b = _battle_state()
+	if b == null or not is_finite(value):
+		return
+	var clamped = clampf(value, .05, b.battlefield_geometry.width - .05)
+	if not force and absf(clamped - line_x) < .2:
+		return
+	line_x = clamped
+	line_spans = Commands.line_segments(b, line_x)
+
+
+func commit_line() -> Dictionary:
+	var command = pending_command_id
+	if command not in ["push", "fall_back"]:
+		return {"accepted":[], "failed":[]}
+	pending_command_id = ""
+	dragging = false
+	var result = Commands.issue(_battle_state(), selected_participant_ids, command, line_x)
+	acknowledge(command, result)
+	if not result.accepted.is_empty():
+		confirmation = {"x":line_x, "spans":line_spans.duplicate(), "command":command, "time":Time.get_ticks_msec()}
+	return result
+
+
+func acknowledge(command: String, result: Dictionary) -> void:
+	feedback_sequence += 1
+	last_command_feedback = {"command":command, "accepted":result.accepted.size(), "failed":result.failed.size()}
+	feedback = "" if result.failed.is_empty() else "Order unavailable for %d unit(s): no suitable reachable cover or valid advance" % result.failed.size()
 
 
 func _issue_selected(kind: String, destination):
@@ -627,6 +672,9 @@ func handle_input(view: Node, event: InputEvent) -> bool:
 			else:
 				clear_selection()
 			return true
+	if event is InputEventMouseMotion and pending_command_id in ["push", "fall_back"]:
+		set_line_x(view.screen_to_tactical_position(event.position).x)
+		return false # Keep camera pan/zoom available during placement.
 	if event is InputEventMouseMotion and dragging:
 		drag_end = event.position
 		return true
@@ -641,6 +689,11 @@ func handle_input(view: Node, event: InputEvent) -> bool:
 		return true
 	if event.button_index != MOUSE_BUTTON_LEFT:
 		return false
+	if pending_command_id in ["push", "fall_back"]:
+		if event.pressed:
+			set_line_x(view.screen_to_tactical_position(event.position).x)
+			commit_line()
+		return true
 	if event.pressed:
 		dragging = true
 		drag_start = event.position

@@ -1,5 +1,6 @@
 class_name BattleCombatBehaviorService
 extends RefCounted
+const PlayerCommands = preload("res://battle/combat/battle_player_command_service.gd")
 
 const AdaptiveTactics = preload("res://battle/ai/battle_adaptive_tactics.gd")
 const BattleState := preload("res://battle/core/battle_state.gd")
@@ -154,6 +155,7 @@ static func advance(battle_state: BattleState, delta_seconds: float) -> BattleCo
 			continue
 		if not _is_positioned(participant):
 			continue
+		PlayerCommands.advance(battle_state, participant, delta_seconds)
 		_sync_player_tactical_intent(participant)
 		_update_acquire_reaction(battle_state, participant)
 		_update_sniper_aim(battle_state, participant)
@@ -3199,6 +3201,7 @@ static func _update_player_cover_behavior(
 	if not participant.has_player_cover_intent():
 		return HEALTHY_NONE
 	if not _player_cover_object_is_usable(battle_state, participant):
+		participant.player_order_feedback = "Cover order interrupted: cover unavailable"
 		participant.clear_player_cover_intent()
 		return HEALTHY_NONE
 	var commanded_object_id: String = participant.player_cover_object_id
@@ -3209,6 +3212,10 @@ static func _update_player_cover_behavior(
 		return HEALTHY_HOLD_COVER
 	var slot: BattleCoverSlot = _player_cover_current_slot(battle_state, participant)
 	if slot == null or slot.cover_object_id != commanded_object_id or not slot.is_valid():
+		if not participant.player_command_context.is_empty():
+			participant.player_command_context.clock = 0.0
+			participant.set_player_hold_intent()
+			return HEALTHY_HOLD_COVER
 		slot = _player_cover_resolve_same_object_slot(battle_state, participant, commanded_object_id)
 		if slot == null:
 			participant.clear_player_cover_intent()

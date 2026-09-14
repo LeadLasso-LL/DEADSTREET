@@ -404,3 +404,88 @@ class selectors. This changes layout only. Native screenshot reviewed at 1440×1
 zero script/engine errors: `tools/tactical_controls/hud_header.png` and
 `header_preview.log`. No combat/performance suite rerun for this layout change.
 Next: owner review before Whittaker Estate.
+
+## 2026-09-13 — Tactical command revision discussion (REQUESTED / PROPOSED)
+
+Source: Brandon's conversational design review. Recording remains paused; no command
+implementation is authorized by this discussion-only request for feedback.
+
+Requested correction: Hold should seek nearby reachable cover that provides protection
+against relevant enemy directions, then hold there; stationary exposed freezing is rejected.
+Proposed Push/Fall Back interaction: a translucent thick vertical line clipped to traversable
+battlefield ground, positioned left/right with mouse input; green for Push, red for Fall Back.
+Click commits; brief brighter confirmation then quick disappearance. Push advances up to
+that boundary, Fall Back retreats to it or behind. Units retain tactical cover/firing/survival
+behavior. Proposed Hold acknowledgement is a brief faded gray circle at recipient units;
+this is a transient cue, distinct from the previously rejected persistent ground rings.
+Orders should have audio acknowledgement. Card bottom-right labels: Pushing (muted green),
+Falling Back (muted red), Holding (muted gray). User wants labels cleared on release,
+arrival at the relevant line, wounds or elimination. Existing group markers versus replacement
+by labels needs explicit treatment; do not silently ship redundant status systems.
+
+Assistant recommendations/concerns (PROPOSED, not owner-approved): keep selection scope;
+retain existing useful cover on Hold, rank reachable protection and exposure rather than
+raw distance, reserve distinct cover slots, and handle unavailable cover without reckless
+crossings. Treat line as a tactical limit with cover destinations nearby rather than a
+literal parade line; account for faction advance direction and weapon roles. Prefer horizontal
+pointer placement with wheel zoom retained and right-click/Escape cancel. Clarify arrival
+semantics: label completion should correspond to a safe destination, and unrestricted AI
+must not immediately reverse a retreat. Consider transition to a visible Holding state on
+arrival; this differs from the requested text disappearance and requires agreement.
+Acknowledge orders once per selected group rather than overlapping every unit's voice;
+never report failed orders as successfully received. Individual replacement, wounds and
+death still remove that unit from the old order. Next: conversational agreement on these
+semantics before implementation; recording and Whittaker Estate remain deferred.
+
+## 2026-09-13 ? Owner-approved asymmetric order completion (DESIGN APPROVED; NOT IMPLEMENTED)
+
+Source: Brandon's follow-up to the tactical command discussion. Fall Back becomes
+Holding per recipient after reaching a suitable position on the friendly/near side
+of the chosen line. Push ends after each unit completes a meaningful role-appropriate
+advance: close-range units seek suitable cover nearer the forward line, while snipers
+advance to an appropriate position farther behind it. Completed Push releases that
+unit to normal combat AI and removes its Pushing status. Completion is individual;
+there is no requirement to wait for every selected unit. This supersedes the assistant
+proposal that both movement commands should become Holding. Hold itself remains the
+approved next-design correction: seek useful directional cover rather than freeze
+exposed in place. These are design decisions, not claims of implemented behavior.
+
+Implication discussed: after Push completes, normal AI can advance beyond the former
+line when appropriate; the Push line constrains that active movement order, not all
+future autonomous movement. A sniper already behind the line must not immediately
+complete without the requested meaningful advance where a viable advance exists.
+Recording remains paused during this discussion. Next: finish command design agreement
+before implementing the revision or staging the requested battle recording.
+
+## 2026-09-13 ? Cover-aware line commands (IMPLEMENTATION STARTED)
+
+Brandon approved starting the command revision after agreeing Fall Back becomes
+Holding at friendly-side cover, while Push releases each unit after its own meaningful
+role-appropriate advance. Scope: cover-aware Hold, directional line placement/confirmation,
+per-unit completion and interruption, text card statuses, transient Hold cues and command
+audio. Existing role combat, reservations, pause and selected-unit scope remain authoritative.
+Scripted recording explicitly deferred. Native behavior/UI verification and scoped Git
+checkpoint follow implementation; owner acceptance remains pending.
+
+
+## 2026-09-14 — Cover-aware command implementation (IMPLEMENTED / VALIDATED)
+
+Source: Brandon approved starting the revised controls after the Hold/Push/Fall Back
+conversation and paused the scripted recording. Implemented directional line placement,
+protective cover planning, staged movement, per-unit asymmetric completion, interruption,
+live text statuses, brief Hold pulses and muted procedural order/receipt audio.
+Canonical behavior and limits: [Tactical controls](TACTICAL_CONTROLS_2026-09-13.md).
+
+125 command checks and 43 native UI checks passed in official Godot 4.7.2 release,
+zero final errors. Real Push and Fall Back navigation completed without teleporting;
+weapons were held on cooldown in that fixture to isolate movement from casualties.
+Own occupied-cover reservation rejection was found and fixed. An invalid retreat
+behind all available starting cover failed visibly as intended; valid placement passed.
+Native captures were reframed and line contrast improved after visual inspection.
+No broad performance campaign was reopened. No spoken faction voices were added.
+
+Updated Hive Mind, Project Control, topic rules and reproducible evidence. Scoped
+commit/push uses the existing LeadLasso-LL/DEADSTREET authorization; Git history is
+its receipt. Unrelated victory/character-factory/dusk/source-recovery work is preserved.
+Owner acceptance remains pending. Next: Brandon playtests the new battle commands;
+scripted recording and Whittaker Estate remain on hold.

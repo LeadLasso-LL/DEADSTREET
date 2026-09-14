@@ -82,6 +82,7 @@ var player_tactical_intent: String = ""
 var player_cover_object_id: String = ""
 var player_cover_slot_id: String = ""
 var player_group_command_id: String = ""
+var player_command_context: Dictionary = {}
 var player_order_position: Vector2 = Vector2.ZERO
 var has_player_order_position: bool = false
 var player_order_feedback: String = ""
@@ -93,6 +94,7 @@ func current_player_group_command() -> String:
 
 func clear_player_group_command() -> void:
 	player_group_command_id = ""
+	player_command_context = {}
 
 func set_player_hold_intent() -> void:
 	player_tactical_intent = PLAYER_INTENT_HOLD
