@@ -1,0 +1,54 @@
+--- a/gameplay/sandbox_menu_music.gd
++++ b/gameplay/sandbox_menu_music.gd
+@@ -48,8 +48,8 @@
+ 	enabled_check=CheckBox.new(); enabled_check.text="Dead Street — B-22"; enabled_check.button_pressed=track_enabled; box.add_child(enabled_check)
+ 	enabled_check.toggled.connect(func(on):track_enabled=on; save_settings())
+ 	var actions=HBoxContainer.new(); box.add_child(actions)
+-	toggle=Button.new(); toggle.text="Pause"; toggle.pressed.connect(pause_music); actions.add_child(toggle)
+-	var skip=Button.new(); skip.text="Next"; skip.disabled=true; skip.tooltip_text="No other tracks in this playlist yet."; actions.add_child(skip)
++	toggle=Button.new(); toggle.name="PlayPause"; toggle.custom_minimum_size=Vector2(38,32); toggle.pressed.connect(pause_music); actions.add_child(toggle); update_transport_button()
++	var skip=Button.new(); skip.name="NextTrack"; skip.custom_minimum_size=Vector2(38,32); skip.icon=transport_icon("next"); skip.disabled=true; skip.tooltip_text="No other tracks in this playlist yet."; actions.add_child(skip)
+ 	volume=HSlider.new(); volume.min_value=0; volume.max_value=1; volume.step=0.01; volume.value=db_to_linear(-4.0); volume.size_flags_horizontal=Control.SIZE_EXPAND_FILL; actions.add_child(volume)
+ 	volume.value_changed.connect(func(value):player.volume_db=linear_to_db(maxf(value,0.0001)))
+ 	toast=PanelContainer.new(); surface.add_child(toast); toast.size=Vector2(282,93); style(toast)
+@@ -90,14 +90,38 @@
+ 
+ func toggle_panel(): panel.visible=not panel.visible
+ func pause_music():
+-	user_paused=not user_paused; toggle.text="Play" if user_paused else "Pause"
++	user_paused=not user_paused; update_transport_button()
+ 	if not user_paused and track_finished:player.play(); play_count+=1; last_clock=0.0; track_finished=false
+ func finished():
+ 	# With one track, wait for a deliberate replay instead of immediately repeating it.
+-	track_finished=true; user_paused=true; toggle.text="Play"
++	track_finished=true; user_paused=true; update_transport_button()
+ func save_settings():
+ 	var cfg=ConfigFile.new(); cfg.set_value("playlist","dead_street",track_enabled); cfg.save(settings_path)
+ func _unhandled_key_input(event: InputEvent):
+ 	if not in_sandbox or not layer.visible:return
+ 	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_M:
+ 		toggle_panel();get_viewport().set_input_as_handled()
++
++func transport_icon(symbol: String) -> Texture2D:
++	var shapes={
++		"pause":'<rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/>',
++		"play":'<path d="M6 4 L20 12 L6 20 Z"/>',
++		"next":'<path d="M3 4 L16 12 L3 20 Z"/><rect x="17" y="4" width="4" height="16"/>'}
++	var image=Image.new()
++	image.load_svg_from_string('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#dce2df">'+shapes[symbol]+'</svg>')
++	return ImageTexture.create_from_image(image)
++
++func update_transport_button():
++	toggle.icon=transport_icon("play" if user_paused else "pause")
++	toggle.tooltip_text="Play music" if user_paused else "Pause music"
++
++func _input(event: InputEvent):
++	if not in_sandbox or not layer.visible or not panel.visible:return
++	var outside_press=false
++	if event is InputEventMouseButton:
++		outside_press=event.pressed and event.button_index in [MOUSE_BUTTON_LEFT,MOUSE_BUTTON_RIGHT]
++	elif event is InputEventScreenTouch:outside_press=event.pressed
++	if not outside_press:return
++	if panel.get_global_rect().has_point(event.position) or (dock.is_visible_in_tree() and dock.get_global_rect().has_point(event.position)):return
++	panel.hide()
++	get_viewport().set_input_as_handled()

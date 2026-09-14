@@ -1,0 +1,10 @@
+{
+  "status": "IMPLEMENTED / NATIVE-VALIDATED",
+  "checks": 15,
+  "failures": [],
+  "baseline_sha256": "26697063fa9f95864c043fb2a199ad5bce10dd270f1b38e2a91b3c1e6e3abff0",
+  "current_sha256": "24d03fe3e0dbdf8061a034bca847648922e72e495e386d28066aea8789e64abc",
+  "file": "gameplay/sandbox_menu_music.gd",
+  "existing_launcher_uses_live_source": true,
+  "publication_scope": "Owned delta patch and records only; full music script remains part of the opening chat uncommitted source."
+}

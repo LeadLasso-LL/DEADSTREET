@@ -1,0 +1,7 @@
+# Music controls — 14 September 2026
+
+Owner requested click-outside dismissal plus pause and next-track symbols. The live sandbox_menu_music.gd now closes on an outside left/right click or touch press, consumes the dismissing event, preserves clicks within the panel and visible dock, and keeps playback unchanged. Pause uses two bars; its paused state uses a play triangle; Next uses a right triangle ending at a vertical bar. Icons are native SVG textures with text tooltips. The one-track Next control remains disabled.
+
+Native live-source Godot4.7.2 exercise passed15 observations: open/reopen/dock-close, inside controls, outside dismissal, no click-through, uninterrupted playback, icons, pause/resume without restart, volume and scaled-window dismissal. Screenshot music_controls.png inspected. Command: Godot --path <repo> --script res://tools/music_controls_20260914/check_native.gd. See native_observations.json and change_receipt.json. No opening timing, media, launcher or battle changes; owner visual acceptance pending.
+
+The opening chat's full music source was untracked before this task. Preserve its ownership: this checkpoint publishes only the narrow delta patch and owned evidence/records, not the entire pre-existing opening work. music_controls.patch is already applied to the live source; do not apply twice. Its baseline and final SHA256 are in change_receipt.json. The normal desktop sandbox launcher reads the changed file on next launch. The opening chat can include the combined source in its eventual opening checkpoint.

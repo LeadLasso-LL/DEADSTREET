@@ -1416,3 +1416,7 @@ Battle Setup is the leftmost default tab, followed by Faction Glossary, Arsenal,
 IMPLEMENTED / VALIDATED: two native runs, 3,684 checks each, zero failures; all images/text/interaction/state checks passed. The 79.63s H.264 preview is libfile_5979eacadd048191b4f35b665e6defc4 v0. Owner visual acceptance pending. Opening/music/launcher integration remains with chat3438f1ea0e55, which must refresh the new menu scripts/data/assets in its pack. Shared runtime untouched by this task. See journal sandbox-glossaries-01 through -04 and tools/sandbox_glossaries_20260914/README.md.
 
 Publication: source 52c864752c2260048f1863d83929ae49420a6239 is PUSHED / VERIFIED on origin/build/arsenal-checkpoint-20260911. Owner visual acceptance remains pending. See journal sandbox-glossaries-05.
+
+## 2026-09-14 - Music panel dismissal and transport icons
+
+IMPLEMENTED / NATIVE-VALIDATED: click/tap outside the Music box to close it without stopping music; two-bar pause, play when paused, right triangle/end-bar Next. Fifteen focused native observations passed; screenshot checked. Live-source desktop entry uses the changes on restart. Next remains disabled for the one-track catalogue. Full opening source remains uncommitted under opening chat ownership; this task records/publishes only its delta and evidence. See journal music-controls-02 and tools/music_controls_20260914/README.md. Owner visual acceptance pending.

@@ -1,0 +1,21 @@
+{
+  "audio_play_count": 1,
+  "failures": [],
+  "observations": {
+    "dismiss_does_not_activate_background": true,
+    "dismiss_keeps_music_running": true,
+    "dock_closes_without_reopening": true,
+    "dock_opens_panel": true,
+    "dock_reopens_once": true,
+    "icon_button_pauses": true,
+    "icon_button_resumes_same_track": true,
+    "inside_click_keeps_panel_open": true,
+    "inside_volume_stays_open": true,
+    "next_icon_and_single_track_disabled": true,
+    "outside_click_closes": true,
+    "outside_dismiss_scaled_viewport": true,
+    "pause_icon_replaces_text": true,
+    "paused_button_shows_play": true,
+    "reopen_preserves_pause": true
+  }
+}
