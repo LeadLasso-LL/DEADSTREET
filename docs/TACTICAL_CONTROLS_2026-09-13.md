@@ -181,3 +181,10 @@ No new broad performance campaign, all-map exhaustive test, mobile-touch test or
 whole-core regression suite was run. Owner acceptance is pending. Immediate next:
 Brandon playtests Hold, Push and Fall Back; refine requested behavior/feel. Scripted
 recording, Whittaker Estate and dedicated performance work remain deferred.
+
+
+## 2026-09-14 — Owner path-overlay correction
+Persistent selected-unit movement routes and target connection lines are hidden.
+Selection still uses the glowing emblem and yellow ring. Brief Push/Fall Back
+placement lines and Hold acknowledgements remain. This supersedes earlier route-line
+presentation rules; command behavior is preserved.

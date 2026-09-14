@@ -38,3 +38,16 @@ Phone sharing: `python tools/raiders_recording/mobile_export.py` creates the 128
 H.264 copy with the verified AAC audio unchanged. `mobile.json` records its exact
 size/hash and the full-HD master hash. The September 14 recording is 112.64 seconds;
 the mobile copy is 15.52 MiB. Full-HD master retained on the build machine.
+
+
+## Final original-audio recording — 2026-09-14
+
+Current deliverable: `Dead_Street_Raiders_Victory_Mobile.mp4`.
+Master: `Dead_Street_Raiders_Victory.mp4`. Earlier videos are superseded.
+Build the original radio with `python tools/convoy_arrival/build_audio.py`, then
+run `record_worker.py` for capture, master encode, mobile export and pack restoration.
+The encoder requires a resolved attacker victory and clean arrival/outro routes.
+`record.json` contains the full disclosed showcase loadout, seed and original-radio
+provenance. `original_source_hashes.json` records sources at capture. Lane/arrival
+validation has 102 checks; the final capture validates runtime/audio/export separately.
+No third-party music or credit overlay is part of this final recording.

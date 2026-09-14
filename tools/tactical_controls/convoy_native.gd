@@ -41,6 +41,9 @@ func start():
     n+=1;check(not occupants.has(p.participant_id),"Each unit is assigned exactly once");occupants[p.participant_id]=true
     if p.get_meta("transport_bed",false):beds+=1
   counts.append(n);check(v.has_battle_position,"Vehicle has legal placement")
+  check(v.facing_direction.is_equal_approx(Vector2.RIGHT),"West approach faces east")
+  for corner in preload("res://battle/vehicles/battle_vehicle_body_service.gd").world_corners(v):
+   check(corner.y>=31. and corner.y<=44.,"Entire arriving body stays in eastbound carriageway")
  check(counts==[2,1,1,5,1,1,1],"Seven bike occupants and five Mesa occupants")
  check(beds==2,"Two actual units in pickup bed");check(occupants.size()==12,"All 12 actual units accounted for")
  ready=true

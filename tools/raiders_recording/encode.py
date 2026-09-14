@@ -4,14 +4,14 @@ import imageio_ffmpeg
 import numpy as np
 from PIL import Image,ImageOps,ImageDraw
 r=Path(__file__).parent; ff=imageio_ffmpeg.get_ffmpeg_exe()
-report=json.loads((r/'record.json').read_text());src=r/'raiders_raw.avi';out=r/'Dead_Street_Stateline_Raiders_vs_NBPD.mp4'
-assert report['phase']=='resolved', 'Recording did not reach its natural conclusion'
+report=json.loads((r/'record.json').read_text());src=r/'raiders_raw.avi';out=r/'Dead_Street_Raiders_Victory.mp4'
+assert report['phase']=='resolved' and report['winner']=='attacker', 'Recording must resolve in the requested Raiders victory'
 assert not report['arrival_route_errors'],report['arrival_route_errors']
 assert not report['outro_errors'],report['outro_errors']
 def info(p):return subprocess.run([ff,'-hide_banner','-i',str(p)],capture_output=True,text=True).stderr
 meta=info(src);m=re.search(r'Duration: (\d+):(\d+):([\d.]+)',meta);assert m,meta
 seconds=int(m[1])*3600+int(m[2])*60+float(m[3]);trim=report['trim_frames']/30;length=seconds-trim
-subprocess.run([ff,'-hide_banner','-loglevel','error','-y','-ss',str(trim),'-i',str(src),'-vf',f'fade=t=in:st=0:d=0.25,fade=t=out:st={length-.8}:d=0.8', '-af',f'afade=t=in:st=0:d=0.25,afade=t=out:st={length-.8}:d=0.8','-c:v','libx264','-preset','medium','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',str(out)],check=True,timeout=240)
+subprocess.run([ff,'-hide_banner','-loglevel','error','-y','-ss',str(trim),'-i',str(src),'-vf',f'fade=t=in:st=0:d=0.25,fade=t=out:st={length-.8}:d=0.8', '-af',f'afade=t=in:st=0:d=0.25,afade=t=out:st={length-.8}:d=0.8','-c:v','libx264','-preset','fast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',str(out)],check=True,timeout=240)
 subprocess.run([ff,'-hide_banner','-loglevel','error','-i',str(out),'-f','null','-'],check=True,timeout=90)
 raw=subprocess.run([ff,'-hide_banner','-loglevel','error','-i',str(out),'-vn','-ac','2','-ar','22050','-f','f32le','-'],capture_output=True,check=True).stdout
 a=np.frombuffer(raw,dtype='<f4');assert np.isfinite(a).all() and len(a)>22050

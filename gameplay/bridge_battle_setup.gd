@@ -26,12 +26,10 @@ static func apply(b,config: Dictionary) -> Dictionary:
   vs.sort_custom(func(a,c):return a.battle_vehicle_id<c.battle_vehicle_id if grouped else Body.profile_for_vehicle(a).length>Body.profile_for_vehicle(c).length)
   var candidates=[]
   if side_id==b.attacker_side_id:
-   # Lead vehicles stop diagonally across BOTH carriageways. Additional
-   # vehicles backfill the same approach with checked body/door clearance.
+   # West-approach arrivals travel east on the lower carriageway. Never
+   # use the oncoming lanes as overflow parking.
    for x in [34.,22.,10.]:
-    for y in [18.5,38.]:candidates.append(Vector2(x,y))
-   for x in [34.,22.,10.]:
-    for y in [12.8,24.,32.8,44.5]:candidates.append(Vector2(x,y))
+    for y in [35.,41.]:candidates.append(Vector2(x,y))
   else:
    for x in [150.,161.,173.]:
     for y in [19.,38.,12.8,45.7]:candidates.append(Vector2(x,y))
@@ -40,13 +38,11 @@ static func apply(b,config: Dictionary) -> Dictionary:
    var positions=candidates
    if grouped:
     var slot=int(v.get_meta("convoy_slot",0));var member=int(v.get_meta("convoy_member",0));var n=int(v.get_meta("convoy_group_size",1))
-    var x=35.-slot*12.;var y=20.
+    var x=35.-slot*12.;var y=38.
     if n>1 and member>0:x-=4.;y+=-4. if member==1 else 4.
     positions=[Vector2(x,y)]
-    # Further slots use the second carriageway; bodies still pass normal checks.
-    if slot>=3:positions=[Vector2(35.-(slot-3)*12.,y+18.)]
    for at in positions:
-    var facing=Vector2(1,1 if at.y<29 else -1).normalized() if side_id==b.attacker_side_id else Vector2.DOWN
+    var facing=Vector2.RIGHT if side_id==b.attacker_side_id else Vector2.DOWN
     if grouped:facing=Vector2.RIGHT
     var attempt=Placement.place_vehicle(b,v.battle_vehicle_id,at,facing)
     if attempt!=null and attempt.success:placed=true;break

@@ -86,7 +86,7 @@ func capture(key: String):
 func finish():
  active=false
  var p=view.battle_presentation
- var report={"seed":9141,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"audio_shots":p.sound.shots_played,"convoy_slots":3,"motorcycles":6,"motorcycle_occupants":7,"pickup_occupants":5,"pickup_bed_occupants":2,"ambient_emitters":p.convoy_audio.sources.size()}
+ var report={"radio_origin":"Original composition; no recordings or samples","radio_bpm":102,"showcase_loadout":Director.config(),"seed":9141,"trim_frames":trim_frames,"frames":frames,"seconds":frames/30.0,"combat_seconds":b.elapsed_time_seconds,"phase":b.battle_phase,"winner":b.get_winning_side_id(),"commands":d.log,"phases":phase_changes,"arrival_route_errors":p.last_path_errors,"outro_kind":p.outro.kind,"outro_errors":p.outro.errors,"results":p.result_snapshot,"audio_shots":p.sound.shots_played,"convoy_slots":3,"motorcycles":6,"motorcycle_occupants":7,"pickup_occupants":5,"pickup_bed_occupants":2,"ambient_emitters":p.convoy_audio.sources.size()}
  FileAccess.open(out+"/record.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
  print("RECORD_COMPLETE ",JSON.stringify(report))
  scene.queue_free()

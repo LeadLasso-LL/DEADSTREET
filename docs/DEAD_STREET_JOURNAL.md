@@ -541,3 +541,35 @@ Final movie: 112.64 seconds, combat 82.70 seconds, 312 shot events, 4 contextual
 ## 2026-09-14 — Compact mobile battle export (VALIDATED)
 
 The full-HD master is 74.43 MiB, so a separate 1280x720 H.264 copy was made for phone sharing, preserving the complete 112.64-second recording and its AAC audio. Mobile export decoding passed; file size is 16,269,495 bytes (15.52 MiB); SHA256 `0c80ad890641dd67f6bebe0a62c93fe594caced1a18d10d473d40412f6c663b7`. The full-HD master is retained. Convoy/arrival/audio implementation and records were committed and pushed as `7638a0915f0e1b3f1542d716e9401f6ce0f25937`. Mobile export source/metadata are a separate scoped checkpoint. The next owner task is to review the delivered battle, particularly the arrival, audio and command feel.
+
+
+## 2026-09-14 — Owner recording corrections (IN PROGRESS)
+
+Brandon rejected the arrival using oncoming lanes, the synthetic guitar timbre and persistent unit route lines. Requested real grungy heavy guitar (Walk by Pantera as a feel reference), slightly quieter sirens and a Raiders victory. Correct west-approach arrivals to the lower eastbound carriageway; preserve bike trio / Mesa / bike trio and the approved 7+5 occupants. Hide persistent route/target connectors while retaining brief command-placement acknowledgements. Sirens reduced 3 dB. The showcase fixture uses tier-3 Raiders against tier-2 NBPD; global combat balance is unchanged. Re-record with a verified Raiders win. Previous clip is superseded, not owner-accepted. Validation and replacement audio are pending.
+
+
+## 2026-09-14 — Third-party music rejected by owner; delivery paused
+
+Brandon objected to use of licensed material. The assistant had chosen a free CC BY recording to replace the poor synthetic guitar; it introduced an attribution dependency without establishing that third-party music was acceptable. That was an assistant error. The source/processed music and credit overlay were removed from the active build before any commit/push of this revision. The prior original music is retained only as a muted placeholder, because its sound was already rejected. No third-party version is approved for delivery. Treat named music references as sonic direction, not authorization to add third-party recordings.
+
+Preserved completed work: correct eastbound arrival lane, hidden persistent route/target overlays, sirens reduced 3 dB, 102 passed native arrival checks, and a recording fixture with verified Raiders victory. The attempted recording is superseded due to its rejected music. Current immediate task: create suitable original heavy guitar audio and then finish the corrected mobile battle recording. Do not run the prepared finish_revised.py publisher: it describes the rejected third-party version. Performance and Whittaker stay parked.
+
+
+## 2026-09-14 — Original radio and final Raiders recording started
+
+Brandon instructed completion with original grungy, intimidating heavy guitar and a Raiders win. A new original 102 BPM Drop-C riff uses plucked-string waveguides, a driven/cabinet-filtered amplifier, original bass and procedural drums. No recordings, borrowed samples or external music assets are used. The radio is re-enabled with the new asset; sirens retain the requested 3 dB reduction. Correct eastbound arrival, clean selection overlays and the seeded Raiders-victory fixture are preserved. The rejected third-party version remains excluded. This pass is a new capture/export of the already-verified battle, followed by delivery; no new performance campaign.
+
+
+## 2026-09-14 — Original-guitar Raiders victory recording (IMPLEMENTED / VALIDATED)
+
+Brandon explicitly directed immediate completion after rejecting third-party music. The final radio is an original 102 BPM Drop-C groove-metal composition, built from plucked-string waveguides, a driven/cabinet-filtered amplifier, original bass and procedural drums. No recordings, borrowed samples or external music are used. The riff is filtered as a vehicle radio; police sirens are 3 dB quieter (-29 dB emitter gain). Source and deterministic asset metadata are in tools/convoy_arrival/build_audio.py and assets/audio/convoy/original_radio.json. The earlier additive riff and the removed third-party attempt are superseded. There is no outside-music credit overlay in the final video.
+
+Corrected eastbound arrivals stay entirely within the lower carriageway, with no oncoming-lane overflow. The six-bike / Mesa formation, pillion and two bed occupants remain. Persistent selected-unit movement paths and target connector lines are hidden; brief command-placement/acknowledgement cues remain. The arrival camera keeps the formation clear of the banner.
+
+The requested Raiders victory is staged through the recording fixture: tier-3 Raiders with reinforced_carrier, versus tier-1 unarmored NBPD. Global combat balance is unchanged; hits, casualties and contextual orders remain live. Seed 9141 resolves in an attacker victory after 68.40 simulated combat seconds, with 230 shot events and 5 contextual commands. The director releases later stale Hold orders as support loses contact. This is showcase staging, not a faction-balance comparison.
+
+Validation: the lane/arrival pass previously passed 102 native checks, including all seven east-facing bodies entirely within y=31..44, legal seating and dismounts. The final capture has zero arrival/outro route errors, three ambient emitters and no final script/engine errors. Full video decode and finite/unclipped audio checks passed. Final visual review checked arrival, combat and result frames. No performance campaign or exhaustive all-map regression was reopened. Audio quality remains subject to Brandon's listening review; numerical checks are not aesthetic approval.
+
+Mobile file: 93.37 seconds, 1280x720 at 30 FPS, H.264/AAC, 13.10 MiB. SHA256 5133f7fc34f9ecddf8cbd29f0fd06be7e7b7aae657b94984b452abd4d8ca4576. Original radio SHA256 88927d68c3fdcf4f9a39afb5043a85f17f0b83ba28978ec921ced51cc4d92043. Source hashes captured before recording are checked before this commit. Earlier recordings are superseded. Commit/push uses standing approval and excludes unrelated work. Delivery/save status is reported in chat.
+
+Next: Brandon reviews the completed original-audio Raiders-victory video. Performance and Whittaker Estate remain parked.

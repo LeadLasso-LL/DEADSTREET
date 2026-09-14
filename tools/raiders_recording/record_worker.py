@@ -21,6 +21,7 @@ with (out/'capture.log').open('wb')as log:
    p.kill();p.wait();raise RuntimeError(contents[-4000:])
 print('CAPTURE_EXIT',p.returncode,flush=True);assert p.returncode==0
 subprocess.run([sys.executable,str(out/'encode.py')],cwd=r,check=True,timeout=300)
+subprocess.run([sys.executable,str(out/'mobile_export.py')],cwd=r,check=True,timeout=180)
 # Restore the normal preview launcher after MovieMaker, retaining the new audio overlay.
 subprocess.run([sys.executable,str(r/'tools/tactical_controls/run.py'),'pack'],cwd=r,check=True,timeout=90)
 print('RECORDING_JOB_COMPLETE',flush=True)

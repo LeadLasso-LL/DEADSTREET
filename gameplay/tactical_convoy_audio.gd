@@ -37,7 +37,7 @@ func rebuild(b):
    if clip==null:continue
    var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
    player.max_distance=900. if identity=="stateline" else 1050.;player.attenuation=.7;player.panning_strength=.75
-   player.set_meta("base_gain",-16. if identity=="stateline" else -26.);player.set_meta("offset",count*2.35)
+   player.set_meta("base_gain",-16. if identity=="stateline" else -29.);player.set_meta("offset",count*2.35)
    sources[v.battle_vehicle_id]=player;count+=1
 func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float):
  if b==null:return

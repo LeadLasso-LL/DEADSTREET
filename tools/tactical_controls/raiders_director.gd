@@ -1,5 +1,5 @@
 extends RefCounted
-# Staged player decisions only; NBPD, hits, wounds and the outcome remain live.
+# Showcase fixture favors veteran Raiders; combat and contextual orders remain live.
 const Config=preload("res://gameplay/sandbox_force_config.gd")
 const Force=preload("res://battle/core/battle_force_command_service.gd")
 var orders
@@ -14,13 +14,17 @@ var held=false
 var withdrawn=false
 var released=false
 var deselect_at=-1.0
+const Armor=preload("res://campaign/equipment/armor_catalog.gd")
 static func config() -> Dictionary:
  var c={"map_id":"river_bridge","attacker":{"faction":"stateline","vehicles":["ironhorse","ironhorse","ironhorse","mesa","ironhorse","ironhorse","ironhorse"],"units":[]},"defender":{"faction":"nbpd","vehicles":["interceptor","warden","bulwark"],"units":[]}}
  c.attacker["vehicle_occupants"]=[{"units":2,"bed":0},{"units":1,"bed":0},{"units":1,"bed":0},{"units":5,"bed":2},{"units":1,"bed":0},{"units":1,"bed":0},{"units":1,"bed":0}]
+ var strongest_armor="patrol_vest"
+ for id in Armor.IDS:
+  if Armor.bonus(id)>Armor.bonus(strongest_armor):strongest_armor=id
  for side in ["attacker","defender"]:
   var roles=["pistol","pistol","smg","smg","smg","shotgun","shotgun","rifle","rifle","rifle","sniper","sniper"]
   for i in range(roles.size()):
-   var row=Config.unit(roles[i]);row.tier=2;row.armor="patrol_vest"
+   var row=Config.unit(roles[i]);row.tier=3 if side=="attacker" else 1;row.armor=strongest_armor if side=="attacker" else ""
    c[side].units.append(row)
  return c
 func setup(battle,controller):
@@ -84,7 +88,7 @@ func tick():
    if p.weapon_type in ["rifle","sniper"] and not p.occupied_cover_slot_id.is_empty() and t-float(last_shot.get(p.participant_id,-100.0))<2.5:support.append(p.participant_id)
   if support.size()>=2:
    held=true;stage("hold",support,NAN,"Firing support has established covered overwatch");return
- if held and not released and t>24.0:
+ if held and t>24.0:
   var stale=[]
   for p in own:
    if p.current_player_group_command()=="hold" and t-float(last_shot.get(p.participant_id,-100.0))>13.0:stale.append(p.participant_id)

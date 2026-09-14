@@ -4369,25 +4369,7 @@ func _draw_player_order_overlays(battle_state: BattleState) -> void:
 		return
 	var canvas = _paint_canvas()
 	_draw_command_cues(canvas)
-	if orders_controller.pending_command_id in ["push", "fall_back"]:
-		return
-	var zoom = _camera.zoom.x if _camera != null else 1.0
-	var width = 1.5 / maxf(zoom, .1)
-	for id in orders_controller.selected_participant_ids:
-		var p = battle_state.get_participant(id)
-		if p == null or not p.is_alive:
-			continue
-		var at = _to_view(p.battle_position)
-		var points = PackedVector2Array([at])
-		for i in range(p.navigation_waypoint_index, p.navigation_waypoints.size()):
-			points.append(_to_view(p.navigation_waypoints[i]))
-		if points.size() > 1:
-			canvas.draw_polyline(points, Color(.87, .83, .65, .6), width, true)
-		if not p.player_priority_target_id.is_empty():
-			var target = battle_state.get_participant(p.player_priority_target_id)
-			if target != null and target.is_alive:
-				var to = _to_view(target.battle_position)
-				canvas.draw_dashed_line(at, to, Color(.83, .39, .35, .7), width, 5.0)
+	# Selection uses the emblem glow; only brief command placement cues are drawn.
 
 
 func _draw_command_cues(canvas: CanvasItem) -> void:

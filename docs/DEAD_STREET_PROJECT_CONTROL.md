@@ -1,3 +1,16 @@
+## Current milestone — original-audio Raiders victory video — 2026-09-14
+
+IMPLEMENTED / VALIDATED; owner review pending. Correct eastbound arrivals, hidden
+persistent unit paths and quieter sirens are included in the final mobile video.
+The radio uses an original heavy guitar riff; no outside music or samples are used.
+The requested Raiders win uses a disclosed veteran/equipment advantage in the
+recording fixture. Global combat balance is unchanged. The lane/arrival pass had
+102 native checks; final capture has zero route or script errors and passed video
+decode/audio checks. Details, hashes and limits are in the latest journal.
+
+Next: Brandon reviews the completed Raiders-victory video with original audio.
+Performance and Whittaker remain parked. Earlier conflicting milestones are history.
+
 ## Current milestone — Raiders convoy and battle recording — 2026-09-14
 
 IMPLEMENTED / VALIDATED; owner acceptance pending. Stateline motorcycle trios count

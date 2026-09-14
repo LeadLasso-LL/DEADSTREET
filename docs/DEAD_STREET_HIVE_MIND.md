@@ -2,7 +2,7 @@
 
 **Shared entry point for all future chats.**
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-14, after cover-aware line commands and native review.
+Coordination last reconciled: 2026-09-14, after original-audio Raiders-victory recording.
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
 This is a saved record, not an automatic feed of activity in other chats.
 
@@ -74,14 +74,14 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Deliver the completed Stateline Raiders versus NBPD battle video and gather Brandon's review of the grouped motorcycle/pickup arrival, sound and battle commands. Convoy implementation and native validation are complete; owner acceptance remains pending. Performance and Whittaker Estate stay parked.
+**Active objective:** Deliver the completed original-audio Raiders-victory mobile video and obtain Brandon's review. Correct road side, original heavy guitar, quieter sirens and hidden unit paths are implemented and validated. The third-party music attempt was rejected and removed; it is excluded from the final build and video. Performance and Whittaker remain parked.
 
 | Work | Owner | State / scope |
 | --- | --- | --- |
 | Runtime/target/cover optimization | This receiving chat | Bounded pass complete and validated; further optimization parked. |
 | Shared records and reproducible benchmarks | This receiving chat | Current results, failed trials, source scope and remaining limits recorded. |
 | HUD and player battle controls | This receiving chat | Cover-aware Hold and directional Push/Fall Back implemented; 125 command and 43 native UI checks passed. Owner playtest next. |
-| Scripted battle recording | This receiving chat | Grouped Raiders arrival/audio implemented; 67 native checks passed; full natural battle recorded and encoded for sharing. |
+| Scripted battle recording | This receiving chat | Original-audio Raiders-victory video complete; corrected lane, hidden paths, quieter sirens; owner review next. |
 | Whittaker Estate sandbox map | This receiving chat | Deferred by Brandon until HUD/control review. |
 
 **Latest evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -95,7 +95,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Deliver the MP4, then Brandon reviews the arrival, audio and command feel. [Convoy rules and evidence](../tools/convoy_arrival/README.md).
+**Immediate next task:** Brandon reviews the completed Raiders-victory video with original audio. [Convoy details](../tools/convoy_arrival/README.md).
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
@@ -178,3 +178,7 @@ durable reference. Reports should link to the actual evidence and its fixture.
 Historical evidence retains its original dates and limits. Current source, required
 diagnostics and reports are included in the performance checkpoint; verify Git
 and its remote before making a new synchronization claim.
+
+
+### Active owner correction — 2026-09-14
+The delivered Raiders recording was rejected for wrong-side arrival, synthetic music and route-line clutter. Current task: eastbound lower-carriageway arrival, convincing recorded heavy guitar, sirens 3 dB quieter, no persistent unit paths, verified Raiders-victory mobile video. Preserve the 3-bike / pickup / 3-bike formation. This was completed by the original-audio revision above; owner review is next. Performance and Whittaker remain parked.
