@@ -1,5 +1,7 @@
 # Current milestone - second estate correction - 2026-09-14
 
+Local gameplay checkpoint 15c6bbc1292c745408869e545d5ae9dab31991cc is committed. Push is blocked by automatic approval review; verified remote remains 2cf7e4af5e4335683263004560127df7a08bcded on build/arsenal-checkpoint-20260911. Review declined the standing authorization recorded in the repository and requires explicit owner approval in this chat for the external GitHub payload. Do not retry or bypass that block without accepted approval.
+
 IMPLEMENTED / VALIDATED; owner review pending. Shared estate projection/scale fixed; measured HUD framing and continuous local aftermath; full intro names, quieter mansion-positioned music and 36 TRC/Whittaker pack-07 voice clips. Corrected 74.537-second video saved as existing recording version 2. 31,514 actor-frame checks, zero overlap/hidden-survivor/route errors, zero result-camera jump; current command 128 and native UI 43 checks passed. Fresh estate native sample 44.42 FPS/p95 41.517 ms: performance remains open. Other 17 voice profiles not installed; no pressure hook or shield mechanics added. See tools/whittaker_estate/README.md and journal for exact sources, reproduction, failed checks and limits. Next: Brandon reviews corrected video; earlier review-next claims below describe superseded deliveries.
 
 ## Current milestone — corrected Whittaker Estate — 2026-09-14

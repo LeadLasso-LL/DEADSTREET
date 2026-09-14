@@ -57,10 +57,9 @@ Existing code does not automatically mean approved design.
 - Repository: C:\Users\brand\OneDrive\Documents\dead-street
 - Documented origin: https://github.com/LeadLasso-LL/DEADSTREET.git
 - Observed build branch: build/arsenal-checkpoint-20260911
-- Last observed gameplay checkpoint: e2c9a1374c5f82336126c59becc9d59a9d5090d3,
-  “Add playable river suspension bridge with contextual convoys and shared tactical art.”
-- This workflow setup adds documentation after that gameplay checkpoint.
-  Use Git to find the actual latest HEAD; do not reset to the snapshot above.
+- Latest local gameplay checkpoint: 15c6bbc1292c745408869e545d5ae9dab31991cc.
+- Verified remote checkpoint: 2cf7e4af5e4335683263004560127df7a08bcded.
+- Publication blocked by automatic approval review; see current coordination below.
 - [Standing commit/push authorization](PROJECT_WORKFLOW_AUTHORIZATION.md) applies
   to the established work/destination. Preserve scope and unrelated changes.
 
@@ -83,6 +82,8 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 | Mobile recording | Active continuation chat | 74.537 seconds, complete stereo export saved as version 2; four Whittaker survivors. |
 | Performance | Parked from broad optimization | Fresh estate 32-unit sample 44.42 FPS/p95 41.517 ms; remains unresolved. |
 
+**Checkpoint / publication:** Local gameplay checkpoint 15c6bbc1292c745408869e545d5ae9dab31991cc is committed. Push is blocked by automatic approval review; verified remote remains 2cf7e4af5e4335683263004560127df7a08bcded on build/arsenal-checkpoint-20260911. Review declined the standing authorization recorded in the repository and requires explicit owner approval in this chat for the external GitHub payload. Do not retry or bypass that block without accepted approval.
+
 **Latest estate evidence:** 31,514 actor-frame checks, zero HUD/hidden-survivor/route errors, 0 px result-camera jump, current command checks 128/128 and native UI 43/43. Exact evidence and failed-trial details in estate report. The old projection omission was the major sprite displacement/phase-jump defect.
 
 **Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
@@ -96,7 +97,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Brandon reviews the corrected estate video/map/audio. Record feedback before selecting another pass. Estate live performance and remaining voice banks remain explicit unfinished work; do not claim sandbox completion.
+**Immediate next task:** Obtain explicit in-chat approval for the scoped estate push only because automatic approval review requires it; do not ask the owner to reconstruct the handoff. Brandon reviews the corrected estate video/map/audio. Record feedback before selecting another pass. Estate live performance and remaining voice banks remain explicit unfinished work; do not claim sandbox completion.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
