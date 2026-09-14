@@ -1,7 +1,7 @@
 {
   "source_commit": "15c6bbc1292c745408869e545d5ae9dab31991cc",
-  "remote_commit": "2cf7e4af5e4335683263004560127df7a08bcded",
-  "push_status": "blocked_by_automatic_approval_review_requires_in_chat_authorization",
+  "remote_commit": "cd23759a82e0d7c2c5c1060ca9dd084cb1bab80c",
+  "push_status": "source_and_original_handoff_pushed_verified",
   "origin": "https://github.com/LeadLasso-LL/DEADSTREET.git",
   "branch": "build/arsenal-checkpoint-20260911",
   "paths": [
@@ -99,5 +99,8 @@
     "tools/whittaker_estate/resume_20260914/record.json"
   ],
   "video_version": 2,
-  "video_sha256": "98e9a795b3faf329877619f673ec754826bef6bb2bc8b8b68637947c0991dccf"
+  "video_sha256": "98e9a795b3faf329877619f673ec754826bef6bb2bc8b8b68637947c0991dccf",
+  "approval_text": "push approved, will review video shortly and provide feedback",
+  "completion_receipt_publication": "blocked_by_automatic_review_as_additional_payload",
+  "next_step": "Owner video feedback; local completion receipt publication requires separate approval"
 }

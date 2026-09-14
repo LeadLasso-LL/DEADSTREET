@@ -740,3 +740,14 @@ The subsequent direct, non-force push of exactly 15c6bbc to the established bran
 Preserved outside the checkpoint: battle_victory_service whitespace work; character-factory, dusk and source-recovery modifications; inherited untracked experiments/imports. Current controls fixture output files remain local evidence outside the scoped checkpoint; relevant authoritative summaries and copied logs are committed. No stage-all, reset, clean or source rollback was used. Native runtime workers have completed. Final preview log was empty and is not claimed as validation evidence; displayed overview/detail assets and captured battle phases were inspected separately.
 
 Next: owner may review the delivered 74.537-second video now; if explicit publication approval is obtained, verify live branch, HEAD, scope and remote before a normal push of the two local checkpoint commits. Keep the 44.42 FPS estate result, other 17 voice banks, pressure hook and owner visual/listening acceptance unresolved. No further broad test/optimization work is implied by this handoff.
+
+
+## 20260914-active-resume-07 - Approved push verified; completion receipt local
+
+Source: Brandon in the active build chat, 2026-09-14: "push approved, will review video shortly and provide feedback". This authorized the scoped estate source/art/voice/evidence/handoff push to https://github.com/LeadLasso-LL/DEADSTREET.git on build/arsenal-checkpoint-20260911. It does not imply visual or audio acceptance.
+
+Fresh checks verified local cd23759, remote 2cf7e4a, exact established origin/branch, empty index, and only the two reviewed commits pending. A normal non-force push succeeded, advancing GitHub to cd23759a82e0d7c2c5c1060ca9dd084cb1bab80c; ls-remote verified equality. The earlier source push block is resolved.
+
+Automatic approval review separately rejected creating and publishing this additional documentation commit because the current approval covered the two previously identified commits. That action was rejected before execution. This completion receipt is saved and committed locally; its publication remains pending separate approval. A first local-only attempt had a command-line quoting error before execution; writing an explicit script file resolves the serialization issue. No further publication attempt was made. Unrelated dirty work is preserved, and no gameplay edits or new tests were needed.
+
+Next: receive and acknowledge Brandon video feedback, record decisions before dependent edits, then select the next correction. Estate performance 44.42 FPS, other 17 voice banks, the pressure hook, and owner visual/listening acceptance remain open. Source and prior handoff are on GitHub; this completion note is local until its publication is approved.
