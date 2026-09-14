@@ -1,0 +1,75 @@
+{
+  "approved_battle_comparison": {
+    "seed": true,
+    "combat_seconds": true,
+    "winner": true,
+    "commands": true,
+    "phases": true,
+    "arrival_manifest": true,
+    "audio_shots": true,
+    "result_summaries": true,
+    "all_unit_result_states": true
+  },
+  "combat_siren": [
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -33.5,
+      "movie_seconds": 25.0,
+      "phase": "active",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -33.1666679382324,
+      "movie_seconds": 30.0,
+      "phase": "active",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    }
+  ],
+  "result_order": {
+    "attacker": [
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD"
+    ],
+    "defender": [
+      "ACTIVE",
+      "WOUNDED",
+      "ACTIVE",
+      "ACTIVE",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD",
+      "DEAD"
+    ]
+  },
+  "presentation_errors": [],
+  "camera_safety_violations": 0
+}

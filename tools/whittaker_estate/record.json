@@ -316,7 +316,7 @@
       "gain_db": -13.5,
       "movie_seconds": 6.0,
       "phase": "arrival",
-      "pitch_scale": 0.5,
+      "pitch_scale": 0.75,
       "playing": true,
       "position": "(102.7402, 405.7946)",
       "range": 2600.0
@@ -326,7 +326,7 @@
       "gain_db": -13.5,
       "movie_seconds": 10.5,
       "phase": "arrival",
-      "pitch_scale": 0.5,
+      "pitch_scale": 0.75,
       "playing": true,
       "position": "(312.0, 294.0)",
       "range": 2600.0
@@ -336,7 +336,7 @@
       "gain_db": -13.5,
       "movie_seconds": 11.5,
       "phase": "arrival",
-      "pitch_scale": 0.5,
+      "pitch_scale": 0.75,
       "playing": true,
       "position": "(312.0, 294.0)",
       "range": 2600.0
@@ -346,17 +346,37 @@
       "gain_db": -13.5,
       "movie_seconds": 13.0,
       "phase": "arrival",
-      "pitch_scale": 0.5,
+      "pitch_scale": 0.75,
       "playing": true,
       "position": "(312.0, 294.0)",
       "range": 2600.0
     },
     {
       "attenuation": 0.219999998807907,
-      "gain_db": -13.9775409698486,
+      "gain_db": -14.9326229095459,
       "movie_seconds": 20.0,
       "phase": "arrival",
-      "pitch_scale": 0.5,
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -33.5,
+      "movie_seconds": 25.0,
+      "phase": "active",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -33.1666679382324,
+      "movie_seconds": 30.0,
+      "phase": "active",
+      "pitch_scale": 0.75,
       "playing": true,
       "position": "(312.0, 294.0)",
       "range": 2600.0
@@ -556,6 +576,20 @@
       "gain_db": -25.4775409698486,
       "movie_seconds": 20.0,
       "phase": "arrival"
+    },
+    {
+      "arrival_clock": 21.6666666666669,
+      "battle_mix": 1.0,
+      "gain_db": -35.0,
+      "movie_seconds": 25.0,
+      "phase": "active"
+    },
+    {
+      "arrival_clock": 21.6666666666669,
+      "battle_mix": 1.0,
+      "gain_db": -34.3333320617676,
+      "movie_seconds": 30.0,
+      "phase": "active"
     }
   ],
   "radio_origin": "Original composition; no recordings or samples",
@@ -709,6 +743,38 @@
     ],
     "defender": [
       {
+        "health_width": 123.0,
+        "id": "sandbox_defender_unit_13",
+        "role": "RIFLE",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 8.20000076293945,
+        "id": "sandbox_defender_unit_08",
+        "role": "SHOTGUN",
+        "state": "WOUNDED",
+        "tint": "(1.0, 0.72, 0.72, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 123.0,
+        "id": "sandbox_defender_unit_14",
+        "role": "SNIPER",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AWM / T3"
+      },
+      {
+        "health_width": 112.613334655762,
+        "id": "sandbox_defender_unit_15",
+        "role": "SNIPER",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AWM / T3"
+      },
+      {
         "health_width": 0.0,
         "id": "sandbox_defender_unit_03",
         "role": "SMG",
@@ -757,14 +823,6 @@
         "weapon": "M4A1 / T2"
       },
       {
-        "health_width": 123.0,
-        "id": "sandbox_defender_unit_13",
-        "role": "RIFLE",
-        "state": "ACTIVE",
-        "tint": "(1.0, 1.0, 1.0, 1.0)",
-        "weapon": "M4A1 / T2"
-      },
-      {
         "health_width": 0.0,
         "id": "sandbox_defender_unit_01",
         "role": "PISTOL",
@@ -803,30 +861,6 @@
         "state": "DEAD",
         "tint": "(0.72, 0.22, 0.26, 1.0)",
         "weapon": "REMINGTON 870 / T1"
-      },
-      {
-        "health_width": 8.20000076293945,
-        "id": "sandbox_defender_unit_08",
-        "role": "SHOTGUN",
-        "state": "WOUNDED",
-        "tint": "(1.0, 0.72, 0.72, 1.0)",
-        "weapon": "REMINGTON 870 / T1"
-      },
-      {
-        "health_width": 123.0,
-        "id": "sandbox_defender_unit_14",
-        "role": "SNIPER",
-        "state": "ACTIVE",
-        "tint": "(1.0, 1.0, 1.0, 1.0)",
-        "weapon": "AWM / T3"
-      },
-      {
-        "health_width": 112.613334655762,
-        "id": "sandbox_defender_unit_15",
-        "role": "SNIPER",
-        "state": "ACTIVE",
-        "tint": "(1.0, 1.0, 1.0, 1.0)",
-        "weapon": "AWM / T3"
       },
       {
         "health_width": 0.0,
@@ -1111,7 +1145,7 @@
         {
           "attenuation": 0.219999998807907,
           "foreground": 0.0,
-          "gain_db": -21.1666660308838,
+          "gain_db": -33.1666679382324,
           "is_radio": false,
           "panning": 0.349999994039536,
           "playing": true,
@@ -1136,7 +1170,7 @@
         {
           "attenuation": 0.219999998807907,
           "foreground": 0.0,
-          "gain_db": -30.5,
+          "gain_db": -42.5,
           "is_radio": false,
           "panning": 0.349999994039536,
           "playing": true,
@@ -1161,7 +1195,7 @@
         {
           "attenuation": 0.219999998807907,
           "foreground": 0.0,
-          "gain_db": -33.5,
+          "gain_db": -45.5,
           "is_radio": false,
           "panning": 0.349999994039536,
           "playing": true,
@@ -1186,7 +1220,7 @@
         {
           "attenuation": 0.219999998807907,
           "foreground": 0.0,
-          "gain_db": -33.5,
+          "gain_db": -45.5,
           "is_radio": false,
           "panning": 0.349999994039536,
           "playing": true,

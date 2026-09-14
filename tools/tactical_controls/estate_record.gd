@@ -60,7 +60,7 @@ func _process(delta):
  if validation_mode and not resized and b.elapsed_time_seconds>10.:
   resized=true;root.size=Vector2i(1280,720);DisplayServer.window_set_size(root.size)
  var presentation=view.battle_presentation
- var sample_times=[6.0,10.5,11.5,13.0,20.0]
+ var sample_times=[6.0,10.5,11.5,13.0,20.0,25.0,30.0]
  if radio_sample_index<sample_times.size() and float(frames)/30.>=float(sample_times[radio_sample_index]):
   for source in presentation.convoy_audio.sources.values():
    if bool(source.get_meta("is_radio",false)):

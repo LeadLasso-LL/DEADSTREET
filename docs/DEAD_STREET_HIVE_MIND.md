@@ -57,9 +57,9 @@ Existing code does not automatically mean approved design.
 - Repository: C:\Users\brand\OneDrive\Documents\dead-street
 - Documented origin: https://github.com/LeadLasso-LL/DEADSTREET.git
 - Observed build branch: build/arsenal-checkpoint-20260911
-- Published gameplay checkpoint: 15c6bbc1292c745408869e545d5ae9dab31991cc.
-- Verified remote checkpoint: a493f38afd27802798d84159ee56ef3abc7221f7.
-- Approved source, handoff and completion receipt are published; owner video feedback next.
+- Published feedback checkpoint: 77874acc264fe3318583780bf48b0776a3eba499.
+- Verified remote checkpoint: 77874acc264fe3318583780bf48b0776a3eba499.
+- Owner feedback source, handoff and validation evidence are published; version-3 review next.
 - [Standing commit/push authorization](PROJECT_WORKFLOW_AUTHORIZATION.md) applies
   to the established work/destination. Preserve scope and unrelated changes.
 
@@ -73,9 +73,9 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Owner feedback implemented and validated: vocals parked; bridge-sized HUD; half-speed broken TRC siren; complete lower fence/gate; covered assault arrival with exact 7/5/4 passengers and four-person Vigil flank; white Workhorse on circle. Version-3 video saved. Active build chat is finishing the scoped checkpoint; owner review next. See journal active-resume-16.
+**Active objective:** Version-3 battle OWNER-ACCEPTED. Narrow siren/result-card changes implemented and validated: 0.75 siren speed, 12 dB quieter in combat, survivors before casualties for every final result stack. Version-4 video saved; battle timing/commands/all unit outcomes exactly match version 3. Finishing scoped publication; revised presentation review next. See journal siren-cards-03.
 
-**Checkpoint / publication:** PUSHED / VERIFIED, 2026-09-14: origin/build/arsenal-checkpoint-20260911 is verified at a493f38afd27802798d84159ee56ef3abc7221f7, including gameplay 15c6bbc, handoff cd23759 and completion receipt a493f38. Brandon explicitly approved publication of the receipt in the active chat. Both publication blocks are resolved. Owner video feedback and visual/listening acceptance remain pending. This local status update will accompany the next substantive build checkpoint; no further publication is needed for this approval turn.
+**Checkpoint / publication:** PUSHED / VERIFIED 2026-09-14: 77874acc264fe3318583780bf48b0776a3eba499 on origin/build/arsenal-checkpoint-20260911. Scoped feedback, handoffs and validation evidence published; video version 3 saved. Local receipt: tools/tactical_controls/hud_fixed_20260914/feedback_checkpoint_receipt.json. This post-push status note accompanies the next substantive checkpoint; do not create another receipt-only publication loop.
 
 **Latest estate evidence:** HUD 786 checks, assault/passengers 25081 checks, native line controls 43. Final capture 39707 actor-frame checks, zero HUD/hidden-survivor/route errors and zero result-camera jump. 88.197-second video version 3, native combat 48.30s, four Whittaker survivors. See estate report for bounded validation and failed trials.
 
@@ -90,7 +90,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Finish scoped source checkpoint/publication, then Brandon reviews version 3. Apply further feedback without reopening parked vocals or broad performance work. Consult Git and local feedback checkpoint receipt for exact publication state.
+**Immediate next task:** Finish this narrow checkpoint/publication, then Brandon reviews the revised siren and survivor-first result stacks in version 4. Preserve the accepted battle, parked vocals and all unrelated work.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
@@ -177,3 +177,12 @@ and its remote before making a new synchronization claim.
 
 ### Historical Raiders correction — 2026-09-14 (superseded as active task)
 The delivered Raiders recording was rejected for wrong-side arrival, synthetic music and route-line clutter. Current task: eastbound lower-carriageway arrival, convincing recorded heavy guitar, sirens 3 dB quieter, no persistent unit paths, verified Raiders-victory mobile video. Preserve the 3-bike / pickup / 3-bike formation. This was completed by the original-audio revision above; owner review is next. Performance and Whittaker remain parked.
+
+## Parallel work register - 2026-09-14
+
+| Chat / owner | Scope | Last verified state / next action |
+| --- | --- | --- |
+| Existing BUILD chat | Whittaker Estate, recording and subsequent owner feedback | Version 3 delivered; source 77874ac published; owner review pending. Retains estate scope. |
+| Parallel assignment chat 3ca0ac6a33c3 | Onboarding and coordination records only; source ownership not yet assigned | READY for Brandon's separate assignment. Claim exact files after the assignment and a fresh status/ownership check. |
+
+Brandon explicitly directed this chat to follow the shared handoff/update rhythm while awaiting a separate assignment. Preserve existing work; estate remains with the existing BUILD chat. See journal entry 20260914-parallel-onboarding-3ca0ac6a33c3-01. This is a saved ownership record, not an automatic feed of another chat.

@@ -49,7 +49,7 @@ func rebuild(b):
    player.max_distance=900. if identity=="stateline" else 1050.;player.attenuation=.7;player.panning_strength=.75
    player.set_meta("base_gain",-18. if identity=="stateline" else (-13.5 if identity=="trc" else -29.));player.set_meta("offset",count*2.35)
    player.set_meta("is_trc_siren",identity=="trc")
-   player.pitch_scale=.5 if identity=="trc" else 1.
+   player.pitch_scale=.75 if identity=="trc" else 1.
    player.set_meta("is_radio",identity=="stateline");player.set_meta("side_id",side)
    sources[v.battle_vehicle_id]=player;count+=1
 func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0,victory_mix: float=0.0):
@@ -76,7 +76,7 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
    # A persistent warning source, not radio music. Use broken, wavering warning pulses and
    # enough distance reach to remain audible after the camera leaves the convoy.
    var victory_dip=clampf(victory_mix,0.,1.) if not winner.is_empty() and str(player.get_meta("side_id",""))!=winner else 0.
-   player.volume_db=-13.5-6.0*clampf(battle_mix,0.,1.)-2.0*duck-3.0*ending-11.0*victory_dip
+   player.volume_db=-13.5-18.0*clampf(battle_mix,0.,1.)-2.0*duck-3.0*ending-11.0*victory_dip
    player.max_distance=2600.;player.attenuation=.22;player.panning_strength=.35
   player.set_meta("victory_foreground",foreground)
   if not player.playing:player.play(float(player.get_meta("offset",0.)))

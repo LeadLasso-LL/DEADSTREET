@@ -829,3 +829,40 @@ Remaining: owner visual/listening acceptance; historical estate 44.42 FPS sample
 
 
 Code/source hashes match the final recording snapshot. Video transfer hash verified independently and existing recording replaced as version 3. Technical success does not imply owner acceptance. Preparing only this feedback scope for commit/push under existing authorization; preserve every unrelated dirty/untracked item. No recursive receipt-only publication loop.
+
+
+## 20260914-active-resume-17 - Feedback checkpoint published
+
+Committed and pushed 77874acc264fe3318583780bf48b0776a3eba499 to the existing build branch; git ls-remote independently matches local HEAD. Scope: 84 files including preserved voice-bank renames, requested source changes, focused fixtures, evidence and handoff. Version-3 movie already saved and transfer hash verified. Unrelated work preserved; no build/capture process remains. Next: owner video review. This local receipt/status note accompanies the next substantive change, without a new receipt-only commit/push loop.
+
+## 20260914-parallel-onboarding-3ca0ac6a33c3-01 - Parallel chat onboarded; separate assignment pending
+
+- Type/status: WORKFLOW / READY FOR ASSIGNMENT. Source: Brandon in parallel chat 3ca0ac6a33c3 requested onboarding through the default handoff, hive-mind updates and awareness of the BUILD chat; he will supply a separate assignment.
+- Read live AGENTS.md, Hive Mind, recent journal through active-resume-17, current Project Control milestones, estate README and feedback receipt. Attached September-7 Project Control and recovered September-13 handoffs are historical, superseded for current build status.
+- Verified native Windows checkout C:/Users/brand/OneDrive/Documents/dead-street, branch build/arsenal-checkpoint-20260911, HEAD 77874acc264fe3318583780bf48b0776a3eba499. Fresh git ls-remote independently matched. Index empty; existing modified and untracked work preserved.
+- Latest estate state: version-3 recording delivered, feedback source published; owner visual/listening acceptance pending. Vocals parked; compact shared HUD; half-speed TRC siren; complete lower fence/gate; covered assault arrival; real 7/5/4 passengers; four-person Vigil flank; white Workhorse on circle. Existing BUILD chat retains estate and feedback scope.
+- Validation: reviewed prior evidence, no gameplay tests/render/pack/capture launched. No matching project Godot/FFmpeg/Python build/capture workers observed in the scoped process query; this does not establish another chat's internal state.
+- Open: historical estate 44.42 FPS sample not remeasured after feedback; sustained performance/headroom, global convoy/personnel caps, shield proposal and legacy whole-project regression unresolved. Estate 16-per-side showcase does not approve global caps.
+- Scope: only this journal event and Hive Mind work register, appended with fresh reads and prior contents preserved. First append attempt did not execute because bare python resolves to the Windows Store alias; PowerShell/.NET append used instead. No source edits, staging, commit or push. Local coordination notes accompany the next substantive checkpoint, without a receipt-only publication loop.
+- Next: receive Brandon's separate assignment; read relevant standards/source; recheck live ownership/dirty state; claim exact scope before implementation; acknowledge messages promptly and give meaningful progress at least every minute during work.
+
+
+## 20260914-siren-cards-01 - Owner accepts battle; narrow presentation corrections
+
+Brandon: this battle is amazing; nothing should change except siren pace and combat loudness. Version-3 battle, layout, arrival, units, cover/flank, HUD, vehicle placement and ending are OWNER-ACCEPTED. Half-speed siren is too slow/drawn out and too loud during combat. Set pitch_scale to 0.75, midpoint between original 1.0 and current 0.5; increase TRC-only combat reduction from 6 to 18 dB (12 dB quieter than v3), preserving arrival gain, engines, Whittaker music and other emitters.
+
+Additional standing owner rule: survivors appear first in both final result card stacks, across every battle. Living wounded count as survivors. Preserve weapon-class grouping within alive/dead groups, then stable participant-ID order. No combat or unit-state changes. Existing export gates will verify actual order and combat siren gain; a new recording will preserve the accepted configuration. No broad gameplay/performance retesting or other design edits.
+
+
+## 20260914-siren-cards-02 - Narrow source diff confirmed; recording underway
+
+Only two live presentation sources changed: two TRC audio parameters and the shared final-card comparator. All other 177 battle/gameplay/director source hashes match the approved checkpoint. Additional recording telemetry samples at movie 25 and 30 seconds cover active combat; export gates require 0.75 pitch, combat gain at or below -31.5 dB, and survivors preceding casualties in each rendered side snapshot. Native recording has reached combat without errors and matches approved early timing/counts. Previous recording and raw files preserved; no repacking until capture finishes.
+
+
+## 20260914-siren-cards-03 - Final refinement validated and delivered
+
+VALIDATED / delivered as video version 4. TRC siren pitch 0.75; arrival gain stays -13.5 dB, full combat base is -31.5 dB before existing shot ducking (12 dB quieter than version 3). Observed active-combat samples were -33.5 and -33.167 dB. Both final stacks are survivor-first; the Whittaker stack begins ACTIVE, WOUNDED, ACTIVE, ACTIVE, then casualties. All 177 protected battle/gameplay/director source hashes are unchanged.
+Comparison with owner-accepted version 3: identical seed, combat duration, winner, commands, phase frames, arrival manifests, shot count, result summaries and every individual unit result state. Only siren parameters and final display sorting changed in live code. Existing capture/export validation passed, with 39707 actor-frame checks, zero presentation/arrival/outro errors and zero HUD camera violations; no broad gameplay or performance retesting.
+Video: 88.197s, 1280x720/30fps H.264/AAC, 7521709 bytes, full decode passed; SHA256 1ba06c48d84e756f09dc25ec09802423a4583f79f0ef9245c26a26384256b77f. Saved as version 4 of libfile_5962de2d811081919c16f93b3f306b4c. Version 3 remains the accepted battle reference and is retained in history and siren_cards_20260914/prior_version3. Exact comparison and gain/order evidence: siren_cards_20260914/verification.json. Revised siren/card presentation awaits owner review; accepted battle behavior stays locked.
+
+Scoped publication follows under existing authorization. No unrelated files staged, no new approval loop, no additional design changes.

@@ -311,7 +311,11 @@ func build_results():
   var summary=preload("res://gameplay/battle_result_summary.gd").for_side(battle,side)
   result_summaries[side]=summary
   Card.label(panel,Vector2(104,83),Vector2(382,22),summary.text,11,Color("#c4c9bf"),font)
-  units.sort_custom(func(a,b):return ROLES.find(a.weapon_type)<ROLES.find(b.weapon_type))
+  units.sort_custom(func(a,b):
+   if a.is_alive!=b.is_alive:return a.is_alive
+   var left=ROLES.find(a.weapon_type);var right=ROLES.find(b.weapon_type)
+   return left<right if left!=right else a.participant_id<b.participant_id
+  )
   result_snapshot[side]=[]
   var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(16,116);scroll.size=Vector2(476,258);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
   var grid=GridContainer.new();scroll.add_child(grid);grid.columns=3 if units.size()>4 else 2;grid.add_theme_constant_override("h_separation",10);grid.add_theme_constant_override("v_separation",10)

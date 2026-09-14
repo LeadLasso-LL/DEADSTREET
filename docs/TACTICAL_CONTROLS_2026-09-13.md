@@ -1,3 +1,7 @@
+## 2026-09-14 owner rule: survivors first in final results
+
+For every battle and both factions, final result cards put all living units before dead units. Wounded living units count as survivors. Within each group retain weapon-class grouping and a stable participant-ID tie break. This changes display order only, never casualty state or surviving-unit counts.
+
 ## 2026-09-14 owner correction: uniform HUD footprint
 
 The complete combat HUD keeps the bridge baseline size across maps and roster sizes: 226 logical units in the 1152x800 reference frame, scaled to fit both viewport dimensions. More than twelve unit cards use two condensed 46-unit rows inside the same panel; the HUD must never grow taller to accommodate units. Bridge/estate native layout checks cover 12/16 cards at three viewport sizes, including card states and field containment.

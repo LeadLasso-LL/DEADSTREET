@@ -11,11 +11,18 @@ assert not record['presentation_errors'] and record['camera_safety_violations']=
 assert record['max_outro_jump_pixels']<3.0 and record['result_camera_jump_pixels']<.1
 assert not record['voice_missing'] and record['voice_clips_loaded']==0 and record['max_simultaneous_voices']==0
 assert all(x['matches'] for x in record['hud_weapon_models'])
-assert record['horn_gain_samples'] and all(x['pitch_scale']==.5 for x in record['horn_gain_samples'])
+assert record['horn_gain_samples'] and all(x['pitch_scale']==.75 for x in record['horn_gain_samples'])
 assert {x['vehicle']:x['count'] for x in record['arrival_manifest']}=={'aegis':7,'watchdog':5,'vigil':4}
 passengers=[p for v in record['arrival_manifest'] for p in v['passengers']]
 assert len({p['id'] for p in passengers})==16 and all(p['covered'] for p in passengers)
 assert sum(p['flanker'] for p in passengers)==4
+combat_siren=[x for x in record['horn_gain_samples'] if x['phase']=='active']
+assert combat_siren and all(x['gain_db']<=-31.49 for x in combat_siren)
+for rows in record['results'].values():
+ seen_dead=False
+ for row in rows:
+  if row['state']=='DEAD':seen_dead=True
+  else:assert not seen_dead,'Survivor appears below casualties'
 trim=record['trim_frames']/30;raw=out/'estate_raw.avi'
 assert raw.exists()
 meta=subprocess.run([ff,'-hide_banner','-i',str(raw)],capture_output=True,text=True).stderr
