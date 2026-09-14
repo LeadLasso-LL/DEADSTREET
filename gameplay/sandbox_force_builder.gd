@@ -23,19 +23,20 @@ var error_override=""
 var map_option: OptionButton
 var map_description: Label
 var defender_controls=[]
+var embedded=false
 
 func _ready():
  size=Vector2(1152,860);mouse_filter=Control.MOUSE_FILTER_STOP
  if config.is_empty():config=Config.from_legacy({})
  font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
  var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#121c20")
- label_at(self,Vector2(28,20),Vector2(920,36),"DEAD STREET / BATTLE SETUP",26)
+ var title=label_at(self,Vector2(28,20),Vector2(920,36),"DEAD STREET / BATTLE SETUP",26)
  map_option=option(self,Vector2(28,62),Vector2(310,33))
  map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge");map_option.add_item("Whittaker Estate")
  map_option.select(["harold","river_bridge","whittaker_estate"].find(config.get("map_id","harold")))
  map_option.item_selected.connect(func(i):choose_map(["harold","river_bridge","whittaker_estate"][i]))
  map_description=label_at(self,Vector2(356,66),Vector2(768,28),"1–12 units per side / All factions and equipment unlocked",12)
- button_at(self,Vector2(992,20),Vector2(132,36),"ARSENAL",queue_free)
+ var close=button_at(self,Vector2(992,20),Vector2(132,36),"ARSENAL",queue_free)
  for side_index in range(2):build_side("attacker" if side_index==0 else "defender",28+side_index*564)
  convoy_label=label_at(self,Vector2(28,720),Vector2(720,65),"",13)
  convoy_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -46,6 +47,10 @@ func _ready():
  status=label_at(self,Vector2(28,807),Vector2(744,55),"",13);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
  start_button=button_at(self,Vector2(808,808),Vector2(316,36),"START BATTLE",launch)
  refresh_status()
+ if embedded:
+  size=Vector2(1152,816);bg.size=size;title.hide();close.hide()
+  for child in get_children():
+   if child is Control and child not in [bg,title,close]:child.position.y-=46
 
 func label_at(parent,at,sz,value,points=13):return Card.label(parent,at,sz,value,points,Color("#d5ddcf"),font)
 func button_at(parent,at,sz,value,action):
@@ -155,10 +160,12 @@ func show_error(message: String):error_override=message;refresh_status()
 func launch():
  if Config.validate(config).valid:launch_requested.emit(config.duplicate(true))
 func open_fleet(side: String="attacker"):
- if has_node("VehicleFleet"):return
+ var host=get_parent().get_parent() if embedded else self
+ if host.has_node("VehicleFleet"):return
  var fleet=FleetPanel.new();fleet.name="VehicleFleet";fleet.required_units=config[side].units.size();fleet.faction_id=config[side].faction;fleet.selected=config[side].get("vehicles",[]).duplicate();fleet.allow_encounter_lab=false
  fleet.convoy_selected.connect(func(models):config[side].vehicles=models.duplicate();config[side].erase("vehicle_occupants");changed())
- add_child(fleet)
+ if embedded:get_parent().get_parent().add_child(fleet)
+ else:add_child(fleet)
 
 func choose_map(id: String):
  config.map_id=id

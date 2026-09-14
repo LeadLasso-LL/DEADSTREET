@@ -1,0 +1,10 @@
+{
+	"battle_launched_after_preview_only": true,
+	"checks": 3684,
+	"errors": [],
+	"factions": 23,
+	"paired_unit_images": 115,
+	"preview_end_seconds": 79.6333333333333,
+	"vehicles": 75,
+	"weapons": 30
+}

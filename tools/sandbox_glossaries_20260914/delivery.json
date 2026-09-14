@@ -1,0 +1,43 @@
+{
+  "filename": "Dead_Street_Sandbox_Panels_Preview.mp4",
+  "bytes": 2365809,
+  "sha256": "a0c550be3815f8fcc045d6dfa17a35f2c3138590dee248205260c9eeb71d5522",
+  "width": 1440,
+  "height": 1000,
+  "fps": 30,
+  "frames": 2389,
+  "duration_seconds": 79.63333333333334,
+  "codec": "H.264",
+  "pixel_format": "yuv420p",
+  "faststart": true,
+  "full_decode_passed": true,
+  "checks": 3684,
+  "errors": [],
+  "chunks": [
+    {
+      "name": "000.b64",
+      "bytes": 524288,
+      "sha256": "ab6042c7f5a137eb549a6c06351ce9274c43482898d227fdf025048e4e1b7922"
+    },
+    {
+      "name": "001.b64",
+      "bytes": 524288,
+      "sha256": "521c4132cb47062dbd1178d6b5d895d7d90efcf09b3f84f33fa2743bf95a44e9"
+    },
+    {
+      "name": "002.b64",
+      "bytes": 524288,
+      "sha256": "7b751520ef58e5123f7f18a284780200a7401959d60461da183621533c181018"
+    },
+    {
+      "name": "003.b64",
+      "bytes": 524288,
+      "sha256": "f382ab858002a9aeea15086ac7757979d82d16b750534b2c15e6f08f1cba4932"
+    },
+    {
+      "name": "004.b64",
+      "bytes": 268657,
+      "sha256": "55ececfee5adf1dca696f2d7848a01eb4599695dfbee5e352762d65509282d9b"
+    }
+  ]
+}

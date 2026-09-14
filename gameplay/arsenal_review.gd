@@ -45,6 +45,7 @@ var battle_clock=0.
 var custom_loadouts: Dictionary={}
 var custom_battle=false
 var seed_value=4101
+var menu_panels: Control
 func _ready():
  font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
  sound=AudioStreamPlayer.new();add_child(sound);sound.volume_db=-10
@@ -130,6 +131,10 @@ func _ready():
  button(surface,Vector2(826,797),Vector2(284,39),"TEST 5v5 - ALL FIVE CLASSES",start_battle.bind(false))
  text(Vector2(28,800),Vector2(775,42),"Esc returns to the sandbox. Unit-tier bonuses are initial balance values for testing.\nGuide weapon pairings are suggestions; they do not limit these loadouts.",12)
  show_class("pistol")
+ for child in surface.get_children():
+  if child is CanvasItem:child.hide()
+ menu_panels=preload("res://gameplay/sandbox_menu_panels.gd").new()
+ menu_panels.name="SandboxMenu";menu_panels.owner_scene=self;surface.add_child(menu_panels)
 func text(at: Vector2,sz: Vector2,value: String,points: int) -> Label:
  return Card.label(surface,at,sz,value,points,Color("#d5ddcf"),font)
 func button(parent: Node,at: Vector2,sz: Vector2,value: String,action: Callable) -> Button:
@@ -182,6 +187,7 @@ func start_battle(snipers: bool,config: Dictionary={}):
  if not result.has("battle"):
   var message="Test could not start: "+str(result.get("error",result))
   note.text=message
+  if menu_panels!=null:menu_panels.builder.show_error(message)
   if surface.has_node("ForceBuilder"):surface.get_node("ForceBuilder").show_error(message)
   runtime.queue_free();runtime=null;return
  battle=result.battle;ready_started=false;battle_clock=0.;ui.visible=false
@@ -256,6 +262,7 @@ func start_blockade_battle(context: Dictionary):
  loadouts=original
 
 func open_force_builder():
+ if menu_panels!=null:menu_panels.show_tab("battle_setup");return
  if surface.has_node("ForceBuilder"):return
  var panel=preload("res://gameplay/sandbox_force_builder.gd").new();panel.name="ForceBuilder"
  panel.config=(preload("res://gameplay/sandbox_force_config.gd").from_legacy(loadouts) if custom_loadouts.is_empty() else custom_loadouts.duplicate(true))

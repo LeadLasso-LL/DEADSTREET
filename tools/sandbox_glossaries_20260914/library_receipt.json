@@ -1,0 +1,20 @@
+{
+  "current_version_number": 0,
+  "directory_id": "6aa0207fd3c08191bffca33062d73c97",
+  "external_connectors_accessed": false,
+  "file_id": "file_000000006cb0823094220b3869e58363",
+  "file_name": "Dead_Street_Sandbox_Panels_Preview.mp4",
+  "file_size_bytes": 2365809,
+  "library_file_id": "libfile_5979eacadd048191b4f35b665e6defc4",
+  "mime_type": "video/mp4",
+  "operation": "create_library_file",
+  "path": "/Dead Street/Dead_Street_Sandbox_Panels_Preview.mp4",
+  "restored_from_version_number": null,
+  "status": "succeeded",
+  "xattrs": [
+    {
+      "name": "user.library-file-version",
+      "value": "0"
+    }
+  ]
+}
