@@ -1,0 +1,34 @@
+{
+  "accepted_battle_comparison": {
+    "seed": true,
+    "combat_seconds": true,
+    "winner": true,
+    "commands": true,
+    "phases": true,
+    "arrival_manifest": true,
+    "audio_shots": true,
+    "result_summaries": true,
+    "results": true,
+    "frames": true,
+    "seconds": true
+  },
+  "protected_sources": 195,
+  "changed_protected_sources": [],
+  "hud_checks": 834,
+  "camera_safety_violations": 0,
+  "actor_frame_checks": 39707,
+  "presentation_errors": [],
+  "arrival_errors": [],
+  "outro_errors": [],
+  "result_camera_jump_pixels": 0.0,
+  "video": {
+    "bytes": 7520962,
+    "sha256": "64a8b2cc27cd13bdb7b71b9cb17b9efba9404bdf16bf05dc9e7808b373d21210",
+    "seconds": 88.19666666666667,
+    "decoded_to_end": true,
+    "audio_peak": 0.6183186769485474,
+    "audio_rms": 0.02567397989332676
+  },
+  "camera_policy": "Source hash unchanged; original intro zoom/pan and subsequent camera path retained",
+  "scope": "Two live presentation sources: HUD width and estate scenery/driveway; no battle/geometry/audio/result-state edits"
+}

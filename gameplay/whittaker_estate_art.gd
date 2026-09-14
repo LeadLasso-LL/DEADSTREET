@@ -46,7 +46,7 @@ func _draw():
  rng.seed=14371 if prop.is_empty() else absi(str(prop[0]).hash())
  if prop.is_empty():
   if not bake_mode and ground_plate!=null:
-   r(Rect2(-1600,-1100,5000,2800),Color("#56684a"));draw_texture(ground_plate,Vector2(-512,-384))
+   r(Rect2(-1600,-1100,5000,2800),Color("#56684a"));draw_texture(ground_plate,Vector2(-1200,-900))
   else:ground()
   return
  var box: Rect2=prop[1];var q=p(box.position);var sz=box.size*Vector2(8,6)
@@ -71,17 +71,9 @@ func _draw():
    if texture!=null:draw_texture_rect(texture,Rect2(Vector2(-64,-66)*Models.TACTICAL_SCALE,Vector2(128,96)*Models.TACTICAL_SCALE),false,Color("#c1c0a9"))
 func ground():
  r(Rect2(-1600,-1100,5000,2800),Color("#56684a"))
- # Quiet city silhouette through the treeline, not a second visual focal point.
- r(Rect2(-650,-310,2700,240),Color("#728078"))
- for x in range(-600,2000,38):
-  var h=rng.randf_range(18,74);var y=-130+rng.randf_range(-5,5)
-  r(Rect2(x,y-h,rng.randf_range(25,38),h),Color("#829184").darkened(rng.randf_range(.0,.1)))
-  if x%3==0:l(Vector2(x+14,y-h),Vector2(x+14,y-h-12),Color("#6b7567"),2.)
-  for wy in range(7,int(h)-4,10):
-   for wx in range(5,25,8):r(Rect2(x+wx,y-h+wy,2,2),Color("#828775"))
- for i in range(90):
-  var q=Vector2(-520+i*28.,-65+rng.randf_range(-20,25))
-  distant_tree(q,rng.randf_range(.7,1.35))
+ var foreground_rng=rng.state
+ surroundings()
+ rng.state=foreground_rng
  # Lawn stripes are subtle; bare patches, edged beds and gravel keep it grounded.
  var lawn=Rect2(-220,-35,1900,780);r(lawn,Color("#56684a"))
  for x in range(-220,1680,45):r(Rect2(x,-35,22,780),Color(.75,.77,.51,.045))
@@ -89,12 +81,14 @@ func ground():
  for i in range(45):
   var q=Vector2(rng.randf_range(180,1370),rng.randf_range(20,620));oval(q,Vector2(rng.randf_range(4,17),rng.randf_range(2,8)),Color(.25,.28,.18,.15))
  # Public road: right-hand traffic northbound in the east lane. TRC turns right.
- r(Rect2(9,-600,130,1900),Color("#303532"));grain(Rect2(12,-220,123,1150),4000)
- for x in [18.,132.]:l(Vector2(x,-500),Vector2(x,1200),Color("#c8c0a2"),1.)
- for y in range(-480,1200,26):r(Rect2(71,y,2,15),Color("#b6a970"));r(Rect2(76,y,2,15),Color("#b6a970"))
- r(Rect2(140,-120,8,920),Color("#716b54"));grain(Rect2(140,-120,8,920),550)
+ r(Rect2(9,-1100,130,2800),Color("#303532"));grain(Rect2(12,-1100,123,2800),4000)
+ for x in [18.,132.]:l(Vector2(x,-1100),Vector2(x,1700),Color("#c8c0a2"),1.)
+ for y in range(-1090,1700,26):r(Rect2(71,y,2,15),Color("#b6a970"));r(Rect2(76,y,2,15),Color("#b6a970"))
+ r(Rect2(140,-1100,8,2800),Color("#716b54"));grain(Rect2(140,-1100,8,2800),550)
  # Drive with a real circular turnaround and four narrow connector paths.
- var drive=Rect2(135,336,663,108);r(drive.grow(4),Color("#8d8971"));r(drive,Color("#767461"));grain(drive,2800)
+ var drive=Rect2(143,336,655,108)
+ # The outside border starts at x139, exactly on the public road edge.
+ r(Rect2(139,332,663,116),Color("#8d8971"));r(drive,Color("#767461"));grain(drive,2800)
  var center=C.FOUNTAIN*Vector2(8,6)
  oval(center,Vector2(208,145),Color("#aba48a"));oval(center,Vector2(201,139),Color("#7f7d69"))
  for n in range(28):
@@ -170,6 +164,52 @@ func ground():
  draw_string(font,Vector2(380,298),"W",HORIZONTAL_ALIGNMENT_CENTER,14,8,Color("#d3c79a"))
  for at in [Vector2(405,304),Vector2(405,450),Vector2(850,313),Vector2(982,448)]:
   l(at,at-Vector2(0,24),Color("#303b2f"),2.);r(Rect2(at-Vector2(3,29),Vector2(6,7)),Color("#a69865"));r(Rect2(at-Vector2(2,28),Vector2(4,4)),Color("#d3bf7e"))
+func surroundings():
+ # Decorative noncombat context, baked with an independent random sequence.
+ var hinterland=Rect2(-1600,-1100,5000,1065)
+ r(hinterland,Color("#526044"));grain(hinterland,36000)
+ for field in [Rect2(-1150,-830,1030,650),Rect2(190,-910,920,460),Rect2(1170,-840,1530,640)]:
+  r(field,Color("#626b49"));grain(field,9000)
+  for y in range(int(field.position.y)+8,int(field.end.y),16):
+   l(Vector2(field.position.x,y),Vector2(field.end.x,y),Color(.31,.36,.23,.24),3.)
+ # Access lane and drainage shoulders connect neighboring rural lots.
+ for lane in [Rect2(-1400,-376,1409,28),Rect2(139,-376,2800,28)]:
+  r(lane.grow(4),Color("#77765c"));r(lane,Color("#686b55"));grain(lane,2200)
+  l(lane.position+Vector2(0,5),Vector2(lane.end.x,lane.position.y+5),Color("#83816a"),1.)
+ for plot in [Rect2(-1040,-625,265,210),Rect2(-570,-605,250,195),Rect2(235,-655,320,232),Rect2(735,-610,265,194),Rect2(1300,-665,310,244),Rect2(1890,-620,280,206)]:
+  r(plot.grow(3),Color("#66694e"));r(plot,Color("#72735a"));grain(plot,1100)
+  var shed=Rect2(plot.position+Vector2(28,24),Vector2(plot.size.x*.59,64))
+  shadow(shed.position,shed.size,16.)
+  r(shed,Color("#85816c"))
+  r(Rect2(shed.position+Vector2(0,42),Vector2(shed.size.x,28)),Color("#676a59"))
+  poly([shed.position+Vector2(-4,38),shed.position+Vector2(13,-10),shed.position+Vector2(shed.size.x-13,-10),shed.position+Vector2(shed.size.x+4,38)],Color("#4c5a50"))
+  l(shed.position+Vector2(13,-10),shed.position+Vector2(shed.size.x-13,-10),Color("#7a8370"),2.)
+  for x in range(14,int(shed.size.x)-8,13):
+   l(shed.position+Vector2(x,1),shed.position+Vector2(x-7,34),Color("#606e5e"),1.)
+  for x in [12.,shed.size.x-32.]:
+   r(Rect2(shed.position+Vector2(x,46),Vector2(18,13)),Color("#39493e"))
+   l(shed.position+Vector2(x,61),shed.position+Vector2(x+20,61),Color("#a09a80"),2.)
+  var path=Rect2(plot.get_center().x-8,plot.end.y,16,-348-plot.end.y)
+  r(path,Color("#77765c"));grain(path,150)
+  for x in range(int(plot.position.x),int(plot.end.x),22):
+   r(Rect2(x,plot.end.y-12,2,13),Color("#555d44"))
+  l(Vector2(plot.position.x,plot.end.y-8),Vector2(plot.end.x,plot.end.y-8),Color("#7a7b5c"),1.)
+ # Layered wooded breaks keep surrounding buildings behind the estate.
+ for row in [-810.,-270.,-170.,-55.]:
+  for x in range(-1380,2920,42):
+   if x>-30 and x<184:continue
+   var at=Vector2(x+rng.randf_range(-13,13),row+rng.randf_range(-23,20))
+   oval(at+Vector2(11,4),Vector2(29,10),Color(.12,.18,.11,.19))
+   distant_tree(at,rng.randf_range(.7,1.3))
+ for x in range(-1230,2790,190):
+  if x>0 and x<180:continue
+  var at=Vector2(x,-331)
+  l(at+Vector2(3,0),at+Vector2(3,-64),Color("#424d3b"),3.)
+  l(at+Vector2(-9,-58),at+Vector2(14,-58),Color("#787862"),2.)
+  if x<2600:
+   for i in range(12):
+    var t=float(i)/12.;var u=float(i+1)/12.
+    l(at+Vector2(t*190,-59+sin(t*PI)*8),at+Vector2(u*190,-59+sin(u*PI)*8),Color("#49513e"),.7)
 func distant_tree(q: Vector2,scale_value: float):
  var c=Color("#394b39")
  r(Rect2(q-Vector2(2,30)*scale_value,Vector2(4,34)*scale_value),Color("#3e4332"))

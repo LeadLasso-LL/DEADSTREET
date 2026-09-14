@@ -4,7 +4,7 @@ const Director=preload("res://tools/tactical_controls/estate_director.gd")
 var errors=[]
 var checks=0
 var samples=[]
-var out="C:/Users/brand/OneDrive/Documents/dead-street/tools/tactical_controls/hud_fixed_20260914"
+var out="C:/Users/brand/OneDrive/Documents/dead-street/tools/whittaker_estate/width_scenery_20260914"
 func _initialize():call_deferred("run")
 func check(ok,label):
  checks+=1
@@ -37,10 +37,16 @@ func run():
   for size in [Vector2i(1440,1000),Vector2i(1920,1080),Vector2i(1280,720)]:
    root.size=size;DisplayServer.window_set_size(size)
    await process_frame;await process_frame;await RenderingServer.frame_post_draw
+   for settle in range(4):await process_frame
+   await RenderingServer.frame_post_draw
    var rect=hud.surface.get_global_rect()
    var viewport_size=hud.get_viewport_rect().size
    var expected=226.*minf(viewport_size.x/1152.,viewport_size.y/800.)
    check(absf(rect.size.y-expected)<.1,map_id+" fixed bridge height "+str(size))
+   check(absf(rect.size.x-viewport_size.x)<.1,map_id+" full viewport width")
+   check(absf(rect.position.x)<.1,map_id+" aligned screen origin")
+   check(hud.background.size.x*hud.surface.scale.x/viewport_size.x>.978,map_id+" near-full panel width")
+   check(rect.encloses(hud.playback.get_global_transform()*Rect2(Vector2.ZERO,Vector2(421,29))),map_id+" playback inside expanded panel")
    check(rect.size.y/viewport_size.y<=.283,map_id+" bounded screen share")
    check(hud.cards.size()==(16 if map_id=="whittaker_estate" else 12),map_id+" complete roster")
    for id in hud.cards:
@@ -50,13 +56,16 @@ func run():
      if not field.visible:continue
      check(Rect2(Vector2.ZERO,card.size).grow(.1).encloses(Rect2(field.position,field.size)),map_id+" card field enclosed "+str(field.name))
     check(not card.get_global_rect().intersects(Rect2(hud.surface.global_position+hud.command_row.position*hud.surface.scale,Vector2(1152,29)*hud.surface.scale)),map_id+" no card-command overlap")
+   for header in [hud.faction_emblem,hud.faction_label,hud.strength_label,hud.strength_fill.get_parent()]:
+    check(rect.encloses(header.get_global_rect()),map_id+" header enclosed "+str(header.name))
+   print("HUD_HEADER ",map_id," ",size," ",hud.faction_emblem.position," ",hud.faction_label.get_global_rect()," visible ",hud.faction_label.is_visible_in_tree()," text ",hud.faction_label.text)
    var debug_fields=[]
    for field in [hud.cards.values()[0].weapon_model,hud.cards.values()[0].status,hud.cards.values()[0].number,hud.cards.values()[0].command_status]:
     debug_fields.append({"name":str(field.name),"text":field.text,"pos":str(field.position),"size":str(field.size),"minimum":str(field.get_minimum_size())})
    print("HUD_FIELDS ",map_id," ",JSON.stringify(debug_fields))
    var label=map_id+"_"+str(size.x)+"x"+str(size.y)
    root.get_texture().get_image().save_png(out+"/"+label+".png")
-   samples.append({"map":map_id,"viewport":[size.x,size.y],"hud_height":rect.size.y,"hud_fraction":rect.size.y/viewport_size.y,"cards":hud.cards.size(),"card_height":hud.cards.values()[0].size.y,"voices":voices})
+   samples.append({"map":map_id,"viewport":[size.x,size.y],"logical_viewport":str(viewport_size),"hud_width":rect.size.x,"panel_width":hud.background.size.x*hud.surface.scale.x,"hud_height":rect.size.y,"hud_fraction":rect.size.y/viewport_size.y,"cards":hud.cards.size(),"card_height":hud.cards.values()[0].size.y,"voices":voices})
   # Force representative card states in this paused review-only scene.
   var ids=hud.cards.keys()
   var wounded=b.get_participant(ids[0]);wounded.is_wounded=true

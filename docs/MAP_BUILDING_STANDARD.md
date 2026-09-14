@@ -55,3 +55,8 @@ The complete map-art pass through `139d10c` is visually accepted, including the 
 Existing technical evidence: 66 can checks, 40 wall checks, all 100 cover positions and both entrances reachable; valid geometry. Latest measured full street run was approximately 54–55 FPS, below the earlier approximately 59 FPS wall-only review, with remaining spikes in the combat step. The final car correction was visually inspected and passed existing checks; it did not establish a new FPS result.
 Font portability, exact source-emblem matching, broader combat AI review and campaign-to-layout selection remain recorded follow-ups. The current map approval does not resolve these separate tasks.
 The next feature backlog remains in [HAROLD_AVE_PRODUCTION_BRIEF.md](HAROLD_AVE_PRODUCTION_BRIEF.md): arrival choices, deployment previews/information, ready orders, drag selection and arrival/victory staging. Wait for Brandon's next instructions before selecting new scope.
+
+
+## Estate intro surroundings correction - 2026-09-14
+
+Brandon requested continuous developed context beyond the fightable estate visible at the existing intro zoom. Expand and furnish the static scenery coverage rather than changing the approved camera. Estate now has a 4096x2304 bake at origin (-1200,-900), continuing public road, fields, tree belts, utility lines and neighboring lots. These remain noncombat scenery; no collision, cover or route changes. The main driveway and its border end flush at the public road edge. Native intro and road-junction inspection passed; owner visual review remains pending. Detailed evidence and reproduction: tools/whittaker_estate/README.md.

@@ -19,6 +19,7 @@ var playback_buttons: Array[Button] = []
 var playback: Control
 var command_row: Control
 var count_label: RichTextLabel
+var header_fields: Array[Control] = []
 var faction_label: Label
 var faction_emblem: TextureRect
 var strength_label: Label
@@ -94,6 +95,9 @@ func setup(p_view: Node) -> void:
 	strength_fill.size = Vector2(101.5, 7)
 	strength_fill.color = Color("#83a38a")
 	strength_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header_fields.assign([faction_emblem, faction_label, divider, strength_label, strength_bg])
+	for field in header_fields:
+		field.set_meta("header_base_x", field.position.x)
 	var all = button(surface, "SELECT ALL", Vector2(24, 37), Vector2(118, 27))
 	all.tooltip_text = "Select all living units · Ctrl+A · Shift adds to selection"
 	all.pressed.connect(func(): if controller() != null: controller().select_class())
@@ -224,13 +228,18 @@ func _process(delta: float) -> void:
 	var viewport_size = get_viewport_rect().size
 	var factor = minf(viewport_size.x / DESIGN_SIZE.x, viewport_size.y / DESIGN_SIZE.y)
 	surface.scale = Vector2.ONE * factor
-	surface.position = Vector2((viewport_size.x - DESIGN_SIZE.x * factor) * .5, viewport_size.y - height * factor)
-	surface.size = Vector2(1152, height)
-	background.size = Vector2(1128, height - 5)
+	# Fill viewport width independently of the accepted height/text scale.
+	var layout_width = viewport_size.x / factor
+	surface.position = Vector2(0, viewport_size.y - height * factor)
+	surface.size = Vector2(layout_width, height)
+	background.size = Vector2(layout_width - 24, height - 5)
+	for field in header_fields:
+		field.position.x = float(field.get_meta("header_base_x")) + layout_width - DESIGN_SIZE.x
 	command_row.position = Vector2(0, height - 57)
-	playback.position = Vector2(710, height - 57)
+	playback.position = Vector2(layout_width - 442, height - 57)
 	feedback_label.position.y = height - 22
-	var width = (1104.0 - (columns - 1) * 5.0) / columns
+	feedback_label.size.x = layout_width - 52
+	var width = (layout_width - 48.0 - (columns - 1) * 5.0) / columns
 	var living = 0
 	for i in range(ordered.size()):
 		var id = ordered[i]

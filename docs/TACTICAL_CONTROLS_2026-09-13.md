@@ -4,7 +4,7 @@ For every battle and both factions, final result cards put all living units befo
 
 ## 2026-09-14 owner correction: uniform HUD footprint
 
-The complete combat HUD keeps the bridge baseline size across maps and roster sizes: 226 logical units in the 1152x800 reference frame, scaled to fit both viewport dimensions. More than twelve unit cards use two condensed 46-unit rows inside the same panel; the HUD must never grow taller to accommodate units. Bridge/estate native layout checks cover 12/16 cards at three viewport sizes, including card states and field containment.
+The complete combat HUD keeps the bridge baseline size across maps and roster sizes: 226 logical units in the 1152x800 reference frame, with height/text scale bounded by both viewport dimensions. The surface fills viewport width; its visible panel has 12 logical-unit insets on each side. Width is independent of the height-limited scale, and is identical across maps at matching viewports. This latest owner width correction supersedes the fixed 1152-unit surface width. More than twelve unit cards use two condensed 46-unit rows inside the same panel; the HUD must never grow taller to accommodate units. Bridge/estate native layout checks cover 12/16 cards at three viewport sizes, including card states and field containment.
 
 # Tactical HUD and player orders — 2026-09-13
 

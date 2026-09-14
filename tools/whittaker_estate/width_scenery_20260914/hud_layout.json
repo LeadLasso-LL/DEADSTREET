@@ -1,0 +1,97 @@
+{
+  "checks": 834,
+  "errors": [],
+  "faction_vocals_enabled": false,
+  "samples": [
+    {
+      "card_height": 94.0,
+      "cards": 12,
+      "hud_fraction": 0.282499998472211,
+      "hud_height": 225.717498779297,
+      "hud_width": 1151.99987792969,
+      "logical_viewport": "(1152.0, 799.0)",
+      "map": "river_bridge",
+      "panel_width": 1128.02993793177,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 94.0,
+      "cards": 12,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "hud_width": 1152.0,
+      "logical_viewport": "(1152.0, 648.0)",
+      "map": "river_bridge",
+      "panel_width": 1132.55995938831,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 94.0,
+      "cards": 12,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "hud_width": 1152.0,
+      "logical_viewport": "(1152.0, 648.0)",
+      "map": "river_bridge",
+      "panel_width": 1132.55995938831,
+      "viewport": [
+        1280,
+        720
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 46.0,
+      "cards": 16,
+      "hud_fraction": 0.282499998472211,
+      "hud_height": 225.717498779297,
+      "hud_width": 1151.99987792969,
+      "logical_viewport": "(1152.0, 799.0)",
+      "map": "whittaker_estate",
+      "panel_width": 1128.02993793177,
+      "viewport": [
+        1440,
+        1000
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 46.0,
+      "cards": 16,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "hud_width": 1152.0,
+      "logical_viewport": "(1152.0, 648.0)",
+      "map": "whittaker_estate",
+      "panel_width": 1132.55995938831,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "voices": 0
+    },
+    {
+      "card_height": 46.0,
+      "cards": 16,
+      "hud_fraction": 0.282499996232398,
+      "hud_height": 183.059997558594,
+      "hud_width": 1152.0,
+      "logical_viewport": "(1152.0, 648.0)",
+      "map": "whittaker_estate",
+      "panel_width": 1132.55995938831,
+      "viewport": [
+        1280,
+        720
+      ],
+      "voices": 0
+    }
+  ]
+}

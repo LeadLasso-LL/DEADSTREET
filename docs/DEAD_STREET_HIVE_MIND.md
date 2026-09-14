@@ -57,9 +57,9 @@ Existing code does not automatically mean approved design.
 - Repository: C:\Users\brand\OneDrive\Documents\dead-street
 - Documented origin: https://github.com/LeadLasso-LL/DEADSTREET.git
 - Observed build branch: build/arsenal-checkpoint-20260911
-- Published feedback checkpoint: 77874acc264fe3318583780bf48b0776a3eba499.
-- Verified remote checkpoint: 77874acc264fe3318583780bf48b0776a3eba499.
-- Owner feedback source, handoff and validation evidence are published; version-3 review next.
+- Published presentation checkpoint: 555d6925fbf1a965a3b8027bc2f5186fdd19d4bc.
+- Verified remote checkpoint: 555d6925fbf1a965a3b8027bc2f5186fdd19d4bc.
+- Owner feedback source, handoff and validation evidence are published; version-4 siren/card review next.
 - [Standing commit/push authorization](PROJECT_WORKFLOW_AUTHORIZATION.md) applies
   to the established work/destination. Preserve scope and unrelated changes.
 
@@ -73,11 +73,11 @@ live Dead Street repository. Follow their documentation and handoff workflow.”
 
 ## Current coordination and next action
 
-**Active objective:** Version-3 battle OWNER-ACCEPTED. Narrow siren/result-card changes implemented and validated: 0.75 siren speed, 12 dB quieter in combat, survivors before casualties for every final result stack. Version-4 video saved; battle timing/commands/all unit outcomes exactly match version 3. Finishing scoped publication; revised presentation review next. See journal siren-cards-03.
+**Active objective:** Owner driveway seam, full-width shared HUD and estate intro-surroundings refinements are implemented and validated; version-6 video saved. Original zoom and accepted battle are unchanged. Finishing scoped publication; then owner presentation review. See journal width-scenery-03.
 
-**Checkpoint / publication:** PUSHED / VERIFIED 2026-09-14: 77874acc264fe3318583780bf48b0776a3eba499 on origin/build/arsenal-checkpoint-20260911. Scoped feedback, handoffs and validation evidence published; video version 3 saved. Local receipt: tools/tactical_controls/hud_fixed_20260914/feedback_checkpoint_receipt.json. This post-push status note accompanies the next substantive checkpoint; do not create another receipt-only publication loop.
+**Checkpoint / publication:** PUSHED / VERIFIED: 555d6925fbf1a965a3b8027bc2f5186fdd19d4bc on origin/build/arsenal-checkpoint-20260911. Siren/card refinement and records published; video version 4 saved. Local receipt: tools/whittaker_estate/siren_cards_20260914/checkpoint_receipt.json. Post-push notes accompany the next substantive checkpoint; no receipt-only publication loop.
 
-**Latest estate evidence:** HUD 786 checks, assault/passengers 25081 checks, native line controls 43. Final capture 39707 actor-frame checks, zero HUD/hidden-survivor/route errors and zero result-camera jump. 88.197-second video version 3, native combat 48.30s, four Whittaker survivors. See estate report for bounded validation and failed trials.
+**Latest estate evidence:** 834 native HUD checks across bridge/estate and three viewports; 39707 actor-frame checks in final capture, zero presentation/route/HUD camera errors. Version-5 video 88.197s; native combat 48.30s with four Whittaker survivors. Exact accepted-battle comparison and 195 protected source hashes pass; see estate README.
 
 **Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
 max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
@@ -90,7 +90,7 @@ for source ownership, results and reproduction. The earlier
 of unresolved expansion capacity. Revisit performance if current-scale play
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Finish this narrow checkpoint/publication, then Brandon reviews the revised siren and survivor-first result stacks in version 4. Preserve the accepted battle, parked vocals and all unrelated work.
+**Immediate next task:** Publish this validated presentation checkpoint, then Brandon reviews video version 6. Preserve accepted battle behavior, current siren/result ordering, parked vocals and unrelated work.
 
 **Known gaps:**
 - Two maximum legal convoys remain the battle ceiling. Three vehicles per
@@ -182,7 +182,7 @@ The delivered Raiders recording was rejected for wrong-side arrival, synthetic m
 
 | Chat / owner | Scope | Last verified state / next action |
 | --- | --- | --- |
-| Existing BUILD chat | Whittaker Estate, recording and subsequent owner feedback | Version 3 delivered; source 77874ac published; owner review pending. Retains estate scope. |
-| Parallel assignment chat 3ca0ac6a33c3 | Onboarding and coordination records only; source ownership not yet assigned | READY for Brandon's separate assignment. Claim exact files after the assignment and a fresh status/ownership check. |
+| Existing BUILD chat | Whittaker Estate, recording and subsequent owner feedback | Version-3 battle owner-accepted; version-6 presentation refinement validated and saved, scoped publication underway. Retains estate scope. |
+| Parallel assignment chat 3ca0ac6a33c3 | tools/sandbox_ui_review_20260914/; private runtime/capture only | DELIVERED: 3:05 current sandbox UI video, complete 5v5 bridge setup, 224 checks/zero errors, no combat. Owner UI review next; no production changes. See journal sandbox-ui-review-02 and the folder README. |
 
 Brandon explicitly directed this chat to follow the shared handoff/update rhythm while awaiting a separate assignment. Preserve existing work; estate remains with the existing BUILD chat. See journal entry 20260914-parallel-onboarding-3ca0ac6a33c3-01. This is a saved ownership record, not an automatic feed of another chat.
