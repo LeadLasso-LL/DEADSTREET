@@ -1,0 +1,8 @@
+{
+  "assets/data/weapon_models.json": "8281121e042f7b1512684972ebe4976b9b2e50f4d1070ff6697ec3fc4b7e72f4",
+  "assets/data/faction_glossary.json": "119350e698fa1b3c3ea7031d2178c7b2c4bed2e15ee0001365044a3deeee688e",
+  "battle/presentation/tactical_unit_animation_catalog.gd": "6edf833cc3a4a958979c487c310e1c80c87ecac36b26851b2628e2a026700775",
+  "gameplay/tactical_unit_card.gd": "1ff3354f728a3fa0c398c326cfa5bef27b0a87ce8c2e7a6c3fb2e1eb46fdaf2b",
+  "assets/data/music_catalog.json": "02672dada2281e093d64809bab5e40fbb00b64651b767bb196c2e1d757a26d45",
+  "gameplay/tactical_radio_filter.gd": "e0284d767321bcb26347ada8c398e314729e22b6b68d268a45a4ac5583485f34"
+}

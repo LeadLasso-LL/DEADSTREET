@@ -1,0 +1,16 @@
+{
+  "canonical_regular_combinations": 690,
+  "checks": 3578,
+  "failures": [
+    "current Arsenal trigger icon rem870",
+    "current Arsenal trigger icon moss500",
+    "current Arsenal trigger icon spas12",
+    "current Arsenal trigger icon benelli_m2",
+    "current Arsenal trigger icon benelli_m4",
+    "current Arsenal trigger icon saiga12",
+    "current Arsenal trigger icon mini14",
+    "current Arsenal trigger icon aug"
+  ],
+  "portraits": 691,
+  "runtime": "Godot 4.7.2; actual current catalogue bindings, textures and glossary cards; no combat benchmark needed for static artwork."
+}
