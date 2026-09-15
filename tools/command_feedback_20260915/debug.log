@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/command_feedback_20260915/debug_check.gd:26)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+DISPLAY { "viewport": [P: (0.0, 0.0), S: (1152.0, 1152.0)], "root": (64, 64), "view_visible": true, "feedback_visible": true, "badge_visible": true, "badge_center": (1080.0, 378.0), "pick": "sandbox_attacker_unit_02", "want": "sandbox_attacker_unit_01", "over_ui": false, "markers": ["sandbox_attacker_unit_01", "sandbox_attacker_unit_02", "sandbox_defender_unit_01", "sandbox_defender_unit_02"], "hud_visible": true, "hud_rect": [P: (0.0, 926.0), S: (1152.0, 226.0)], "stage": "active", "battle": "active" }
+BADGE sandbox_attacker_unit_01 true (1080.0, 378.0)
+BADGE sandbox_attacker_unit_02 true (1080.0, 288.0)
+BADGE sandbox_defender_unit_01 true (108.0, 162.0)
+BADGE sandbox_defender_unit_02 true (288.0, 126.0)
+FAIL harold friendly emblem is clickable
+FAIL harold emblem selects its unit
+FAIL harold click hostile sets priority while paused
+FAIL harold target click preserves selection
+FAIL harold yellow route exists immediately while paused
+FAIL harold cover route reaches assigned slot immediately
+FAIL harold all playable cover has artwork highlight: ["sandbox_transport_00__door_0_north", "sandbox_transport_00__door_0_south"]
+FAIL harold HUD blocks world picking
+MAP_DONE harold checks=24 failures=8
+FEEDBACK_QA 24 checks; 8 failures

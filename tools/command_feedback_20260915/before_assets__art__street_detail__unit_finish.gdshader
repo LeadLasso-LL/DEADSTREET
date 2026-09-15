@@ -1,7 +1,6 @@
 shader_type canvas_item;
 // Approved B silhouette, with a sprite-local grid stable across atlas frames.
 uniform float outline_width = 3.0;
-uniform float hover_amount : hint_range(0.0, 1.0) = 0.0;
 uniform sampler2D clothing_mask : hint_default_black, filter_nearest, repeat_disable;
 uniform bool blood_enabled = true;
 uniform bool wounded_stain = false;
@@ -29,7 +28,6 @@ void fragment(){
  // A restrained light-facing edge helps dark equipment separate from clothing.
  float edge=step(light+0.16,max(max(above.r,above.g),above.b))*above.a;
  toned+=vec3(0.035,0.04,0.04)*edge*(1.0-step(0.3,light));
- toned=mix(toned,vec3(1.0,0.93,0.73),hover_amount*0.22);
- if(c.a<0.1 && a>0.4 && outline_width>0.0) COLOR=vec4(mix(vec3(0.055,0.075,0.07),vec3(0.91,0.80,0.48),hover_amount*0.68),a*0.95)*tint;
+ if(c.a<0.1 && a>0.4 && outline_width>0.0) COLOR=vec4(0.055,0.075,0.07,a*0.95)*tint;
  else COLOR=vec4(toned,c.a)*tint;
 }

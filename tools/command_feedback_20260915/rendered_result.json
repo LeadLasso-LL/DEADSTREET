@@ -1,0 +1,18 @@
+{
+  "checks": 50,
+  "failures": [],
+  "maps": [
+    {
+      "cover_count": 28,
+      "map": "harold",
+      "missing_cover_art": [],
+      "paused": true
+    },
+    {
+      "cover_count": 31,
+      "map": "freight_exchange",
+      "missing_cover_art": [],
+      "paused": true
+    }
+  ]
+}

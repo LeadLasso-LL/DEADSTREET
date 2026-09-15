@@ -1,0 +1,36 @@
+{
+  "checks": 120,
+  "failures": [],
+  "maps": [
+    {
+      "cover_count": 28,
+      "map": "harold",
+      "missing_cover_art": [],
+      "paused": true
+    },
+    {
+      "cover_count": 70,
+      "map": "river_bridge",
+      "missing_cover_art": [],
+      "paused": true
+    },
+    {
+      "cover_count": 63,
+      "map": "whittaker_estate",
+      "missing_cover_art": [],
+      "paused": true
+    },
+    {
+      "cover_count": 24,
+      "map": "doble_ocho",
+      "missing_cover_art": [],
+      "paused": true
+    },
+    {
+      "cover_count": 31,
+      "map": "freight_exchange",
+      "missing_cover_art": [],
+      "paused": true
+    }
+  ]
+}

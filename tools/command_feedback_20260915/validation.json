@@ -1,0 +1,17 @@
+{
+  "native_checks": 120,
+  "rendered_checks": 50,
+  "source_sha256": {
+    "gameplay/tactical_battle_view.gd": "a0e8cf3b1b914ff7192bfd5d104fd11da62e6fb2244c84b5ec63bff16de06652",
+    "gameplay/tactical_orders_controller.gd": "85bf887a79b431fbc88c2a8d6f60b7ad84dd901766908f6bccabaec6013450c1",
+    "gameplay/tactical_emblem_marker.gd": "161f9c5cbfcabd9061069695a5d9b5fec573bc483a5b2bb693d0203beb7224a7",
+    "assets/art/street_detail/unit_finish.gdshader": "90fe35bc55a404ab9b4597b139565fc2bdaefdb4f86352d74f07f311ffc17252",
+    "gameplay/tactical_command_feedback.gd": "33cc85cb316e1b6d5187e8c7542f71bd37c82d794ac03e4a94d9e1cf6293b7cb"
+  },
+  "visual_review": [
+    "harold_unit_hover.png",
+    "freight_exchange_cover_hover.png"
+  ],
+  "runtime": "Godot 4.7.2; rendered gl_compatibility 1280x800",
+  "limitations": "Focused paused 2v2 input/presentation fixtures, not a full-capacity benchmark. Owner acceptance pending."
+}

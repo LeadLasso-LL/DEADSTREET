@@ -242,7 +242,6 @@ var _surface_cache_valid: bool = false
 var static_layer: TacticalStaticBattlefieldLayer = null
 var dynamic_layer: TacticalDynamicBattlefieldLayer = null
 var selection_range_layer: Node2D = null
-var command_feedback_layer: Node2D = null
 var static_surface_root: Node2D = null
 var static_building_root: Node2D = null
 var static_composite_root: Node2D = null
@@ -564,12 +563,6 @@ func _ensure_layers() -> void:
 		selection_range_layer.host = self
 		selection_range_layer.z_index = 0
 		add_child(selection_range_layer)
-	if command_feedback_layer == null:
-		command_feedback_layer = preload("res://gameplay/tactical_command_feedback.gd").new()
-		command_feedback_layer.name = "CommandFeedback"
-		command_feedback_layer.host = self
-		command_feedback_layer.z_index = 1
-		add_child(command_feedback_layer)
 	if static_building_root == null:
 		static_building_root = Node2D.new()
 		static_building_root.name = "StaticBuildingRoot"
@@ -632,7 +625,6 @@ func _order_presentation_roots() -> void:
 		static_layer,
 		static_composite_root,
 		selection_range_layer,
-		command_feedback_layer,
 		static_building_root,
 		static_detail_root,
 		static_asset_root,
@@ -3973,8 +3965,6 @@ func _cover_object_hit_rect(battle_state: BattleState, cover_object_id: String) 
 
 
 func _draw_cover_object_hover(battle_state: BattleState) -> void:
-	if battle_state != null and battle_state.battle_phase == "active" and command_feedback_layer != null:
-		return # Active pointer feedback brightens the actual artwork.
 	if battle_presentation!=null and battle_presentation.stage in ["arrival","ready"]:return
 	if battle_state == null:
 		return
@@ -4467,7 +4457,3 @@ func _draw_command_cues(canvas: CanvasItem) -> void:
 		var ink = Color("#a8adb1")
 		ink.a = .45 * (1.0 - age / .55)
 		canvas.draw_arc(_to_view(pulse.at), 5.0 + age * 3.0, 0, TAU, 24, ink, 1.5 / maxf(_camera.zoom.x, .1), true)
-
-
-func hit_test_pointer_unit(screen: Vector2) -> String:
-	return command_feedback_layer.pick_unit(screen) if command_feedback_layer != null else ""

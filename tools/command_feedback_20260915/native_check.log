@@ -1,0 +1,102 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/command_feedback_20260915/native_check.gd:26)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+FAIL harold friendly emblem is clickable
+FAIL harold emblem selects its unit
+FAIL harold click hostile sets priority while paused
+FAIL harold target click preserves selection
+FAIL harold yellow route exists immediately while paused
+FAIL harold cover route reaches assigned slot immediately
+FAIL harold all playable cover has artwork highlight: ["sandbox_transport_00__door_0_north", "sandbox_transport_00__door_0_south"]
+FAIL harold HUD blocks world picking
+MAP_DONE harold checks=24 failures=8
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+FAIL river_bridge friendly emblem is clickable
+FAIL river_bridge emblem selects its unit
+FAIL river_bridge click hostile sets priority while paused
+FAIL river_bridge target click preserves selection
+FAIL river_bridge yellow route exists immediately while paused
+FAIL river_bridge cover route reaches assigned slot immediately
+FAIL river_bridge all playable cover has artwork highlight: ["sandbox_transport_00__door_1_north", "sandbox_transport_00__door_0_north", "sandbox_transport_00__door_1_south", "sandbox_transport_00__door_0_south", "bridge_defender_vehicle_00__door_0_south", "bridge_defender_vehicle_00__door_1_south", "bridge_defender_vehicle_00__door_0_north", "bridge_defender_vehicle_00__door_1_north"]
+MAP_DONE river_bridge checks=46 failures=15
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+FAIL whittaker_estate friendly emblem is clickable
+FAIL whittaker_estate emblem selects its unit
+FAIL whittaker_estate click hostile sets priority while paused
+FAIL whittaker_estate target click preserves selection
+FAIL whittaker_estate target line exists immediately before unpause
+FAIL whittaker_estate accepted paused move
+FAIL whittaker_estate yellow route exists immediately while paused
+FAIL whittaker_estate accepted paused cover
+FAIL whittaker_estate cover route reaches assigned slot immediately
+FAIL whittaker_estate all playable cover has artwork highlight: ["sandbox_transport_00__door_1_south", "sandbox_transport_00__door_1_north", "estate_defender_vehicle_00__door_0_south", "estate_defender_vehicle_00__door_1_south", "estate_defender_vehicle_00__door_0_north", "estate_defender_vehicle_00__door_1_north", "estate_defender_vehicle_01__door_0_south", "estate_defender_vehicle_01__door_1_south", "estate_defender_vehicle_01__door_0_north", "estate_defender_vehicle_01__door_1_north", "cover_fountain", "estate_defender_vehicle_02__door_0_south", "estate_defender_vehicle_02__door_0_north"]
+FAIL whittaker_estate group target shows each selected unit
+FAIL whittaker_estate HUD blocks world picking
+MAP_DONE whittaker_estate checks=68 failures=27
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+FAIL doble_ocho friendly emblem is clickable
+FAIL doble_ocho emblem selects its unit
+FAIL doble_ocho click hostile sets priority while paused
+FAIL doble_ocho target click preserves selection
+FAIL doble_ocho yellow route exists immediately while paused
+FAIL doble_ocho cover route reaches assigned slot immediately
+FAIL doble_ocho all playable cover has artwork highlight: ["sandbox_transport_00__door_1_south", "sandbox_transport_00__door_1_north"]
+MAP_DONE doble_ocho checks=92 failures=34
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+FAIL freight_exchange friendly emblem is clickable
+FAIL freight_exchange emblem selects its unit
+FAIL freight_exchange click hostile sets priority while paused
+FAIL freight_exchange target click preserves selection
+FAIL freight_exchange yellow route exists immediately while paused
+FAIL freight_exchange cover route reaches assigned slot immediately
+FAIL freight_exchange all playable cover has artwork highlight: ["sandbox_transport_00__door_1_south", "sandbox_transport_00__door_1_north"]
+FAIL freight_exchange HUD blocks world picking
+MAP_DONE freight_exchange checks=116 failures=42
+FEEDBACK_QA 116 checks; 42 failures

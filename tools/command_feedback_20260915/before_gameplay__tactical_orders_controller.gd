@@ -733,19 +733,19 @@ func select_box(view: Node, rect: Rect2, additive: bool) -> void:
 
 
 func click_world(view: Node, screen: Vector2, additive: bool = false) -> void:
-	if view.command_feedback_layer != null and view.command_feedback_layer.pointer_is_over_ui(screen):
-		return
 	var local: Vector2 = view.viewport_to_local_position(screen)
 	view.set_pointer_local_position(local)
-	var picked: String = view.hit_test_pointer_unit(screen)
-	if not picked.is_empty():
-		var p = _battle_state().get_participant(picked)
-		if p.side_id == _battle_state().attacker_side_id:
-			select_participant(picked, additive)
-		elif not selected_participant_ids.is_empty():
-			issue_target(picked)
+	var friendly: String = view.hit_test_live_friendly_soldier(local)
+	if friendly.is_empty():
+		friendly = view.hit_test_inactive_friendly_soldier(local)
+	if not friendly.is_empty():
+		select_participant(friendly, additive)
 		return
 	if selected_participant_ids.is_empty():
+		return
+	var target: String = view.hit_test_hostile_soldier(local)
+	if not target.is_empty() and pending_command_id.is_empty():
+		issue_target(target)
 		return
 	var cover: String = view.hit_test_cover_object(local)
 	if not cover.is_empty():

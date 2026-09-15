@@ -3,7 +3,6 @@ extends Control
 static var sized_textures={}
 var emblem: TextureRect
 var selected: bool=false
-var hovered: bool=false
 var diameter: int=24
 var source_texture: Texture2D
 func _ready() -> void:
@@ -26,15 +25,10 @@ func configure(source: Texture2D,pixels: int) -> void:
 func set_selected(value: bool) -> void:
  if selected==value:return
  selected=value;queue_redraw()
-func set_hovered(value: bool) -> void:
- if hovered==value:return
- hovered=value
- if emblem!=null:emblem.modulate=Color(1.22,1.18,1.08,1.) if value else Color.WHITE
- queue_redraw()
 func _draw() -> void:
  var center=Vector2.ONE*float(diameter)*.5
  # A dark separation edge works on both floodlit concrete and deep shadow.
  draw_circle(center,float(diameter)*.5+.7,Color(.025,.035,.04,.88))
- if not selected and not hovered:return
+ if not selected:return
  for layer in range(4):draw_arc(center,float(diameter)*.5+2.5+layer,0,TAU,64,Color(1.,.84,.27,.18-layer*.04),2.,true)
- draw_arc(center,float(diameter)*.5+1.5,0,TAU,64,Color("#f4d34e") if selected else Color("#eddfae"),1.5,true)
+ draw_arc(center,float(diameter)*.5+1.5,0,TAU,64,Color("#f4d34e"),1.5,true)

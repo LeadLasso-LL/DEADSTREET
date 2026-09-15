@@ -1,0 +1,9 @@
+{
+  "head": "fb153af2ba868012c5c4ec7e789bd42de43e0d34",
+  "before": {
+    "gameplay/tactical_battle_view.gd": "f9d24a4ea10f70bf2adad8bb7c6213ad842a3bca3895a394755b6ed03f8efccb",
+    "gameplay/tactical_orders_controller.gd": "6afa1c67eb1fe2b44000dacaaae1a655c9cb407f23d758028ffafd0f1beeaeee",
+    "gameplay/tactical_emblem_marker.gd": "4e014466c45191e956ac11881c2a73560bcb38ffda5f8f62272ec5d0d943cd78",
+    "assets/art/street_detail/unit_finish.gdshader": "20dd812df3b832ee4adb55ede28aaf57b5e3e6b3b47d6f9914d2750f30b2f6d7"
+  }
+}
