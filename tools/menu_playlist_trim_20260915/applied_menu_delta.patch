@@ -1,0 +1,11 @@
+--- a/gameplay/sandbox_menu_music.gd
++++ b/gameplay/sandbox_menu_music.gd
+@@ -34,7 +34,7 @@
+ 
+ func _ready():
+ 	add_to_group("dead_street_menu_music")
+-	tracks = Catalog.tracks()
++	tracks = Catalog.menu_tracks()
+ 	current_id = str(Catalog.catalogue().get("signature_track", "dead_street"))
+ 	var cfg = ConfigFile.new()
+ 	cfg.load(settings_path)

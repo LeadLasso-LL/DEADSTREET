@@ -40,3 +40,9 @@ static func battle_stream(id: String) -> AudioStreamWAV:
 static func faction_stream(faction_id: String) -> AudioStreamWAV:
 	var id = str(catalogue().get("faction_tracks", {}).get(faction_id, ""))
 	return battle_stream(id) if not id.is_empty() else null
+
+
+static func menu_tracks() -> Array:
+	var data = catalogue()
+	var excluded: Array = data.get("menu_excluded_tracks", [])
+	return data.get("tracks", []).filter(func(item): return str(item.get("id", "")) not in excluded)

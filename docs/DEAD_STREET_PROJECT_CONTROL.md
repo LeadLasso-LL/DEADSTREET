@@ -1,3 +1,7 @@
+# Current milestone - four menu soundtrack exclusions - 2026-09-15
+
+IMPLEMENTED / VALIDATED: Switch, Ripper, Dead or Alive and Lurk removed only from sandbox menu playlist/shuffle; 18 menu songs remain. All faction mappings, snippets and 43 audio assets unchanged. Native menu check PASS, including old saved preferences. See tools/menu_playlist_trim_20260915/README.md and publication_receipt.json. Reopen Sandbox.
+
 # Current milestone - gun and vehicle comparison / SMG labels - 2026-09-15
 
 IMPLEMENTED / NATIVE-VALIDATED: click to select a gun or vehicle; hover another to compare both values and signed changes across categories. SMG uppercase throughout force selection. 3,736 native checks PASS for 30 guns / 75 vehicles and three layouts. No stat/economy changes. Evidence, interaction rules, scope and continuation: tools/arsenal_compare_20260915/README.md and journal arsenal-compare-02. Current publication receipt records actual Git outcome; prior Faction Audio 50a0007 is published. Reopen Sandbox for owner review.

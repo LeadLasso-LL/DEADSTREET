@@ -1,4 +1,5 @@
 {
+  "menu_excluded_tracks": ["switch_b22", "ripper_b22", "dead_or_alive_b22", "lurk_b22"],
   "schema_version": 1,
   "signature_track": "dead_street",
   "tracks": [

@@ -1,0 +1,31 @@
+{
+  "scope": [
+    "assets/data/music_catalog.json",
+    "gameplay/music_catalog.gd",
+    "tools/menu_playlist_trim_20260915/applied_menu_delta.patch",
+    "tools/menu_playlist_trim_20260915/apply.py",
+    "tools/menu_playlist_trim_20260915/check_menu.gd",
+    "tools/menu_playlist_trim_20260915/finalize.py",
+    "tools/menu_playlist_trim_20260915/manifest.json",
+    "tools/menu_playlist_trim_20260915/native.log",
+    "tools/menu_playlist_trim_20260915/native_validation.json",
+    "tools/menu_playlist_trim_20260915/owned_docs.json",
+    "tools/menu_playlist_trim_20260915/publish.py",
+    "tools/menu_playlist_trim_20260915/README.md"
+  ],
+  "hashes": {
+    "assets/data/music_catalog.json": "06c70f21a9d6679ed05cba5b963f6aca6d34bbd4f9ea854e9f8233efd530c7a6",
+    "gameplay/music_catalog.gd": "1d6d0d803e3916265e767031b9204a95d765cff83d4f648c83fa72926918e1bc",
+    "tools/menu_playlist_trim_20260915/applied_menu_delta.patch": "4e0c67f9230c13e070ed066f2f1a964c0fba54038159a064d9fbedd01d300393",
+    "tools/menu_playlist_trim_20260915/apply.py": "27f5f9d3c1bfb0147c6a64664c5f878ddd2f5be0f1afa0c93bef9402c7593cae",
+    "tools/menu_playlist_trim_20260915/check_menu.gd": "fb8093f022fad550398b0ee548f5f856f655fb7f9e00b34d53e6a548378a5f73",
+    "tools/menu_playlist_trim_20260915/finalize.py": "6af8274272aee1e131149f8fea92f631cabfe05fc2a578145c6f1b291565d2b4",
+    "tools/menu_playlist_trim_20260915/manifest.json": "86f6204322da7731bdc6deaa0484f66d88d4d69c9deb2b1c51f5943d917ca1d1",
+    "tools/menu_playlist_trim_20260915/native.log": "0073427da44a94a6f366291b80944ebdf2ef7afdfa97b8e62e1b888eb4c94d7d",
+    "tools/menu_playlist_trim_20260915/native_validation.json": "7d27de79cbe2af839a391f9a5dd67c41b5f7c8bba2605a887b426aa137dd8ea3",
+    "tools/menu_playlist_trim_20260915/owned_docs.json": "e2b34a48c9afa6d88613bbc7ec268945d59782eb80f51eca5d593479c519206e",
+    "tools/menu_playlist_trim_20260915/publish.py": "aff8c05a029b3fd77b6a4bbf01953f293ddd4599eebf59b55774b5140c7b5775",
+    "tools/menu_playlist_trim_20260915/README.md": "9dfad35e8f2fae9685e1efbbf56cd23f5df6142270f1e5f28bc83b47e2269c98"
+  },
+  "live_menu_hash": "dfbf43f54bfb7229e3e2d31bf70c699967fe69d4e30ef33805797e9359ee7257"
+}
