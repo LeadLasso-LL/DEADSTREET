@@ -10,7 +10,8 @@
         "shotgun": "moss500",
         "rifle": "ak47",
         "sniper": "sks"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/mercer.jpg"
     },
     "eastex": {
       "kind": "Street gang",
@@ -21,7 +22,8 @@
         "shotgun": "rem870",
         "rifle": "mini14",
         "sniper": "rem700"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/eastex.jpg"
     },
     "calle_ocho": {
       "kind": "Street gang",
@@ -32,7 +34,8 @@
         "shotgun": "moss500",
         "rifle": "ak47",
         "sniper": "sks"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/calle_ocho.jpg"
     },
     "ventresca": {
       "kind": "Italian mafia",
@@ -43,7 +46,8 @@
         "shotgun": "spas12",
         "rifle": "mini14",
         "sniper": "ssg69"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/ventresca.jpg"
     },
     "ravicci": {
       "kind": "Italian mafia",
@@ -54,7 +58,8 @@
         "shotgun": "benelli_m4",
         "rifle": "aug",
         "sniper": "psg1"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/ravicci.jpg"
     },
     "orlov": {
       "kind": "Russian mafia",
@@ -65,7 +70,8 @@
         "shotgun": "saiga12",
         "rifle": "ak47",
         "sniper": "svd"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/orlov.jpg"
     },
     "zangyaku": {
       "kind": "Japanese yakuza",
@@ -76,7 +82,8 @@
         "shotgun": "benelli_m2",
         "rifle": "g36c",
         "sniper": "ssg69"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/zangyaku.jpg"
     },
     "bitian": {
       "kind": "Chinese triad",
@@ -87,7 +94,8 @@
         "shotgun": "spas12",
         "rifle": "ak47",
         "sniper": "sks"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/bitian.jpg"
     },
     "stateline": {
       "kind": "Outlaw motorcycle club",
@@ -98,7 +106,8 @@
         "shotgun": "rem870",
         "rifle": "mini14",
         "sniper": "rem700"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/stateline.jpg"
     },
     "sierra_roja": {
       "kind": "Mexican cartel",
@@ -109,7 +118,8 @@
         "shotgun": "saiga12",
         "rifle": "m4a1",
         "sniper": "svd"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/sierra_roja.jpg"
     },
     "whittaker": {
       "kind": "Oil and land dynasty",
@@ -120,7 +130,8 @@
         "shotgun": "rem870",
         "rifle": "mini14",
         "sniper": "rem700"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/whittaker.jpg"
     },
     "mcallister": {
       "kind": "Holding company",
@@ -131,7 +142,8 @@
         "shotgun": "benelli_m2",
         "rifle": "aug",
         "sniper": "ssg69"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/mcallister.jpg"
     },
     "trc": {
       "kind": "Regional mercenary coalition",
@@ -142,7 +154,8 @@
         "shotgun": "benelli_m4",
         "rifle": "scar_h",
         "sniper": "awm"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/trc.jpg"
     },
     "nbpd": {
       "kind": "City police department",
@@ -153,7 +166,8 @@
         "shotgun": "rem870",
         "rifle": "m4a1",
         "sniper": "psg1"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/nbpd.jpg"
     },
     "mercer44": {
       "kind": "Street coalition",
@@ -176,7 +190,8 @@
         "shotgun": "benelli_m2",
         "rifle": "scar_h",
         "sniper": "rem700"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/wm_corp.jpg"
     },
     "union_sur": {
       "kind": "Criminal organization",
@@ -211,7 +226,8 @@
         "shotgun": "moss500",
         "rifle": "ak47",
         "sniper": "sks"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/sand_raiders.jpg"
     },
     "saffar": {
       "kind": "Trading group",
@@ -222,7 +238,8 @@
         "shotgun": "spas12",
         "rifle": "ak47",
         "sniper": "svd"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/saffar.jpg"
     },
     "kurgan": {
       "kind": "Independent mercenaries",
@@ -233,7 +250,8 @@
         "shotgun": "saiga12",
         "rifle": "ak47",
         "sniper": "svd"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/kurgan.jpg"
     },
     "ashford_crane": {
       "kind": "Criminal collective",
@@ -244,7 +262,8 @@
         "shotgun": "benelli_m2",
         "rifle": "g36c",
         "sniper": "ssg69"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/ashford_crane.jpg"
     },
     "blacktop": {
       "kind": "Outlaw motorcycle club",
@@ -255,7 +274,8 @@
         "shotgun": "spas12",
         "rifle": "m4a1",
         "sniper": "rem700"
-      }
+      },
+      "leader_photo": "res://assets/art/leaders/portraits/blacktop.jpg"
     }
   }
 }

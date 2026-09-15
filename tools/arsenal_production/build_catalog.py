@@ -1,6 +1,7 @@
 """Authored game balance. Values are fictional tactical units, not firearm specifications."""
 import json
 from pathlib import Path
+from weapon_pricing import PRICES
 ROOT=Path(__file__).resolve().parents[2]
 # id, name, class, tier, movement, range, cadence, solid trauma, critical trauma,
 # miss, graze, critical chance, acquire, recoil per shot, recoil recovery/sec
@@ -42,7 +43,7 @@ RECOVERY={"desert_eagle":.09,"uzi":.11,"mp5":.10,"mp5k":.12,"vector":.19,"p90":.
 MODELS={}
 for r in ROWS:
  id,name,kind,tier,move,reach,rate,solid,critical,miss,graze,crit,aim,recoil,recover=r
- MODELS[id]=dict(id=id,name=name,weapon_class=kind,tier=tier,art_base=ART[kind],movement_multiplier=move,
+ MODELS[id]=dict(id=id,name=name,weapon_class=kind,tier=tier,price=PRICES[id],art_base=ART[kind],movement_multiplier=move,
   weight_burden=round((1.25-move)/.5,3),max_range=reach,shots_per_second=rate,solid_trauma=solid,
   critical_trauma=critical,graze_trauma=round(solid*.22,3),miss_probability=miss,graze_probability=graze,
   solid_probability=round(1-miss-graze-crit,4),critical_probability=crit,acquire_seconds=aim,

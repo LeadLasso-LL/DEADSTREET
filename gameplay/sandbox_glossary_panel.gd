@@ -27,6 +27,7 @@ var visible_models: Array = []
 var detail_labels = {}
 var active_texture: TextureRect
 var selected_faction_rows: Dictionary = {}
+var leader_image: TextureRect
 
 func _ready():
 	size = Vector2(1152,764)
@@ -110,15 +111,24 @@ func mark_faction():
 		item_buttons[id].add_theme_stylebox_override("normal",Card.style(Color("#39443b") if id==selected_id else Color("#243237"),TAN if id==selected_id else Color("#425451")))
 
 func show_faction(id: String):
-	selected_id = id; clear(detail); unit_images.clear(); detail_labels.clear(); mark_faction()
+	selected_id = id; clear(detail); unit_images.clear(); detail_labels.clear(); leader_image=null; mark_faction()
 	var row: Dictionary = data.get(id,{})
 	selected_faction_rows = row
 	picture(detail,Vector2(0,0),Vector2(96,96),Anim._load_texture(Factions.emblem_path(id)))
-	detail_labels.title = label(detail,Vector2(114,0),Vector2(712,65),Factions.display_name(id),25)
-	detail_labels.leader = label(detail,Vector2(114,71),Vector2(712,28),"LEADER  /  "+leader_for(id),15,TAN)
-	var story = panel(detail,Vector2(0,116),Vector2(832,158))
-	label(story,Vector2(18,14),Vector2(790,23),str(row.get("kind","Organization")).to_upper(),12,TAN)
-	detail_labels.description = label(story,Vector2(18,45),Vector2(794,102),str(row.get("description","")),16)
+	detail_labels.title = label(detail,Vector2(114,0),Vector2(498,65),Factions.display_name(id),25)
+	detail_labels.leader = label(detail,Vector2(114,71),Vector2(498,35),"LEADER  /  "+leader_for(id),15,TAN)
+	var photo_path = str(row.get("leader_photo",""))
+	if not photo_path.is_empty():
+		leader_image=picture(detail,Vector2(630,0),Vector2(202,252),Anim._load_texture(photo_path))
+		leader_image.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
+		leader_image.set_meta("faction",id)
+		leader_image.tooltip_text=leader_for(id)
+	else:
+		var pending=panel(detail,Vector2(630,0),Vector2(202,252))
+		label(pending,Vector2(18,98),Vector2(166,66),"LEADERSHIP\nUNDISCLOSED",13,MUTED)
+	var story = panel(detail,Vector2(0,116),Vector2(612,158))
+	label(story,Vector2(18,14),Vector2(576,23),str(row.get("kind","Organization")).to_upper(),12,TAN)
+	detail_labels.description = label(story,Vector2(18,45),Vector2(576,102),str(row.get("description","")),16)
 	label(detail,Vector2(0,296),Vector2(800,28),"REGULAR UNITS",16,TAN)
 	for i in range(CLASSES.size()):
 		var role: String = CLASSES[i]
@@ -164,6 +174,11 @@ func choose_class(id: String):
 	for key in class_buttons:
 		class_buttons[key].add_theme_stylebox_override("normal",Card.style(Color("#39443b") if key==id else Color("#243237"),TAN if key==id else Color("#425451")))
 	var ids: Array = Weapons.models_for_class(id) if mode=="arsenal" else Vehicles.all_ids().filter(func(key):return Vehicles.model(key).vehicle_class==id)
+	if mode=="vehicles":
+		ids.sort_custom(func(a,b):
+			var left=int(Vehicles.model(a).price)
+			var right=int(Vehicles.model(b).price)
+			return str(Vehicles.model(a).name).naturalnocasecmp_to(str(Vehicles.model(b).name))<0 if left==right else left<right)
 	for model_id in ids:
 		visible_models.append(model_id)
 		var model = Weapons.get_model(model_id) if mode=="arsenal" else Vehicles.model(model_id)
@@ -172,7 +187,7 @@ func choose_class(id: String):
 		var title = model.display_name if mode=="arsenal" else model.name
 		label(b,Vector2(12,10),Vector2(219,40),title,14)
 		picture(b,Vector2(12,53),Vector2(219,76),equipment_texture(model_id))
-		var footer = "TIER %d"%model.tier if mode=="arsenal" else "%d SEATS  /  $%s"%[model.unit_capacity,money(model.price)]
+		var footer = "TIER %d  /  $%s"%[model.tier,money(Weapons.purchase_price(model_id))] if mode=="arsenal" else "%d SEATS  /  $%s"%[model.unit_capacity,money(model.price)]
 		label(b,Vector2(12,141),Vector2(219,20),footer,11,TAN)
 		item_buttons[model_id]=b
 	if not ids.is_empty(): show_equipment(ids[0])
@@ -205,6 +220,7 @@ func show_equipment(id: String):
 	label(detail,Vector2(18,218),Vector2(514,25),("%s  /  WEAPON TIER %d"%[m.weapon_type_id.to_upper(),m.tier]) if mode=="arsenal" else Vehicles.class_name_for(m.vehicle_class).to_upper(),13,TAN)
 	if mode=="arsenal":
 		var rows=[
+			["Price","$"+money(Weapons.purchase_price(id)),"Purchase price per firearm. Unit recruitment and training are separate."],
 			["Range","%.1f"%m.max_range,"Maximum firing distance in battlefield units."],
 			["Fire rate","%.2f shots / sec"%m.shots_per_second,"Shot pace while firing. Aiming, movement and reloads can slow it."],
 			["Movement","%+.0f%%"%((m.movement_multiplier-1.)*100.),"Change to the unit's normal movement speed while carrying this weapon."],

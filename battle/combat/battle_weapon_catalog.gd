@@ -215,6 +215,12 @@ static func model_data() -> Dictionary:
 		if data is Dictionary: _models = data
 	return _models
 
+# Canonical acquisition value per firearm; excludes unit training and ammunition.
+# Unknown equipment has no valid quote and must never become a free purchase.
+static func purchase_price(model_id: String) -> int:
+	var row: Dictionary = model_data().get("models", {}).get(model_id, {})
+	return int(row.get("price", -1))
+
 static func default_model(weapon_class: String) -> String:
 	return str(model_data().get("defaults", {}).get(weapon_class, ""))
 

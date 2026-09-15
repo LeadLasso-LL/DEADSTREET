@@ -48,3 +48,8 @@ owner acceptance of the revised art remains separate.
 ## Pistol card forearm continuity — 2026-09-14
 
 SW/SE pistol card portraits must retain a visible continuous elbow-to-hand forearm connection and shoulders joined into the garment/torso. Preserve existing joints, body proportions, grip anchors and mirror convention. The card-only finishing pass is documented in [the pistol portrait report](../tools/pistol_portrait_20260914/README.md). Full atlas rebuilds must retain/reapply that finishing pass before publishing card crops; an uncorrected atlas crop is not the accepted card baseline. This standing-image correction does not certify unreviewed animation stances.
+
+
+## All-loadout standing-card continuity — 2026-09-15
+
+All standing cards use the fixed 90x80 canvas and shared body scale, including Mercer/Orlov base roles. Preserve continuous shoulder roots and elbow-to-hand forearms from tools/portrait_audit_20260914/portrait_anatomy.py; the takeover reviewed all 691 installed standing cards. Future full builds must regenerate/review/reapply this standing-card finishing pass instead of replacing it with an uncorrected or tight atlas crop. Crop rules, source adapter, exhaustive review evidence and native import parity are in tools/sandbox_finish_20260915/README.md. This extends the pistol continuity rule; it does not certify all animation frames.

@@ -6,6 +6,7 @@ R=Path(__file__).resolve().parents[2];SRC=R/'tools/unit_source_recovery';HERE=Pa
 sys.path[:0]=[str(HERE),str(SRC),str(SRC/'src')]
 import equipment,directions,showcase_build
 from weapon_art import make,draw_art
+from weapon_display_art import make_display_icon
 N='{http://www.w3.org/2000/svg}'
 MODELS=json.loads((R/'assets/data/weapon_models.json').read_text())['models'].values()
 MANIFEST=json.loads((R/'assets/art/units/pixel_v1/manifest.json').read_text())
@@ -49,7 +50,7 @@ def save_svg(root,path):
 def build(model,k,sample=False,only_clip=""):
  art,definition=bind(model);v=f'{k}_{model["id"]}';w=model['art_base']
  folder=HERE/'render_svg';folder.mkdir(exist_ok=True);(folder/'.gdignore').touch();jobs=[];muzzles={};abdomen={}
- icon=E.Element(N+'svg',{'width':'376','height':'160','viewBox':'-18 -12 94 40'});draw_art(icon,art)
+ icon=make_display_icon(model,art)
  save_svg(icon,DEST/'source'/f'{model["id"]}.svg')
  (DEST/'source'/f'{model["id"]}.json').write_text(json.dumps(definition,indent=2)+'\n')
  for d,dirname in enumerate(MANIFEST['directions']):

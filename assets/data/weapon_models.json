@@ -30,7 +30,8 @@
       "recoil_per_shot": 0.025,
       "recoil_recovery": 0.18,
       "reacquire_seconds": 0.165,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 450
     },
     "m1911": {
       "id": "m1911",
@@ -53,7 +54,8 @@
       "recoil_per_shot": 0.05,
       "recoil_recovery": 0.15,
       "reacquire_seconds": 0.21,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 350
     },
     "usp": {
       "id": "usp",
@@ -76,7 +78,8 @@
       "recoil_per_shot": 0.025,
       "recoil_recovery": 0.2,
       "reacquire_seconds": 0.173,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 850
     },
     "cz75": {
       "id": "cz75",
@@ -99,7 +102,8 @@
       "recoil_per_shot": 0.018,
       "recoil_recovery": 0.23,
       "reacquire_seconds": 0.217,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 950
     },
     "desert_eagle": {
       "id": "desert_eagle",
@@ -122,7 +126,8 @@
       "recoil_per_shot": 0.095,
       "recoil_recovery": 0.09,
       "reacquire_seconds": 0.285,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1550
     },
     "five_seven": {
       "id": "five_seven",
@@ -145,7 +150,8 @@
       "recoil_per_shot": 0.02,
       "recoil_recovery": 0.25,
       "reacquire_seconds": 0.135,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1850
     },
     "uzi": {
       "id": "uzi",
@@ -168,7 +174,8 @@
       "recoil_per_shot": 0.024,
       "recoil_recovery": 0.11,
       "reacquire_seconds": 0.188,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1150
     },
     "mac10": {
       "id": "mac10",
@@ -191,7 +198,8 @@
       "recoil_per_shot": 0.045,
       "recoil_recovery": 0.18,
       "reacquire_seconds": 0.15,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 900
     },
     "mp5": {
       "id": "mp5",
@@ -214,7 +222,8 @@
       "recoil_per_shot": 0.021,
       "recoil_recovery": 0.1,
       "reacquire_seconds": 0.18,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 2250
     },
     "mp5k": {
       "id": "mp5k",
@@ -237,7 +246,8 @@
       "recoil_per_shot": 0.03,
       "recoil_recovery": 0.12,
       "reacquire_seconds": 0.128,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1950
     },
     "vector": {
       "id": "vector",
@@ -260,7 +270,8 @@
       "recoil_per_shot": 0.022,
       "recoil_recovery": 0.19,
       "reacquire_seconds": 0.15,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 3450
     },
     "p90": {
       "id": "p90",
@@ -283,7 +294,8 @@
       "recoil_per_shot": 0.018,
       "recoil_recovery": 0.105,
       "reacquire_seconds": 0.15,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 3950
     },
     "ak47": {
       "id": "ak47",
@@ -306,7 +318,8 @@
       "recoil_per_shot": 0.065,
       "recoil_recovery": 0.055,
       "reacquire_seconds": 0.225,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1600
     },
     "mini14": {
       "id": "mini14",
@@ -329,7 +342,8 @@
       "recoil_per_shot": 0.04,
       "recoil_recovery": 0.21,
       "reacquire_seconds": 0.21,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1400
     },
     "m4a1": {
       "id": "m4a1",
@@ -352,7 +366,8 @@
       "recoil_per_shot": 0.04,
       "recoil_recovery": 0.06,
       "reacquire_seconds": 0.188,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 3100
     },
     "g36c": {
       "id": "g36c",
@@ -375,7 +390,8 @@
       "recoil_per_shot": 0.038,
       "recoil_recovery": 0.055,
       "reacquire_seconds": 0.135,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 2700
     },
     "scar_h": {
       "id": "scar_h",
@@ -398,7 +414,8 @@
       "recoil_per_shot": 0.085,
       "recoil_recovery": 0.08,
       "reacquire_seconds": 0.292,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 5200
     },
     "aug": {
       "id": "aug",
@@ -421,7 +438,8 @@
       "recoil_per_shot": 0.033,
       "recoil_recovery": 0.062,
       "reacquire_seconds": 0.188,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 4800
     },
     "rem870": {
       "id": "rem870",
@@ -444,7 +462,8 @@
       "recoil_per_shot": 0.08,
       "recoil_recovery": 0.16,
       "reacquire_seconds": 0.21,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 650
     },
     "moss500": {
       "id": "moss500",
@@ -467,7 +486,8 @@
       "recoil_per_shot": 0.09,
       "recoil_recovery": 0.16,
       "reacquire_seconds": 0.135,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 550
     },
     "spas12": {
       "id": "spas12",
@@ -490,7 +510,8 @@
       "recoil_per_shot": 0.085,
       "recoil_recovery": 0.085,
       "reacquire_seconds": 0.27,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1600
     },
     "benelli_m2": {
       "id": "benelli_m2",
@@ -513,7 +534,8 @@
       "recoil_per_shot": 0.09,
       "recoil_recovery": 0.1,
       "reacquire_seconds": 0.173,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1900
     },
     "benelli_m4": {
       "id": "benelli_m4",
@@ -536,7 +558,8 @@
       "recoil_per_shot": 0.06,
       "recoil_recovery": 0.082,
       "reacquire_seconds": 0.217,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 3000
     },
     "saiga12": {
       "id": "saiga12",
@@ -559,7 +582,8 @@
       "recoil_per_shot": 0.105,
       "recoil_recovery": 0.11,
       "reacquire_seconds": 0.225,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 2800
     },
     "rem700": {
       "id": "rem700",
@@ -582,7 +606,8 @@
       "recoil_per_shot": 0.09,
       "recoil_recovery": 0.17,
       "reacquire_seconds": 1.013,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1700
     },
     "sks": {
       "id": "sks",
@@ -605,7 +630,8 @@
       "recoil_per_shot": 0.065,
       "recoil_recovery": 0.032,
       "reacquire_seconds": 0.637,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 1200
     },
     "svd": {
       "id": "svd",
@@ -628,7 +654,8 @@
       "recoil_per_shot": 0.075,
       "recoil_recovery": 0.04,
       "reacquire_seconds": 0.84,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 3700
     },
     "ssg69": {
       "id": "ssg69",
@@ -651,7 +678,8 @@
       "recoil_per_shot": 0.09,
       "recoil_recovery": 0.18,
       "reacquire_seconds": 1.125,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 4200
     },
     "awm": {
       "id": "awm",
@@ -674,7 +702,8 @@
       "recoil_per_shot": 0.12,
       "recoil_recovery": 0.16,
       "reacquire_seconds": 1.35,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 6800
     },
     "psg1": {
       "id": "psg1",
@@ -697,7 +726,8 @@
       "recoil_per_shot": 0.065,
       "recoil_recovery": 0.04,
       "reacquire_seconds": 1.087,
-      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition."
+      "balance_notes": "Provisional game tuning; no per-model magazine capacity or reserve ammunition.",
+      "price": 7600
     }
   }
 }
