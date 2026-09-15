@@ -1,7 +1,6 @@
 extends RefCounted
 # World-positioned ambience. Radio belongs to Raiders transport; sirens belong
 # to police vehicles. These sources never replace or drive combat events.
-const RadioFilter=preload("res://gameplay/tactical_radio_filter.gd")
 const Music=preload("res://gameplay/music_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 var view
@@ -82,7 +81,6 @@ func add_faction_radio(b,side: String,identity: String,candidates: Array,track_i
  player.set_meta("range",1100. if building else 900.);player.set_meta("attenuation",1.2 if building else .7)
  player.set_meta("offset",0.);player.set_meta("is_radio",true);player.set_meta("side_id",side)
  player.set_meta("faction_id",identity);player.set_meta("track_id",track_id)
- RadioFilter.attach(player,building)
  sources[key]=player
 func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0,victory_mix: float=0.0):
  if b==null:return
@@ -96,7 +94,6 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
   var is_radio=bool(player.get_meta("is_radio",false))
   var owns_victory=is_radio and not winner.is_empty() and str(player.get_meta("side_id",""))==winner
   var foreground=clampf(victory_mix,0.,1.) if owns_victory else 0.
-  RadioFilter.update(player,foreground)
   var radio_drop=float(player.get_meta("battle_drop",14.))*clampf(battle_mix,0.,1.)*(1.-foreground) if is_radio else 0.
   var base_gain=float(player.get_meta("base_gain"))
   player.volume_db=lerpf(base_gain,float(player.get_meta("victory_gain",base_gain)),foreground)-radio_drop-(duck*4.+ending*5.)*(1.-foreground)

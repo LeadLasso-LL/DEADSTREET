@@ -1,0 +1,11 @@
+{
+  "checks": 141,
+  "failures": [],
+  "mix_rate": 48000.0,
+  "profiles_hz": {
+    "building": 1800,
+    "foreground": 7500,
+    "vehicle": 2400
+  },
+  "validation": "Native Godot routing, real loop transport, before/after behavior, cleanup and captured signal response. No independent listening approval."
+}

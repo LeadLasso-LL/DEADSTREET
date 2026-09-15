@@ -1,0 +1,42 @@
+{
+  "native_checks": 141,
+  "mix_rate": 48000.0,
+  "response_db_relative_to_dry": {
+    "vehicle": {
+      "120": -0.02,
+      "1000": -1.37,
+      "4000": -11.74,
+      "8000": -23.1
+    },
+    "building": {
+      "120": -0.04,
+      "1000": -2.32,
+      "4000": -15.74,
+      "8000": -27.89
+    },
+    "foreground": {
+      "120": -0.0,
+      "1000": -0.13,
+      "4000": -1.95,
+      "8000": -6.72
+    }
+  },
+  "peak_amplitudes": {
+    "dry": 0.12927640974521637,
+    "vehicle": 0.07123022526502609,
+    "building": 0.06596626341342926,
+    "foreground": 0.10680625587701797
+  },
+  "checks": {
+    "vehicle_preserves_bass": true,
+    "building_preserves_bass": true,
+    "vehicle_softens_highs": true,
+    "building_is_more_enclosed": true,
+    "foreground_restores_detail": true,
+    "no_clipping": true,
+    "no_resonant_boost": true,
+    "catalogue_menu_battle_audio_unchanged": true
+  },
+  "failures": [],
+  "method": "Godot AudioEffectCapture after each private bus filter; four tone least-squares amplitude against dry reference. Native routing and transport validated separately. Not a subjective listening signoff."
+}
