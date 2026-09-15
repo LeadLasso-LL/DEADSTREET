@@ -1,0 +1,173 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__left
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+HUD_LAYOUT {"checks":786,"errors":["river_bridge fixed bridge height (1440, 1000)","river_bridge card field enclosed @Label@721","river_bridge card field enclosed @Label@730","river_bridge card field enclosed @Label@739","river_bridge card field enclosed @Label@748","river_bridge card field enclosed @Label@757","river_bridge card field enclosed @Label@766","river_bridge card field enclosed @Label@775","river_bridge card field enclosed @Label@784","river_bridge card field enclosed @Label@793","river_bridge card field enclosed @Label@802","river_bridge card field enclosed @Label@811","river_bridge card field enclosed @Label@820","river_bridge fixed bridge height (1920, 1080)","river_bridge card field enclosed @Label@721","river_bridge card field enclosed @Label@730","river_bridge card field enclosed @Label@739","river_bridge card field enclosed @Label@748","river_bridge card field enclosed @Label@757","river_bridge card field enclosed @Label@766","river_bridge card field enclosed @Label@775","river_bridge card field enclosed @Label@784","river_bridge card field enclosed @Label@793","river_bridge card field enclosed @Label@802","river_bridge card field enclosed @Label@811","river_bridge card field enclosed @Label@820","river_bridge fixed bridge height (1280, 720)","river_bridge card field enclosed @Label@721","river_bridge card field enclosed @Label@730","river_bridge card field enclosed @Label@739","river_bridge card field enclosed @Label@748","river_bridge card field enclosed @Label@757","river_bridge card field enclosed @Label@766","river_bridge card field enclosed @Label@775","river_bridge card field enclosed @Label@784","river_bridge card field enclosed @Label@793","river_bridge card field enclosed @Label@802","river_bridge card field enclosed @Label@811","river_bridge card field enclosed @Label@820","whittaker_estate fixed bridge height (1440, 1000)","whittaker_estate card field enclosed @Label@1568","whittaker_estate card field enclosed @Label@1570","whittaker_estate card field enclosed @Label@1577","whittaker_estate card field enclosed @Label@1579","whittaker_estate card field enclosed @Label@1586","whittaker_estate card field enclosed @Label@1588","whittaker_estate card field enclosed @Label@1595","whittaker_estate card field enclosed @Label@1597","whittaker_estate card field enclosed @Label@1604","whittaker_estate card field enclosed @Label@1606","whittaker_estate card field enclosed @Label@1613","whittaker_estate card field enclosed @Label@1615","whittaker_estate card field enclosed @Label@1622","whittaker_estate card field enclosed @Label@1624","whittaker_estate card field enclosed @Label@1631","whittaker_estate card field enclosed @Label@1633","whittaker_estate card field enclosed @Label@1640","whittaker_estate card field enclosed @Label@1642","whittaker_estate card field enclosed @Label@1649","whittaker_estate card field enclosed @Label@1651","whittaker_estate card field enclosed @Label@1658","whittaker_estate card field enclosed @Label@1660","whittaker_estate card field enclosed @Label@1667","whittaker_estate card field enclosed @Label@1669","whittaker_estate card field enclosed @Label@1676","whittaker_estate card field enclosed @Label@1678","whittaker_estate card field enclosed @Label@1685","whittaker_estate card field enclosed @Label@1687","whittaker_estate card field enclosed @Label@1694","whittaker_estate card field enclosed @Label@1696","whittaker_estate card field enclosed @Label@1703","whittaker_estate card field enclosed @Label@1705","whittaker_estate fixed bridge height (1920, 1080)","whittaker_estate card field enclosed @Label@1568","whittaker_estate card field enclosed @Label@1570","whittaker_estate card field enclosed @Label@1577","whittaker_estate card field enclosed @Label@1579","whittaker_estate card field enclosed @Label@1586","whittaker_estate card field enclosed @Label@1588","whittaker_estate card field enclosed @Label@1595","whittaker_estate card field enclosed @Label@1597","whittaker_estate card field enclosed @Label@1604","whittaker_estate card field enclosed @Label@1606","whittaker_estate card field enclosed @Label@1613","whittaker_estate card field enclosed @Label@1615","whittaker_estate card field enclosed @Label@1622","whittaker_estate card field enclosed @Label@1624","whittaker_estate card field enclosed @Label@1631","whittaker_estate card field enclosed @Label@1633","whittaker_estate card field enclosed @Label@1640","whittaker_estate card field enclosed @Label@1642","whittaker_estate card field enclosed @Label@1649","whittaker_estate card field enclosed @Label@1651","whittaker_estate card field enclosed @Label@1658","whittaker_estate card field enclosed @Label@1660","whittaker_estate card field enclosed @Label@1667","whittaker_estate card field enclosed @Label@1669","whittaker_estate card field enclosed @Label@1676","whittaker_estate card field enclosed @Label@1678","whittaker_estate card field enclosed @Label@1685","whittaker_estate card field enclosed @Label@1687","whittaker_estate card field enclosed @Label@1694","whittaker_estate card field enclosed @Label@1696","whittaker_estate card field enclosed @Label@1703","whittaker_estate card field enclosed @Label@1705","whittaker_estate fixed bridge height (1280, 720)","whittaker_estate card field enclosed @Label@1568","whittaker_estate card field enclosed @Label@1570","whittaker_estate card field enclosed @Label@1577","whittaker_estate card field enclosed @Label@1579","whittaker_estate card field enclosed @Label@1586","whittaker_estate card field enclosed @Label@1588","whittaker_estate card field enclosed @Label@1595","whittaker_estate card field enclosed @Label@1597","whittaker_estate card field enclosed @Label@1604","whittaker_estate card field enclosed @Label@1606","whittaker_estate card field enclosed @Label@1613","whittaker_estate card field enclosed @Label@1615","whittaker_estate card field enclosed @Label@1622","whittaker_estate card field enclosed @Label@1624","whittaker_estate card field enclosed @Label@1631","whittaker_estate card field enclosed @Label@1633","whittaker_estate card field enclosed @Label@1640","whittaker_estate card field enclosed @Label@1642","whittaker_estate card field enclosed @Label@1649","whittaker_estate card field enclosed @Label@1651","whittaker_estate card field enclosed @Label@1658","whittaker_estate card field enclosed @Label@1660","whittaker_estate card field enclosed @Label@1667","whittaker_estate card field enclosed @Label@1669","whittaker_estate card field enclosed @Label@1676","whittaker_estate card field enclosed @Label@1678","whittaker_estate card field enclosed @Label@1685","whittaker_estate card field enclosed @Label@1687","whittaker_estate card field enclosed @Label@1694","whittaker_estate card field enclosed @Label@1696","whittaker_estate card field enclosed @Label@1703","whittaker_estate card field enclosed @Label@1705"],"faction_vocals_enabled":false,"samples":[{"card_height":94.0,"cards":12,"hud_fraction":0.225717498779297,"hud_height":225.717498779297,"map":"river_bridge","viewport":[1440,1000],"voices":0},{"card_height":94.0,"cards":12,"hud_fraction":0.169499997739439,"hud_height":183.059997558594,"map":"river_bridge","viewport":[1920,1080],"voices":0},{"card_height":94.0,"cards":12,"hud_fraction":0.254249996609158,"hud_height":183.059997558594,"map":"river_bridge","viewport":[1280,720],"voices":0},{"card_height":46.0,"cards":16,"hud_fraction":0.225717498779297,"hud_height":225.717498779297,"map":"whittaker_estate","viewport":[1440,1000],"voices":0},{"card_height":46.0,"cards":16,"hud_fraction":0.169499997739439,"hud_height":183.059997558594,"map":"whittaker_estate","viewport":[1920,1080],"voices":0},{"card_height":46.0,"cards":16,"hud_fraction":0.254249996609158,"hud_height":183.059997558594,"map":"whittaker_estate","viewport":[1280,720],"voices":0}]}
+HUD_FAIL river_bridge fixed bridge height (1440, 1000)
+HUD_FAIL river_bridge card field enclosed @Label@721
+HUD_FAIL river_bridge card field enclosed @Label@730
+HUD_FAIL river_bridge card field enclosed @Label@739
+HUD_FAIL river_bridge card field enclosed @Label@748
+HUD_FAIL river_bridge card field enclosed @Label@757
+HUD_FAIL river_bridge card field enclosed @Label@766
+HUD_FAIL river_bridge card field enclosed @Label@775
+HUD_FAIL river_bridge card field enclosed @Label@784
+HUD_FAIL river_bridge card field enclosed @Label@793
+HUD_FAIL river_bridge card field enclosed @Label@802
+HUD_FAIL river_bridge card field enclosed @Label@811
+HUD_FAIL river_bridge card field enclosed @Label@820
+HUD_FAIL river_bridge fixed bridge height (1920, 1080)
+HUD_FAIL river_bridge card field enclosed @Label@721
+HUD_FAIL river_bridge card field enclosed @Label@730
+HUD_FAIL river_bridge card field enclosed @Label@739
+HUD_FAIL river_bridge card field enclosed @Label@748
+HUD_FAIL river_bridge card field enclosed @Label@757
+HUD_FAIL river_bridge card field enclosed @Label@766
+HUD_FAIL river_bridge card field enclosed @Label@775
+HUD_FAIL river_bridge card field enclosed @Label@784
+HUD_FAIL river_bridge card field enclosed @Label@793
+HUD_FAIL river_bridge card field enclosed @Label@802
+HUD_FAIL river_bridge card field enclosed @Label@811
+HUD_FAIL river_bridge card field enclosed @Label@820
+HUD_FAIL river_bridge fixed bridge height (1280, 720)
+HUD_FAIL river_bridge card field enclosed @Label@721
+HUD_FAIL river_bridge card field enclosed @Label@730
+HUD_FAIL river_bridge card field enclosed @Label@739
+HUD_FAIL river_bridge card field enclosed @Label@748
+HUD_FAIL river_bridge card field enclosed @Label@757
+HUD_FAIL river_bridge card field enclosed @Label@766
+HUD_FAIL river_bridge card field enclosed @Label@775
+HUD_FAIL river_bridge card field enclosed @Label@784
+HUD_FAIL river_bridge card field enclosed @Label@793
+HUD_FAIL river_bridge card field enclosed @Label@802
+HUD_FAIL river_bridge card field enclosed @Label@811
+HUD_FAIL river_bridge card field enclosed @Label@820
+HUD_FAIL whittaker_estate fixed bridge height (1440, 1000)
+HUD_FAIL whittaker_estate card field enclosed @Label@1568
+HUD_FAIL whittaker_estate card field enclosed @Label@1570
+HUD_FAIL whittaker_estate card field enclosed @Label@1577
+HUD_FAIL whittaker_estate card field enclosed @Label@1579
+HUD_FAIL whittaker_estate card field enclosed @Label@1586
+HUD_FAIL whittaker_estate card field enclosed @Label@1588
+HUD_FAIL whittaker_estate card field enclosed @Label@1595
+HUD_FAIL whittaker_estate card field enclosed @Label@1597
+HUD_FAIL whittaker_estate card field enclosed @Label@1604
+HUD_FAIL whittaker_estate card field enclosed @Label@1606
+HUD_FAIL whittaker_estate card field enclosed @Label@1613
+HUD_FAIL whittaker_estate card field enclosed @Label@1615
+HUD_FAIL whittaker_estate card field enclosed @Label@1622
+HUD_FAIL whittaker_estate card field enclosed @Label@1624
+HUD_FAIL whittaker_estate card field enclosed @Label@1631
+HUD_FAIL whittaker_estate card field enclosed @Label@1633
+HUD_FAIL whittaker_estate card field enclosed @Label@1640
+HUD_FAIL whittaker_estate card field enclosed @Label@1642
+HUD_FAIL whittaker_estate card field enclosed @Label@1649
+HUD_FAIL whittaker_estate card field enclosed @Label@1651
+HUD_FAIL whittaker_estate card field enclosed @Label@1658
+HUD_FAIL whittaker_estate card field enclosed @Label@1660
+HUD_FAIL whittaker_estate card field enclosed @Label@1667
+HUD_FAIL whittaker_estate card field enclosed @Label@1669
+HUD_FAIL whittaker_estate card field enclosed @Label@1676
+HUD_FAIL whittaker_estate card field enclosed @Label@1678
+HUD_FAIL whittaker_estate card field enclosed @Label@1685
+HUD_FAIL whittaker_estate card field enclosed @Label@1687
+HUD_FAIL whittaker_estate card field enclosed @Label@1694
+HUD_FAIL whittaker_estate card field enclosed @Label@1696
+HUD_FAIL whittaker_estate card field enclosed @Label@1703
+HUD_FAIL whittaker_estate card field enclosed @Label@1705
+HUD_FAIL whittaker_estate fixed bridge height (1920, 1080)
+HUD_FAIL whittaker_estate card field enclosed @Label@1568
+HUD_FAIL whittaker_estate card field enclosed @Label@1570
+HUD_FAIL whittaker_estate card field enclosed @Label@1577
+HUD_FAIL whittaker_estate card field enclosed @Label@1579
+HUD_FAIL whittaker_estate card field enclosed @Label@1586
+HUD_FAIL whittaker_estate card field enclosed @Label@1588
+HUD_FAIL whittaker_estate card field enclosed @Label@1595
+HUD_FAIL whittaker_estate card field enclosed @Label@1597
+HUD_FAIL whittaker_estate card field enclosed @Label@1604
+HUD_FAIL whittaker_estate card field enclosed @Label@1606
+HUD_FAIL whittaker_estate card field enclosed @Label@1613
+HUD_FAIL whittaker_estate card field enclosed @Label@1615
+HUD_FAIL whittaker_estate card field enclosed @Label@1622
+HUD_FAIL whittaker_estate card field enclosed @Label@1624
+HUD_FAIL whittaker_estate card field enclosed @Label@1631
+HUD_FAIL whittaker_estate card field enclosed @Label@1633
+HUD_FAIL whittaker_estate card field enclosed @Label@1640
+HUD_FAIL whittaker_estate card field enclosed @Label@1642
+HUD_FAIL whittaker_estate card field enclosed @Label@1649
+HUD_FAIL whittaker_estate card field enclosed @Label@1651
+HUD_FAIL whittaker_estate card field enclosed @Label@1658
+HUD_FAIL whittaker_estate card field enclosed @Label@1660
+HUD_FAIL whittaker_estate card field enclosed @Label@1667
+HUD_FAIL whittaker_estate card field enclosed @Label@1669
+HUD_FAIL whittaker_estate card field enclosed @Label@1676
+HUD_FAIL whittaker_estate card field enclosed @Label@1678
+HUD_FAIL whittaker_estate card field enclosed @Label@1685
+HUD_FAIL whittaker_estate card field enclosed @Label@1687
+HUD_FAIL whittaker_estate card field enclosed @Label@1694
+HUD_FAIL whittaker_estate card field enclosed @Label@1696
+HUD_FAIL whittaker_estate card field enclosed @Label@1703
+HUD_FAIL whittaker_estate card field enclosed @Label@1705
+HUD_FAIL whittaker_estate fixed bridge height (1280, 720)
+HUD_FAIL whittaker_estate card field enclosed @Label@1568
+HUD_FAIL whittaker_estate card field enclosed @Label@1570
+HUD_FAIL whittaker_estate card field enclosed @Label@1577
+HUD_FAIL whittaker_estate card field enclosed @Label@1579
+HUD_FAIL whittaker_estate card field enclosed @Label@1586
+HUD_FAIL whittaker_estate card field enclosed @Label@1588
+HUD_FAIL whittaker_estate card field enclosed @Label@1595
+HUD_FAIL whittaker_estate card field enclosed @Label@1597
+HUD_FAIL whittaker_estate card field enclosed @Label@1604
+HUD_FAIL whittaker_estate card field enclosed @Label@1606
+HUD_FAIL whittaker_estate card field enclosed @Label@1613
+HUD_FAIL whittaker_estate card field enclosed @Label@1615
+HUD_FAIL whittaker_estate card field enclosed @Label@1622
+HUD_FAIL whittaker_estate card field enclosed @Label@1624
+HUD_FAIL whittaker_estate card field enclosed @Label@1631
+HUD_FAIL whittaker_estate card field enclosed @Label@1633
+HUD_FAIL whittaker_estate card field enclosed @Label@1640
+HUD_FAIL whittaker_estate card field enclosed @Label@1642
+HUD_FAIL whittaker_estate card field enclosed @Label@1649
+HUD_FAIL whittaker_estate card field enclosed @Label@1651
+HUD_FAIL whittaker_estate card field enclosed @Label@1658
+HUD_FAIL whittaker_estate card field enclosed @Label@1660
+HUD_FAIL whittaker_estate card field enclosed @Label@1667
+HUD_FAIL whittaker_estate card field enclosed @Label@1669
+HUD_FAIL whittaker_estate card field enclosed @Label@1676
+HUD_FAIL whittaker_estate card field enclosed @Label@1678
+HUD_FAIL whittaker_estate card field enclosed @Label@1685
+HUD_FAIL whittaker_estate card field enclosed @Label@1687
+HUD_FAIL whittaker_estate card field enclosed @Label@1694
+HUD_FAIL whittaker_estate card field enclosed @Label@1696
+HUD_FAIL whittaker_estate card field enclosed @Label@1703
+HUD_FAIL whittaker_estate card field enclosed @Label@1705

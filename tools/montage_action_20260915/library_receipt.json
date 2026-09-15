@@ -1,0 +1,20 @@
+{
+  "current_version_number": 0,
+  "directory_id": "6aa0207fd3c08191bffca33062d73c97",
+  "external_connectors_accessed": false,
+  "file_id": "file_000000001b8881fd8a2cdb5f438b2588",
+  "file_name": "DEAD_STREET_Action_Montage.mp4",
+  "file_size_bytes": 6968073,
+  "library_file_id": "libfile_60102d31c2508191b3579a0b5f502269",
+  "mime_type": "video/mp4",
+  "operation": "create_library_file",
+  "path": "/Dead Street/DEAD_STREET_Action_Montage.mp4",
+  "restored_from_version_number": null,
+  "status": "succeeded",
+  "xattrs": [
+    {
+      "name": "user.library-file-version",
+      "value": "0"
+    }
+  ]
+}

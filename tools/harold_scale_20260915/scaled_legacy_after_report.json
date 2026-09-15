@@ -1,0 +1,16 @@
+{
+	"advance_ms_median": 8.829,
+	"advance_ms_p95": 14.475,
+	"battle_phase": "active",
+	"checks": 905,
+	"disembark_routes": 12,
+	"errors": [
+		"arrival option close",
+		"arrival option medium"
+	],
+	"frame_ms_median": 23.298,
+	"frame_ms_p95": 32.738,
+	"frames": 843,
+	"phase": "after",
+	"seconds": 20.004428
+}

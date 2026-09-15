@@ -1,0 +1,52 @@
+{
+  "checkpoints": [
+    {
+      "fps_snapshot": 28.0,
+      "mean_update_ms": 36.478375,
+      "sim_seconds": 5.99999999999999
+    },
+    {
+      "fps_snapshot": 22.0,
+      "mean_update_ms": 33.2836333333333,
+      "sim_seconds": 12.0
+    },
+    {
+      "fps_snapshot": 31.0,
+      "mean_update_ms": 30.3480833333333,
+      "sim_seconds": 18.0000000000001
+    },
+    {
+      "fps_snapshot": 12.0,
+      "mean_update_ms": 37.8869833333333,
+      "sim_seconds": 24.0000000000002
+    },
+    {
+      "fps_snapshot": 15.0,
+      "mean_update_ms": 45.764375,
+      "sim_seconds": 30.0000000000003
+    }
+  ],
+  "damage": 13.392,
+  "label": "defender24",
+  "living": 19,
+  "max_ms": 157.485,
+  "mean_ms": 36.75229,
+  "moved": 18,
+  "occupied": 13,
+  "p95_ms": 61.951,
+  "paused_fps": 35.0,
+  "phase": "active",
+  "rendered": 24,
+  "sim_seconds": 30.0000000000003,
+  "stages_ms": {
+    "combat": 11244.657,
+    "movement": 3903.002,
+    "path_follow": 166.09,
+    "pressure": 2037.094,
+    "tactics": 68.329,
+    "targets": 3470.715,
+    "weapon": 1115.588
+  },
+  "steps": 600,
+  "units": 24
+}

@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+Movie Maker mode enabled, recording movie in 1152×648 @ 30 FPS...
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.8000001907349, 0.0) segment=0 into=11.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+SPATIAL_AUDIO_REVIEW {"errors":[],"samples":[{"attacker_margin_db":23.3371114410973,"clock":2.5,"rms":{"attacker":0.0206111990407799,"defender":0.00140361398022622}},{"attacker_margin_db":25.0180623859513,"clock":4.5,"rms":{"attacker":0.0197036908671649,"defender":0.00110571821989471}},{"attacker_margin_db":26.1041712773207,"clock":7.0,"rms":{"attacker":0.0227088089644012,"defender":0.00112456818555563}},{"attacker_margin_db":26.9213712204666,"clock":9.5,"rms":{"attacker":0.0255687690911492,"defender":0.0011525008651888}}]}

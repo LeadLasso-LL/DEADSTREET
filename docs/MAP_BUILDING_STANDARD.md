@@ -60,3 +60,18 @@ The next feature backlog remains in [HAROLD_AVE_PRODUCTION_BRIEF.md](HAROLD_AVE_
 ## Estate intro surroundings correction - 2026-09-14
 
 Brandon requested continuous developed context beyond the fightable estate visible at the existing intro zoom. Expand and furnish the static scenery coverage rather than changing the approved camera. Estate now has a 4096x2304 bake at origin (-1200,-900), continuing public road, fields, tree belts, utility lines and neighboring lots. These remain noncombat scenery; no collision, cover or route changes. The main driveway and its border end flush at the public road edge. Native intro and road-junction inspection passed; owner visual review remains pending. Detailed evidence and reproduction: tools/whittaker_estate/README.md.
+
+
+## Harold parked-vehicle standard — 2026-09-15
+Supersedes the earlier5.15x2.1 generic sedan scale for Harold curb traffic: use VehicleModelCatalog model length/width times TACTICAL_SCALE (currently1.6) and fleet_vehicle_art.gd at the same ground-centre anchor. Keep artwork, obstacle rectangles, cover slots and baked shadows aligned. The12 chosen models and positions are authored in HaroldStreetCatalog.PARKED_CARS. Mostly inexpensive neighborhood transport; a conspicuous scarlet Veloce Rosso directly outside the HQ steps and nearby Rancher Seven indicate Saints wealth. Owner corrections harold-scale-08 through11 supersede the understated Cabrillo and rejected blue Volta choices. Road is20 units wide and both sidewalk curbs/props follow catalog geometry. Legacy generic-sedan10% height treatment does not apply to canonical fleet sprites. Detailed evidence: tools/harold_scale_20260915/README.md.
+
+
+## Harold cover silhouette clearance - 2026-09-15
+Physical-point reachability alone does not certify visible cover use. Current Harold rule:1.35-world car/stoop standoff, stair side points .35 beyond front corners,2.4-world separation between offered firing positions, no facing-dependent shift of drawn feet. Keep physical doors while avoiding overlapping door/body firing spots. This supersedes older Harold .85 standoff/interior-corner positions; other map rules remain unchanged. Inspect native full view and close poses. Evidence/limits: tools/cover_interactions_20260915/README.md.
+
+
+### 2026-09-15 owner direction: natural convoy arrivals
+- No visible preassigned parking boxes for an assault convoy. Cars pull up for a fight; final poses can use alternating diagonals and irregular spacing where the physical road/yard permits.
+- Use map-specific curved approaches, staggered acceleration and braking, with each animation ending at its actual collision/cover/exit pose. Do not fake rotations independently of physical placement.
+- Validate moving hulls against scenery and each other, including multi-bike slots and large transports. Preserve valid passenger exits.
+- Eastex Freight Exchange is the implemented example. Existing estate and auto-yard arrivals already use map-specific turning routes; future arrival revisions must follow this standard. Street/bridge constraints still require traffic and footprint clearance.

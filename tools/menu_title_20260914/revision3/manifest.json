@@ -1,0 +1,186 @@
+{
+  "timeline": {
+    "gloria_hold": [
+      0,
+      3
+    ],
+    "godot_hold": [
+      4,
+      7
+    ],
+    "caution_fade_in": [
+      7.5,
+      8.0
+    ],
+    "caution_full_hold": [
+      8.0,
+      9.25
+    ],
+    "caution_zoom": [
+      9.25,
+      11.5
+    ],
+    "black_hold": [
+      11.5,
+      13
+    ],
+    "pixel_title_assembly": [
+      13,
+      21
+    ],
+    "title_complete_and_hover_start": 21,
+    "background_fade_in": [
+      21,
+      21.6
+    ],
+    "open_sandbox_first_visible": 27,
+    "preview_sandbox_entry": 45,
+    "preview_music_docked": 48.75,
+    "preview_playlist_open": 51,
+    "music": "Dead Street \u2014 B-22; one uninterrupted stream from 0 through sandbox entry"
+  },
+  "shots": [
+    [
+      "bridge",
+      34.5,
+      60,
+      [
+        345,
+        104,
+        530,
+        298
+      ],
+      "CROSSFIRE"
+    ],
+    [
+      "harold",
+      12.5,
+      60,
+      [
+        420,
+        190,
+        1024,
+        576
+      ],
+      "HAROLD STREET CROSSFIRE"
+    ],
+    [
+      "estate",
+      6.2,
+      90,
+      [
+        170,
+        115,
+        640,
+        360
+      ],
+      "TRC CONVOY ACROSS GRASS"
+    ],
+    [
+      "bridge",
+      51.5,
+      60,
+      [
+        340,
+        104,
+        580,
+        326
+      ],
+      "BRIDGE CASUALTY"
+    ],
+    [
+      "estate",
+      9.0,
+      90,
+      [
+        210,
+        135,
+        575,
+        323
+      ],
+      "TRC DISMOUNT"
+    ],
+    [
+      "harold",
+      19.4,
+      60,
+      [
+        600,
+        260,
+        896,
+        504
+      ],
+      "MERCER FRONTAGE FIREFIGHT"
+    ],
+    [
+      "bridge",
+      54.6,
+      60,
+      [
+        470,
+        102,
+        530,
+        298
+      ],
+      "BLOCKADE FIREFIGHT"
+    ],
+    [
+      "estate",
+      55.0,
+      60,
+      [
+        310,
+        125,
+        530,
+        298
+      ],
+      "GATE ASSAULT"
+    ],
+    [
+      "bridge",
+      61.0,
+      60,
+      [
+        520,
+        101,
+        530,
+        298
+      ],
+      "RAIDERS ADVANCE"
+    ],
+    [
+      "harold",
+      30.8,
+      60,
+      [
+        420,
+        250,
+        896,
+        504
+      ],
+      "ORLOV STREET ASSAULT"
+    ],
+    [
+      "bridge",
+      69.0,
+      60,
+      [
+        500,
+        100,
+        580,
+        326
+      ],
+      "FINAL CROSSFIRE"
+    ]
+  ],
+  "duration": 57,
+  "frames": 1710,
+  "harold_library_id": "libfile_8999c66a893c8191b89b904c99decbbd",
+  "source_hashes": {
+    "estate": "64a8b2cc27cd13bdb7b71b9cb17b9efba9404bdf16bf05dc9e7808b373d21210",
+    "bridge": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93",
+    "harold": "1b193b4062b6d299251a72071a56ca83ea70cb80c7f4db31c7c4351e3b32fba7"
+  },
+  "status": "Revised video preview, no native controller integration",
+  "title_source_sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9"
+}

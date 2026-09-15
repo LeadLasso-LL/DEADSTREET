@@ -1,0 +1,45 @@
+{
+  "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\yard_finish_20260915\\DEAD_STREET_Ravicci_Raid_Final.mp4",
+  "bytes": 7369078,
+  "sha256": "b31c1092b7bc3c7330a00d9370d4f1d5197050b8f103653b3efc4d627d74c413",
+  "seconds": 53.79666666666667,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "decoded_to_end": true,
+  "audio_peak": 0.4467383623123169,
+  "audio_rms": 0.02180815301835537,
+  "parts": [
+    {
+      "name": "part_000.txt",
+      "bytes": 1300000,
+      "sha256": "dda5e1003b73717a106ea57b2741668e2b37f1ebede0974f3a00e4272ac42bd8"
+    },
+    {
+      "name": "part_001.txt",
+      "bytes": 1300000,
+      "sha256": "d3a399a62e12177daf75f353cbb6f15dc10efa8fe67a129f81e49f82c8281e01"
+    },
+    {
+      "name": "part_002.txt",
+      "bytes": 1300000,
+      "sha256": "5fc7e3a9329c84a71a21f2dc88cb0831592f5937fec22d7337c721f1b7c0f828"
+    },
+    {
+      "name": "part_003.txt",
+      "bytes": 1300000,
+      "sha256": "5f1279065dc8c7e3f49294a33abf3a435f09f0de3561378e2f935f9a97ec57be"
+    },
+    {
+      "name": "part_004.txt",
+      "bytes": 1300000,
+      "sha256": "329cd505845eaad2d52b7481236634cc2dfc4aadf6cf13145e3e1a2f7fd48ca9"
+    },
+    {
+      "name": "part_005.txt",
+      "bytes": 869078,
+      "sha256": "bd2d13eba888259501cdf09d3b344d9f99330da2062b0af136de03bf32d15129"
+    }
+  ],
+  "winner": "attacker"
+}

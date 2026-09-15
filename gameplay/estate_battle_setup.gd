@@ -5,6 +5,7 @@ const Vehicle=preload("res://battle/core/battle_vehicle.gd")
 const Placement=preload("res://battle/vehicles/battle_vehicle_placement_service.gd")
 const UnitPlacement=preload("res://battle/core/battle_deployment_placement_service.gd")
 const Body=preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 const Doors=preload("res://battle/vehicles/battle_arrival_service.gd")
 const Cover=preload("res://battle/geometry/battle_cover_service.gd")
 static func apply(b,config: Dictionary) -> Dictionary:
@@ -30,10 +31,21 @@ static func apply(b,config: Dictionary) -> Dictionary:
   for v in b.vehicles.values():
    if v.side_id==side_id:vs.append(v)
   vs.sort_custom(func(a,z):return a.battle_vehicle_id<z.battle_vehicle_id)
+  var grouped_attacker=side_id==b.attacker_side_id and vs.any(func(vehicle):return int(vehicle.get_meta("convoy_group_size",1))>1)
   var candidates=[[Vector2(39,49),Vector2(.8,-.6)],[Vector2(41,78),Vector2(.5,-.866).normalized()],[Vector2(30,103),Vector2(.94,.342).normalized()],[Vector2(28,62),Vector2.RIGHT],[Vector2(28,82),Vector2.UP]] if side_id==b.attacker_side_id else [[Vector2(69,62),Vector2.LEFT],[Vector2(117,35),Vector2.LEFT],[Vector2(70,81),Vector2.LEFT],[Vector2(115,82),Vector2.LEFT],[Vector2(95,26),Vector2.LEFT]]
   for v in vs:
    var placed=false
    var vehicle_candidates=[[Vector2(116,74),Vector2.LEFT]]+candidates if side_id==b.defender_side_id and v.vehicle_type_id=="workhorse" else candidates
+   if grouped_attacker:
+    var base: Array=candidates[clampi(int(v.get_meta("convoy_slot",0)),0,2)]
+    vehicle_candidates=[base]
+    for shift in [Vector2(-4,0),Vector2(4,0),Vector2(-8,0),Vector2(8,0),Vector2(0,-4),Vector2(-4,-4),Vector2(4,-4)]:
+     vehicle_candidates.append([base[0]+shift,base[1]])
+   if side_id==b.attacker_side_id and Formation.two_wheeler(v.vehicle_type_id):
+    var slot=clampi(int(v.get_meta("convoy_slot",0)),0,2);var member=int(v.get_meta("convoy_member",0));var count=int(v.get_meta("convoy_group_size",1))
+    var base: Array=candidates[slot];var forward: Vector2=base[1];var lateral=Vector2(-forward.y,forward.x)
+    var offset=lateral*(-2.8 if member%2==0 else 2.8)+forward*((3. if count==4 else 0.)-floori(member/2.)*9.) if count>1 else Vector2.ZERO
+    vehicle_candidates=[[base[0]+offset,forward]]
    for pose in vehicle_candidates:
     var at: Vector2=pose[0];var facing: Vector2=pose[1]
     var attempt=Placement.place_vehicle(b,v.battle_vehicle_id,at,facing)
@@ -113,8 +125,13 @@ static func opening_score(slot,goal: Vector2,transport: String,prefer_vehicle: b
  var own_vehicle=str(slot.cover_object_id).begins_with(transport)
  var fence="front_fence" in str(slot.cover_object_id)
  return slot.position.distance_squared_to(goal)-(650. if prefer_vehicle and own_vehicle else (180. if fence else 0.))
+static func bike_formation_offset(v,facing: Vector2) -> Vector2:
+ var count=int(v.get_meta("convoy_group_size",1))
+ if count<=1:return Vector2.ZERO
+ var member=int(v.get_meta("convoy_member",0))
+ return Vector2(-facing.y,facing.x)*(-2.8 if member%2==0 else 2.8)+facing*((3. if count==4 else 0.)-floori(member/2.)*9.)
 static func arrival_pose(v,clock: float,stop: float) -> Dictionary:
- var target: Vector2=v.battle_position
+ var target: Vector2=v.battle_position-bike_formation_offset(v,v.facing_direction)
  var slot=int(v.get_meta("convoy_slot",0))
  # Each assault vehicle peels off before the final angle-aligned braking leg.
  # The rear team uses the outside verge; the lead vehicles cut across the lawn.
@@ -122,6 +139,8 @@ static func arrival_pose(v,clock: float,stop: float) -> Dictionary:
  var turn_start=Vector2(12.8,turn_y+8.)
  var turn_end=Vector2(22.,turn_y)
  var control=Vector2(12.8,turn_y)
+ # Packed riders share a centerline and retain their actual body spacing while
+ # it turns; separate per-rider path lengths make trailing bikes catch the lead.
  var points=[Vector2(12.8,144.+slot*20.),turn_start]
  for i in range(1,13):points.append(turn_start.bezier_interpolate(control,control,turn_end,float(i)/12.))
  var approach=turn_end+Vector2(7.,0.)
@@ -136,6 +155,7 @@ static func arrival_pose(v,clock: float,stop: float) -> Dictionary:
   var distance=points[i-1].distance_to(points[i])
   if remaining<=distance and distance>.001:
    var at=points[i-1].lerp(points[i],remaining/distance)
-   return {"position":at,"facing":points[i-1].direction_to(points[i]) if clock<stop else v.facing_direction}
+   var facing=points[i-1].direction_to(points[i]) if clock<stop else v.facing_direction
+   return {"position":at+bike_formation_offset(v,facing),"facing":facing}
   remaining-=distance
- return {"position":target,"facing":v.facing_direction}
+ return {"position":v.battle_position,"facing":v.facing_direction}

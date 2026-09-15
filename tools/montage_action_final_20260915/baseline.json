@@ -1,0 +1,10 @@
+{
+  "assets/menu/opening/montage.ogv": "44e9a1e5f3d2581c90033f68fbb01281a984b483bc3a2dca64db954f1a2d63f5",
+  "assets/menu/opening/approved_title.png": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+  "assets/menu/opening/camera_ui.png": "7a644fcbd0eb14f2f4954af138fdfa9a30bb758dccda72e39a45ad521e2008a3",
+  "assets/menu/opening/open_button.png": "2564c430caf661f52db6d324d20996e37abafc9ef768a80b72108d3ecb1938b6",
+  "assets/menu/opening/B-22_Dead_Street.mp3": "e624827c72e62dc1c6568762f7ad73f7aaa3cf8b912dbb4ae88c6099887dbb5d",
+  "assets/menu/opening/startup.ogv": "57e45265cfa97531d6be9a9ed0c926a70f189248505ab8d6e5c0b43aa12317b6",
+  "gameplay/sandbox_opening.gd": "671bef61edc112a0e54d348d160d6b809c9fd6fd412872b7bf46f139b6455dcf",
+  "gameplay/sandbox_caution.gd": "8293f855b878eb06ef7c7febfc235c235371772a9f134fdd00e67d13dd36cf57"
+}

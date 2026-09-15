@@ -196,3 +196,20 @@ Persistent selected-unit movement routes and target connection lines are hidden.
 Selection still uses the glowing emblem and yellow ring. Brief Push/Fall Back
 placement lines and Hold acknowledgements remain. This supersedes earlier route-line
 presentation rules; command behavior is preserved.
+
+
+## 2026-09-15 — Individual selected-unit firing range
+
+IMPLEMENTED / NATIVE-VALIDATED, owner visual acceptance pending. Exactly one living selected friendly during an active or paused battle shows a light soft red circle on the ground, centered on the unit. The radius comes from the equipped weapon model/tier via BattleWeaponCatalog.for_participant().max_range. Ground projection follows the map, so the tactical circle appears elliptical in perspective. It stays beneath scenery/vehicles/units and never receives input.
+
+Faint interior, feathered edge and 120ms fade-in; immediate removal on deselection, group selection, death, hidden battle or leaving active phase. Wounded/reloading selected units still show nominal weapon reach. This does not visualize line of sight or guarantee firing/accuracy. It changes no combat rule, HUD dimension or camera behavior. This narrowly supersedes the previous prohibition on persistent ground selection markers; movement routes/target lines remain hidden and existing emblem selection feedback remains.
+
+Validation: 234 native checks across Harold, bridge and estate, five weapon classes with real model/tier range differences. Final native screenshot inspection confirmed visible soft geometry and scenery layering after correcting textureless-quad UV handling. See journal selected-range-02 and ../tools/selected_range_20260915/README.md. No full performance/battle regression campaign; owner review is the next step.
+
+
+## 20260915-selected-range-04 — Appearance accepted; group display under discussion
+OWNER-ACCEPTED: current individual range-circle appearance (Brandon: "that is perfect"). PROPOSED, not implemented: retain individual fill/rim, add fainter outline-only ranges for weapon-class selections, suppress mixed/Select All ranges and avoid bright overlap buildup. Each unit keeps its actual equipped range. See journal selected-range-04. Next: settle the group rule; current runtime stays individual-only. Publication blocker remains separately recorded in selected-range-03.
+
+
+## 20260915-selected-range-07 — Individuals and class groups complete
+IMPLEMENTED / NATIVE-VALIDATED: accepted individual look retained; homogeneous weapon-class groups now show faint outline-only ranges per unit, with maximum-opacity compositing so intersections never brighten. Mixed groups and Select All hide ranges.398 native checks passed (164 groups +234 individual), zero final errors; actual screenshots inspected across all three maps. Group appearance owner review next. Rules/evidence: tools/selected_range_groups_20260915/README.md and journal selected-range-07. Reopen normal live-source sandbox to load. Existing publication blocker remains separate; no push attempted and old individual-only publisher must be refreshed before future publication. Other chats' uncommitted work preserved.

@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_02__door_0_north slot sandbox_transport_02__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__left
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__rear
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+LIVE_WINDOW { "wall_seconds": 5.015346, "fps": 51.4421138641282, "sim_seconds": 4.94582288888889 }
+LIVE_WINDOW { "wall_seconds": 10.021098, "fps": 55.7358814419891, "sim_seconds": 9.95483200000005 }
+LIVE_WINDOW { "wall_seconds": 15.039004, "fps": 52.4123010674174, "sim_seconds": 14.9687500000001 }
+LIVE_WINDOW { "wall_seconds": 20.045162, "fps": 53.5340674425378, "sim_seconds": 19.9833333333335 }
+LIVE_WINDOW { "wall_seconds": 25.085663, "fps": 38.686630555177, "sim_seconds": 24.5694020793653 }
+LIVE_DONE {"damage":17.988,"fps":48.6489843824764,"late_paused_fps":60.567632657108,"living":18,"max_frame_ms":345.083,"p95_frame_ms":30.813,"rendered":24,"sim_seconds":29.3322934126986,"units":24,"wall_seconds":30.010904,"windows":[{"fps":51.4421138641282,"sim_seconds":4.94582288888889,"wall_seconds":5.015346},{"fps":55.7358814419891,"sim_seconds":9.95483200000005,"wall_seconds":10.021098},{"fps":52.4123010674174,"sim_seconds":14.9687500000001,"wall_seconds":15.039004},{"fps":53.5340674425378,"sim_seconds":19.9833333333335,"wall_seconds":20.045162},{"fps":38.686630555177,"sim_seconds":24.5694020793653,"wall_seconds":25.085663}]}

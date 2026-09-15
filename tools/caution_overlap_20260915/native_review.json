@@ -1,0 +1,26 @@
+{
+  "black_max": 0,
+  "button_at": 27.007277456665,
+  "checks": 37,
+  "errors": [],
+  "hit_times": [
+    7.21285142849731,
+    7.54130488513184,
+    7.95004106726074,
+    8.23606990716553,
+    8.56753388696289
+  ],
+  "intro_sound_players": 0,
+  "sandbox_at": 29.1323933980713,
+  "signature_play_count": 1,
+  "start_frame": 60,
+  "status": "PASS",
+  "title_at": 21.0112700202637,
+  "total_frames": 2073,
+  "viewport": [
+    1280,
+    720
+  ],
+  "zoom_end": 11.8,
+  "zoom_start": 6.85
+}

@@ -1,0 +1,191 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started Registering global classes... (9 steps)
+[   0% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] _update_scan_actions | Started Scanning actions... (69 steps)
+[   0% ] _update_scan_actions | ground.png
+[   1% ] _update_scan_actions | ak47.png
+[   2% ] _update_scan_actions | aug.png
+[   4% ] _update_scan_actions | awm.png
+[   5% ] _update_scan_actions | benelli_m2.png
+[   7% ] _update_scan_actions | benelli_m4.png
+[   8% ] _update_scan_actions | cz75.png
+[  10% ] _update_scan_actions | desert_eagle.png
+[  11% ] _update_scan_actions | five_seven.png
+[  12% ] _update_scan_actions | g36c.png
+[  14% ] _update_scan_actions | glock_17.png
+[  15% ] _update_scan_actions | m4a1.png
+[  17% ] _update_scan_actions | m1911.png
+[  18% ] _update_scan_actions | mac10.png
+[  20% ] _update_scan_actions | mini14.png
+[  21% ] _update_scan_actions | moss500.png
+[  22% ] _update_scan_actions | mp5.png
+[  24% ] _update_scan_actions | mp5k.png
+[  25% ] _update_scan_actions | p90.png
+[  27% ] _update_scan_actions | psg1.png
+[  28% ] _update_scan_actions | rem700.png
+[  30% ] _update_scan_actions | rem870.png
+[  31% ] _update_scan_actions | saiga12.png
+[  32% ] _update_scan_actions | scar_h.png
+[  34% ] _update_scan_actions | sks.png
+[  35% ] _update_scan_actions | spas12.png
+[  37% ] _update_scan_actions | ssg69.png
+[  38% ] _update_scan_actions | svd.png
+[  40% ] _update_scan_actions | usp.png
+[  41% ] _update_scan_actions | uzi.png
+[  42% ] _update_scan_actions | vector.png
+[  44% ] _update_scan_actions | ak47.svg
+[  45% ] _update_scan_actions | awm.svg
+[  47% ] _update_scan_actions | psg1.svg
+[  48% ] _update_scan_actions | rem700.svg
+[  50% ] _update_scan_actions | sks.svg
+[  51% ] _update_scan_actions | ssg69.svg
+[  52% ] _update_scan_actions | svd.svg
+[  54% ] _update_scan_actions | after_combat.png
+[  55% ] _update_scan_actions | after_ready.png
+[  57% ] _update_scan_actions | ak47.png
+[  58% ] _update_scan_actions | awm.png
+[  60% ] _update_scan_actions | psg1.png
+[  61% ] _update_scan_actions | rem700.png
+[  62% ] _update_scan_actions | sks.png
+[  64% ] _update_scan_actions | ssg69.png
+[  65% ] _update_scan_actions | svd.png
+[  67% ] _update_scan_actions | ak47.svg
+[  68% ] _update_scan_actions | awm.svg
+[  70% ] _update_scan_actions | psg1.svg
+[  71% ] _update_scan_actions | rem700.svg
+[  72% ] _update_scan_actions | sks.svg
+[  74% ] _update_scan_actions | ssg69.svg
+[  75% ] _update_scan_actions | svd.svg
+[  77% ] _update_scan_actions | ak47.png
+[  78% ] _update_scan_actions | battle_setup.png
+[  80% ] _update_scan_actions | emblems_after.png
+[  81% ] _update_scan_actions | faction_mercer.png
+[  82% ] _update_scan_actions | faction_nbpd.png
+[  84% ] _update_scan_actions | faction_orlov.png
+[  85% ] _update_scan_actions | music_popup.png
+[  87% ] _update_scan_actions | music_shuffle_menu.png
+[  88% ] _update_scan_actions | precision_guns.png
+[  90% ] _update_scan_actions | sniper_awm.png
+[  91% ] _update_scan_actions | sniper_psg1.png
+[  92% ] _update_scan_actions | sniper_rem700.png
+[  94% ] _update_scan_actions | sniper_sks.png
+[  95% ] _update_scan_actions | sniper_ssg69.png
+[  97% ] _update_scan_actions | sniper_svd.png
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importing Assets (39 steps)
+[   0% ] reimport | Preparing files to reimport...
+[   2% ] reimport | Preparing files to reimport...
+[   5% ] reimport | Preparing files to reimport...
+[   7% ] reimport | Preparing files to reimport...
+[  10% ] reimport | Preparing files to reimport...
+[  12% ] reimport | Preparing files to reimport...
+[  15% ] reimport | Preparing files to reimport...
+[  17% ] reimport | Preparing files to reimport...
+[  20% ] reimport | Preparing files to reimport...
+[  22% ] reimport | Preparing files to reimport...
+[  25% ] reimport | Preparing files to reimport...
+[  27% ] reimport | Preparing files to reimport...
+[  30% ] reimport | Preparing files to reimport...
+[  32% ] reimport | Preparing files to reimport...
+[  35% ] reimport | Preparing files to reimport...
+[  37% ] reimport | Preparing files to reimport...
+[  40% ] reimport | Preparing files to reimport...
+[  42% ] reimport | Preparing files to reimport...
+[  45% ] reimport | Preparing files to reimport...
+[  47% ] reimport | Preparing files to reimport...
+[  50% ] reimport | Preparing files to reimport...
+[  52% ] reimport | Preparing files to reimport...
+[  55% ] reimport | Preparing files to reimport...
+[  57% ] reimport | Preparing files to reimport...
+[  60% ] reimport | Preparing files to reimport...
+[  62% ] reimport | Preparing files to reimport...
+[  65% ] reimport | Preparing files to reimport...
+[  67% ] reimport | Preparing files to reimport...
+[  70% ] reimport | Preparing files to reimport...
+[  72% ] reimport | Preparing files to reimport...
+[  75% ] reimport | Preparing files to reimport...
+[  77% ] reimport | Preparing files to reimport...
+[  80% ] reimport | Preparing files to reimport...
+[  82% ] reimport | Preparing files to reimport...
+[  85% ] reimport | Preparing files to reimport...
+[  87% ] reimport | Preparing files to reimport...
+[  90% ] reimport | Preparing files to reimport...
+[  92% ] reimport | Preparing files to reimport...
+[  95% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Executing pre-reimport operations...
+[   0% ] reimport | rem700.svg
+[   2% ] reimport | sks.svg
+[   5% ] reimport | ssg69.svg
+[   7% ] reimport | svd.svg
+[  10% ] reimport | ak47.png
+[  12% ] reimport | battle_setup.png
+[  15% ] reimport | emblems_after.png
+[  17% ] reimport | faction_mercer.png
+[  20% ] reimport | faction_nbpd.png
+[  22% ] reimport | faction_orlov.png
+[  25% ] reimport | music_popup.png
+[  27% ] reimport | music_shuffle_menu.png
+[  30% ] reimport | precision_guns.png
+[  32% ] reimport | sniper_awm.png
+[  35% ] reimport | sniper_psg1.png
+[  37% ] reimport | sniper_rem700.png
+[  40% ] reimport | sniper_sks.png
+[  42% ] reimport | sniper_ssg69.png
+[  45% ] reimport | sniper_svd.png
+[  47% ] reimport | ground.png
+[  50% ] reimport | ak47.svg
+[  52% ] reimport | awm.svg
+[  55% ] reimport | psg1.svg
+[  57% ] reimport | rem700.svg
+[  60% ] reimport | sks.svg
+[  62% ] reimport | ssg69.svg
+[  65% ] reimport | svd.svg
+[  67% ] reimport | after_combat.png
+[  70% ] reimport | after_ready.png
+[  72% ] reimport | ak47.png
+[  75% ] reimport | awm.png
+[  77% ] reimport | psg1.png
+[  80% ] reimport | rem700.png
+[  82% ] reimport | sks.png
+[  85% ] reimport | ssg69.png
+[  87% ] reimport | svd.png
+[  90% ] reimport | ak47.svg
+[  92% ] reimport | awm.svg
+[  95% ] reimport | psg1.svg
+[  97% ] reimport | Finalizing Asset Import...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importing Assets (39 steps)
+[   0% ] reimport | Executing post-reimport operations...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[  33% ] loading_editor_layout | Reopening scenes...
+[  50% ] loading_editor_layout | Loading central editor layout...
+[  66% ] loading_editor_layout | Loading plugin window layout...
+[  83% ] loading_editor_layout | Editor layout ready.
+[ DONE ] loading_editor_layout
+

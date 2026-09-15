@@ -1,0 +1,114 @@
+[
+  {
+    "path": "gameplay/arsenal_battle_fixture.gd",
+    "conflicts": [],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "gameplay/sandbox_force_builder.gd",
+    "conflicts": [
+      {
+        "lines": [
+          36,
+          38
+        ],
+        "old": " map_option.add_item(\"Harold Avenue\");map_option.add_item(\"River Suspension Bridge\");map_option.add_item(\"Whittaker Estate\")\n map_option.select([\"harold\",\"river_bridge\",\"whittaker_estate\"].find(config.get(\"map_id\",\"harold\")))\n map_option.item_selected.connect(func(i):choose_map([\"harold\",\"river_bridge\",\"whittaker_estate\"][i]))\n",
+        "new": " map_option.add_item(\"Harold Avenue\");map_option.add_item(\"River Suspension Bridge\");map_option.add_item(\"Whittaker Estate\");map_option.add_item(\"Doble Ocho Auto Yard\")\n map_option.select([\"harold\",\"river_bridge\",\"whittaker_estate\",\"doble_ocho\"].find(config.get(\"map_id\",\"harold\")))\n map_option.item_selected.connect(func(i):choose_map([\"harold\",\"river_bridge\",\"whittaker_estate\",\"doble_ocho\"][i]))\n"
+      }
+    ],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "gameplay/sandbox_force_config.gd",
+    "conflicts": [],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "gameplay/tactical_actor_presenter.gd",
+    "conflicts": [],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "gameplay/tactical_battle_outro.gd",
+    "conflicts": [],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "gameplay/tactical_battle_presentation.gd",
+    "conflicts": [],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "gameplay/tactical_battle_view.gd",
+    "conflicts": [
+      {
+        "lines": [
+          3850,
+          3850
+        ],
+        "old": "\tif battle_state.battlefield_geometry.authored_layout_id == \"dead_street_dusk_v1\":\n",
+        "new": "\tif battle_state.battlefield_geometry.authored_layout_id in [\"dead_street_dusk_v1\",\"doble_ocho_yard_v1\"]:\n"
+      }
+    ],
+    "owned_changes": true,
+    "unrelated_changes_in_file": true
+  },
+  {
+    "path": "gameplay/tactical_convoy_audio.gd",
+    "conflicts": [],
+    "owned_changes": true,
+    "unrelated_changes_in_file": false
+  },
+  {
+    "path": "battle/presentation/tactical_participant_visual.gd",
+    "conflicts": [
+      {
+        "lines": [
+          81,
+          81
+        ],
+        "old": "\tif battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id == \"dead_street_dusk_v1\":\n",
+        "new": "\tif battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in [\"dead_street_dusk_v1\", \"doble_ocho_yard_v1\"]:\n"
+      },
+      {
+        "lines": [
+          78,
+          78
+        ],
+        "old": "\tif battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in [\"dead_street_dusk_v1\", \"river_suspension_bridge_v1\", \"whittaker_estate_v1\"]:\n",
+        "new": "\tif battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in [\"dead_street_dusk_v1\", \"river_suspension_bridge_v1\", \"whittaker_estate_v1\", \"doble_ocho_yard_v1\"]:\n"
+      }
+    ],
+    "owned_changes": true,
+    "unrelated_changes_in_file": true
+  },
+  {
+    "path": "battle/vehicles/battle_arrival_service.gd",
+    "conflicts": [
+      {
+        "lines": [
+          120,
+          120
+        ],
+        "old": " if g.authored_layout_id==Catalog.ID:_space_body_cover(b)\n",
+        "new": " if g.authored_layout_id in [Catalog.ID,\"doble_ocho_yard_v1\"]:_space_body_cover(b)\n"
+      },
+      {
+        "lines": [
+          117,
+          117
+        ],
+        "old": "  if g.authored_layout_id==Catalog.ID and not _reserve_door_space(b,spec):continue\n",
+        "new": "  if g.authored_layout_id in [Catalog.ID,\"doble_ocho_yard_v1\"] and not _reserve_door_space(b,spec):continue\n"
+      }
+    ],
+    "owned_changes": true,
+    "unrelated_changes_in_file": true
+  }
+]

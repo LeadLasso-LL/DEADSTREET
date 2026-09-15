@@ -1,0 +1,14 @@
+{
+  "head_before": "a61f77bf41e5bd3e00d397c5f523476741de7857",
+  "sources": [
+    "tools/vehicle_fleet/README.md",
+    "campaign/vehicles/vehicle_encounter_service.gd",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md",
+    "tools/vehicle_fleet/driveby_catalog.py",
+    "tools/vehicle_fleet/driveby_geometry.py",
+    "tools/vehicle_fleet/build_driveby_sheet.py",
+    "tools/vehicle_fleet/validate_driveby.gd",
+    "tools/vehicle_fleet/review_driveby.gd"
+  ],
+  "passed": true
+}

@@ -19,7 +19,10 @@ func build(b,entrance: Vector2,view=null):
  kind="enter_objective" if winning==b.attacker_side_id else ("check_comrades" if not fallen.is_empty() else "regroup")
  var bridge=b.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
  if bridge and winning==b.attacker_side_id:kind="secure_crossing"
- var estate=b.battlefield_geometry.authored_layout_id=="whittaker_estate_v1"
+ var yard=b.battlefield_geometry.authored_layout_id in ["doble_ocho_yard_v1","freight_exchange_v1"]
+ var estate=b.battlefield_geometry.authored_layout_id in ["whittaker_estate_v1","doble_ocho_yard_v1","freight_exchange_v1"]
+ if yard and winning==b.attacker_side_id:kind="secure_yard"
+ if b.battlefield_geometry.authored_layout_id=="freight_exchange_v1" and winning==b.attacker_side_id:kind="loot_freight"
  var assigned={};var occupied=[];var guard_index=0
  for i in range(winners.size()):
   var p=winners[i];var target=entrance+Vector2(0,.35);var action="enter";var facing=Vector2.UP
@@ -81,7 +84,13 @@ func build(b,entrance: Vector2,view=null):
    # The landing is between the full-height stair walls; face outward down the street.
    target=entrance+Vector2(-1.1+(guard_index%2)*2.2,1.6+floorf(guard_index/2.)*1.9)
    facing=Vector2(-.35+(guard_index%2)*.7,1).normalized();action="guard";guard_index+=1
-  if bridge and kind!="check_comrades":
+  if kind=="loot_freight":
+   var loot=_freight_loot_target(b,p,occupied)
+   if not loot.is_empty():
+    target=loot.point;facing=loot.facing;action="loot";occupied.append(target)
+   else:
+    target=p.battle_position;action="guard";errors.append(p.participant_id+": no reachable freight door")
+  elif (bridge or yard) and kind!="check_comrades":
    # Hold reachable individual positions; nobody fades through a nonexistent doorway.
    target=p.battle_position;action="guard";facing=Vector2.RIGHT if winning==b.attacker_side_id else Vector2.LEFT
   var stationary=target.is_equal_approx(p.battle_position)
@@ -93,7 +102,25 @@ func build(b,entrance: Vector2,view=null):
   for n in range(1,points.size()):length+=points[n-1].distance_to(points[n])
   var start=.9+i*.25;var travel=maxf(.25,length/(2.2 if p.is_wounded else 4.2))
   routes[p.participant_id]={"points":points,"start":start,"travel":travel,"length":length,"action":action,"facing":facing,"wounded":p.is_wounded,"snapshot":snapshot,"stationary":stationary}
-  duration=maxf(duration,start+travel+(3.2 if action=="kneel" else 2.0))
+  # Freight winners can still be walking when results appear; retain the former hold timing.
+  duration=maxf(duration,start+.25+2.0 if kind=="loot_freight" else start+travel+(3.2 if action=="kneel" else 2.0))
+func _freight_loot_target(b,p,occupied: Array) -> Dictionary:
+ var candidates=[]
+ for row in preload("res://battle/geometry/freight_exchange_catalog.gd").props():
+  if row[2]!="boxcar":continue
+  var box: Rect2=row[1]
+  for offset in [0.,-2.6,2.6,-5.2,5.2]:
+   for side in [-1.,1.]:
+    var point=Vector2(box.get_center().x+offset,box.get_center().y+side*(box.size.y*.5+1.8))
+    candidates.append({"point":point,"facing":Vector2(0,-side)})
+ candidates.sort_custom(func(a,c):return p.battle_position.distance_squared_to(a.point)<p.battle_position.distance_squared_to(c.point))
+ for candidate in candidates:
+  var crowded=false
+  for taken in occupied:
+   if candidate.point.distance_to(taken)<2.4:crowded=true;break
+  if crowded:continue
+  if Nav.find_path(b,p.battle_position,candidate.point).success:return candidate
+ return {}
 func apply(view,time: float):
  for id in routes:
   if not view.actor_presenter._unit_nodes.has(id):continue

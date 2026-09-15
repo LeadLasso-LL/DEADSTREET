@@ -1,0 +1,255 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(8.19999980926514, 0.0) segment=0 into=8.2 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+ERROR: BattlefieldGeometry.add_cover_slot: cover slot 'cover_north_car_0_2' position is illegal.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] add_cover_slot (res://battle/geometry/battlefield_geometry.gd:395)
+       [1] _build_geometry (res://battle/geometry/authored_battlefield_service.gd:122)
+       [2] apply_definition (res://battle/geometry/authored_battlefield_service.gd:80)
+       [3] create_for_mission (res://battle/session/campaign_battle_session_service.gd:98)
+       [4] enter_pending_battle (res://core/game_flow_controller.gd:157)
+       [5] enter_battle (res://gameplay/gameplay_runtime.gd:468)
+       [6] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:135)
+       [7] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [8] start_battle (res://gameplay/arsenal_review.gd:186)
+RANGE_FAIL native Harold fixture
+CampaignMapView: force=debug_hq_force faction=player_gang state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0

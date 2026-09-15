@@ -1,0 +1,29 @@
+{
+  "baseline_head": "dc0450543801f3b4046f39cb1f762abf0bd79e15",
+  "owned": [
+    "assets/data/music_catalog.json",
+    "gameplay/tactical_convoy_audio.gd",
+    "gameplay/tactical_battle_audio.gd",
+    "tools/faction_music_apply_20260915/README.md",
+    "tools/faction_music_apply_20260915/approved_assignments.json",
+    "tools/faction_music_apply_20260915/pre_correction_assignments.json",
+    "tools/faction_music_apply_20260915/runtime.patch",
+    "tools/faction_music_apply_20260915/native_validation.json",
+    "tools/faction_music_apply_20260915/correction_validation.json",
+    "tools/faction_music_apply_20260915/source_hashes.json",
+    "tools/faction_music_apply_20260915/check_native.gd",
+    "tools/faction_music_apply_20260915/check_correction.gd",
+    "tools/faction_music_apply_20260915/before_tactical_convoy_audio.gd",
+    "tools/faction_music_picker_20260915/README.md",
+    "tools/faction_music_picker_20260915/picker.gd",
+    "tools/faction_music_picker_20260915/Open-Faction-Music-Assignments.cmd",
+    "tools/faction_music_picker_20260915/validation.json"
+  ],
+  "docs": [
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md"
+  ],
+  "destination": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "branch": "build/arsenal-checkpoint-20260911"
+}

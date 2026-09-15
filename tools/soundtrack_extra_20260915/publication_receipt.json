@@ -1,0 +1,34 @@
+{
+  "status": "PUSHED / VERIFIED",
+  "commit": "d262e8f43f34b889ce72b1705d0f4de36d7e40fd",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "destination": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "new_tracks": 3,
+  "menu_total": 22,
+  "battle_loops": 21,
+  "native_checks": 25,
+  "owned_paths": [
+    "assets/data/music_catalog.json",
+    "assets/audio/music/B-22_Glock.mp3",
+    "assets/audio/music/B-22_Glock_battle_30_60.wav",
+    "assets/audio/music/B-22_Keys.mp3",
+    "assets/audio/music/B-22_Keys_battle_31_61.wav",
+    "assets/audio/music/B-22_Ripper.mp3",
+    "assets/audio/music/B-22_Ripper_battle_48_78.wav",
+    "tools/soundtrack_extra_20260915/README.md",
+    "tools/soundtrack_extra_20260915/manifest.json",
+    "tools/soundtrack_extra_20260915/fetch_batch.mjs",
+    "tools/soundtrack_extra_20260915/build_batch.py",
+    "tools/soundtrack_extra_20260915/check_native.gd",
+    "tools/soundtrack_extra_20260915/download_report.json",
+    "tools/soundtrack_extra_20260915/audio_validation.json",
+    "tools/soundtrack_extra_20260915/native_validation.json",
+    "tools/soundtrack_extra_20260915/integrity_validation.json",
+    "tools/soundtrack_extra_20260915/source_hashes.json"
+  ],
+  "docs": [
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md"
+  ]
+}

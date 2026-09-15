@@ -17,7 +17,9 @@ func body_world_rect(node) -> Rect2:
  if texture==null:return Rect2(node.global_position,Vector2.ONE)
  var size=texture.get_size()
  var box=Rect2(body.offset-(size*.5 if body.centered else Vector2.ZERO),size)
- return body.global_transform*box
+ # Safety follows the actor footprint, never a cosmetic sprite-position correction.
+ var footprint=body.transform;footprint.origin=Vector2.ZERO
+ return node.global_transform*footprint*box
 func safe_rect() -> Rect2:
  var size=view.get_viewport_rect().size
  var factor=size.x/1152.

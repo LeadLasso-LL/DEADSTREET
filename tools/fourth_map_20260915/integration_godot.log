@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+SCRIPT ERROR: Parse Error: The member "Range" shadows a native class.
+   at: GDScript::reload (res://tools/fourth_map_20260915/integration_review.gd:5)
+ERROR: Failed to load script "res://tools/fourth_map_20260915/integration_review.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

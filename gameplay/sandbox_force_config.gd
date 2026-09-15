@@ -5,8 +5,9 @@ const Factions=preload("res://battle/identity/faction_unit_catalog.gd")
 const Armor=preload("res://campaign/equipment/armor_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 const CLASSES=["pistol","smg","shotgun","rifle","sniper"]
-const MAX_UNITS=12
-static func max_units(map_id: String) -> int:return 16 if map_id=="whittaker_estate" else MAX_UNITS
+const MAX_UNITS=16
+const ConvoyRules=preload("res://gameplay/sandbox_convoy_rules.gd")
+static func max_units(_map_id: String) -> int:return MAX_UNITS
 const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 
 static func unit(kind: String="rifle") -> Dictionary:
@@ -31,14 +32,12 @@ static func balanced() -> Array:
  for kind in CLASSES:rows.append(unit(kind))
  return rows
 
-static func auto_convoy(count: int) -> Array:
- var models=[]
- for i in range(ceili(float(count)/4.)):models.append("bayou")
- return models
+static func auto_convoy(count: int,faction: String="") -> Array:
+ return ConvoyRules.auto_fit(count,faction)
 
 static func validate(config: Dictionary) -> Dictionary:
  var counts={}
- if config.get("map_id","harold") not in ["harold","river_bridge","whittaker_estate"]:return {"valid":false,"error":"Choose an available battlefield."}
+ if config.get("map_id","harold") not in ["harold","river_bridge","whittaker_estate","doble_ocho","freight_exchange"]:return {"valid":false,"error":"Choose an available battlefield."}
  for side in ["attacker","defender"]:
   if not config.get(side) is Dictionary:return {"valid":false,"error":"Choose both forces."}
   var team: Dictionary=config[side]
@@ -59,6 +58,8 @@ static func validate(config: Dictionary) -> Dictionary:
  for model in config.attacker.vehicles:
   if not model is String or not Models.has_model(model):return {"valid":false,"error":"Choose a valid convoy vehicle."}
  if not config.attacker.get("vehicle_occupants",[]) is Array:return {"valid":false,"error":"Choose a valid passenger manifest."}
+ var legal=ConvoyRules.check(config.attacker.vehicles,counts.attacker,config.attacker.faction)
+ if not legal.valid:return legal
  var seating=Formation.manifest(config.attacker.vehicles,counts.attacker,config.attacker.get("vehicle_occupants",[]))
  if not seating.valid:return {"valid":false,"error":seating.error}
  var convoy=Models.convoy(config.attacker.vehicles,counts.attacker)
@@ -69,6 +70,8 @@ static func validate(config: Dictionary) -> Dictionary:
   if not defender is Array:return {"valid":false,"error":"Choose defending vehicles."}
   for id in defender:
    if not id is String or not Models.has_model(id):return {"valid":false,"error":"Choose valid defending vehicles."}
+  var defense_rules=ConvoyRules.check(defender,counts.defender,config.defender.faction)
+  if not defense_rules.valid:return {"valid":false,"error":"Defenders: "+defense_rules.error}
   var defense=Models.convoy(defender,counts.defender)
   if not defense.valid:return {"valid":false,"error":"Defenders: "+defense.error}
  return {"valid":true,"counts":counts,"convoy":convoy,"error":""}

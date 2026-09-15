@@ -1,0 +1,14 @@
+{
+  "head": "50a000753b04c7115bfeef48cb46dea0b2ddbbd4",
+  "index": "",
+  "checks": 538,
+  "errors": [],
+  "protected_sources_unchanged": true,
+  "sources": {
+    "battle/geometry/harold_street_catalog.gd": "594959b548301c84e4ed330fea89e1044c0fab79ea2d5950f68880f9f47c1ce7",
+    "assets/art/harold_frontage/ground.png": "17013bf1e4eb816351ebb604da53b7c22c7593a506b367cd02e51427a379d6ea"
+  },
+  "screenshot_sha256": "568918bb795deb856d242b5ce6742779ae92182db2bbcdccc2a7ae3ddbc16483",
+  "commit_push": "not performed",
+  "owner_visual_acceptance": "pending"
+}

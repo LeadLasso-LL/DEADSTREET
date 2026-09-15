@@ -86,6 +86,10 @@ func _process_run(run_dir: String) -> Dictionary:
 		return _process_calibration(run_dir, daz, post)
 	if str(post.get("kind", "")) == "rifle_silhouette_calibration":
 		return _process_silhouette(run_dir, daz, post)
+	if str(post.get("kind", "")) == "style_conversion":
+		return _process_style_conversion(run_dir, daz, post)
+	if str(post.get("kind", "")) == "integrity_proof":
+		return _process_integrity_proof(run_dir, daz, post)
 
 	var check_clip := not profiles.is_empty()
 	var reports: Array = []
@@ -356,6 +360,287 @@ func _process_silhouette(run_dir: String, daz: Dictionary, post: Dictionary) -> 
 		},
 		"accepted_camera": "",
 		"accepted_pose": "",
+		"images": reports
+	}
+
+
+func _process_style_conversion(run_dir: String, daz: Dictionary, post: Dictionary) -> Dictionary:
+	var cells_raw: Variant = daz.get("style_sources", [])
+	if typeof(cells_raw) != TYPE_ARRAY or cells_raw.is_empty():
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": "style_sources missing from daz_result.json"
+		}
+	var source_order := ["SOURCE_0", "SOURCE_1", "SOURCE_2"]
+	var post_order := ["POST_0", "POST_1", "POST_2"]
+	var sources: Dictionary = {}
+	var reports: Array = []
+	for cell_value in cells_raw:
+		if typeof(cell_value) != TYPE_DICTIONARY:
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "style source cell is not an object"
+			}
+		var cell: Dictionary = cell_value
+		var src_path: String = str(cell.get("path", ""))
+		var check: Dictionary = _validate_source(src_path, true)
+		check["source_id"] = str(cell.get("source_id", ""))
+		check["path"] = src_path
+		if not bool(check.get("ok", false)):
+			check.erase("image")
+			reports.append(check)
+			return {
+				"ok": false,
+				"error_code": str(check.get("error_code", "PNG_ALPHA_FAILED")),
+				"reason": str(check.get("reason", "style source failed")),
+				"images": reports
+			}
+		var img: Image = check["image"]
+		check.erase("image")
+		reports.append(check)
+		sources[str(cell.get("source_id", ""))] = {
+			"cell": cell,
+			"image": img
+		}
+	for sid in source_order:
+		if not sources.has(sid):
+			return {
+				"ok": false,
+				"error_code": "GODOT_IMAGE_TOOL_FAILED",
+				"reason": "missing style source %s" % sid,
+				"images": reports
+			}
+	var matrix: Array = []
+	var metrics: Array = []
+	for sid in source_order:
+		var pack: Dictionary = sources[sid]
+		var src_img: Image = pack["image"]
+		var src_cell: Dictionary = pack["cell"]
+		var post0: Image = _profile_post_clean(src_img)
+		var post1: Image = _profile_shape_compressed(src_img)
+		var post2: Image = _profile_digitized_structure(post1)
+		var treated := {"POST_0": post0, "POST_1": post1, "POST_2": post2}
+		for pid in post_order:
+			var processed: Image = treated[pid]
+			var dest_dir: String = run_dir.path_join("profiles").path_join(pid)
+			DirAccess.make_dir_recursive_absolute(dest_dir)
+			var dest: String = dest_dir.path_join("%s_%s_se.png" % [sid, pid])
+			if processed.save_png(dest) != OK:
+				return {
+					"ok": false,
+					"error_code": "GODOT_IMAGE_TOOL_FAILED",
+					"reason": "failed to save %s" % dest,
+					"images": reports
+				}
+			var dest128_dir: String = run_dir.path_join("128").path_join(pid)
+			DirAccess.make_dir_recursive_absolute(dest128_dir)
+			var img128: Image = processed.duplicate()
+			img128.resize(128, 128, Image.INTERPOLATE_LANCZOS)
+			if pid == "POST_0":
+				img128 = _sharpen(img128, 0.16)
+			var dest128: String = dest128_dir.path_join("%s_se.png" % sid)
+			if img128.save_png(dest128) != OK:
+				return {
+					"ok": false,
+					"error_code": "GODOT_IMAGE_TOOL_FAILED",
+					"reason": "failed to save %s" % dest128,
+					"images": reports
+				}
+			for h_value in [96, 80, 64]:
+				var scaled: Image = _presentation_at_height(processed, int(h_value))
+				var scale_dir: String = run_dir.path_join("scale").path_join(pid).path_join(str(int(h_value)))
+				DirAccess.make_dir_recursive_absolute(scale_dir)
+				var scale_path: String = scale_dir.path_join("%s_se.png" % sid)
+				if scaled.save_png(scale_path) != OK:
+					return {
+						"ok": false,
+						"error_code": "GODOT_IMAGE_TOOL_FAILED",
+						"reason": "failed to save %s" % scale_path,
+						"images": reports
+					}
+			var metric: Dictionary = _style_metrics(processed)
+			metric["source_id"] = sid
+			metric["post_id"] = pid
+			metric["source_path"] = str(src_cell.get("path", ""))
+			metrics.append(metric)
+			matrix.append({
+				"source_id": sid,
+				"source_label": str(src_cell.get("source_label", sid)),
+				"post_id": pid,
+				"processed": processed
+			})
+	if matrix.size() != 9:
+		return {
+			"ok": false,
+			"error_code": "GODOT_IMAGE_TOOL_FAILED",
+			"reason": "expected 9 style combinations, got %d" % matrix.size(),
+			"images": reports
+		}
+	var boards_spec: Dictionary = post.get("boards", {}) if typeof(post.get("boards", {})) == TYPE_DICTIONARY else {}
+	var matrix_path: String = run_dir.path_join(str(boards_spec.get("matrix", "style_conversion_matrix.png")))
+	var actual_path: String = run_dir.path_join(str(boards_spec.get("actual_scale", "style_conversion_actual_scale.png")))
+	var source_board_path: String = run_dir.path_join(str(boards_spec.get("source", "style_conversion_source_comparison.png")))
+	var matrix_err: String = _write_style_matrix_board(matrix, matrix_path)
+	if not matrix_err.is_empty():
+		return {"ok": false, "error_code": "GODOT_IMAGE_TOOL_FAILED", "reason": matrix_err, "images": reports}
+	var actual_err: String = _write_style_actual_scale_board(matrix, actual_path)
+	if not actual_err.is_empty():
+		return {"ok": false, "error_code": "GODOT_IMAGE_TOOL_FAILED", "reason": actual_err, "images": reports}
+	var src_imgs: Array = []
+	for sid2 in source_order:
+		var src_pack: Dictionary = sources[sid2]
+		var src_cell2: Dictionary = src_pack["cell"]
+		src_imgs.append({
+			"id": sid2,
+			"label": str(src_cell2.get("source_label", sid2)),
+			"image": src_pack["image"]
+		})
+	var src_err: String = _write_style_source_board(src_imgs, source_board_path)
+	if not src_err.is_empty():
+		return {"ok": false, "error_code": "GODOT_IMAGE_TOOL_FAILED", "reason": src_err, "images": reports}
+	_write_json(run_dir.path_join("style_metrics.json"), {"ok": true, "accepted_style": "", "metrics": metrics})
+	return {
+		"ok": true,
+		"error_code": "",
+		"reason": "three DAZ sources and nine style combinations validated. No style is accepted.",
+		"preview_board": matrix_path,
+		"preview_boards": {
+			"matrix": matrix_path,
+			"actual_scale": actual_path,
+			"source": source_board_path
+		},
+		"accepted_style": "",
+		"images": reports
+	}
+
+
+func _composite_on_bg(src: Image, bg: Color) -> Image:
+	var out := Image.create(src.get_width(), src.get_height(), false, Image.FORMAT_RGBA8)
+	out.fill(bg)
+	for y in src.get_height():
+		for x in src.get_width():
+			var c: Color = src.get_pixel(x, y)
+			if c.a <= 0.0:
+				continue
+			var dst: Color = out.get_pixel(x, y)
+			out.set_pixel(x, y, Color(
+				dst.r * (1.0 - c.a) + c.r * c.a,
+				dst.g * (1.0 - c.a) + c.g * c.a,
+				dst.b * (1.0 - c.a) + c.b * c.a,
+				1.0
+			))
+	return out
+
+
+func _alpha_vis(src: Image) -> Image:
+	var out := Image.create(src.get_width(), src.get_height(), false, Image.FORMAT_RGBA8)
+	for y in src.get_height():
+		for x in src.get_width():
+			var a: float = src.get_pixel(x, y).a
+			out.set_pixel(x, y, Color(a, a, a, 1.0))
+	return out
+
+
+func _load_png_loose(path: String) -> Image:
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return null
+	var img := Image.new()
+	if img.load(path) != OK:
+		return null
+	img.convert(Image.FORMAT_RGBA8)
+	return img
+
+
+func _blit(dst: Image, src: Image, ox: int, oy: int) -> void:
+	if src == null:
+		return
+	for y in src.get_height():
+		for x in src.get_width():
+			dst.set_pixel(ox + x, oy + y, src.get_pixel(x, y))
+
+
+func _integrity_alpha_stats(img: Image) -> Dictionary:
+	var out := {}
+	for thresh in [16, 80, 128, 240]:
+		var n := 0
+		var min_x := img.get_width()
+		var min_y := img.get_height()
+		var max_x := -1
+		var max_y := -1
+		var border := 0
+		for y in img.get_height():
+			for x in img.get_width():
+				if img.get_pixel(x, y).a * 255.0 < float(thresh):
+					continue
+				n += 1
+				min_x = mini(min_x, x)
+				min_y = mini(min_y, y)
+				max_x = maxi(max_x, x)
+				max_y = maxi(max_y, y)
+				if x == 0 or y == 0 or x == img.get_width() - 1 or y == img.get_height() - 1:
+					border += 1
+		out[str(thresh)] = {
+			"count": n,
+			"bounds": [min_x, min_y, max_x, max_y] if n > 0 else [],
+			"size": [max_x - min_x + 1, max_y - min_y + 1] if n > 0 else [0, 0],
+			"border": border
+		}
+	return out
+
+
+func _process_integrity_proof(run_dir: String, daz: Dictionary, post: Dictionary) -> Dictionary:
+	var files_raw: Variant = daz.get("render_files", [])
+	if typeof(files_raw) != TYPE_ARRAY or files_raw.is_empty():
+		return {"ok": false, "error_code": "GODOT_IMAGE_TOOL_FAILED", "reason": "integrity render_files missing"}
+	var loaded: Array = []
+	var reports: Array = []
+	var stats := {}
+	for path_value in files_raw:
+		var path: String = str(path_value)
+		var img: Image = _load_png_loose(path)
+		if img == null:
+			return {"ok": false, "error_code": "RENDER_FAILED", "reason": "missing integrity png %s" % path}
+		var st: Dictionary = _integrity_alpha_stats(img)
+		stats[path.get_file()] = st
+		reports.append({"path": path, "ok": true, "alpha": st})
+		loaded.append({"path": path, "image": img, "name": path.get_file()})
+	var orig_dir: String = run_dir.path_join("original_v13")
+	var orig2: Image = _load_png_loose(orig_dir.path_join("local_street_gang_rifleman_proof_01_SOURCE_2_se.png"))
+	if orig2 != null:
+		stats["original_SOURCE_2"] = _integrity_alpha_stats(orig2)
+		loaded.push_front({"path": orig_dir.path_join("local_street_gang_rifleman_proof_01_SOURCE_2_se.png"), "image": orig2, "name": "original_v13_SOURCE_2"})
+	var cell := 256
+	var cols := 4
+	var rows: int = loaded.size()
+	var board := Image.create(cols * cell + 8, rows * cell + 8, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.12, 0.12, 0.13, 1.0))
+	var bgs: Array[Color] = [Color(0.94, 0.93, 0.89), Color(0.50, 0.50, 0.50), Color(0.10, 0.10, 0.10)]
+	for r in rows:
+		var src: Image = loaded[r]["image"]
+		var small: Image = src.duplicate()
+		small.resize(cell, cell, Image.INTERPOLATE_NEAREST)
+		for c in 3:
+			var comp: Image = _composite_on_bg(small, bgs[c])
+			_blit(board, comp, c * cell, r * cell)
+		var av: Image = _alpha_vis(small)
+		_blit(board, av, 3 * cell, r * cell)
+	var board_name := "integrity_comparison_board.png"
+	var boards: Variant = post.get("boards", {})
+	if typeof(boards) == TYPE_DICTIONARY and str(boards.get("comparison", "")) != "":
+		board_name = str(boards.get("comparison"))
+	var board_path: String = run_dir.path_join(board_name)
+	if board.save_png(board_path) != OK:
+		return {"ok": false, "error_code": "GODOT_IMAGE_TOOL_FAILED", "reason": "failed to save %s" % board_path}
+	_write_json(run_dir.path_join("integrity_alpha_stats.json"), {"ok": true, "accepted_style": "", "stats": stats})
+	return {
+		"ok": true,
+		"error_code": "",
+		"reason": "integrity diagnostic board written. Isolation is not a production source. No style is accepted.",
+		"preview_board": board_path,
+		"preview_boards": {"comparison": board_path},
+		"accepted_style": "",
 		"images": reports
 	}
 
@@ -666,6 +951,178 @@ func _profile_digitized_grit(grounded_128: Image) -> Image:
 			c.b = _quantize(clampf(c.b + dither, 0.0, 1.0), levels)
 			out.set_pixel(x, y, c)
 	return _sharpen(out, 0.12)
+
+
+func _profile_post_clean(src: Image) -> Image:
+	var work: Image = src.duplicate()
+	work.convert(Image.FORMAT_RGBA8)
+	return work
+
+
+func _profile_shape_compressed(src: Image) -> Image:
+	var work: Image = src.duplicate()
+	work.convert(Image.FORMAT_RGBA8)
+	var blurred: Image = _box_blur(work, 3)
+	var treated := Image.create(work.get_width(), work.get_height(), false, Image.FORMAT_RGBA8)
+	for y in work.get_height():
+		for x in work.get_width():
+			var c: Color = work.get_pixel(x, y)
+			if c.a * 255.0 < OPAQUE_ALPHA:
+				treated.set_pixel(x, y, Color(0, 0, 0, 0))
+				continue
+			var b: Color = blurred.get_pixel(x, y)
+			# Collapse high-frequency photographic variation toward local form.
+			c = c.lerp(b, 0.38)
+			var luma := _luma(c)
+			var blur_luma := _luma(b)
+			var gray := Color(luma, luma, luma, c.a)
+			c = c.lerp(gray, 0.28)
+			# Stronger broad light/shadow grouping.
+			var local: float = luma - blur_luma
+			if local > 0.045:
+				c = c.lerp(Color(clampf(c.r + 0.05, 0.0, 1.0), clampf(c.g + 0.05, 0.0, 1.0), clampf(c.b + 0.045, 0.0, 1.0), c.a), 0.35)
+			elif local < -0.045:
+				c = c.lerp(Color(c.r * 0.82, c.g * 0.82, c.b * 0.84, c.a), 0.40)
+			c.r = clampf(c.r + local * 0.22, 0.0, 1.0)
+			c.g = clampf(c.g + local * 0.22, 0.0, 1.0)
+			c.b = clampf(c.b + local * 0.20, 0.0, 1.0)
+			luma = _luma(c)
+			# Tonal compression: lift crushed shadows, roll highlights, keep rifle readable.
+			if luma < 0.10:
+				var lift: float = (0.10 - luma) * 0.45
+				c.r = clampf(c.r + lift, 0.0, 1.0)
+				c.g = clampf(c.g + lift, 0.0, 1.0)
+				c.b = clampf(c.b + lift, 0.0, 1.0)
+			luma = _luma(c)
+			if luma > 0.68:
+				var knee: float = (luma - 0.68) / 0.32
+				var scale: float = 1.0 - knee * 0.28
+				c.r *= scale
+				c.g *= scale
+				c.b *= scale
+			# Bounded quantization, not retro.
+			c.r = _quantize(c.r, 42.0)
+			c.g = _quantize(c.g, 42.0)
+			c.b = _quantize(c.b, 42.0)
+			c.a = work.get_pixel(x, y).a
+			treated.set_pixel(x, y, c)
+	return _sharpen(treated, 0.14)
+
+
+func _profile_digitized_structure(shape_compressed: Image) -> Image:
+	var img: Image = shape_compressed.duplicate()
+	img.convert(Image.FORMAT_RGBA8)
+	var levels := 20.0
+	var quantized := Image.create(img.get_width(), img.get_height(), false, Image.FORMAT_RGBA8)
+	for y in img.get_height():
+		for x in img.get_width():
+			var c: Color = img.get_pixel(x, y)
+			if c.a * 255.0 < OPAQUE_ALPHA:
+				quantized.set_pixel(x, y, Color(0, 0, 0, 0))
+				continue
+			var dither: float = (BAYER4[y % 4][x % 4] - 0.5) * (0.42 / levels)
+			c.r = _quantize(clampf(c.r + dither, 0.0, 1.0), levels)
+			c.g = _quantize(clampf(c.g + dither, 0.0, 1.0), levels)
+			c.b = _quantize(clampf(c.b + dither, 0.0, 1.0), levels)
+			quantized.set_pixel(x, y, c)
+	var clustered: Image = _snap_isolated_pixels(quantized)
+	return _sharpen(clustered, 0.20)
+
+
+func _snap_isolated_pixels(src: Image) -> Image:
+	var out: Image = src.duplicate()
+	var w: int = src.get_width()
+	var h: int = src.get_height()
+	for y in h:
+		for x in w:
+			var c: Color = src.get_pixel(x, y)
+			if c.a * 255.0 < OPAQUE_ALPHA:
+				continue
+			var counts: Dictionary = {}
+			var nbs: Array[Color] = []
+			var offsets := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+			for off in offsets:
+				var nx: int = x + off.x
+				var ny: int = y + off.y
+				if nx < 0 or ny < 0 or nx >= w or ny >= h:
+					continue
+				var nb: Color = src.get_pixel(nx, ny)
+				if nb.a * 255.0 < OPAQUE_ALPHA:
+					continue
+				nbs.append(nb)
+				var key := "%d,%d,%d" % [int(round(nb.r * 20.0)), int(round(nb.g * 20.0)), int(round(nb.b * 20.0))]
+				counts[key] = int(counts.get(key, 0)) + 1
+			if nbs.size() < 3:
+				continue
+			var self_key := "%d,%d,%d" % [int(round(c.r * 20.0)), int(round(c.g * 20.0)), int(round(c.b * 20.0))]
+			var best_key := ""
+			var best_n := 0
+			for k in counts.keys():
+				if int(counts[k]) > best_n:
+					best_n = int(counts[k])
+					best_key = str(k)
+			if best_n >= 3 and best_key != self_key:
+				var parts: PackedStringArray = best_key.split(",")
+				out.set_pixel(x, y, Color(float(parts[0]) / 20.0, float(parts[1]) / 20.0, float(parts[2]) / 20.0, c.a))
+	return out
+
+
+func _sat(c: Color) -> float:
+	var mx: float = maxf(c.r, maxf(c.g, c.b))
+	var mn: float = minf(c.r, minf(c.g, c.b))
+	if mx <= 0.0001:
+		return 0.0
+	return (mx - mn) / mx
+
+
+func _style_metrics(img: Image) -> Dictionary:
+	var unique := {}
+	var opaque := 0
+	var edges := 0
+	var dark := 0
+	var bright := 0
+	var sat_sum := 0.0
+	var luma_min := 1.0
+	var luma_max := 0.0
+	var w: int = img.get_width()
+	var h: int = img.get_height()
+	for y in h:
+		for x in w:
+			var c: Color = img.get_pixel(x, y)
+			if c.a * 255.0 < OPAQUE_ALPHA:
+				continue
+			opaque += 1
+			var key := (int(c.r * 255.0) << 16) | (int(c.g * 255.0) << 8) | int(c.b * 255.0)
+			unique[key] = true
+			var luma := _luma(c)
+			luma_min = minf(luma_min, luma)
+			luma_max = maxf(luma_max, luma)
+			sat_sum += _sat(c)
+			if luma < 0.08:
+				dark += 1
+			if luma > 0.85:
+				bright += 1
+			if x + 1 < w:
+				var rgt: Color = img.get_pixel(x + 1, y)
+				if rgt.a * 255.0 >= OPAQUE_ALPHA and absf(luma - _luma(rgt)) > 0.12:
+					edges += 1
+			if y + 1 < h:
+				var dwn: Color = img.get_pixel(x, y + 1)
+				if dwn.a * 255.0 >= OPAQUE_ALPHA and absf(luma - _luma(dwn)) > 0.12:
+					edges += 1
+	var occ: float = float(opaque) / float(maxi(1, w * h))
+	return {
+		"unique_colors": unique.size(),
+		"luminance_min": luma_min if opaque > 0 else 0.0,
+		"luminance_max": luma_max if opaque > 0 else 0.0,
+		"luminance_range": (luma_max - luma_min) if opaque > 0 else 0.0,
+		"mean_saturation": (sat_sum / float(opaque)) if opaque > 0 else 0.0,
+		"alpha_occupancy": occ,
+		"edge_density": (float(edges) / float(opaque)) if opaque > 0 else 0.0,
+		"very_dark_pct": (float(dark) / float(opaque)) if opaque > 0 else 0.0,
+		"very_bright_pct": (float(bright) / float(opaque)) if opaque > 0 else 0.0,
+		"opaque_pixels": opaque
+	}
 
 
 func _quantize(v: float, levels: float) -> float:
@@ -1017,6 +1474,179 @@ func _write_silhouette_actual_scale_board(matrix: Array, dest: String) -> String
 	var save_err: Error = board.save_png(dest)
 	if save_err != OK:
 		return "failed to save rifle silhouette actual-scale board"
+	return ""
+
+
+func _write_style_matrix_board(matrix: Array, dest: String) -> String:
+	var source_order := ["SOURCE_0", "SOURCE_1", "SOURCE_2"]
+	var post_order := ["POST_0", "POST_1", "POST_2"]
+	var labels := {
+		"SOURCE_0": "CONTROL",
+		"SOURCE_1": "MATTE MUTED",
+		"SOURCE_2": "SHAPED GRIT",
+		"POST_0": "CLEAN",
+		"POST_1": "SHAPE COMPRESSED",
+		"POST_2": "DIGITIZED STRUCTURE"
+	}
+	var lookup := {}
+	for item_value in matrix:
+		var item: Dictionary = item_value
+		lookup["%s|%s" % [str(item.get("source_id", "")), str(item.get("post_id", ""))]] = item
+	var inspect := 256
+	var gap := 16
+	var margin := 24
+	var label_h := 22
+	var cells: Array = []
+	var max_p96_w := 96
+	var max_p80_w := 80
+	var max_p64_w := 64
+	var max_scale_h := inspect
+	for r in 3:
+		for c in 3:
+			var key: String = "%s|%s" % [source_order[r], post_order[c]]
+			if not lookup.has(key):
+				return "missing style cell %s" % key
+			var item: Dictionary = lookup[key]
+			var processed: Image = item["processed"]
+			var inspect_copy: Image = processed.duplicate()
+			inspect_copy.resize(inspect, inspect, Image.INTERPOLATE_NEAREST)
+			var p96: Image = _presentation_at_height(processed, 96)
+			var p80: Image = _presentation_at_height(processed, 80)
+			var p64: Image = _presentation_at_height(processed, 64)
+			max_p96_w = maxi(max_p96_w, p96.get_width())
+			max_p80_w = maxi(max_p80_w, p80.get_width())
+			max_p64_w = maxi(max_p64_w, p64.get_width())
+			max_scale_h = maxi(max_scale_h, 10 + maxi(p96.get_height(), maxi(p80.get_height(), p64.get_height())))
+			cells.append({
+				"item": item,
+				"inspect": inspect_copy,
+				"p96": p96,
+				"p80": p80,
+				"p64": p64
+			})
+	var cell_w: int = inspect + gap + max_p96_w + gap + max_p80_w + gap + max_p64_w
+	var cell_h: int = label_h + maxi(inspect, max_scale_h)
+	var w: int = margin * 2 + 3 * cell_w + 2 * 28
+	var h: int = margin * 2 + 28 + 3 * cell_h + 2 * 24
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.12, 0.12, 0.14, 1.0))
+	_draw_text(board, margin, margin, "STYLE CONVERSION  3X3  SE  56 DEG  HYBRID B  NON-CANON  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in cells.size():
+		var col: int = i % 3
+		var row: int = int(i / 3)
+		var packed: Dictionary = cells[i]
+		var cell_item: Dictionary = packed["item"]
+		var ox: int = margin + col * (cell_w + 28)
+		var oy: int = margin + 22 + row * (cell_h + 24)
+		var sid: String = str(cell_item.get("source_id", ""))
+		var pid: String = str(cell_item.get("post_id", ""))
+		var label: String = "%s %s  %s %s" % [sid, str(labels.get(sid, "")), pid, str(labels.get(pid, ""))]
+		_draw_text(board, ox, oy, label, Color(0.78, 0.78, 0.74, 1.0))
+		var iy: int = oy + label_h
+		_draw_checker(board, ox, iy, inspect, inspect)
+		_blend_sprite(board, packed["inspect"], ox, iy)
+		var s96: Image = packed["p96"]
+		var s80: Image = packed["p80"]
+		var s64: Image = packed["p64"]
+		var sx: int = ox + inspect + gap
+		_draw_text(board, sx, iy, "96", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s96.get_width(), s96.get_height())
+		_blend_sprite(board, s96, sx, iy + 10)
+		sx += max_p96_w + gap
+		_draw_text(board, sx, iy, "80", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s80.get_width(), s80.get_height())
+		_blend_sprite(board, s80, sx, iy + 10)
+		sx += max_p80_w + gap
+		_draw_text(board, sx, iy, "64", Color(0.65, 0.65, 0.62, 1.0))
+		_draw_checker(board, sx, iy + 10, s64.get_width(), s64.get_height())
+		_blend_sprite(board, s64, sx, iy + 10)
+	var err: Error = board.save_png(dest)
+	if err != OK:
+		return "failed to save style conversion matrix board"
+	return ""
+
+
+func _write_style_actual_scale_board(matrix: Array, dest: String) -> String:
+	var source_order := ["SOURCE_0", "SOURCE_1", "SOURCE_2"]
+	var post_order := ["POST_0", "POST_1", "POST_2"]
+	var lookup := {}
+	for item_value in matrix:
+		var item: Dictionary = item_value
+		lookup["%s|%s" % [str(item.get("source_id", "")), str(item.get("post_id", ""))]] = item
+	var gap := 48
+	var margin := 32
+	var label_h := 18
+	var samples: Array = []
+	var max_w := 80
+	var max_h80 := 80
+	var max_h64 := 64
+	for r in 3:
+		for c in 3:
+			var key: String = "%s|%s" % [source_order[r], post_order[c]]
+			if not lookup.has(key):
+				return "missing style cell %s" % key
+			var item: Dictionary = lookup[key]
+			var processed: Image = item["processed"]
+			var p80: Image = _presentation_at_height(processed, 80)
+			var p64: Image = _presentation_at_height(processed, 64)
+			samples.append({
+				"label": "%s %s" % [source_order[r], post_order[c]],
+				"p80": p80,
+				"p64": p64
+			})
+			max_w = maxi(max_w, maxi(p80.get_width(), p64.get_width()))
+			max_h80 = maxi(max_h80, p80.get_height())
+			max_h64 = maxi(max_h64, p64.get_height())
+	var w: int = margin * 2 + 3 * max_w + 2 * gap
+	var h: int = margin * 2 + 24 + 3 * ((label_h + max_h80) + 12 + (label_h + max_h64)) + 2 * gap
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.11, 0.11, 0.13, 1.0))
+	_draw_text(board, margin, margin, "ACTUAL SCALE  80 AND 64 PX  9 STYLE CANDIDATES  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in samples.size():
+		var col: int = i % 3
+		var row: int = int(i / 3)
+		var sample: Dictionary = samples[i]
+		var ox: int = margin + col * (max_w + gap)
+		var block_h: int = (label_h + max_h80) + 12 + (label_h + max_h64)
+		var oy: int = margin + 22 + row * (block_h + gap)
+		_draw_text(board, ox, oy, "%s 80" % str(sample["label"]), Color(0.74, 0.74, 0.70, 1.0))
+		var img80: Image = sample["p80"]
+		_draw_checker(board, ox, oy + label_h, img80.get_width(), img80.get_height())
+		_blend_sprite(board, img80, ox, oy + label_h)
+		var oy64: int = oy + label_h + max_h80 + 12
+		_draw_text(board, ox, oy64, "%s 64" % str(sample["label"]), Color(0.74, 0.74, 0.70, 1.0))
+		var img64: Image = sample["p64"]
+		_draw_checker(board, ox, oy64 + label_h, img64.get_width(), img64.get_height())
+		_blend_sprite(board, img64, ox, oy64 + label_h)
+	var save_err: Error = board.save_png(dest)
+	if save_err != OK:
+		return "failed to save style actual-scale board"
+	return ""
+
+
+func _write_style_source_board(sources: Array, dest: String) -> String:
+	var inspect := 384
+	var gap := 28
+	var margin := 24
+	var label_h := 20
+	var w: int = margin * 2 + 3 * inspect + 2 * gap
+	var h: int = margin * 2 + 28 + label_h + inspect
+	var board := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	board.fill(Color(0.12, 0.12, 0.14, 1.0))
+	_draw_text(board, margin, margin, "DAZ SOURCE PROFILES  512  SE  56 DEG  HYBRID B  NO WINNER", Color(0.88, 0.88, 0.84, 1.0))
+	for i in sources.size():
+		var item: Dictionary = sources[i]
+		var img: Image = item["image"]
+		var copy: Image = img.duplicate()
+		copy.resize(inspect, inspect, Image.INTERPOLATE_NEAREST)
+		var ox: int = margin + i * (inspect + gap)
+		var oy: int = margin + 22
+		_draw_text(board, ox, oy, "%s %s" % [str(item.get("id", "")), str(item.get("label", ""))], Color(0.78, 0.78, 0.74, 1.0))
+		_draw_checker(board, ox, oy + label_h, inspect, inspect)
+		_blend_sprite(board, copy, ox, oy + label_h)
+	var err: Error = board.save_png(dest)
+	if err != OK:
+		return "failed to save style source comparison board"
 	return ""
 
 

@@ -1,0 +1,20 @@
+from pathlib import Path
+import subprocess,json,zipfile,sys
+sys.stdout.reconfigure(encoding='utf-8')
+r=Path(r'C:\Users\brand\OneDrive\Documents\dead-street');d=r/'tools/tactical_controls/hud_fixed_20260914';d.mkdir(exist_ok=True)
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=r,text=True).strip()=='a493f38afd27802798d84159ee56ef3abc7221f7'
+print('RECENT_JOURNAL', (r/'docs/DEAD_STREET_JOURNAL.md').read_text(encoding='utf-8')[-4800:])
+print('CURRENT_CONTROL', (r/'docs/DEAD_STREET_PROJECT_CONTROL.md').read_text(encoding='utf-8')[:2500])
+owned=['gameplay/tactical_command_hud.gd','gameplay/tactical_compact_card.gd','gameplay/tactical_faction_voices.gd','gameplay/tactical_battle_presentation.gd','gameplay/tactical_convoy_audio.gd','tools/tactical_controls/run.py','tools/tactical_controls/estate_record.gd','tools/whittaker_estate/record_worker.py','tools/whittaker_estate/encode.py','docs/DEAD_STREET_HIVE_MIND.md','docs/DEAD_STREET_JOURNAL.md','docs/DEAD_STREET_PROJECT_CONTROL.md','docs/TACTICAL_CONTROLS_2026-09-13.md']
+assert not (d/'inherited_sources.zip').exists()
+with zipfile.ZipFile(d/'inherited_sources.zip','w',zipfile.ZIP_DEFLATED) as z:
+ for rel in owned:z.write(r/rel,rel)
+(d/'inherited_status.txt').write_bytes(subprocess.check_output(['git','status','--short'],cwd=r))
+with (r/'docs/DEAD_STREET_JOURNAL.md').open('a',encoding='utf-8') as f:f.write("\n\n## 20260914-active-resume-09 - Owner rejects vocals; fixed HUD and broken TRC siren\n\nSource: Brandon in active build chat. He dislikes the faction vocals and directs parking the entire idea and removing them from battles; retain the built premise for possible future work. This supersedes pack-07 integration/listening-review and remaining-bank expansion as active tasks. Remove runtime playback and active asset loading, preserve recoverable source/history. No replacement voices.\n\nHUD direction: use the same size as the bridge across maps. Additional units may use two rows, but condense unit cards inside a fixed panel; the HUD must not grow toward half the screen. Existing no-unit-under-HUD rule still applies. Inspection found 226 logical units for the bridge single row versus 266 for two rows, plus width-only scaling that makes widescreen views disproportionately tall. Implement fixed bridge height and scaling bounded by both viewport dimensions; validate bridge and estate at the same resolutions.\n\nFollow-up: keep the driving/engine sound that Brandon likes. Replace only TRC foghorn with an original broken, wavering warning siren with a Purge-like feel, clearly distinct from engines. Keep contextual spatial emitter and battle/victory attenuation. Not a request for a film recording or new faction voices.\n\nState: implementation starting from a493f38 with existing local status updates and unrelated work preserved. Validation not yet run for these changes. Next: remove active voice path; condense HUD; create siren; run bounded native layout/audio checks and provide updated review evidence.\n")
+p=r/'docs/DEAD_STREET_HIVE_MIND.md';s=p.read_text(encoding='utf-8');a=s.index('**Active objective:**');b=s.index('**Checkpoint / publication:**',a);s=s[:a]+'**Active objective:** Apply Brandon 2026-09-14 feedback: park all faction vocals, keep one bridge-sized HUD with condensed two-row cards, replace TRC foghorn with a broken warning siren while preserving driving audio. Active build chat owns this bounded pass. See journal event active-resume-09.\n\n'+s[b:];a=s.index('**Immediate next task:**');b=s.index('**Known gaps:**',a);s=s[:a]+'**Immediate next task:** Finish vocal removal, fixed HUD and TRC siren; native bridge/estate validation and updated review evidence. Faction vocals and remaining banks are parked, not upcoming integration work.\n\n'+s[b:];p.write_text(s,encoding='utf-8')
+print('DECISIONS_RECORDED')
+for folder,ext in [('gameplay','*.gd'),('tools','*.py')]:
+ for p in (r/folder).rglob(ext):
+  t=p.read_text(encoding='utf-8',errors='replace')
+  if 'trc_horn' in t or 'faction_voices' in t:print('AUDIO_REFERENCE',str(p.relative_to(r)))
+print('AUDIO_SOURCES', [p.name for p in (r/'gameplay').glob('*audio*.gd')])

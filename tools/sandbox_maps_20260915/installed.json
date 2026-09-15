@@ -1,0 +1,19 @@
+{
+  "gameplay/sandbox_force_builder.gd": "46c48084ce21d661dcddd99ed9004ab4485fcdc5d7453c0d1dba8e6cf957578f",
+  "gameplay/sandbox_force_config.gd": "0e22d0ce9c0d68f6557583ef17048c2a00af48725fba3620366c881c7197a63d",
+  "gameplay/sandbox_map_catalog.gd": "369e1a49c7535a2e5cd605c7edc4f81232254498cf7c579c2081e255f47c8948",
+  "gameplay/sandbox_map_selector.gd": "ebcdb5585e5505b23bee834b1dd70be0e2f45d35be656ee3029902cc5aee40a8",
+  "gameplay/sandbox_menu_panels.gd": "b6885f277089c1ee3bc3ffbf542562dd278af90b59ddd8208ccb2e58fc547b9e",
+  "gameplay/arsenal_review.gd": "516a67b35effccede5d46c01581f6cb40b3203609200af0f9bd22620022ef788",
+  "gameplay/tactical_battle_presentation.gd": "dd81d160e6d4e8baf24bea91cf333d9fab39f1e0e84e87148b58338a7e9c3c4c",
+  "gameplay/sandbox_convoy_rules.gd": "7bb669d554061d3e6d4a9d794dedbff74eefc7f5f5b4ffd48c539e31315f21b1",
+  "gameplay/sandbox_convoy_slots.gd": "37d96bb71a8e89165b36d2508cf931aebfbc5ead15a7cee22a367ca50d934407",
+  "gameplay/sandbox_convoy_summary.gd": "912acd50e61f399cd11838964e12ad19b776ae4a4756b5d8350313ee11565ebd",
+  "gameplay/vehicle_fleet_panel.gd": "4297158e97453975bbfef563d2c724e7787cb973251ae2c3bc34a0c9fcfe77b4",
+  "campaign/vehicles/convoy_formation_catalog.gd": "e37c0de1eaa3f8b6896fe8489fb3ba892ad589ef1f07e4123f5e4d88f547d413",
+  "tools/sandbox_maps_20260915/check.gd": "fb5fadb38ca40cf06abfb7d2d5ed1441ae6aa511d3e92b2d57d1c21e857997d8",
+  "tools/sandbox_maps_20260915/preview.gd": "ac12309742b8dc4812ba3617396d3982ec0d8b534fb2a205a15862b6d026dfa7",
+  "tools/sandbox_maps_20260915/groups.gd": "7caf1fa9fa6e5b907d30496fd86da48232d604a4f193fcd65e735a2cd273d372",
+  "tools/sandbox_maps_20260915/clicks.gd": "f8a6e620c0226d93e983ee06ceb83a77fee84a3c09d95b2df318315d4726f06d",
+  "tools/sandbox_maps_20260915/uishots.gd": "f54906540904c2f972a90d60f9563a48373c071bbb100c0285e0347387247d08"
+}

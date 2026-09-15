@@ -1,0 +1,208 @@
+{
+  "preview": "Dead_Street_Opening_Preview.mp4",
+  "frames": 1440,
+  "seconds": 48,
+  "title_sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+  "source_hashes": {
+    "estate": "64a8b2cc27cd13bdb7b71b9cb17b9efba9404bdf16bf05dc9e7808b373d21210",
+    "bridge": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93"
+  },
+  "shots": [
+    [
+      "bridge",
+      5.0,
+      206,
+      0.8,
+      [
+        55,
+        140,
+        990,
+        557
+      ],
+      "RIVER CROSSING",
+      "CONVOY"
+    ],
+    [
+      "estate",
+      5.2,
+      206,
+      0.85,
+      [
+        175,
+        140,
+        900,
+        506
+      ],
+      "WHITTAKER ESTATE",
+      "APPROACH"
+    ],
+    [
+      "bridge",
+      8.8,
+      206,
+      0.45,
+      [
+        240,
+        265,
+        690,
+        388
+      ],
+      "RIVER CROSSING",
+      "ARRIVAL"
+    ],
+    [
+      "estate",
+      25.5,
+      103,
+      0.7,
+      [
+        260,
+        125,
+        630,
+        354
+      ],
+      "WHITTAKER ESTATE",
+      "GROUND MOVEMENT"
+    ],
+    [
+      "bridge",
+      31.0,
+      103,
+      0.65,
+      [
+        310,
+        113,
+        605,
+        340
+      ],
+      "RIVER CROSSING",
+      "CONTACT"
+    ],
+    [
+      "estate",
+      39.0,
+      206,
+      0.65,
+      [
+        235,
+        128,
+        600,
+        337
+      ],
+      "WHITTAKER ESTATE",
+      "CONTACT"
+    ],
+    [
+      "bridge",
+      46.0,
+      206,
+      0.65,
+      [
+        490,
+        113,
+        610,
+        343
+      ],
+      "RIVER CROSSING",
+      "TRAFFIC BLOCKADE"
+    ],
+    [
+      "estate",
+      52.0,
+      206,
+      0.65,
+      [
+        300,
+        134,
+        605,
+        340
+      ],
+      "WHITTAKER ESTATE",
+      "GROUND MOVEMENT"
+    ],
+    [
+      "bridge",
+      59.0,
+      206,
+      0.6,
+      [
+        430,
+        113,
+        610,
+        343
+      ],
+      "RIVER CROSSING",
+      "CONTACT"
+    ],
+    [
+      "estate",
+      14.0,
+      152,
+      0.65,
+      [
+        310,
+        125,
+        735,
+        413
+      ],
+      "WHITTAKER ESTATE",
+      "PERIMETER"
+    ]
+  ],
+  "scope": "edited video review; not live menu integration",
+  "audio_credit": "Dead Street \u2014 B-22",
+  "audio_gain_db": -4,
+  "timeline": {
+    "scene_holds": [
+      [
+        "Gloria Systems",
+        0,
+        3
+      ],
+      [
+        "Godot Engine",
+        4,
+        7
+      ],
+      [
+        "Redacted caution sign",
+        8,
+        11
+      ]
+    ],
+    "transitions": [
+      [
+        "Gloria to Godot",
+        3,
+        4
+      ],
+      [
+        "Godot to warning",
+        7,
+        8
+      ],
+      [
+        "Redaction zoom / main reveal",
+        11,
+        12
+      ]
+    ],
+    "full_black_at_seconds": 11.5,
+    "main_screen_settled_at_seconds": 12,
+    "open_sandbox_first_visible_seconds": 17,
+    "preview_sandbox_entry_seconds": 36,
+    "preview_music_card_docks_seconds": 39.75,
+    "preview_playlist_opens_seconds": 42,
+    "audio": "Dead Street \u2014 B-22; plays continuously from 0 and persists on sandbox entry, no offset/restart"
+  },
+  "assets": {
+    "approved_title.png": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+    "warning_sign_bullet_holes.png": "f783ee80c0014dc9844aafd08d179a53d03593ba2041b99148190cad392a0b84",
+    "gloria_logo_original.svg": "11014e34912509519cabf349de4c6bcf0453d3a2493195b72997790822cd6270",
+    "godot_logo_white.svg": "bc50c2c011a9da831bdd51acc0cca929bcb47886a5e1dad5b0b14cfe812022e9"
+  },
+  "gloria_source": "Owner attachment gloriasystemslogo.html, first inline SVG; original white paths preserved",
+  "godot_source": "https://godotengine.org/assets/press/logo_large_monochrome_dark.svg",
+  "godot_attribution": "Godot Engine logo by Andrea Calabr\u00f3, CC BY 4.0; see ASSET_CREDITS.md",
+  "status": "Preview for owner review; title unchanged; designed Music overlay on a still of real sandbox UI; no native menu/music controller integration"
+}

@@ -1,0 +1,17 @@
+SHOT_READY 0 Bridge exchange between vehicles
+SHOT_READY 1 Harold close street exchange
+SHOT_READY 2 Freight southern railcar exchange
+SHOT_READY 3 Whittaker convoy already in frame
+SHOT_READY 4 Doble Ocho gate firefight
+SHOT_READY 5 Bridge close blockade engagement
+SHOT_READY 6 Freight dispatch defender fires back
+SHOT_READY 7 Doble Ocho close vehicle exchange
+SHOT_READY 8 Harold late engagement
+SHOT_READY 9 Whittaker close gate firefight
+SHOT_READY 10 Doble Ocho close western firefight
+SHOT_READY 11 Freight final attack across the loading lane
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\montage_action_20260915\render.py", line 24, in <module>
+    frames=int(re.findall(rb'frame=(\d+)',check.stdout)[-1]);assert frames==720,frames
+                                                                    ^^^^^^^^^^^
+AssertionError: 711

@@ -1,0 +1,109 @@
+{
+  "files": 34362,
+  "bytes": 4876891528,
+  "large_files": [
+    {
+      "path": "tools/freight_clarity_20260915/DEAD_STREET_Eastex_Freight_Exchange_Clarity.mp4",
+      "bytes": 61580324
+    },
+    {
+      "path": "tools/freight_stability_20260915/DEAD_STREET_Eastex_Freight_Exchange_Stable.mp4",
+      "bytes": 52798126
+    },
+    {
+      "path": "tools/freight_clarity_20260915/lossless/frame.wav",
+      "bytes": 33868844
+    },
+    {
+      "path": "tools/freight_stability_20260915/lossless/frame.wav",
+      "bytes": 33868844
+    },
+    {
+      "path": "tools/weapon_card_refresh_20260915/card_jobs.json",
+      "bytes": 30792716
+    },
+    {
+      "path": "tools/freight_revision_20260915/DEAD_STREET_Eastex_Freight_Exchange_Battle.mp4",
+      "bytes": 22668919
+    },
+    {
+      "path": "tools/unit_source_recovery/action_review.html",
+      "bytes": 21260204
+    }
+  ],
+  "groups": {
+    "tools/freight_clarity_20260915": {
+      "files": 3403,
+      "bytes": 2031199782
+    },
+    "tools/freight_stability_20260915": {
+      "files": 2683,
+      "bytes": 1710620094
+    },
+    "tools/caution_impacts_20260915": {
+      "files": 1088,
+      "bytes": 332508182
+    },
+    "tools/portrait_audit_20260914": {
+      "files": 8465,
+      "bytes": 72889916
+    },
+    "tools/unit_source_recovery": {
+      "files": 4646,
+      "bytes": 71519488
+    },
+    "tools/montage_action_20260915": {
+      "files": 245,
+      "bytes": 71070661
+    },
+    "tools/whittaker_estate": {
+      "files": 275,
+      "bytes": 64846676
+    },
+    "tools/montage_action_final_20260915": {
+      "files": 167,
+      "bytes": 58991063
+    },
+    "tools/weapon_card_refresh_20260915": {
+      "files": 6991,
+      "bytes": 48565156
+    },
+    "tools/soundtrack_batch_20260915": {
+      "files": 88,
+      "bytes": 41055629
+    },
+    "tools/raiders_recording": {
+      "files": 106,
+      "bytes": 38994318
+    },
+    "tools/freight_revision_20260915": {
+      "files": 48,
+      "bytes": 32089252
+    },
+    "assets/menu": {
+      "files": 22,
+      "bytes": 24677606
+    },
+    "tools/yard_revision_20260915": {
+      "files": 109,
+      "bytes": 24179377
+    },
+    "tools/fourth_map_20260915": {
+      "files": 104,
+      "bytes": 23363242
+    },
+    "tools/caution_smooth_20260915": {
+      "files": 38,
+      "bytes": 22440668
+    },
+    "tools/caution_overlap_20260915": {
+      "files": 37,
+      "bytes": 21002701
+    },
+    "tools/bridge_perf": {
+      "files": 170,
+      "bytes": 18251584
+    }
+  },
+  "unexpected_sensitive_names": []
+}

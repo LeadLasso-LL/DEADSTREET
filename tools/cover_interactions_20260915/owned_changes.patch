@@ -1,0 +1,96 @@
+--- before/battle/geometry/harold_street_catalog.gd
++++ battle/geometry/harold_street_catalog.gd
+@@ -73,17 +73,21 @@
+ 		var id: String="cover_"+row[0]
+ 		d.cover_objects.append(Cover.new(id,row[0]))
+ 		var center=b.get_center()
+-		var points=[[Vector2(center.x,b.position.y-.85),Vector2.DOWN],[Vector2(center.x,b.end.y+.85),Vector2.UP],[Vector2(b.position.x-.85,center.y),Vector2.RIGHT],[Vector2(b.end.x+.85,center.y),Vector2.LEFT]]
++		var stand=1.35 if kind in ["car","stoop_wall"] else .85
++		var points=[[Vector2(center.x,b.position.y-stand),Vector2.DOWN],[Vector2(center.x,b.end.y+stand),Vector2.UP],[Vector2(b.position.x-stand,center.y),Vector2.RIGHT],[Vector2(b.end.x+stand,center.y),Vector2.LEFT]]
+ 		if kind=="stoop_wall":
+ 			# Tall wall side cover belongs at its open corners, where a unit can aim around the end.
+ 			# Mid-wall slots imply the over-top firing available on low cover such as cars.
+-			points[2][0].y=b.end.y-.15
+-			points[3][0].y=b.end.y-.15
+-		for n in range(4):
++			points[2][0].y=b.end.y+.35
++			points[3][0].y=b.end.y+.35
++		for n in ([2,3,1,0] if kind=="stoop_wall" else [0,1,2,3]):
+ 			var point: Vector2=points[n][0]
++			if not Rect2(Vector2.ZERO,SIZE).has_point(point):continue
+ 			var blocked=false
+ 			for other in props():
+ 				if other[1].has_point(point): blocked=true;break
++			for existing in d.cover_slots:
++				if existing.position.distance_squared_to(point)<2.4*2.4:blocked=true;break
+ 			if not blocked: d.cover_slots.append(Slot.new(id+"_"+str(n),id,point,points[n][1]))
+ 	d.attacker_deployment_area.add_pocket(Pocket.new("arrival",rect_points(Rect2(31,ARRIVAL_BAND.x,33,ARRIVAL_BAND.y))))
+ 	d.defender_deployment_area.add_pocket(Pocket.new("frontage",rect_points(DEFENDER_ZONE)))
+--- before/battle/presentation/tactical_participant_visual.gd
++++ battle/presentation/tactical_participant_visual.gd
+@@ -77,6 +77,9 @@
+ 	var view_pos: Vector2 = participant.battle_position * pixels_per_unit
+ 	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"]:
+ 		view_pos.y *= 0.75
++	# Harold cover positions include body clearance; aiming must not slide feet into scenery.
++	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
++		return view_pos
+ 	if not participant.has_occupied_cover_slot():
+ 		return view_pos
+ 	var face: Vector2 = facing(battle_state, participant)
+--- before/gameplay/tactical_battle_view.gd
++++ gameplay/tactical_battle_view.gd
+@@ -3847,6 +3847,8 @@
+ 	if participant == null or not participant.has_battle_position:
+ 		return Vector2.ZERO
+ 	var view_pos: Vector2 = _to_view(participant.battle_position)
++	if battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
++		return view_pos
+ 	if not participant.has_occupied_cover_slot():
+ 		return view_pos
+ 	var facing: Vector2 = _participant_view_facing(battle_state, participant)
+--- before/battle/vehicles/battle_arrival_service.gd
++++ battle/vehicles/battle_arrival_service.gd
+@@ -114,8 +114,10 @@
+  for spec in specs:
+   if g.has_cover_object(spec.id) or not g.obstacles.has(spec.id):continue
+   if not g.contains_point(spec.slot) or not g.get_movement_blocking_obstacle_id_at(spec.slot).is_empty() or not Body.blocking_vehicle_id_at(b,spec.slot).is_empty():continue
++  if g.authored_layout_id==Catalog.ID and not _reserve_door_space(b,spec):continue
+   g.add_cover_object(CoverObject.new(spec.id,spec.id))
+   g.add_cover_slot(Slot.new(spec.id+"_cover",spec.id,spec.slot,spec.facing))
++ if g.authored_layout_id==Catalog.ID:_space_body_cover(b)
+ static func remove_doors(b,v) -> void:
+  var g=b.battlefield_geometry
+  for spec in door_specs(v):
+@@ -131,3 +133,31 @@
+   if g.has_cover_slot(id):b.vehicle_hidden_cover_slots.erase(id);continue
+   if g.contains_point(slot.position) and g.get_movement_blocking_obstacle_id_at(slot.position).is_empty():
+    if g.add_cover_slot(slot):b.vehicle_hidden_cover_slots.erase(id)
++
++static func _reserve_door_space(b,spec) -> bool:
++ # A single usable firing position per tight door cluster, not stacked people.
++ var g=b.battlefield_geometry;var hidden=[]
++ for slot in g.cover_slots.values():
++  if slot.position.distance_squared_to(spec.slot)>=2.4*2.4:continue
++  if slot.is_occupied() or slot.is_reserved():return false
++  if "__body_cover" not in slot.cover_object_id:return false
++  hidden.append(slot)
++ for slot in hidden:
++  b.vehicle_hidden_cover_slots[slot.cover_slot_id]=slot
++  g.remove_cover_slot(slot.cover_slot_id)
++ return true
++
++static func _space_body_cover(b) -> void:
++ var g=b.battlefield_geometry;var kept=[];var bodies=[]
++ for slot in g.cover_slots.values():
++  if "__body_cover" in slot.cover_object_id:bodies.append(slot)
++  else:kept.append(slot)
++ bodies.sort_custom(func(a,c):return a.cover_slot_id<c.cover_slot_id)
++ for slot in bodies:
++  var close=false
++  for other in kept:
++   if other.position.distance_squared_to(slot.position)<2.4*2.4:close=true;break
++  if close and not slot.is_occupied() and not slot.is_reserved():
++   b.vehicle_hidden_cover_slots[slot.cover_slot_id]=slot
++   g.remove_cover_slot(slot.cover_slot_id)
++  else:kept.append(slot)

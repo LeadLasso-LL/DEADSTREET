@@ -25,33 +25,57 @@ var map_option: OptionButton
 var map_description: Label
 var defender_controls=[]
 var embedded=false
+var yard_preset_button: Button
+
+var Maps=preload("res://gameplay/sandbox_map_catalog.gd")
+var map_selector: Control
+var side_panels={}
+var badges={}
+var side_scrolls={}
+var preset_buttons={}
+var fleet_buttons={}
+var defender_summary: Label
+var background: ColorRect
+var convoy_strips={}
 
 func _ready():
- size=Vector2(1152,860);mouse_filter=Control.MOUSE_FILTER_STOP
+ size=Vector2(1504,764);mouse_filter=Control.MOUSE_FILTER_STOP
  if config.is_empty():config=Config.from_legacy({})
  font=SystemFont.new();font.font_names=PackedStringArray(["Arial"])
- var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#121c20")
- var title=label_at(self,Vector2(28,20),Vector2(920,36),"DEAD STREET / BATTLE SETUP",26)
- map_option=option(self,Vector2(28,62),Vector2(310,33))
- map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge");map_option.add_item("Whittaker Estate")
- map_option.select(["harold","river_bridge","whittaker_estate"].find(config.get("map_id","harold")))
- map_option.item_selected.connect(func(i):choose_map(["harold","river_bridge","whittaker_estate"][i]))
- map_description=label_at(self,Vector2(356,66),Vector2(768,28),"1–12 units per side / All factions and equipment unlocked",12)
- var close=button_at(self,Vector2(992,20),Vector2(132,36),"ARSENAL",queue_free)
- for side_index in range(2):build_side("attacker" if side_index==0 else "defender",28+side_index*564)
- convoy_label=label_at(self,Vector2(28,720),Vector2(720,65),"",13)
- convoy_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
- button_at(self,Vector2(768,718),Vector2(190,36),"ATTACKING VEHICLES",open_fleet)
- button_at(self,Vector2(972,718),Vector2(152,36),"AUTO-FIT SEATS",auto_fit)
- defender_controls.append(button_at(self,Vector2(768,758),Vector2(190,33),"DEFENDING VEHICLES",func():open_fleet("defender")))
- defender_controls.append(button_at(self,Vector2(972,758),Vector2(152,33),"AUTO-FIT DEFENDERS",func():auto_fit("defender")))
- status=label_at(self,Vector2(28,807),Vector2(744,55),"",13);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
- start_button=button_at(self,Vector2(808,808),Vector2(316,36),"START BATTLE",launch)
- refresh_status()
- if embedded:
-  size=Vector2(1152,816);bg.size=size;title.hide();close.hide()
-  for child in get_children():
-   if child is Control and child not in [bg,title,close]:child.position.y-=46
+ background=ColorRect.new();add_child(background);background.color=Color("#121c20");background.mouse_filter=Control.MOUSE_FILTER_IGNORE
+ for side in ["attacker","defender"]:build_side(side,24)
+ map_selector=preload("res://gameplay/sandbox_map_selector.gd").new();map_selector.selected=config.get("map_id","harold");add_child(map_selector)
+ map_selector.map_selected.connect(choose_map);map_option=map_selector.option;map_description=map_selector.summary
+ for side in ["attacker","defender"]:
+  var side_id: String=side
+  var strip=preload("res://gameplay/sandbox_convoy_summary.gd").new();strip.side=side;add_child(strip);convoy_strips[side]=strip
+  strip.edit_requested.connect(func():open_fleet(side_id))
+  strip.remove_vehicle.connect(func(index):config[side_id].vehicles.remove_at(index);config[side_id].erase("vehicle_occupants");changed())
+ status=label_at(self,Vector2.ZERO,Vector2.ZERO,"",11);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+ start_button=button_at(self,Vector2.ZERO,Vector2.ZERO,"START BATTLE",launch)
+ start_button.add_theme_font_size_override("font_size",16)
+ start_button.add_theme_stylebox_override("normal",Card.style(Color("#414b3b"),Color("#d2bf8d")))
+ resized.connect(arrange);arrange();refresh_status()
+
+func arrange():
+ if map_selector==null:return
+ background.size=size
+ var panel_h=size.y-238.
+ var center_x=572.
+ var center_w=size.x-1144.
+ for side in ["attacker","defender"]:
+  var x=24. if side=="attacker" else size.x-556.
+  side_panels[side].position=Vector2(x,10);side_panels[side].size=Vector2(532,panel_h)
+  side_scrolls[side].size=Vector2(504,panel_h-194.)
+  add_classes[side].position.y=panel_h-44.;add_buttons[side].position.y=panel_h-44.
+ map_selector.position=Vector2(center_x,10);map_selector.size=Vector2(center_w,panel_h)
+ var bridge=config.get("map_id","")=="river_bridge"
+ var strip_w=(size.x-64.)*.5 if bridge else size.x-48.
+ convoy_strips.attacker.position=Vector2(24,size.y-218.);convoy_strips.attacker.size=Vector2(strip_w,150)
+ convoy_strips.defender.visible=bridge
+ convoy_strips.defender.position=Vector2(40+strip_w,size.y-218.);convoy_strips.defender.size=Vector2(strip_w,150)
+ status.position=Vector2(24,size.y-52.);status.size=Vector2(500,42)
+ start_button.position=Vector2((size.x-384.)*.5,size.y-54.);start_button.size=Vector2(384,42)
 
 func label_at(parent,at,sz,value,points=13):return Card.label(parent,at,sz,value,points,Color("#d5ddcf"),font)
 func button_at(parent,at,sz,value,action):
@@ -60,12 +84,12 @@ func button_at(parent,at,sz,value,action):
 func option(parent,at,sz):
  var o=OptionButton.new();parent.add_child(o);o.position=at;o.size=sz;o.fit_to_longest_item=false;o.clip_text=true;o.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS;o.add_theme_font_size_override("font_size",12);return o
 func build_side(side: String,x: int):
- var panel=Panel.new();add_child(panel);panel.position=Vector2(x,108);panel.size=Vector2(532,590);panel.add_theme_stylebox_override("panel",Card.style(Color("#1b292f"),Color("#4c605c")))
+ var panel=Panel.new();add_child(panel);panel.position=Vector2(x,10);panel.size=Vector2(532,610);side_panels[side]=panel;panel.add_theme_stylebox_override("panel",Card.style(Color("#1b292f"),Color("#4c605c")))
  counters[side]=label_at(panel,Vector2(14,12),Vector2(280,25),side.to_upper(),18)
- button_at(panel,Vector2(302,12),Vector2(136,30),"BALANCED FIVE",func():set_balanced(side))
+ preset_buttons[side]=button_at(panel,Vector2(302,12),Vector2(136,30),"MAP PRESET",func():set_balanced(side))
  button_at(panel,Vector2(446,12),Vector2(72,30),"CLEAR",func():config[side].units.clear();refresh_side(side))
- var badge=TextureRect.new();panel.add_child(badge);badge.name="FactionEmblem";badge.position=Vector2(14,51);badge.size=Vector2(36,36);badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;MenuEmblem.apply(badge,config[side].faction)
- var faction=option(panel,Vector2(60,52),Vector2(458,34));faction_options[side]=faction
+ var badge=TextureRect.new();panel.add_child(badge);badge.name="FactionEmblem";badge.position=Vector2(18,50);badge.size=Vector2(80,80);badges[side]=badge;badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;MenuEmblem.apply(badge,config[side].faction)
+ var faction=option(panel,Vector2(112,71),Vector2(406,38));faction_options[side]=faction
  for id in Factions.all_ids():
   faction.add_item(Factions.display_name(id));faction.set_item_metadata(faction.item_count-1,id);faction.set_item_tooltip(faction.item_count-1,Factions.display_name(id))
   if id==config[side].faction:faction.select(faction.item_count-1)
@@ -74,7 +98,7 @@ func build_side(side: String,x: int):
   if config[side].faction!="mercer":
    for row in config[side].units:row.specialist=""
   refresh_side(side))
- var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(14,101);scroll.size=Vector2(504,431);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+ var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(14,142);scroll.size=Vector2(504,416);side_scrolls[side]=scroll;scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
  var list=VBoxContainer.new();scroll.add_child(list);list.size_flags_horizontal=Control.SIZE_EXPAND_FILL;list.add_theme_constant_override("separation",8);lists[side]=list
  var classes=option(panel,Vector2(14,546),Vector2(242,31));add_classes[side]=classes
  for kind in Config.CLASSES:classes.add_item(class_label(kind));classes.set_item_metadata(classes.item_count-1,kind)
@@ -134,29 +158,22 @@ func duplicate_unit(side: String,index: int):
 func remove_unit(side: String,index: int):
  config[side].units.remove_at(index);refresh_side(side)
 func set_balanced(side: String):
- config[side].units=Config.balanced();refresh_side(side)
+ var suggested=Maps.preset(config.get("map_id","harold"),config)
+ config[side]=suggested[side];refresh_side(side)
 func auto_fit(side: String="attacker"):
- config[side].vehicles=Config.auto_convoy(config[side].units.size());config[side].erase("vehicle_occupants");changed()
+ config[side].vehicles=Config.auto_convoy(config[side].units.size(),config[side].faction);config[side].erase("vehicle_occupants");changed()
 func changed():
  error_override="";refresh_status();setup_changed.emit(config.duplicate(true))
 func refresh_status():
  if status==null:return
- map_description.text="1–%d units per side / All factions and equipment unlocked"%Config.max_units(config.get("map_id","harold"))
  var check=Config.validate(config)
  start_button.disabled=not check.valid
  start_button.text="START %d vs %d"%[config.attacker.units.size(),config.defender.units.size()]
- var summary=Config.Models.convoy(config.attacker.vehicles)
- for control in defender_controls:control.visible=config.get("map_id","harold")=="river_bridge"
- convoy_label.text="ATTACKING CONVOY  /  %d vehicles  /  %d seats for %d units\nDefenders begin on foot at Harold Apartments."%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size()]
- if config.get("map_id","harold")=="river_bridge":
-  var defense=Config.Models.convoy(config.defender.get("vehicles",[]))
-  convoy_label.text="WEST APPROACH  /  %d vehicles  /  %d seats for %d attackers\nEAST BLOCKADE  /  %d vehicles  /  %d seats for %d defenders"%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size(),config.defender.get("vehicles",[]).size(),defense.get("units",0),config.defender.units.size()]
- if config.get("map_id","harold")=="whittaker_estate":
-  convoy_label.text="ESTATE APPROACH  /  %d vehicles  /  %d seats for %d attackers\nDefenders begin on the estate grounds with prepared cover."%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size()]
- var slots=Config.Formation.slots(config.attacker.vehicles,config.attacker.faction).size()
- convoy_label.text=convoy_label.text.replace("%d vehicles"%config.attacker.vehicles.size(),"%d slots / %d vehicles"%[slots,config.attacker.vehicles.size()])
- status.text=error_override if not error_override.is_empty() else ("Ready. Each convoy uses its own units as drivers.\nEsc returns here after a battle; your setup is retained." if check.valid else check.error)
+ for side in ["attacker","defender"]:
+  if side=="attacker" or config.get("map_id","")=="river_bridge":convoy_strips[side].configure(config[side])
+ status.text=error_override if not error_override.is_empty() else ("Ready. Esc returns to this setup.   /   16 units per side maximum" if check.valid else check.error)
  status.add_theme_color_override("font_color",Color("#d68c87") if not error_override.is_empty() or not check.valid else Color("#acb9a8"))
+ arrange()
 func show_error(message: String):error_override=message;refresh_status()
 func launch():
  if Config.validate(config).valid:launch_requested.emit(config.duplicate(true))
@@ -165,14 +182,19 @@ func open_fleet(side: String="attacker"):
  if host.has_node("VehicleFleet"):return
  var fleet=FleetPanel.new();fleet.name="VehicleFleet";fleet.required_units=config[side].units.size();fleet.faction_id=config[side].faction;fleet.selected=config[side].get("vehicles",[]).duplicate();fleet.allow_encounter_lab=false
  fleet.convoy_selected.connect(func(models):config[side].vehicles=models.duplicate();config[side].erase("vehicle_occupants");changed())
- if embedded:get_parent().get_parent().add_child(fleet)
+ if embedded:
+  get_parent().get_parent().add_child(fleet)
+  fleet.position=Vector2((get_parent().get_parent().size.x-1504.)*.5,0)
  else:add_child(fleet)
 
 func choose_map(id: String):
- config.map_id=id
- for side in ["attacker","defender"]:refresh_side(side)
- if id=="river_bridge" and not config.defender.has("vehicles"):
-  config.defender.vehicles=Config.auto_convoy(config.defender.units.size())
+ if id not in Maps.IDS:return
+ if id==config.get("map_id","harold"):
+  map_selector.select_map(id);return
+ config=Maps.preset(id,config)
+ map_selector.select_map(id)
+ for side in ["attacker","defender"]:
+  faction_options[side].select(Factions.all_ids().find(config[side].faction));MenuEmblem.apply(badges[side],config[side].faction);refresh_side(side)
  changed()
 
 func class_label(id: String) -> String:

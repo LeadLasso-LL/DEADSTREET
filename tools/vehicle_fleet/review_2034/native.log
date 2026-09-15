@@ -1,0 +1,92 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_00__door_1_south slot sandbox_transport_00__door_1_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.79999971389771, 0.0) segment=0 into=7.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.7000007629395, 0.0) segment=0 into=11.7 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_00__door_1_south slot sandbox_transport_00__door_1_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(4.59999990463257, 0.0) segment=0 into=4.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(6.89999961853027, 0.0) segment=0 into=6.9 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.19999980926514, 0.0) segment=0 into=9.2 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.5, 0.0) segment=0 into=11.5 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 3 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.2000007629395, 0.0) segment=0 into=10.2 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 3 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_00__door_1_south slot sandbox_transport_00__door_1_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.19999980926514, 0.0) segment=0 into=9.2 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+FLEET_NATIVE_VISUAL []

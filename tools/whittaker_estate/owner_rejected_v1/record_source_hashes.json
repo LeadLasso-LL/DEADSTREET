@@ -1,0 +1,7 @@
+{
+  "gameplay\\whittaker_estate_art.gd": "04ce03eec072170afcec4071ee15daae643f94f672b03e6fafdf0267c675bda5",
+  "battle\\geometry\\whittaker_estate_catalog.gd": "0f4f98f76ee05d338bd29df6de41fa6a4b49f13424cbdbcac7190f35050ca809",
+  "tools\\tactical_controls\\estate_director.gd": "0cbf8d9ba0d2bcb0271cbb43b5fe9242cc0fa8266ca22234f9bb54722e429560",
+  "tools\\tactical_controls\\estate_record.gd": "0019169ebdf9c0b1fecde2f6fb138552a1c794c997d1c421664a2c3c9df63f33",
+  "gameplay\\tactical_convoy_audio.gd": "13ecb6a7000c8f28af153f4885f99d929a3d9dd8740836d8aef60fe3cb47edf8"
+}

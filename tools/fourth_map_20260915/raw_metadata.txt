@@ -1,0 +1,6 @@
+[aist#0:1/pcm_s16le @ 000001363d7f2200] Guessed Channel Layout: stereo
+Input #0, avi, from 'C:\Users\brand\OneDrive\Documents\dead-street\tools\fourth_map_20260915\yard_raw_v2.avi':
+  Duration: 00:00:50.30, start: 0.000000, bitrate: 20941 kb/s
+  Stream #0:0: Video: mjpeg (Baseline) (MJPG / 0x47504A4D), yuvj420p(pc, bt470bg/unknown/unknown), 1152x648 [SAR 1:1 DAR 16:9], 19406 kb/s, 30 fps, 30 tbr, 30 tbn
+  Stream #0:1: Audio: pcm_s16le ([1][0][0][0] / 0x0001), 48000 Hz, stereo, s16, 1536 kb/s
+At least one output file must be specified

@@ -1,0 +1,45 @@
+{
+  "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\fourth_map_20260915\\DEAD_STREET_Doble_Ocho_Battle.mp4",
+  "bytes": 7356325,
+  "sha256": "018acf2a7208dd2900fbfc12aa17b572ded621cbdb554ab2e1901f5fe4cdaa75",
+  "seconds": 50.266666666666666,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "decoded_to_end": true,
+  "audio_peak": 0.38136255741119385,
+  "audio_rms": 0.02145025134086609,
+  "parts": [
+    {
+      "name": "part_000.txt",
+      "bytes": 1300000,
+      "sha256": "e7b99d053b91d103003c5fc12e8a877aaf683b2cb39f048d8dfd037dea342bbf"
+    },
+    {
+      "name": "part_001.txt",
+      "bytes": 1300000,
+      "sha256": "fe60079b29a54afe19e5c5c3ab875dc37edb6aaa364d44aa0a696fcb96867f8d"
+    },
+    {
+      "name": "part_002.txt",
+      "bytes": 1300000,
+      "sha256": "433b4bee6387118eb80cf1d257b0fba3b8b3a36ae26c3123e63ceed5f4458ac0"
+    },
+    {
+      "name": "part_003.txt",
+      "bytes": 1300000,
+      "sha256": "85162ff1f8a72c710f0997a872aaa8648dbf8c8960e6da7ef458b256515328c3"
+    },
+    {
+      "name": "part_004.txt",
+      "bytes": 1300000,
+      "sha256": "b84331552253abcaf789930359650c87c1aa18832e01065ca0be5cabd9f8bdc4"
+    },
+    {
+      "name": "part_005.txt",
+      "bytes": 856325,
+      "sha256": "7b7e3e450ad144dc307e8a2fbf9e8b8357ac3b70133d61a85bc4fede3d252f9e"
+    }
+  ],
+  "winner": "attacker"
+}

@@ -1,0 +1,14 @@
+{
+  "gameplay/bridge_battle_setup.gd": "a2ef629c0a6dfd8b3390b107c88711ad282edd77c512e6196e76b0530705657d",
+  "gameplay/tactical_battle_view.gd": "2b0942a5c4db853b87eedde388716137d8447e2718aa33994650fa4bbf81858f",
+  "gameplay/tactical_convoy_audio.gd": "a5c2f3d0d87a8b51982368c62c502446cb808b832b43e4fadd3eec69875cb456",
+  "tools/tactical_controls/raiders_director.gd": "af513fda19ee393b9812ca84f9cd2164ca8b0627bd3c8e3b1c76217620b609a9",
+  "tools/tactical_controls/raiders_record.gd": "dcabe05e13f1b2033d022c6926825cd51c2c04d19ced7694fac14a4c13438995",
+  "tools/tactical_controls/convoy_native.gd": "855c38b4869ba02f3c2b527315cec536fd4c4a9ad1deb677dc797967e2750d19",
+  "tools/convoy_arrival/build_audio.py": "d83c44741ae1c7977f43171499f5738e590fc35f6966d776d8a40d5a014a1279",
+  "assets/audio/convoy/raiders_radio.wav": "64ad8f8708dbd437d45677613750ed126818c78337a96c60127a5df83b0f9060",
+  "assets/audio/convoy/police_siren.wav": "035e1fca26002f0699fc6aec7c38b4878d1b6d7d4c0f9092c188d186cdcf1dba",
+  "tools/raiders_recording/record_worker.py": "1fd9befadf1f163792267de68477a443b584e01a7d11b73181870e25b8a19269",
+  "tools/raiders_recording/encode.py": "63d9acbdf6fa56c904633225dece271f1b855ae2d30de5cc279e8fc92e852c94",
+  "tools/raiders_recording/mobile_export.py": "1220585c38a6d04aca40a2c9bcabe5e955f901f27936a131dd915b41ef477029"
+}

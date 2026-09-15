@@ -1,0 +1,60 @@
+{
+  "head": "e409716cbfd9625a9fd43539451fb7806c874703",
+  "remote": "e409716cbfd9625a9fd43539451fb7806c874703",
+  "mobile_sha256": "1ad5ab6d64e40239bff9500eba1030e3b3fef20416d5cf45ceb57eebd656fd2a",
+  "radio_sha256": "3550e3f8b6231f6815c2383a94404255752456a21b603fcbd8724d54f1952981",
+  "radio_gain_samples": [
+    {
+      "arrival_clock": 5.99999999999999,
+      "battle_mix": 0.0,
+      "gain_db": -18.0,
+      "movie_seconds": 6.0,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 10.5,
+      "battle_mix": 0.0758111102681216,
+      "gain_db": -19.0613555908203,
+      "movie_seconds": 10.5,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 11.5,
+      "battle_mix": 0.743501940722106,
+      "gain_db": -28.4090270996094,
+      "movie_seconds": 11.5,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 12.1666666666666,
+      "battle_mix": 1.0,
+      "gain_db": -32.0,
+      "movie_seconds": 13.0,
+      "phase": "active"
+    },
+    {
+      "arrival_clock": 12.1666666666666,
+      "battle_mix": 1.0,
+      "gain_db": -32.0,
+      "movie_seconds": 20.0,
+      "phase": "active"
+    }
+  ],
+  "files": [
+    "gameplay/tactical_convoy_audio.gd",
+    "gameplay/tactical_battle_presentation.gd",
+    "tools/convoy_arrival/build_audio.py",
+    "assets/audio/convoy/raiders_radio.wav",
+    "assets/audio/convoy/original_radio.json",
+    "tools/tactical_controls/raiders_record.gd",
+    "tools/raiders_recording/record.json",
+    "tools/raiders_recording/video.json",
+    "tools/raiders_recording/mobile.json",
+    "tools/raiders_recording/heavy_radio_source_hashes.json",
+    "tools/raiders_recording/README.md",
+    "tools/convoy_arrival/README.md",
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md"
+  ]
+}

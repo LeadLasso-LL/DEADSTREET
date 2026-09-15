@@ -1,0 +1,37 @@
+{
+	"errors": [],
+	"samples": [
+		{
+			"attacker_margin_db": 23.3371114410973,
+			"clock": 2.5,
+			"rms": {
+				"attacker": 0.0206111990407799,
+				"defender": 0.00140361398022622
+			}
+		},
+		{
+			"attacker_margin_db": 25.0180623859513,
+			"clock": 4.5,
+			"rms": {
+				"attacker": 0.0197036908671649,
+				"defender": 0.00110571821989471
+			}
+		},
+		{
+			"attacker_margin_db": 26.1041712773207,
+			"clock": 7.0,
+			"rms": {
+				"attacker": 0.0227088089644012,
+				"defender": 0.00112456818555563
+			}
+		},
+		{
+			"attacker_margin_db": 26.9213712204666,
+			"clock": 9.5,
+			"rms": {
+				"attacker": 0.0255687690911492,
+				"defender": 0.0011525008651888
+			}
+		}
+	]
+}

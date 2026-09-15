@@ -1,0 +1,390 @@
+class_name BattleParticipant
+extends RefCounted
+
+const BattleWeaponCatalog := preload("res://battle/combat/battle_weapon_catalog.gd")
+const BattleWeaponState := preload("res://battle/combat/battle_weapon_state.gd")
+const TacticalIdentitySnapshot := preload("res://battle/identity/tactical_identity_snapshot.gd")
+const NAVIGATION_SOURCE_NONE := ""
+const NAVIGATION_SOURCE_EXTERNAL := "external"
+const NAVIGATION_SOURCE_COMBAT := "combat"
+const PLAYER_INTENT_NONE := ""
+const PLAYER_INTENT_MOVE := "move"
+const PLAYER_INTENT_COVER := "cover"
+const PLAYER_INTENT_TARGET := "target"
+const PLAYER_INTENT_HOLD := "hold"
+
+const Armor := preload("res://campaign/equipment/armor_catalog.gd")
+var armor_id: String = ""
+var max_vitality: float:
+	get:
+		return Armor.max_hp(armor_id)
+
+var transport_vehicle_id: String = ""
+var participant_id: String = ""
+var campaign_soldier_id: String = ""
+var faction_id: String = ""
+var side_id: String = ""
+var tactical_force_id: String = ""
+var weapon_type: String = ""
+var weapon_state: BattleWeaponState = null
+var unit_tier: int = 1:
+	set(value):
+		unit_tier = clampi(value, 1, 3)
+var specialist_id: String = ""
+var weapon_model_id: String = ""
+var weapon_recoil: float = 0.0
+var is_alive: bool = true
+var is_wounded: bool = false
+var vitality: float = 1.5
+var deployment_slot_id: String = ""
+var has_battle_position: bool = false
+var battle_position: Vector2 = Vector2.ZERO
+var velocity: Vector2 = Vector2.ZERO
+var movement_intent: Vector2 = Vector2.ZERO
+var movement_speed: float = 0.0
+var movement_target_position: Vector2 = Vector2.ZERO
+var has_movement_target_position: bool = false
+var navigation_destination: Vector2 = Vector2.ZERO
+var has_navigation_destination: bool = false
+var navigation_waypoints: Array[Vector2] = []
+var navigation_waypoint_index: int = 0
+var has_target_participant: bool = false
+var target_participant_id: String = ""
+var defend_position: bool = false
+var has_defend_position_anchor: bool = false
+var defend_position_anchor: Vector2 = Vector2.ZERO
+var navigation_source: String = ""
+var combat_move_mode: String = ""
+var combat_move_target_id: String = ""
+var combat_decision_key: String = ""
+var combat_no_role_cover: bool = false
+var combat_no_role_cover_key: String = ""
+var combat_no_role_cover_self_position: Vector2 = Vector2.ZERO
+var combat_no_role_cover_target_position: Vector2 = Vector2.ZERO
+var reserved_cover_slot_id: String = ""
+var occupied_cover_slot_id: String = ""
+var combat_closing_hold_slot_id: String = ""
+var combat_closing_settle_seconds: float = 0.0
+var combat_closing_peek_served: bool = false
+var combat_wounded_stall_seconds: float = 0.0
+var combat_wounded_abandoned_slot_id: String = ""
+var cover_posture: String = "none"
+var cover_posture_phase: String = ""
+var cover_posture_timer_seconds: float = 0.0
+var wound_reaction_remaining_seconds: float = 0.0
+var acquire_reaction_remaining_seconds: float = 0.0
+var acquire_reaction_target_id: String = ""
+var sniper_aim_remaining_seconds: float = 0.0
+var sniper_aim_target_id: String = ""
+var sniper_aim_engagement_active: bool = false
+var player_priority_target_id: String = ""
+var player_tactical_intent: String = ""
+var player_cover_object_id: String = ""
+var player_cover_slot_id: String = ""
+var player_group_command_id: String = ""
+var player_command_context: Dictionary = {}
+var player_order_position: Vector2 = Vector2.ZERO
+var has_player_order_position: bool = false
+var player_order_feedback: String = ""
+
+func current_player_group_command() -> String:
+	if not is_alive or is_wounded or player_tactical_intent.is_empty():
+		return ""
+	return player_group_command_id
+
+func clear_player_group_command() -> void:
+	player_group_command_id = ""
+	player_command_context = {}
+
+func set_player_hold_intent() -> void:
+	player_tactical_intent = PLAYER_INTENT_HOLD
+	player_order_position = battle_position
+	has_player_order_position = true
+	clear_navigation_path()
+	clear_movement_intent()
+	velocity = Vector2.ZERO
+
+func finish_player_move() -> void:
+	# Arrival retains the assigned position and any independent target priority.
+	if player_tactical_intent == PLAYER_INTENT_MOVE:
+		if has_player_order_position and battle_position.distance_to(player_order_position) > 0.8:
+			player_order_feedback = "Route interrupted — orders released"
+			clear_player_tactical_intent()
+			return
+		set_player_hold_intent()
+
+var pending_deployment_cover_object_id: String = ""
+var pending_deployment_cover_slot_id: String = ""
+var identity: TacticalIdentitySnapshot = null
+
+
+func _init(
+	p_participant_id: String = "",
+	p_campaign_soldier_id: String = "",
+	p_faction_id: String = "",
+	p_side_id: String = "",
+	p_weapon_type: String = "",
+	p_is_alive: bool = true,
+	p_is_wounded: bool = false,
+	p_deployment_slot_id: String = "",
+	p_tactical_force_id: String = ""
+) -> void:
+	participant_id = p_participant_id
+	campaign_soldier_id = p_campaign_soldier_id
+	faction_id = p_faction_id
+	side_id = p_side_id
+	weapon_type = p_weapon_type
+	weapon_model_id = BattleWeaponCatalog.default_model(p_weapon_type)
+	weapon_state = BattleWeaponCatalog.create_initial_state(p_weapon_type)
+	is_alive = p_is_alive
+	is_wounded = p_is_wounded
+	vitality = 1.5
+	if not p_is_alive:
+		vitality = 0.0
+	deployment_slot_id = p_deployment_slot_id
+	tactical_force_id = p_tactical_force_id
+
+
+func set_movement_intent(direction: Vector2) -> bool:
+	if not is_finite(direction.x) or not is_finite(direction.y):
+		push_error("BattleParticipant.set_movement_intent: direction is not finite.")
+		return false
+	if direction == Vector2.ZERO:
+		movement_intent = Vector2.ZERO
+		return true
+	movement_intent = direction.normalized()
+	return true
+
+
+func clear_movement_intent() -> void:
+	movement_intent = Vector2.ZERO
+
+
+func set_movement_speed(value: float) -> bool:
+	if not is_finite(value) or value < 0.0:
+		push_error("BattleParticipant.set_movement_speed: value is invalid.")
+		return false
+	movement_speed = value
+	return true
+
+
+func set_movement_target_position(target: Vector2) -> bool:
+	if not is_finite(target.x) or not is_finite(target.y):
+		push_error("BattleParticipant.set_movement_target_position: target is not finite.")
+		return false
+	movement_target_position = target
+	has_movement_target_position = true
+	return true
+
+
+func clear_movement_target_position() -> void:
+	movement_target_position = Vector2.ZERO
+	has_movement_target_position = false
+
+
+func set_navigation_path(
+	destination: Vector2,
+	waypoints: Array[Vector2],
+	p_source: String = NAVIGATION_SOURCE_EXTERNAL
+) -> bool:
+	if not is_finite(destination.x) or not is_finite(destination.y):
+		push_error("BattleParticipant.set_navigation_path: destination is not finite.")
+		return false
+	var copied: Array[Vector2] = []
+	for waypoint: Vector2 in waypoints:
+		if not is_finite(waypoint.x) or not is_finite(waypoint.y):
+			push_error("BattleParticipant.set_navigation_path: waypoint is not finite.")
+			return false
+		if copied.is_empty() or not copied[copied.size() - 1].is_equal_approx(waypoint):
+			copied.append(waypoint)
+	navigation_destination = destination
+	has_navigation_destination = true
+	navigation_waypoints = copied
+	navigation_waypoint_index = 0
+	navigation_source = p_source
+	if p_source != NAVIGATION_SOURCE_COMBAT:
+		combat_move_mode = ""
+		combat_move_target_id = ""
+		combat_decision_key = ""
+	clear_movement_target_position()
+	return true
+
+
+func clear_navigation_path() -> void:
+	navigation_destination = Vector2.ZERO
+	has_navigation_destination = false
+	navigation_waypoints = []
+	navigation_waypoint_index = 0
+	navigation_source = NAVIGATION_SOURCE_NONE
+	combat_move_mode = ""
+	combat_move_target_id = ""
+	combat_decision_key = ""
+	clear_movement_target_position()
+
+
+func has_active_navigation_path() -> bool:
+	if not has_navigation_destination:
+		return false
+	if navigation_waypoint_index < 0:
+		return false
+	return navigation_waypoint_index < navigation_waypoints.size()
+
+
+func get_current_navigation_waypoint() -> Vector2:
+	if not has_active_navigation_path():
+		return Vector2.ZERO
+	return navigation_waypoints[navigation_waypoint_index]
+
+
+func advance_navigation_waypoint() -> bool:
+	if not has_active_navigation_path():
+		return false
+	navigation_waypoint_index += 1
+	return true
+
+
+func has_reached_navigation_end() -> bool:
+	if not has_navigation_destination:
+		return false
+	return navigation_waypoint_index >= navigation_waypoints.size()
+
+
+func set_target_participant(participant_id: String) -> bool:
+	if participant_id.is_empty():
+		push_error("BattleParticipant.set_target_participant: participant id is empty.")
+		return false
+	target_participant_id = participant_id
+	has_target_participant = true
+	return true
+
+
+func clear_target_participant() -> void:
+	target_participant_id = ""
+	has_target_participant = false
+
+
+func clear_player_priority_target() -> void:
+	player_priority_target_id = ""
+	if player_tactical_intent == PLAYER_INTENT_TARGET:
+		player_tactical_intent = PLAYER_INTENT_NONE
+
+
+func has_player_priority_target() -> bool:
+	return not player_priority_target_id.is_empty()
+
+
+func current_player_intent() -> String:
+	return player_tactical_intent
+
+
+func has_player_cover_intent() -> bool:
+	return (
+		player_tactical_intent == PLAYER_INTENT_COVER
+		and not player_cover_object_id.is_empty()
+	)
+
+
+func set_player_cover_intent(cover_object_id: String, cover_slot_id: String = "") -> void:
+	player_tactical_intent = PLAYER_INTENT_COVER
+	player_cover_object_id = cover_object_id
+	player_cover_slot_id = cover_slot_id
+
+
+func set_player_move_intent() -> void:
+	player_tactical_intent = PLAYER_INTENT_MOVE
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	player_order_position = navigation_destination
+	has_player_order_position = has_navigation_destination
+
+
+func set_player_target_intent(hostile_id: String) -> void:
+	# Priority is independent of movement/cover. It never initiates a chase.
+	if player_tactical_intent.is_empty() or player_tactical_intent == PLAYER_INTENT_TARGET:
+		set_player_hold_intent()
+	player_priority_target_id = hostile_id
+
+
+func clear_player_cover_intent() -> void:
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	if player_tactical_intent == PLAYER_INTENT_COVER:
+		player_tactical_intent = PLAYER_INTENT_NONE
+		clear_player_group_command()
+		has_player_order_position = false
+
+
+func clear_player_tactical_intent() -> void:
+	player_tactical_intent = PLAYER_INTENT_NONE
+	player_cover_object_id = ""
+	player_cover_slot_id = ""
+	player_priority_target_id = ""
+	clear_player_group_command()
+	has_player_order_position = false
+
+
+func has_pending_deployment_cover() -> bool:
+	return (
+		not pending_deployment_cover_object_id.is_empty()
+		and not pending_deployment_cover_slot_id.is_empty()
+	)
+
+
+func set_pending_deployment_cover(cover_object_id: String, cover_slot_id: String) -> void:
+	pending_deployment_cover_object_id = cover_object_id
+	pending_deployment_cover_slot_id = cover_slot_id
+
+
+func clear_pending_deployment_cover() -> void:
+	pending_deployment_cover_object_id = ""
+	pending_deployment_cover_slot_id = ""
+
+
+func set_defend_position(enabled: bool) -> void:
+	defend_position = enabled
+
+
+func set_defend_position_anchor(position: Vector2) -> bool:
+	if not is_finite(position.x) or not is_finite(position.y):
+		push_error("BattleParticipant.set_defend_position_anchor: position is not finite.")
+		return false
+	defend_position_anchor = position
+	has_defend_position_anchor = true
+	return true
+
+
+func clear_defend_position_anchor() -> void:
+	has_defend_position_anchor = false
+	defend_position_anchor = Vector2.ZERO
+
+
+func has_reserved_cover_slot() -> bool:
+	return not reserved_cover_slot_id.is_empty()
+
+
+func has_occupied_cover_slot() -> bool:
+	return not occupied_cover_slot_id.is_empty()
+
+
+func is_cover_tucked() -> bool:
+	return cover_posture == "tucked"
+
+
+func is_cover_exposed() -> bool:
+	return cover_posture == "exposed"
+
+
+func has_wound_reaction() -> bool:
+	return is_finite(wound_reaction_remaining_seconds) and wound_reaction_remaining_seconds > 0.0
+
+
+func has_acquire_reaction() -> bool:
+	return is_finite(acquire_reaction_remaining_seconds) and acquire_reaction_remaining_seconds > 0.0
+
+
+func has_sniper_aim() -> bool:
+	return is_finite(sniper_aim_remaining_seconds) and sniper_aim_remaining_seconds > 0.0
+
+
+func has_identity() -> bool:
+	return identity != null and identity.is_valid()

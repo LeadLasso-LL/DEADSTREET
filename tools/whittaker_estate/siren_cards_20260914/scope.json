@@ -1,0 +1,16 @@
+[
+  "gameplay/tactical_convoy_audio.gd",
+  "gameplay/tactical_battle_presentation.gd",
+  "tools/tactical_controls/estate_record.gd",
+  "tools/whittaker_estate/encode.py",
+  "docs/DEAD_STREET_HIVE_MIND.md",
+  "docs/DEAD_STREET_JOURNAL.md",
+  "docs/DEAD_STREET_PROJECT_CONTROL.md",
+  "docs/TACTICAL_CONTROLS_2026-09-13.md",
+  "tools/whittaker_estate/README.md",
+  "tools/whittaker_estate/record.json",
+  "tools/whittaker_estate/record_source_hashes.json",
+  "tools/whittaker_estate/delivery.json",
+  "tools/whittaker_estate/results.png",
+  "tools/whittaker_estate/siren_cards_20260914/verification.json"
+]

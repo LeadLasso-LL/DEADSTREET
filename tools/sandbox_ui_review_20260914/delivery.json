@@ -1,0 +1,80 @@
+{
+  "filename": "Dead_Street_Bridge_5v5_Sandbox_UI_Review.mp4",
+  "bytes": 6070607,
+  "sha256": "81bdc071ae77d66455317d2634a8603b6338f2e38ff31a68668924bcfbcffdc5",
+  "fps": 30,
+  "width": 1152,
+  "height": 860,
+  "frames": 5563,
+  "duration_seconds": 185.43333333333334,
+  "video_codec": "H.264",
+  "pixel_format": "yuv420p",
+  "audio_codec": "AAC",
+  "faststart": true,
+  "full_decode_passed": true,
+  "ui_checks": 224,
+  "ui_errors": [],
+  "no_combat": true,
+  "chunks": [
+    {
+      "name": "000.b64",
+      "bytes": 524288,
+      "sha256": "456c425080b41301947c834476e2e0b3250cf4eb1c19ec7f7817672bc5b24a68"
+    },
+    {
+      "name": "001.b64",
+      "bytes": 524288,
+      "sha256": "289a15259e8a4dd0ada050d2c0904b454acdb9f0fa882b7a484457fa257a9cc1"
+    },
+    {
+      "name": "002.b64",
+      "bytes": 524288,
+      "sha256": "cf8dfc03d6a4a594ce5539650cc8a889229da23fe90a4c75424075bc76ca3cf0"
+    },
+    {
+      "name": "003.b64",
+      "bytes": 524288,
+      "sha256": "b94790c57e92951e69a16f079f31f73dfc57fbb199ba0da3f0a81673d39cd484"
+    },
+    {
+      "name": "004.b64",
+      "bytes": 524288,
+      "sha256": "ba70981a72528679f31dc204f790b5955fd8414a9d0b8cbebd80d6b8ea3189a2"
+    },
+    {
+      "name": "005.b64",
+      "bytes": 524288,
+      "sha256": "ccd828b2c3fefceaa4940302c0dff58dcc683e9176dac2302ebd754b5c254244"
+    },
+    {
+      "name": "006.b64",
+      "bytes": 524288,
+      "sha256": "0a510265fd21aeacbfbbe8680f75deb11f4bb7706faba0820fef7d89a73c4d9e"
+    },
+    {
+      "name": "007.b64",
+      "bytes": 524288,
+      "sha256": "8c89d96594f87544197fb5477dfca626f93ed82ddfb3082638cc5ab175e203de"
+    },
+    {
+      "name": "008.b64",
+      "bytes": 524288,
+      "sha256": "679625dba3f231c878f1571a3fbf95fd4d7cda4afcb8d307251e884040a8af0a"
+    },
+    {
+      "name": "009.b64",
+      "bytes": 524288,
+      "sha256": "d85bdecb67685e77d0fd94e48ad214a18be1ef4ce42280dbaa79ad58a06d92e4"
+    },
+    {
+      "name": "010.b64",
+      "bytes": 524288,
+      "sha256": "62e6c7545130785d54bac165ffab58adc7382fa8951f8d6b73cfcb466f425559"
+    },
+    {
+      "name": "011.b64",
+      "bytes": 303439,
+      "sha256": "49b4c14197bf539cf7e3cd032173bd64d07ce2af82ec92638d07934076310d0a"
+    }
+  ]
+}

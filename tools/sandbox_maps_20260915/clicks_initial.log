@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+ERROR: Mouse selects map doble_ocho
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:21)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Dropdown synchronized doble_ocho
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:23)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Mouse selects map river_bridge
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:21)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Dropdown synchronized river_bridge
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:23)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Mouse selects map whittaker_estate
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:21)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Dropdown synchronized whittaker_estate
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:23)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Faction tab
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:25)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Arsenal tab
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:26)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Vehicles tab
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:27)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Mouse opens convoy
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] expect (res://tools/sandbox_maps_20260915/clicks.gd:7)
+       [1] run (res://tools/sandbox_maps_20260915/clicks.gd:30)
+       [2] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+ERROR: Node not found: "VehicleFleet" (relative to "/root/ArsenalReview/@CanvasLayer@3/@Control@4/SandboxMenu").
+   at: get_node (scene/main/node.cpp:1975)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tools/sandbox_maps_20260915/clicks.gd:31)
+       [1] click (res://tools/sandbox_maps_20260915/clicks.gd:13)
+SCRIPT ERROR: Invalid assignment of property or key 'selected' with value of type 'Array' on a base object of type 'null instance'.
+   at: run (res://tools/sandbox_maps_20260915/clicks.gd:32)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tools/sandbox_maps_20260915/clicks.gd:32)
+       [1] click (res://tools/sandbox_maps_20260915/clicks.gd:13)

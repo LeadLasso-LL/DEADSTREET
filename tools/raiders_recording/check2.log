@@ -1,0 +1,164 @@
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+MUSIC_DOWNLOADED 340087 451367
+MUSIC_DOWNLOADED 367876 1109314
+PROBE_FINAL {
+  "commands": [
+    {
+      "accepted": [
+        "sandbox_attacker_unit_01",
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04",
+        "sandbox_attacker_unit_05",
+        "sandbox_attacker_unit_06",
+        "sandbox_attacker_unit_07"
+      ],
+      "command": "push",
+      "failed": [],
+      "line": 59.570225579398,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 3.06666666666667
+    },
+    {
+      "accepted": [
+        "sandbox_attacker_unit_01",
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04",
+        "sandbox_attacker_unit_05"
+      ],
+      "command": "push",
+      "failed": [
+        "sandbox_attacker_unit_06",
+        "sandbox_attacker_unit_07"
+      ],
+      "line": 109.677936008998,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 21.2666666666669
+    },
+    {
+      "command": "hold",
+      "feedback": {
+        "accepted": 3,
+        "command": "hold",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_08",
+        "sandbox_attacker_unit_09",
+        "sandbox_attacker_unit_12"
+      ],
+      "reason": "Firing support has established covered overwatch",
+      "time": 30.2000000000007
+    },
+    {
+      "accepted": [
+        "sandbox_attacker_unit_02",
+        "sandbox_attacker_unit_03",
+        "sandbox_attacker_unit_04"
+      ],
+      "command": "push",
+      "failed": [],
+      "line": 136.796435038249,
+      "reason": "Advance assault element through cover to establish contact",
+      "time": 39.366666666667
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_08"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 44.4
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_12"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 54.5666666666661
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_09"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 58.6333333333326
+    }
+  ],
+  "duration": 79.6333333333314,
+  "phase": "resolved",
+  "seed": 9141,
+  "snapshots": [
+    {
+      "events": 0,
+      "nbpd": 12,
+      "raiders": 12,
+      "time": 0.0333333333333333
+    },
+    {
+      "events": 0,
+      "nbpd": 12,
+      "raiders": 12,
+      "time": 10.0333333333333
+    },
+    {
+      "events": 0,
+      "nbpd": 12,
+      "raiders": 12,
+      "time": 20.0333333333335
+    },
+    {
+      "events": 21,
+      "nbpd": 11,
+      "raiders": 12,
+      "time": 30.033333333334
+    },
+    {
+      "events": 83,
+      "nbpd": 10,
+      "raiders": 8,
+      "time": 40.0333333333336
+    },
+    {
+      "events": 125,
+      "nbpd": 7,
+      "raiders": 6,
+      "time": 50.0333333333331
+    },
+    {
+      "events": 149,
+      "nbpd": 7,
+      "raiders": 3,
+      "time": 60.0333333333325
+    },
+    {
+      "events": 161,
+      "nbpd": 5,
+      "raiders": 2,
+      "time": 70.0333333333319
+    }
+  ],
+  "winner": "defender"
+}
+SECOND_CHECK_COMPLETE

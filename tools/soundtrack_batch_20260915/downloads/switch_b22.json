@@ -1,0 +1,23 @@
+{
+  "index": 13,
+  "id": "switch_b22",
+  "artist": "B-22",
+  "title": "Switch",
+  "source_url": "https://soundcloud.com/brandonharb-1/killswitch",
+  "start_timestamp": "00:00",
+  "start_seconds": 0,
+  "duration_seconds": 30,
+  "basename": "B-22_Switch",
+  "status": "downloaded",
+  "source_title": "#### killswitch ####",
+  "source_artist": "brandon",
+  "source_track_id": 319290076,
+  "canonical_url": "https://soundcloud.com/brandonharb-1/killswitch",
+  "source_duration_seconds": 94.962,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 1519280,
+  "sha256": "e25204895a7cceabc15a8614677b525af2478bc0b3a51372f2e3ea4682a5ba1d",
+  "settings_changed": false
+}

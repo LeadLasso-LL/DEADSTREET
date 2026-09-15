@@ -1,0 +1,9 @@
+{
+  "campaign/vehicles/convoy_formation_catalog.gd": "62a9ef7726718c41bdeb28ab33fe8967bda65e4c0e228abb130061ba65a5ee9d",
+  "gameplay/sandbox_convoy_rules.gd": "5dbea6db8ce4a5a0b37f77629d9de58d1e66508cede676c6e182406bfbb7b233",
+  "gameplay/vehicle_fleet_panel.gd": "95ebac578dc0e5df679c25b14e80536026f1c1463c65d8e4c1a9dc49e57bc988",
+  "gameplay/sandbox_menu_panels.gd": "4e069d1055347788c0dc250e0036c70e1b8630f488d9fb1ca815aee398ebaac0",
+  "gameplay/bridge_battle_setup.gd": "584d52b7192c68d5738beeacea4864c72d1a96e87580af62d55300ad9a7f6c03",
+  "gameplay/estate_battle_setup.gd": "83a3a63adba92bfde125219194c910dd31330aaa96484e8ef5bcab3f7774cc74",
+  "gameplay/freight_exchange_setup.gd": "a3711eae75190a6c54746e39b2190bf6e39e55bc03eee51698888b88b4ebcaab"
+}

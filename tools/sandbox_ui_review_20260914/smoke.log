@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+UI_STEP 3 Open Battle Sandbox
+UI_STEP 18 Arsenal / weapon preview
+UI_STEP 37 Armor catalog / three HP tiers
+UI_STEP 60 Custom Battle Setup / choose the map
+UI_STEP 83 Choose attacking faction
+UI_STEP 94 Clear and build five attackers
+UI_STEP 195 Change an existing unit class
+UI_STEP 217 Duplicate and remove a unit
+UI_STEP 237 Attacker / Pistol
+UI_STEP 278 Attacker / Smg
+UI_STEP 319 Attacker / Shotgun
+UI_STEP 360 Attacker / Rifle
+UI_STEP 401 Attacker / Sniper
+UI_STEP 436 Choose defending faction
+UI_STEP 460 Defender / Pistol
+UI_STEP 501 Defender / Smg
+UI_STEP 542 Defender / Shotgun
+UI_STEP 583 Defender / Rifle
+UI_STEP 624 Defender / Sniper
+UI_STEP 659 Attacking convoy / manual selection
+UI_STEP 711 Seat validation / add a second vehicle
+UI_STEP 760 Auto-Fit Seats / inspect automatic convoy
+UI_STEP 808 Defending convoy / Auto-Fit Defenders
+UI_STEP 894 Final 5 vs 5 / ready to launch
+UI_REVIEW_COMPLETE 224 checks / 0 errors / 945 frames

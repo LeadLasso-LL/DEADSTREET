@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+Movie Maker mode enabled, recording movie in 1152×648 @ 30 FPS...
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/freight_clarity_20260915/showcase.gd:30)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.8000001907349, 0.0) segment=0 into=11.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+SCRIPT ERROR: Invalid access to property or key 'stage' on a base object of type 'previously freed'.
+   at: run (res://tools/freight_clarity_20260915/showcase.gd:52)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tools/freight_clarity_20260915/showcase.gd:52)

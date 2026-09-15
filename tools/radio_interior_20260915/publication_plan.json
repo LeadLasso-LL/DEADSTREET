@@ -1,0 +1,42 @@
+{
+  "head": "070469580f055e3352fae8eabaf2425fb171c40f",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "origin": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "owned": [
+    "gameplay/tactical_radio_filter.gd",
+    "gameplay/tactical_convoy_audio.gd",
+    "tools/radio_interior_20260915/README.md",
+    "tools/radio_interior_20260915/analyze.py",
+    "tools/radio_interior_20260915/check_native.gd",
+    "tools/radio_interior_20260915/before_tactical_convoy_audio.gd",
+    "tools/radio_interior_20260915/filter_probe.wav",
+    "tools/radio_interior_20260915/protected_hashes.json",
+    "tools/radio_interior_20260915/source_hashes.json",
+    "tools/radio_interior_20260915/native_validation.json",
+    "tools/radio_interior_20260915/measured_response.json",
+    "tools/radio_interior_20260915/native.log",
+    "tools/radio_interior_20260915/runtime.patch",
+    "tools/radio_interior_20260915/owned_doc_deltas.json"
+  ],
+  "hashes": {
+    "gameplay/tactical_radio_filter.gd": "e0284d767321bcb26347ada8c398e314729e22b6b68d268a45a4ac5583485f34",
+    "gameplay/tactical_convoy_audio.gd": "6811bead2d0e4d125ead503f2f72978f11f1d52d2f8be004667248cd1f319460",
+    "tools/radio_interior_20260915/README.md": "8743cd3dce5bcba231ab3c6ccf99a13810dfcc10ab14d40dd0624e0b86ce69ed",
+    "tools/radio_interior_20260915/analyze.py": "9fc76d3766430745e9123cb81872242de50f398f57eac9faf11db0c6a93aa72e",
+    "tools/radio_interior_20260915/check_native.gd": "c267f15584affa76d9ac3f053eaf6751127e09be9990453840693676ac684ce4",
+    "tools/radio_interior_20260915/before_tactical_convoy_audio.gd": "107fad372c75d4c26adf90e2d7613bbc8d4a8703ebc3baf7f56c138471d2007b",
+    "tools/radio_interior_20260915/filter_probe.wav": "c6eb347dca8589be9b5991c7d531d8274021566a0a849f9c941ee593b2564a28",
+    "tools/radio_interior_20260915/protected_hashes.json": "8a98f2892fb15c94095660ae8e4b1c1a62228c1a692e3b74218a2c25b543c29e",
+    "tools/radio_interior_20260915/source_hashes.json": "baf369cc73c71c53aa345e8d1196db53d3ada6c22dec47f78c1bb9652a09b48c",
+    "tools/radio_interior_20260915/native_validation.json": "2be6dd4ed4a596fa0b089ec95fd12d2b0b284764f0ec0cf68e62fa77aed443d6",
+    "tools/radio_interior_20260915/measured_response.json": "eeccce73e0cacfa71133125c8058ab7d860b0418d72e246e1a6dc809a608df87",
+    "tools/radio_interior_20260915/native.log": "96f33811be772e46be4557db118c7eb40ab2a6d04f63ce0029a0004f76cb372e",
+    "tools/radio_interior_20260915/runtime.patch": "c4ebb33f8c6323bb629c9982a0dc562350437d589e70c3ae5023bee93e20fdce",
+    "tools/radio_interior_20260915/owned_doc_deltas.json": "52b68f85225f0ee4658122fe3c7cb5448d467b5e20dbea55a54068ad28ff93c3"
+  },
+  "docs": [
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md"
+  ]
+}

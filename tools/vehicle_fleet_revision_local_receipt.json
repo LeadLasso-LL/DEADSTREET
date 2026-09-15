@@ -1,0 +1,11 @@
+{
+  "commit": "db92794c98981b4a12c45c4863c84480cfb7c1a7",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "pushed": false,
+  "reason": "Automatic approval review requires destination confirmation from the user",
+  "model_checks": 2876,
+  "mixed_checks": 43,
+  "native_scenarios": 4,
+  "models": 46,
+  "sprites": 944
+}

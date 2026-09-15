@@ -1,0 +1,77 @@
+diff --git a/gameplay/tactical_battle_view.gd b/gameplay/tactical_battle_view.gd
+index 35c0bce..28da12c 100644
+--- a/gameplay/tactical_battle_view.gd
++++ b/gameplay/tactical_battle_view.gd
+@@ -241,6 +241,7 @@ var _deployment_cache_valid: bool = false
+ var _surface_cache_valid: bool = false
+ var static_layer: TacticalStaticBattlefieldLayer = null
+ var dynamic_layer: TacticalDynamicBattlefieldLayer = null
++var selection_range_layer: Node2D = null
+ var static_surface_root: Node2D = null
+ var static_building_root: Node2D = null
+ var static_composite_root: Node2D = null
+@@ -556,6 +557,12 @@ func _ensure_layers() -> void:
+ 		static_composite_root.name = "StaticCompositeRoot"
+ 		static_composite_root.z_index = 0
+ 		add_child(static_composite_root)
++	if selection_range_layer == null:
++		selection_range_layer = preload("res://gameplay/tactical_selection_range.gd").new()
++		selection_range_layer.name = "SelectedUnitRange"
++		selection_range_layer.host = self
++		selection_range_layer.z_index = 0
++		add_child(selection_range_layer)
+ 	if static_building_root == null:
+ 		static_building_root = Node2D.new()
+ 		static_building_root.name = "StaticBuildingRoot"
+@@ -617,6 +624,7 @@ func _order_presentation_roots() -> void:
+ 		static_surface_root,
+ 		static_layer,
+ 		static_composite_root,
++		selection_range_layer,
+ 		static_building_root,
+ 		static_detail_root,
+ 		static_asset_root,
+diff --git a/gameplay/tactical_orders_controller.gd b/gameplay/tactical_orders_controller.gd
+index bea049a..c0bc61c 100644
+--- a/gameplay/tactical_orders_controller.gd
++++ b/gameplay/tactical_orders_controller.gd
+@@ -31,6 +31,7 @@ const ORDER_COVER := "cover"
+ var session: CampaignBattleSession = null
+ var selected_participant_id: String = ""
+ var selected_participant_ids: Array[String] = []
++var selection_is_all: bool = false # Presentation only; never changes orders.
+ var pending_command_id: String = ""
+ var feedback: String = "Select units to give orders"
+ var line_x: float = 0.0
+@@ -61,6 +62,7 @@ func sync_from_authority() -> void:
+ 
+ 
+ func clear_selection() -> void:
++	selection_is_all = false
+ 	selected_participant_id = ""
+ 	selected_participant_ids.clear()
+ 	pending_command_id = ""
+@@ -72,6 +74,7 @@ func select_participant(participant_id: String, additive: bool = false) -> bool:
+ 	sync_from_authority()
+ 	if not can_control_participant(participant_id):
+ 		return false
++	selection_is_all = false
+ 	if not additive:
+ 		selected_participant_ids.clear()
+ 	if additive and participant_id in selected_participant_ids:
+@@ -94,6 +97,7 @@ func select_class(weapon_type: String = "", additive: bool = false) -> void:
+ 	var b = _battle_state()
+ 	if b == null:
+ 		return
++	selection_is_all = weapon_type.is_empty()
+ 	var ids = b.participants.keys()
+ 	ids.sort()
+ 	for id in ids:
+@@ -712,6 +716,7 @@ func handle_input(view: Node, event: InputEvent) -> bool:
+ 
+ 
+ func select_box(view: Node, rect: Rect2, additive: bool) -> void:
++	selection_is_all = false
+ 	if not additive:
+ 		clear_selection()
+ 	var b = _battle_state()

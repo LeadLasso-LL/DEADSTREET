@@ -1,0 +1,20 @@
+[
+  "C:\\Users\\brand\\OneDrive\\Documents\\Godot\\Godot_v4.7.2-stable_win64.exe",
+  "--path",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street",
+  "--resolution",
+  "1280x720",
+  "--position",
+  "0,0",
+  "--fixed-fps",
+  "30",
+  "--disable-vsync",
+  "--write-movie",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\freight_revision_20260915\\eastex_battle_raw.avi",
+  "--log-file",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\freight_revision_20260915\\capture_godot.log",
+  "--script",
+  "res://tools/freight_revision_20260915/showcase.gd",
+  "--",
+  "--record"
+]

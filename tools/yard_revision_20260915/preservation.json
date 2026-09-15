@@ -1,0 +1,15 @@
+{
+  "head": "9604323afae49ee63915b378048cfac9940f1f66",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "index": "",
+  "production_baseline_count": 248,
+  "changed_by_revision": [
+    "battle\\geometry\\doble_ocho_catalog.gd",
+    "gameplay\\doble_ocho_art.gd",
+    "gameplay\\doble_ocho_setup.gd",
+    "gameplay\\tactical_convoy_audio.gd"
+  ],
+  "unexpected_changes": [],
+  "capture_source_count": 251,
+  "changed_since_capture": []
+}

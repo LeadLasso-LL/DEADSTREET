@@ -1,0 +1,62 @@
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+raiders_probe 0 box_attacker_unit_08 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__left
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__rear
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__right
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+PACE {"events":0,"nbpd":12,"raiders":12,"time":0.0333333333333333}
+PACE {"events":0,"nbpd":12,"raiders":12,"time":10.0333333333333}
+PACE {"events":0,"nbpd":12,"raiders":12,"time":20.0333333333335}
+PACE {"events":20,"nbpd":11,"raiders":12,"time":30.033333333334}
+PACE {"events":125,"nbpd":8,"raiders":8,"time":40.0333333333336}
+PACE {"events":176,"nbpd":6,"raiders":5,"time":50.0333333333331}
+PACE {"events":196,"nbpd":6,"raiders":3,"time":60.0333333333325}
+PACE {"events":211,"nbpd":4,"raiders":2,"time":70.0333333333319}
+PACE {"events":228,"nbpd":2,"raiders":1,"time":80.0333333333314}
+PACE {"events":233,"nbpd":1,"raiders":1,"time":90.0333333333308}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":100.03333333333}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":110.03333333333}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":120.033333333329}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":130.033333333329}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":140.033333333328}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":150.033333333327}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":160.033333333327}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":170.033333333326}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":180.033333333326}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":190.033333333325}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":200.033333333325}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":210.033333333324}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":220.033333333323}
+PACE {"events":235,"nbpd":1,"raiders":1,"time":230.033333333323}
+PROBE {"commands":[{"accepted":["sandbox_attacker_unit_01","sandbox_attacker_unit_02","sandbox_attacker_unit_03","sandbox_attacker_unit_04","sandbox_attacker_unit_05","sandbox_attacker_unit_06","sandbox_attacker_unit_07"],"command":"push","failed":[],"line":59.570225579398,"reason":"Advance assault element through cover to establish contact","time":3.06666666666667},{"accepted":["sandbox_attacker_unit_01","sandbox_attacker_unit_02","sandbox_attacker_unit_03","sandbox_attacker_unit_04","sandbox_attacker_unit_05"],"command":"push","failed":["sandbox_attacker_unit_06","sandbox_attacker_unit_07"],"line":109.677936008998,"reason":"Advance assault element through cover to establish contact","time":21.2666666666669},{"command":"hold","feedback":{"accepted":3,"command":"hold","failed":0},"ids":["sandbox_attacker_unit_08","sandbox_attacker_unit_09","sandbox_attacker_unit_12"],"reason":"Firing support has established covered overwatch","time":30.2000000000007},{"command":"clear","feedback":{"accepted":1,"command":"clear","failed":0},"ids":["sandbox_attacker_unit_08"],"reason":"Overwatch has lost contact; allow support to reposition","time":44.4}],"duration":239.999999999989,"phase":"active","seed":9141,"snapshots":[{"events":0,"nbpd":12,"raiders":12,"time":0.0333333333333333},{"events":0,"nbpd":12,"raiders":12,"time":10.0333333333333},{"events":0,"nbpd":12,"raiders":12,"time":20.0333333333335},{"events":20,"nbpd":11,"raiders":12,"time":30.033333333334},{"events":125,"nbpd":8,"raiders":8,"time":40.0333333333336},{"events":176,"nbpd":6,"raiders":5,"time":50.0333333333331},{"events":196,"nbpd":6,"raiders":3,"time":60.0333333333325},{"events":211,"nbpd":4,"raiders":2,"time":70.0333333333319},{"events":228,"nbpd":2,"raiders":1,"time":80.0333333333314},{"events":233,"nbpd":1,"raiders":1,"time":90.0333333333308},{"events":235,"nbpd":1,"raiders":1,"time":100.03333333333},{"events":235,"nbpd":1,"raiders":1,"time":110.03333333333},{"events":235,"nbpd":1,"raiders":1,"time":120.033333333329},{"events":235,"nbpd":1,"raiders":1,"time":130.033333333329},{"events":235,"nbpd":1,"raiders":1,"time":140.033333333328},{"events":235,"nbpd":1,"raiders":1,"time":150.033333333327},{"events":235,"nbpd":1,"raiders":1,"time":160.033333333327},{"events":235,"nbpd":1,"raiders":1,"time":170.033333333326},{"events":235,"nbpd":1,"raiders":1,"time":180.033333333326},{"events":235,"nbpd":1,"raiders":1,"time":190.033333333325},{"events":235,"nbpd":1,"raiders":1,"time":200.033333333325},{"events":235,"nbpd":1,"raiders":1,"time":210.033333333324},{"events":235,"nbpd":1,"raiders":1,"time":220.033333333323},{"events":235,"nbpd":1,"raiders":1,"time":230.033333333323}],"winner":""}
+
+convoy_native 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.80000019073486, 0.0) segment=0 into=9.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_03__door_0_north slot sandbox_transport_03__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_03__door_0_south slot sandbox_transport_03__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_03__door_1_north slot sandbox_transport_03__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_03__door_1_south slot sandbox_transport_03__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__left
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__rear
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__right
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+CONVOY_NATIVE {"captures":["arrival_40","arrival_64","arrival_73","arrival_92","arrival_120"],"checks":102,"errors":[]}
+
+REVISED_CHECKS_COMPLETE

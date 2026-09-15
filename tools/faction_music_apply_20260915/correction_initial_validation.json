@@ -1,0 +1,15 @@
+{
+  "21_distinct_assignments": true,
+  "attacker_30s_loop": true,
+  "attacker_correct_anchor": true,
+  "attacker_glock_audio": true,
+  "attacker_native_wrap": false,
+  "authorities_excluded": true,
+  "calle_ocho_glock": true,
+  "defender_30s_loop": true,
+  "defender_correct_anchor": true,
+  "defender_glock_audio": true,
+  "defender_native_wrap": true,
+  "union_sur_audio_unchanged": true,
+  "union_sur_burn": true
+}

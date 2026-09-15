@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "factions": {
+    "mercer": {
+      "kind": "Street gang",
+      "description": "A street gang rooted in Mercer Heights, led by Malcolm Rowe II, better known as Mac 11. Their territory lies beside Whittaker land. Across the neighborhood line, the Eastex 44’s are rivals—and that rivalry runs closer to home than most.",
+      "weapons": {
+        "pistol": "glock_17",
+        "smg": "mac10",
+        "shotgun": "moss500",
+        "rifle": "ak47",
+        "sniper": "sks"
+      }
+    },
+    "eastex": {
+      "kind": "Street gang",
+      "description": "Based around 44th Street in Eastex, the 44’s answer to Andre “Dre Holly” Hollis. Their streets border McAllister holdings. The Mercer Saints are close neighbors and bitter rivals, with ties between the two leaders that territory alone cannot explain.",
+      "weapons": {
+        "pistol": "m1911",
+        "smg": "uzi",
+        "shotgun": "rem870",
+        "rifle": "mini14",
+        "sniper": "rem700"
+      }
+    },
+    "calle_ocho": {
+      "kind": "Street gang",
+      "description": "A homegrown Mexican-American street gang whose members are known as the Crazy 8’s. Vicente “Chente” Garza leads them on New Briarport’s south side, where sharing ground with Sierra Roja makes every local relationship matter.",
+      "weapons": {
+        "pistol": "cz75",
+        "smg": "mac10",
+        "shotgun": "moss500",
+        "rifle": "ak47",
+        "sniper": "sks"
+      }
+    },
+    "ventresca": {
+      "kind": "Italian mafia",
+      "description": "An established Italian mafia family led by Don Silvio Ventresca. Its long rivalry with the Ravicci Family cuts through New Briarport’s Italian underworld; a shared heritage does little to settle competing claims to power.",
+      "weapons": {
+        "pistol": "m1911",
+        "smg": "mp5k",
+        "shotgun": "spas12",
+        "rifle": "mini14",
+        "sniper": "ssg69"
+      }
+    },
+    "ravicci": {
+      "kind": "Italian mafia",
+      "description": "Led by Don Aurelio Ravicci, the Ravicci Family is New Briarport’s most powerful criminal organization. Its rivalry with the Ventrescas is one of the city’s defining underworld divisions.",
+      "weapons": {
+        "pistol": "usp",
+        "smg": "mp5",
+        "shotgun": "benelli_m4",
+        "rifle": "aug",
+        "sniper": "psg1"
+      }
+    },
+    "orlov": {
+      "kind": "Russian mafia",
+      "description": "A Russian mafia organization operating in New Briarport under Konstantin Orlov. The Bratva has connections to the independent Kurgan mercenaries, though a connection is not the same as unquestioning loyalty.",
+      "weapons": {
+        "pistol": "cz75",
+        "smg": "uzi",
+        "shotgun": "saiga12",
+        "rifle": "ak47",
+        "sniper": "svd"
+      }
+    },
+    "zangyaku": {
+      "kind": "Japanese yakuza",
+      "description": "A Japanese yakuza faction led by Shinzo Arakawa. Zangyaku and the Chinese Bìtiān triad are rivals within New Briarport’s criminal underworld.",
+      "weapons": {
+        "pistol": "usp",
+        "smg": "mp5k",
+        "shotgun": "benelli_m2",
+        "rifle": "g36c",
+        "sniper": "ssg69"
+      }
+    },
+    "bitian": {
+      "kind": "Chinese triad",
+      "description": "A Chinese triad operating in New Briarport under Han Zhengkun. Its rivalry with Zangyaku puts the two organizations on opposite sides of a tense divide.",
+      "weapons": {
+        "pistol": "cz75",
+        "smg": "uzi",
+        "shotgun": "spas12",
+        "rifle": "ak47",
+        "sniper": "sks"
+      }
+    },
+    "stateline": {
+      "kind": "Outlaw motorcycle club",
+      "description": "An outlaw motorcycle club led by Oliver “Ollie” Rourke. The Stateline Raiders operate in New Briarport, where the roads connect them to a wider world of clubs, suppliers and competing interests.",
+      "weapons": {
+        "pistol": "m1911",
+        "smg": "mac10",
+        "shotgun": "rem870",
+        "rifle": "mini14",
+        "sniper": "rem700"
+      }
+    },
+    "sierra_roja": {
+      "kind": "Mexican cartel",
+      "description": "The local operation of a Mexican cartel, led by “El Mudo” Murrieta. Sierra Roja shares New Briarport’s south side with Calle Ocho, bringing an outside cartel’s interests into the same streets as a homegrown gang.",
+      "weapons": {
+        "pistol": "desert_eagle",
+        "smg": "mp5",
+        "shotgun": "saiga12",
+        "rifle": "m4a1",
+        "sniper": "svd"
+      }
+    },
+    "whittaker": {
+      "kind": "Oil and land dynasty",
+      "description": "An old Texas oil-and-land dynasty led by Beaumont “Beau” Whittaker IV. Legitimate business, local sheriff networks and longstanding NBPD ties support the family’s influence. Its feud with McAllister Holdings spans generations.",
+      "weapons": {
+        "pistol": "m1911",
+        "smg": "uzi",
+        "shotgun": "rem870",
+        "rifle": "mini14",
+        "sniper": "rem700"
+      }
+    },
+    "mcallister": {
+      "kind": "Holding company",
+      "description": "Railroad wealth built moving Whittaker oil grew into a diversified holding company under Harlan McAllister III. The McAllisters are wealthier than their old Whittaker rivals and played a major role in the creation of the Texas Recovery Coalition.",
+      "weapons": {
+        "pistol": "usp",
+        "smg": "mp5",
+        "shotgun": "benelli_m2",
+        "rifle": "aug",
+        "sniper": "ssg69"
+      }
+    },
+    "trc": {
+      "kind": "Regional mercenary coalition",
+      "description": "A militant, well-funded regional mercenary coalition founded after the war and commanded by Everett Voss. Its McAllister connections place the TRC on one side of a family feud that also strains its relationship with the NBPD.",
+      "weapons": {
+        "pistol": "five_seven",
+        "smg": "p90",
+        "shotgun": "benelli_m4",
+        "rifle": "scar_h",
+        "sniper": "awm"
+      }
+    },
+    "nbpd": {
+      "kind": "City police department",
+      "description": "New Briarport’s police department, led by Chief Douglas “Doug” Pritchard. Longstanding Whittaker ties run through local sheriff networks. Those connections complicate relations with the Texas Recovery Coalition.",
+      "weapons": {
+        "pistol": "glock_17",
+        "smg": "mp5",
+        "shotgun": "rem870",
+        "rifle": "m4a1",
+        "sniper": "psg1"
+      }
+    },
+    "mercer44": {
+      "kind": "Street coalition",
+      "description": "A broad street coalition with roots in New Briarport’s neighborhoods. Its colors represent an organization shaped by local loyalties and competing ambitions.",
+      "weapons": {
+        "pistol": "glock_17",
+        "smg": "mac10",
+        "shotgun": "moss500",
+        "rifle": "m4a1",
+        "sniper": "rem700"
+      },
+      "leader_display": "Undisclosed"
+    },
+    "wm_corp": {
+      "kind": "Industrial corporation",
+      "description": "A corporation spanning oil, land and railroad interests, led by Eleanor “Nelly” Whittaker. Its name carries the weight of two of the region’s most influential business dynasties.",
+      "weapons": {
+        "pistol": "usp",
+        "smg": "uzi",
+        "shotgun": "benelli_m2",
+        "rifle": "scar_h",
+        "sniper": "rem700"
+      }
+    },
+    "union_sur": {
+      "kind": "Criminal organization",
+      "description": "A south-side criminal organization rooted in New Briarport’s Mexican and Mexican-American underworld. Its influence reaches across the streets and networks that connect the district.",
+      "weapons": {
+        "pistol": "five_seven",
+        "smg": "uzi",
+        "shotgun": "saiga12",
+        "rifle": "ak47",
+        "sniper": "svd"
+      },
+      "leader_display": "Undisclosed"
+    },
+    "lombardia": {
+      "kind": "Italian mafia",
+      "description": "An Italian mafia organization known as the Order of Lombardy. It draws on New Briarport’s established Italian underworld and the family loyalties within it.",
+      "weapons": {
+        "pistol": "cz75",
+        "smg": "mp5k",
+        "shotgun": "benelli_m4",
+        "rifle": "g36c",
+        "sniper": "psg1"
+      },
+      "leader_display": "Undisclosed"
+    },
+    "sand_raiders": {
+      "kind": "Desert raiders",
+      "description": "Marauders from the western desert, led by Coyote. They pillage, burn and gather followers along the way. Poor equipment does little to soften the danger of their numbers.",
+      "weapons": {
+        "pistol": "m1911",
+        "smg": "mac10",
+        "shotgun": "moss500",
+        "rifle": "ak47",
+        "sniper": "sks"
+      }
+    },
+    "saffar": {
+      "kind": "Trading group",
+      "description": "A foreign trading group headed by Farid al-Saffar, doing business along New Briarport’s waterfront. Low prices make its goods difficult to ignore. The organization keeps much of its wider business out of sight.",
+      "weapons": {
+        "pistol": "cz75",
+        "smg": "mp5",
+        "shotgun": "spas12",
+        "rifle": "ak47",
+        "sniper": "svd"
+      }
+    },
+    "kurgan": {
+      "kind": "Independent mercenaries",
+      "description": "Independent Russian mercenaries led by Colonel Pavel Antonov. The Kurgan Group has ties to Orlov Bratva but pursues its own interests; shared enemies do not erase those differences.",
+      "weapons": {
+        "pistol": "cz75",
+        "smg": "mp5k",
+        "shotgun": "saiga12",
+        "rifle": "ak47",
+        "sniper": "svd"
+      }
+    },
+    "ashford_crane": {
+      "kind": "Criminal collective",
+      "description": "An elusive collective of thieves led by Julian Ashford-Crane. Masks and secrecy surround the organization, leaving outsiders with little certainty about who is behind its work.",
+      "weapons": {
+        "pistol": "glock_17",
+        "smg": "mp5k",
+        "shotgun": "benelli_m2",
+        "rifle": "g36c",
+        "sniper": "ssg69"
+      }
+    },
+    "blacktop": {
+      "kind": "Outlaw motorcycle club",
+      "description": "An outlaw motorcycle club led by Wade “Wrath” McGrath. The Apostles supply harder drugs that are scarce in New Briarport, putting their business close to the Stateline Raiders’ world.",
+      "weapons": {
+        "pistol": "desert_eagle",
+        "smg": "vector",
+        "shotgun": "spas12",
+        "rifle": "m4a1",
+        "sniper": "rem700"
+      }
+    }
+  }
+}

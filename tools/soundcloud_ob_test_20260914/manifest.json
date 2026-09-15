@@ -1,0 +1,21 @@
+{
+  "title": "Bond",
+  "source_title": "Bond",
+  "artist": "OB",
+  "source_artist": "OB",
+  "source_url": "https://on.soundcloud.com/7xSTXKeQvsfhgntLOU",
+  "canonical_url": "https://soundcloud.com/colinobriennn/bond",
+  "track_id": 408242721,
+  "duration_ms": 139662,
+  "downloadable": false,
+  "method": "page-provided full progressive playback",
+  "settings_changed": false,
+  "playlist_installed": false,
+  "faction_assigned": false,
+  "source_format": "mp3_0_0",
+  "bytes": 2234408,
+  "sha256": "b2e7a8f318a5c64083ad1ff3b9723b42f987638ba12c633b165e0b930f783634",
+  "file": "OB_Bond.mp3",
+  "verified_decode": true,
+  "decoded_seconds": 139.59836734693877
+}

@@ -1,0 +1,5 @@
+file 'C:/Users/brand/OneDrive/Documents/dead-street/tools/menu_title_20260914/native/media_work/startup_gloria.mkv'
+file 'C:/Users/brand/OneDrive/Documents/dead-street/tools/menu_title_20260914/native/media_work/startup_godot.mkv'
+file 'C:/Users/brand/OneDrive/Documents/dead-street/tools/menu_title_20260914/native/media_work/warning_slow.mkv'
+file 'C:/Users/brand/OneDrive/Documents/dead-street/tools/menu_title_20260914/native/media_work/black_hold.mkv'
+file 'C:/Users/brand/OneDrive/Documents/dead-street/tools/menu_title_20260914/native/media_work/title_motion.mkv'

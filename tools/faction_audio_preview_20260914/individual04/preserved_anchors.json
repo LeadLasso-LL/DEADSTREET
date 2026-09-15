@@ -1,0 +1,44 @@
+[
+  {
+    "id": "eastex",
+    "format": "mp3",
+    "sha256": "6415f88bd8ae0b4f4406404a55b6fd050dbf7a4c1ac4dddbba002068b056d04e",
+    "source": "contrast03/previews/01_eastex_c3.mp3",
+    "copy": "01_eastex_i4.mp3"
+  },
+  {
+    "id": "eastex",
+    "format": "wav",
+    "sha256": "96ebe92c5803a7199a37541190019d678c9102c5107a505b19a0a030ad5d0ed6",
+    "source": "contrast03/previews/01_eastex_c3.wav",
+    "copy": "01_eastex_i4.wav"
+  },
+  {
+    "id": "ravicci",
+    "format": "mp3",
+    "sha256": "e93b5172aba65d27e7bbb815dc11597dce0804ea679fdb1098aecb2d9011b673",
+    "source": "contrast03/previews/02_ravicci_c3.mp3",
+    "copy": "04_ravicci_i4.mp3"
+  },
+  {
+    "id": "ravicci",
+    "format": "wav",
+    "sha256": "721de679c8b2dbecaef6deca820e93120857fe51ad3923c3e3a9ee9a3bdc74c9",
+    "source": "contrast03/previews/02_ravicci_c3.wav",
+    "copy": "04_ravicci_i4.wav"
+  },
+  {
+    "id": "blacktop",
+    "format": "mp3",
+    "sha256": "432a2e16504ffb3ae3ca57dea9a3ca4f659789901de9c8773ed6589e3f32d0e1",
+    "source": "contrast03/previews/03_blacktop_c3.mp3",
+    "copy": "18_blacktop_i4.mp3"
+  },
+  {
+    "id": "blacktop",
+    "format": "wav",
+    "sha256": "016fb0ddd2b915871c9add59dcdffb04abe16f63f8013eac004780f29e720618",
+    "source": "contrast03/previews/03_blacktop_c3.wav",
+    "copy": "18_blacktop_i4.wav"
+  }
+]

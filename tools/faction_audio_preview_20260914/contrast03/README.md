@@ -1,0 +1,9 @@
+# DEAD STREET — Three independent contrast tests
+
+Status: CONCRETE REVIEW CHECKPOINT; NOT APPROVED OR INSTALLED. Owner says rebuild02 sounds like the same melody/sequence across factions. Source inspection agrees: common four-bar root/root/down-two/up-one bass sequence, repeated timings and similar drum/lead motifs. Different event-array hashes did not establish different music; the assistant overstated that distinction.
+
+Three independent scores now test the corrective method before another 18-track batch: Eastex is a fully written 24-beat rap rhythm, gliding 808 and chopped chord texture; Ravicci is through-composed piano/cello/strings without drums or sub/synth bass; Blacktop is a 24-beat physical-guitar doom phrase, picked bass and a separate kit arrangement. No common musical backing function, bass sequence or drum pattern. Rendering/mastering infrastructure shared only. Tempos retain 64/72/54.4 BPM from owner-directed reduction.
+
+compose_contrasts.py plus engine.py reproduce the samples with the existing verified GeneralUser instrument bank in ../dependencies. Blacktop guitars use original physical string synthesis and amplification; other sampled instrument provenance/license unchanged. Python, numpy/scipy/tinysoundfont and FFmpeg/Pillow dependencies as in the parent README. package_review.py generates reel/player. Exact scores, hashes and export validation are in manifest.json and validation.json. No independent auditory/genre-quality approval or browser interaction testing claimed.
+
+No runtime edits, no Git operations, no automatic-review push retry. Other staged and uncommitted work preserved. Earlier sets remain rejected/unaccepted references. This is three prototypes, not completion of the 18-faction revision. Next: owner hears whether these are musically distinct and aligned with DEAD STREET; refine as needed, then use individually authored approaches for remaining 15. Do not extrapolate sound approval from technical checks.

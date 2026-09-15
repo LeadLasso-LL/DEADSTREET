@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=debug_hq_assault
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 3 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: deployed player_arsenal_sniper to cover cover_north_car_4 slot cover_north_car_4_3
+TacticalDeploymentController: deployed player_soldier to cover cover_north_car_5 slot cover_north_car_5_1
+TacticalDeploymentController: deployed player_soldier_shotgun to cover cover_north_car_5 slot cover_north_car_5_2
+TacticalDeploymentController: deployed player_soldier_smg to cover cover_north_car_5 slot cover_north_car_5_3
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+FLEET_MODEL_TEST revenant
+GameplayRuntime: mode=campaign pending=debug_hq_assault
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_arsenal_shotgun to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed player_arsenal_sniper to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed player_soldier to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: deployed player_soldier_shotgun to cover sandbox_transport_00__door_1_south slot sandbox_transport_00__door_1_south_cover
+TacticalDeploymentController: deployed player_soldier_smg to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+FLEET_MODEL_TEST nocturne
+FLEET_VALIDATION checks=253 errors=[]

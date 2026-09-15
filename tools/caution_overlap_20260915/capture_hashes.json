@@ -1,0 +1,9 @@
+{
+  "gameplay/sandbox_opening.gd": "671bef61edc112a0e54d348d160d6b809c9fd6fd412872b7bf46f139b6455dcf",
+  "gameplay/sandbox_caution.gd": "8293f855b878eb06ef7c7febfc235c235371772a9f134fdd00e67d13dd36cf57",
+  "assets/menu/opening/startup.ogv": "57e45265cfa97531d6be9a9ed0c926a70f189248505ab8d6e5c0b43aa12317b6",
+  "assets/menu/opening/caution_clean.png": "60cdc5a14b668be7276abc93d6753f39b37063d23ff7893971194e0cfbb7cef2",
+  "assets/menu/opening/montage.ogv": "44e9a1e5f3d2581c90033f68fbb01281a984b483bc3a2dca64db954f1a2d63f5",
+  "assets/menu/opening/approved_title.png": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+  "gameplay/sandbox_menu_music.gd": "dfbf43f54bfb7229e3e2d31bf70c699967fe69d4e30ef33805797e9359ee7257"
+}

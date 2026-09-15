@@ -1,0 +1,25 @@
+{
+	"errors": [],
+	"runs": [
+		{
+			"bikes": 0,
+			"overlaps": [],
+			"pair_samples": 331
+		},
+		{
+			"bikes": 2,
+			"overlaps": [],
+			"pair_samples": 1986
+		},
+		{
+			"bikes": 4,
+			"overlaps": [],
+			"pair_samples": 4965
+		},
+		{
+			"bikes": 12,
+			"overlaps": [],
+			"pair_samples": 21846
+		}
+	]
+}

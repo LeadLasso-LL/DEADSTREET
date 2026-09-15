@@ -1,0 +1,79 @@
+audio_revision 0 [{"file": "whittaker_radio.wav", "seconds": 18.113197278911564, "sha256": "ecab6c19d8963852ec7a99b85a273562172585d64cb66daeb586830afb2fa12b", "peak": 0.75, "rms": 0.09888422095846848}, {"file": "trc_horn.wav", "seconds": 12.0, "sha256": "5c76957e97648cf98e79cad9132aa81640ac76fee0061dd54b681242f0e37d5d", "peak": 0.75, "rms": 0.33282414030754276}]
+
+revision_pack1 0 pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+
+estate_bake 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+ESTATE_GROUND_BAKED 0 3072x1536
+
+estate_bake_props 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+ESTATE_PROP_PLATES 47
+
+revision_pack2 0 pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+
+revision_geometry 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+ESTATE_GEOMETRY {"cover_slots":204,"errors":[],"placed_units":32,"route_checks":[{"error":"","reachable":true,"route":"main gate"},{"error":"","reachable":true,"route":"approach to court"},{"error":"","reachable":true,"route":"north garden"},{"error":"","reachable":true,"route":"south service"},{"error":"","reachable":true,"route":"front steps"}]}
+
+revision_preview 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+ESTATE_PREVIEW 32 units / route errors []
+
+revision_probe 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+PACE {"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16}
+PACE {"events":134,"time":10.0333333333333,"trc":9,"whittaker":13}
+PACE {"events":192,"time":20.0333333333335,"trc":4,"whittaker":10}
+PACE {"events":226,"time":30.033333333334,"trc":3,"whittaker":7}
+PACE {"events":240,"time":40.0333333333336,"trc":0,"whittaker":7}
+PROBE {"commands":[{"command":"hold","feedback":{"accepted":2,"command":"hold","failed":0},"ids":["sandbox_attacker_unit_09","sandbox_attacker_unit_10"],"reason":"Firing support has established covered overwatch","time":8.09999999999998},{"event":"defender_counterattack","reason":"TRC assault has lost half its effective strength","result":{"accepted":["sandbox_defender_unit_03","sandbox_defender_unit_05","sandbox_defender_unit_06","sandbox_defender_unit_07","sandbox_defender_unit_08","sandbox_defender_unit_09","sandbox_defender_unit_10","sandbox_defender_unit_11","sandbox_defender_unit_12","sandbox_defender_unit_13","sandbox_defender_unit_14","sandbox_defender_unit_15","sandbox_defender_unit_16"],"failed":[]},"time":12.1666666666666}],"duration":41.4000000000002,"phase":"resolved","seed":9146,"snapshots":[{"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16},{"events":134,"time":10.0333333333333,"trc":9,"whittaker":13},{"events":192,"time":20.0333333333335,"trc":4,"whittaker":10},{"events":226,"time":30.033333333334,"trc":3,"whittaker":7},{"events":240,"time":40.0333333333336,"trc":0,"whittaker":7}],"survivor_positions":[{"anchor":"(70.05, 29.85)","at":"(59.0, 42.15)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_03","nav":"","order":"","slot":"cover_gatehouse_0","target":"sandbox_attacker_unit_10"},{"anchor":"(124.29, 46.0)","at":"(60.65, 61.9)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_08","nav":"","order":"","slot":"cover_sandbags_58_59_3","target":"sandbox_attacker_unit_10"},{"anchor":"(81.85, 37.9)","at":"(67.6, 29.15)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_09","nav":"","order":"","slot":"cover_garden_crates_0","target":"sandbox_attacker_unit_10"},{"anchor":"(106.85, 34.9)","at":"(70.05, 29.85)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_10","nav":"","order":"","slot":"cover_garden_crates_3","target":"sandbox_attacker_unit_10"},{"anchor":"(128.65, 79.75)","at":"(71.666, 78.696)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_12","nav":"","order":"","slot":"estate_defender_vehicle_01__door_1_south_cover","target":"sandbox_attacker_unit_10"},{"anchor":"(127.85, 40.9)","at":"(78.0, 36.1)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_13","nav":"","order":"","slot":"cover_planter_70_37_6","target":"sandbox_attacker_unit_10"},{"anchor":"(128.85, 86.85)","at":"(78.25, 88.85)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_16","nav":"","order":"","slot":"cover_service_crates_3","target":"sandbox_attacker_unit_10"}],"winner":"defender"}
+
+revision_native 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+ESTATE_NATIVE {"average_fps":55.527872269925,"frames":612,"frames_over_16_67ms":531,"initial_units":32,"native_render":true,"p95_frame_ms":20.3703703703704,"resolution":[1920,1080],"route_errors":[],"seconds":12.0176456435077}
+
+VISUAL_REVISION_READY

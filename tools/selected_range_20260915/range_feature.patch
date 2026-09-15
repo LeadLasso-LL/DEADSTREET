@@ -1,0 +1,33 @@
+diff --git a/gameplay/tactical_battle_view.gd b/gameplay/tactical_battle_view.gd
+index 35c0bce..28da12c 100644
+--- a/gameplay/tactical_battle_view.gd
++++ b/gameplay/tactical_battle_view.gd
+@@ -241,6 +241,7 @@ var _deployment_cache_valid: bool = false
+ var _surface_cache_valid: bool = false
+ var static_layer: TacticalStaticBattlefieldLayer = null
+ var dynamic_layer: TacticalDynamicBattlefieldLayer = null
++var selection_range_layer: Node2D = null
+ var static_surface_root: Node2D = null
+ var static_building_root: Node2D = null
+ var static_composite_root: Node2D = null
+@@ -556,6 +557,12 @@ func _ensure_layers() -> void:
+ 		static_composite_root.name = "StaticCompositeRoot"
+ 		static_composite_root.z_index = 0
+ 		add_child(static_composite_root)
++	if selection_range_layer == null:
++		selection_range_layer = preload("res://gameplay/tactical_selection_range.gd").new()
++		selection_range_layer.name = "SelectedUnitRange"
++		selection_range_layer.host = self
++		selection_range_layer.z_index = 0
++		add_child(selection_range_layer)
+ 	if static_building_root == null:
+ 		static_building_root = Node2D.new()
+ 		static_building_root.name = "StaticBuildingRoot"
+@@ -617,6 +624,7 @@ func _order_presentation_roots() -> void:
+ 		static_surface_root,
+ 		static_layer,
+ 		static_composite_root,
++		selection_range_layer,
+ 		static_building_root,
+ 		static_detail_root,
+ 		static_asset_root,

@@ -1,0 +1,239 @@
+{
+  "frames": 720,
+  "seconds": 24,
+  "size": [
+    1280,
+    720
+  ],
+  "maps": [
+    "bridge",
+    "doble",
+    "estate",
+    "freight",
+    "harold"
+  ],
+  "shots": [
+    [
+      "harold",
+      18.65,
+      48,
+      [
+        490,
+        140,
+        896,
+        504
+      ],
+      "Harold crossfire and shotgun casualty"
+    ],
+    [
+      "bridge",
+      34.4,
+      51,
+      [
+        325,
+        65,
+        640,
+        360
+      ],
+      "Bridge group crossfire"
+    ],
+    [
+      "doble",
+      21.0,
+      45,
+      [
+        608,
+        150,
+        576,
+        324
+      ],
+      "Doble Ocho gate casualty"
+    ],
+    [
+      "harold",
+      16.85,
+      51,
+      [
+        465,
+        145,
+        896,
+        504
+      ],
+      "Harold attackers and defenders exchanging fire"
+    ],
+    [
+      "estate",
+      7.5,
+      66,
+      [
+        300,
+        160,
+        640,
+        360
+      ],
+      "Whittaker moving convoy already in frame"
+    ],
+    [
+      "bridge",
+      51.3,
+      45,
+      [
+        520,
+        75,
+        576,
+        324
+      ],
+      "Bridge blockade firefight"
+    ],
+    [
+      "doble",
+      24.2,
+      51,
+      [
+        275,
+        70,
+        640,
+        360
+      ],
+      "Doble Ocho vehicle firefight and deaths"
+    ],
+    [
+      "harold",
+      31.65,
+      51,
+      [
+        465,
+        140,
+        896,
+        504
+      ],
+      "Harold return fire at the barricades"
+    ],
+    [
+      "freight",
+      54.35,
+      48,
+      [
+        1140,
+        150,
+        768,
+        432
+      ],
+      "Freight defenders fire as a fighter falls"
+    ],
+    [
+      "bridge",
+      54.3,
+      48,
+      [
+        470,
+        65,
+        640,
+        360
+      ],
+      "Bridge concentrated fire"
+    ],
+    [
+      "harold",
+      35.25,
+      54,
+      [
+        620,
+        205,
+        832,
+        468
+      ],
+      "Harold rifle casualty under fire"
+    ],
+    [
+      "doble",
+      17.9,
+      48,
+      [
+        235,
+        98,
+        576,
+        324
+      ],
+      "Doble Ocho western crossfire"
+    ],
+    [
+      "estate",
+      42.7,
+      48,
+      [
+        330,
+        175,
+        512,
+        288
+      ],
+      "Whittaker gate exchange"
+    ],
+    [
+      "harold",
+      33.0,
+      66,
+      [
+        580,
+        190,
+        832,
+        468
+      ],
+      "Harold point-blank exchange and Saint casualty"
+    ]
+  ],
+  "candidate_sha256": "f7b896b23d5de752a24982493f5f6f873d46866c65fd1d2d5ee21b1039ca91d8",
+  "source_hashes": {
+    "estate": "64a8b2cc27cd13bdb7b71b9cb17b9efba9404bdf16bf05dc9e7808b373d21210",
+    "bridge": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93",
+    "harold": "6232fa6663fcd165cb7dfefe885a5ac024c813edb00abc4ef79306b51636db0d",
+    "doble": "ec3fdff9efa7bae722f4abe833df58b72b99bc5367a864a140f621db3b3e38c6",
+    "freight": "45839ac0a2536cd77926c23edbac030b69bf89d9889ac67eb9332065fa43ecbd"
+  },
+  "preview": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\montage_action_final_20260915\\DEAD_STREET_Action_Montage_Final.mp4",
+  "bytes": 7126825,
+  "sha256": "631f3edaeb351c27a87f5fed2731c1cace261c2a7fa690b21397012fc5d030a1",
+  "parts": [
+    {
+      "name": "part_000.txt",
+      "bytes": 1000000,
+      "sha256": "cf8dd3a26d127fe36a6335dd02da2298c9f16260387374a9de1e461c2590449e"
+    },
+    {
+      "name": "part_001.txt",
+      "bytes": 1000000,
+      "sha256": "10a95ad90b0c7d786b47a1f797739eceac37c64217e85f8b037b7bd04e5fffcf"
+    },
+    {
+      "name": "part_002.txt",
+      "bytes": 1000000,
+      "sha256": "087cb94e9d3dc2c39447df0ff1616da70ce67845f38edd8c257c3d121ee1dadc"
+    },
+    {
+      "name": "part_003.txt",
+      "bytes": 1000000,
+      "sha256": "261221bee566f8d82eda8199ebdd6877aebb51c0d5e35b4b60b46a9257fe8774"
+    },
+    {
+      "name": "part_004.txt",
+      "bytes": 1000000,
+      "sha256": "dd607f6889445bd33ab2e6bb9c05ae014b28c4e360e5f694a33aa25c9cfadafb"
+    },
+    {
+      "name": "part_005.txt",
+      "bytes": 1000000,
+      "sha256": "0566e1d65325b9d3fc04c2478c1a7536cc9f6f60542c5c4d02b821c5d2e68826"
+    },
+    {
+      "name": "part_006.txt",
+      "bytes": 1000000,
+      "sha256": "f0229e70d2baf15e8675128c8cb24709e4c4515213f9e9c749bb64701cf0876f"
+    },
+    {
+      "name": "part_007.txt",
+      "bytes": 126825,
+      "sha256": "c90cde2a60e778726d52686a226157f34f950311896a6b6c5cddb2ae4f577776"
+    }
+  ],
+  "review_type": "Edited montage preview using exact candidate and existing native title/UI coordinates; not a full intro capture"
+}

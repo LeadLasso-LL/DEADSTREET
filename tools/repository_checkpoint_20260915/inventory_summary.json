@@ -1,0 +1,359 @@
+{
+  "head": "35e0db12aae4d114364c911a69ae2136de30ee4e",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "tracked_status": [
+    " M assets/art/harold_frontage/ground.png",
+    " M battle/ai/battle_vehicle_deployment_planner.gd",
+    " M battle/core/battle_victory_service.gd",
+    " M battle/geometry/harold_street_catalog.gd",
+    " M battle/presentation/tactical_participant_visual.gd",
+    " M battle/vehicles/battle_arrival_service.gd",
+    " M battle/vehicles/battle_vehicle_placement_context.gd",
+    " M campaign/vehicles/convoy_formation_catalog.gd",
+    " M docs/DEAD_STREET_HIVE_MIND.md",
+    " M docs/DEAD_STREET_JOURNAL.md",
+    " M docs/DEAD_STREET_PROJECT_CONTROL.md",
+    " M docs/HAROLD_AVE_IMPLEMENTATION.md",
+    " M docs/MAP_BUILDING_STANDARD.md",
+    " M docs/TACTICAL_CONTROLS_2026-09-13.md",
+    " M gameplay/arsenal_battle_fixture.gd",
+    " M gameplay/arsenal_review.gd",
+    " M gameplay/bridge_battle_setup.gd",
+    " M gameplay/estate_battle_setup.gd",
+    " M gameplay/harold_street_art.gd",
+    " M gameplay/sandbox_force_builder.gd",
+    " M gameplay/sandbox_force_config.gd",
+    " M gameplay/sandbox_menu_panels.gd",
+    " M gameplay/tactical_actor_presenter.gd",
+    " M gameplay/tactical_battle_outro.gd",
+    " M gameplay/tactical_battle_presentation.gd",
+    " M gameplay/tactical_battle_view.gd",
+    " M gameplay/tactical_camera_safety.gd",
+    " M gameplay/tactical_convoy_audio.gd",
+    " M gameplay/tactical_emblem_marker.gd",
+    " M gameplay/tactical_orders_controller.gd",
+    " M gameplay/vehicle_fleet_panel.gd",
+    " M tools/arsenal_production/Open-Arsenal.ps1",
+    " M tools/character_factory/README.md",
+    " M tools/character_factory/daz/dead_street_factory.dsa",
+    " M tools/character_factory/godot/character_factory_image_tool.gd",
+    " M tools/character_factory/invoke_character_factory.ps1",
+    " M tools/character_factory/provisional_baseline.json",
+    " M tools/dusk_review/bake_harold_frontage.gd",
+    " M tools/dusk_review/results/battle_01.png",
+    " M tools/dusk_review/results/battle_02.png",
+    " M tools/dusk_review/results/battle_05.png",
+    " M tools/dusk_review/results/battle_10.png",
+    " M tools/dusk_review/results/decisions_baseline.jsonl",
+    " M tools/dusk_review/results/runtime_report.json",
+    " M tools/dusk_review/results/unit_finish_0.png",
+    " M tools/dusk_review/results/unit_finish_1.png",
+    " M tools/faction_reassign_20260915/README.md",
+    " M tools/menu_additions_20260915/README.md",
+    " M tools/tactical_controls/checks.json",
+    " M tools/tactical_controls/checks.log",
+    " M tools/tactical_controls/line_checks.json",
+    " M tools/tactical_controls/line_command_cards.png",
+    " M tools/tactical_controls/line_commands_live.png",
+    " M tools/tactical_controls/line_fall_back_preview.png",
+    " M tools/tactical_controls/line_push_preview.png",
+    " M tools/unit_source_recovery/README_READABILITY.md",
+    " M tools/whittaker_estate/aftermath.png",
+    " M tools/whittaker_estate/arrival.png",
+    " M tools/whittaker_estate/combat_12.png",
+    " M tools/whittaker_estate/combat_30.png",
+    " M tools/whittaker_estate/geometry.json",
+    " M tools/whittaker_estate/probe.json",
+    " M tools/whittaker_estate/results.png",
+    " M tools/whittaker_estate/resume_20260914/checkpoint_receipt.json"
+  ],
+  "untracked_files": 743032,
+  "untracked_bytes": 309328254314,
+  "largest": [
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/whittaker_estate/width_scenery_20260914/prior_version4/estate_raw.avi",
+      "bytes": 525275898,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/whittaker_estate/estate_raw.avi",
+      "bytes": 524942054,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/freight_stability_20260915/capture_project/tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_stability_20260915/capture_project/tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/whittaker_estate/siren_cards_20260914/prior_version3/estate_raw.avi",
+      "bytes": 524004952,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/battle_finish/results/harold_4v4_raw.avi",
+      "bytes": 437687770,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/battle_finish/results/music_export/raw.avi",
+      "bytes": 437687770,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/battle_finish/results/harold_4v4_raw.avi",
+      "bytes": 437687770,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/battle_finish/results/music_export/raw.avi",
+      "bytes": 437687770,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/battle_finish/results/harold_4v4_raw.avi",
+      "bytes": 437687770,
+      "suffix": ".avi"
+    },
+    {
+      "path": "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/battle_finish/results/music_export/raw.avi",
+      "bytes": 437687770,
+      "suffix": ".avi"
+    }
+  ],
+  "groups": {
+    "tools/freight_clarity_20260915": {
+      "files": 350614,
+      "bytes": 145817084174
+    },
+    "tools/freight_stability_20260915": {
+      "files": 336813,
+      "bytes": 144388369644
+    },
+    "tools/caution_impacts_20260915": {
+      "files": 10152,
+      "bytes": 4422437377
+    },
+    "tools/caution_smooth_20260915": {
+      "files": 9091,
+      "bytes": 4238734452
+    },
+    "tools/caution_overlap_20260915": {
+      "files": 9090,
+      "bytes": 4234641374
+    },
+    "tools/whittaker_estate": {
+      "files": 290,
+      "bytes": 3735443961
+    },
+    "tools/yard_revision_20260915": {
+      "files": 125,
+      "bytes": 353714569
+    },
+    "tools/sandbox_glossaries_20260914": {
+      "files": 44,
+      "bytes": 326794139
+    },
+    "tools/freight_revision_20260915": {
+      "files": 72,
+      "bytes": 302674076
+    },
+    "tools/fourth_map_20260915": {
+      "files": 113,
+      "bytes": 302223262
+    },
+    "tools/sandbox_tutorial_20260914": {
+      "files": 41,
+      "bytes": 221897502
+    },
+    "tools/yard_finish_20260915": {
+      "files": 54,
+      "bytes": 186212259
+    },
+    "tools/menu_title_20260914": {
+      "files": 164,
+      "bytes": 104583532
+    },
+    "tools/montage_action_20260915": {
+      "files": 269,
+      "bytes": 99941317
+    },
+    "tools/montage_action_final_20260915": {
+      "files": 189,
+      "bytes": 82211521
+    },
+    "tools/portrait_audit_20260914": {
+      "files": 8465,
+      "bytes": 72889916
+    },
+    "tools/freight_exchange_20260915": {
+      "files": 53,
+      "bytes": 71861400
+    },
+    "tools/unit_source_recovery": {
+      "files": 4646,
+      "bytes": 71519488
+    },
+    "tools/weapon_card_refresh_20260915": {
+      "files": 6991,
+      "bytes": 48565156
+    },
+    "tools/soundtrack_batch_20260915": {
+      "files": 88,
+      "bytes": 41055629
+    },
+    "tools/raiders_recording": {
+      "files": 106,
+      "bytes": 38994318
+    },
+    "assets/menu": {
+      "files": 22,
+      "bytes": 24677606
+    },
+    "tools/bridge_perf": {
+      "files": 170,
+      "bytes": 18251584
+    },
+    "tools/pistol_portrait_20260914": {
+      "files": 1420,
+      "bytes": 14325656
+    },
+    "tools/dusk_review": {
+      "files": 205,
+      "bytes": 13512693
+    }
+  },
+  "lfs": "git-lfs/3.7.1 (GitHub; windows amd64; go 1.25.1; git b84b3384)",
+  "missing": [
+    "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/caution_impacts_20260915/capture_project/assets/art/units/factions/anchors/faction_ashford_crane_desert_eagle.json",
+    "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/caution_impacts_20260915/capture_project/assets/art/units/factions/blood_masks/faction_ashford_crane_benelli_m2.png",
+    "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/caution_impacts_20260915/capture_project/assets/art/units/factions/blood_masks/faction_ashford_crane_benelli_m4.png",
+    "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/caution_impacts_20260915/capture_project/assets/art/units/factions/blood_masks/faction_ashford_crane_desert_eagle.png",
+    "tools/freight_clarity_20260915/capture_project/tools/freight_clarity_20260915/capture_project/tools/caution_impacts_20260915/capture_project/assets/art/units/factions/blood_masks/faction_ashford_crane_five_seven.png"
+  ]
+}

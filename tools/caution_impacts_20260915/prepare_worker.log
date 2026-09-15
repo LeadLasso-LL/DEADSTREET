@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\caution_impacts_20260915\prepare.py", line 21, in <module>
+    assert 'frame=630' in decode.stdout,decode.stdout
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: frame=628
+fps=0.00
+stream_0_0_q=-0.0
+bitrate=N/A
+total_size=N/A
+out_time_us=20933333
+out_time_ms=20933333
+out_time=00:00:20.933333
+dup_frames=0
+drop_frames=0
+speed= 254x
+progress=end
+

@@ -4,6 +4,7 @@ const Authored=preload("res://battle/geometry/authored_battlefield_service.gd")
 const Vehicle=preload("res://battle/core/battle_vehicle.gd")
 const Placement=preload("res://battle/vehicles/battle_vehicle_placement_service.gd")
 const Body=preload("res://battle/vehicles/battle_vehicle_body_service.gd")
+const Formation=preload("res://campaign/vehicles/convoy_formation_catalog.gd")
 const Doors=preload("res://battle/vehicles/battle_arrival_service.gd")
 static func apply(b,config: Dictionary) -> Dictionary:
  var result=Authored.apply_definition(b,Catalog.build())
@@ -39,8 +40,14 @@ static func apply(b,config: Dictionary) -> Dictionary:
    if grouped:
     var slot=int(v.get_meta("convoy_slot",0));var member=int(v.get_meta("convoy_member",0));var n=int(v.get_meta("convoy_group_size",1))
     var x=35.-slot*12.;var y=38.
-    if n>1 and member>0:x-=4.;y+=-4. if member==1 else 4.
+    if n==4:
+     x-=floori(member/2.)*6.;y+=-2.6 if member%2==0 else 2.6
+    elif n>1 and member>0:x-=4.;y+=-4. if member==1 else 4.
     positions=[Vector2(x,y)]
+   if side_id==b.defender_side_id and Formation.two_wheeler(v.vehicle_type_id):
+    positions=positions.duplicate()
+    for x in [151.,157.,163.,169.,175.]:
+     for y in [13.,19.,24.,33.,39.,44.]:positions.append(Vector2(x,y))
    for at in positions:
     var facing=Vector2.RIGHT if side_id==b.attacker_side_id else Vector2.DOWN
     if grouped:facing=Vector2.RIGHT

@@ -1,0 +1,12 @@
+{
+  "base_sha256": "1ad5ab6d64e40239bff9500eba1030e3b3fef20416d5cf45ceb57eebd656fd2a",
+  "sha256": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93",
+  "bytes": 13830203,
+  "copied_bytes": 1024801,
+  "literal_bytes": 12805402,
+  "operations": 1043,
+  "parts": 27,
+  "transfer_characters": 17169336,
+  "build_seconds": 1.7030000000377186,
+  "large_parts": 7
+}

@@ -1,0 +1,176 @@
+{
+  "timeline": {
+    "gloria_hold": [
+      0,
+      3
+    ],
+    "godot_hold": [
+      4,
+      7
+    ],
+    "caution_zoom": [
+      7.5,
+      11.5
+    ],
+    "black_hold": [
+      11.5,
+      13
+    ],
+    "pixel_title_assembly": [
+      13,
+      21
+    ],
+    "title_complete_and_hover_start": 21,
+    "background_fade_in": [
+      21,
+      21.6
+    ],
+    "open_sandbox_first_visible": 27,
+    "preview_sandbox_entry": 45,
+    "preview_music_docked": 48.75,
+    "preview_playlist_open": 51,
+    "music": "Dead Street \u2014 B-22; one uninterrupted stream from 0 through sandbox entry"
+  },
+  "shots": [
+    [
+      "bridge",
+      34.5,
+      60,
+      [
+        345,
+        104,
+        530,
+        298
+      ],
+      "CROSSFIRE"
+    ],
+    [
+      "estate",
+      40.0,
+      60,
+      [
+        265,
+        130,
+        530,
+        298
+      ],
+      "COURTYARD GUNFIRE"
+    ],
+    [
+      "estate",
+      6.2,
+      90,
+      [
+        170,
+        115,
+        640,
+        360
+      ],
+      "TRC CONVOY ACROSS GRASS"
+    ],
+    [
+      "bridge",
+      51.5,
+      60,
+      [
+        340,
+        104,
+        580,
+        326
+      ],
+      "BRIDGE CASUALTY"
+    ],
+    [
+      "estate",
+      9.0,
+      90,
+      [
+        210,
+        135,
+        575,
+        323
+      ],
+      "TRC DISMOUNT"
+    ],
+    [
+      "estate",
+      46.0,
+      60,
+      [
+        265,
+        120,
+        530,
+        298
+      ],
+      "COURTYARD CASUALTY"
+    ],
+    [
+      "bridge",
+      54.6,
+      60,
+      [
+        470,
+        102,
+        530,
+        298
+      ],
+      "BLOCKADE FIREFIGHT"
+    ],
+    [
+      "estate",
+      55.0,
+      60,
+      [
+        310,
+        125,
+        530,
+        298
+      ],
+      "GATE ASSAULT"
+    ],
+    [
+      "bridge",
+      61.0,
+      60,
+      [
+        520,
+        101,
+        530,
+        298
+      ],
+      "RAIDERS ADVANCE"
+    ],
+    [
+      "estate",
+      63.0,
+      60,
+      [
+        260,
+        105,
+        590,
+        332
+      ],
+      "ESTATE PRESSURE"
+    ],
+    [
+      "bridge",
+      69.0,
+      60,
+      [
+        500,
+        100,
+        580,
+        326
+      ],
+      "FINAL CROSSFIRE"
+    ]
+  ],
+  "duration": 57,
+  "frames": 1710,
+  "source_hashes": {
+    "estate": "64a8b2cc27cd13bdb7b71b9cb17b9efba9404bdf16bf05dc9e7808b373d21210",
+    "bridge": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93"
+  },
+  "status": "Revised video preview, no native controller integration",
+  "title_source_sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9"
+}

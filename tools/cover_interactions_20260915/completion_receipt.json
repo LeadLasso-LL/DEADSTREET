@@ -1,0 +1,21 @@
+{
+  "head": "c5a625fcb5978a6a2c82224c86c1ed45d4ee6616",
+  "index": "",
+  "sources": {
+    "battle/geometry/harold_street_catalog.gd": "8d5c77ffc5c294835b2cb7b3235390a13f6d3af8415bab5144a453eb8a9a0917",
+    "battle/presentation/tactical_participant_visual.gd": "537fc251743e338540ca6b3c0601ed37a8a6ac0ada746ce687c9796b0755453f",
+    "gameplay/tactical_battle_view.gd": "2b369698fb3f131db07413abadab5a64ea3ca39c86628b178808d32814897184",
+    "battle/vehicles/battle_arrival_service.gd": "42e6cadf651491d6e8867590def9f912e4fb3edecab1a8fa36fc34c76f89c9f5"
+  },
+  "checks": {
+    "mixed": 497,
+    "live_all_arrivals": 929,
+    "bridge_estate": 66
+  },
+  "errors": [],
+  "tight_pairs_after": 0,
+  "screenshot_sha256": "84a75f2ece718a7c2cb9555588568ea6775b641982842ed75fa904ef182db54f",
+  "commit_push": "not performed",
+  "scarlet_car": "owner-accepted",
+  "cover_visual_acceptance": "pending"
+}

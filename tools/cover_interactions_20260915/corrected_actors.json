@@ -1,0 +1,485 @@
+{
+	"actors": [
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				405.011199951172,
+				211.919998168945
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_01",
+			"position": [
+				50.6263999938965,
+				35.3199996948242
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_00__door_1_north_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				405.011199951172,
+				184.080001831055
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_02",
+			"position": [
+				50.6263999938965,
+				30.6800003051758
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_00__door_1_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				478.889587402344,
+				215.279998779297
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_03",
+			"position": [
+				59.861198425293,
+				35.8800010681152
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_01__door_0_north_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				478.889587402344,
+				185.52001953125
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_04",
+			"position": [
+				59.861198425293,
+				30.9200019836426
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_01__door_0_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				311.103332519531,
+				214.223999023438
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_05",
+			"position": [
+				38.8879165649414,
+				35.7039985656738
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_02__door_0_north_cover",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				311.103332519531,
+				186.575988769531
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_06",
+			"position": [
+				38.8879165649414,
+				31.0959968566895
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_02__door_0_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				271.040008544922,
+				169.884002685547
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_07",
+			"position": [
+				33.8800010681152,
+				28.314001083374
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_3_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				316.079986572266,
+				151.992004394531
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_08",
+			"position": [
+				39.5099983215332,
+				25.3320007324219
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_3_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				356.959991455078,
+				170.460006713867
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_09",
+			"position": [
+				44.6199989318848,
+				28.4100017547607
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_4_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				400.720001220703,
+				152.279998779297
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_10",
+			"position": [
+				50.0900001525879,
+				25.3800010681152
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_4_3",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				466.239990234375,
+				169.692016601563
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_11",
+			"position": [
+				58.2799987792969,
+				28.2820014953613
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_5_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				421.200012207031,
+				151.89599609375
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_12",
+			"position": [
+				52.6500015258789,
+				25.3159999847412
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_5_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				165.199996948242,
+				119.100006103516
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_01",
+			"position": [
+				20.6499996185303,
+				19.8500003814697
+			],
+			"side": "defender",
+			"slot": "cover_stoop_west_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				172.240005493164,
+				245.040008544922
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_02",
+			"position": [
+				21.5300006866455,
+				40.8400001525879
+			],
+			"side": "defender",
+			"slot": "cover_south_car_1_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				191.519989013672,
+				169.307998657227
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_03",
+			"position": [
+				23.939998626709,
+				28.2180004119873
+			],
+			"side": "defender",
+			"slot": "cover_north_car_2_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "s",
+			"draw_position": [
+				103.360000610352,
+				134.100006103516
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_04",
+			"position": [
+				12.9200000762939,
+				22.3500003814697
+			],
+			"side": "defender",
+			"slot": "cover_north_car_1_0",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				17.2000007629395,
+				113.700004577637
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_05",
+			"position": [
+				2.15000009536743,
+				18.9500007629395
+			],
+			"side": "defender",
+			"slot": "cover_store_delivery_1",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "s",
+			"draw_position": [
+				129.120010375977,
+				227.580001831055
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_06",
+			"position": [
+				16.1400012969971,
+				37.9300003051758
+			],
+			"side": "defender",
+			"slot": "cover_south_car_1_0",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				234.800003051758,
+				119.100006103516
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_07",
+			"position": [
+				29.3500003814697,
+				19.8500003814697
+			],
+			"side": "defender",
+			"slot": "cover_stoop_east_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				239.279998779297,
+				246.0
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_08",
+			"position": [
+				29.9099998474121,
+				41.0
+			],
+			"side": "defender",
+			"slot": "cover_south_car_2_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				103.360000610352,
+				170.460006713867
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_09",
+			"position": [
+				12.9200000762939,
+				28.4100017547607
+			],
+			"side": "defender",
+			"slot": "cover_north_car_1_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				32.6399993896484,
+				167.100006103516
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_10",
+			"position": [
+				4.07999992370605,
+				27.8500003814697
+			],
+			"side": "defender",
+			"slot": "cover_north_car_0_1",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				91.1200103759766,
+				244.320007324219
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_11",
+			"position": [
+				11.3900012969971,
+				40.7200012207031
+			],
+			"side": "defender",
+			"slot": "cover_south_car_0_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "idle",
+			"direction": "s",
+			"draw_position": [
+				164.5,
+				189.75
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_12",
+			"position": [
+				20.5625,
+				31.625
+			],
+			"side": "defender",
+			"slot": "",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		}
+	],
+	"tight_pairs": []
+}

@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.19999980926514, 0.0) segment=0 into=9.2 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+NATIVE_PERF {"average_fps":53.6837331428249,"frames":806,"initial_units":14,"median_frame_ms":17.874,"note":"Native wall-clock sample, no fixed-FPS movie mode. Separate from visual acceptance and not an expansion-headroom certification.","p95_frame_ms":23.232,"resolution":"1280x720","seconds":15.013859}

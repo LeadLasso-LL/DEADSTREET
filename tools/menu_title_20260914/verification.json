@@ -1,0 +1,114 @@
+{
+  "duration_seconds": 48.0,
+  "frames": 1440,
+  "width": 1280,
+  "height": 720,
+  "fps": "30/1",
+  "video_codec": "h264",
+  "pixel_format": "yuv420p",
+  "audio_title": "Dead Street",
+  "audio_artist": "B-22",
+  "audio_peak": 0.688550591468811,
+  "full_decode": "PASS",
+  "all_four_shots_used_before_sandbox_entry_present": "PASS",
+  "monochrome": "PASS",
+  "scene_checks": [
+    {
+      "shot": 0,
+      "time": 15.433333333333334,
+      "sector": "RIVER CROSSING",
+      "background_correlation": 0.9530964296924653,
+      "max_rgb_difference": 0
+    },
+    {
+      "shot": 1,
+      "time": 22.299999999999997,
+      "sector": "WHITTAKER ESTATE",
+      "background_correlation": 0.8294208401882852,
+      "max_rgb_difference": 0
+    },
+    {
+      "shot": 2,
+      "time": 29.166666666666664,
+      "sector": "RIVER CROSSING",
+      "background_correlation": 0.9434711866625727,
+      "max_rgb_difference": 0
+    },
+    {
+      "shot": 3,
+      "time": 34.31666666666666,
+      "sector": "WHITTAKER ESTATE",
+      "background_correlation": 0.9115982633438241,
+      "max_rgb_difference": 0
+    }
+  ],
+  "bytes": 5790825,
+  "sha256": "5b16839e4b5d64f981a52424859628c7a57e9fe8e71b0981815646789a37f6b1",
+  "title_original_sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+  "scope": "48-second edited opening and Music handoff preview; designed overlay on real sandbox UI still, no live sandbox integration",
+  "audio_continuity": "PASS",
+  "audio_continuity_checks": [
+    {
+      "start": 10,
+      "end": 14,
+      "source_audio_correlation": 0.9998908755361817
+    },
+    {
+      "start": 34,
+      "end": 39,
+      "source_audio_correlation": 0.9985661703746251
+    },
+    {
+      "start": 40,
+      "end": 45,
+      "source_audio_correlation": 0.9962298883716326
+    }
+  ],
+  "black_frame_345_mean": 0.0,
+  "button_first_frame": 510,
+  "button_border_brightness_increase": 31.476666666666674,
+  "main_settled_frame": 360,
+  "timeline": {
+    "scene_holds": [
+      [
+        "Gloria Systems",
+        0,
+        3
+      ],
+      [
+        "Godot Engine",
+        4,
+        7
+      ],
+      [
+        "Redacted caution sign",
+        8,
+        11
+      ]
+    ],
+    "transitions": [
+      [
+        "Gloria to Godot",
+        3,
+        4
+      ],
+      [
+        "Godot to warning",
+        7,
+        8
+      ],
+      [
+        "Redaction zoom / main reveal",
+        11,
+        12
+      ]
+    ],
+    "full_black_at_seconds": 11.5,
+    "main_screen_settled_at_seconds": 12,
+    "open_sandbox_first_visible_seconds": 17,
+    "preview_sandbox_entry_seconds": 36,
+    "preview_music_card_docks_seconds": 39.75,
+    "preview_playlist_opens_seconds": 42,
+    "audio": "Dead Street \u2014 B-22; plays continuously from 0 and persists on sandbox entry, no offset/restart"
+  }
+}

@@ -1,0 +1,238 @@
+{
+	"advance": {
+		"median_ms": 5.078,
+		"p95_ms": 8.862
+	},
+	"arrival_errors": [],
+	"audio": [
+		{
+			"faction": "sierra_roja",
+			"playing": true,
+			"track": "break_bad_b22",
+			"volume_db": -37.0
+		},
+		{
+			"faction": "calle_ocho",
+			"playing": true,
+			"track": "glock_b22",
+			"volume_db": -18.0
+		}
+	],
+	"camera_frames": 1474,
+	"camera_violations": 0,
+	"combat_seconds": 28.2333333333339,
+	"commands": [
+		{
+			"action": "Both forces hold opening cover",
+			"time": 0.0
+		},
+		{
+			"accepted": true,
+			"action": "Service team moves outside the fence",
+			"destination": "(93.5, 48.0)",
+			"time": 1.2,
+			"unit": "sandbox_attacker_unit_05"
+		},
+		{
+			"accepted": true,
+			"action": "Service team takes the second gate",
+			"destination": "(97.0, 49.5)",
+			"time": 1.2,
+			"unit": "sandbox_attacker_unit_06"
+		},
+		{
+			"accepted": true,
+			"action": "Flanker enters through the open service gate",
+			"destination": "(93.5, 37.0)",
+			"time": 5.23333333333332,
+			"unit": "sandbox_attacker_unit_05"
+		},
+		{
+			"accepted": true,
+			"action": "SMG takes the service corner",
+			"destination": "(97.5, 35.5)",
+			"time": 5.23333333333332,
+			"unit": "sandbox_attacker_unit_06"
+		},
+		{
+			"accepted": [
+				"sandbox_attacker_unit_01",
+				"sandbox_attacker_unit_03",
+				"sandbox_attacker_unit_04"
+			],
+			"action": "Main team advances through yard cover",
+			"failed": [
+				"sandbox_attacker_unit_02"
+			],
+			"time": 7.53333333333332
+		},
+		{
+			"accepted": [
+				"sandbox_defender_unit_02",
+				"sandbox_defender_unit_03",
+				"sandbox_defender_unit_06"
+			],
+			"action": "Calle Ocho counterattack from the garage",
+			"failed": [],
+			"time": 16.0333333333333
+		}
+	],
+	"errors": [],
+	"frames": 1745,
+	"loop_frames": 1745,
+	"manifest": [
+		{
+			"count": 4,
+			"passengers": [
+				"sandbox_attacker_unit_01",
+				"sandbox_attacker_unit_02",
+				"sandbox_attacker_unit_03",
+				"sandbox_attacker_unit_04"
+			],
+			"vehicle": "mesa"
+		},
+		{
+			"count": 3,
+			"passengers": [
+				"sandbox_attacker_unit_05",
+				"sandbox_attacker_unit_06",
+				"sandbox_attacker_unit_07"
+			],
+			"vehicle": "outlander"
+		}
+	],
+	"outro_errors": [],
+	"phase": "resolved",
+	"results": {
+		"attacker": [
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_02",
+				"role": "SMG",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "IMI UZI / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_06",
+				"role": "SMG",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "IMI UZI / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_01",
+				"role": "RIFLE",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "AK-47 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_04",
+				"role": "RIFLE",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "AK-47 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_05",
+				"role": "PISTOL",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "GLOCK 17 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_03",
+				"role": "SHOTGUN",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "REMINGTON 870 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_attacker_unit_07",
+				"role": "SNIPER",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "REMINGTON 700 / T1"
+			}
+		],
+		"defender": [
+			{
+				"health_width": 65.5999984741211,
+				"id": "sandbox_defender_unit_02",
+				"role": "SMG",
+				"state": "ACTIVE",
+				"tint": "(1.0, 1.0, 1.0, 1.0)",
+				"weapon": "IMI UZI / T1"
+			},
+			{
+				"health_width": 19.6800003051758,
+				"id": "sandbox_defender_unit_06",
+				"role": "SMG",
+				"state": "WOUNDED",
+				"tint": "(1.0, 0.72, 0.72, 1.0)",
+				"weapon": "IMI UZI / T1"
+			},
+			{
+				"health_width": 88.5599975585938,
+				"id": "sandbox_defender_unit_01",
+				"role": "RIFLE",
+				"state": "ACTIVE",
+				"tint": "(1.0, 1.0, 1.0, 1.0)",
+				"weapon": "AK-47 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_defender_unit_04",
+				"role": "RIFLE",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "AK-47 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_defender_unit_05",
+				"role": "PISTOL",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "GLOCK 17 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_defender_unit_03",
+				"role": "SHOTGUN",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "REMINGTON 870 / T1"
+			},
+			{
+				"health_width": 0.0,
+				"id": "sandbox_defender_unit_07",
+				"role": "SNIPER",
+				"state": "DEAD",
+				"tint": "(0.72, 0.22, 0.26, 1.0)",
+				"weapon": "REMINGTON 700 / T1"
+			}
+		]
+	},
+	"seconds": 58.1666666666667,
+	"seed": 91517,
+	"stages": {
+		"active": 449,
+		"arrival": 1,
+		"ending": 1295,
+		"ready": 420
+	},
+	"survivors": {
+		"attacker": 0,
+		"defender": 3
+	},
+	"trim_frames": 1,
+	"winner": "defender"
+}

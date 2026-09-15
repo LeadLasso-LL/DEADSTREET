@@ -1,0 +1,159 @@
+{
+	"checks": 436,
+	"errors": [
+		"Launch stateline / whittaker_estate Test could not start: This convoy does not fit the estate arrival area. Choose fewer vehicles.",
+		"Launch zangyaku / whittaker_estate Test could not start: This convoy does not fit the estate arrival area. Choose fewer vehicles.",
+		"Launch trc / whittaker_estate Test could not start: This convoy does not fit the estate arrival area. Choose fewer vehicles.",
+		"Launch twelve_bikes / whittaker_estate Test could not start: This convoy does not fit the estate arrival area. Choose fewer vehicles.",
+		"Defending twelve-bike blockade Test could not start: This convoy does not fit the bridge approach. Choose fewer vehicles."
+	],
+	"runs": [
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "whittaker_estate",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		}
+	]
+}

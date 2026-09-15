@@ -1,0 +1,55 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+OPENING_GATE_READY
+CHECK silent_enter_gate true
+OPENING_ACTIVATED
+CHECK enter_starts_signature_once true
+CHECK enter_idempotent true
+OPENING_TITLE 21.0093349653114
+CHECK audio_clock_reveals_title true
+OPENING_SANDBOX_ENABLED 27.0149169653114
+CHECK audio_clock_enables_sandbox true
+OPENING_SANDBOX_ENTERED 27.2258546028846
+CHECK entry_keeps_player_and_position true
+CHECK both_tracks_visible_and_bond_next true
+DOCK true [P: (1016.1, 602.1), S: (110.7, 32.4)] panel false
+CLICK (1071.45, 618.3)
+CHECK dock_opens_playlist true
+CLICK (939.5999, 557.1)
+CHECK next_plays_bond true
+CHECK title_artist_and_toast_update true
+CHECK signature_stays_in_shuffle true
+CHECK toast_does_not_cover_open_panel true
+CHECK actual_file_end_advances true
+CHECK no_immediate_repeats_eight_advances true
+BEFORE_PAUSE true [P: (884.7, 542.7), S: (34.2, 28.8)] paused false playing true
+CLICK (901.7999, 557.1)
+CHECK pause_icon_works true
+CLICK (939.5999, 557.1)
+CHECK next_while_paused_preserves_pause true
+CLICK (901.7999, 557.1)
+CHECK resume_after_skip true
+CLICK (997.2, 437.85)
+CHECK checkbox_excludes_bond_and_disables_next true
+CHECK one_enabled_song_stops_without_repeat true
+CHECK all_unchecked_do_not_replay true
+CHECK enable_new_song_resumes_queue true
+CHECK exclusions_and_volume_persist true
+CLICK (217.3395, 44.45581)
+CHECK outside_dismiss_consumed true
+CHECK battle_hides_panel_and_pauses_music true
+CHECK return_resumes_without_restart true
+CHECK m_opens_music true
+CHECK space_pauses_in_music true
+CHECK space_resumes_in_music true
+CHECK media_next_key_advances true
+CHECK escape_closes_music true
+CHECK battle_stream_exact_30_seconds true
+CHECK stereo_loop_counts_frames true
+CHECK faction_assignment_not_invented true
+CHECK three_real_loop_wraps_without_stop true
+CHECK scaled_panel_fits_viewport true
+CLICK (40.0, 100.0)
+CHECK scaled_outside_dismiss true
+SOUNDTRACK_NATIVE 36 checks; failures=[]

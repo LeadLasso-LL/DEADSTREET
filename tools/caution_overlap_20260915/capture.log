@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+Movie Maker mode enabled, recording movie in 1280×720 @ 60 FPS...
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] picture (res://gameplay/sandbox_opening.gd:55)
+       [2] _ready (res://gameplay/sandbox_opening.gd:35)
+       [3] run (res://tools/caution_overlap_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/camera_ui.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] picture (res://gameplay/sandbox_opening.gd:55)
+       [2] _ready (res://gameplay/sandbox_opening.gd:39)
+       [3] run (res://tools/caution_overlap_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/enter_button.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] action_button (res://gameplay/sandbox_opening.gd:65)
+       [2] _ready (res://gameplay/sandbox_opening.gd:40)
+       [3] run (res://tools/caution_overlap_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/open_button.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] action_button (res://gameplay/sandbox_opening.gd:65)
+       [2] _ready (res://gameplay/sandbox_opening.gd:41)
+       [3] run (res://tools/caution_overlap_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] _ready (res://gameplay/sandbox_opening.gd:44)
+       [3] run (res://tools/caution_overlap_20260915/review.gd:18)
+OPENING_GATE_READY
+OPENING_ACTIVATED
+CAUTION_IMPACT 1 7.21285142849731
+CAUTION_IMPACT 2 7.54130488513184
+CAUTION_IMPACT 3 7.95004106726074
+CAUTION_IMPACT 4 8.23606990716553
+CAUTION_IMPACT 5 8.56753388696289
+OPENING_TITLE 21.0112700202637
+OPENING_SANDBOX_ENABLED 27.007277456665
+OPENING_SANDBOX_ENTERED 29.1323933980713
+INTRO_REVIEW {"black_max":0,"button_at":27.007277456665,"checks":37,"errors":[],"hit_times":[7.21285142849731,7.54130488513184,7.95004106726074,8.23606990716553,8.56753388696289],"intro_sound_players":0,"sandbox_at":29.1323933980713,"signature_play_count":1,"start_frame":60,"status":"PASS","title_at":21.0112700202637,"total_frames":2073,"viewport":[1280,720],"zoom_end":11.8,"zoom_start":6.85}
+--------------------------------------------------------------------------------
+Done recording movie at path: C:\Users\brand\OneDrive\Documents\dead-street\tools\caution_overlap_20260915\native_intro.avi
+2075 frames at 60 FPS (movie length: 00:00:34:35), recorded in 00:00:45 (75% of real-time speed).
+CPU render time: 0.29 seconds (average: 0.14 ms/frame)
+GPU render time: 1.17 seconds (average: 0.56 ms/frame)
+Encoding time: 13.85 seconds (average: 6.68 ms/frame)
+--------------------------------------------------------------------------------
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

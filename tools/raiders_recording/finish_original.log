@@ -1,0 +1,28 @@
+assets/audio/convoy/original_radio.json            |   9 +
+ assets/audio/convoy/police_siren.wav               | Bin 1058444 -> 1058444 bytes
+ assets/audio/convoy/raiders_radio.wav              | Bin 1512044 -> 1660280 bytes
+ docs/DEAD_STREET_HIVE_MIND.md                      |  12 +-
+ docs/DEAD_STREET_JOURNAL.md                        |  32 ++
+ docs/DEAD_STREET_PROJECT_CONTROL.md                |  13 +
+ docs/TACTICAL_CONTROLS_2026-09-13.md               |   7 +
+ gameplay/bridge_battle_setup.gd                    |  14 +-
+ gameplay/tactical_battle_view.gd                   |  20 +-
+ gameplay/tactical_convoy_audio.gd                  |   2 +-
+ tools/convoy_arrival/README.md                     |  23 +-
+ tools/convoy_arrival/build_audio.py                | 177 +++++++---
+ tools/raiders_recording/README.md                  |  13 +
+ tools/raiders_recording/convoy_native.json         |   2 +-
+ tools/raiders_recording/encode.py                  |   6 +-
+ tools/raiders_recording/mobile.json                |  91 ++---
+ tools/raiders_recording/mobile_export.py           |   2 +-
+ .../raiders_recording/original_source_hashes.json  |  14 +
+ tools/raiders_recording/probe.json                 |  70 ++--
+ tools/raiders_recording/record.json                | 329 ++++++++++++++---
+ tools/raiders_recording/record_worker.py           |   1 +
+ tools/raiders_recording/video.json                 | 393 +++++++--------------
+ tools/tactical_controls/convoy_native.gd           |   3 +
+ tools/tactical_controls/raiders_director.gd        |  10 +-
+ tools/tactical_controls/raiders_record.gd          |   2 +-
+ 25 files changed, 743 insertions(+), 502 deletions(-)
+COMMITTED 05d8ad72138db255617e0e5c50dac23f13f32c06
+PUSH_VERIFIED 05d8ad72138db255617e0e5c50dac23f13f32c06

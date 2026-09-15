@@ -1,0 +1,22 @@
+{
+  "saved_files": {
+    "README.md": "9084b69fda84ddaf655903a40d80b9ed92dec48ce6feb56855ea360bd1a479c8",
+    "BRIEF.md": "5cf157f5bf8536af519f84b95e53cea5ee1fcea5f67b52753df50b1d51e073b1",
+    "engine.py": "7f662570bb17fdb4a48ed49dbaf93b6312c492911e30177eee57f4f83ebdbe9c",
+    "instruments.py": "68ea37cc7cfbdca75d0a1226b79c502399e8d6f15cece0c4875236c9e38b0dc9",
+    "compose_individuals.py": "57b7393040d5dc17aa20e7f37686a3552b3795c7fb6990e24054086b638a3561",
+    "package_review.py": "6e849b54c56ffa44e8f64694b004cc241e3842240b09356cbd9f1d8fada64b56",
+    "manifest.json": "7c5ca67f8d7e8295d9b03b5e9c9aca9277fd5d048b82c8d8dbb64969ab944cb9",
+    "review_index.json": "a39d515f9de6fb663ef87d59b6a6aeae64970612a1603648dc62e8ef4da6e52e",
+    "validation.json": "5ac7faa8a397d35081b0f752d4c910656eed62b21c64e47a2dfb5beef57255c8",
+    "preserved_anchors.json": "40ce1cd416a05a69b7a916ec76cabfb5e9818156ff6f907017434dbf27b2fbf5",
+    "score_checks.json": "ee8f5d7705a11080c90d80f73156072f10adcdcc5c91ab7d2c368bdc6f484572",
+    "delivery_receipt.json": "4f185c1b97ecb769b669cfe74f7c83dd137c5616c0edba291b9aefc9988654a7",
+    "GeneralUser_LICENSE.txt": "7b32efefdf95ce38a043799f0659853ddc00fbaa14d8c50f0aca16b9b8b405be",
+    "review/LISTENING_GUIDE.md": "08e4fb16eda838dc818f5a7aa48d3236ba38241a40593527137ea71cc9d5efb5"
+  },
+  "head": "ca7688947ef3ae67bdb136359c43666fe4d99e70",
+  "staged_path_count": 0,
+  "git_publication": "NOT ATTEMPTED",
+  "records_verified": true
+}

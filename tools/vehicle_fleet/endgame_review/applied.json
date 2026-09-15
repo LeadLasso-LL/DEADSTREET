@@ -1,0 +1,15 @@
+{
+  "source_files": [
+    "tools/vehicle_fleet/endgame_catalog.py",
+    "tools/vehicle_fleet/endgame_geometry.py",
+    "tools/vehicle_fleet/build_endgame_boards.py",
+    "tools/vehicle_fleet/review_endgame.gd",
+    "tools/vehicle_fleet/validate_encounters.gd",
+    "campaign/vehicles/vehicle_encounter_service.gd",
+    "gameplay/vehicle_encounter_scenarios.gd",
+    "gameplay/vehicle_encounter_lab.gd",
+    "tools/vehicle_fleet/build_catalog.py"
+  ],
+  "head_before": "a16fdb99b98440571aa05fd13511c3d697b47eea",
+  "passed": true
+}

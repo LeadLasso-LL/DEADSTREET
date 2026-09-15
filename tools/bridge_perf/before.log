@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__front
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+BENCH_PROGRESS before { "sim_seconds": 5.99999999999999, "mean_update_ms": 31.2812833333333, "fps_snapshot": 27.0 }
+BENCH_PROGRESS before { "sim_seconds": 12.0, "mean_update_ms": 30.4388, "fps_snapshot": 28.0 }
+BENCH_PROGRESS before { "sim_seconds": 18.0000000000001, "mean_update_ms": 36.9655916666667, "fps_snapshot": 20.0 }
+BENCH_PROGRESS before { "sim_seconds": 24.0000000000002, "mean_update_ms": 24.7981083333333, "fps_snapshot": 36.0 }
+BENCH_PROGRESS before { "sim_seconds": 30.0000000000003, "mean_update_ms": 24.8716583333333, "fps_snapshot": 37.0 }
+BENCH_DONE {"checkpoints":[{"fps_snapshot":27.0,"mean_update_ms":31.2812833333333,"sim_seconds":5.99999999999999},{"fps_snapshot":28.0,"mean_update_ms":30.4388,"sim_seconds":12.0},{"fps_snapshot":20.0,"mean_update_ms":36.9655916666667,"sim_seconds":18.0000000000001},{"fps_snapshot":36.0,"mean_update_ms":24.7981083333333,"sim_seconds":24.0000000000002},{"fps_snapshot":37.0,"mean_update_ms":24.8716583333333,"sim_seconds":30.0000000000003}],"damage":6.931,"label":"before","living":13,"max_ms":206.695,"mean_ms":29.6710883333334,"moved":11,"occupied":6,"p95_ms":61.095,"paused_fps":1.0,"phase":"active","rendered":16,"sim_seconds":30.0000000000003,"stages_ms":{"combat":10712.768,"movement":3047.591,"path_follow":102.828,"pressure":812.493999999999,"tactics":33.3830000000001,"targets":1397.882,"weapon":1658.962},"steps":600,"units":16}

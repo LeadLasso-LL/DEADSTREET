@@ -1,0 +1,12 @@
+{
+  "owned_source_files": {
+    "gameplay/tactical_convoy_audio.gd": "2edd71654bb12227a2cd07cc69cc7124014fde9c3a01aee68d4e8f1324ad8801",
+    "gameplay/tactical_emblem_marker.gd": "4e014466c45191e956ac11881c2a73560bcb38ffda5f8f62272ec5d0d943cd78",
+    "gameplay/tactical_battle_presentation.gd": "f51e12d499fc87ad76f24e597702b0412f243cccb5bb1b385d3a965ec5345904",
+    "gameplay/tactical_actor_presenter.gd": "77e0e363869d61437763da89bd73dcff80b3c50b46838f2e5ffb8c489ca691cc",
+    "gameplay/freight_exchange_weather.gd": "4ccdeb715ea4db5d85e2cf527f231581b10e7f1d4bf8aebbda08540ed89ae8b7"
+  },
+  "capture_copy_matches_live": true,
+  "head": "35e0db12aae4d114364c911a69ae2136de30ee4e",
+  "staged": []
+}

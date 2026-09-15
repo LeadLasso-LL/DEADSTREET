@@ -1,0 +1,17 @@
+# Battle Sandbox UI review - 2026-09-14
+
+Brandon requested the existing UI from opening through a fully configured 5v5 bridge setup, with no combat. This recording uses unchanged production UI and an automated visible cursor, native mouse/keyboard input, dropdowns and scrolling. No production-source or shared-runtime edits.
+
+Delivered: Dead_Street_Bridge_5v5_Sandbox_UI_Review.mp4, 185.433 seconds, 1152x860 at 30 fps, H.264 yuv420p / AAC, fast-start, 6,070,607 bytes. The native 4:3-like layout is retained so the full setup fits without clipping. SHA256: 81bdc071ae77d66455317d2634a8603b6338f2e38ff31a68668924bcfbcffdc5. Durable recording: libfile_ac845622e400819196eb825c79e08955, version 0; /Dead Street/Dead_Street_Bridge_5v5_Sandbox_UI_Review.mp4.
+
+Flow: sandbox opening and rifle preview; armor catalog; Custom Battle Setup; three-map dropdown and bridge selection; Mercer attackers built through Clear and five Add actions; existing class change; duplicate/remove; all five units' weapon/tier/armor menus; Orlov defenders and Balanced Five; all five defenders' equipment; both vehicle pickers; faction-suggestion filter; all four vehicle classes; catalog scrolling; insufficient-seat validation; convoy chip removal; automatic seat fitting for each side; manually mixed convoys; final ready 5v5. Start is hovered, never clicked. Detailed selected equipment and chapter frame times are in record.json.
+
+Validation: quick native pass and final capture each passed 224 checks, zero errors. Final: 5,563 frames, exact 5+5 units, valid config and enabled Start; no battle/runtime created. Both final convoys have 7 seats for 5 people. Full MP4 decode passed; opening, real map/weapon menus, configured rows, fleet and final screen inspected. Complete transferred file independently matched bytes and SHA256. This is UI/reproduction evidence, not battle placement, performance, balance or owner acceptance.
+
+Review findings, intentionally unchanged: defender picker still says ATTACKING CONVOY; only about four roster rows fit, so the fifth requires scrolling; unit-tier field uses numbers while Regular/Experienced/Veteran explanations are tooltips; the detailed weapon stats remain in the separate arsenal; legacy quick loadouts and Custom Battle Setup coexist. These are observations for Brandon's review, not approved redesign scope.
+
+Reproduce with C:/Users/brand/AppData/Local/DeadStreetTools/python/python.exe run_capture.py smoke, then record, then encode_video.py. The runner snapshots production sources once under AppData/Local/DeadStreetTools/sandbox_ui_review_20260914/source_snapshot and creates its own godot.exe/godot.pck. It references the existing immutable benchmark_data.pck for assets. It never invokes the shared tactical_controls/run.py pack. Record mode refuses to overwrite an existing raw AVI. Preserve the named prior take before rerunning.
+
+Known harness issue resolved: the distributed release binary rejects --main-pack; a private copied executable and adjacent private godot.pck solve this without touching the shared runtime. One desktop request timed out although the files had been written; checked actual logs before retrying. No optional full-core or battle tests were run.
+
+Tools, bounded evidence and this report remain local/uncommitted for the next relevant checkpoint. Large raw/transfer/video copies are excluded; the video is saved separately. BUILD chat retains Whittaker/audio/result-card work. Next: Brandon reviews this current UI and chooses corrections before a UI implementation pass.

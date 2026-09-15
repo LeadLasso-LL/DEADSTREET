@@ -1,0 +1,47 @@
+{
+  "owned": [
+    "battle/geometry/freight_exchange_catalog.gd",
+    "gameplay/freight_exchange_art.gd",
+    "gameplay/freight_exchange_setup.gd",
+    "gameplay/freight_exchange_scenario.gd",
+    "gameplay/freight_exchange_weather.gd",
+    "assets/art/freight_exchange/ground.png",
+    "assets/menu/maps/freight_exchange.png",
+    "assets/audio/ambience/freight_rain.wav",
+    "assets/audio/ambience/freight_roof_rain.wav"
+  ],
+  "shared_additive": [
+    "gameplay/sandbox_force_config.gd",
+    "gameplay/sandbox_map_catalog.gd",
+    "gameplay/arsenal_battle_fixture.gd",
+    "gameplay/tactical_battle_view.gd",
+    "gameplay/tactical_actor_presenter.gd",
+    "gameplay/tactical_battle_presentation.gd",
+    "gameplay/tactical_battle_outro.gd",
+    "gameplay/tactical_convoy_audio.gd",
+    "battle/presentation/tactical_participant_visual.gd",
+    "battle/vehicles/battle_arrival_service.gd"
+  ],
+  "head": "35e0db12aae4d114364c911a69ae2136de30ee4e",
+  "hashes": {
+    "battle/geometry/freight_exchange_catalog.gd": "30b502277d11296592f8044297d76566d6ba09df2caed75bed8210fe4b841f59",
+    "gameplay/freight_exchange_art.gd": "3319b566dbd4eaabc3fbc538343ae06f57f8ad6e6b3636f56ad9740cdf036200",
+    "gameplay/freight_exchange_setup.gd": "3ffe332b19772db9d0935dd248149a96c17b11016799a8e38d2e173bf4cab60c",
+    "gameplay/freight_exchange_scenario.gd": "fd914f69048529dc4e683618a150b6bb03f11f140eb4775623e20d402f7094af",
+    "gameplay/freight_exchange_weather.gd": "34c7eb9e98771e481a1d22ccb322aad6efab87c4e0d36d040cfab779477db8e8",
+    "assets/art/freight_exchange/ground.png": "2ab81a3c0705c1db1abf19eb7d4a5413a6ee70af0ae112e03560bba6274cb099",
+    "assets/menu/maps/freight_exchange.png": "751918268bf4ae7666a3b5cff9ef1d52d15cd203e35626dcc2b936fe58b8442c",
+    "assets/audio/ambience/freight_rain.wav": "08a75f27279f17ae69794237b3430ea2a6edac23e14c5d85f83880a6d78b2303",
+    "assets/audio/ambience/freight_roof_rain.wav": "2a8418af27ebc014c5920e64822daba2010152c854d965d049c6a39ed58f5481",
+    "gameplay/sandbox_force_config.gd": "1fdc3190db2153518327456bd4d201aec577e98a3bc68b6665548505ccad062d",
+    "gameplay/sandbox_map_catalog.gd": "fa59b2a1e59e503737f78c2c00475d113d9fefefd56a7c4b52a47b1dfd364259",
+    "gameplay/arsenal_battle_fixture.gd": "90a344fd9fab6948c2f72bf840606af35421468c1a7273a45911dc1b0dff0f4c",
+    "gameplay/tactical_battle_view.gd": "f9d24a4ea10f70bf2adad8bb7c6213ad842a3bca3895a394755b6ed03f8efccb",
+    "gameplay/tactical_actor_presenter.gd": "e0bd9c53c01d6c76889eb69eeeffd79af47607c75d32dd87eeb0529640523627",
+    "gameplay/tactical_battle_presentation.gd": "d9329c30c599125b4b7f3c97c168d972e86f52c43dfa976f68762cc4543e81f0",
+    "gameplay/tactical_battle_outro.gd": "a15bb5b7e7eaf334b8a3195bb45fc9590bec7c82c60e9cfe025dbb501f469a62",
+    "gameplay/tactical_convoy_audio.gd": "755177eeda62594d7f89b2fca0ba20caf71ec2b360a6308b6ae177882bdb18e9",
+    "battle/presentation/tactical_participant_visual.gd": "3d2a46c095d03de13888d8ac3b6fa5d77a5290f4a5f7c7339493d5d3c8c716c6",
+    "battle/vehicles/battle_arrival_service.gd": "e3055533f4562410d7eec7fb6a2ea7b7abf239d0934e5316cce103575e177169"
+  }
+}

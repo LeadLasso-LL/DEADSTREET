@@ -1,0 +1,23 @@
+{
+  "index": 1,
+  "id": "glock_b22",
+  "artist": "B-22",
+  "title": "Glock",
+  "source_url": "https://soundcloud.com/brandonharb-1/glockk-draco",
+  "start_timestamp": "00:30",
+  "start_seconds": 30,
+  "duration_seconds": 30,
+  "basename": "B-22_Glock",
+  "status": "downloaded",
+  "source_title": "+ GlocKk & Draco +",
+  "source_artist": "brandon",
+  "source_track_id": 305644638,
+  "canonical_url": "https://soundcloud.com/brandonharb-1/glockk-draco",
+  "source_duration_seconds": 169.941,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 2718823,
+  "sha256": "35284062d7b2f2513cc08edc3c5c865085bbabecf83e205f0e578b1b82f5ce4f",
+  "settings_changed": false
+}

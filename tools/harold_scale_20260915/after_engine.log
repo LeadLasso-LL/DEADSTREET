@@ -1,0 +1,60 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+SCRIPT ERROR: Parse Error: Class "BattleWeaponCatalog" hides a global script class.
+   at: GDScript::reload (res://battle/combat/battle_weapon_catalog.gd:1)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://gameplay/tactical_selection_range.gd:0)
+SCRIPT ERROR: Parse Error: Class "BattleState" hides a global script class.
+   at: GDScript::reload (res://battle/core/battle_state.gd:1)
+SCRIPT ERROR: Parse Error: Class "BattlefieldGeometry" hides a global script class.
+   at: GDScript::reload (res://battle/geometry/battlefield_geometry.gd:1)
+SCRIPT ERROR: Parse Error: Class "BattleNavigationService" hides a global script class.
+   at: GDScript::reload (res://battle/navigation/battle_navigation_service.gd:1)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tools/bridge_perf/before_spatial/battle/core/battle_state.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://battle/identity/tactical_identity_factory.gd:0)
+SCRIPT ERROR: Parse Error: Class "BattleLineOfSightService" hides a global script class.
+   at: GDScript::reload (res://battle/combat/battle_line_of_sight_service.gd:1)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://battle/ai/battle_deployment_planner.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://battle/ai/battle_deployment_ai_service.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://gameplay/arsenal_battle_fixture.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tools/selected_range_20260915/check_native.gd:0)
+SCRIPT ERROR: Parse Error: Class "BattleRuntimeService" hides a global script class.
+   at: GDScript::reload (res://battle/runtime/battle_runtime_service.gd:1)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tools/harold_scale_20260915/check.gd:0)
+ERROR: Failed to load script "res://tools/harold_scale_20260915/check.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Invalid call. Nonexistent function 'models_for_class' in base 'GDScript'.
+   at: _ready (res://gameplay/arsenal_review.gd:117)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/arsenal_review.gd:117)
+       [1] run (res://tools/harold_scale_20260915/check.gd:12)
+SCRIPT ERROR: Invalid call. Nonexistent function 'default_model' in base 'GDScript'.
+   at: unit (res://gameplay/sandbox_force_config.gd:13)
+   GDScript backtrace (most recent call first):
+       [0] unit (res://gameplay/sandbox_force_config.gd:13)
+       [1] from_legacy (res://gameplay/sandbox_force_config.gd:21)
+       [2] make (res://tools/sandbox_setup/scenarios.gd:4)
+       [3] run (res://tools/harold_scale_20260915/check.gd:14)
+SCRIPT ERROR: Invalid access to property or key 'weapon' on a base object of type 'Dictionary'.
+   at: from_legacy (res://gameplay/sandbox_force_config.gd:22)
+   GDScript backtrace (most recent call first):
+       [0] from_legacy (res://gameplay/sandbox_force_config.gd:22)
+       [1] make (res://tools/sandbox_setup/scenarios.gd:4)
+       [2] run (res://tools/harold_scale_20260915/check.gd:14)
+SCRIPT ERROR: Invalid access to property or key 'attacker' on a base object of type 'Dictionary'.
+   at: make (res://tools/sandbox_setup/scenarios.gd:6)
+   GDScript backtrace (most recent call first):
+       [0] make (res://tools/sandbox_setup/scenarios.gd:6)
+       [1] run (res://tools/harold_scale_20260915/check.gd:14)
+SCRIPT ERROR: Invalid access to property or key 'attacker' on a base object of type 'Dictionary'.
+   at: run (res://tools/harold_scale_20260915/check.gd:16)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tools/harold_scale_20260915/check.gd:16)

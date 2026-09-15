@@ -1,0 +1,19 @@
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CAPTURE_PID 17872
+CAPTURE_EXIT 0
+[aist#0:1/pcm_s16le @ 0000020c93d19540] Guessed Channel Layout: stereo
+[swscaler @ 0000020c93d54500] deprecated pixel format used, make sure you did set range correctly
+[aist#0:1/pcm_s16le @ 0000022776ae3340] Guessed Channel Layout: stereo
+[swscaler @ 00000227771bc700] deprecated pixel format used, make sure you did set range correctly
+MOBILE_EXPORT {"file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\Dead_Street_Whittaker_Estate_Mobile.mp4", "bytes": 7538956, "sha256": "9f9a424122221b3afd14014399c6bf2fe94633f8c7c9ee5650cf78187496eef6", "seconds": 74.19666666666667, "video_bitrate": 722052, "decoded_to_end": true, "winner": "defender"}
+TRANSFER_READY {"file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\Dead_Street_Whittaker_Estate_Mobile.mp4", "bytes": 7538956, "sha256": "9f9a424122221b3afd14014399c6bf2fe94633f8c7c9ee5650cf78187496eef6", "seconds": 74.19666666666667, "video_bitrate": 722052, "decoded_to_end": true, "winner": "defender", "parts": [{"name": "part_000.txt", "bytes": 1950000, "sha256": "32b1bc3251731b3d37e9f6644467c2c179e6bbddaf1c30d12565197714937e88"}, {"name": "part_001.txt", "bytes": 1950000, "sha256": "51bb1ce4b7a3e659d7827a2b08ddbeca0a95b95d5fc11e6c9fc1900b4a2902c2"}, {"name": "part_002.txt", "bytes": 1950000, "sha256": "32fcb183016356d1af5cd9ccb44e1287b2ee1791ca115483812fb854fcdfb13a"}, {"name": "part_003.txt", "bytes": 1688956, "sha256": "2533728616d2660822884062d308306e2202d40734c119484160bb80a9824ffe"}], "audio_peak": 0.9199243187904358, "audio_rms": 0.039010077714920044}
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+ESTATE_RECORDING_COMPLETE

@@ -1,0 +1,10 @@
+from pathlib import Path
+p=Path('tools/dusk_review/harold_review.gd')
+s=p.read_text()
+s=s.replace('var active := false','var cpu_samples: Array[float] = []\nvar active := false',1)
+s=s.replace('for second in [1, 2, 5, 10]:','for second in []:')
+s=s.replace('var out_dir := "res://tools/dusk_review/frontage_results"','var out_dir := "res://tools/dusk_review/frontage_profile_results"')
+s=s.replace('\tvar begin = runtime.begin_current_battle()','\tif "--old-wall-los" in OS.get_cmdline_user_args():\n\t\tfor id in ["stoop_west","stoop_east","east_stoop_west","east_stoop_east"]:\n\t\t\tg.get_obstacle(id).blocks_line_of_sight=false\n\t\tbattle.clear_los_cache()\n\tvar begin = runtime.begin_current_battle()',1)
+s=s.replace('\t\tload("res://battle/runtime/battle_runtime_service.gd").advance(battle, delta)','\t\tvar before=Time.get_ticks_usec()\n\t\tload("res://battle/runtime/battle_runtime_service.gd").advance(battle, delta)\n\t\tif elapsed>3:cpu_samples.append((Time.get_ticks_usec()-before)/1000.)',1)
+s=s.replace('\t\tactive_samples.sort()','\t\tcpu_samples.sort()\n\t\treport["cpu_p95_ms"]=cpu_samples[int(cpu_samples.size()*.95)] if not cpu_samples.is_empty() else 0\n\t\tvar cpu_total=0.\n\t\tfor ms in cpu_samples:cpu_total+=ms\n\t\treport["cpu_mean_ms"]=cpu_total/maxi(1,cpu_samples.size())\n\t\treport["draw_calls"]=Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)\n\t\tactive_samples.sort()',1)
+Path('tools/dusk_review/frontage_profile.gd').write_text(s)

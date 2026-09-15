@@ -1,0 +1,12 @@
+{
+  "checks": 164,
+  "classes_per_map": 5,
+  "engine": "4.7.2-stable (official)",
+  "errors": [
+    "harold full 12-unit class supported",
+    "river_bridge full 12-unit class supported",
+    "whittaker_estate full 12-unit class supported"
+  ],
+  "largest_class_selection": 12,
+  "maps": 3
+}

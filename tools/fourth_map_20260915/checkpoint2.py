@@ -1,0 +1,6 @@
+from pathlib import Path
+r=Path(r'C:\Users\brand\OneDrive\Documents\dead-street')
+event="## 20260915-doble-ocho-02 - Fourth map installed; native bake passes\nIMPLEMENTED first pass in15 scoped files: new96x64 catalog, garage/yard/scenery renderer, legal vehicle setup/opening-cover allocation,7v7 preset and sandbox dropdown. Narrow shared hooks carry8x6 projection/1.48 actor scale,2.4 cover spacing, fixed defenders, custom arrival path, actual garage music anchor and stationary secure-yard aftermath. Existing3 maps retain their branches. Native Godot4.7.2 D3D12 ground bake passed (4096x2304) with no errors; retain full developed surrounding district at intro zoom. Geometry/visual review currently running, not yet validated/accepted. Baseline normalized-text guards passed for all existing files; exact original backups under before/.gdignore; no staging/commit/push. Next: inspect real7v7 capture/routes then refine any faults before director and video.\n"
+for name in ['docs/DEAD_STREET_HIVE_MIND.md','docs/DEAD_STREET_JOURNAL.md']:
+ p=r/name;s=p.read_text(encoding='utf-8');assert '20260915-doble-ocho-02' not in s;p.write_text(s+'\n\n'+event,encoding='utf-8')
+print('Native implementation milestone recorded')

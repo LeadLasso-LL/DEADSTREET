@@ -1,0 +1,10 @@
+{
+  "state": "pushed and remote verified",
+  "commit": "408f62cb2c3642e4ba9e33713f531c35757a6a2f",
+  "parent": "c5a625fcb5978a6a2c82224c86c1ed45d4ee6616",
+  "native_validation": "PASS",
+  "menu_tracks": 18,
+  "unchanged_audio_files": 43,
+  "destination": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "remote": "408f62cb2c3642e4ba9e33713f531c35757a6a2f"
+}

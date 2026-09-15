@@ -1,0 +1,9 @@
+{
+  "paths": 27384,
+  "bytes": 970600638,
+  "large_files_over_100MB": [],
+  "credential_pattern_paths": [],
+  "baseline_head": "35e0db12aae4d114364c911a69ae2136de30ee4e",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "scope": "All current nonignored tracked and untracked project work; generated capture mirrors and raw/transfer intermediates preserved locally and ignored."
+}

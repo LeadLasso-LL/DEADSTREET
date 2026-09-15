@@ -1,0 +1,139 @@
+{
+  "files": [
+    {
+      "id": "eastex",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -2.82,
+      "sha256": "14029eb4e6bb80318a572b19b4729d77347c2875f7b5345ebbf5bb56f95fd201"
+    },
+    {
+      "id": "calle_ocho",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -2.55,
+      "sha256": "f4684f228c71cf27c510578582a3b684ac435981d255ff69affaa55ac79b1fbd"
+    },
+    {
+      "id": "ventresca",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.29,
+      "true_peak_dbtp": -3.06,
+      "sha256": "cbfc3c53429875032823fe10aea9035cd598f3895be20d45701e1cf40668b596"
+    },
+    {
+      "id": "ravicci",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -3.05,
+      "sha256": "ae4994390f93616ce61439c530b4f8b17139d218d32b8d0238252507ec82b85f"
+    },
+    {
+      "id": "orlov",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -3.85,
+      "sha256": "c16142ac317700b90e75f92e650ac329841ed387eb6f7b383eb1b8e106044b28"
+    },
+    {
+      "id": "zangyaku",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -4.23,
+      "sha256": "c224f87c94f9f10a818192a21996615bf7ca197f7c9820d0c8a9acd9662ba8bb"
+    },
+    {
+      "id": "bitian",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.37,
+      "true_peak_dbtp": -2.35,
+      "sha256": "65022d63c42952a36f7e6e2bcf7b378931ec911f73b0341761aeb093fb4d45ed"
+    },
+    {
+      "id": "sierra_roja",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -2.44,
+      "sha256": "a4c1f6e1f46c4ec252841bb415ee3bd7200845ee08f5cfe799cdb4bc70698dea"
+    },
+    {
+      "id": "mcallister",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -4.37,
+      "sha256": "25ad505d33393da6b5890b93e116ecb08caf8e079872d2fc3134391455a905dc"
+    },
+    {
+      "id": "mercer44",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -3.14,
+      "sha256": "da049da8af6678eb880168bb69186169bf9d6fc9c3e75762a6a22a21c0a9cdf2"
+    },
+    {
+      "id": "wm_corp",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -4.51,
+      "sha256": "9d4e3058d9bdc3dca7ba7167e63a0e96c702982daa8b9d07533093e419654d57"
+    },
+    {
+      "id": "union_sur",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -3.11,
+      "sha256": "037761b6ef6b8def55b2ffbf8876b7a01b4f1e28fe8398ed16a51b829468537b"
+    },
+    {
+      "id": "lombardia",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -3.34,
+      "sha256": "4dba537d8cf00cb80c2e09200fd7296bb46affed259d84416180964fb87a4ef4"
+    },
+    {
+      "id": "sand_raiders",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.27,
+      "true_peak_dbtp": -3.24,
+      "sha256": "09d534b0c418f9f67eec1c4c5192cba7ef5d01a0e9a36e0deb198ce2c86ca626"
+    },
+    {
+      "id": "saffar",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.4,
+      "true_peak_dbtp": -2.26,
+      "sha256": "aaf48917cc4120199434fd09213aacfeb2a33fcddd7bc36b66570e4e10f892a9"
+    },
+    {
+      "id": "kurgan",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -3.97,
+      "sha256": "ada676460b4a4c1fefe975ab02fcab760598fede0d60cb57d2c7357be4b10936"
+    },
+    {
+      "id": "ashford_crane",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -2.82,
+      "sha256": "41096fcbf17421d0cb31205de9a0acd092ee2376329a8d710143a150d258e7a0"
+    },
+    {
+      "id": "blacktop",
+      "full_decode": "PASS",
+      "integrated_lufs": -18.26,
+      "true_peak_dbtp": -3.93,
+      "sha256": "c908eaf5cc43bdd74f9f6ff23b79da2db73a45b37b65fb586732fb323e25e3a3"
+    }
+  ],
+  "reel_full_decode": "PASS",
+  "chapter_count": 18,
+  "duration": 508.273,
+  "sample_rate": 44100,
+  "channels": 2,
+  "auditory_review": "Not independently listened to; owner listening review pending. Machine checks establish decoding, loudness and absence of clipping, not artistic quality.",
+  "in_game_test": "Not run: no runtime integration or game change.",
+  "production_status": "PREVIEW ONLY — NOT APPROVED",
+  "reel_sha256": "3dee49cbe5963ae3ae5be4016e2d30d4e1839e2e75fab6150f69fcf0109e1365"
+}

@@ -4,7 +4,7 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet("handshake", "smoke", "proof", "calibrate", "silhouette")]
+    [ValidateSet("handshake", "smoke", "proof", "calibrate", "silhouette", "style", "integrity")]
     [string]$Mode = "smoke",
     [string]$RecipePath = "",
     [int]$TimeoutSeconds = 0,
@@ -140,6 +140,10 @@ if (-not $RecipePath) {
         $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_calib_v11.json"
     } elseif ($Mode -eq "silhouette") {
         $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_silhouette_v12.json"
+    } elseif ($Mode -eq "style") {
+        $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_style_v13.json"
+    } elseif ($Mode -eq "integrity") {
+        $RecipePath = Join-Path $factoryRoot "recipes\local_street_gang_rifleman_integrity_v14.json"
     } else {
         $RecipePath = Join-Path $factoryRoot "recipes\smoke_genesis9.json"
     }
@@ -160,6 +164,16 @@ $runId = "{0}_{1}" -f (Get-Date -Format "yyyyMMdd_HHmmss"), $Mode
 $runDir = Join-Path $outputRoot "runs\$runId"
 $sourceDir = Join-Path $runDir "source"
 New-Item -ItemType Directory -Force -Path $runDir, $sourceDir | Out-Null
+if ($Mode -eq "integrity") {
+    $origRoot = Join-Path $env:LOCALAPPDATA "DeadStreetCharacterFactory\runs\20260907_201120_style\source"
+    $origCopy = Join-Path $runDir "original_v13"
+    New-Item -ItemType Directory -Force -Path $origCopy | Out-Null
+    if (Test-Path -LiteralPath $origRoot) {
+        Copy-Item -LiteralPath (Join-Path $origRoot "local_street_gang_rifleman_proof_01_SOURCE_0_se.png") -Destination $origCopy -ErrorAction SilentlyContinue
+        Copy-Item -LiteralPath (Join-Path $origRoot "local_street_gang_rifleman_proof_01_SOURCE_1_se.png") -Destination $origCopy -ErrorAction SilentlyContinue
+        Copy-Item -LiteralPath (Join-Path $origRoot "local_street_gang_rifleman_proof_01_SOURCE_2_se.png") -Destination $origCopy -ErrorAction SilentlyContinue
+    }
+}
 
 $resultPath = Join-Path $runDir "factory_result.json"
 $dazResultPath = Join-Path $runDir "daz_result.json"
@@ -274,6 +288,18 @@ if ($dazResult) {
     if ($dazResult.PSObject.Properties['calibration_cells'] -and $dazResult.calibration_cells) {
         $baseResult.calibration_cells = $dazResult.calibration_cells
     }
+    if ($dazResult.PSObject.Properties['style_sources'] -and $dazResult.style_sources) {
+        $baseResult.style_sources = $dazResult.style_sources
+    }
+    if ($dazResult.PSObject.Properties['material_overrides'] -and $dazResult.material_overrides) {
+        $baseResult.material_overrides = $dazResult.material_overrides
+    }
+    if ($dazResult.PSObject.Properties['integrity_readbacks'] -and $dazResult.integrity_readbacks) {
+        $baseResult.integrity_readbacks = $dazResult.integrity_readbacks
+    }
+    if ($dazResult.PSObject.Properties['integrity_correction'] -and $dazResult.integrity_correction) {
+        $baseResult.integrity_correction = $dazResult.integrity_correction
+    }
 }
 
 if (-not $dazResult) {
@@ -330,6 +356,10 @@ $doneReason = if ($Mode -eq "proof") {
     "Unattended DAZ camera/pose calibration complete. No camera or pose is accepted. Art is not bound."
 } elseif ($Mode -eq "silhouette") {
     "Unattended DAZ hybrid rifle silhouette complete. Camera 56 is provisional, not canon. No pose is accepted. Art is not bound."
+} elseif ($Mode -eq "style") {
+    "Unattended DAZ style-conversion matrix complete. No style is accepted. Art is not bound."
+} elseif ($Mode -eq "integrity") {
+    "Unattended V1.4 source-integrity diagnostic complete. Isolation is not a production source. No style is accepted. Art is not bound."
 } else {
     "Unattended DAZ smoke and Godot PNG validation complete. Art is not product-accepted."
 }

@@ -1,0 +1,11 @@
+{
+  "status": "blocked_before_execution",
+  "reason": "Automatic approval review requires explicit permission for this private range-feature payload to the GitHub destination",
+  "destination": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "head": "d262e8f43f34b889ce72b1705d0f4de36d7e40fd",
+  "index": "",
+  "feature": "implemented_native_validated",
+  "checks": 234,
+  "preview_library_file_id": "libfile_5a697f4ecb308191a828e57f40a34f36"
+}

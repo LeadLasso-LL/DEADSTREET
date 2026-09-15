@@ -1,0 +1,30 @@
+{
+  "approved_title.png": {
+    "sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+    "bytes": 721425
+  },
+  "B-22_Dead_Street.mp3": {
+    "sha256": "e624827c72e62dc1c6568762f7ad73f7aaa3cf8b912dbb4ae88c6099887dbb5d",
+    "bytes": 2485267
+  },
+  "camera_ui.png": {
+    "sha256": "7a644fcbd0eb14f2f4954af138fdfa9a30bb758dccda72e39a45ad521e2008a3",
+    "bytes": 7563
+  },
+  "enter_button.png": {
+    "sha256": "ab435be80231cb6ef4f3d79d45cd8dab43e21879ebfdde99371a8f3e8a6a2b76",
+    "bytes": 1338
+  },
+  "montage.ogv": {
+    "sha256": "e9e5652f3a623feec4ae3de594c5c0faa6f9e9ce268c471e253b81aa47ad148c",
+    "bytes": 10011702
+  },
+  "open_button.png": {
+    "sha256": "2564c430caf661f52db6d324d20996e37abafc9ef768a80b72108d3ecb1938b6",
+    "bytes": 3565
+  },
+  "startup.ogv": {
+    "sha256": "57e45265cfa97531d6be9a9ed0c926a70f189248505ab8d6e5c0b43aa12317b6",
+    "bytes": 5017563
+  }
+}

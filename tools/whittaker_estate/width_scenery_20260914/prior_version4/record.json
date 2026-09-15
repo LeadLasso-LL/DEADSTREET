@@ -1,0 +1,1245 @@
+{
+  "actor_frame_checks": 39707,
+  "ambient_emitters": 2,
+  "arrival_manifest": [
+    {
+      "count": 7,
+      "passengers": [
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_01",
+          "route_end": "(48.1, 40.0)",
+          "route_start": "(43.336, 45.248)",
+          "seat": 0,
+          "start_seconds": 8.7
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_02",
+          "route_end": "(48.1, 46.0)",
+          "route_start": "(43.816, 45.888)",
+          "seat": 1,
+          "start_seconds": 9.22
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_03",
+          "route_end": "(41.41629, 50.80838)",
+          "route_start": "(43.816, 45.888)",
+          "seat": 2,
+          "start_seconds": 9.74
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_04",
+          "route_end": "(48.15, 42.0)",
+          "route_start": "(43.336, 45.248)",
+          "seat": 3,
+          "start_seconds": 10.26
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_05",
+          "route_end": "(48.1, 76.0)",
+          "route_start": "(34.664, 52.752)",
+          "seat": 4,
+          "start_seconds": 10.78
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_06",
+          "route_end": "(43.256, 45.808)",
+          "route_start": "(43.336, 45.248)",
+          "seat": 5,
+          "start_seconds": 11.3
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_07",
+          "route_end": "(48.15, 80.0)",
+          "route_start": "(34.664, 52.752)",
+          "seat": 6,
+          "start_seconds": 11.82
+        }
+      ],
+      "vehicle": "aegis"
+    },
+    {
+      "count": 5,
+      "passengers": [
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_08",
+          "route_end": "(48.1, 82.0)",
+          "route_start": "(43.76646, 74.00847)",
+          "seat": 0,
+          "start_seconds": 9.8
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_09",
+          "route_end": "(42.44182, 80.82549)",
+          "route_start": "(38.92635, 82.39154)",
+          "seat": 1,
+          "start_seconds": 10.32
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_10",
+          "route_end": "(48.1, 97.0)",
+          "route_start": "(38.92635, 82.39154)",
+          "seat": 2,
+          "start_seconds": 10.84
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_11",
+          "route_end": "(37.94051, 46.17402)",
+          "route_start": "(43.07365, 73.60846)",
+          "seat": 3,
+          "start_seconds": 11.36
+        },
+        {
+          "covered": true,
+          "flanker": false,
+          "id": "sandbox_attacker_unit_12",
+          "route_end": "(43.22005, 74.15488)",
+          "route_start": "(43.76646, 74.00847)",
+          "seat": 4,
+          "start_seconds": 11.88
+        }
+      ],
+      "vehicle": "watchdog"
+    },
+    {
+      "count": 4,
+      "passengers": [
+        {
+          "covered": true,
+          "flanker": true,
+          "id": "sandbox_attacker_unit_13",
+          "route_end": "(69.0, 103.5)",
+          "route_start": "(34.66253, 104.2707)",
+          "seat": 0,
+          "start_seconds": 10.9
+        },
+        {
+          "covered": true,
+          "flanker": true,
+          "id": "sandbox_attacker_unit_14",
+          "route_end": "(75.0, 103.5)",
+          "route_start": "(34.66253, 104.2707)",
+          "seat": 1,
+          "start_seconds": 11.42
+        },
+        {
+          "covered": true,
+          "flanker": true,
+          "id": "sandbox_attacker_unit_15",
+          "route_end": "(80.0, 108.85)",
+          "route_start": "(34.66253, 104.2707)",
+          "seat": 2,
+          "start_seconds": 11.94
+        },
+        {
+          "covered": true,
+          "flanker": true,
+          "id": "sandbox_attacker_unit_16",
+          "route_end": "(64.5, 103.45)",
+          "route_start": "(34.66253, 104.2707)",
+          "seat": 3,
+          "start_seconds": 12.46
+        }
+      ],
+      "vehicle": "vigil"
+    }
+  ],
+  "arrival_route_errors": [],
+  "attacking_units": 16,
+  "audio_shots": 261,
+  "camera_safety_frames": 2314,
+  "camera_safety_violations": 0,
+  "combat_seconds": 48.2999999999998,
+  "commands": [
+    {
+      "event": "south_gate_flank",
+      "time": 0.0,
+      "units": [
+        {
+          "gate_goal": "(85.0, 99.5)",
+          "id": "sandbox_attacker_unit_13",
+          "valid": true,
+          "waypoints": 2
+        },
+        {
+          "gate_goal": "(88.0, 99.5)",
+          "id": "sandbox_attacker_unit_14",
+          "valid": true,
+          "waypoints": 3
+        },
+        {
+          "gate_goal": "(91.0, 99.5)",
+          "id": "sandbox_attacker_unit_15",
+          "valid": true,
+          "waypoints": 2
+        },
+        {
+          "gate_goal": "(94.0, 99.5)",
+          "id": "sandbox_attacker_unit_16",
+          "valid": true,
+          "waypoints": 3
+        }
+      ]
+    },
+    {
+      "command": "hold",
+      "feedback": {
+        "accepted": 3,
+        "accepted_ids": [
+          "sandbox_attacker_unit_07",
+          "sandbox_attacker_unit_08",
+          "sandbox_attacker_unit_09"
+        ],
+        "command": "hold",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_07",
+        "sandbox_attacker_unit_08",
+        "sandbox_attacker_unit_09"
+      ],
+      "reason": "Firing support has established covered overwatch",
+      "time": 6.06666666666665
+    },
+    {
+      "event": "flanker_entered_gate",
+      "id": "sandbox_attacker_unit_14",
+      "position": "(88.0, 100.9744)",
+      "time": 7.03333333333332
+    },
+    {
+      "event": "flanker_entered_gate",
+      "id": "sandbox_attacker_unit_13",
+      "position": "(85.0, 100.9602)",
+      "time": 7.09999999999998
+    },
+    {
+      "event": "defender_counterattack",
+      "reason": "TRC assault has lost half its effective strength",
+      "result": {
+        "accepted": [
+          "sandbox_defender_unit_03",
+          "sandbox_defender_unit_05",
+          "sandbox_defender_unit_06",
+          "sandbox_defender_unit_08",
+          "sandbox_defender_unit_11",
+          "sandbox_defender_unit_12",
+          "sandbox_defender_unit_13",
+          "sandbox_defender_unit_14",
+          "sandbox_defender_unit_15",
+          "sandbox_defender_unit_16"
+        ],
+        "failed": []
+      },
+      "time": 12.1666666666666
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "accepted_ids": [
+          "sandbox_attacker_unit_09"
+        ],
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_09"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 26.2000000000005
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "accepted_ids": [
+          "sandbox_attacker_unit_07"
+        ],
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_07"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 42.3666666666668
+    },
+    {
+      "command": "clear",
+      "feedback": {
+        "accepted": 1,
+        "accepted_ids": [
+          "sandbox_attacker_unit_08"
+        ],
+        "command": "clear",
+        "failed": 0
+      },
+      "ids": [
+        "sandbox_attacker_unit_08"
+      ],
+      "reason": "Overwatch has lost contact; allow support to reposition",
+      "time": 44.4
+    }
+  ],
+  "convoy_slots": 3,
+  "defending_units": 16,
+  "entered_objective": [],
+  "extra_victory_card_seconds": 5,
+  "faction_vocals_enabled": false,
+  "faction_voice_events": [],
+  "frames": 2645,
+  "horn_gain_samples": [
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -13.5,
+      "movie_seconds": 6.0,
+      "phase": "arrival",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(102.7402, 405.7946)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -13.5,
+      "movie_seconds": 10.5,
+      "phase": "arrival",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -13.5,
+      "movie_seconds": 11.5,
+      "phase": "arrival",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -13.5,
+      "movie_seconds": 13.0,
+      "phase": "arrival",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -14.9326229095459,
+      "movie_seconds": 20.0,
+      "phase": "arrival",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -33.5,
+      "movie_seconds": 25.0,
+      "phase": "active",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    },
+    {
+      "attenuation": 0.219999998807907,
+      "gain_db": -33.1666679382324,
+      "movie_seconds": 30.0,
+      "phase": "active",
+      "pitch_scale": 0.75,
+      "playing": true,
+      "position": "(312.0, 294.0)",
+      "range": 2600.0
+    }
+  ],
+  "hud_weapon_models": [
+    {
+      "card_height": 46.0,
+      "class": "pistol",
+      "expected": "GLOCK 17",
+      "id": "sandbox_attacker_unit_01",
+      "matches": true,
+      "model": "GLOCK 17"
+    },
+    {
+      "card_height": 46.0,
+      "class": "pistol",
+      "expected": "GLOCK 17",
+      "id": "sandbox_attacker_unit_02",
+      "matches": true,
+      "model": "GLOCK 17"
+    },
+    {
+      "card_height": 46.0,
+      "class": "smg",
+      "expected": "HK MP5",
+      "id": "sandbox_attacker_unit_03",
+      "matches": true,
+      "model": "HK MP5"
+    },
+    {
+      "card_height": 46.0,
+      "class": "smg",
+      "expected": "HK MP5",
+      "id": "sandbox_attacker_unit_04",
+      "matches": true,
+      "model": "HK MP5"
+    },
+    {
+      "card_height": 46.0,
+      "class": "smg",
+      "expected": "HK MP5",
+      "id": "sandbox_attacker_unit_13",
+      "matches": true,
+      "model": "HK MP5"
+    },
+    {
+      "card_height": 46.0,
+      "class": "rifle",
+      "expected": "M4A1",
+      "id": "sandbox_attacker_unit_07",
+      "matches": true,
+      "model": "M4A1"
+    },
+    {
+      "card_height": 46.0,
+      "class": "rifle",
+      "expected": "M4A1",
+      "id": "sandbox_attacker_unit_08",
+      "matches": true,
+      "model": "M4A1"
+    },
+    {
+      "card_height": 46.0,
+      "class": "rifle",
+      "expected": "M4A1",
+      "id": "sandbox_attacker_unit_09",
+      "matches": true,
+      "model": "M4A1"
+    },
+    {
+      "card_height": 46.0,
+      "class": "rifle",
+      "expected": "M4A1",
+      "id": "sandbox_attacker_unit_10",
+      "matches": true,
+      "model": "M4A1"
+    },
+    {
+      "card_height": 46.0,
+      "class": "rifle",
+      "expected": "M4A1",
+      "id": "sandbox_attacker_unit_15",
+      "matches": true,
+      "model": "M4A1"
+    },
+    {
+      "card_height": 46.0,
+      "class": "rifle",
+      "expected": "M4A1",
+      "id": "sandbox_attacker_unit_16",
+      "matches": true,
+      "model": "M4A1"
+    },
+    {
+      "card_height": 46.0,
+      "class": "shotgun",
+      "expected": "BENELLI M4",
+      "id": "sandbox_attacker_unit_05",
+      "matches": true,
+      "model": "BENELLI M4"
+    },
+    {
+      "card_height": 46.0,
+      "class": "shotgun",
+      "expected": "BENELLI M4",
+      "id": "sandbox_attacker_unit_06",
+      "matches": true,
+      "model": "BENELLI M4"
+    },
+    {
+      "card_height": 46.0,
+      "class": "shotgun",
+      "expected": "BENELLI M4",
+      "id": "sandbox_attacker_unit_14",
+      "matches": true,
+      "model": "BENELLI M4"
+    },
+    {
+      "card_height": 46.0,
+      "class": "sniper",
+      "expected": "ACCURACY INTERNATIONAL AWM",
+      "id": "sandbox_attacker_unit_11",
+      "matches": true,
+      "model": "ACCURACY INTERNATIONAL AWM"
+    },
+    {
+      "card_height": 46.0,
+      "class": "sniper",
+      "expected": "ACCURACY INTERNATIONAL AWM",
+      "id": "sandbox_attacker_unit_12",
+      "matches": true,
+      "model": "ACCURACY INTERNATIONAL AWM"
+    }
+  ],
+  "max_outro_jump_pixels": 1.11990666389465,
+  "max_simultaneous_voices": 0,
+  "outro_errors": [],
+  "outro_kind": "check_comrades",
+  "phase": "resolved",
+  "phases": [
+    {
+      "battle_time": 0.0,
+      "frame": 1,
+      "phase": "arrival"
+    },
+    {
+      "battle_time": 0.0,
+      "frame": 650,
+      "phase": "ready"
+    },
+    {
+      "battle_time": 0.0,
+      "frame": 673,
+      "phase": "active"
+    },
+    {
+      "battle_time": 48.2999999999998,
+      "frame": 2122,
+      "phase": "ending"
+    }
+  ],
+  "presentation_errors": [],
+  "radio_bpm": 106,
+  "radio_gain_samples": [
+    {
+      "arrival_clock": 5.99999999999999,
+      "battle_mix": 0.0,
+      "gain_db": -25.0,
+      "movie_seconds": 6.0,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 10.5,
+      "battle_mix": 0.0,
+      "gain_db": -25.0,
+      "movie_seconds": 10.5,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 11.5,
+      "battle_mix": 0.0,
+      "gain_db": -25.0,
+      "movie_seconds": 11.5,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 13.0,
+      "battle_mix": 0.0,
+      "gain_db": -25.0,
+      "movie_seconds": 13.0,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 20.0000000000002,
+      "battle_mix": 0.0795901514380071,
+      "gain_db": -25.4775409698486,
+      "movie_seconds": 20.0,
+      "phase": "arrival"
+    },
+    {
+      "arrival_clock": 21.6666666666669,
+      "battle_mix": 1.0,
+      "gain_db": -35.0,
+      "movie_seconds": 25.0,
+      "phase": "active"
+    },
+    {
+      "arrival_clock": 21.6666666666669,
+      "battle_mix": 1.0,
+      "gain_db": -34.3333320617676,
+      "movie_seconds": 30.0,
+      "phase": "active"
+    }
+  ],
+  "radio_origin": "Original composition; no recordings or samples",
+  "result_camera_jump_pixels": 0.0,
+  "result_summaries": {
+    "attacker": {
+      "remaining": 0,
+      "retreated": false,
+      "text": "0 Units Remaining"
+    },
+    "defender": {
+      "remaining": 4,
+      "retreated": false,
+      "text": "4 Units Remaining"
+    }
+  },
+  "result_summary_checks": {
+    "checks": 9,
+    "errors": []
+  },
+  "results": {
+    "attacker": [
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_03",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "HK MP5 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_04",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "HK MP5 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_13",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "HK MP5 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_07",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_08",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_09",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_10",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_15",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_16",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_01",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_02",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "GLOCK 17 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_05",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "BENELLI M4 / T3"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_06",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "BENELLI M4 / T3"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_14",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "BENELLI M4 / T3"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_11",
+        "role": "SNIPER",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AWM / T3"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_attacker_unit_12",
+        "role": "SNIPER",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AWM / T3"
+      }
+    ],
+    "defender": [
+      {
+        "health_width": 123.0,
+        "id": "sandbox_defender_unit_13",
+        "role": "RIFLE",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 8.20000076293945,
+        "id": "sandbox_defender_unit_08",
+        "role": "SHOTGUN",
+        "state": "WOUNDED",
+        "tint": "(1.0, 0.72, 0.72, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 123.0,
+        "id": "sandbox_defender_unit_14",
+        "role": "SNIPER",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AWM / T3"
+      },
+      {
+        "health_width": 112.613334655762,
+        "id": "sandbox_defender_unit_15",
+        "role": "SNIPER",
+        "state": "ACTIVE",
+        "tint": "(1.0, 1.0, 1.0, 1.0)",
+        "weapon": "AWM / T3"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_03",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "MAC-10 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_04",
+        "role": "SMG",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "MAC-10 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_09",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_10",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_11",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_12",
+        "role": "RIFLE",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "M4A1 / T2"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_01",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "COLT M1911A1 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_02",
+        "role": "PISTOL",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "COLT M1911A1 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_05",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_06",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_07",
+        "role": "SHOTGUN",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "REMINGTON 870 / T1"
+      },
+      {
+        "health_width": 0.0,
+        "id": "sandbox_defender_unit_16",
+        "role": "SNIPER",
+        "state": "DEAD",
+        "tint": "(0.72, 0.22, 0.26, 1.0)",
+        "weapon": "AWM / T3"
+      }
+    ]
+  },
+  "seconds": 88.1666666666667,
+  "seed": 9146,
+  "showcase_loadout": {
+    "attacker": {
+      "faction": "trc",
+      "units": [
+        {
+          "armor": "patrol_vest",
+          "class": "pistol",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "glock_17"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "pistol",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "glock_17"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "smg",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "mp5"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "smg",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "mp5"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "benelli_m4"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "benelli_m4"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "awm"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "awm"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "smg",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "mp5"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "benelli_m4"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "m4a1"
+        }
+      ],
+      "vehicle_occupants": [
+        {
+          "bed": 0,
+          "units": 7
+        },
+        {
+          "bed": 0,
+          "units": 5
+        },
+        {
+          "bed": 0,
+          "units": 4
+        }
+      ],
+      "vehicles": [
+        "aegis",
+        "watchdog",
+        "vigil"
+      ]
+    },
+    "defender": {
+      "faction": "whittaker",
+      "units": [
+        {
+          "armor": "reinforced_carrier",
+          "class": "pistol",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m1911"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "pistol",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m1911"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "smg",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "mac10"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "smg",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "mac10"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "rem870"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "rem870"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "rem870"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "rem870"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "awm"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "awm"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "awm"
+        }
+      ],
+      "vehicles": [
+        "mesa",
+        "outlander",
+        "workhorse"
+      ]
+    },
+    "estate_flank_count": 4,
+    "map_id": "whittaker_estate"
+  },
+  "trim_frames": 1,
+  "victory_audio_samples": [
+    {
+      "cards_visible": false,
+      "end_clock": 0.1,
+      "levels": [
+        {
+          "attenuation": 0.219999998807907,
+          "foreground": 0.0,
+          "gain_db": -33.1666679382324,
+          "is_radio": false,
+          "panning": 0.349999994039536,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 1.20000004768372,
+          "foreground": 0.0,
+          "gain_db": -34.3333320617676,
+          "is_radio": true,
+          "panning": 0.75,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 70.8
+    },
+    {
+      "cards_visible": false,
+      "end_clock": 2.0,
+      "levels": [
+        {
+          "attenuation": 0.219999998807907,
+          "foreground": 0.0,
+          "gain_db": -42.5,
+          "is_radio": false,
+          "panning": 0.349999994039536,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.0,
+          "foreground": 1.0,
+          "gain_db": -18.0,
+          "is_radio": true,
+          "panning": 0.0,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 72.7
+    },
+    {
+      "cards_visible": true,
+      "end_clock": 8.46666666666665,
+      "levels": [
+        {
+          "attenuation": 0.219999998807907,
+          "foreground": 0.0,
+          "gain_db": -45.5,
+          "is_radio": false,
+          "panning": 0.349999994039536,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.0,
+          "foreground": 1.0,
+          "gain_db": -18.0,
+          "is_radio": true,
+          "panning": 0.0,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 79.1666666666667
+    },
+    {
+      "cards_visible": true,
+      "end_clock": 15.4666666666666,
+      "levels": [
+        {
+          "attenuation": 0.219999998807907,
+          "foreground": 0.0,
+          "gain_db": -45.5,
+          "is_radio": false,
+          "panning": 0.349999994039536,
+          "playing": true,
+          "side": "attacker"
+        },
+        {
+          "attenuation": 0.0,
+          "foreground": 1.0,
+          "gain_db": -18.0,
+          "is_radio": true,
+          "panning": 0.0,
+          "playing": true,
+          "side": "defender"
+        }
+      ],
+      "movie_seconds": 86.1666666666667
+    }
+  ],
+  "voice_clips_loaded": 0,
+  "voice_missing": [],
+  "winner": "defender"
+}

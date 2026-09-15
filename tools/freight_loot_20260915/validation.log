@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/freight_loot_20260915/validate.gd:10)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.8000001907349, 0.0) segment=0 into=11.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+FREIGHT_LOOT {"baseline_duration":6.0,"defender_unchanged":true,"duration":6.0,"failures":[],"moving":10,"routes":[{"distance":11.876239657402,"goal":"(50.8, 21.6)","id":"sandbox_attacker_unit_01","travel":2.82767610890525},{"distance":12.9448866844177,"goal":"(50.8, 30.4)","id":"sandbox_attacker_unit_02","travel":3.08211587724232},{"distance":18.7556738853455,"goal":"(56.8, 52.4)","id":"sandbox_attacker_unit_03","travel":4.46563663936797},{"distance":24.5086557865143,"goal":"(59.4, 52.4)","id":"sandbox_attacker_unit_04","travel":5.83539423488435},{"distance":12.5941476821899,"goal":"(53.4, 21.6)","id":"sandbox_attacker_unit_05","travel":2.99860659099761},{"distance":10.8541479110718,"goal":"(53.4, 30.4)","id":"sandbox_attacker_unit_06","travel":2.58432093120757},{"distance":17.2652115821838,"goal":"(56.8, 43.6)","id":"sandbox_attacker_unit_07","travel":4.11076466242472},{"distance":22.7233924865723,"goal":"(62.0, 52.4)","id":"sandbox_attacker_unit_08","travel":5.41033154442197},{"distance":13.3575801849365,"goal":"(56.0, 21.6)","id":"sandbox_attacker_unit_09","travel":3.1803762345087},{"distance":23.6368885040283,"goal":"(56.0, 30.4)","id":"sandbox_attacker_unit_10","travel":5.62783059619722}],"walking_at_5s":6}

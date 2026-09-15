@@ -1,0 +1,54 @@
+{
+	"checks": 302,
+	"errors": [],
+	"launches": [
+		{
+			"arrival_errors": [],
+			"covered": 10,
+			"map": "harold",
+			"units": 5
+		},
+		{
+			"arrival_errors": [],
+			"covered": 31,
+			"map": "harold",
+			"units": 16
+		},
+		{
+			"arrival_errors": [],
+			"covered": 15,
+			"map": "river_bridge",
+			"units": 8
+		},
+		{
+			"arrival_errors": [],
+			"covered": 28,
+			"map": "river_bridge",
+			"units": 16
+		},
+		{
+			"arrival_errors": [],
+			"covered": 24,
+			"map": "whittaker_estate",
+			"units": 12
+		},
+		{
+			"arrival_errors": [],
+			"covered": 32,
+			"map": "whittaker_estate",
+			"units": 16
+		},
+		{
+			"arrival_errors": [],
+			"covered": 14,
+			"map": "doble_ocho",
+			"units": 7
+		},
+		{
+			"arrival_errors": [],
+			"covered": 32,
+			"map": "doble_ocho",
+			"units": 16
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+  "structural_validation": "PASS",
+  "frames": 5946,
+  "seconds": 155.32408163264,
+  "sample_rates": [
+    44100
+  ],
+  "bitrates_kbps": [
+    128
+  ],
+  "all_bytes_parsed": true,
+  "full_decode_test": false
+}

@@ -1,0 +1,58 @@
+{
+  "gameplay/sandbox_convoy_rules.gd": [
+    {
+      "line": 12,
+      "context": " if count<1 or count>MAX_UNITS:return {\"valid\":false,\"error\":\"Choose 1\u201316 units.\",\"badge\":\"UNIT LIMIT\"}\n for id in models:\n  if not id is String or not Models.has_model(id):return {\"valid\":false,\"error\":\"Choose a valid vehicle.\",\"badge\":\"UNAVAILABLE\"}\n if models.size()>count:return {\"valid\":false,\"error\":\"Each vehicle needs one of your units to drive it.\",\"badge\":\"NEEDS DRIVER\"}\n var groups=Formation.slots(models,faction)\n if groups.size()>MAX_SLOTS:return {\"valid\":false,\"error\":\"Your convoy has three vehicle slots.\",\"badge\":\"SLOTS FULL\"}\n var seats=int(Models.convoy(models).get(\"units\",0))\n if complete and (models.is_empty() or seats<count):return {\"valid\":false,\"error\":\"Add seats for %d more units.\"%maxi(0,count-seats),\"badge\":\"MORE SEATS\"}\n if not complete:\n  var possible=seats+(MAX_SLOTS-groups.size())*12\n  if Formation.packs_motorcycles(faction):"
+    },
+    {
+      "line": 18,
+      "context": " var seats=int(Models.convoy(models).get(\"units\",0))\n if complete and (models.is_empty() or seats<count):return {\"valid\":false,\"error\":\"Add seats for %d more units.\"%maxi(0,count-seats),\"badge\":\"MORE SEATS\"}\n if not complete:\n  var possible=seats+(MAX_SLOTS-groups.size())*12\n  if Formation.packs_motorcycles(faction):\n   for group in groups:\n    if group.motorcycles:possible+=(3-group.indices.size())*2\n  if possible<count:return {\"valid\":false,\"error\":\"This choice leaves too few seats within three slots.\",\"badge\":\"TOO FEW SEATS\"}\n return {\"valid\":true,\"error\":\"\",\"badge\":\"\",\"seats\":seats,\"slots\":groups.size()}\nstatic func addition(models: Array,id: String,count: int,faction: String) -> Dictionary:\n var next=models.duplicate();next.append(id);return check(next,count,faction,false)"
+    },
+    {
+      "line": 20,
+      "context": " if not complete:\n  var possible=seats+(MAX_SLOTS-groups.size())*12\n  if Formation.packs_motorcycles(faction):\n   for group in groups:\n    if group.motorcycles:possible+=(3-group.indices.size())*2\n  if possible<count:return {\"valid\":false,\"error\":\"This choice leaves too few seats within three slots.\",\"badge\":\"TOO FEW SEATS\"}\n return {\"valid\":true,\"error\":\"\",\"badge\":\"\",\"seats\":seats,\"slots\":groups.size()}\nstatic func addition(models: Array,id: String,count: int,faction: String) -> Dictionary:\n var next=models.duplicate();next.append(id);return check(next,count,faction,false)\nstatic func auto_fit(count: int,faction: String=\"\") -> Array:\n if count<=12:"
+    }
+  ],
+  "gameplay/sandbox_convoy_slots.gd": [
+    {
+      "line": 20,
+      "context": " if is_node_ready():rebuild()\nfunc rebuild():\n for c in get_children():remove_child(c);c.queue_free()\n cells=[]\n var groups=Formation.slots(models,faction)\n var w=(size.x-20.)/3.\n for i in range(3):\n  var panel=Panel.new();add_child(panel);panel.name=\"Slot%d\"%(i+1);panel.position=Vector2(i*(w+10),0);panel.size=Vector2(w,size.y)\n  panel.add_theme_stylebox_override(\"panel\",Card.style(Color(\"#223238\") if i<groups.size() else Color(\"#152127\"),Color(\"#698071\") if i<groups.size() else Color(\"#45565b\")))\n  cells.append(panel)\n  if i>=groups.size():"
+    }
+  ],
+  "gameplay/sandbox_force_config.gd": [
+    {
+      "line": 66,
+      "context": " if not legal.valid:return legal\n var seating=Formation.manifest(config.attacker.vehicles,counts.attacker,config.attacker.get(\"vehicle_occupants\",[]))\n if not seating.valid:return {\"valid\":false,\"error\":seating.error}\n var convoy=Models.convoy(config.attacker.vehicles,counts.attacker)\n convoy[\"slots\"]=Formation.slots(config.attacker.vehicles,config.attacker.faction).size()\n if not convoy.valid:return {\"valid\":false,\"error\":convoy.get(\"error\",\"Choose transport for every attacker.\")}\n if config.get(\"map_id\",\"harold\")==\"river_bridge\":\n  var defender=config.defender.get(\"vehicles\",[])\n  if not defender is Array:return {\"valid\":false,\"error\":\"Choose defending vehicles.\"}\n  for id in defender:\n   if not id is String or not Models.has_model(id):return {\"valid\":false,\"error\":\"Choose valid defending vehicles.\"}"
+    }
+  ],
+  "gameplay/tactical_convoy_setup.gd": [
+    {
+      "line": 16,
+      "context": " vehicles.sort_custom(func(a,z):return a.battle_vehicle_id<z.battle_vehicle_id)\n var manifest=Formation.manifest(team.vehicles,units.size(),team.get(\"vehicle_occupants\",[]))\n if not manifest.valid:return {\"error\":manifest.error}\n if vehicles.size()!=team.vehicles.size():return {\"error\":\"Convoy vehicle count mismatch.\"}\n var groups=Formation.slots(team.vehicles,team.faction)\n for slot in range(groups.size()):\n  var members=groups[slot].indices\n  for member in range(members.size()):\n   var v=vehicles[members[member]]\n   v.set_meta(\"convoy_slot\",slot);v.set_meta(\"convoy_member\",member);v.set_meta(\"convoy_group_size\",members.size())\n var cursor=0"
+    }
+  ],
+  "gameplay/vehicle_fleet_panel.gd": [
+    {
+      "line": 97,
+      "context": " seat_bar.max_value=required_units\n convoy_row.configure(selected,faction_id)\n var summary=Models.convoy(selected);var legal=Rules.check(selected,required_units,faction_id);var seats=int(summary.get(\"units\",0))\n apply_button.disabled=not legal.valid\n slot_label.text=\"%d / 3 slots\"%Formation.slots(selected,faction_id).size()\n status.text=\"%d / %d seats  %s\"%[seats,required_units,\"\u2014 READY\" if legal.valid else \"\u2014 \"+str(legal.error)]\n status.add_theme_color_override(\"font_color\",Color(\"#b9d4b9\") if legal.valid else Color(\"#e0b49b\"));seat_bar.value=mini(seats,required_units)\n refresh_availability()\nfunc open_encounter_lab():\n if has_node(\"EncounterLab\"):return\n var lab=load(\"res://gameplay/vehicle_encounter_lab.gd\").new();lab.name=\"EncounterLab\";lab.battle_requested.connect(func(context):blockade_battle_requested.emit(context));add_child(lab)"
+    }
+  ],
+  "campaign/vehicles/convoy_formation_catalog.gd": [
+    {
+      "line": 8,
+      "context": "const Models=preload(\"res://campaign/vehicles/vehicle_model_catalog.gd\")\nstatic func motorcycle(id: String) -> bool:\n var m=Models.model(id)\n return m.get(\"vehicle_class\",\"\")==\"two_wheelers\" and m.get(\"body\",\"\")!=\"bicycle\"\nstatic func packs_motorcycles(faction_id: String) -> bool:\n return faction_id in [\"stateline\",\"blacktop\",\"nbpd\",\"trc\"]\nstatic func slots(models: Array,faction_id: String) -> Array:\n var result=[]\n for i in range(models.size()):\n  var pack=packs_motorcycles(faction_id) and motorcycle(str(models[i]))\n  var placed=false"
+    },
+    {
+      "line": 13,
+      "context": " return faction_id in [\"stateline\",\"blacktop\",\"nbpd\",\"trc\"]\nstatic func slots(models: Array,faction_id: String) -> Array:\n var result=[]\n for i in range(models.size()):\n  var pack=packs_motorcycles(faction_id) and motorcycle(str(models[i]))\n  var placed=false\n  if pack:\n   for group in result:\n    if group.motorcycles and group.indices.size()<3:\n     group.indices.append(i);placed=true;break\n  if not placed:result.append({\"indices\":[i],\"motorcycles\":pack})"
+    },
+    {
+      "line": 17,
+      "context": "  var pack=packs_motorcycles(faction_id) and motorcycle(str(models[i]))\n  var placed=false\n  if pack:\n   for group in result:\n    if group.motorcycles and group.indices.size()<3:\n     group.indices.append(i);placed=true;break\n  if not placed:result.append({\"indices\":[i],\"motorcycles\":pack})\n return result\nstatic func bed_capacity(model_id: String) -> int:\n return 2 if Models.model(model_id).get(\"body\",\"\") in [\"pickup\",\"crew_pickup\"] else 0\nstatic func manifest(models: Array,count: int,chosen: Array=[]) -> Dictionary:"
+    },
+    {
+      "line": 18,
+      "context": "  var placed=false\n  if pack:\n   for group in result:\n    if group.motorcycles and group.indices.size()<3:\n     group.indices.append(i);placed=true;break\n  if not placed:result.append({\"indices\":[i],\"motorcycles\":pack})\n return result\nstatic func bed_capacity(model_id: String) -> int:\n return 2 if Models.model(model_id).get(\"body\",\"\") in [\"pickup\",\"crew_pickup\"] else 0\nstatic func manifest(models: Array,count: int,chosen: Array=[]) -> Dictionary:\n if not Models.convoy(models,count).valid:return {\"valid\":false,\"error\":\"Convoy needs a driver per vehicle and a seat for every unit.\"}"
+    }
+  ]
+}

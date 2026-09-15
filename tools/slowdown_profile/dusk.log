@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: debug HQ assault launched mission=debug_hq_assault force=debug_hq_force state=traveling_outbound
+GameplayRuntime: after_launch force=debug_hq_force state=traveling_outbound campaign_pos=(5.0, 0.0) segment=0 into=5.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed player_soldier at (20.0, 37.0)
+TacticalDeploymentController: deployed player_soldier_shotgun at (22.0, 37.0)
+TacticalDeploymentController: deployed player_soldier_smg at (24.0, 37.0)
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+PIXEL_REVIEW_ACTIVE participants=6
+PIXEL_REVIEW_REPORT {"active_combat_mean_fps":58.6843467143092,"active_combat_p95_ms":16.97,"alive":3,"clips_observed":{"aim":296,"cover_tucked_idle":2,"death":7601,"fire":117,"hit":80,"idle":6,"walk":5525,"wounded_walk":2525},"elapsed_real_seconds":45.0065253333321,"mean_fps":59.8135488145825,"observed_shots":44,"p95_frame_ms":16.6666666666667,"participants":6,"phase":"resolved","simulation_seconds":4.82241033333333,"wounded":4}

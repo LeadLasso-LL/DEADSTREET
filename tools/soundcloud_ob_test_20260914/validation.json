@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "full_decode": true,
+    "duration_matches": true,
+    "bytes_match": true,
+    "sha256_matches": true
+  },
+  "all_pass": true,
+  "decoded_seconds": 139.59836734693877,
+  "source_seconds": 139.662,
+  "pcm_bytes": 24625152,
+  "sample_rate": 44100,
+  "channels": 2,
+  "decode_exit_code": 0,
+  "settings_changed": false,
+  "playlist_installed": false,
+  "independent_listening_verdict": false
+}

@@ -93,7 +93,9 @@ func skip_to_ready():
  stage="ready";clock=intro_duration;routes={};apply_poses()
 func is_bridge() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
 func is_estate() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="whittaker_estate_v1"
-func fixed_defenders() -> bool:return is_bridge() or is_estate()
+func is_yard() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="doble_ocho_yard_v1"
+func is_freight() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="freight_exchange_v1"
+func fixed_defenders() -> bool:return is_bridge() or is_estate() or is_yard() or is_freight()
 func begin_arrival():
  stage="arrival";clock=0.;routes={};last_path_errors=[];original_zoom=view._dusk_zoom;original_pan=view._dusk_pan
  if view.deployment_controller!=null:view.deployment_controller.apply_pending_cover_to_live()
@@ -145,13 +147,15 @@ func _process(delta):
   arrival_buttons[choice].disabled=b.is_side_deployment_committed(b.attacker_side_id)
  arrival_status.text={"close":"Closer contact. Less room before the first exchange.","medium":"Balanced approach with nearby street cover.","far":"More space to organize. A longer advance to contact."}.get(b.arrival_choice,"")
  if is_bridge():arrival_status.text="WEST APPROACH / Convoy stops behind the traffic queue."
+ if is_freight():arrival_status.text="EASTEX FREIGHT EXCHANGE / Convoy enters through the receiving gate."
+ if is_yard():arrival_status.text="AUTO YARD / Main gate and service-gate approach."
  if is_estate():arrival_status.text="ESTATE APPROACH / Convoy enters from the public road."
  if stage=="deployment" and b.battle_phase=="deployment" and all_committed():begin_arrival()
  if b.battle_phase=="active" and stage!="active":
   stage="active";routes={};sound.set_engine(Vector2.ZERO,false)
   if not start_played:sound.play("start",Vector2(32,28),-19.);start_played=true
  if b.battle_phase=="resolved" and stage!="ending":
-  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if is_estate() else (Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE),view)
+  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/freight_exchange_catalog.gd").ENTRANCE if is_freight() else preload("res://battle/geometry/doble_ocho_catalog.gd").ENTRANCE if is_yard() else (preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if is_estate() else (Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)),view)
  if stage=="arrival":
   clock+=delta
   if clock>=6.6 and not door_played:
@@ -198,6 +202,12 @@ func apply_poses():
    at+=offset
    if is_estate():
     var pose=preload("res://gameplay/estate_battle_setup.gd").arrival_pose(v,clock,stop)
+    at=pose.position;node.facing=pose.facing
+   if is_freight():
+    var pose=preload("res://gameplay/freight_exchange_setup.gd").arrival_pose(v,clock,stop)
+    at=pose.position;node.facing=pose.facing
+   if is_yard():
+    var pose=preload("res://gameplay/doble_ocho_setup.gd").arrival_pose(v,clock,stop)
     at=pose.position;node.facing=pose.facing
    node.position=at*Vector2(8,6)
    node.door_open=smoothstep(stop+.05,stop+.65,clock)
@@ -252,6 +262,8 @@ func apply_poses():
   if target_distance-float(route.distance)>.85:
    route.distance=target_distance;sound.play("step"+str(sound.cursor%4),point,-22.,sound.cursor)
 func vehicle_stop_time(vehicle) -> float:
+ if is_freight():return [8.8,11.0,13.2][clampi(int(vehicle.get_meta("convoy_slot",0)),0,2)]+float(vehicle.get_meta("convoy_member",0))*.28 if vehicle!=null else 8.8
+ if is_yard():return 8.4+float(vehicle.get_meta("convoy_slot",0))*1.7 if vehicle!=null else 8.4
  if is_estate():return 8.0+float(vehicle.get_meta("convoy_slot",0))*1.1 if vehicle!=null else 8.0
  return 6.5+float(vehicle.get_meta("convoy_slot",0))*.18 if vehicle!=null else 6.5
 func prepare_riders():
@@ -282,16 +294,22 @@ func update_markers():
   var node=view.actor_presenter._unit_nodes[id]
   if not markers.has(id):
    var badge=preload("res://gameplay/tactical_emblem_marker.gd").new();surface.add_child(badge)
-   badge.emblem.texture=Factions.for_side(battle,p.side_id).emblem;Factions.style_emblem(badge.emblem);markers[id]=badge
+   Factions.style_emblem(badge.emblem);markers[id]=badge
   var badge=markers[id];badge.visible=identifiers_enabled and p.is_alive and node.visible and stage!="deployment" and not results_visible()
   badge.set_selected(view.orders_controller!=null and view.orders_controller.is_selected(id))
   var lift=-26. if p.is_alive else -8.
   if p.is_alive and (p.has_occupied_cover_slot() or p.is_wounded):lift=-19.
   var at=node.get_global_transform_with_canvas()*Vector2(0,lift)
-  badge.position=at/surface.scale.x-Vector2(8,17);badge.size=Vector2(16,16);badge.modulate.a=1. if p.is_alive else .55
+  var stretch=view.get_viewport().get_stretch_transform()
+  var parent_pixels=stretch*surface.get_global_transform_with_canvas()
+  var pixels=maxi(24,roundi(view.get_viewport_rect().size.x*stretch.x.length()*24./1280.))
+  badge.configure(Factions.for_side(battle,p.side_id).emblem,pixels)
+  badge.scale=Vector2.ONE/parent_pixels.x.length()
+  badge.position=parent_pixels.affine_inverse()*((stretch*at)+Vector2(-float(pixels)*.5,-float(pixels)-2.)).round()
+  badge.modulate.a=1. if p.is_alive else .55
   if is_estate():
    if stage=="arrival" and clock<4.4:badge.visible=false
-   if stage in ["active","ending"] and badge.position.y+16.>surface.size.y-266.:badge.visible=false
+   if stage in ["active","ending"] and badge.position.y+badge.size.y*badge.scale.y>surface.size.y-266.:badge.visible=false
 func build_results():
  result_summaries={}
  result_root=Control.new();surface.add_child(result_root);result_root.mouse_filter=Control.MOUSE_FILTER_IGNORE;result_root.modulate.a=0.
@@ -344,12 +362,12 @@ class Context extends Control:
   if p.attacker.emblem!=null:draw_emblem(p.attacker.emblem,left)
   if p.defender.emblem!=null:draw_emblem(p.defender.emblem,right)
   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
-  draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("CITY OUTSKIRTS  /  WHITTAKER ESTATE" if p.is_estate() else ("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE.")),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
+  draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("EASTEX  /  EASTEX FREIGHT EXCHANGE" if p.is_freight() else "SOUTH SIDE  /  DOBLE OCHO AUTO YARD" if p.is_yard() else "CITY OUTSKIRTS  /  WHITTAKER ESTATE" if p.is_estate() else ("CALDER RIVER  /  CALDER MEMORIAL BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE.")),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
   draw_faction_title(p,p.attacker,Vector2(60,45),Vector2(155,98),212.,t,ink)
   draw_faction_title(p,p.defender,Vector2(343,45),Vector2(675,98),126.,t,ink)
   draw_string(p.font,Vector2(60,65).lerp(Vector2(155,140),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
   draw_string(p.font,Vector2(343,65).lerp(Vector2(675,140),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
-  var location="ESTATE ASSAULT" if p.is_estate() else ("ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS")
+  var location="FREIGHT YARD ASSAULT" if p.is_freight() else "GARAGE RAID" if p.is_yard() else "ESTATE ASSAULT" if p.is_estate() else ("ROAD BLOCKADE" if p.is_bridge() else "HAROLD AVE.")
   var location_size=int(lerpf(8,12,t))
   var location_width=p.font.get_string_size(location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size).x
   draw_string(p.font,Vector2(size.x-lerpf(12.,30.,t)-location_width,lerpf(17.,29.,t)),location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size,muted)

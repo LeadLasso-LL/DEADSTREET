@@ -1,405 +1,3165 @@
 # Dead Street — Hive Mind
 
+
+
+
+
+
+
 **Shared entry point for all future chats.**
+
+
+
 Established by Brandon on 2026-09-13. Maintained by the assistant doing the work.
-Coordination last reconciled: 2026-09-14, after the corrected Whittaker Estate recording.
+
+
+
+Coordination last reconciled: 2026-09-15, after bike-slots-04 native validation. Sandbox and Eastex Freight revision04 are ready for owner review.
+
+
 Gameplay evidence: fresh native runs, scoped checks and deterministic replay; see current report.
+
+
+
 This is a saved record, not an automatic feed of activity in other chats.
+
+
+
+
+
+
 
 ## The rule
 
+
+
+
+
+
+
 **Record everything needed to preserve the intent, reasoning, current state,
+
+
+
 and next step of Dead Street development. Update the record during the work,
+
+
+
 including meaningful discussion that changes no code. Brandon does not have
+
+
+
 to request documentation or prepare handoffs.**
 
+
+
+
+
+
+
 The record must let the next chat answer: what are we building, why, what is
+
+
+
 accepted, what is unfinished, what failed, what changed, and what should happen next?
+
+
+
+
+
+
 
 ## Where each kind of truth lives
 
+
+
+
+
+
+
 | Record | Owns |
+
+
+
 | --- | --- |
+
+
+
 | [AGENTS.md](../AGENTS.md) | Short startup and mandatory recording instructions |
+
+
+
 | **This Hive Mind** | Reading map, collaboration rules, active ownership, immediate continuation and unresolved handoff gaps |
+
+
+
 | [Journal](DEAD_STREET_JOURNAL.md) | Dated decisions, rationale, corrections, experiments, results, work events and source provenance |
+
+
+
 | [Project Control](DEAD_STREET_PROJECT_CONTROL.md) | Canonical milestone/feature status, architecture roadmap and development tracker |
+
+
+
 | Topic documents and accepted references below | Detailed product rules, art standards, implementation notes and evidence |
+
+
+
 | Git and actual working files | What is committed, what changed, and what exists now |
 
+
+
+
+
+
+
 Use one authoritative home for each fact. The Hive Mind indexes and coordinates
+
+
+
 the existing tracker; it does not replace the tracker or duplicate the full GDD.
+
+
+
 A dated snapshot stays a snapshot. Update live state in its owning record.
 
+
+
+
+
+
+
 **Precedence:** latest explicit Brandon decision → current accepted design/standards
+
+
+
 → current implementation evidence for what exists → validated milestone records
+
+
+
 → older concepts → speculation. Resolve conflicts explicitly in the journal.
+
+
+
 Existing code does not automatically mean approved design.
+
+
+
+
+
+
 
 ## New-chat startup
 
+
+
+
+
+
+
 1. Read AGENTS.md, this file, recent journal entries, and current dated Project
+
+
+
    Control milestones. Read older/topic material when the task requires it.
+
+
+
 2. Verify the repository/branch/HEAD, status and affected source. Check whether a
+
+
+
    recorded active pass has finished before overlapping its work.
+
+
+
 3. Inspect uncommitted/untracked work as well as commits. Record what is yours;
+
+
+
    preserve unrelated work and unfinished experiments.
+
+
+
 4. Identify the current task, last accepted result, unresolved decisions,
+
+
+
    validation state, and exact next action. Resolve concrete gaps from the
+
+
+
    linked records or a targeted question; do not invent missing context.
+
+
+
 5. Update the work register when ownership/scope changes, then proceed under the
+
+
+
    existing authorization. No ceremonial reapproval or full transcript export.
+
+
+
+
+
+
 
 ## Repository and access
 
+
+
+
+
+
+
 - Development PC: DESKTOP-7CL4DM3.
+
+
+
 - Device identifier: 01064661-3272-4194-85ad-718eef125dd5.
+
+
+
 - Repository: C:\Users\brand\OneDrive\Documents\dead-street
+
+
+
 - Documented origin: https://github.com/LeadLasso-LL/DEADSTREET.git
+
+
+
 - Observed build branch: build/arsenal-checkpoint-20260911
-- Published presentation checkpoint: 555d6925fbf1a965a3b8027bc2f5186fdd19d4bc.
-- Verified remote checkpoint: 555d6925fbf1a965a3b8027bc2f5186fdd19d4bc.
-- Owner feedback source, handoff and validation evidence are published; version-4 siren/card review next.
+
+- Working HEAD verified for sandbox-maps-04: 35e0db12aae4d114364c911a69ae2136de30ee4e; empty index, mixed local source retained. Audio checkpoint publication is verified in faction-reassign-04; this sandbox refresh is local/uncommitted.
+
+
+
+- Published presentation checkpoint: 54b1597c28e143d753525b8154df386a2af60fc4.
+
+
+
+- Verified remote checkpoint: 54b1597c28e143d753525b8154df386a2af60fc4.
+
+
+
+- Owner feedback source, handoff and validation evidence are published; version-6 presentation review next.
+
+
+
 - [Standing commit/push authorization](PROJECT_WORKFLOW_AUTHORIZATION.md) applies
+
+
+
   to the established work/destination. Preserve scope and unrelated changes.
 
+
+
+
+
+
+
 A fresh ChatGPT chat must have access to this repository and be directed to this
+
+
+
 entry point. Files here do not themselves attach to every chat, update ChatGPT
+
+
+
 Project settings, or automatically synchronize an active chat's internal context.
 
+
+
+
+
+
+
 Suggested one-time Project instruction:
+
+
+
 “Before Dead Street work, read AGENTS.md and docs/DEAD_STREET_HIVE_MIND.md in the
+
+
+
 live Dead Street repository. Follow their documentation and handoff workflow.”
+
+
+
+
+
+
 
 ## Current coordination and next action
 
-**Active objective:** Pistol card anatomy pass implemented and validated: 138 regular portraits repaired, all SW/SE static views reviewed, unchanged dual specialist included in 139-entry native check. See journal pistol-portrait-03 and tools/pistol_portrait_20260914/README.md.
+
+
+
+
+
+
+**Active objective (2026-09-15):** Sandbox refresh and two/four-bike packing/title pass COMPLETE / native-validated / owner review. See bike-slots-04 and tools/bike_slots_20260915/README.md. Canonical names and three-slot/16-per-side setup remain. Separate Eastex Freight revision04 MP4 is delivered.
+
+
+
+
+
 
 **Checkpoint / publication:** PUSHED / VERIFIED: pistol art/source checkpoint 6ebfd61a59562cb3fb2d6636dcf880a92e7186f0 on origin/build/arsenal-checkpoint-20260911. Publication receipt and documentation follow-up accompany this checkpoint. See tools/pistol_portrait_20260914/checkpoint_receipt.json and journal pistol-portrait-04. Estate presentation remains version 6.
 
+
+
+
+
+
+
 **Latest estate evidence:** 834 native HUD checks across bridge/estate and three viewports; 39707 actor-frame checks in final capture, zero presentation/route/HUD camera errors. Version-6 video 88.197s; native combat 48.30s with four Whittaker survivors. Exact accepted-battle comparison and 195 protected source hashes pass; see estate README.
 
+
+
+
+
+
+
 **Earlier bridge evidence:** Normal 24-unit release averaged 59.67 FPS; P95 17.028 ms,
+
+
+
 max 33.297 ms, zero frames over 33.333 ms. One five-second window was 57.90 FPS.
+
+
+
 The cover shortcut passed 4,545 predicate/replay checks. Current-scale play is
+
+
+
 sufficient to resume development; frame dips and larger-battle variability remain.
 
+
+
+
+
+
+
 Read [the bounded cover report](../tools/bridge_perf/cover_close/README.md)
+
+
+
 for source ownership, results and reproduction. The earlier
+
+
+
 [32-unit report](../tools/bridge_perf/slow_frames/README.md) remains evidence
+
+
+
 of unresolved expansion capacity. Revisit performance if current-scale play
+
+
+
 regresses, the unit cap increases, or release acceptance requires it.
 
-**Immediate next task:** Owner reviews the repaired pistol cards. Preserve accepted battle/presentation and animation assets. Future atlas rebuilds must reapply the documented portrait finishing step. Native check passes 556 checks/zero failures; no render or repair task remains running.
+
+
+
+
+
+
+**Immediate next task:** Owner reopens live-source Dead Street Sandbox to review the two/four-bike picker and approved title header. Relevant native launch, UI and sampled grouped-arrival checks pass. Preserve the seven-file bike scope and separate Freight revision04 work; no new commit/push by this pass.
+
+
+
+
+
 
 **Known gaps:**
-- Two maximum legal convoys remain the battle ceiling. Three vehicles per
-  convoy, legal combinations and final personnel cap are undecided. Raiders now pack up to three motorcycles per slot; this does not settle the global cap.
-- Production remains 12 units per side; larger test fixtures do not change it.
+
+
+
+- Superseded cap/packing gap: sandbox-maps-04 and bike-slots-04 establish16 units per side, exactly3 convoy slots,2 two-wheelers per slot generally and4 for Stateline/Blacktop/Zangyaku/Bitian/NBPD/TRC. Seats and actual drivers remain required.
+
+
+
 - Stable 60 FPS, expansion headroom and final bridge-art acceptance remain open.
+
+
+
 - Legacy whole-project core-regression status was not re-established.
+
+
+
 - Preserve unrelated character-factory/dusk/source-recovery work.
+
+
+
 - Full original chat transcripts were not recovered.
+
+
+
+
+
+
 
 ## Required documentation rhythm
 
+
+
+
+
+
+
 **At a meaningful user decision/correction:** record it before dependent work.
+
+
+
 Include what was decided, why, scope, source, status and what it supersedes.
+
+
+
 If the user has not given a reason, say so; separate any assistant inference.
 
+
+
+
+
+
+
 **During execution:** checkpoint useful experiments, material discoveries,
+
+
+
 changes of approach, blockers and recoverable intermediate state. Preserve
+
+
+
 failed approaches so future chats do not unknowingly repeat them.
 
+
+
+
+
+
+
 **Before reporting substantive work complete:** update the journal and the
+
+
+
 owning topic/milestone records; update this file only if coordination or next
+
+
+
 action changed. Save evidence and record tests actually run, limitations,
+
+
+
 uncommitted files, commit/push state, and the next step.
 
+
+
+
+
+
+
 **For ideas without implementation:** label PROPOSED/BACKLOG, retain the actual
+
+
+
 idea and rationale in the relevant topic/backlog, and link it from a journal event.
+
+
+
 Do not turn brainstorming into approved scope.
 
+
+
+
+
+
+
 **At handoff:** leave a current next action, exact checkpoint, dirty/untracked
+
+
+
 work ownership, open questions, known failures, results and evidence paths.
+
+
+
 The next chat reads those records directly. A full-chat export is a recovery
+
+
+
 fallback, never the normal prerequisite.
 
+
+
+
+
+
+
 Routine tool calls, unchanged status acknowledgments, and every transient log do
+
+
+
 not need separate entries. Preserve the information that changes future judgment.
+
+
+
+
+
+
 
 ## Journal and maintenance conventions
 
+
+
+
+
+
+
 Use dated, unique entries such as YYYYMMDD-topic-01. Include timezone when a time
+
+
+
 is known. Distinguish event date from the date historical evidence was recovered.
+
+
+
 An entry may cover one coherent decision or completed work pass.
 
+
+
+
+
+
+
 Minimal entry:
+
+
+
 - Type/status; source and author/chat.
+
+
+
 - Decision/change and reason.
+
+
+
 - Affected scope; alternatives rejected or superseded.
+
+
+
 - Validation and evidence, or “not run / not applicable.”
+
+
+
 - Outstanding work and exact next action; commit/push status when relevant.
 
+
+
+
+
+
+
 Append corrections with a supersedes/reference link. Do not silently rewrite
+
+
+
 historical approvals into rejections or erase failed attempts. When shared records
+
+
+
 change during your work, reread and merge before saving.
 
+
+
+
+
+
+
 Keep this entry point concise (about 200 lines). The journal is chronological;
+
+
+
 when it becomes unwieldy, archive completed older entries under docs/history/,
+
+
+
 retain an archive index and unresolved entries, and fix links in the same pass.
+
+
+
 Do not create a new competing “master” for each chat.
 
+
+
+
+
+
+
 Keep essential decision/spec text and small accepted reference examples durable
+
+
+
 with the project. For large external assets, record persistent location, identity,
+
+
+
 version/hash when available, and access route. Scratch paths alone are not a
+
+
+
 durable reference. Reports should link to the actual evidence and its fixture.
+
+
+
+
+
+
 
 ## Essential reading map
 
+
+
+
+
+
+
 | Topic | Start here |
+
+
+
 | --- | --- |
+
+
+
 | Current milestones and overall roadmap | [Project Control](DEAD_STREET_PROJECT_CONTROL.md) |
+
+
+
 | Map look, scale, collision and construction | [Map standard](MAP_BUILDING_STANDARD.md), [Harold brief](HAROLD_AVE_PRODUCTION_BRIEF.md) |
+
+
+
 | Anatomy, shoulders, weapons and visual QA | [Unit art standard](UNIT_ART_STANDARD.md) |
+
+
+
 | Weapons, sniper behavior and known regression history | [Arsenal report](ARSENAL_PRODUCTION_REPORT.md), [attacker tactics](ATTACKER_TACTICS_2026-09-11.md) |
+
+
+
 | Defender counterattacks and player-order authority | [Relative-strength AI](RELATIVE_STRENGTH_AI_2026-09-10.md) |
+
+
+
 | Factions/outfits | [Faction work order](FACTION_WORK_ORDER.md), then the faction's design document |
+
+
+
 | Vehicle rules, production and sandbox limits | [Fleet README](../tools/vehicle_fleet/README.md) |
-| Individual force/loadout setup | [Sandbox README](../tools/sandbox_setup/README.md) |
+
+
+
+| Individual force/loadout setup and current convoy limits | [Current sandbox refresh](../tools/sandbox_maps_20260915/README.md), then historical [Sandbox README](../tools/sandbox_setup/README.md) |
+
+
+
 | Current bridge revisions | [Bridge README](../tools/bridge_map/README.md), [V3 report](../tools/bridge_map/v3_results/BRIDGE_REVISION_2026-09-13.md) |
+
+
+
 | Active performance evidence | tools/bridge_perf/ — inspect timestamps, fixture and source revision; do not assume every report describes latest code |
 
+
+
+
+
+
+
 Historical evidence retains its original dates and limits. Current source, required
+
+
+
 diagnostics and reports are included in the performance checkpoint; verify Git
+
+
+
 and its remote before making a new synchronization claim.
 
 
+
+
+
+
+
+
+
+
+
 ### Historical Raiders correction — 2026-09-14 (superseded as active task)
+
+
+
 The delivered Raiders recording was rejected for wrong-side arrival, synthetic music and route-line clutter. Current task: eastbound lower-carriageway arrival, convincing recorded heavy guitar, sirens 3 dB quieter, no persistent unit paths, verified Raiders-victory mobile video. Preserve the 3-bike / pickup / 3-bike formation. This was completed by the original-audio revision above; owner review is next. Performance and Whittaker remain parked.
+
+
+
+
+
+
 
 ## Parallel work register - 2026-09-14
 
+
+
+
+
+
+
 | Chat / owner | Scope | Last verified state / next action |
+
+
+
 | --- | --- | --- |
-| Existing BUILD chat | Whittaker Estate, recording and subsequent owner feedback | Version-3 battle owner-accepted; version-6 presentation refinement validated and saved, scoped publication underway. Retains estate scope. |
+
+
+
+| BUILD / two-wheeler packing and title | Two/four packing, faction helper, approved wordmark and narrow grouped-arrival fixes | COMPLETE / native-validated / owner review. See bike-slots-04 and tools/bike_slots_20260915/README.md; seven owned sources, no commit/push. |
+| BUILD / sandbox refresh | Central map images/names, full-width setup, larger emblems, 16-unit cap and visual three-slot convoys | COMPLETE / native-validated / owner review. See sandbox-maps-04 and tools/sandbox_maps_20260915/README.md. Preserve concurrent Freight additions; no commit/push by this pass. |
+
+
+| BUILD / fourth map | Doble Ocho final sidewalks/audio and Ravicci video | Complete / native-validated / owner review. Gray slab sidewalks; Ravicci radio leads arrival; exact previous Ravicci battle retained. See doble-ocho-12 and tools/yard_finish_20260915/README.md. Uncommitted/unpushed; preserve mixed work. |
+
+
+
 | Parallel assignment chat 3ca0ac6a33c3 | Sandbox interior/top navigation; glossary panels/data; arsenal_review.gd and embedded setup; tools/sandbox_glossaries_20260914/ | IMPLEMENTED / VALIDATED: five top tabs; 23 factions / 115 paired portraits, 30 guns, 75 vehicles. 3,684 native checks pass; 79.63s MP4 saved. Owner visual review pending. PUSHED / VERIFIED: 52c8647 (journal sandbox-glossaries-05). Opening chat must refresh menu scripts/data/assets in its native pack; arsenal_review.tscn entry retained. Tutorial published previously as 04034d8. |
+
+
+
+
+
+
 
 Brandon explicitly directed this chat to follow the shared handoff/update rhythm while awaiting a separate assignment. Preserve existing work; estate remains with the existing BUILD chat. See journal entry 20260914-parallel-onboarding-3ca0ac6a33c3-01. This is a saved ownership record, not an automatic feed of another chat.
 
+
+
+
+
+
+
+
+
+
+
+## Title/menu concept scope — 2026-09-14
+
+
+
+Chat 3438f1ea0e55 owns tools/menu_title_20260914/ and the first static title concept. Owner authorized title work and supplied signature Track 22 (credit B-22); full MP3 retrieved. See journal title-menu-01 and tools/menu_title_20260914/BRIEF.md for exact design and music rules. Next: owner title-art review; opening/menu implementation remains pending. Existing estate scope stays with BUILD. This record adds no acceptance or runtime change.
+
+
+
+
+
+
+
+Title scope update: the first static DEAD STREET wordmark is now OWNER-ACCEPTED, exactly as displayed (journal title-menu-03). This supersedes the pending title-art review above. Preserve it as the approved title baseline. Next: prepare that asset for the planned opening; runtime intro/menu/animation remain unimplemented. No redesign requested; existing BUILD scope unchanged.
+
+
+
+
+
+
+
+
+
+
+
+Opening/Music update (20260914-opening-preview-06): chat 3438f1ea0e55 delivered the 48-second opening + Music handoff design preview, saved as libfile_bd207446ea3c81919a3d39bce90ae156 v0. Exact accepted title retained; supplied Gloria Systems / official white Godot / bullet-hole redacted caution startup; main settled 12s, Open Sandbox available 17s. Signature Dead Street by B-22 now PERSISTS into sandbox, superseding immediate shuffle. Track card contracts into Music; playlist shown as a designed overlay on real sandbox UI. Full decode/timing/audio-continuity checks passed. Native startup/player/playlist are still unimplemented; owner MP4 review is next. Scope assets, scripts and evidence: tools/menu_title_20260914/README.md, verification.json and library_receipt.json; no commit/push or production gameplay/UI edits. See journal opening-preview-04 through -06 for latest decisions and resolved export issues. Existing BUILD scope remains unchanged.
+
+
+
+
+
+
+
+
+
+
+
+## Opening/Music current revision - 20260914-opening-preview-08
+
+
+
+
+
+
+
+Revision 2 replaces the prior opening timing: caution zoom starts immediately at 7.5s, reaches black at 11.5s; black holds until 13s; title forms from pixels during 13-21s and is fully complete at exactly 21.000s. Continuous small suspended hover starts then (maximum +/-3 pixels, main cycle 1.35s plus a smaller 0.43s motion), and background fades in over 21.0-21.6s. Open Sandbox first appears at 27.000s, superseding 17s. Preserve the accepted original title, supplied Gloria Systems logo, official white Godot credit and bullet-hole redacted caution art.
+
+
+
+
+
+
+
+Owner explicitly requires the FIRST VISIBLE GAMEPLAY SHOT TO BE A COOL FIREFIGHT. Final montage starts with active Bridge crossfire (source 34.5s), then eleven tightly framed actual Bridge/Estate shots include shooting, units falling, TRC convoy across grass and troops getting out. Most cuts are 2 seconds; convoy and dismount are 3 seconds; crossfades last 4 frames (~0.133s). Casualty cuts were moved to actual elimination events (Bridge 51.5s and 54.6s), not just aftermath. Exact source trims/crops/hashes are in revision2/manifest.json and editorial_evidence.json.
+
+
+
+
+
+
+
+Dead Street by B-22 stays continuous from the first credit through sandbox entry, without restart or immediate shuffle. Music popup/dock/playlist are 12% smaller. This 57-second design preview demonstrates entry at 45s, docking at 48.75s, and playlist at 51s. Future native entry can occur any time after 27s. Only one track is supplied; additional catalogue/queue behavior remains pending.
+
+
+
+
+
+
+
+VALIDATED / SAVED: 1280x720, 30fps, 1710 decoded frames, H.264/AAC, 57.000s. Full audio/video decode PASS; black hold, title complete at frame 630, button first visible at frame 810, hover range, all eleven source shots and uninterrupted music across entry verified. Final contact frames and first firefight/Music panel visually checked. Preview SHA256 f78e031422f5effad363f083fbae987c3e648cd2dd2f97c269a457ca9b2ac7ba; 10,376,426 bytes. Saved as libfile_bd207446ea3c81919a3d39bce90ae156 version 1, retaining revision 1 as version 0.
+
+
+
+
+
+
+
+Scope remains edited MP4 design preview. Native intro, player, playlist and production sandbox UI have NOT been implemented by this work; Music is an animated concept over a real sandbox UI still. No commit/push or gameplay edits. Current repository reverified at 96019224ba2633fc852682b3ce733debff916f97 on build/arsenal-checkpoint-20260911; preserve BUILD, character, tutorial and other dirty work. Next: owner reviews revision 2; native opening/persistent Music integration follows the accepted design, coordinating with the tutorial panel owner before touching arsenal_review.gd. Authoring/evidence/receipt: tools/menu_title_20260914/revision2/README.md, compose_revision2.py, sandbox_smaller.py, verify_revision2.py, manifest.json, verification.json and library_receipt.json.
+
+
+
+
+
+
+
+
+
+
+
+## Opening/Music current revision - 20260914-opening-preview-10
+
+
+
+
+
+
+
+Owner feedback on revision 2: "So damn good" with three corrections. Added actual Harold Apartments Orlov Bratva attacker versus Mercer Saints defender footage from the found delivered Battle Finish recording (libfile_8999c66a893c8191b89b904c99decbbd v1). No new capture needed. Three close combat cuts at preview 23-25s, 33-35s, 41-43s use source 12.5s, 19.4s and 30.8s. First visible shot remains Bridge crossfire; TRC grass convoy and dismount preserved.
+
+
+
+
+
+
+
+Caution now fades in 7.5-8.0s and holds at full brightness/fixed scale for 1.25s (8.0-9.25), then zooms within 9.25-11.5. This supersedes immediate zoom on appearance. White top sliver fixed by centering the zoom viewport on the redaction instead of anchoring at 70% of pan travel. Sign artwork unchanged. Black hold remains 11.5-13, title pixel assembly 13-21, completed title/hover/background fade at 21.000, Open Sandbox at 27.000. Demo entry45, Music dock48.75/playlist51, end57. Existing accepted title/credits/hover/smaller Music and uninterrupted Dead Street by B-22 retained.
+
+
+
+
+
+
+
+VALIDATED / SAVED: 57s, 1710 frames, 1280x720 30fps H.264/AAC. Full decode, exact title/button cues, all eleven scene matches and audio continuity pass. Checked 38 stationary full-brightness sign frames (mean difference <0.10) and every one of 45 blackout frames: maximum decoded pixel is 0. Last zoom frames also entirely black; no white edge remains. Final exported caution and Harold frames visually reviewed. Preview libfile_bd207446ea3c81919a3d39bce90ae156 version2, 9,625,058 bytes, SHA256 27dfdb1cb7e9066a7dfeca409cedd9180aeee003cc7f3db29bd0a8b5d9186132. Owner review of this revision pending.
+
+
+
+
+
+
+
+Scope tools/menu_title_20260914/revision3 and append-only coordination records. Native intro/player/playlist remain unimplemented by this work. No gameplay/menu source edits, no commit/push; concurrent BUILD/tutorial/character work preserved. Source, exact cuts/timeline/hashes, verification, reproduction and receipt: revision3/README.md, compose_revision3.py, sandbox_smaller.py, verify_revision3.py, manifest.json, verification.json, library_receipt.json. Next: owner watches revision3; follow feedback and coordinate future native menu integration with the accepted Tutorial entry. The 21/27-second cues and persistent signature remain current rules.
+
+
+
+
+
+
+
+
+
+
+
+## Native opening active - 20260914-opening-native-02
+
+
+
+Revision3 is OWNER-ACCEPTED. Chat3438f1ea0e55 now owns gameplay/sandbox_opening.gd/.tscn, gameplay/sandbox_menu_music.gd, assets/menu/opening and tools/menu_title_20260914/native. User's final Enter gate is being integrated with the real sandbox: silent black wait, matching Enter/Open Sandbox buttons, audio-cued approved intro, persistent music into actual arsenal menu. Existing arsenal_review.gd/Tutorial preserved. Isolated AppData runtime sandbox_opening_20260914; shared release pack preserved. Native render/validation in progress, not yet complete. Windows FFmpeg7.1 crossfade frame-rate metadata required reordered fps filters; endpoint normalization preserves24s montage. Next: finish media gates, native click-through validation, then update sandbox launch entry. Native acceptance and source publication remain separate from the approved cinematic.
+
+
+
+
+
+
+
+
+
+
+
+## Native opening current - 20260914-opening-native-03
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED: silent black Enter gate now launches the owner-accepted revision3 intro, then the real current sandbox with persistent Dead Street by B-22 and compact functional Music. Open from desktop Dead Street Sandbox, repository Open Dead Street Sandbox.cmd or tools/arsenal_production/Open-Arsenal.ps1. Enter starts the music clock; full title/background21s and Open Sandbox27s. Live-source Godot4.7.2 validation passes29 checks, play_count1, all-black maxpixel0. New native owner review pending; cinematic revision3 remains OWNER-ACCEPTED. One track only; multi-track queue awaits more supplied music. No commit/push. Existing parallel menu/navigation/Tutorial and BUILD scopes preserved; project campaign entry and shared pack unchanged. Exact ownership, evidence, measurements, implementation discoveries and remaining limits: journal opening-native-03 and tools/menu_title_20260914/native/README.md. Next: owner tests the desktop entry, then further music/release packaging. This supersedes the preceding native-in-progress record.
+
+
+
+
+
+
+
+
+
+
+
+## Portrait / leader correction active - 20260914-portrait-audit-01
+
+
+
+Chat3438f1ea0e55 owns owner-requested follow-up to the completed glossary: existing leader photos in the top-right header; current uniformly framed Mercer/Orlov cards; all-unit standing-card shoulder/anatomy review and fixes. Scope tools/portrait_audit_20260914, portrait generation/assets and narrow glossary photo integration; inspect shared portrait/catalog consumers before choosing source edits. Prior pistol-only checks do not certify other classes. Preserve opening/menu behavior and concurrent faction audio. Known leader gallery v1 contains20 approved images; no new leader generation. Next: source/crop/import audit and fixed-scale all-card review. See journal portrait-audit-01; no completed validation/owner acceptance claimed.
+
+
+
+
+
+
+
+
+
+
+
 ## Music controls current - 20260914-music-controls-02
+
+
+
+
+
+
 
 Chat3ca0ac6a33c3 completed outside-click/tap dismissal and pause/play/next icons in the live sandbox_menu_music.gd. Native15 observations PASS; playback/state/inside controls preserved, no dismissal click-through. Existing desktop launcher loads the changes on restart. Full music source remains opening chat's uncommitted ownership; only the owned delta patch/evidence/records are published. Opening chat3438f1ea0e55 should include this already-applied delta in its later opening checkpoint; portrait/audio work unchanged. See journal music-controls-02 and tools/music_controls_20260914/README.md. Owner visual acceptance pending.
 
+
+
+
+
+
+
+
+
+
+
 ## SoundCloud playlist intake - 20260914-music-import-readiness-01
+
+
+
+
+
+
 
 Chat3ca0ac6a33c3 is ready for additional owner-supplied SoundCloud URLs; existing full-audio extraction script and title/artist rules verified. Preserve source titles; brandon becomes B-22, OB remains OB; Dead Street is the explicit signature-title exception. Signature continues through sandbox entry, remains eligible later, and must not repeat immediately after ending/skipping when another enabled song exists. Multi-track queue/Next/exclusions/now-playing behavior will be implemented and validated with actual new imports; only one track currently exists. No new audio or runtime changes in this discussion. See journal music-import-readiness-01. Next: owner supplies URLs. Concurrent portrait/faction-audio scopes preserved.
 
+
+
+
+
+
+
+
+
+
+
 ## SoundCloud track-title rule - 20260914-music-import-title-rule-01
+
+
+
+
+
+
 
 Owner text outside a submitted SoundCloud URL is the intended track title and overrides the source title. Use it as written. URL alone: use the SoundCloud title. This updates the preceding intake rule; source provenance and artist-credit mappings remain. See journal music-import-title-rule-01. Apply to subsequent imports.
 
+
+
+
+
+
+
+
+
+
+
+## Shared menu / faction soundtrack decision - 20260914-faction-audio-shared-music-01
+
+
+
+Owner chose all imported SoundCloud/menu beats as the source pool for faction music too. Stop generated faction composition work. Import once and reference shared track identity in menu/faction assignments; associations and runtime shared catalogue are next work, not implemented. Coordinate with existing music-import readiness scope; preserve title/signature continuity and accepted nonmusic sounds. See current faction audio topic and journal for exact gaps.
+
+
+
+
+
+
+
+
+
+
+
 ## SoundCloud OB extraction test - 20260914-soundcloud-ob-test-01
+
+
+
+
+
+
 
 VALIDATED: Bond by OB retrieved in full from the supplied SoundCloud link under existing settings; no settings change or contact with OB needed. Full strict decode139.598s, duration/hash/size checks PASS. Candidate and reproducible evidence: tools/soundcloud_ob_test_20260914/; see journal soundcloud-ob-test-01. This was the requested extraction-only test: no playlist installation, faction mapping or runtime changes. Candidate/records are currently uncommitted. Next: report result, retain the validated track for expanded shared music catalogue/intake; preserve native intro continuity and concurrent portrait/BUILD work.
 
+
+
+
+
+
+
+
+
+
+
 ## Bond playlist and battle-loop model - 20260914-bond-playlist-02
+
+
+
+
+
+
 
 IMPLEMENTED / VALIDATED: menu now has Dead Street/B-22 and Bond/OB, actual queue/Next/end advancement, persisted selections/volume and unobstructed now-playing popup. Native36 checks PASS. Bond battle excerpt is exactly00:21-00:51,30 seconds, native looping ready; no faction assigned. Shared catalogue assets/data/music_catalog.json + gameplay/music_catalog.gd; full tracks and derived loop share a track ID, while faction assignments stay separate. See journal bond-playlist-02 and tools/soundtrack_import_20260914/README.md for batch workflow, seam processing and evidence. Own new files/assets and applied delta patch saved locally; publication blocked by automatic approval review; original opening/music source remains separately uncommitted. Opening chat must retain combined live music source. Next: owner reviews and sends batch; BUILD coordinates explicit faction bindings/spatial mix. No generated faction audio resumed.
 
 
+
+
+
+
+
+
+
+
+
 PUBLICATION BLOCKED (2026-09-15 UTC): automatic approval review rejected the proposed scoped commit/push twice. Fresh remote check exactly matched https://github.com/LeadLasso-LL/DEADSTREET.git at ec7a60edaaa7d25493bdae523a6ab44d42148391 and the standing workflow authorization names that destination, but the review still requires trusted explicit user approval for this code/audio payload. No bypass, staging, commit or push performed. Current local implementation works through the existing live-source launcher. New files, patch, README and validation evidence saved. Next publication action: obtain explicit owner confirmation to push the Bond assets/catalogue/music delta and owned records to that GitHub repository, then scoped publish. Other chats' work remains untouched.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-bond-playlist-03 - Explicit upload approval received
 
+
+
+
+
+
+
 Brandon replied "approved. report back quickly please." to the exact request to push the Bond code/audio changes to https://github.com/LeadLasso-LL/DEADSTREET. This supersedes the earlier publication blocker. Proceed with only the validated Bond assets, shared catalogue/loader, already-applied music delta/evidence and owned records on build/arsenal-checkpoint-20260911. No gameplay/audio rework or test rerun needed; native36 checks and asset/source hashes remain verified. Existing opening-source ownership and all unrelated work preserved. Publication result will be recorded in tools/soundtrack_import_20260914/publication_receipt.json and the live hive/journal.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-bond-playlist-04 - Publication verified
 
+
+
+
+
+
+
 PUSHED / VERIFIED: 269dbeca1382cd0fe3871f17ae140a87b9691282 on origin/build/arsenal-checkpoint-20260911. Scoped new Bond assets/shared catalogue/loader/applied music delta, evidence and owned records published under explicit owner approval. Native36 checks already passed; source/audio hashes reverified before publishing, no rework or test rerun. Local live-source launcher loads the two-song menu; Bond30-second21-51 battle loop ready, faction assignment open. Original opening/music source and unrelated work remain separately owned/uncommitted. Next: owner bulk track submission and explicit faction associations. Receipt: tools/soundtrack_import_20260914/publication_receipt.json.
+
+
+
+
+
+
+
+
+
+
 
 ## Seventeen-track batch ready - 20260915-soundtrack-batch-01
 
+
+
+
+
+
+
 Awaiting17 URLs, each followed by separate artist/title/start-time fields. Format artists exactly OB/B-22, retain owner title, extract30s from that entry's timestamp; artist/timestamp are not title text. Reuse published Bond catalogue/player/loop model269dbec. Plan bounded concurrent downloads with saved progress, one decode/asset pass per track, per-file integrity/loop checks, one catalogue integration and consolidated native UI/loop validation. No new tracks received or processed yet; no faction mappings inferred. Exact plan and revised parsing rule: journal soundtrack-batch-01. Next: owner sends all17 entries.
+
+
+
+
+
+
+
+
+
+
 
 ## Seventeen-track batch complete - 20260915-soundtrack-batch-03
 
+
+
+
+
+
+
 IMPLEMENTED / VALIDATED: all17 supplied tracks (5 OB/12 B-22) imported with owner titles and exact30s excerpts. Catalogue now19 menu songs/18 loops; original signature/Bond retained. Full audio validation and93 native checks PASS, all18 real loop wraps verified. Zero-start Switch/Skyfall handled without shifting starts. No runtime source edits, permission changes or faction assignments. Scope/evidence/batch mappings: tools/soundtrack_batch_20260915/README.md and journal soundtrack-batch-03. Next: scoped publication and owner use through reopened live-source sandbox; await faction associations. Preserve concurrent portrait/BUILD and original opening ownership.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-soundtrack-batch-04 - Batch complete locally; publication approval blocked
 
+
+
+
+
+
+
 All17 imports and loops are implemented/file-validated/native-validated;19 menu songs/18 loops,93 native checks PASS. Automatic approval review rejected execution of tools/soundtrack_batch_20260915/run_publish.py because this is a new17-track private code/audio payload to GitHub and the explicit preceding approval covered Bond only. Destination is the established https://github.com/LeadLasso-LL/DEADSTREET.git, branch build/arsenal-checkpoint-20260911. No bypass or retry without new authorization; no staging/commit/push occurred. All unaffected local work/evidence/records are complete and saved.
+
+
+
+
+
+
 
 Exact remaining action: ask Brandon to approve publishing the17-track code/audio batch to that repository. After confirmation, run the prepared publisher: it verifies native93 checks, source/asset hashes, branch/origin/index and exact owned scope; stages34 new audio assets, catalogue, batch evidence and owned docs only; commits/pushes and verifies remote hash. Scripts/payloads in tools/soundtrack_batch_20260915; no rerender/redownload/retesting needed unless current protected hashes differ. Current published HEAD remains269dbeca1382cd0fe3871f17ae140a87b9691282; local sandbox already reads all19 songs. Faction assignments remain open.
 
+
+
+
+
+
+
+
+
+
+
+## 20260915-portrait-arsenal-takeover-01 - Owner-directed continuation
+
+
+
+
+
+
+
+Brandon reports the original portrait chat hit maximum length and directs chat10a67755ceea to finish leader photograph integration, Mercer/Orlov framing and every-unit standing portrait anatomy review. Additional authorized scope: Vehicles panel ascending purchase-price order, balanced canonical firearm prices reflected in Arsenal, and firearm artwork detail/refinement with emphasis on pistols/SMGs and first pistol trigger area. This chat takes over the interrupted portrait scope and related glossary/weapon work. No prior worker is observed running; existing sandbox is open. Preserve BUILD estate, soundtrack/catalogue and opening work. Read latest journal entry with this ID for status; no completion/acceptance claimed. Next: recover candidates and leaders, finish/integrate with native review and durable evidence.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-soundtrack-batch-05 - Owner explicitly approved batch upload
+
+
+
+
+
+
 
 Brandon replied "approved" to the explicit request to upload the17-track batch to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the publication block in soundtrack-batch-04. Proceed with the validated34 new audio assets, catalogue, batch tools/evidence and owned records on build/arsenal-checkpoint-20260911; preserve other chats' work. No new processing or test reruns unless protected hashes changed. Publication receipt and final status follow.
 
+
+
+
+
+
+
+
+
+
+
 ## 20260915-soundtrack-batch-06 - Seventeen-track publication verified
+
+
+
+
+
+
 
 PUSHED / VERIFIED: 710964102ef3f6cca3f47bcbf26a815653e59453 on origin/build/arsenal-checkpoint-20260911. All17 full MP3s and17 exact30s WAV loops,19-song shared catalogue, batch source/mappings/evidence and owned records published.93 native checks passed; source/audio hashes reverified before commit. No permission changes, runtime code edits, faction mappings or unrelated-file staging. Earlier Bond/signature retained; current total19 menu songs/18 battle loops. Next: reopen normal live-source sandbox and provide faction associations when ready. Complete source/provenance/timing/processing and receipt in tools/soundtrack_batch_20260915/.
 
+
+
+
+
+
+
+
+
+
+
 ## 20260915-soundtrack-extra-02 - Three additional tracks implemented and validated
+
+
+
+
+
+
 
 Glock, Keys and Ripper by B-22 are imported as full menu MP3s plus exact 30-second battle WAV loops at 30–60s, 31–61s and 48–78s respectively. Current catalogue: 22 menu songs / 21 battle loops. All three files and loops pass full decoding, frame/timing/hash/seam validation; 25 focused native Godot checks and four integrity checks pass. Existing 19 catalogue entries, faction map and music consumer sources are unchanged. No account or SoundCloud permission changes.
 
+
+
+
+
+
+
 Native checks covered each new title/artist/start, full stream, checkbox, Next playback and real loop wrap; actual file-end advance and expanded playlist scrolling also pass. No subjective listening approval or faction assignments claimed. Tools, exact mappings and evidence: tools/soundtrack_extra_20260915/README.md. Next: scoped publication to the established DEADSTREET origin/build branch under standing authorization, verify remote commit, reopen live-source sandbox for owner review. Preserve concurrent portrait/arsenal and original opening ownership.
+
+
+
+
+
+
+
+
+
+
+
+## Selected-unit firing range active — 20260915-selected-range-01
+
+
+
+BUILD chat6a4bd31e258d owns new gameplay/tactical_selection_range.gd + shader, narrow tactical_battle_view.gd layer wiring and tools/selected_range_20260915/. Owner wants a light/faded/soft red ground radius for individual selection. Read authoritative per-participant max_range; single living friendly selection, active/paused battle; projected ground plane, no combat change. Preserve concurrent portrait/arsenal/menu/music work. Implementation and native checks next; details in journal selected-range-01.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-soundtrack-extra-03 - Complete locally; three-track publication blocked
 
+
+
+
+
+
+
 All three full songs and exact loops are implemented and validated locally: 22 menu songs, 21 loops, 25 native checks and four integrity checks passed. Automatic approval review rejected tools/soundtrack_extra_20260915/publish.py because the visible preceding publication approval covered the earlier 17-track batch, not this later three-track private audio/code payload to GitHub. No bypass/retry performed. Target: https://github.com/LeadLasso-LL/DEADSTREET.git on build/arsenal-checkpoint-20260911. Unaffected processing, catalogue integration, evidence, README and shared records are complete.
+
+
+
+
+
+
 
 Remaining action: request explicit owner approval to publish Glock, Keys and Ripper (six new audio assets, catalogue, batch source/evidence and owned records) to the established repository. After approval run the prepared publish.py, which checks current branch/origin/index, source/asset hashes and validation, stages only owned changes, commits/pushes and verifies remote hash. No retrieval or processing rerun needed unless protected hashes changed. Faction associations remain pending. Live-source sandbox already reads the local 22-track catalogue.
 
+
+
+
+
+
+
+
+
+
+
 ## 20260915-soundtrack-extra-04 - Owner explicitly approved three-track publication
+
+
+
+
+
+
 
 Brandon replied "approved" to the explicit request to publish Glock, Keys and Ripper to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the automatic-review publication block in soundtrack-extra-03. Authorized scope: six new audio assets, shared catalogue, this batch source/evidence and owned records on build/arsenal-checkpoint-20260911. Proceed with the prepared publisher and fresh branch/index/source/asset checks; preserve concurrent work. All processing and 25 native checks already passed; do not rerun absent a changed protected source. Verify remote hash and record final receipt.
 
 
-## 20260915-portrait-arsenal-takeover-03 — Completed and native-validated
 
-Owner continuation is complete in the live-source sandbox: 20 approved leader photos installed top right; 691 standing portraits normalized and visually reviewed with no remaining obvious detached shoulders/limbs observed; 75 vehicles price-sorted within existing categories; 30 canonical firearm prices displayed in Arsenal; all 30 close-up gun icons refined, especially pistol triggers/guards and SMGs. Exact prices/rationale are in docs/WEAPON_PRICING.md. Combat statistics and animation atlases remain unchanged. This certifies the reviewed standing-card scope, not unreviewed animation frames or final economy balance.
 
-Final Windows Godot native validation: 6178 checks, zero failures. All 691 native imported portrait images match source after normal alpha-edge processing; 20 leader textures, 115 displayed role cards, 30 weapons, 75 sorted vehicles, three desktop sizes, setup/fleet/tutorial navigation and launch/return checked. Initial harness failures and fixes are documented; final smoke.json is authoritative. Source/asset hashes verified. All 23 standing boards and five weapon boards visually inspected, along with native faction/Arsenal screens. Small stray gun detail strokes were cleaned before final import/render. Evidence, reproducible scripts, source/photo provenance and review limits: tools/sandbox_finish_20260915/README.md.
 
-Current task ownership moves to COMPLETE / OWNER REVIEW. Reopen the existing desktop Sandbox launcher to load. Publication receipt will state actual Git status; do not infer publication from this local completion. Concurrent soundtrack (now 22 tracks/21 loops), selected-range, estate and opening work preserved. No further implementation required for this requested scope before owner review.
+
+
+
+
+
 
 ## 20260915-soundtrack-extra-05 - Glock, Keys and Ripper publication verified
 
+
+
+
+
+
+
 PUSHED / VERIFIED: d262e8f43f34b889ce72b1705d0f4de36d7e40fd on origin/build/arsenal-checkpoint-20260911. Three full B-22 menu MP3s and three exact 30-second WAV loops published: Glock 30–60s, Keys 31–61s, Ripper 48–78s. Total 22 menu tracks / 21 battle loops. All audio validation, 25 native checks and four integrity checks passed; protected source and asset hashes verified before commit. Existing tracks, runtime sources, permissions and faction mapping unchanged. Scoped asset/catalogue/evidence and owned documentation only; concurrent work preserved. Next: reopen live-source sandbox to load all tracks; owner faction associations remain pending. Receipt and evidence: tools/soundtrack_extra_20260915/.
+
+
+
+
+
+
+
+
+
+
+
+## Selected-unit firing range complete — 20260915-selected-range-02
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED in the live source: one selected living friendly gets a soft red ground circle from its equipped weapon maximum range.234 native checks PASS across Harold/bridge/estate and all five classes; actual screenshots inspected after fixing initially invisible UV mapping. No combat/camera/HUD/music/portrait changes. Owner visual acceptance pending. Source ownership is limited to the new range node/shader, eight view wiring lines and tools/selected_range_20260915/. Reopen normal sandbox to load; see README, journal selected-range-02 and publication receipt for exact continuation/status. Parallel soundtrack and portrait work preserved.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-selected-range-03 — Complete locally; publication blocked
+
+
+
+
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED: selected-unit range feature, 234 native checks, final visual review, screenshot and all handoff records are complete. Automatic approval review rejected execution of tools/selected_range_20260915/publish.py before staging/commit/push. Stated reason: the GitHub destination was not established as a trusted organization-owned destination and earlier generic push approval did not explicitly authorize this particular private source/documentation transfer. Target is the established https://github.com/LeadLasso-LL/DEADSTREET.git, branch build/arsenal-checkpoint-20260911. Standing project authorization was read; it does not override the tool rejection. No bypass or retry performed.
+
+
+
+
+
+
+
+Current live-source sandbox loads the feature after reopening; user visual acceptance pending. Exact remaining publication action: obtain explicit owner approval to push this selected-unit firing-range code, native evidence and owned documentation to that destination. Then use the prepared scoped publisher after fresh source/branch/index checks; no native rerun needed unless validated source changed. It reconstructs only owned documentation changes in the index and preserves unrelated working text. Final native source hashes, source delta, README, 18 captures and publication_receipt.json are in tools/selected_range_20260915/. Parallel portrait/Arsenal/music work remains untouched.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-selected-range-04 — Appearance accepted; group display under discussion
+
+
+
+OWNER-ACCEPTED: current individual range-circle appearance (Brandon: "that is perfect"). PROPOSED, not implemented: retain individual fill/rim, add fainter outline-only ranges for weapon-class selections, suppress mixed/Select All ranges and avoid bright overlap buildup. Each unit keeps its actual equipped range. See journal selected-range-04. Next: settle the group rule; current runtime stays individual-only. Publication blocker remains separately recorded in selected-range-03.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-faction-music-picker-01 - Owner assignment screen ready
 
+
+
+
+
+
+
 Owner requested quick one-screen faction/snippet matching with canonical emblems, playable titled snippets, assignment controls and screenshot capture. Explicit latest rule: TRC and NBPD KEEP EXISTING SIRENS and are excluded. Built tools/faction_music_picker_20260915/picker.gd as an isolated native review tool using all 21 eligible factions and all 21 existing 30-second loops. Each row has an emblem/name, track selector and play/pause; selecting assigns and auditions; one loop plays at a time. Autosaved draft: tools/faction_music_picker_20260915/assignments.json. Save screenshot writes Desktop/Dead-Street-Faction-Music-Assignments.png; every row fits on a 1000x750 screen. Desktop launcher: Faction Music Assignments.cmd. All 10 native checks passed and screenshot inspected. No runtime catalogue or gameplay changes, no speculative assignments. Next: owner selects snippets and returns screenshot; read draft/confirm owner choices, then implement approved faction mapping while preserving both authority sirens. Concurrent BUILD range/portrait work untouched. Utility is ready locally; no push needed for immediate use.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-portrait-arsenal-takeover-03 — Completed and native-validated
+
+
+
+
+
+
+
+Owner continuation is complete in the live-source sandbox: 20 approved leader photos installed top right; 691 standing portraits normalized and visually reviewed with no remaining obvious detached shoulders/limbs observed; 75 vehicles price-sorted within existing categories; 30 canonical firearm prices displayed in Arsenal; all 30 close-up gun icons refined, especially pistol triggers/guards and SMGs. Exact prices/rationale are in docs/WEAPON_PRICING.md. Combat statistics and animation atlases remain unchanged. This certifies the reviewed standing-card scope, not unreviewed animation frames or final economy balance.
+
+
+
+
+
+
+
+Final Windows Godot native validation: 6178 checks, zero failures. All 691 native imported portrait images match source after normal alpha-edge processing; 20 leader textures, 115 displayed role cards, 30 weapons, 75 sorted vehicles, three desktop sizes, setup/fleet/tutorial navigation and launch/return checked. Initial harness failures and fixes are documented; final smoke.json is authoritative. Source/asset hashes verified. All 23 standing boards and five weapon boards visually inspected, along with native faction/Arsenal screens. Small stray gun detail strokes were cleaned before final import/render. Evidence, reproducible scripts, source/photo provenance and review limits: tools/sandbox_finish_20260915/README.md.
+
+
+
+
+
+
+
+Current task ownership moves to COMPLETE / OWNER REVIEW. Reopen the existing desktop Sandbox launcher to load. Publication receipt will state actual Git status; do not infer publication from this local completion. Concurrent soundtrack (now 22 tracks/21 loops), selected-range, estate and opening work preserved. No further implementation required for this requested scope before owner review.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-selected-range-05 — Class-group extension authorized and started
+
+
+
+
+
+
+
+Brandon approved: "yeah go ahead and do individuals and class groups". Keep accepted individual rendering; same-weapon-class selected groups get faint soft outlines only, with maximum-opacity compositing so overlapping rings do not accumulate brightness. Mixed groups and Select All suppress ranges. Each outline uses its unit's actual equipped maximum range. Implementation choice: mark Select All selection explicitly in the controller (including homogeneous squads); manually assembled homogeneous groups also qualify, and a single selected unit keeps individual presentation. No command, combat, HUD, audio or camera changes intended. Preserve current uncommitted indicator work and all concurrent portrait/music work. Fresh branch build/arsenal-checkpoint-20260911, HEADd262e8f, index empty; own indicator/view hashes unchanged from validation. Scope extends to narrow selection-display metadata in tactical_orders_controller.gd, new group shader, range node and tools/selected_range_groups_20260915/. Next: implement, check actual native class-button behavior/overlap pixels and preserve the accepted individual image. Existing Git publication blocker is separate and not retried.
+
+
+
+
+
+
+
+## 20260915-portrait-arsenal-takeover-04 ? Finished locally; publication blocked
+
+
+
+
+
+
+
+All requested portrait/leader/vehicle-price-order/firearm-price/art changes are implemented, visually reviewed and native-validated (6178 checks, zero failures). Reopen the normal desktop Sandbox launcher to load. Automatic approval review rejected execution of tools/sandbox_finish_20260915/publish.py because it stages/commits/pushes this potentially private source/art/documentation checkpoint to a GitHub remote requiring explicit payload authorization. Standing project authorization was read; review rejected the action nonetheless. No staging, commit, push, bypass or retry occurred; index verified empty. Target: https://github.com/LeadLasso-LL/DEADSTREET.git, branch build/arsenal-checkpoint-20260911.
+
+
+
+
+
+
+
+All unaffected work, evidence and handoff records are finished. Remaining action: ask Brandon to explicitly approve publication of this portrait/leader-photo/Arsenal code, art, evidence and owned documentation to that repository. Then use the prepared scoped publisher after fresh validation hashes/branch/index checks. Its only baseline differences are BOM/line-ending differences, verified text-identical; shared documentation is staged as owned additions against HEAD so other chats' text stays untouched. Do not rerun generation or native tests absent changed protected content. Owner appearance acceptance and economy playtesting remain separate. Receipt: tools/sandbox_finish_20260915/publication_receipt.json.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-selected-range-06 — Group renderer installed; validation checkpoint
+
+
+
+
+
+
+
+New max-opacity group shader and retained group quad installed; individual shader remains byte-identical. Selection controller adds display-only Select All metadata. Actual native class buttons select correct members in all15 map/class combinations, and inspected Harold group preview shows the intended faint outlines under scenery. Five rendered-pixel checks pass: 12 coincident outlines exactly equal one, distinct crossing outlines equal the maximum individual mask, center/outside are transparent, visible alpha remains capped. Initial fixture clicked before active HUD layout; corrected with settle. Larger homogeneous-squad test then exposed invalid test equipment (class changed while rifle/SMG model IDs remained), correctly yielding no range; fixture corrected to valid pistols. No runtime fix needed for either test-fixture issue. Final full group rerun and existing individual234 checks running. Preserve failed logs in own group-tools folder; final authoritative report follows.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-selected-range-07 — Individuals and class groups complete
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED: accepted individual look retained; homogeneous weapon-class groups now show faint outline-only ranges per unit, with maximum-opacity compositing so intersections never brighten. Mixed groups and Select All hide ranges.398 native checks passed (164 groups +234 individual), zero final errors; actual screenshots inspected across all three maps. Group appearance owner review next. Rules/evidence: tools/selected_range_groups_20260915/README.md and journal selected-range-07. Reopen normal live-source sandbox to load. Existing publication blocker remains separate; no push attempted and old individual-only publisher must be refreshed before future publication. Other chats' uncommitted work preserved.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-faction-music-apply-01 - Owner screenshot accepted; mapping installed
 
+
+
+
+
+
+
 Owner returned completed21/21 faction assignment screenshot. Saved picker mapping matches all21 screenshot rows exactly, including Burn shared by Calle Ocho and La Union del Sur; Glock remains available in menu/unassigned. Approved mapping captured in tools/faction_music_apply_20260915/approved_assignments.json and registered in assets/data/music_catalog.json. TRC/NBPD excluded: existing sirens retained. Narrow audio wiring extends current spatial convoy/stronghold radio to mapped factions, suppresses old Harold beat when mapped music is present, keeps existing winner-continuity/mix and siren code. No menu, combat or presentation source edits. Next: validate all mappings, actual battle placement/playback across three maps and siren equivalence; publish scoped source/evidence/owned records. Preserve concurrent portrait/range work.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-faction-music-apply-02 - Wiring validated; owner correcting duplicated Burn
 
+
+
+
+
+
+
 IMPLEMENTED / NATIVE-VALIDATED audio wiring: 115 checks PASS, zero final failures. All21 screenshot mappings load on both sides and loop; actual Harold/bridge/estate sources and anchors, winning-stream continuity, loser background, exit stop and suppression of old Harold beat checked. TRC/NBPD audio/parameters match previous implementation across all three maps. Existing menu tracks/audio assets and protected consumers unchanged. Initial declaration bug fixed; harness isolation/result fixture corrections documented in tools/faction_music_apply_20260915/README.md. No commit/push performed.
+
+
+
+
+
+
 
 LATEST OWNER CORRECTION: repeated Burn was NOT intentional. Unused track is Glock — B-22. Current screenshot has Burn for Calle Ocho and La Union del Sur. Exact unresolved choice is which of those two gets Glock. Do not infer, publish or claim final assignment approval before this is answered. Current catalogue remains provisional screenshot mapping; approved_assignments.json status now awaiting_duplicate_resolution. Next: receive selection, update that single faction to glock_b22 and check uniqueness/corrected source; preserve the other20 choices and both authority sirens. Then finalize owned records and scoped publication. Hive/current source supersedes earlier apply-01 assertion that duplicated Burn was an approved final choice.
 
+
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-01 - Vehicle/street update started
+
+
+
+Owner requested Harold Apartments vehicle sizing and a wider street, with a native screenshot. Verified branch build/arsenal-checkpoint-20260911, HEAD d262e8f, empty index; baseline copies/hashes in tools/harold_scale_20260915/. Shared fleet/bridge standard is1.6x; Harold parked cars still use old dimensions. Apply shared scale to all twelve parked cars and matching physical cover, widen road from12 to20 world units toward south, move lower sidewalk/building strip/lamps/litter together; preserve north frontage and unit scale. Arrival deployment bounds follow widened road. Scope: Harold catalog/art, Harold-only arrival service bounds, ground baker/cache and evidence. Concurrent music/portrait/range sources untouched. Next: native before sample, update/rebake, check clearances and native after screenshot. Existing publication blocker remains separate.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-02 - Geometry and art source installed
+
+
+
+All12 parked vehicles now use shared1.6x length/width; collision and cover derive from the same rectangles. North/south rows respaced to avoid overlap. Road23..43, lower sidewalk43..49, map64x54; lower props/lamps/litter moved8 units. Arrival choices and deployment band follow the enlarged road. Apartment frontage and unit/camera/HUD code unchanged. Ground baker now uses runtime cache bounds and supports --ground-only so unrelated facades remain untouched. Next: rebake/import, native geometry/disembark/20-second combat comparison and screenshot inspection. Source diffs/baselines in tools/harold_scale_20260915/.
+
+
+
+
+
+
+
+## 20260915-menu-polish-01 - Owner continuation and approved checkpoint
+
+
+
+
+
+
+
+Brandon explicitly approved publishing the completed portrait/Arsenal checkpoint to the established DEADSTREET GitHub destination. Publication is being completed with the already validated scope; only a trailing blank line in the inherited portrait render script required whitespace cleanup. New authorized scope for chat10a67755ceea: remove white surrounds from all sandbox-menu faction emblems; improve AK-47 and all six sniper close-up illustrations; make current-song toast only slightly larger than the 123x36 music dock and retain its popup-above behavior; add crossed-arrow Shuffle control that reshuffles enabled songs and immediately plays the new first song (avoid current song first when alternatives exist).
+
+
+
+
+
+
+
+Ownership: narrow menu consumers/shared emblem presentation helper, weapon display-art module/new precision-gun helper and seven icon outputs, sandbox_menu_music.gd, tools/menu_polish_20260915/. No audio catalogue/track/faction assignment edits; preserve active faction music wiring, Harold street/fleet scale and range-group work. Menu music source verified current before editing; no other active chat claims it. Next: code/art implementation, focused native shuffle/size/emblem checks and actual screenshot review.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-faction-music-apply-03 - Calle Ocho corrected; all assignments final and validated
+
+
+
+
+
+
 
 Owner explicitly directed Glock for Calle Ocho. Final mapping has21 distinct tracks for21 non-authority factions; La Union del Sur keeps Burn and the other20 screenshot choices are unchanged. Corrected runtime catalogue, owner assignment record and picker saved choices. TRC/NBPD retain existing sirens. All prior115 native wiring checks remain applicable to unchanged audio sources;13 focused correction checks PASS for exact Glock source on both sides, spatial anchors, actual native loop wrap, distinct mapping and Union/authority preservation. Current source hashes recorded. Full final faction/title/artist table and validation limits: tools/faction_music_apply_20260915/README.md.
 
+
+
+
+
+
+
 No decisions remain. Next: scoped commit/push and remote hash verification; reopen normal live-source sandbox for faction playback. Preserve current concurrent portrait/Arsenal/Harold/range work, including any staged changes. No runtime menu or audio asset edits in this block. Supersedes apply-02 pending duplicate decision. The utility remains local and reopenable; active in-memory picker sessions should be reopened to display the corrected saved mapping.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-faction-music-apply-04 - Final mapping ready locally; publication review blocked
 
+
+
+
+
+
+
 Final owner mapping is implemented: Calle Ocho=Glock, La Union del Sur=Burn;21 unique loops for21 non-authority factions, TRC/NBPD sirens unchanged.115 native wiring checks plus13 final correction checks passed; owner mapping/evidence/README/shared records complete. Automatic approval review rejected execution of tools/faction_music_apply_20260915/publish.py, stating that private project source/documentation publication to the GitHub destination was not clearly authorized in the transcript. No staging/commit/push occurred from this rejected call; no workaround or retry performed.
+
+
+
+
+
+
 
 Exact remaining action: ask owner approval to publish the final faction-audio mapping/wiring and assignment utility/evidence to https://github.com/LeadLasso-LL/DEADSTREET.git on build/arsenal-checkpoint-20260911. Once explicitly approved, run the prepared publisher after its built-in branch/origin/index/hash/report guards. It stages only the three owned audio/catalogue sources, final mapping/utility/evidence and owned shared-record sections, then pushes and verifies remote hash. No repeat processing/full testing needed absent changed owned hashes. Preserve concurrent menu shuffle/toast, Harold geometry, range and portrait work. No faction choice remains unresolved; local sandbox loads final mapping after reopen.
 
+
+
+
+
+
+
+
+
+
+
 ## 20260915-faction-music-apply-05 - Owner explicitly approved final faction audio publication
+
+
+
+
+
+
 
 Brandon replied "approved" to the explicit request to push the finalized faction audio setup to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the automatic-review block in apply-04. Scope: final21 unique faction assignments with Calle Ocho=Glock and La Union del Sur=Burn; three audio source/catalogue files; assignment utility, evidence and owned shared records. TRC/NBPD keep existing sirens. Proceed on build/arsenal-checkpoint-20260911 using prepared publisher with fresh branch/origin/index/hash guards; preserve concurrent work.115 wiring checks and13 correction checks already passed. Verify remote hash and record receipt; no optional retesting absent changed owned hashes.
 
 
-## 20260915-menu-polish-02 - Completed and native-validated
 
-All requested changes complete locally: remove white canvas surrounds from23 faction emblems across sandbox glossary/list/header and both setup selectors, retain emblem interior white detail; refine AK-47 and all six sniper illustrations with distinct stocks/scopes/receivers; compact now-playing toast158x56 above Music dock123x36; crossed-arrow Shuffle rebuilds enabled-song order and immediately starts a different song when alternatives exist. Pause resumes on explicit shuffle; exclusions/volume persist; zero enabled disables and one enabled explicitly restarts. Next and natural track finish follow the new order.
 
-249 native Godot checks PASS, zero failures, with actual menu/button input, eight full22-song shuffles, all23 rendered emblems, seven native gun panels and three desktop sizes. Exact inner emblem pixel equality proves preservation; all white exterior corners cleared. Final screenshots and seven-gun board visually inspected. Earlier pixel fixture corrected logical-to-physical scaling; import log BOM decoding corrected. Other734 prior art assets remain byte-identical; no combat/stat/price/animation changes or broad battle benchmark. Source/evidence/reproduction and limits: tools/menu_polish_20260915/README.md. Owner appearance review remains separate.
 
-Prior portrait checkpoint explicitly approved in this turn, pushed and verified at dc0450543801f3b4046f39cb1f762abf0bd79e15; its previous auto-review block is resolved. New music-menu change preserves the separately owned untracked opening source: exact already-applied delta is checkpointed instead of staging that entire inherited file. Music/faction audio catalogue, Harold and range-group changes preserved. Current pass publication receipt records actual status. Reopen the normal Sandbox launcher; no further implementation needed before owner review.
+
+
+
+
+
 
 ## 20260915-faction-music-apply-06 - Final faction soundtrack publication verified
 
+
+
+
+
+
+
 PUSHED / VERIFIED 22342c76c969c77d2749a488da794bd6133ad618 on origin/build/arsenal-checkpoint-20260911. Final21 unique faction loops installed, including Calle Ocho=Glock and La Union del Sur=Burn; exact other20 screenshot choices retained. TRC/NBPD keep their prior sirens. Three audio source/catalogue files, owner mappings, assignment utility, native evidence and owned documentation only.115 wiring checks plus13 correction checks passed; source hashes verified. Reopen live-source sandbox for faction audio. No mapping decisions remain; subjective mix review can follow in normal play. Menu playlist and audio assets unchanged.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-03 - Import recovery
+
+
+
+Initial map bake caught/fixed a four-occurrence art-coordinate identifier typo; final ground bake succeeds. Whole-project import exceeded the original150-second wrapper limit while scanning archived review assets. Resumed import completed asset processing but exposed12 global classes pointing at archived tools/bridge_perf, sandbox_finish before-sources and selected-range before-view copies. Added .gdignore to evidence/backup folders (no backup deletion/source modification), repaired generated class-cache paths to canonical runtime scripts, and saved original cache plus exact repair manifest in tools/harold_scale_20260915/import_recovery.json. This is import hygiene, not gameplay logic. Initial failed native run retained; clean final rerun follows.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-faction-music-audit-01 - Spatial/level behavior confirmed; interior filtering missing
 
+
+
+
+
+
+
 Owner asked whether imported snippets preserve arriving-vehicle/defending-building placement, louder arrival, quieter combat and interior muffling. Current tactical_convoy_audio.gd confirms moving convoy source, Harold/estate defender entrance (bridge defenders use vehicles), existing arrival-to-combat drops of14dB vehicle/6dB building plus shot ducking, and same-loop winner foreground. Read-only verification found no low-pass/filter routing for these new players: battle excerpts were prepared with timing/seam/headroom only, so imported loops currently remain clean aside from positional gain/panning. Interior vehicle/building sound design was not carried over and remains a real gap; do not claim otherwise. No runtime changes made in this confirmation block. TRC/NBPD sirens and clean menu tracks remain unchanged.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-04 - Owner adds Arsenal neighborhood vehicles
+
+
+
+Owner requested actual Arsenal vehicles, predominantly poor-neighborhood transport with one or two modest upgrades immediately outside Mercer Saints HQ. Selected worn Rattleback/Bayou, Workhorse pickup, Courier van and one practical Civicline; Cabrillo Lowline and Rancher Seven by the HQ, both canonical Mercer preferences. No premium/exotic vehicles. All parked art uses the existing fleet renderer, with model catalogue length/width at shared1.6x and closed doors. Same12 parked identities retained. Scale-only checks exposed an older Harold arrival limit: left boundary31 cannot fit the enlarged three-car convoy for Close/Medium. Extend that placement band toward world x1 as required by actual convoy length; retain existing option positions. Initial option-check fixture also needed its auto-committed side reopened; documented separately from real placement issue. Next: model-specific geometry/art, rebake ground, all choices/routes/cover and native screenshot.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-menu-polish-02 - Completed and native-validated
+
+
+
+
+
+
+
+All requested changes complete locally: remove white canvas surrounds from23 faction emblems across sandbox glossary/list/header and both setup selectors, retain emblem interior white detail; refine AK-47 and all six sniper illustrations with distinct stocks/scopes/receivers; compact now-playing toast158x56 above Music dock123x36; crossed-arrow Shuffle rebuilds enabled-song order and immediately starts a different song when alternatives exist. Pause resumes on explicit shuffle; exclusions/volume persist; zero enabled disables and one enabled explicitly restarts. Next and natural track finish follow the new order.
+
+
+
+
+
+
+
+249 native Godot checks PASS, zero failures, with actual menu/button input, eight full22-song shuffles, all23 rendered emblems, seven native gun panels and three desktop sizes. Exact inner emblem pixel equality proves preservation; all white exterior corners cleared. Final screenshots and seven-gun board visually inspected. Earlier pixel fixture corrected logical-to-physical scaling; import log BOM decoding corrected. Other734 prior art assets remain byte-identical; no combat/stat/price/animation changes or broad battle benchmark. Source/evidence/reproduction and limits: tools/menu_polish_20260915/README.md. Owner appearance review remains separate.
+
+
+
+
+
+
+
+Prior portrait checkpoint explicitly approved in this turn, pushed and verified at dc0450543801f3b4046f39cb1f762abf0bd79e15; its previous auto-review block is resolved. New music-menu change preserves the separately owned untracked opening source: exact already-applied delta is checkpointed instead of staging that entire inherited file. Music/faction audio catalogue, Harold and range-group changes preserved. Current pass publication receipt records actual status. Reopen the normal Sandbox launcher; no further implementation needed before owner review.
+
+
+
+
+
+
+
+## 20260915-menu-polish-03 - Complete locally; new publication blocked
+
+
+
+
+
+
+
+All new emblem/AK-sniper/toast/shuffle changes,249 native checks, screenshot review, source delta and handoff records are complete. Automatic approval review rejected tools/menu_polish_20260915/publish.py before execution: the preceding explicit approval covered the earlier portrait/Arsenal checkpoint, not this new source/art/evidence/documentation payload to GitHub. Previous approved checkpoint remains pushed/verified dc0450543801f3b4046f39cb1f762abf0bd79e15. No new staging/commit/push or bypass/retry occurred. Target https://github.com/LeadLasso-LL/DEADSTREET.git, build/arsenal-checkpoint-20260911.
+
+
+
+
+
+
+
+Remaining publication step: request explicit owner approval for the new menu-polish checkpoint, then run the prepared publisher with fresh protected hashes/branch/index checks. It preserves inherited untracked opening/music source and checkpoints only its already-applied narrow music delta. Reopen the normal Sandbox launcher to use all changes now. Do not rerun art production/native tests absent changed validated files. Exact receipt and continuation: tools/menu_polish_20260915/publication_receipt.json and README.md.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-radio-interior-01 - Subtle interior filtering implemented
 
+
+
+
+
+
+
 Owner authorized restrained, well-done vehicle/building muffling. Implemented per-source12dB/oct low-pass: vehicles2400Hz, buildings1800Hz, resonance0.5/no gain boost; winner smoothly opens to7500Hz using existing outro mix without replacing/restarting its loop. Each radio owns a separate temporary bus and cleans it up on exit. Sirens/menu sources never attach this treatment. Existing spatial anchors, gain/ducking, timing and assets unchanged. Scope: new gameplay/tactical_radio_filter.gd plus three narrow convoy-audio wiring lines; evidence in tools/radio_interior_20260915/. Next: native signal-response, source isolation, cleanup, transitions and siren checks; record final results and publish scoped change. Preserve concurrent Harold/Arsenal/menu/range work.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-06 - Mixed-convoy door clearance corrected
+
+
+
+A faction-appropriate Taiga/Bayou/Outlander screenshot fixture exposed a real invalid_vehicle_pose: old planner padding0.6 per body let adjacent open door proxies enter neighboring vehicle bodies by about0.1 world units. Native diagnostic records exact colliding body/door IDs in mixed_convoy_debug.log. Shared placement context now accepts authored parking_clearance with unchanged default0.6; planner forwards it. Only Harold sets1.52 per body, sufficient for both current-scale door leaves, and allocates matching convoy length. Bridge/estate behavior retains default. New planner/context files were clean before this narrow edit; exact before copies and hashes retained. No visual-only suppression of doors or relaxed collision validation. Next: rerun native heavy convoy, actual Orlov mixed convoy, default-context map smokes, final screenshot and records.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-radio-interior-02 - Interior treatment validated
 
+
+
+
+
+
+
 Closed the faction-radio muffling gap with restrained per-source low-pass filtering: vehicles 2,400 Hz; defending buildings 1,800 Hz; 12 dB/oct, resonance 0.5 and no gain boost. Winning radio smoothly opens to 7,500 Hz using the existing outro mix while the loser stays enclosed. Each radio owns and cleans up its bus. Existing spatial placement, arrival level, combat ducking and looping remain identical; menu music and TRC/NBPD sirens are unchanged. Native Godot: 141 checks passed across all 21 mappings, three layouts, real loop wraps, winner continuity, authority sources and bus cleanup. Captured audio response plus protected-file checks: 8 passed; bass retained, high frequencies attenuated, no clipping or resonant boost. No independent listening signoff claimed. Evidence: tools/radio_interior_20260915/{README.md,native_validation.json,measured_response.json,source_hashes.json}. Next: scoped publication and owner review after reopening the live sandbox. Preserve concurrent BUILD/Harold, Arsenal and menu changes.
+
+
+
+
+
+
+
+## 20260915-faction-preview-01 - Glossary audio audition authorized
+
+
+
+
+
+
+
+Brandon explicitly approved the preceding menu-polish checkpoint and requested a Faction Audio label/play button in each faction glossary page. Filled right-pointing play triangle becomes a filled stop square during playback; stop resumes the paused menu song at its current position. Implementation will reuse final21 faction snippet mappings and existing TRC/NBPD sirens, play each snippet once, stop on natural completion/faction change/page hide and preserve a pre-existing manual menu pause. Narrow scope: new gameplay/faction_audio_preview.gd, glossary button/lifecycle wiring, menu music external-preview pause API/group, tools/faction_audio_preview_20260915/. No catalogue/track/siren/battle-filter changes. Preserve active radio-interior and Harold work. Source baselines captured; next implement and verify actual native playback/controls and resume position.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-radio-interior-03 - Final gentler interior treatment validated
 
+
+
+
+
+
+
 Closed the faction-radio muffling gap with restrained per-source low-pass filtering: vehicles 2,400 Hz; defending buildings 1,800 Hz; 6 dB/oct, resonance 0.5 and no gain boost. Winning radio smoothly opens to 7,500 Hz using the existing outro mix while the loser stays enclosed. Each radio owns and cleans up its bus. Existing spatial placement, arrival level, combat ducking and looping remain identical; menu music and TRC/NBPD sirens are unchanged. Native Godot: 141 checks passed across all 21 mappings, three layouts, real loop wraps, winner continuity, authority sources and bus cleanup. Captured audio response plus protected-file checks: 8 passed; bass retained, high frequencies attenuated, no clipping or resonant boost. No independent listening signoff claimed. Evidence: tools/radio_interior_20260915/{README.md,native_validation.json,measured_response.json,source_hashes.json}. Next: scoped publication and owner review after reopening the live sandbox. Preserve concurrent BUILD/Harold, Arsenal and menu changes.
 
+
+
+
+
+
+
+
+
+
+
 ## 20260915-radio-interior-04 - Final tuning and publication ready
+
+
+
+
+
+
 
 The initial FILTER_12DB pass was deliberately eased after measuring its response. Final runtime uses Godot FILTER_6DB, vehicles 2,400 Hz and buildings 1,800 Hz; measured bass change at 120 Hz is only -0.02/-0.04 dB, with 4 kHz softened -11.74/-15.74 dB. Winner opens smoothly to 7,500 Hz (-1.95 dB at 4 kHz). This supersedes the initial 12 dB setting recorded above. Final 141 native checks plus 8 captured-response/protected-file checks pass. Source files/catalogue hashes checked. Other chat advanced HEAD to 070469580f055e3352fae8eabaf2425fb171c40f and cleared its own staging during validation; preserve that new menu checkpoint. Publish only this helper, three convoy wiring lines, its narrow evidence, and this chat's shared-record sections. Owner can review by reopening the normal live-source Sandbox launcher. No independent listening signoff claimed.
 
 
+
+
+
+
+
+
+
+
+
+## 20260915-radio-interior-05 - Published and verified
+
+
+
+
+
+
+
+Scoped interior-radio filtering checkpoint pushed and remote branch verified at db2da64b0cb8a11c5b57a056b0829dcea246d289. Final restrained FILTER_6DB configuration, vehicle/building placement and gain preservation, smooth winner clarity, unchanged menu/sirens, and 149 passing native/measured checks are recorded in tools/radio_interior_20260915/. All pre-existing unstaged work preserved; only owned record sections checkpointed. Reopen normal Sandbox launcher for owner listening review. No remaining implementation task in this scope.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-07 - Harold Arsenal vehicles and widened street complete
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED:12 actual Arsenal parked vehicles, mostly poor-neighborhood models with Cabrillo/Rancher upgrades by HQ; shared1.6x per-model cover footprints, road20 units wide, lower streetscape shifted coherently and three arrival choices corrected for convoy length. 943 native checks pass, zero final errors; screenshot inspected, owner review next. Backups preserved; .gdignore import hygiene fixes historical duplicate-class registration. See tools/harold_scale_20260915/README.md, completion_receipt.json and journal harold-scale-07. Reopen normal live-source Sandbox. No Harold commit/push; concurrent audio/portrait/range work preserved.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-faction-preview-02 - Implemented and native-validated
+
+
+
+
+
+
 
 Faction Audio label and filled play/stop button installed beneath every glossary leader photograph. Plays exact 21 mapped snippets plus existing TRC/NBPD sirens (TRC 0.75 pitch), as fresh one-shot preview resources. Preview pauses the menu player and Stop/natural finish resumes the same song at its held position. Only one preview; faction/tab/Tutorial/hidden-page/removal transitions stop it. Pre-existing manual pause is respected; Next/Shuffle cannot overlap preview. Existing menu volume controls audition level. Catalogue, source WAVs, battle looping/spatial filters, portraits and art unchanged.
 
+
+
+
+
+
+
 250 official Windows Godot native checks PASS, zero failures: actual controls for all 23 sources and icon states, byte identity, pause/position/play-count continuity, real clip end, navigation/cleanup, manual-pause and Shuffle interaction, three desktop layouts. Actual Mercer playing/stopped and NBPD screenshots visually inspected. Existing unrelated Tutorial anchor warning recorded; no broad battle benchmark or owner appearance acceptance claimed. Source/evidence/reproduction in tools/faction_audio_preview_20260915/README.md; exact live music delta preserved separately from untracked opening ownership. Narrow scope includes new preview node, glossary, one menu-navigation stop line and external menu-pause API.
+
+
+
+
+
+
 
 Brandon's preceding explicit approval was fulfilled: menu-polish checkpoint 070469580f055e3352fae8eabaf2425fb171c40f pushed/remote verified. That prior blocker is resolved. Current preview implementation/evidence/records are complete; publication receipt states actual Git result. Reopen normal live-source Sandbox. Preserve parallel radio-interior/Harold/range work; no implementation work remains before owner review.
 
 
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-08 - Owner requests a conspicuous HQ status car
+
+
+
+Owner rejected the subtle Cabrillo/Rancher wealth contrast: at least one car immediately outside the steps must obviously look nicer. Selected the canonical bright azure Volta GT ($68,000 grand tourer, below exotic/endgame tiers) after inspecting actual west-facing Volta and Kensei sprites. Replace only north_car_2 Cabrillo with Volta at x20.3 (centre24.02, directly across from steps23..27.1), retain the other11 neighborhood vehicles and the accepted street/scale work. This supersedes the modest-upgrades-only choice in harold-scale-04/07. Existing1.6 model scale derives footprint7.44x3.104 and cover; rebake matching ground shadow. Current HEAD 50a000753b04c7115bfeef48cb46dea0b2ddbbd4; branch verified, index empty, other uncommitted work preserved. Next: native clearance/access checks and screenshot; owner visual acceptance pending. Scope tools/harold_scale_20260915/hq_upgrade/. No staging/commit/push in this correction.
+
+
+
+
+
+
+
+## 20260915-harold-scale-09 - HQ Volta correction complete
+
+
+
+Canonical bright-blue Volta GT replaces the understated Cabrillo directly outside the steps; other11 cars/street unchanged. 538 focused native checks pass, zero errors; screenshot visually inspected. Owner review next. Source/evidence/limits: tools/harold_scale_20260915/hq_upgrade/ and journal harold-scale-09. No staging/commit/push.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-weapon-cards-01 - Trigger and card artwork refresh in progress
+
+
+
+
+
+
+
+Owner requested clearer shotgun triggers, then added Ruger Mini-14 and AUG triggers; also every unit image card must hold the latest Arsenal weapon art. Confirmed current icon-only polish is absent from portrait weapons. Scope: eight SVG-native trigger/guard refinements and all 691 reachable portraits (23 factions x 30 models plus Mercer dual-pistol specialist). Preserve accepted final anatomy/outfits/hand transforms/framing by replacing only the existing weapon groups in exact accepted card SVGs; shared runtime and world animation atlases stay untouched. Reuse current Arsenal source SVGs as the single weapon-art input, including new AK/sniper detail. Working source clean before edit; HEAD 50a000753b04c7115bfeef48cb46dea0b2ddbbd4. Concurrent Harold HQ car and glossary/comparison/menu changes are outside scope. Baseline portraits and SVG jobs backed up in tools/weapon_card_refresh_20260915/. Next: render triggers, refresh weapon-only card layers, check full catalogue coverage and native texture loading, visual review, update records and scoped publication.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-arsenal-compare-01 - Owner requested SMG casing and direct equipment comparisons
 
+
+
+
+
+
+
 Brandon requested SMG always uppercase in the sandbox force picker and click-one/hover-another Arsenal stat comparisons, then explicitly extended the same interaction to Vehicles. Scope: glossary UI, force-builder presentation, a shared equipment stat formatter and tools/arsenal_compare_20260915/. Both affected existing sources are clean at baseline; preserve parallel Harold HQ-car, range and opening work. No combat/stat/price tuning. Vehicle comparisons include price, upkeep, seats, road movement, resources, cover and neutral dimensions/door counts, with special-role descriptions preserved. Implement a clicked baseline that persists across class tabs; show both values and signed hovered-minus-selected differences. Lower price/aim/reload/recoil/miss chance is beneficial; graze probability is a neutral tradeoff. Keep hovered details stable for scrolling. Verify actual native input, cross-class comparisons, formatting and screen fit.
+
+
+
+
+
+
 
 Prior Faction Audio publication is complete and remotely verified at 50a000753b04c7115bfeef48cb46dea0b2ddbbd4; no prior approval blocker remains. Current work is a separate UI request.
 
 
+
+
+
+
+
+
+
+
+
+## 20260915-harold-scale-10 - Blue HQ model rejected; scarlet replacement
+
+
+
+Brandon explicitly rejected the blue Volta ("not a blue model"). Selected the existing scarlet Veloce Rosso after actual sprite inspection: obvious sports-car status, fitting Saints red, $89,000 and below top-end Arsenal vehicles. This supersedes the Volta choice in harold-scale-08/09, not the request for a conspicuous HQ car. Replace only north_car_2 model, preserving x20.3, other11 cars, street and canonical1.6 scale. New footprint7.28x3.168 drives cover/art/shadow together. Scope tools/harold_scale_20260915/hq_red/. HEAD 50a000753b04c7115bfeef48cb46dea0b2ddbbd4; branch verified/index empty. Preserve concurrent weapon-card/comparison/menu work. Next: rebake ground, repeat focused native access/screenshot fixture, owner review. No commit/push in this correction.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-arsenal-compare-02 - Gun and vehicle comparison complete and validated
+
+
+
+
+
+
 
 IMPLEMENTED / NATIVE-VALIDATED: SMG uppercase in both force-builder Add Unit selectors, existing unit rows and tooltips. Arsenal and Vehicles now use clicked baselines and hover comparisons across class/category tabs. Both source values and signed hovered-minus-selected differences shown; green benefits, red drawbacks, neutral tradeoffs, unchanged em dash, percentage-point deltas. Last hovered comparison persists for scrolling; new click changes baseline; hover selected restores details; page/category change clears hover while preserving selected baseline. Guns compare 17 stats; vehicles compare 10 common stats with applicable special-role/capacity and ability details below. Source values remain canonical; no combat/economy/art/audio changes.
 
+
+
+
+
+
+
 3,736 native Windows Godot checks PASS, zero failures, exit 0/no engine-script errors: all 30 gun and 75 vehicle source values/deltas, price ordering, actual click/hover and cross-category controls, selection/scroll/page lifecycle, SMG labels, formatting and three desktop layouts. Six relevant screenshots visually inspected. No battle benchmark, full regression suite or owner appearance acceptance implied. README/evidence/commands/protected hashes: tools/arsenal_compare_20260915/. Only gameplay/equipment_comparison.gd, glossary equipment UI and force-builder presentation are owned. Faction Audio source/lifecycle, catalogues, ordering and concurrent Harold/range/opening work preserved.
+
+
+
+
+
+
 
 Owner's in-turn vehicle extension is fulfilled. Previous Faction Audio 50a0007 is pushed/remote verified. Current comparison publication outcome is separate in publication_receipt.json. Next: reopen live-source Sandbox and review; implementation is complete. Scoped publisher preserves other chats' working records and source edits.
 
-## 20260915-radio-interior-05 - Published and verified
 
-Scoped interior-radio filtering checkpoint pushed and remote branch verified at db2da64b0cb8a11c5b57a056b0829dcea246d289. Final restrained FILTER_6DB configuration, vehicle/building placement and gain preservation, smooth winner clarity, unchanged menu/sirens, and 149 passing native/measured checks are recorded in tools/radio_interior_20260915/. All pre-existing unstaged work preserved; only owned record sections checkpointed. Reopen normal Sandbox launcher for owner listening review. No remaining implementation task in this scope.
 
-## 20260915-weapon-cards-01 - Trigger and card artwork refresh in progress
 
-Owner requested clearer shotgun triggers, then added Ruger Mini-14 and AUG triggers; also every unit image card must hold the latest Arsenal weapon art. Confirmed current icon-only polish is absent from portrait weapons. Scope: eight SVG-native trigger/guard refinements and all 691 reachable portraits (23 factions x 30 models plus Mercer dual-pistol specialist). Preserve accepted final anatomy/outfits/hand transforms/framing by replacing only the existing weapon groups in exact accepted card SVGs; shared runtime and world animation atlases stay untouched. Reuse current Arsenal source SVGs as the single weapon-art input, including new AK/sniper detail. Working source clean before edit; HEAD 50a000753b04c7115bfeef48cb46dea0b2ddbbd4. Concurrent Harold HQ car and glossary/comparison/menu changes are outside scope. Baseline portraits and SVG jobs backed up in tools/weapon_card_refresh_20260915/. Next: render triggers, refresh weapon-only card layers, check full catalogue coverage and native texture loading, visual review, update records and scoped publication.
+
+
+
+## 20260915-harold-scale-11 - Scarlet Veloce correction complete
+
+
+
+Owner-rejected blue Volta replaced with canonical scarlet Veloce Rosso outside HQ steps. 538 focused native checks pass; screenshot inspected and owner review next. Other11 cars/street/protected sources preserved. See hq_red/ evidence and journal harold-scale-11. No staging/commit/push.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-weapon-cards-02 - Trigger artwork and all card weapons installed
 
+
+
+
+
+
+
 Eight requested trigger assemblies refined with open guards and distinct curved trigger blades (six shotguns plus Mini-14/AUG). All 691 canonical unit portraits now embed current Arsenal SVG artwork, including all 30 regular weapon models and both specialist pistols. Verified exact accepted source match for every baseline and structurally identical non-weapon SVG nodes in both standing directions (1,382 checks): existing anatomy corrections, hands, clothing and card framing are retained. New assets/data/unit_card_weapon_art.json records each source SVG and installed portrait hash for future freshness checks. Refreshed only changed imported images in an isolated Godot import. Other chats' current UI, Harold maps, music and world atlases preserved. Evidence in tools/weapon_card_refresh_20260915/. Next: native catalogue/card/texture checks, final visual review, records and scoped publication; owner acceptance remains separate.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-weapon-cards-03 - Trigger and current card weapon artwork validated
 
+
+
+
+
+
+
 IMPLEMENTED / VALIDATED: six shotgun triggers/guards plus Ruger Mini-14 and AUG; all 691 unit cards now hold current Arsenal source SVGs, including latest AK/sniper/pistol/SMG detail and both specialist Glocks. The eight trigger designs are part of the normal display generator. Exact accepted baseline match for all 691 portraits and 1,382 non-weapon SVG equality checks preserve fixed shoulders, hands, outfit geometry and framing. Initial longer sniper art caused edge clipping in 140 angle views; fixed by uniform 0.9 weapon scale about the right grip, keeping unit framing unchanged. Final both-angle framing check shows zero new side clipping. 3578 native Godot checks passed: actual runtime paths/current pixels, all 690 faction/model combinations, specialist, 115 glossary cards and eight icons. Visually reviewed all weapon designs, all faction/class glossary images and native pages. Added source/portrait freshness manifest assets/data/unit_card_weapon_art.json and reproducible accepted source/render archives. No changes to weapon stats, audio, runtime card layout or world animation atlases. Initial native icon comparison was corrected to account for the existing fix_alpha_border import step; final exact visible-pixel checks pass without a relaxed tolerance. Owner visual acceptance remains separate. Evidence/commands/limits: tools/weapon_card_refresh_20260915/README.md. Next: scoped publish and reopen live Sandbox for review; preserve concurrent Harold, SMG label and gun comparison work.
+
+
+
+
+
+
+
+
+
+
 
 ## 20260915-weapon-cards-05 - Complete locally; new publication blocked
 
+
+
+
+
+
+
 All eight trigger improvements and 691 current-weapon portraits are installed in the live sandbox and validated (3,578 native checks, 1,382 non-weapon structural comparisons, zero new side clipping). Automatic approval review rejected execution of tools/weapon_card_refresh_20260915/publish.py before it ran: the current 742-file artwork/evidence payload and GitHub destination need explicit approval in trusted user text. No staging/commit/push occurred and no workaround/retry attempted. Target https://github.com/LeadLasso-LL/DEADSTREET.git, branch build/arsenal-checkpoint-20260911. Prepared publisher verifies fresh HEAD/branch/index/protected-source/owned-file hashes and stages only owned source/art/evidence plus owned shared-record sections. Remaining step: owner explicitly approves this new batch, then execute the prepared publisher with its guards and verify remote receipt; no repeat production/testing needed unless validated files change. Reopen normal live-source Sandbox for immediate review now. Preserve concurrent Harold and menu/comparison changes.
 
+
+
+
+
+
+
+
+
+
+
+## 20260915-cover-interactions-01 - Owner accepts red HQ car; flags cover and stairs
+
+
+
+Brandon: "Much better" for the scarlet Veloce, then concerning cover interactions and specifically "And the stairs". Record red HQ-car choice OWNER-ACCEPTED; cover/pose presentation is a new issue, not covered by prior reachability checks. BUILD is inspecting native parked/arrival vehicle and stair-wall interactions. Source reading identifies3.2px facing-dependent occupied-cover visual nudge plus fixed .85-world static standoff and closely spaced vehicle door/body slots as suspects; do not call causes proven before native inspection. Exact source backups/hashes in tools/cover_interactions_20260915/before and baseline.json. Preserve wider street/car choices, range/HUD and concurrent weapon-card/comparison work. Next: capture actor positions/slot distances and close native stairs/vehicles, fix confirmed issues narrowly, validate and report. No commit/push.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-cover-interactions-02 - Confirmed overlap causes; narrow correction
+
+
+
+Native snapshot records4 same-side arrival-door occupant pairs only1.4196/1.6068 world units apart. Harold static cover uses .85-world standoff and3.2px facing-dependent sprite translation, leaving only .45-world horizontal clearance when facing the cover; the stair defender occupies the inside corner only .15 before the wall end. Correct Harold only: keep displayed foot origins on physical points (remove forward nudge), use1.35-world static car/stoop standoff, move stair side slots .35 beyond the front corner, and reject arrival-door slots within2.4 world units of another door slot while suppressing conflicting unowned body slots. Physical doors remain intact; other maps retain existing rules. No unit art, size, collision checks or combat damage/LOS rules weakened. Baseline native record in actors.json/before.png. Initial supposed close captures remained at overview due camera controller; those filenames are not proof of zoomed inspection. Next: focused geometry/pose checks, actual close capture,20-second movement/combat review and bridge/estate preservation smoke.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-weapon-cards-06 - Owner explicitly approved artwork publication
+
+
+
+
+
+
 
 Brandon replied "Approved" to this chat's request to push the new shotgun/Mini-14/AUG trigger improvements and all 691 current-weapon card portraits to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the automatic-review publication block in weapon-cards-05. Existing 3,578 native checks and both-angle framing checks remain valid; all non-documentation owned file hashes and protected source hashes are unchanged. Proceed with the prepared scoped publisher on build/arsenal-checkpoint-20260911, preserving concurrent Harold cover/stair work and previously published comparison UI. Record remote verification; no repeated art generation or optional validation is needed.
 
 
+
+
+
+
+
+
+
+
+
+## 20260915-weapon-cards-07 - Published and verified
+
+
+
+
+
+
+
+Scoped trigger and unit-card artwork checkpoint pushed and remote branch verified at c5a625fcb5978a6a2c82224c86c1ed45d4ee6616. Six shotguns plus Mini-14/AUG have readable triggers/open guards; all 691 card portraits use current Arsenal art with accepted anatomy retained. 3,578 native checks pass; both-angle framing has zero new clipping. Exact source/portrait freshness hashes and regeneration guidance are recorded. Concurrent Harold, SMG/comparison UI, music and other work preserved. Reopen normal live-source Sandbox for owner visual review. No remaining implementation task in this scope.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-menu-trim-01 - Four tracks removed from menu only
+
+
+
+
+
+
 
 Brandon explicitly requested removing Switch, Ripper, Dead or Alive and Lurk from the sandbox menu playlist because they do not suit the menu; change nothing else for audio. Implement menu-only eligibility in MusicCatalog and the menu player's track-list load. Preserve all 22 full track records, original audio assets, faction mappings/snippets, sirens, filters, volume and playback behavior. Exclusions apply even when an old user preference has those tracks enabled; they are absent from the menu list and shuffle. Menu roster becomes 18 tracks. Only catalogue data/helper and one live untracked menu-source line are owned; preserve other opening changes through an already-applied delta instead of staging that inherited source. Previous comparison d6c0113 is pushed/verified; this is a new narrow request. Native menu loading and exact catalogue/audio preservation will be checked before completion.
 
 
+
+
+
+
+
+## 20260915-cover-interactions-03 - Harold cover correction complete
+
+
+
+Removed forward visual nudge, increased car/stoop clearance, placed stair cover outside corners and separated authored/door/body cover positions. Scarlet Veloce accepted; new cover appearance review pending. 1492 final native checks pass across mixed snapshot, all arrival choices/live fight and bridge/estate preservation. See tools/cover_interactions_20260915/README.md and journal for exact scope/limits/failures. No staging/commit/push.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-menu-trim-02 - Menu-only removal complete and validated
 
+
+
+
+
+
+
 Removed Switch, Ripper, Dead or Alive and Lurk from the sandbox menu list and shuffle. 18 menu songs remain. Existing saved enable flags cannot reintroduce the four. All 22 shared track records, faction assignments and 43 MP3/WAV files are identical to baseline; faction battle snippets and Faction Audio previews still load the excluded songs. No siren, mix, volume, spatial-filter or playback-control changes.
+
+
+
+
+
+
 
 Official Godot 4.7.2 headless menu initialization PASS, exit 0/no errors: 18 actual menu rows, old enabled preferences ignored, excluded IDs absent from three queue refills, four original full-song and battle streams still load, signature Dead Street preserved. No broader audio testing needed for this filtering-only change. Evidence/source hashes/delta: tools/menu_playlist_trim_20260915/. Scope is music_catalog.json eligibility list, MusicCatalog.menu_tracks() and one menu-source call replacement. Inherited untracked sandbox_menu_music.gd remains separately owned; exact already-applied delta saved for eventual opening-source publication. Do not reapply to current source. Reopen normal Sandbox; no further implementation is needed. Current Git outcome is in publication_receipt.json. Preserve concurrent Harold and weapon-card work. Previous comparison d6c0113 was published.
 
 
+
+
+
+
+
+
+
+
+
+## 20260915-doble-ocho-01 - Fourth tactical map and scripted video authorized
+
+
+
+Status: IN PROGRESS; source Brandon's current chat6a4bd31e258d. Owner delegates creative setting/factions/layout for a surprise overnight fourth map, targeted6v6/7v7 between Harold and bridge, and requests a complete scripted battle video. No approval question needed for these authored choices.
+
+
+
+Fresh repo: build/arsenal-checkpoint-20260911 HEAD408f62cb2c3642e4ba9e33713f531c35757a6a2f; index empty. Mixed Harold/range/outcome/character/opening work preserved. tools/fourth_map_20260915/initial_status.txt and source_export.json preserve read baseline.
+
+
+
+Selected new authored scenario: Doble Ocho Auto Yard, south-side New Briarport. Calle Ocho holds a working repair/salvage business; Sierra Roja launches a seven-person seizure raid. Rivalry/south-side overlap grounded in owner faction reference05; specific business and encounter are assistant-authored for this delegated first pass, not preexisting campaign canon. Target96x64 world, two gates, central scrap-car cover, sheltered northern route and southern service flank. Seven-person show uses actual seats and canonical vehicles, auto-deployed real cover before combat, native deterministic orders without health/winner overrides.
+
+
+
+Preserve shared1.6 fleet scale,1.48 actors/8x6 projection, fixed bridge-width HUD, selected individual/class range rules, survivor-first results, parked vocals, owner-assigned faction tracks and quiet combat mix. Carry Harold1.35 cover standoff/2.4 offered-slot spacing to new layout only. Develop surroundings beyond intro viewport. Use physical collision/cover matching authored art, solid building corners, open visible gates. No broad combat/AI/balance changes.
+
+
+
+Scope: new catalog/art/setup/scenario/fixtures; narrow shared map registration and presentation hooks. Existing three maps remain behaviorally protected. Next: implement map and sandbox choice, native geometry/route/arrival/visual checks, rehearse7v7 and capture complete phone-friendly battle video. Visual acceptance remains OWNER REVIEW after delivery; no publication performed.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-doble-ocho-02 - Fourth map installed; native bake passes
+
+
+
+IMPLEMENTED first pass in15 scoped files: new96x64 catalog, garage/yard/scenery renderer, legal vehicle setup/opening-cover allocation,7v7 preset and sandbox dropdown. Narrow shared hooks carry8x6 projection/1.48 actor scale,2.4 cover spacing, fixed defenders, custom arrival path, actual garage music anchor and stationary secure-yard aftermath. Existing3 maps retain their branches. Native Godot4.7.2 D3D12 ground bake passed (4096x2304) with no errors; retain full developed surrounding district at intro zoom. Geometry/visual review currently running, not yet validated/accepted. Baseline normalized-text guards passed for all existing files; exact original backups under before/.gdignore; no staging/commit/push. Next: inspect real7v7 capture/routes then refine any faults before director and video.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-doble-ocho-03 - Native rehearsal completed; approach defect found and corrected
+
+
+
+Native7v7 review passed220 geometry/cover/route/deployment assertions. Rehearsal seed91517 naturally resolved at21.3667 combat seconds, Sierra Roja5 survivors against0 Calle Ocho; no arrival/outro errors;0 camera violations across1801 samples. This was a normal native rehearsal, not the final fixed30FPS movie and not a60FPS performance claim. Correct4+3 manifest; visible garage counterattack and service-gate flank use ordinary player orders, no damage/health/outcome overrides. Separate120Hz vehicle-body sweep reproduced lead Mesa intersecting street_dumpster at7.53s; this block moves its approach west of that obstacle and uses the lower/eastbound street lane. Newmap-only container fades when it obscures a living actor, preserving physical blocking and feet. Road paint aligned to17-world-wide road. Follow-up sweep,6v6/preset checks, visual inspection and final audio/video remain. No staging, commit or push; all prior mixed work preserved.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-doble-ocho-04 - Four-map smoke and mobile capture pass; final visibility refinement
+
+
+
+39 native integration checks pass: actual dropdown/preset/start button,6v6 actual cover/dismounts/passenger total, individual/class-range behavior, and ordinary start on Harold, bridge, estate and newyard.120Hz body sweeps clear every staticprop after correcting Mesa dumpsterclip. Native15.0139s1280x720 sample:53.6837FPS average,17.874ms median/23.232ms p95; compare only cautiously to olderHarold54–55FPS, not a60FPS/headroom certification. First full50.27s movie passed natural resolution,7actualpassengers,0camera/path/outroerrors, survivor-firstcards, full decode and audio checks. Visual review showed container fading too slowly as an actor entered its silhouette (nativealpha0.7 at14s); now reveal immediately at0.28 and restore gradually. Final capture running, unchanged combat/director. First export archived. Desktop shortcut verified launches live source sandbox_opening.tscn, no pack refresh needed. Scope review found three shared files include uncommitted Harold prerequisites; preserve them and separate any future index payload. Current implementation remains local, unstaged/uncommitted/unpushed; no approval request needed to finish video/review.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-doble-ocho-05 - Fourth map and complete battle video delivered
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED / OWNER REVIEW: Doble Ocho Auto Yard,96x64,6v6/7v7 betweenHarold andbridge. Calle Ocho south-side repair yard under Sierra Roja assault; specific business/encounter newly authored under delegated scope. Normal Sandbox → Battle Setup → Doble Ocho Auto Yard → LOAD YARD7vs7. Correct4+3 transport, strategic two-gate approach, real opening cover before combat, complete fence/open leaves, canonical1.6 cars and grounded1.48 actors, developed surroundings, sharedfullwidthHUD/ranges/survivor-firstresults. Owner's exact Break Bad/Glock music mappings; no vocals or new music.
+
+
+
+Final50.2667s mobile MP4 (7355422bytes,1280x720/30FPS H.264/AAC, faststart) saved as libfile_b4c01a1910b08191b39c2aed27fde7ba v0; opening screenshot libfile_146ee1caf4a4819196e95e5ace3db5ee v0. SHA256241e1d23923ed937fd8c7f86038844c698b4d581e5ed0e8c60ded0d2d7f9381b. Full video decode and finite nonclipping audio pass; exact transferred bytes verified. Native movie initializes1152x648 then export scales to1280x720, no claim of native720 recording. Scripted ordinary orders only; seed91517 natural21.3667s combat,SierraRoja5survivors/0CalleOcho;0camera violations across1236samples,0arrival/outroerrors. Final immediate container occlusion reveal inspected. Rawv1 andv2/first_export preserve iteration.
+
+
+
+Validation:220native7v7checks,39integration/preset/6v6/old-map-startchecks,120Hz both-car body sweeps againstallprops clear. Native15.01s14unit sample53.68FPS average,p9523.23ms; not60FPS/headroomcertification. Six movie shutdown ObjectDB leak warnings remain in native logs; capture exits0, no script/runtime error or truncated video. Existing weapon/body visuals were not modified.
+
+
+
+Source and existing mixed work verified at completion; exact protected count/hashes,HEAD,branch andstatus in tools/fourth_map_20260915/completion_receipt.json. Index remains empty; no mapcommit/push. Three shared integration files rely on unpublished Harold spacing/view prerequisites; future scoped publication must separate/preserve these, not blindly stage wholefiles. Full handoff README, baseline exact backups, owned_source_delta.patch, repro scripts and final evidence in samefolder. Immediate next action: owner watches/reviews/plays newmap; no further automatic battle/layout changes pending feedback. Earlier Harold appearance and unrelated review/publication items keep their separate status.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-06 — owner revision resumed
+
+
+
+- Remote DESKTOP-7CL4DM3 connection restored. Reverified branch build/arsenal-checkpoint-20260911 at 408f62cb2c3642e4ba9e33713f531c35757a6a2f; index empty. Preserving all earlier mixed/uncommitted work.
+
+
+
+- Active authorized block: widen Doble Ocho yard horizontally about 20%; relocate road dumpster; continuous sidewalks and flush gate aprons; authored neighboring businesses/backlots; +10% arrival radio gain. Preserve actual fleet proportions, 7-person 4+3 manifest, native combat/outro, existing tracks and combat mix.
+
+
+
+- Exact pre-edit backups and 248 production GDScript hashes: tools/yard_revision_20260915/baseline.json and before/. First map/movie retained.
+
+
+
+- Next: update map/catalog/setup/art together; validate native 6v6/7v7 cover, vehicle approach and exits, then capture revised MP4. Revision changes not yet installed at this entry.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-07 — wider yard implemented and native checks passed
+
+
+
+- Yard widened from 70 to 86 world units (+22.9%); map 112x70. Cars retain canonical 1.6 fleet scale. West road 20 wide, south road 17 wide at y51..68; continuous sidewalks and dropped-curb main/service aprons align with authored surfaces. Service gate x88..102, flank transport at (75,58). Street dumpster moved onto interior waste pad at (28.5,41.5).
+
+
+
+- Authored surrounding context: auto electrical/grocery block, machine/bodywork/refrigeration businesses behind yard, pawn/upholstery/parts/supply frontage across street, backlots and parked background fleet wholly outside combat bounds.
+
+
+
+- Arrival-only incoming radio +10% linear (+0.82785dB); native tests confirm combat radio levels unchanged. No siren/track changes.
+
+
+
+- Validation: 229 native 7v7 geometry/route/cover/spacing/exit checks; 68,820 convoy-vs-obstacle sweep checks; 55 integration checks covering 6v6, real preset, selected ranges, exact audio gains and other-map starts. All zero errors. First native screenshot inspected. Native scenery bake4096x2304 succeeded.
+
+
+
+- Installer initially halted because scratch transfer appended one newline to baseline strings. Auto-review blocked resetting that baseline. Read-only SHA/backup comparison proved all four live sources unchanged; installed with original immutable byte-hash guards instead. Initial art loop syntax error fixed; subsequent native runs clean.
+
+
+
+- Sources changed only catalog/setup/art and three scoped audio lines, plus ground plate and isolated tools/yard_revision_20260915. Next: full native scripted capture, inspect wide intro/combat/results, validate source preservation and deliver phone MP4.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-08 — owner changed requested video matchup
+
+
+
+- Latest owner messages: "make this Ravicci Family hitting Calle Ocho for the video" and "Ravicci attackers win". Supersedes Sierra Roja as the final video attacker. Map revision scope remains unchanged.
+
+
+
+- Use a capture-specific Ravicci lineup and matching arsenal transport/music; retain reusable map preset separately. Deliver a native resolved Ravicci win using authored roster/orders and a selected take; do not misrepresent it as an untuned balance test.
+
+
+
+- Wider-yard Sierra capture was already running when this arrived; retain its evidence but replace the final deliverable with Ravicci. Next: validate Ravicci transport/cover/audio and record requested winning take.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-menu-additions-01 - Mercy, Hitters, Creepin\u2019
+
+
+
+IMPLEMENTED; validation in progress. Owner authorized menu-only full tracks: cav.mp3 = Mercy, dumpman SAM.mp3 = Hitters, sour.mp3 = Creepin\u2019; all B-22. Uploaded bytes transferred with SHA256 verification; catalogue now 25 full tracks / 21 menu-eligible. Existing 22 entries, exclusions, faction mappings, snippets and sirens preserved. Snippet times and faction assignments await owner. Scope assets/data/music_catalog.json and three new MP3s; preserve Doble Ocho and all mixed work. Evidence tools/menu_additions_20260915/.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-menu-additions-02 - Three B-22 menu tracks ready locally
+
+
+
+IMPLEMENTED / NATIVE-VALIDATED: cav.mp3 = Mercy; dumpman SAM.mp3 = Hitters; sour.mp3 = Creepin’, all B-22. Original uploaded MP3 bytes preserved by SHA256. Enabled by default; 25 shared tracks / 21 menu tracks. Existing 22 track records, signature, exclusions and faction mappings exactly preserved. Snippets and assignments await owner; no battle_loop fields added.
+
+
+
+Godot4.7.2 headless actual menu initialization/advance PASS, exit0: all three streams load >30sec, enabled rows/title-credit display and track switching pass; excluded songs remain excluded after old saved settings and 3 queue refills. No script errors. Four ObjectDB shutdown leak warnings in short fixture; no audible listening review/full regression run. Evidence/repro: tools/menu_additions_20260915/{check_menu.gd,native.log,native_validation.json,manifest.json,catalog_before.json}. Transfer helper failed on Windows xattrs; direct ZIP import checked each original SHA256. Uploaded bundle libfile_4c971c8eb92c8191a7f888152d62aee1.
+
+
+
+LOCAL ONLY: automatic approval review rejected combined commit/push, stating exact new audio payload and GitHub destination need explicit approval. No commit/push attempted after rejection. Destination requested is origin/build/arsenal-checkpoint-20260911 at https://github.com/LeadLasso-LL/DEADSTREET.git. All game changes ready; reopen live-source Sandbox. Preserve Doble Ocho/inherited opening sources and shared records. Next owner provides snippet times/assignments; publishing awaits explicit approval.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-menu-additions-03 - Explicit publication approval
+
+
+
 Brandon explicitly approved committing and pushing the completed Mercy, Hitters and Creepin’ menu-only update to LeadLasso-LL/DEADSTREET branch build/arsenal-checkpoint-20260911 after automatic review requested exact-payload approval. This supersedes the prior publishing blocker. All three B-22 full MP3s are enabled by default; 21 menu songs / 25 total records. Existing 22 records, four exclusions and faction mappings preserved exactly; native menu loading and switching PASS. Snippet times and faction assignments await owner. Evidence and publication status: tools/menu_additions_20260915/.
 
 
+
+
+
+
+
+
+
+
+
+## 20260915-menu-additions-04 - Published and verified
+
+
+
+PUSHED / VERIFIED: 9604323afae49ee63915b378048cfac9940f1f66 on origin/build/arsenal-checkpoint-20260911. Mercy, Hitters and Creepin’ by B-22 installed and native menu-validated; original MP3 checksums preserved. Explicit owner approval received and publication succeeded. Reopen Sandbox. Next: owner supplies snippet timestamps and faction assignments. Concurrent mixed work preserved. Exact receipt: tools/menu_additions_20260915/publication_receipt.json. Supersedes previous local-only/publishing-blocked status.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-09 — revision and Ravicci victory video complete
+
+
+
+- Owner's latest video direction is Ravicci Family attacking Calle Ocho, with Ravicci winning. Capture-only configuration uses seven tier-three Ravicci versus seven tier-two Calle Ocho, unchanged stock weapons; Monarch V12 four passengers + Obsidian X three, native spatial bond_ob radio. Production reusable Sierra Roja preset unchanged. This is an authored showcase, not a balance test; no health/damage/RNG/victory overrides.
+
+
+
+- Final native seed91517 battle resolves at23.90s with three Ravicci survivors. Full video53.7967s,1280x720/30fps H264/AAC fast-start,7377431bytes; SHA256 ec3fdff9efa7bae722f4abe833df58b72b99bc5367a864a140f621db3b3e38c6. Encoded MP4 fully decoded and audio peak0.49665; intro/combat/results frames inspected. Survivors precede dead result cards. Camera, arrival, outro error counts all zero.
+
+
+
+- Exact Ravicci validation:229 geometry/cover/exit/spacing/route checks,68820 approach sweep checks,8 cast/audio checks; wider-map integration55 checks includes6v6,preset/ranges/other maps and exact10%linear arrival boost with unchanged combat gain. Earlier Sierra revised capture retained as non-delivery evidence (Calle Ocho win).
+
+
+
+- Deliverables saved: DEAD_STREET_Ravicci_Raid_Doble_Ocho.mp4 library libfile_256c8cb686c48191b888746f6984d2ad v0; DEAD_STREET_Doble_Ocho_Revised.png libfile_c8ff339d0d6881918a267f3f3eaf2dcd v0. Full remote/local paths and reproduction in tools/yard_revision_20260915/README.md.
+
+
+
+- Preservation: all244 production sources outside the four owned edits remain exact against248-file startup baseline; all251 captured source/art/config hashes unchanged at final verification. Index remains empty. Concurrent menu-only publication advanced HEAD from408f62c to9604323afae49ee63915b378048cfac9940f1f66; preserved. This map/revision is still uncommitted/unpushed amid earlier mixed work; no staging/publication performed here.
+
+
+
+- Remaining: owner review/play revised map and video; Harold cover/stair appearance remains separate review work, broader stable60FPS/full-regression gate not claimed. No unresolved revision test failure. Follow up from this current revision, not the first50s Sierra video. User saw stopped-working UI during capture; actual owned worker completed and recovered final output, no duplicate capture needed.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-10 — sidewalk and arrival mix correction
+
+
+
+- Owner requests gray sidewalks with visible spaced slab joints, and Ravicci music dominant during arrival. Previous +10% source gain did not account for trailing-vehicle distance versus nearby defender building. Scope only yard scenery and yard arrival radio presentation; keep the accepted Ravicci battle configuration, orders and outcome. Fresh exact backup tools/yard_finish_20260915/before, protected baseline.json. Next: native spatial audio check, bake gray sidewalks, recapture matching Ravicci victory MP4.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-11 — gray slabs and dominant incoming radio validated
+
+
+
+- Sidewalk tint changed to cool neutral gray, spaced six-unit slab joints with1.8px dark seams and gray curb highlights; gate aprons gray. No map geometry/cover/vehicles/combat changes.
+
+
+
+- Yard radio arrival focus blends out with existing last-two-arrival-seconds battle mix: incoming source +3dB plus retained10% boost, range2600, attenuation0.35; defender building -14dB during full arrival focus. Existing combat gain/range/attenuation and winner behavior preserved. Scope applies to whichever attacker is chosen on this yard, including requested Ravicci.
+
+
+
+- Native AudioEffectCapture per-radio bus sampling at2.5/4.5/7.0/9.5s passed: attacker RMS margins23.34/25.02/26.10/26.92dB. Existing combat gain/range/attenuation assertions pass. Baked4096x2304 plate inspected on actual Doble Ocho; gray/seams visible.
+
+
+
+- Probe setup initially returned silence, then froze startup Harold view. Corrected to wait12frames for authored view initialization, explicitly enable radios, and use native movie-maker audio path. Only corrected final audio_review.json is evidence; initial probes are not accepted. Six existing ObjectDB shutdown leak warnings, no final script errors. Next: exact-cast native recapture and delivery/hash preservation check.
+
+
+
+
+
+
+
+### 20260915-doble-ocho-12 — final sidewalk/audio video delivered
+
+
+
+- Completed owner correction: gray slab sidewalks with visible spaced joints; incoming Ravicci Bond radio dominates arrival, defender building sits behind it. Fade returns to prior combat settings before battle. Reusable yard works with any attacker; video keeps the requested Ravicci win.
+
+
+
+- Same native battle verified exactly versus prior Ravicci record: winner, three survivors,23.90s combat, orders, manifest and all result-card fields identical. Camera1342samples/0violations; arrival/outro/errors all empty.246unrelated production GDScripts unchanged against248baseline;251captured source/art/config hashes unchanged. HEAD9604323afae49ee63915b378048cfac9940f1f66, index empty, no commit/push this pass.
+
+
+
+- Corrected audio probe uses initialized Doble Ocho view and native movie-maker audio; actual per-radio RMS attacker lead23.34/25.02/26.10/26.92dB at2.5/4.5/7/9.5s. Combat gain/range/attenuation preservation passes. Gray concrete and seams inspected in final encoded frame. Six known ObjectDB shutdown leaks; no final script errors. No broader regression claim.
+
+
+
+- Final53.7967s MP4,1280x720/30fps H264/AAC fast-start,7369078bytes,full decode pass,audio peak0.446738. SHA256 b31c1092b7bc3c7330a00d9370d4f1d5197050b8f103653b3efc4d627d74c413. Saved video libfile_e00f8e02fe808191bafc7466b9aa68be v0; screenshot libfile_fe89df92fa588191b1d47f6f76e3d26f v0.
+
+
+
+- Deliverable now DEAD_STREET_Ravicci_Raid_Final.mp4 (supersedes previous video's sidewalk/mix only). Remote evidence/repro: tools/yard_finish_20260915/. Next: owner review/play; no further map/battle changes requested. Preserve all mixed work and separate Harold cover/stair review. This final file is available directly for phone playback.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-faction-reassign-01 - New owner audio assignments
+
+
+
+IN PROGRESS: Brandon assigns Orlov Bratva = Hitters/B-22, 17-47s; La Union del Sur = Creepin’/B-22, 12-42s; Calle Ocho = Mercy/B-22, 0-30s. Use existing exact30s/80ms-seam loop pipeline including zero-start reflection. Remove Glock from menu eligibility; preserve other exclusions and original assets. Both battle radios and glossary preview resolve the shared catalogue, so verify all23 glossary sources after mapping changes. Scope catalogue, three new WAVs and evidence/docs only; no concurrent yard or audio-mix source edits. Next build loops, native preview/menu checks and scoped publication.
+
+
+
+
+
+
+
+
+
+
+
 ## 20260915-faction-reassign-02 - Three new faction loops and Glock menu exclusion
+
+
+
 IMPLEMENTED / NATIVE-VALIDATED. Latest owner assignments supersede previous Ripper/Burn/Glock faction choices: Orlov Bratva = Hitters by B-22, 00:17-00:47; La Union del Sur = Creepin’ by B-22, 00:12-00:42; Calle Ocho = Mercy by B-22, 00:00-00:30. Catalogue updated; both battle faction_stream and glossary source_path resolve new exact WAV bytes automatically. Glock removed from menu eligibility even with saved enabled preference; menu now20 tracks, shared catalogue25. Other4 exclusions and18 faction assignments, all25 full songs/all21 old loops unchanged by SHA256. Authority sirens preserved.
+
+
+
 All new loops44100Hz/stereo/16bit/1323000frames, exact30s; existing80ms smooth tail/preroll seam treatment and -1dB peak ceiling reused. Mercy uses existing zero-start odd reflection, exact requested first sample retained. Full source/WAV decode and sample/loop-edge continuity checks PASS. No menu remix/re-encoding, no audio-mix/spatial filter or concurrent yard source changes.
+
+
+
 Native Godot4.7.2 headless195checks PASS/exit0: all23 glossary preview services play assigned bytes, one-shot previews pause/resume active menu, new3battle loops use exact boundaries, old saved Glock enabled flag excluded from rows and3queue refills. Initial fixture omitted music.start_signature(), so its23 pause assertions failed; corrected test start and complete rerun pass, logs retained. Four existing ObjectDB shutdown warnings, no script errors. No fresh audible listening, UI layout or full gameplay regression pass; unchanged glossary button wiring already validated separately.
+
+
+
 Evidence/repro: tools/faction_reassign_20260915/{build.py,audio_validation.json,validation/,check_native.gd,native_validation.json,preservation.json,native.log}. Build is guarded one-time; do not rerun after catalogue installation. Prior published full songs9604323. Reopen live-source Sandbox for new catalogue; battle captures already running may retain old snapshot. Next: owner audition. Publication status in publication_receipt.json.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-faction-reassign-03 - Local commit ready; push blocked
+
+
+
+IMPLEMENTED / VALIDATED / COMMITTED locally as35e0db12aae4d114364c911a69ae2136de30ee4e. Automatic approval review rejected push of this new audio/catalog payload, stating earlier approval covered previous payload only. No retry after rejection. Exact destination https://github.com/LeadLasso-LL/DEADSTREET.git branch build/arsenal-checkpoint-20260911. Request explicit approval for this pending commit. All requested music/preview changes work in live-source Sandbox now;195checks pass. Receipt tools/faction_reassign_20260915/publication_receipt.json.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-sandbox-maps-01 - Central map selection and canonical names approved
+
+
+
+OWNER-AUTHORIZED / IN PROGRESS. Brandon selects Calder River and Calder Memorial Bridge (supersedes suggested Crossing); Harold map display name Harold Ave. Widen Battle Setup to use dead side space; chosen map image between factions, dropdown above, image choices, automatic per-map unit presets and suitable transports. Increase selected faction emblems. Preserve all current roster/equipment editing, glossary/comparisons/opening/music and accepted battles. New audio commit35e0db1 is current; index empty; its separate push block is not this task. Baseline exact source backups/hashes in tools/sandbox_maps_20260915/. Next implement and native-validate layout at multiple window sizes, all map selections/presets/start/return, capture review screenshot. No battle rebalance or map geometry change.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-faction-reassign-04 - Explicit approval; pushed and verified
+
+
+
+Brandon explicitly approved publishing commit35e0db12aae4d114364c911a69ae2136de30ee4e to LeadLasso-LL/DEADSTREET branch build/arsenal-checkpoint-20260911. PUSHED / REMOTE-VERIFIED at that exact commit. Supersedes previous push blocker. Orlov Bratva = Hitters17-47s; La Union del Sur = Creepin’ 12-42s; Calle Ocho = Mercy0-30s, all B-22.195native checks pass including23glossary previews and menu pause/resume; Glock excluded,20menu songs. Existing audio and concurrent source work preserved. Reopen live-source Sandbox to audition. No remaining implementation/publication task in this scope. Exact receipt tools/faction_reassign_20260915/publication_receipt.json.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-sandbox-maps-02 - Visual convoy workflow and limits approved
+
+
+
+OWNER-AUTHORIZED scope expansion: Brandon requires universal16-per-side sandbox cap, exactly3 convoy slots, up to3 motorcycles per slot for biker factions (Stateline/Blacktop), NBPD and TRC. Convoy selection becomes a conspicuous visual step below faction/map setup. Picker shows Your Convoy with3 image-filled slots/model/seats/removal; additions that violate slots/drivers or strand the force without enough possible seats become unclickable and visibly dimmed. Preserve independent vehicle bodies, actual drivers/passengers and existing audio. This supersedes12-unit/non-estate limit and undecided3-slot record. No requested extra arbitrary heavy-vehicle quota; slot and unit limits apply equally. Need actual16v16 map startup/cover and bike grouping checks, not UI-only validation. Existing map-layout draft is not yet installed. Next implement unified legality and visual slots, then native integration.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-map-five-ideas-01 - Fifth sandbox map brainstorm
+
+
+
+PROPOSED ONLY; owner asks for a few ideas relative to current four sandbox maps. No map selected, implementation authorized, or new location canon established. Working concepts: (1) Palm Court Motel: aging U-shaped roadside motel, ground-level pool courtyard, parked cars, concrete planters, laundry/service passage; exposed central crossing versus longer sheltered flank. (2) Freight Exchange: stationary freight cars with clearly visible crossing gaps, loading platforms and service road; long rail sightlines separated by close-range crossings; no moving trains required. (3) Calder Fish Market: riverside wholesale sheds, loading trucks, pallets and waterside service walk; broad vehicle approach narrows into several routes, water constrains one flank. (4) Lantern Market: dense outdoor market street with stalls, masonry corners and rear delivery lane; interrupted close-range sightlines plus one longer shooting lane. Names/settings are assistant proposals, faction ownership unset. Recommend motel for strongest distinct visual/tactical addition with straightforward convoy approach and existing ground-level cover systems. Preserve current maps and all concurrent work. Next: owner chooses/discusses concept; do not start building on this brainstorm alone.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-freight-exchange-01 | MAP BUILD ACTIVE
+
+
+
+Owner approved Freight Exchange as fifth sandbox map, about bridge scale, designed for 10v10. Scope: new freight_exchange catalog/art/setup/scenario plus native geometry, cover, arrival and visual validation. Stationary railcars, visible cross-track gaps, loading platforms and service-road flank. Coordinate sandbox picker integration with active sandbox-maps-02; preserve universal 16-per-side cap / three convoy slots. This pass owns dedicated freight_exchange files and tools/freight_exchange_20260915. Shared menu files will be re-read before additive integration; no replacement of active menu draft. Status: IN PROGRESS, no owner visual acceptance yet.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-sandbox-maps-03 - Native layout and convoy integration pass
+
+
+
+Installed central map selector, responsive full-width menu,80px faction emblems,16-unit cap,3-slot convoy rules and image-driven fleet picker. Native302checks pass: all4presets and16v16actual starts on all4maps; legal seats/drivers; noncontiguous3-bike packing forStateline/Blacktop/NBPD/TRC; fourthRoadwarden/insufficient final-seat/driver additions blocked; removals reenable valid additions.31/32Harold and28/32bridge actors occupy cover at16; all32estate/yard; existing deployment fallback retained. Not a32-unitperformance certification. Next real map-thumbnail bake, visual layout/mouse review, mixed bike convoy startup checks. Current source/audio preserved by hash guards; no staging/push.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-freight-exchange-02 | Fifth-map integration installed
+
+
+
+Freight Exchange 164x76 with native authored art/geometry, 10v10 preset, three rail crossings and service lane. Added fifth IDS/DATA row to current sandbox_map_catalog and config validation, preserving sandbox-maps-03 16-unit/3-slot workflow. Added isolated Freight hooks to fixture, view, actor presenter, arrival/outro and dispatch positional radio. Guarded eight-file baseline before patch; no edits to sandbox_force_builder or convoy UI. Map thumbnail pending in assets/menu/maps/freight_exchange.png. Native deployment and combat validation running; not yet owner-reviewed.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-freight-exchange-03 | Rainy night art direction
+
+
+
+Owner adds night setting, rain, well-designed lighting and rain sound. Corrected wording is ALSO, not ALWAYS; this is Freight Exchange art direction, not a global always-night/weather rule. Implement readable warm yard lights / cool shadows, wet surfaces, visible rainfall and layered ambient rain. Current fifth-map geometry pass continues. No changes to other maps or faction track assignments.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-freight-exchange-04 | Native 10v10 validated
+
+
+
+411 native checks PASS: 20 participants in valid cover, legal spacing, vehicle exits, all3crossings plus east-west lanes, all authored cover reachable.15s deterministic combat sample: median frame16.643ms,p95 18.189ms; simulation advance median6.410ms,p95 8.224ms. Not full-battle/performance certification. Positional Orlov Hitters radio and McAllister Watchin radio anchored to convoy/dispatch verified. Rainy night now live:9warm/cool lights, local solid shadows, wet glints,puddles,610rain streaks/ripples,two original20s looped44.1kHz stereo rain stems. More than45percent actual actor occlusion needed before a railcar fades. Ambient visibility lifted for readability. Current tests:16v16capacity, map thumbnail and final visual capture. Previous review harness disabled presentation before reset; fixed harness explicitly resets/begins arrival, native rerun clean. No owner acceptance or publication claim.
+
+
+
+
+
+
+
+
+
+
+
+## 20260915-freight-exchange-05 | Rainy-night fifth map ready for review
+
+
+
+IMPLEMENTED / VALIDATED / LIVE-SOURCE READY. Freight Exchange164x76,10v10default,3rail crossings and service flank; night lighting/rain/audio complete.411checks10v10plus751checks16v16/menu/weather PASS; all32placed in cover at16cap.9lights,2loopedrainstems and audio mute/restore verified; office positional faction radio correct. Night thumbnail COMPLETE at assets/menu/maps/freight_exchange.png, preserve it in current picker work.15s1280x800MP4 preview with actual sound delivered in chat. Native arrival no path errors; no script errors,10ObjectDBexit warnings recorded. Head remains35e0db1; no stage/commit/push or owner-acceptance claim. Shared menu work preserved; coordinate eventual publication using tools/freight_exchange_20260915/final_scope.json. Full handoff docs/handoffs/FREIGHT_EXCHANGE_20260915.md and validated source ZIP. Next: owner review; coordinated commit/publish when appropriate.
+
+
+
+
+
+
+
+
+
+## 20260915-sandbox-maps-04 — Map and convoy setup complete
+
+
+IMPLEMENTED / NATIVE-VALIDATED / OWNER REVIEW. Full-width setup now uses a central native map image, dropdown and image choices; selected faction emblems are 80px. Canonical names are Harold Ave., Calder Memorial Bridge and Calder River. Per-map presets refresh units/transport while preserving selected factions and edited setup on same-map clicks.
+
+
+
+
+
+Universal sandbox cap is 16 per side; each convoy has three formation slots. Stateline, Blacktop, NBPD and TRC pack up to three motorcycles per slot without losing physical vehicles/drivers/passengers. Image-driven picker and Your Convoy row provide removal, Auto-fit, seat feedback and visible unclickable invalid additions. No extra arbitrary Roadwarden quota: three legal, fourth blocked. This supersedes the old 12-unit/undecided-slot live-state notes.
+
+
+
+
+
+Validation: 302 logic/native map-start checks PASS; actual 16v16 starts on the four existing maps; 16 mixed-bike native deployment trials PASS; 23 real mouse-event checks PASS; four viewport native captures and five-map containment PASS. Initial injected mouse coordinates failed everywhere, including existing tabs; corrected viewport coordinate mode passes, failed log retained. Opening raw-image export warnings remain; live-source playback verified, standalone pack not rebuilt. Stable 60 FPS at 32 units remains unverified; cover fallback counts at cap are Harold31/32, bridge28/32, estate/yard32/32.
+
+
+
+
+
+Freight Exchange was added concurrently. Its shared config/catalog/presentation additions and seven other source changes are preserved. Map selector now fits five choices; Freight thumbnail is visible in final screenshot. Its geometry/weather/audio and battle gates remain with its map pass. Audio commit35e0db1 is now pushed per faction-reassign-04; earlier block is superseded.
+
+
+
+
+
+Current HEAD35e0db12aae4d114364c911a69ae2136de30ee4e, branch build/arsenal-checkpoint-20260911, index empty. No staging/commit/push by this pass.227 unrelated baseline scripts remain byte-identical; concurrent changes are separately recorded. Full scope, exact receipts, reproduction, retained failures and limitations: tools/sandbox_maps_20260915/README.md and completion_receipt.json. Saved review images: DEAD_STREET_Battle_Setup.png (libfile_e1d76a53395c8191977f2b7cfa9f7c2b) and DEAD_STREET_Convoy_Builder.png (libfile_c15393ca1308819191d9b088489df7c9). Next: reopen live-source Dead Street Sandbox for owner review; continue Freight separately from its latest event.
+
+
+
+
+## 20260915-freight-revision-01 | Owner review / revision active
+Owner requests: blend crossing rectangles into worn yard/ballast; substantially more visible rainfall/splashes; remove three drawn parking bays; replace neat queued parking with natural convoy approach and varied diagonal stops, respecting actual bodies/routes. Natural-looking arrivals are now an all-map presentation standard. Rename map Eastex Freight Exchange in menu/banner and on dispatch building. McAllister defense owner-approved; Ashford-Crane Collective attacks. Deliver scripted full battle MP4 ending in Ashford-Crane win. Preserve normal combat mechanics; stage through loadouts and direct orders and verify real outcome. This pass owns freight map source/assets and new tools/freight_revision_20260915; fresh guarded shared display/preset hooks only. No owner acceptance/publication yet.
+
+
+## 20260915-bike-slots-01 — Revised packing and title header authorized
+Owner now requires up to two motorcycles per slot for every faction, four for biker, Asian and authority factions. Two-Wheelers picker gets one matching faction-dependent explanation. Replace top-left plain DEAD STREET menu text with existing approved title artwork. This supersedes sandbox-maps-04 three-bike exception; three convoy slots and16 units per side remain. Verify canonical faction membership, seat/driver accounting, four-bike arrival geometry and native UI. Preserve concurrent Eastex Freight revision and all mixed work. Scope tools/bike_slots_20260915 and guarded formation/picker/header/rules edits; no original title artwork changes. Status IN PROGRESS; next inspect shared formation callers then implement and validate.
+
+
+## 20260915-freight-revision-02 ? implemented and native-validated
+- Display/in-world name: Eastex Freight Exchange. Flush timber rail infill and weathered concrete replace rectangular crossing strips; painted arrival bays removed.
+- Denser two-depth rain, light-catching streaks and metal/ground impacts; existing native looping rain audio retained.
+- New receiving-road curves and diagonal vehicle poses. Sampled hull collision found a rear-car catch-up; corrected stop timing. 424 checks for10v10 and753 for16v16 pass, including animated static/dynamic hull clearance, exits and reachable cover.
+- Ashford-Crane attacks McAllister.10v10 frame median18.552ms,p9521.196ms.
+- First showcase rehearsal exposed poor assault tactics and timed out; revising legal loadouts/tactical orders. No health/damage/winner override. Final recording pending.
+
+
+## 20260915-freight-revision-03 ? winning rehearsal validated
+- Staged10v10: Ashford-Crane attacks McAllister at Eastex Freight Exchange. Legal sandbox loadouts:6 SCAR-H rifles,2 Vectors,2 AWM snipers; unit tier3 and reinforced carriers. McAllister tier2 mixed classes with patrol vests.
+- Native orders: central firing positions, eastern counterattack, covered suppression, assault through crossing, final dispatch push. No health/damage/RNG/winner overrides.
+- Rehearsal resolved in49.6 combat seconds: attacker victory,8 attackers alive,0 defenders alive. Arrival/outro errors0; camera violations0 across3229 checked frames.
+- Full1280x72030fps native-audio recording in progress. Source hashes guarded through capture.
+
+
+## 20260915-bike-slots-02 — UI pass and deployment limits found
+Two/four packing and approved wordmark installed;18native mouse/UI checks pass. Baseline convoy tests found old estate five-position list rejects six/twelve-bike bodies, and bridge defending12bike convoy exhausts car-sized positions. Narrow corrections add grouped estate bike poses/independent arrival lanes and extra collision-checked bike blockade candidates; original non-bike poses and accepted estate battle preserved. All other maps, including concurrent Freight revision, passed tested2/4/12bike starts. Next rerun affected deployment cases, inspect final four-bike UI and retain initial failure logs.
+
+
+## 20260915-freight-revision-04 - Full battle delivered for owner review
+IMPLEMENTED / NATIVE-VALIDATED / RECORDED. Eastex Freight Exchange now has flush timber rail crossings, worn yard connections, no painted assault parking boxes, curved/staggered arrivals and irregular diagonal stops. In-world dispatch sign, menu name, banner and refreshed thumbnail use Eastex Freight Exchange. Dense layered light-catching rain and ground/roof splashes preserve native rain sound.
+
+424 checks at10v10 and753 at16v16 passed for the captured formation version, including sampled moving hull clearance. Full scripted10v10 capture: Ashford-Crane attacks McAllister, attacker wins after49.6 combat seconds,8 survivors. Complete88.133s1280x72030fps H264/AAC MP4 includes arrival, combat and results. No arrival/outro errors or camera violations. Audio decode passes, peak0.44565/RMS0.02811; final MP4 SHA2568a117a2f6c9f5169a35e1a83fdb70322decebe8b100be940a1ee854d9d9aea5d. Visual encoded arrival/combat/results checked.
+
+Export concurrency guard initially stopped: bike-slots-01 changed five motorcycle/menu/bridge files during native capture. Audited in capture_concurrency_review.json; no freight source, combat runtime, weather/audio or showcase change; three enclosed vehicles and identical rehearsed result. The existing native recording was encoded after this scoped audit. New four-bike packing is NOT certified by this recording; bike pass must include current Freight placement/arrival checks, especially member3 spacing. Preserve our curves, varied facings and no-bay art while integrating any necessary bike accommodation.
+
+Evidence/repro: tools/freight_revision_20260915/{review.gd,validation.json,capacity.json,showcase.gd,rehearsal.json,record.json,capture_worker.py,encode_verified_capture.py,capture_concurrency_review.json,delivery.json,final_scope.json,reviewed_sources.zip}. Native scene/capture uses exact legal loadouts and tactical commands, no health/damage/RNG/winner override. Existing10ObjectDB shutdown warnings retained.
+
+Delivered DEAD_STREET_Eastex_Freight_Exchange_Battle.mp4 (libfile_11b997eb8900819180e3d0a22b8074c9; file_0000000080188230ba27f87499d09597). Handoff docs/handoffs/EASTEX_FREIGHT_REVISION_20260915.md. HEAD 35e0db12aae4d114364c911a69ae2136de30ee4e; no staging/commit/push by this pass. Natural convoy arrival direction added to MAP_BUILDING_STANDARD. Next: owner review; coordinate mixed-source publication and motorcycle packing with bike-slots pass.
+
+
+## 20260915-bike-slots-03 â€” Menu and estate motion validated; Freight integration check
+IMPLEMENTED / NATIVE-VALIDATED for the revised picker and title. All23 factions now pack2 two-wheelers per slot; Stateline, Blacktop, Zangyaku, Bitian, NBPD and TRC pack4. Exactly3 convoy slots and16 units per side remain. The category includes bicycles; the existing motorcycle classifier still excludes bicycles for motor/rider behavior. The picker shows one faction-dependent helper line and per-card slot capacity. Existing approved title artwork is reused without changing its pixels.
+
+Native478 rule/launch checks passed, including25 attacker starts across all5maps with16 actual passengers and a12-bike bridge defense.18 mouse/UI checks pass, including selecting exactly4 Ironhorses for each eligible faction. A stale-layout test click initially hit a different card; the fixture now waits for layout and asserts model IDs, then passes.
+
+Estate motion sweep found intra-group catch-up and mixed cars crossing bike stops. Fixed only grouped convoys: slot-local legal car candidates and two-row bikes following a common centerline with maintained body spacing. Latest sweep checks29128 vehicle pairs across0/2/4/12-bike cases at30Hz with no overlaps; every vehicle is positioned, dismount diagnostics empty. Original no-bike arrival poses compare exactly at331 samples. Initial failures and intermediate attempts are retained in tools/bike_slots_20260915. Native UI screenshots are saved as DEAD_STREET_Two_Wheeler_Convoy.png (libfile_fd08120acaac819197f066448d3028a7) and DEAD_STREET_Sandbox_Title.png (libfile_1f9b4f0d10ac81918955f63a08f41848).
+
+Freight revision04 was completed concurrently; its full MP4 does not certify four-bike formations. Now running targeted Freight mixed/12-bike moving-body checks against the latest source before final handoff. Freight source has not been edited by this pass. No staging/commit/push. Owner acceptance and standalone-export/32-unit sustained-performance certification are not claimed.
+
+
+
+## 20260915-freight-clarity-01 - Arrival mix and tactical sharpness revision
+Owner requires plainly audible convoy music during arrival and crisp units/floating faction emblems; re-record full Eastex fight. Inspect positional attenuation/filtering, emblem source size/rendering, rain overlap and capture compression. Own audio/visual/weather/capture files only; preserve bike-slots pass currently validating Freight mixed-body movement. Do not change combat/loadouts/outcome.
+
+
+## 20260915-bike-slots-04 — Complete, native-validated, ready for owner review
+All requested changes are live in source: two two-wheelers per slot for every faction; four for Stateline, Blacktop, Zangyaku, Bitian, NBPD and TRC; one matching helper line in Two-Wheelers plus correct card capacities; approved DEAD STREET title artwork in the Sandbox header. Three convoy slots and sixteen units per side remain. Original title pixels/hash unchanged.
+
+Validation:478 rule/native-launch checks and18 native mouse/UI checks PASS. Estate grouped-arrival correction passes29128 moving-hull pair samples. Latest Freight revision04 was separately checked:12 bikes exposed a turn overlap, fixed through guarded group-only placement/shared-curve spacing;44968 vehicle-pair samples plus scenery-hull clearance PASS. Every tested vehicle is positioned and dismount diagnostics are empty. Original no-bike estate and Freight poses exactly match their prior sources at331 and511 sampled times, respectively. These are representative convoy tests, not every model permutation or sustained32-unit performance certification. Prior failures retained.
+
+Seven production source files owned; final hashes and preservation counts are in tools/bike_slots_20260915/completion_receipt.json. No audio, title pixels, faction/unit art, Freight weather/scenery or original car-arrival changes by this pass. Native screenshot review complete; screenshots saved under DEAD_STREET_Two_Wheeler_Convoy.png (libfile_fd08120acaac819197f066448d3028a7) and DEAD_STREET_Sandbox_Title.png (libfile_1f9b4f0d10ac81918955f63a08f41848).
+
+HEAD35e0db12aae4d114364c911a69ae2136de30ee4e; branch build/arsenal-checkpoint-20260911; empty index. No staging/commit/push. Live-source desktop shortcut works on reopen; standalone packed export not rebuilt. Existing raw-image loading pattern emits an export warning; do not claim packed-export verification. Owner visual acceptance remains pending.
+
+Full rules, source ownership, reproduction, retained experiments, evidence and limits: tools/bike_slots_20260915/README.md. Next: owner reopens Sandbox for review. Separate Freight scope is complete for review in freight-revision04; preserve its delivered MP4, rain/scenery and no-bike curves.
+
+
+
+
+## 20260915-freight-clarity-02 - Native audio/render checks pass; capture correction
+Five source changes installed. Arrival radio measured +11.32dB over prior mix, with moderate interior lowpass and positional source retained; combat returns to -32dB/2400Hz. Arrival rain bed reduced6dB. Native127 checks pass, including all20 physical-pixel emblem sizes/alignment at1080p and720p, nearest unit filtering and visibility toggle. Root canvas stretch (1152 logical to1920 physical) is now accounted for in emblem sizing and actor snapping; body rain overlap reduced and night unit tone lifted subtly.
+First recording exposed MovieWriter default1152x648 output and a freed presentation after battle start, likely external UI input. Failed attempt retained. Restarting from an isolated source copy with explicit1920x1080 capture settings and disabled input; shared project settings and bike-slots04 changes preserved. Final MP4 still pending.
+
+
+## 20260915-freight-clarity-03 - Complete; replacement MP4 ready for review
+Arrival radio is approximately11.32dB louder than the former mix, retains positional/interior coloration, and returns to the existing quiet combat mix. Arrival rain reduced; floating emblems now use cached physical-pixel textures with integer placement through canvas stretch (36px at1080p /24px at720p). Unit render anchoring snaps to physical pixels, Freight tone is slightly lifted, rain streak interference over bodies is reduced. Five source files owned; bike-slots04 work preserved.
+Native127 checks PASS. Full native fight resolves normally: Ashford-Crane wins,8 surviving attackers/0defenders,49.6 combat seconds. Arrival/outro errors0, camera violations0. No combat/loadout/outcome overrides or concurrent source changes during capture. Lossless1920x1080 source encoded once to88.1-second H.264/AAC MP4; complete decode PASS, no audio clipping, native and encoded frames visually reviewed. Mixed-scene arrival RMS0.10849 versus combat0.02145; full peak0.46778.
+Replacement DEAD_STREET_Eastex_Freight_Exchange_Clarity.mp4 saved as libfile_11b997eb8900819180e3d0a22b8074c9 version1 (file_000000006c8081f5b48e96fd69f161f4),61580324bytes. SHA25664af0c87c2ae684903789f0edcdd60672c99b1ea066a16fcb213963a9e2f1051. Previous recording remains version0. Capture setup corrected for MovieWriter startup resolution and disabled physical GUI input in isolated capture copy; failed first attempt retained. No shared project setting changes, staging, commit or push. Handoff: docs/handoffs/EASTEX_FREIGHT_CLARITY_20260915.md; evidence/reproduction tools/freight_clarity_20260915/README.md. Next: owner reviews new recording and live-source audio/visuals; packed-export certification remains outside this pass.
+
+
+## 20260915-freight-stability-01 - Clarity recording rejected for camera jitter
+Owner identified continuous shaking at combat start. Measured previous version0 static rail movement0px versus clarity version1 jumps1-4px per frame. Native180-frame probe confirms stationary unit bodies acquire changing camera-dependent offsets and the HUD-safe camera repeatedly shifts position/zoom. Root cause: the clarity pass sprite-position snapping feeds its camera-dependent correction back into safety bounds. Removed actor-body snapping; retain nearest sampling, emblem sharpness, night visibility and louder audio. Camera safety now measures the canonical actor footprint excluding cosmetic body translation. Guarded two-file change, backups retained. Rechecking motion over time and re-recording; version1 is not visually accepted.
+
+
+## 20260915-caution-impacts-01 - Intro revision authorized
+Owner requests an initially unshot caution sign, five staggered bullet impacts with synchronized gunfire, and spray-painted black redaction. Latest steering moves one second from Gloria Systems and one from Godot into the caution segment; total intro duration, title21s and Open Sandbox27s stay fixed. Current startup is a baked silent Theora clip; locating source assets/renderers before editing. Preserve live mixed tree and concurrent Freight clarity/shake work. Scope tools/caution_impacts_20260915, opening assets/runtime only. Native timing, visual and audio review required; no owner acceptance or publication claim.
+
+
+## 20260915-freight-stability-02 - Temporal checks pass, final capture running
+Guarded removal of the camera-dependent sprite offset eliminates the feedback loop. Before/after180-frame probes: opening20 camera comparisons20 changes before /0 after; unwanted body offsets now0. Native corrected1080p rendered frames736-795: all59 adjacent static-rail comparisons report0px translation, versus1-4px jumps in rejected clarity recording. Full capture includes unchanged-bounds camera invariance and body-offset checks, plus existing no-HUD-overlap and battle/outro diagnostics. Preserve the loud arrival mix and sharp faction emblems. MP4 handoff remains pending final encode/decode/temporal check.
+
+
+## Current intro continuation - 20260915-caution-impacts-02
+Brandon transferred the interrupted BUILD credit/intro scope to successor chat workspace4d378ec3160e after chat-length exhaustion. Handoff read and live repository/runtime verified; READY TO IMPLEMENT, no revised intro built yet. tools/caution_impacts_20260915 contains baseline.json only. Own that folder, required opening assets and narrow opening runtime changes; preserve separate Freight stability and all mixed work. Exact constraints: initially clean sign; five staggered bullet hits with matching gunshots before zoom; spray-painted redaction; Gloria and Godot shortened1s each, caution extended2s; title21s/Open Sandbox27s and persistent signature unchanged. See journal caution-impacts-02 for source entry points, current evidence and the existing-media reuse trap. This supersedes the old BUILD ownership for this intro scope only. Preparation made documentation changes only; implementation/native review is the next authorized step.
+
+
+## 20260915-freight-stability-03 - Fixed and re-recorded; owner review pending
+Root cause confirmed: camera-dependent body snapping introduced by clarity pass changed sprite bounds; HUD-safe camera reacted each frame, feeding back into the next snap. Removed body-position snapping and made camera safety ignore cosmetic body translation. Existing nearest sampling, physical-pixel emblems, louder arrival radio, interior filtering and rain/night readability remain. Two source files changed, guarded hashes/backups; no combat/loadout/convoy changes.
+Temporal verification:180-frame before/after probes, opening20 camera comparisons20 changes before/0 after; body offsets now0. Full native combat1487 frames:416 unchanged-bounds comparisons,0 unexpected camera changes,0 body-offset errors. Native and final encoded static-rail samples both59 adjacent pairs,0px movement; rejected clarity version1 had up to4px jumps. Arrival/outro and HUD camera safety errors0. Same legitimate scripted outcome: Ashford-Crane victory,8 survivors,49.6 seconds combat.
+Delivered new88.1-second1920x1080/30fps H.264/AAC MP4 from lossless native frames. Full decode passes, no clipped audio, arrival mix retained. File DEAD_STREET_Eastex_Freight_Exchange_Stable.mp4,52798126bytes, SHA25645839ac0a2536cd77926c23edbac030b69bf89d9889ac67eb9332065fa43ecbd. Saved libfile_11b997eb8900819180e3d0a22b8074c9 version2, file_0000000080cc81fd9383099e1114a267. Version1 is visually rejected and preserved for comparison.
+Handoff docs/handoffs/EASTEX_FREIGHT_STABILITY_20260915.md; evidence tools/freight_stability_20260915/. Future camera/sprite changes require temporal inspection, not only still frames. No concurrent source changes during capture; no staging/commit/push or packed export. Next: owner reviews new recording; reopen live-source Sandbox to load revised scripts.
+
+
+## 20260915-freight-loot-01 - Attacker victory approaches freight-car doors
+Owner requested a quick outro change: winning attackers move toward freight segments as if beginning to steal cargo, without extending the ending. Only gameplay/tactical_battle_outro.gd changed. Freight attacker victories now choose individually spaced reachable positions beside boxcar doors, walk using existing healthy/wounded animations, then face the cargo. Actual battle positions, health and winner remain untouched. Long routes do not delay results: original hold-based timing is retained (6 seconds for the validated 10 survivors); remaining walkers need not arrive before results. Defender and other-map branches remain unchanged.
+Native headless 10v10 presentation fixture passed: all 10 attackers move, 6 still walking at 5 seconds, reachable non-overlapping door targets, no fades or route errors, duration matches baseline, defender routes/timing exactly equal baseline. Fixture-only result state and actor synchronization were corrected before the successful run. No new full battle recording requested or made. Existing loud convoy audio, emblem sharpness and camera stability fixes preserved; parallel intro work untouched.
+Evidence: tools/freight_loot_20260915/validation.json and validation.log; baseline_outro.gd retained on device. Handoff: docs/handoffs/EASTEX_FREIGHT_LOOT_20260915.md. Source SHA256 fcb0d8e652f7e4e506c2b4bef9243f4d02a864c9207582ea0923e9b652983a37. No staging/commit/push. Next: reopen the sandbox to load the changed outro and review the next attacker victory.
+
+
+## 20260915-montage-action-01 - Action recut authorized
+Owner requests final Doble Ocho and stable Eastex Freight footage in the title-watermark montage; every shot must show readable action (fire, casualties or active convoy arrival), with varied close framing. Remove Whittaker pre-arrival dead time and movement-only/too-wide shots. Scope assets/menu/opening/montage.ogv and tools/montage_action_20260915 only. Preserve concurrent caution-impacts startup/runtime/credits/sign work, title21s/Open Sandbox27s and signature music. Current source uses an independent looping montage.ogv, so recut can integrate without editing shared opening scripts. Sources: final Ravicci raid on Doble Ocho and freight-stability version2, never rejected jitter version1. Inspect final footage and current crop/treatment before building candidate. No publication/owner acceptance claimed.
+
+
+## Current intro result - 20260915-caution-impacts-04
+COMPLETE / NATIVE-VALIDATED / OWNER REVIEW. This supersedes caution-impacts-02 preparation. Corrected centered CAUTION without colon, clean sign, spray-painted redaction, five staggered native bullet hits/gunfire; each credit shortened1s, sign extended2s. Title21s/button27s and uninterrupted signature preserved.31 native checks PASS. Full34.6s MP4 through actual sandbox saved as DEAD_STREET_Revised_Intro.mp4, libfile_cdd13451ed24819189c27626484836f4 v0. Source/verification/failed transcode history and exact ownership: tools/caution_impacts_20260915/README.md; journal caution-impacts-04. Normal live-source shortcut loads changes on reopen. No commit/push or standalone-export certification; owner visual acceptance pending. Next: review MP4; separate Freight work retains its own current status.
+
+
+## Review delivery preference - 20260915-intro-delivery-05
+Brandon explicitly rejects ChatGPT-only file links because they do not work for him. Deliver reviews as local Windows files, normally on his actual Desktop, and open in the installed player. Intro MP4 desktop copy verified and launched; see journal intro-delivery-05. Keep this preference for future reviews.
+
+
+## 20260915-caution-smooth-01 - Silent impacts and continuous zoom authorized
+Brandon rejected weak intro gunfire and the two-stage vertical zoom. Remove intro gunshot players entirely, preserve visual impacts. Replace clamped crop target with a single smooth path whose spray-paint focus moves continuously to screen center without reversal; slightly extend zoom from2.22s to2.85s (8.95-11.8), preserving title21/button27. Own sandbox_caution.gd and tools/caution_smooth_20260915 only; separate montage-action recut remains with its owner. Capture isolated menu assets so concurrent montage installation cannot corrupt the recording. Deliver local desktop MP4; no ChatGPT-only links. Status IN PROGRESS.
+
+
+## Current intro correction - 20260915-caution-smooth-02
+COMPLETE / NATIVE-VALIDATED / OWNER REVIEW. Gunfire removed; five visual impacts remain. Single smooth, non-reversing zoom into spray paint now2.85s (8.95-11.8); title21/button27 preserved.32 native checks PASS, full34.58s60fps MP4 copied/verified to Windows Desktop and launched: DEAD_STREET_Intro_Smooth_Zoom.mp4. Scope only sandbox_caution.gd plus tools/caution_smooth_20260915. See its README and journal caution-smooth-02. Prior gunfire/kinked zoom superseded, history retained. No commit/push; preserve separate montage-action work. Next owner local review.
+
+
+## 20260915-montage-action-02 - Action montage installed and validated
+Replaced only assets/menu/opening/montage.ogv. Exactly720frames/24s at1280x720/30fps;12hard-cut shots across all5sandbox maps. Added3 final Ravicci/Doble Ocho cuts and3 corrected Freight-stability cuts;2Harold,2Bridge and2Whittaker (including convoy already in frame atsource7.5s). Tight varied static crops use2.0-3.33x display scaling; native pixel sampling, monochrome/vignette treatment and approved title/music/UI retained. Freight receives a small pre-grade lift. No artificial shake, optical oscillation, freeze padding, movement-only filler or empty convoy lead-in intended. Shot in/out/count/crop/source hashes are recorded in tools/montage_action_20260915/shots.json and render.json.
+Editorial checks inspected six samples per initial shot and full-size revised closing composition; selected clear firing/hits/casualty sequences. Rejected Freight movement-heavy windows and a lower closing crop that hid the action behind the title; final closing crop places fighters below lettering. Initial concat-demuxer assembly dropped9frames; replaced with filter concat and contiguous timestamps, preserving all720frames without padding. Original and rejected media retained.
+Full video/audio decode PASS. Native Godot video test plays the exact final candidate through its24-second seam:1loop,6non-black frame samples,1280x720texture, no reported script errors. Guarded installation hash equals tested candidate. Approved title, camera UI and signature asset hashes unchanged. Concurrent caution-impacts work (startup video, sign/credits, sandbox_opening.gd) untouched. This is not full-intro/packed-export certification.
+Review MP4 DEAD_STREET_Action_Montage.mp4 is a24-second edited preview of the exact installed loop with native title/UI placement, button at6seconds and existing signature section starting21seconds. It is not a new full intro capture. Preview saving pending; no owner acceptance, staging/commit/push. Next: save preview and owner reviews on reopening Sandbox. Full handoff: docs/handoffs/INTRO_ACTION_MONTAGE_20260915.md.
+
+
+## 20260915-montage-action-03 - Review delivered
+Installed 24-second/720-frame action montage verified in native Godot through the loop (max23.9667s,1restart,6non-black samples). Final candidate/installed SHA25644e9a1e5f3d2581c90033f68fbb01281a984b483bc3a2dca64db954f1a2d63f5. Closing Freight crop further shifted to(570,340,512,288) so firing units remain visible below title lettering. Current intro title/music/camera assets and concurrent caution/credits/runtime work preserved.
+Saved review DEAD_STREET_Action_Montage.mp4,6968073bytes,SHA256dd1652fbbf8d0dc0261d8a41fbe1655c35ffbba342e96681b77c6f1767934fc2;libfile_60102d31c2508191b3579a0b5f502269 version0,file_000000001b8881fd8a2cdb5f438b2588. Edited montage preview only, using exact installed media and native title/UI positions; not full intro recording. Transfer hashes verified. Owner review pending; no staging/commit/push. Reopen live-source Sandbox to see the recut. Reproduction/evidence tools/montage_action_20260915, handoff docs/handoffs/INTRO_ACTION_MONTAGE_20260915.md.
+
+
+## 20260915-caution-overlap-01 - Spread impacts and slower overlapping zoom
+Source: Brandon current intro review. Prior silent/smooth version remains too fast and impact locations are restricted to the sign sides. Move five fixed impact positions across lettering, middle and lower sign. Begin continuous zoom at6.85s, overlap existing staggered7.2-8.566667s impacts, finish at unchanged11.8s:4.95s versus2.85s. Credits2.5/3s, blackout/title sequence, title21s and button27s unchanged. Gunfire stays removed. Scope only gameplay/sandbox_caution.gd and tools/caution_overlap_20260915; new action montage already installed by its own pass and will appear in current-source recording. Status IN PROGRESS; source installation guarded against fresh baseline. Next native capture/visibility/timing checks and local Desktop MP4. No staging/commit/push.
+
+
+## Current intro revision - 20260915-caution-overlap-02
+COMPLETE / NATIVE-VALIDATED / OWNER REVIEW. Bullet hits distributed across lettering/middle/lower sign. Silent smooth zoom now4.95s (6.85-11.8), overlaps impacts; all section endpoints and title21/button27 preserved.37 native checks PASS; full34.58s720p60 MP4 through actual sandbox copied/verified to Desktop and opened: DEAD_STREET_Intro_Slower_Zoom.mp4. Includes current action montage without editing it. Source scope sandbox_caution.gd plus tools/caution_overlap_20260915. See its README and journal caution-overlap-02 for exact evidence, reproduction and limitations. Previous2.85s speed/side placements superseded. No commit/push; next owner local review.
+
+## 20260915-caution-overlap-03 - Owner accepted final intro revision
+OWNER-ACCEPTED. Source: Brandon replied "yeah thats it" to the delivered DEAD_STREET_Intro_Slower_Zoom.mp4 and summary of distributed impacts / 4.95-second overlapping zoom. This accepts caution-overlap-02: centered CAUTION without colon, spray-painted redaction, five silent impacts across the sign, continuous6.85-11.8s zoom overlapping hits, preserved credit/section timing and title21s/button27s. Accepted recording SHA256 b4607c49437bde01330ff9123ad7bff697780065138a2daa8d819a38bbd8e567; exact source hashes and37 passing native checks are in tools/caution_overlap_20260915. This supersedes the owner-review-pending status for this intro revision. No further intro changes requested; preserve this as the accepted baseline. Documentation-only approval record; no source changes, new tests, staging, commit or push this turn. Other passes retain their own acceptance/publication status.
+
+
+## 20260915-montage-final-01 ? Final editorial pass in progress
+Owner rejected the prior montage content: too many isolated fighters or walking shots. New brief prioritizes groups firing immediately, hits/deaths and the already-moving Whittaker convoy; action must remain readable below the existing title. Recut uses final recorded sources, emphasizes Harold/bridge and removes solo Freight footage. Current accepted caution intro and all intro runtime/title/music remain out of scope. Baseline captured; prior montage backed up in tools/montage_action_final_20260915. Review delivery must be copied to the real Windows Desktop and opened locally.
+
+
+## 20260915-montage-final-02 - Final group-combat recut delivered
+IMPLEMENTED / NATIVE-VALIDATED / LOCAL REVIEW DELIVERED. Owner rejected the previous 12-cut edit for isolated fighters and walking. It is superseded editorially by 14 hard cuts: 5 Harold, 3 Bridge, 3 final Doble Ocho, 2 Whittaker (including already-moving convoy), 1 final stabilized Freight. Emphasis is multi-fighter exchanges and visible casualties. No paused Harold footage, solo Freight dispatch shot or closing Freight walk retained. In/out points trimmed to active exchanges; multiple casualties visually checked in Harold, Doble Ocho and Freight. Varied fixed crops place the primary fight below the title; source status-label fragments masked where those crops exposed them. Source recordings are unchanged.
+Exactly 720 frames / 24 seconds, 1280x720 / 30 fps, Theora loop with contiguous timestamps. Grayscale treatment retained; edge darkening reduced and image gain raised from 0.64 to 0.76 to make lower-frame fighting clearer. Existing approved title, camera UI, Open Sandbox timing, signature track, opening runtime and OWNER-ACCEPTED caution-overlap intro all hash-verified unchanged. Only production edit assets/menu/opening/montage.ogv; mixed uncommitted work preserved.
+Full video/audio decode PASS. Final native Godot candidate test PASS: 1280x720 texture, 1 completed loop, max position 23.966666666667, 6 non-black samples. Final title-composited Harold/Freight frames and all-cut contact sheet reviewed. Candidate/installed SHA256 f7b896b23d5de752a24982493f5f6f873d46866c65fd1d2d5ee21b1039ca91d8.
+Review DEAD_STREET_Action_Montage_Final.mp4 copied to the actual Windows Desktop (C:\Users\brand\OneDrive\Desktop) and hash-verified; SHA256 631f3edaeb351c27a87f5fed2731c1cace261c2a7fa690b21397012fc5d030a1, 7126825 bytes. This is the 24-second montage section composed with the actual title/UI placement and signature audio; not a new full-intro capture. Library version 1 also replaces prior review under libfile_60102d31c2508191b3579a0b5f502269. Desktop player launch follows this record. Owner acceptance pending; no staging, commit or push.
+Evidence/reproduction: tools/montage_action_final_20260915 (shots.json, render.py, render.json, baseline.json, native_review.gd, native_validation.json, native_final.log, delivery.json, final_review_sheet.jpg). Previous montage backed up as montage_previous_rejected.ogv; darker intermediate also retained. To rerender changed cuts, use a fresh output directory because render.py reuses existing cut encodes. Next: owner reviews local MP4; reopen live-source Sandbox to load the new montage.
+
+
+## 20260915-montage-final-03 - Owner accepted; repository publication audit
+OWNER-ACCEPTED: Brandon replied "good job" to the final group-action montage (montage-final-02). Preserve that accepted edit and the independently accepted caution-overlap intro.
+Brandon asked whether all recent cross-chat work is committed and pushed. Live repository audit: branch build/arsenal-checkpoint-20260911; local HEAD and freshly queried origin branch both 35e0db12aae4d114364c911a69ae2136de30ee4e, commit "Assign new B-22 faction loops and remove Glock from menu" dated 2026-09-15 09:53:17 -04:00. Existing committed history is pushed, but recent work is NOT all committed. Before this record: 64 tracked modified files, 0 staged files, and 4657 untracked status entries (including grouped directories, media, generated import files and review tools; not a production-file count). Uncommitted/untracked scope includes opening/montage/caution assets and scripts, Doble Ocho, Freight, convoy/arrival changes, presentation and docs. No commit or push performed during this status inquiry; no source changes. Next publication task needs a scoped consolidation of completed production work and required assets, preserving active cross-chat edits and keeping reproducible scratch/capture intermediates out of a blind bulk add.
+
+
+## 20260915-repository-checkpoint-01 - All current project work authorized for publication
+Owner explicitly instructed "commit and push everything" after the cross-chat publication audit. This authorizes consolidating current project changes across owners into the established origin/build branch. Current branch build/arsenal-checkpoint-20260911, baseline 35e0db12aae4d114364c911a69ae2136de30ee4e.
+Inventory found capture_project workspaces with recursive junctions back into the repository: 743032 apparent untracked paths / 309328254314 apparent bytes, including duplicates (not unique disk usage). Added Git ignores for capture mirrors, raw AVI/MKV renders, base64 transfers and local inventory scratch. All files remain on disk. Finished MP4s, canonical game media/art, source/tools and durable records remain in publication scope. No gameplay edits or deletion. Native checks recorded by each pass remain the validation evidence; this checkpoint itself does not imply new owner acceptance or fresh full-game testing.
+Publication in progress. Other work may continue; preserve active source edits. This pass owns index/commit/push coordination and will verify residual working changes and origin after pushing. Work created after the final snapshot must be identified explicitly rather than claimed included.
+
+
+## 20260915-playtest-release-01 - Maximum-capacity performance and friends package authorized
+Source: Brandon requests full test battles on all five sandbox maps at maximum16v16, per-map average FPS and a candid assessment of satisfactory testing, then a sandbox package to share with friends via email. Branding: existing DEAD STREET title centered on solid black for cover/icon assets. No request to email recipients now. Scope tools/playtest_release_20260915, package configuration/branding and any concrete release-blocking compatibility fixes. Preserve accepted caution-overlap-03 and montage-final-03; no unrelated gameplay redesign. Test live rendered release runtime at1920x1080, one battle at a time, retain per-frame/worst-window measurements and actual outcomes; never treat a recording FPS or timeout as achieved gameplay FPS/victory. Next: build isolated current-source standalone candidate, benchmark all five, verify extracted portable launch/assets/input and deliver Windows Desktop ZIP/results. No publication or acceptance claim yet.
+
+
+## 20260915-playtest-release-02 - Standing faction/vehicle/audio release gate
+Source: Brandon current steering. Every release check must explicitly verify every faction and every vehicle in arrival animations, and faction arrival/closing winner audio. Add full catalog coverage to this five-map16v16 performance and package task. Distinguish actual covered models/factions/maps from untested combinations; never infer full coverage from one showcase. Scope includes diagnostics and any evidenced release-blocking fixes. Status IN PROGRESS.
+
+
+## 20260915-repository-checkpoint-02 - Local consolidation; upload blocked by automatic review
+Owner requested committing and pushing everything. Current nonignored project scope is approximately 27385 staged files / 971 MB of working files: cross-chat source, canonical game assets, finished reviews, tools and records. Recursive recording mirrors, raw lossless/AVI/MKV renders and base64 transfers are ignored and remain on disk. Credential-pattern and 100 MB individual-file checks passed. Whitespace check reports inherited trailing whitespace in capture logs and blank EOF lines; no formatting cleanup or new gameplay changes made. No conflicted paths. Existing native validation evidence remains scoped to the original passes; no new full-game benchmark/export claim.
+Automatic approval review REJECTED the combined commit-and-push action. Stated reason: approximately 27000 files / 971 MB is a broad upload to an externally hosted remote; although owner authorized everything, exact destination and complete sensitive payload were not established in end-user text, and the limited credential scan does not validate the entire upload. Do not bypass this rejection.
+Materially safer unaffected work continues as LOCAL COMMIT ONLY. No network publication is attempted by that operation. Established intended destination for explicit follow-up approval: https://github.com/LeadLasso-LL/DEADSTREET.git, branch build/arsenal-checkpoint-20260911. Ask owner to approve uploading this concrete full checkpoint to that exact destination; explain automatic-review source of this additional approval. Until then, publication remains BLOCKED/NOT PUSHED. Local commit receipt and complete staged path manifest are under tools/repository_checkpoint_20260915/local/.
+
+
+## 20260915-playtest-release-03 - Authority audio coverage gap corrected
+Source audit confirmed documented pre-existing NBPD/bridge and TRC/estate restrictions. Latest owner requires faction arrival/winner audio across all maps. Guarded tactical_convoy_audio.gd change adds existing sirens for both authorities on every map, with a positional objective fallback for defenders without vehicles; winner siren restores its existing gain and centers/opens distance at victory. Existing siren samples/pitch,21 assigned music loops and unrelated mixes preserved. No invented authority music. Benchmark package already running is immutable and uses Orlov/Mercer, so this authority-only branch does not alter its cases. Validation pending in full catalog matrix; previous source retained.
+
+
+## 20260915-repository-checkpoint-03 - Exact upload approved; generated build excluded
+Source: owner explicitly approved the approximately 27000-file / 971 MB checkpoint and exact GitHub origin/branch after automatic-review disclosure. Network push was attempted with that authorization. GitHub rejected unpublished fc820575ce069dc4a8ba79752b54fabebd1f654b because a concurrently generated candidate/DeadStreetSandbox.exe (109268480 bytes) entered staging after the inventory and exceeded its 100 MB file limit; the candidate PCK snapshot was only 128 bytes during construction. The prior size inventory was therefore not authoritative for the committed tree.
+Resolution: keep generated playtest candidate files on the PC, ignore that candidate directory and remove it from Git's index; amend only this unpublished checkpoint, with the original retained locally at refs/checkpoints/pre-size-fix-20260915. No force push and no working-source deletion. Validate sizes directly from the corrected committed tree before retrying. Canonical source/assets, finished recordings and existing cross-chat work remain included.
+Other chat's newer authority siren source fix and ongoing playtest/catalog outputs remain active working changes after the approved snapshot; do not claim they are published by this checkpoint. This record supersedes checkpoint-02's automatic approval block. Publication retry in progress; local/push_receipt.json and the subsequent verified-publication entry are authoritative for outcome.

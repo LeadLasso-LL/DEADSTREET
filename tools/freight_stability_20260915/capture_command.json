@@ -1,0 +1,20 @@
+[
+  "C:\\Users\\brand\\OneDrive\\Documents\\Godot\\Godot_v4.7.2-stable_win64.exe",
+  "--path",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\freight_stability_20260915\\capture_project",
+  "--resolution",
+  "1920x1080",
+  "--position",
+  "0,0",
+  "--fixed-fps",
+  "30",
+  "--disable-vsync",
+  "--write-movie",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\freight_stability_20260915\\lossless\\frame.png",
+  "--log-file",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\freight_stability_20260915\\capture_godot.log",
+  "--script",
+  "res://tools/freight_stability_20260915/showcase.gd",
+  "--",
+  "--record"
+]

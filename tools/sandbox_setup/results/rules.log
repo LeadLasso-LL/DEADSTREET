@@ -1,0 +1,102 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 2 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_00__door_1_south slot sandbox_transport_00__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=weaker
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 3 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_00__door_1_south slot sandbox_transport_00__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_02__door_1_south slot sandbox_transport_02__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover cover_north_car_4 slot cover_north_car_4_3
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_00__door_1_north slot sandbox_transport_00__door_1_north_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=stronger
+GameplayRuntime: mode=tactical_active pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(4.59999990463257, 0.0) segment=0 into=4.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(6.89999961853027, 0.0) segment=0 into=6.9 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.19999980926514, 0.0) segment=0 into=9.2 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.5, 0.0) segment=0 into=11.5 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover cover_north_car_4 slot cover_north_car_4_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover cover_north_car_5 slot cover_north_car_5_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover cover_north_car_5 slot cover_north_car_5_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_north_car_5 slot cover_north_car_5_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover cover_south_car_4 slot cover_south_car_4_0
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_south_car_4 slot cover_south_car_4_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover cover_south_car_5 slot cover_south_car_5_0
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover cover_south_car_5 slot cover_south_car_5_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover cover_south_car_5 slot cover_south_car_5_3
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=weaker
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(2.0, 0.0) segment=0 into=2.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(3.0, 0.0) segment=0 into=3.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(4.0, 0.0) segment=0 into=4.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(5.0, 0.0) segment=0 into=5.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(6.0, 0.0) segment=0 into=6.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.0, 0.0) segment=0 into=7.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(8.0, 0.0) segment=0 into=8.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.0, 0.0) segment=0 into=9.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.0, 0.0) segment=0 into=11.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 6 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover cover_north_car_4 slot cover_north_car_4_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover cover_north_car_4 slot cover_north_car_4_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover cover_north_car_5 slot cover_north_car_5_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover cover_north_car_5 slot cover_north_car_5_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover cover_north_car_5 slot cover_north_car_5_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover cover_south_car_4 slot cover_south_car_4_0
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=weaker
+FLEXIBLE_VALIDATION { "checks": 285, "errors": [], "scenarios": [{ "attacker": 1, "defender": 1, "participants": 2, "vehicles": 1 }, { "attacker": 7, "defender": 3, "participants": 10, "vehicles": 2 }, { "attacker": 12, "defender": 12, "participants": 24, "vehicles": 3 }, { "attacker": 3, "defender": 9, "participants": 12, "vehicles": 1 }] }

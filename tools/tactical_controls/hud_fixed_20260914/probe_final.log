@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+PACE {"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16}
+PACE {"events":146,"time":10.0333333333333,"trc":10,"whittaker":13}
+PACE {"events":188,"time":20.0333333333335,"trc":7,"whittaker":7}
+PACE {"events":209,"time":30.033333333334,"trc":5,"whittaker":4}
+PACE {"events":232,"time":40.0333333333336,"trc":1,"whittaker":3}
+PROBE {"commands":[{"event":"south_gate_flank","time":0.0,"units":[{"gate_goal":"(85.0, 99.5)","id":"sandbox_attacker_unit_13","valid":true,"waypoints":2},{"gate_goal":"(88.0, 99.5)","id":"sandbox_attacker_unit_14","valid":true,"waypoints":3},{"gate_goal":"(91.0, 99.5)","id":"sandbox_attacker_unit_15","valid":true,"waypoints":2},{"gate_goal":"(94.0, 99.5)","id":"sandbox_attacker_unit_16","valid":true,"waypoints":3}]},{"command":"hold","feedback":{"accepted":3,"accepted_ids":["sandbox_attacker_unit_07","sandbox_attacker_unit_08","sandbox_attacker_unit_09"],"command":"hold","failed":0},"ids":["sandbox_attacker_unit_07","sandbox_attacker_unit_08","sandbox_attacker_unit_09"],"reason":"Firing support has established covered overwatch","time":6.06666666666665},{"event":"flanker_entered_gate","id":"sandbox_attacker_unit_14","position":"(88.0, 100.9744)","time":7.03333333333332},{"event":"flanker_entered_gate","id":"sandbox_attacker_unit_13","position":"(85.0, 100.9602)","time":7.09999999999998},{"event":"defender_counterattack","reason":"TRC assault has lost half its effective strength","result":{"accepted":["sandbox_defender_unit_05","sandbox_defender_unit_06","sandbox_defender_unit_08","sandbox_defender_unit_11","sandbox_defender_unit_12","sandbox_defender_unit_13","sandbox_defender_unit_14","sandbox_defender_unit_15","sandbox_defender_unit_16"],"failed":[]},"time":16.2}],"duration":47.0999999999999,"phase":"resolved","seed":9146,"snapshots":[{"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16},{"events":146,"time":10.0333333333333,"trc":10,"whittaker":13},{"events":188,"time":20.0333333333335,"trc":7,"whittaker":7},{"events":209,"time":30.033333333334,"trc":5,"whittaker":4},{"events":232,"time":40.0333333333336,"trc":1,"whittaker":3}],"survivor_positions":[{"anchor":"(118.81, 46.0)","at":"(67.85, 45.0)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_13","nav":"","order":"","slot":"cover_hedge_65_40_3","target":"sandbox_attacker_unit_08"},{"anchor":"(122.85, 25.0)","at":"(111.4609, 31.75019)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_14","nav":"","order":"","slot":"","target":"sandbox_attacker_unit_08"}],"winner":"defender"}

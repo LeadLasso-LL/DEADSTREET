@@ -1,0 +1,15 @@
+[aist#0:1/pcm_s16le @ 000002de49f09540] Guessed Channel Layout: stereo
+[swscaler @ 000002de4a20af40] deprecated pixel format used, make sure you did set range correctly
+[aist#0:1/pcm_s16le @ 000001e84e4d3340] Guessed Channel Layout: stereo
+[swscaler @ 000001e850178940] deprecated pixel format used, make sure you did set range correctly
+MOBILE_EXPORT {"file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\Dead_Street_Whittaker_Estate_Mobile.mp4", "bytes": 7559487, "sha256": "9438786053438a08bae9e0f0d9af584835fda674c32dd9ebc5f3a423f3e4d663", "seconds": 76.96666666666667, "video_bitrate": 692755, "decoded_to_end": true, "winner": "defender"}
+TRANSFER_READY {"file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\Dead_Street_Whittaker_Estate_Mobile.mp4", "bytes": 7559487, "sha256": "9438786053438a08bae9e0f0d9af584835fda674c32dd9ebc5f3a423f3e4d663", "seconds": 76.96666666666667, "video_bitrate": 692755, "decoded_to_end": true, "winner": "defender", "parts": [{"name": "part_000.txt", "bytes": 1950000, "sha256": "49c0d16dcda4d42fba0c060082a8025a6fb797b4e776e07cca596bf3d2dd118e"}, {"name": "part_001.txt", "bytes": 1950000, "sha256": "536f566374fa83d44fbc2dbddd71de8e5b32d1e48fae64ae711ed43a319c95a9"}, {"name": "part_002.txt", "bytes": 1950000, "sha256": "d00c892126cce38b994f5dee01977a52932d6a33bed89b376b07132d314ad019"}, {"name": "part_003.txt", "bytes": 1709487, "sha256": "af3eab58fe8430ecbf6c540a501d6f4de7a08fffd21ca60ab48c9ddfe78300a3"}], "audio_peak": 0.9932104349136353, "audio_rms": 0.03325146809220314}
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\whittaker_estate\export_worker.py", line 7, in <module>
+    subprocess.run([g,'--headless','--','--check=estate_geometry'],cwd=r,check=True,timeout=60)
+  File "subprocess.py", line 571, in run
+subprocess.CalledProcessError: Command '['C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\godot_release_4.7.2\\godot.exe', '--headless', '--', '--check=estate_geometry']' returned non-zero exit status 1.

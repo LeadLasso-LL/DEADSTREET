@@ -1,0 +1,22 @@
+{
+  "production_files_changed": [
+    "assets/menu/opening/montage.ogv"
+  ],
+  "installed_sha256": "f7b896b23d5de752a24982493f5f6f873d46866c65fd1d2d5ee21b1039ca91d8",
+  "desktop": "C:\\Users\\brand\\OneDrive\\Desktop\\DEAD_STREET_Action_Montage_Final.mp4",
+  "preview_sha256": "631f3edaeb351c27a87f5fed2731c1cace261c2a7fa690b21397012fc5d030a1",
+  "preview_bytes": 7126825,
+  "native": {
+    "black_samples": 0,
+    "loops": 1,
+    "max_position": 23.966666666667,
+    "passed": true,
+    "playing": true,
+    "samples": 6,
+    "texture_size": "(1280.0, 720.0)"
+  },
+  "other_baseline_files_unchanged": true,
+  "review_type": "Edited montage preview using exact candidate and existing native title/UI coordinates; not a full intro capture",
+  "status": "LOCAL_REVIEW_DELIVERED_NOT_OWNER_ACCEPTED",
+  "default_player_launched": true
+}

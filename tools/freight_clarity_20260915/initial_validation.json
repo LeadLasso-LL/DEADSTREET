@@ -1,0 +1,153 @@
+{
+	"arrival": {
+		"cutoff": 2400.0,
+		"frames": 48128,
+		"peak": 0.0695028677582741,
+		"rms": 0.0163233634666723,
+		"volume_db": -14.1721458435059
+	},
+	"arrival_errors": [],
+	"arrival_gain_db": -2.88623595730655,
+	"before": {
+		"cutoff": 2400.0,
+		"frames": 46080,
+		"peak": 0.0804417952895164,
+		"rms": 0.0227573374251768,
+		"volume_db": -14.1721458435059
+	},
+	"checks": 127,
+	"combat": {
+		"cutoff": 2400.0,
+		"frames": 48640,
+		"peak": 0.0842000544071198,
+		"rms": 0.0169988789930391,
+		"volume_db": -14.1721458435059
+	},
+	"errors": [
+		"arrival source audibly lifted by more than8dB",
+		"arrival interior filter opens moderately",
+		"combat radio remains quiet",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p",
+		"36px badge at1080p"
+	],
+	"markers": [
+		{
+			"position": "(228.0, 99.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(235.0, 212.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(220.0, 302.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(243.0, 386.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(248.0, 84.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(260.0, 197.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(245.0, 287.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(263.0, 371.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(250.0, 120.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(178.0, 198.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(1013.0, 120.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(972.0, 185.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(965.0, 343.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(990.0, 357.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(1013.0, 164.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(996.0, 201.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(1058.0, 288.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(965.0, 372.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(1095.0, 168.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		},
+		{
+			"position": "(972.0, 216.0)",
+			"size": "(24.0, 24.0)",
+			"texture": "(24.0, 24.0)"
+		}
+	]
+}

@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__left
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+HUD_FIELDS river_bridge [{"minimum":"(1.0, 11.0)","name":"@Label@719","pos":"(6.0, 62.0)","size":"(75.41666, 12.0)","text":"GLOCK 17"},{"minimum":"(21.0, 10.0)","name":"@Label@720","pos":"(6.0, 37.0)","size":"(30.0, 12.0)","text":"100%"},{"minimum":"(26.0, 10.0)","name":"@Label@722","pos":"(36.41666, 38.0)","size":"(45.0, 12.0)","text":"T1 · 01"},{"minimum":"(1.0, 11.0)","name":"@Label@721","pos":"(6.0, 76.0)","size":"(75.41666, 12.0)","text":""}]
+HUD_FIELDS river_bridge [{"minimum":"(1.0, 11.0)","name":"@Label@719","pos":"(6.0, 62.0)","size":"(75.41666, 12.0)","text":"GLOCK 17"},{"minimum":"(21.0, 10.0)","name":"@Label@720","pos":"(6.0, 37.0)","size":"(30.0, 12.0)","text":"100%"},{"minimum":"(26.0, 10.0)","name":"@Label@722","pos":"(36.41666, 38.0)","size":"(45.0, 12.0)","text":"T1 · 01"},{"minimum":"(1.0, 11.0)","name":"@Label@721","pos":"(6.0, 76.0)","size":"(75.41666, 12.0)","text":""}]
+HUD_FIELDS river_bridge [{"minimum":"(1.0, 11.0)","name":"@Label@719","pos":"(6.0, 62.0)","size":"(75.41666, 12.0)","text":"GLOCK 17"},{"minimum":"(21.0, 10.0)","name":"@Label@720","pos":"(6.0, 37.0)","size":"(30.0, 12.0)","text":"100%"},{"minimum":"(26.0, 10.0)","name":"@Label@722","pos":"(36.41666, 38.0)","size":"(45.0, 12.0)","text":"T1 · 01"},{"minimum":"(1.0, 11.0)","name":"@Label@721","pos":"(6.0, 76.0)","size":"(75.41666, 12.0)","text":""}]
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+HUD_FIELDS whittaker_estate [{"minimum":"(1.0, 10.0)","name":"@Label@1567","pos":"(37.0, 4.0)","size":"(63.625, 12.0)","text":"GLOCK 17"},{"minimum":"(21.0, 10.0)","name":"@Label@1568","pos":"(6.0, 30.0)","size":"(80.625, 12.0)","text":"100%"},{"minimum":"(21.0, 10.0)","name":"@Label@1570","pos":"(88.625, 30.0)","size":"(39.0, 12.0)","text":"T1·01"},{"minimum":"(1.0, 10.0)","name":"@Label@1569","pos":"(37.0, 17.0)","size":"(63.625, 12.0)","text":""}]
+HUD_FIELDS whittaker_estate [{"minimum":"(1.0, 10.0)","name":"@Label@1567","pos":"(37.0, 4.0)","size":"(63.625, 12.0)","text":"GLOCK 17"},{"minimum":"(21.0, 10.0)","name":"@Label@1568","pos":"(6.0, 30.0)","size":"(80.625, 12.0)","text":"100%"},{"minimum":"(21.0, 10.0)","name":"@Label@1570","pos":"(88.625, 30.0)","size":"(39.0, 12.0)","text":"T1·01"},{"minimum":"(1.0, 10.0)","name":"@Label@1569","pos":"(37.0, 17.0)","size":"(63.625, 12.0)","text":""}]
+HUD_FIELDS whittaker_estate [{"minimum":"(1.0, 10.0)","name":"@Label@1567","pos":"(37.0, 4.0)","size":"(63.625, 12.0)","text":"GLOCK 17"},{"minimum":"(21.0, 10.0)","name":"@Label@1568","pos":"(6.0, 30.0)","size":"(80.625, 12.0)","text":"100%"},{"minimum":"(21.0, 10.0)","name":"@Label@1570","pos":"(88.625, 30.0)","size":"(39.0, 12.0)","text":"T1·01"},{"minimum":"(1.0, 10.0)","name":"@Label@1569","pos":"(37.0, 17.0)","size":"(63.625, 12.0)","text":""}]
+HUD_LAYOUT {"checks":786,"errors":[],"faction_vocals_enabled":false,"samples":[{"card_height":94.0,"cards":12,"hud_fraction":0.282499998472211,"hud_height":225.717498779297,"map":"river_bridge","viewport":[1440,1000],"voices":0},{"card_height":94.0,"cards":12,"hud_fraction":0.282499996232398,"hud_height":183.059997558594,"map":"river_bridge","viewport":[1920,1080],"voices":0},{"card_height":94.0,"cards":12,"hud_fraction":0.282499996232398,"hud_height":183.059997558594,"map":"river_bridge","viewport":[1280,720],"voices":0},{"card_height":46.0,"cards":16,"hud_fraction":0.282499998472211,"hud_height":225.717498779297,"map":"whittaker_estate","viewport":[1440,1000],"voices":0},{"card_height":46.0,"cards":16,"hud_fraction":0.282499996232398,"hud_height":183.059997558594,"map":"whittaker_estate","viewport":[1920,1080],"voices":0},{"card_height":46.0,"cards":16,"hud_fraction":0.282499996232398,"hud_height":183.059997558594,"map":"whittaker_estate","viewport":[1280,720],"voices":0}]}

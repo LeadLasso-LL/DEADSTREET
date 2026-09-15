@@ -1,0 +1,92 @@
+{
+  "head": "408f62cb2c3642e4ba9e33713f531c35757a6a2f",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "protected_files_verified": 237,
+  "capture_hashes_verified": 250,
+  "owned_existing_sources": [
+    "battle/presentation/tactical_participant_visual.gd",
+    "battle/vehicles/battle_arrival_service.gd",
+    "gameplay/arsenal_battle_fixture.gd",
+    "gameplay/sandbox_force_builder.gd",
+    "gameplay/sandbox_force_config.gd",
+    "gameplay/tactical_actor_presenter.gd",
+    "gameplay/tactical_battle_outro.gd",
+    "gameplay/tactical_battle_presentation.gd",
+    "gameplay/tactical_battle_view.gd",
+    "gameplay/tactical_convoy_audio.gd"
+  ],
+  "staged": false,
+  "committed": false,
+  "pushed": false,
+  "delivery": {
+    "audio_peak": 0.38136255741119385,
+    "audio_rms": 0.02145025134086609,
+    "bytes": 7355422,
+    "decoded_to_end": true,
+    "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\fourth_map_20260915\\DEAD_STREET_Doble_Ocho_Battle.mp4",
+    "fps": 30,
+    "height": 720,
+    "parts": [
+      {
+        "bytes": 1300000,
+        "name": "part_000.txt",
+        "sha256": "9900547c19057997f2e4a6831cb329be57f4c372b2ff0ca68f135b7e67fea952"
+      },
+      {
+        "bytes": 1300000,
+        "name": "part_001.txt",
+        "sha256": "3153fe6f3e1831928b681975330fe0c90c304a40d352bd1082294cc8c0df8f7e"
+      },
+      {
+        "bytes": 1300000,
+        "name": "part_002.txt",
+        "sha256": "4709644dd2b0e1220e74db8799989322b663ce487ab2f6a40ab998541874fcf1"
+      },
+      {
+        "bytes": 1300000,
+        "name": "part_003.txt",
+        "sha256": "769b7b6509aeb3fbc3ea4b3451fcc286771fc6a5ef8b7ba87f13c07876c38842"
+      },
+      {
+        "bytes": 1300000,
+        "name": "part_004.txt",
+        "sha256": "ad2d8e86e19492a027ef2ca14fcdc1178cc1d0174dd87438198860a909cff7ef"
+      },
+      {
+        "bytes": 855422,
+        "name": "part_005.txt",
+        "sha256": "c4a07060e21b614470ae60b4e0538dac1b26c62b578315ec05a476124302cb76"
+      }
+    ],
+    "seconds": 50.266666666666666,
+    "sha256": "241e1d23923ed937fd8c7f86038844c698b4d581e5ed0e8c60ded0d2d7f9381b",
+    "width": 1280,
+    "winner": "attacker"
+  },
+  "library": {
+    "results": [
+      {
+        "local_path": "/workspace/scratch/6a4bd31e258d/fourth_map/DEAD_STREET_Doble_Ocho_Battle.mp4",
+        "purpose": "create_library_file",
+        "status": "succeeded",
+        "file_id": "file_000000009ac081fd8a16540590ef7b1f",
+        "library_file_id": "libfile_b4c01a1910b08191b39c2aed27fde7ba",
+        "file_name": "DEAD_STREET_Doble_Ocho_Battle.mp4",
+        "local_metadata_applied": true,
+        "path": "/Dead Street/DEAD_STREET_Doble_Ocho_Battle.mp4",
+        "current_version_number": 0
+      },
+      {
+        "local_path": "/workspace/scratch/6a4bd31e258d/fourth_map/DEAD_STREET_Doble_Ocho_Opening.png",
+        "purpose": "create_library_file",
+        "status": "succeeded",
+        "file_id": "file_000000000e0c8230ae33f39e4101e3c1",
+        "library_file_id": "libfile_146ee1caf4a4819196e95e5ace3db5ee",
+        "file_name": "DEAD_STREET_Doble_Ocho_Opening.png",
+        "local_metadata_applied": true,
+        "path": "/Dead Street/DEAD_STREET_Doble_Ocho_Opening.png",
+        "current_version_number": 0
+      }
+    ]
+  }
+}

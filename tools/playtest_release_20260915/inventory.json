@@ -1,0 +1,216 @@
+{
+  "stats": {
+    "assets/data/faction_glossary.json": [
+      1,
+      11808
+    ],
+    "assets/data/faction_units.json": [
+      1,
+      5110
+    ],
+    "assets/data/music_catalog.json": [
+      1,
+      23105
+    ],
+    "assets/data/sandbox_emblem_masks.json": [
+      1,
+      3174
+    ],
+    "assets/data/unit_card_weapon_art.json": [
+      1,
+      162161
+    ],
+    "assets/data/vehicle_models.json": [
+      1,
+      59702
+    ],
+    "assets/data/weapon_models.json": [
+      1,
+      22478
+    ],
+    "assets/art/bridge": [
+      2,
+      161566
+    ],
+    "assets/art/doble_ocho": [
+      1,
+      647436
+    ],
+    "assets/art/factions": [
+      53,
+      5157722
+    ],
+    "assets/art/freight_exchange": [
+      1,
+      598182
+    ],
+    "assets/art/harold_frontage": [
+      20,
+      421637
+    ],
+    "assets/art/street_detail": [
+      20,
+      68537
+    ],
+    "assets/art/whittaker_estate": [
+      132,
+      793106
+    ],
+    "assets/art/equipment": [
+      13,
+      145713
+    ],
+    "assets/art/leaders": [
+      40,
+      482238
+    ],
+    "assets/art/units": [
+      5296,
+      3531545799
+    ],
+    "assets/art/vehicles": [
+      1637,
+      10366205
+    ],
+    "assets/art/weapons": [
+      859,
+      277516066
+    ],
+    "assets/audio/ambience": [
+      2,
+      7056088
+    ],
+    "assets/audio/convoy": [
+      11,
+      5733937
+    ],
+    "assets/audio/harold": [
+      49,
+      8866138
+    ],
+    "assets/audio/music": [
+      90,
+      189585866
+    ],
+    "assets/audio/weapons": [
+      181,
+      6118423
+    ],
+    "assets/menu/maps": [
+      5,
+      1042655
+    ],
+    "assets/menu/opening": [
+      17,
+      23634951
+    ],
+    "assets/tactical/environment": [
+      44,
+      3689172
+    ],
+    "assets/tactical/props": [
+      16,
+      60026
+    ],
+    "assets/tactical/vehicles": [
+      12,
+      117921
+    ],
+    "assets/tutorial/harold": [
+      3,
+      391745
+    ],
+    "battle": [
+      256,
+      841590
+    ],
+    "campaign": [
+      96,
+      174091
+    ],
+    "core": [
+      14,
+      3402336
+    ],
+    "gameplay": [
+      146,
+      763086
+    ],
+    "world": [
+      24,
+      20573
+    ],
+    "validation": [
+      3,
+      1356
+    ]
+  },
+  "runtime_files": [
+    [
+      "C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\godot_release_4.7.2\\benchmark_data.pck",
+      4289255067
+    ],
+    [
+      "C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\godot_release_4.7.2\\godot.exe",
+      109268480
+    ],
+    [
+      "C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\godot_release_4.7.2\\godot.pck",
+      11851264
+    ],
+    [
+      "C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\godot_release_4.7.2\\Godot_v4.7.2-stable_export_templates.tpz",
+      1281349702
+    ]
+  ],
+  "largest": [
+    [
+      "assets/menu/opening/montage.ogv",
+      13874726
+    ],
+    [
+      "assets/audio/harold/city.wav",
+      6144044
+    ],
+    [
+      "assets/audio/music/B-22_88_battle_27_57.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_97_battle_38_68.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Break_Bad_battle_32_62.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Burn_battle_24_54.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Creepin_battle_12_42.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Dead_or_Alive_battle_45_75.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Glock_battle_30_60.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Hitters_battle_17_47.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Jumpman_battle_41_71.wav",
+      5292044
+    ],
+    [
+      "assets/audio/music/B-22_Keys_battle_31_61.wav",
+      5292044
+    ]
+  ]
+}

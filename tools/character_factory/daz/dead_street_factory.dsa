@@ -1,5 +1,5 @@
 // DAZ Studio filetype DAZ Script
-// Dead Street Character Factory V1/V1.1 — unattended handshake, smoke, rifleman proof, camera/pose calibration.
+// Dead Street Character Factory — unattended handshake, smoke, rifleman proof, camera/pose/silhouette/style conversion.
 // Generated art is NOT runtime-authoritative and is NOT product-accepted.
 
 (function () {
@@ -35,6 +35,10 @@
 		"camera_profile": "PROVISIONAL_SMOKE_ONLY",
 		"post_process": {},
 		"calibration_cells": [],
+		"style_sources": [],
+		"material_overrides": [],
+		"integrity_readbacks": {},
+		"integrity_correction": [],
 		"render_files": [],
 		"started_at": "",
 		"finished_at": "",
@@ -422,6 +426,24 @@
 		return false;
 	}
 
+	function getPropValue(elem, names) {
+		if (!elem) {
+			return null;
+		}
+		var i;
+		for (i = 0; i < names.length; i += 1) {
+			var p = null;
+			try { p = elem.findProperty(names[i]); } catch (e1) { p = null; }
+			if (!p) {
+				try { p = elem.findPropertyByLabel(names[i]); } catch (e2) { p = null; }
+			}
+			if (p) {
+				try { return p.getValue(); } catch (e3) {}
+			}
+		}
+		return null;
+	}
+
 	function setEnumContains(elem, names, needle) {
 		if (!elem) {
 			return false;
@@ -464,6 +486,44 @@
 			setProp(elems[i], ["Rendering Quality"], 0.5);
 		}
 		return renderer;
+	}
+
+	function applyIrayLimits(samples, maxTime, quality) {
+		var rm = App.getRenderMgr();
+		var elems = [];
+		try { elems = rm.getRenderElementObjects(); } catch (e1) { elems = []; }
+		var i;
+		for (i = 0; i < elems.length; i += 1) {
+			setProp(elems[i], ["Max Samples"], samples);
+			setProp(elems[i], ["Max Time"], maxTime);
+			setProp(elems[i], ["Rendering Quality"], quality);
+		}
+	}
+
+	function readIrayState() {
+		var out = [];
+		var rm = App.getRenderMgr();
+		var elems = [];
+		try { elems = rm.getRenderElementObjects(); } catch (e1) { elems = []; }
+		var i;
+		for (i = 0; i < elems.length; i += 1) {
+			var el = elems[i];
+			var rec = {
+				"index": i,
+				"draw_dome": getPropValue(el, ["Draw Dome", "Draw Dome "]),
+				"draw_ground": getPropValue(el, ["Draw Ground"]),
+				"ground_shadow": getPropValue(el, ["Ground Shadow Visible", "Draw Ground Shadows"]),
+				"environment_mode": getPropValue(el, ["Environment Mode"]),
+				"max_samples": getPropValue(el, ["Max Samples"]),
+				"max_time": getPropValue(el, ["Max Time"]),
+				"rendering_quality": getPropValue(el, ["Rendering Quality"]),
+				"denoising": getPropValue(el, ["Denoising", "Enable Denoising", "Denoiser"]),
+				"exposure": getPropValue(el, ["Exposure", "Tone Mapping Exposure", "Photographic Exposure"])
+			};
+			out.push(rec);
+			appendLog("iray[" + i + "] samples=" + rec.max_samples + " time=" + rec.max_time + " quality=" + rec.rendering_quality + " dome=" + rec.draw_dome + " ground=" + rec.draw_ground + " denoise=" + rec.denoising + " exposure=" + rec.exposure);
+		}
+		return out;
 	}
 
 	function figureBounds(figure) {
@@ -616,7 +676,14 @@
 			if (photo) { photo.setValue(false); }
 		} catch (e0) {}
 		try { light.getIntensityControl().setValue(Number(profile.key_intensity != null ? profile.key_intensity : 100)); } catch (e1) {}
-		try { light.getDiffuseColorControl().setValue(new Color(255, 255, 245)); } catch (e1b) {}
+		try {
+			var kc = profile.key_color;
+			if (kc && kc.length >= 3) {
+				light.getDiffuseColorControl().setValue(new Color(Number(kc[0]), Number(kc[1]), Number(kc[2])));
+			} else {
+				light.getDiffuseColorControl().setValue(new Color(255, 255, 245));
+			}
+		} catch (e1b) {}
 		try { light.getYRotControl().setValue(Number(profile.light_yaw_deg || -32.0)); } catch (e2) {}
 		try { light.getXRotControl().setValue(-Number(profile.light_pitch_deg || 52.0)); } catch (e3) {}
 		var fill = new DzDistantLight();
@@ -627,8 +694,14 @@
 			if (photo2) { photo2.setValue(false); }
 		} catch (e4) {}
 		try { fill.getIntensityControl().setValue(Number(profile.fill_intensity != null ? profile.fill_intensity : 35)); } catch (e5) {}
-		try { fill.getYRotControl().setValue(140); } catch (e6) {}
-		try { fill.getXRotControl().setValue(-20); } catch (e7) {}
+		try {
+			var fc = profile.fill_color;
+			if (fc && fc.length >= 3) {
+				fill.getDiffuseColorControl().setValue(new Color(Number(fc[0]), Number(fc[1]), Number(fc[2])));
+			}
+		} catch (e5b) {}
+		try { fill.getYRotControl().setValue(Number(profile.fill_yaw_deg != null ? profile.fill_yaw_deg : 140)); } catch (e6) {}
+		try { fill.getXRotControl().setValue(-Number(profile.fill_pitch_deg != null ? profile.fill_pitch_deg : 20)); } catch (e7) {}
 		processEvents();
 		return light;
 	}
@@ -977,12 +1050,19 @@
 		if (report.left_hand_dist > 16) {
 			report.reasons.push("left hand is far from weapon (" + report.left_hand_dist + ")");
 		}
+		if (wbox) {
+			try {
+				report.bbox_min = [wbox.min.x, wbox.min.y, wbox.min.z];
+				report.bbox_max = [wbox.max.x, wbox.max.y, wbox.max.z];
+				report.bbox_size = [wbox.max.x - wbox.min.x, wbox.max.y - wbox.min.y, wbox.max.z - wbox.min.z];
+			} catch (eBox) {}
+		}
 		if (report.weapon_center_y < 35) {
 			report.reasons.push("weapon center is too low (possible float/drop)");
 		}
 		report.ok = report.reasons.length === 0;
 		gState.weapon_validation = report;
-		appendLog("weapon validation ok=" + report.ok + " r=" + report.right_hand_dist + " l=" + report.left_hand_dist + " y=" + report.weapon_center_y);
+		appendLog("weapon validation ok=" + report.ok + " r=" + report.right_hand_dist + " l=" + report.left_hand_dist + " y=" + report.weapon_center_y + " bbox=" + (report.bbox_size ? report.bbox_size.join("x") : "none"));
 		return report;
 	}
 
@@ -1230,7 +1310,7 @@
 					return null;
 				}
 			}
-			if (!recipe.calibration) {
+			if (!recipe.calibration && !recipe.style_conversion) {
 				if (recipe.pose && recipe.pose.bone_adjustments) {
 					applyBoneAdjustments(figure, recipe.pose.bone_adjustments);
 				}
@@ -1355,6 +1435,1074 @@
 		return true;
 	}
 
+	function removeStyleLights() {
+		var i;
+		for (i = Scene.getNumNodes() - 1; i >= 0; i -= 1) {
+			var node = Scene.getNode(i);
+			if (!node || !node.inherits("DzLight")) {
+				continue;
+			}
+			var name = String(node.getName());
+			if (name === "SmokeKey" || name === "SmokeFill") {
+				try { Scene.removeNode(node); } catch (e1) {}
+			}
+		}
+		processEventsABit();
+	}
+
+	function mergeLightProfile(base, lightSpec) {
+		var p = {};
+		var k;
+		if (base) {
+			for (k in base) {
+				if (base.hasOwnProperty(k)) {
+					p[k] = base[k];
+				}
+			}
+		}
+		if (lightSpec) {
+			for (k in lightSpec) {
+				if (lightSpec.hasOwnProperty(k)) {
+					p[k] = lightSpec[k];
+				}
+			}
+		}
+		return p;
+	}
+
+	function classifyMaterialRole(node, mat) {
+		var s = (String(node ? node.getName() : "") + " " + String(node ? node.getLabel() : "") + " " + String(mat ? mat.getName() : "") + " " + String(mat ? mat.getLabel() : "")).toLowerCase();
+		if (s.indexOf("cornea") >= 0 || s.indexOf("eye") >= 0 || s.indexOf("tear") >= 0 || s.indexOf("moisture") >= 0 || s.indexOf("mouth") >= 0 || s.indexOf("teeth") >= 0) {
+			return "skip";
+		}
+		if (s.indexOf("carbine") >= 0 || s.indexOf("weapon") >= 0 || s.indexOf("pmws") >= 0 || s.indexOf("gun") >= 0 || s.indexOf("mws") >= 0) {
+			return "weapon";
+		}
+		if (s.indexOf("hair") >= 0 || s.indexOf("mavick") >= 0) {
+			return "hair";
+		}
+		if (s.indexOf("boot") >= 0) {
+			return "boots";
+		}
+		if (s.indexOf("trouser") >= 0 || s.indexOf("pant") >= 0) {
+			return "trousers";
+		}
+		if (s.indexOf("tank") >= 0) {
+			return "tank_top";
+		}
+		if (s.indexOf("skin") >= 0 || s.indexOf("face") >= 0 || s.indexOf("torso") >= 0 || s.indexOf("arms") >= 0 || s.indexOf("legs") >= 0 || s.indexOf("body") >= 0 || s.indexOf("head") >= 0 || s.indexOf("matt") >= 0 || s.indexOf("genesis") >= 0) {
+			return "skin";
+		}
+		return "other";
+	}
+
+	function propertyNameOf(p) {
+		var n = "";
+		try { n = String(p.getName()); } catch (e1) {}
+		var lab = "";
+		try { lab = String(p.getLabel()); } catch (e2) {}
+		return ((n + " " + lab).replace(/^\s+|\s+$/g, ""));
+	}
+
+	function shouldSkipProperty(name) {
+		var s = String(name).toLowerCase();
+		if (!s) {
+			return true;
+		}
+		if (s.indexOf("cutout") >= 0 || s.indexOf("opacity") >= 0 || s.indexOf("translucen") >= 0) {
+			return true;
+		}
+		if (s.indexOf("sss") >= 0 || s.indexOf("subsurface") >= 0 || s.indexOf("scatter") >= 0) {
+			return true;
+		}
+		if (s.indexOf("emission") >= 0 || s.indexOf("displacement") >= 0 || s.indexOf("refraction") >= 0) {
+			return true;
+		}
+		if (s.indexOf("normal map") >= 0 || s.indexOf("bump map") >= 0 || s.indexOf("base color map") >= 0) {
+			return true;
+		}
+		return false;
+	}
+
+	function isRoughnessName(s) {
+		return s.indexOf("rough") >= 0;
+	}
+
+	function isGlossWeightName(s) {
+		if (isRoughnessName(s)) {
+			return false;
+		}
+		var hit = s.indexOf("gloss") >= 0 || s.indexOf("specular") >= 0 || s.indexOf("dual lobe") >= 0 || s.indexOf("metallic") >= 0 || s.indexOf("top coat") >= 0 || s.indexOf("sheen") >= 0 || s.indexOf("reflect") >= 0;
+		var weight = s.indexOf("weight") >= 0 || s.indexOf("amount") >= 0 || s.indexOf("intensity") >= 0 || s.indexOf("strength") >= 0;
+		return hit && weight;
+	}
+
+	function isGlossColorName(s) {
+		if (s.indexOf("map") >= 0) {
+			return false;
+		}
+		var hit = s.indexOf("gloss") >= 0 || s.indexOf("specular") >= 0 || s.indexOf("top coat") >= 0;
+		return hit && s.indexOf("color") >= 0;
+	}
+
+	function isBaseColorName(s) {
+		if (s.indexOf("map") >= 0 || s.indexOf("gloss") >= 0 || s.indexOf("specular") >= 0 || s.indexOf("top coat") >= 0) {
+			return false;
+		}
+		return s.indexOf("base color") >= 0 || s.indexOf("diffuse color") >= 0 || s === "diffuse" || s.indexOf("basecolor") >= 0;
+	}
+
+	function lerpNum(a, b, t) {
+		return a + (b - a) * t;
+	}
+
+	function applyMatteMutedOverrides() {
+		var changes = [];
+		var inspected = 0;
+		var n = Scene.getNumNodes();
+		var i;
+		var m;
+		var pi;
+		for (i = 0; i < n; i += 1) {
+			var node = Scene.getNode(i);
+			if (!node || node.inherits("DzCamera") || node.inherits("DzLight")) {
+				continue;
+			}
+			var obj = null;
+			try { obj = node.getObject(); } catch (e0) { obj = null; }
+			if (!obj) {
+				continue;
+			}
+			var shape = null;
+			try { shape = obj.getCurrentShape(); } catch (e1) { shape = null; }
+			if (!shape) {
+				continue;
+			}
+			var nMat = 0;
+			try { nMat = shape.getNumMaterials(); } catch (e2) { nMat = 0; }
+			for (m = 0; m < nMat; m += 1) {
+				var mat = null;
+				try { mat = shape.getMaterial(m); } catch (e3) { mat = null; }
+				if (!mat) {
+					continue;
+				}
+				var role = classifyMaterialRole(node, mat);
+				if (role === "skip") {
+					appendLog("material skip " + node.getLabel() + " / " + mat.getLabel());
+					continue;
+				}
+				var props = [];
+				try { props = mat.getPropertyList(); } catch (e4) { props = []; }
+				if (!props) {
+					props = [];
+				}
+				for (pi = 0; pi < props.length; pi += 1) {
+					var p = props[pi];
+					if (!p) {
+						continue;
+					}
+					var pname = propertyNameOf(p);
+					inspected += 1;
+					if (shouldSkipProperty(pname)) {
+						continue;
+					}
+					var sl = pname.toLowerCase();
+					var before = null;
+					try { before = p.getValue(); } catch (e5) { before = null; }
+					if (before === null) {
+						continue;
+					}
+					var changed = false;
+					var after = before;
+						if (typeof before === "number") {
+						if (isRoughnessName(sl)) {
+							var percent = before > 1.5;
+							var floorR = role === "weapon" ? 0.82 : (role === "hair" ? 0.74 : 0.70);
+							if (percent) {
+								after = Math.max(before, floorR * 100);
+							} else {
+								after = Math.max(before, floorR);
+							}
+						} else if (isGlossWeightName(sl)) {
+							var mul = 0.30;
+							if (role === "skin") { mul = 0.35; }
+							if (role === "weapon") { mul = 0.42; }
+							if (role === "tank_top" || role === "trousers" || role === "boots") { mul = 0.26; }
+							after = before * mul;
+						}
+						if (after !== before) {
+							try {
+								p.setValue(after);
+								changed = true;
+							} catch (e6) {}
+						}
+					} else if (typeof before === "object") {
+						var cr = -1;
+						var cg = -1;
+						var cb = -1;
+						try { cr = Number(before.red); cg = Number(before.green); cb = Number(before.blue); } catch (e7) {}
+						if (cr < 0) {
+							try { cr = Number(before.r); cg = Number(before.g); cb = Number(before.b); } catch (e8) {}
+						}
+						if (cr >= 0 && !isNaN(cr)) {
+							var amt = 0;
+							if (isGlossColorName(sl)) {
+								amt = 0.55;
+							} else if (isBaseColorName(sl)) {
+								if (role === "skin") { amt = 0.06; }
+								else if (role === "weapon") { amt = 0.08; }
+								else if (role === "hair") { amt = 0.10; }
+								else { amt = 0.14; }
+							}
+							if (amt > 0) {
+								var gray = cr * 0.2126 + cg * 0.7152 + cb * 0.0722;
+								var nr = Math.round(lerpNum(cr, gray, amt));
+								var ng = Math.round(lerpNum(cg, gray, amt));
+								var nb = Math.round(lerpNum(cb, gray, amt));
+								if (nr !== cr || ng !== cg || nb !== cb) {
+									try {
+										p.setValue(new Color(nr, ng, nb));
+										changed = true;
+										after = nr + "," + ng + "," + nb;
+										before = cr + "," + cg + "," + cb;
+									} catch (e9) {}
+								}
+							}
+						}
+					}
+					if (changed) {
+						var rec = {
+							"node": String(node.getLabel()),
+							"material": String(mat.getLabel()),
+							"role": role,
+							"property": pname,
+							"from": String(before),
+							"to": String(after)
+						};
+						changes.push(rec);
+						appendLog("matte " + rec.role + " " + rec.node + " / " + rec.material + " " + rec.property + " " + rec.from + " -> " + rec.to);
+					}
+				}
+			}
+		}
+		appendLog("matte muted inspected=" + inspected + " changed=" + changes.length);
+		gState.material_overrides = changes;
+		return changes;
+	}
+
+	function logMaterialInventory() {
+		var n = Scene.getNumNodes();
+		var i;
+		var m;
+		var pi;
+		var count = 0;
+		for (i = 0; i < n; i += 1) {
+			var node = Scene.getNode(i);
+			if (!node || node.inherits("DzCamera") || node.inherits("DzLight")) {
+				continue;
+			}
+			var obj = null;
+			try { obj = node.getObject(); } catch (e0) { obj = null; }
+			if (!obj) {
+				continue;
+			}
+			var shape = null;
+			try { shape = obj.getCurrentShape(); } catch (e1) { shape = null; }
+			if (!shape) {
+				continue;
+			}
+			var nMat = 0;
+			try { nMat = shape.getNumMaterials(); } catch (e2) { nMat = 0; }
+			for (m = 0; m < nMat; m += 1) {
+				var mat = null;
+				try { mat = shape.getMaterial(m); } catch (e3) { mat = null; }
+				if (!mat) {
+					continue;
+				}
+				var role = classifyMaterialRole(node, mat);
+				var props = [];
+				try { props = mat.getPropertyList(); } catch (e4) { props = []; }
+				if (!props) {
+					props = [];
+				}
+				var names = [];
+				for (pi = 0; pi < props.length; pi += 1) {
+					if (!props[pi]) {
+						continue;
+					}
+					var pn = propertyNameOf(props[pi]);
+					if (pn) {
+						names.push(pn);
+					}
+				}
+				appendLog("inventory " + role + " " + node.getLabel() + " / " + mat.getLabel() + " props=" + names.join(" | "));
+				count += 1;
+			}
+		}
+		appendLog("material inventory materials=" + count);
+		return count;
+	}
+
+	function runStyleConversion(cfg, recipe, figure) {
+		var spec = recipe.style_conversion;
+		var poseSpec = spec.pose;
+		var dir = String(spec.direction || "se");
+		var yawMap = recipe.direction_yaw_deg || {};
+		var profile = recipe.render_profile || {};
+		var offset = Number(profile.facing_yaw_offset_deg || 0);
+		var yaw = Number(yawMap[dir] || 0) + offset;
+		var sizePx = Number((recipe.output_profile && recipe.output_profile.source_size) || 512);
+		var wHints = (recipe.weapon && recipe.weapon.node_hints) ? recipe.weapon.node_hints : ["Carbine", "PMWS"];
+		var weaponNode = findChildByHints(wHints);
+		if (!weaponNode) {
+			fail("weapon", "WEAPON_LOAD_FAILED", "Weapon node missing before style conversion");
+			return;
+		}
+		appendLog("style conversion pose " + poseSpec.id);
+		if (!applyArmedPose(figure, recipe, poseSpec, weaponNode)) {
+			return;
+		}
+		if (!setFigureYaw(figure, yaw)) {
+			fail("render", "RENDER_FAILED", "Could not rotate figure for style conversion direction " + dir);
+			return;
+		}
+		var renderer = configureIray();
+		removeCalibCameras();
+		var box = figureBounds(figure);
+		var cam = buildCamera(figure, profile, box);
+		if (!cam) {
+			fail("camera", "CAMERA_BUILD_FAILED", "Could not build style conversion camera");
+			return;
+		}
+		assignCameraToViewports(cam);
+		var sources = spec.sources || [];
+		var lights = spec.lights || {};
+		var files = [];
+		var cells = [];
+		var appliedMatte = false;
+		var s;
+		gState.stage = "render";
+		gState.clip_id = (recipe.output_profile && recipe.output_profile.clip_id) ? recipe.output_profile.clip_id : "idle";
+		for (s = 0; s < sources.length; s += 1) {
+			var src = sources[s];
+			appendLog("style source " + src.id + " " + src.label + " material=" + src.material + " light=" + src.light);
+			if (String(src.material) === "matte_muted" && !appliedMatte) {
+				logMaterialInventory();
+				applyMatteMutedOverrides();
+				appliedMatte = true;
+			} else if (String(src.material) === "control") {
+				logMaterialInventory();
+			}
+			removeStyleLights();
+			var lightSpec = lights[src.light] || lights.control || {};
+			buildLight(mergeLightProfile(profile, lightSpec));
+			processEventsABit();
+			var fileName = recipe.variant_id + "_" + src.id + "_" + dir + ".png";
+			var outPath = String(cfg.source_dir).replace(/[\\\/]+$/, "") + "\\" + fileName;
+			appendLog("render " + src.id + " -> " + outPath);
+			if (!renderOne(cam, renderer, outPath, sizePx)) {
+				fail("render", "RENDER_FAILED", "Render failed for " + src.id);
+				return;
+			}
+			files.push(outPath);
+			cells.push({
+				"source_id": src.id,
+				"source_label": src.label || src.id,
+				"material": src.material,
+				"light": src.light,
+				"pose_id": poseSpec.id,
+				"elevation_deg": Number(profile.elevation_deg || 56),
+				"direction": dir,
+				"path": outPath,
+				"weapon_validation": gState.weapon_validation
+			});
+			gState.style_sources = cells;
+			gState.render_files = files;
+			writeResult();
+		}
+		gState.style_sources = cells;
+		gState.render_files = files;
+		pass("render", "unattended three source-profile style conversion renders complete");
+	}
+
+	function nodeIsVisible(node) {
+		if (!node) {
+			return null;
+		}
+		try { if (typeof node.isVisible === "function") { return node.isVisible(); } } catch (e1) {}
+		try { if (typeof node.getVisible === "function") { return node.getVisible(); } } catch (e2) {}
+		try { return node.visible; } catch (e3) {}
+		return null;
+	}
+
+	function nodeRenderVisible(node) {
+		if (!node) {
+			return null;
+		}
+		try { if (typeof node.isVisibleInRender === "function") { return node.isVisibleInRender(); } } catch (e1) {}
+		try { if (typeof node.isVisibileInRender === "function") { return node.isVisibileInRender(); } } catch (e2) {}
+		var p = getPropValue(node, ["Visible in Render", "VisibleInRender", "Renderable"]);
+		if (p !== null && typeof p !== "undefined") {
+			return p;
+		}
+		return null;
+	}
+
+	function setNodeVisible(node, vis) {
+		if (!node) {
+			return false;
+		}
+		try { if (typeof node.setVisible === "function") { node.setVisible(vis); return true; } } catch (e1) {}
+		try { node.visible = vis; return true; } catch (e2) {}
+		return false;
+	}
+
+	function setNodeRenderVisible(node, vis) {
+		if (!node) {
+			return false;
+		}
+		try { if (typeof node.setVisibleInRender === "function") { node.setVisibleInRender(vis); return true; } } catch (e1) {}
+		try { if (typeof node.setVisibileInRender === "function") { node.setVisibileInRender(vis); return true; } } catch (e2) {}
+		if (setProp(node, ["Visible in Render", "VisibleInRender", "Renderable"], vis)) {
+			return true;
+		}
+		return false;
+	}
+
+	function setInheritVisibility(node, inherit) {
+		return setProp(node, ["Inherit Parent Visibility", "Inherit Visibility", "Inherits Visibility"], inherit);
+	}
+
+	function nodeIsUnder(node, root) {
+		var n = node;
+		var guard = 0;
+		while (n && guard < 40) {
+			if (n === root) {
+				return true;
+			}
+			try { n = n.getNodeParent(); } catch (e1) { return false; }
+			guard += 1;
+		}
+		return false;
+	}
+
+	function visibilityChain(node) {
+		var chain = [];
+		var n = node;
+		var guard = 0;
+		while (n && guard < 40) {
+			chain.push({
+				"name": String(n.getName()),
+				"label": String(n.getLabel()),
+				"class": String(n.className ? n.className() : ""),
+				"visible": nodeIsVisible(n),
+				"visible_in_render": nodeRenderVisible(n),
+				"inherit_visibility": getPropValue(n, ["Inherit Parent Visibility", "Inherit Visibility", "Inherits Visibility"])
+			});
+			try { n = n.getNodeParent(); } catch (e1) { break; }
+			guard += 1;
+		}
+		return chain;
+	}
+
+	function logCameraReadback(cam) {
+		if (!cam) {
+			return {};
+		}
+		var rec = {
+			"x": null, "y": null, "z": null,
+			"xrot": null, "yrot": null, "zrot": null,
+			"focal_mm": getPropValue(cam, ["Focal Length (mm)"]),
+			"headlamp_mode": getPropValue(cam, ["Headlamp Mode", "HeadlampMode"]),
+			"headlamp_intensity": getPropValue(cam, ["Headlamp Intensity"])
+		};
+		try { rec.x = cam.getXPosControl().getValue(); } catch (e1) {}
+		try { rec.y = cam.getYPosControl().getValue(); } catch (e2) {}
+		try { rec.z = cam.getZPosControl().getValue(); } catch (e3) {}
+		try { rec.xrot = cam.getXRotControl().getValue(); } catch (e4) {}
+		try { rec.yrot = cam.getYRotControl().getValue(); } catch (e5) {}
+		try { rec.zrot = cam.getZRotControl().getValue(); } catch (e6) {}
+		appendLog("camera readback pos=" + rec.x + "," + rec.y + "," + rec.z + " rot=" + rec.xrot + "," + rec.yrot + "," + rec.zrot + " focal=" + rec.focal_mm + " headlampMode=" + rec.headlamp_mode + " headlampI=" + rec.headlamp_intensity);
+		return rec;
+	}
+
+	function logLightsReadback() {
+		var out = [];
+		var i;
+		for (i = 0; i < Scene.getNumNodes(); i += 1) {
+			var node = Scene.getNode(i);
+			if (!node || !node.inherits("DzLight")) {
+				continue;
+			}
+			var rec = {
+				"name": String(node.getName()),
+				"visible": nodeIsVisible(node),
+				"intensity": null,
+				"xrot": null,
+				"yrot": null,
+				"color": null
+			};
+			try { rec.intensity = node.getIntensityControl().getValue(); } catch (e1) {}
+			try { rec.xrot = node.getXRotControl().getValue(); } catch (e2) {}
+			try { rec.yrot = node.getYRotControl().getValue(); } catch (e3) {}
+			try {
+				var c = node.getDiffuseColorControl().getValue();
+				rec.color = [c.red, c.green, c.blue];
+			} catch (e4) {}
+			out.push(rec);
+			appendLog("light " + rec.name + " vis=" + rec.visible + " I=" + rec.intensity + " rot=" + rec.xrot + "," + rec.yrot + " color=" + rec.color);
+		}
+		return out;
+	}
+
+	function logWeaponMaterials(weapon) {
+		var out = [];
+		if (!weapon) {
+			return out;
+		}
+		var obj = null;
+		try { obj = weapon.getObject(); } catch (e0) { obj = null; }
+		if (!obj) {
+			return out;
+		}
+		var shape = null;
+		try { shape = obj.getCurrentShape(); } catch (e1) { shape = null; }
+		if (!shape) {
+			return out;
+		}
+		var nMat = 0;
+		try { nMat = shape.getNumMaterials(); } catch (e2) { nMat = 0; }
+		var m;
+		for (m = 0; m < nMat; m += 1) {
+			var mat = null;
+			try { mat = shape.getMaterial(m); } catch (e3) { mat = null; }
+			if (!mat) {
+				continue;
+			}
+			var rec = {
+				"material": String(mat.getLabel()),
+				"cutout_opacity": getPropValue(mat, ["Cutout Opacity", "Cutout Opacity Cutout Opacity"]),
+				"opacity_strength": getPropValue(mat, ["Opacity Strength", "Opacity"]),
+				"refraction_weight": getPropValue(mat, ["Refraction Weight"]),
+				"diffuse_color": getPropValue(mat, ["Diffuse Color", "Base Color"]),
+				"metallic_weight": getPropValue(mat, ["Metallic Weight", "Metallicity"])
+			};
+			out.push(rec);
+			appendLog("weapon mat " + rec.material + " cutout=" + rec.cutout_opacity + " opacity=" + rec.opacity_strength + " refract=" + rec.refraction_weight + " metal=" + rec.metallic_weight);
+		}
+		return out;
+	}
+
+	function saveSceneExternal(path) {
+		var ok = false;
+		try {
+			if (typeof Scene.saveScene === "function") {
+				ok = Scene.saveScene(path) !== false;
+			}
+		} catch (e1) {
+			appendLog("saveScene exception: " + e1);
+		}
+		if (!ok) {
+			try {
+				if (App.getContentMgr && typeof App.getContentMgr().saveNativeFile === "function") {
+					ok = App.getContentMgr().saveNativeFile(path) !== false;
+				}
+			} catch (e2) {
+				appendLog("saveNativeFile exception: " + e2);
+			}
+		}
+		appendLog("scene save path=" + path + " ok=" + ok);
+		return ok;
+	}
+
+	function unparentKeepWorld(node) {
+		if (!node) {
+			return false;
+		}
+		var xf = null;
+		try { xf = node.getWSTransform(); } catch (e0) {}
+		try {
+			if (typeof node.setNodeParent === "function") {
+				node.setNodeParent(null, true);
+				appendLog("weapon unparent setNodeParent(null,true)");
+				return true;
+			}
+		} catch (e1) {
+			appendLog("setNodeParent inPlace exception: " + e1);
+		}
+		try {
+			if (typeof node.setNodeParent === "function") {
+				node.setNodeParent(null);
+				if (xf && typeof node.setWSTransform === "function") {
+					node.setWSTransform(xf);
+				}
+				appendLog("weapon unparent setNodeParent(null) + restore WS");
+				return true;
+			}
+		} catch (e2) {
+			appendLog("setNodeParent restore exception: " + e2);
+		}
+		appendLog("weapon unparent failed: no setNodeParent");
+		return false;
+	}
+
+	function hideNonWeaponGeometry(weapon) {
+		var hidden = [];
+		var i;
+		for (i = Scene.getNumNodes() - 1; i >= 0; i -= 1) {
+			var node = Scene.getNode(i);
+			if (!node || node.inherits("DzCamera") || node.inherits("DzLight")) {
+				continue;
+			}
+			if (nodeIsUnder(node, weapon)) {
+				continue;
+			}
+			var vis = nodeIsVisible(node);
+			if (vis === false) {
+				continue;
+			}
+			if (setNodeVisible(node, false)) {
+				hidden.push(String(node.getLabel()));
+			}
+		}
+		appendLog("isolation hid nodes=" + hidden.length);
+		return hidden;
+	}
+
+
+
+	// Experimental weapon-local hand contacts; must pass visual review before production.
+	function solveSupportContact(figure, weapon, spec) {
+		var names = ["l_shoulder", "l_upperarm", "l_forearm", "l_hand"];
+		var controls = [], original = [], i, a;
+		for (i = 0; i < names.length; i += 1) {
+			var b = findBone(figure, names[i]);
+			if (!b) { throw new Error("Missing support bone " + names[i]); }
+			for (a = 0; a < 3; a += 1) {
+				var c = rotCtrl(b, a);
+				controls.push(c); original.push(c.getValue());
+			}
+		}
+		var wrist = findBone(figure, "l_hand");
+		var knuckle = findBone(figure, "l_mid1");
+		if (!knuckle) { throw new Error("Missing palm contact bone"); }
+		var xf = weapon.getWSTransform();
+		var tw = xf.multVec(new DzVec3(spec.wrist[0], spec.wrist[1], spec.wrist[2]));
+		var tk = xf.multVec(new DzVec3(spec.knuckle[0], spec.knuckle[1], spec.knuckle[2]));
+		var indexBone=spec.index ? findBone(figure,"l_index1") : null;
+		var targetIndex=spec.index ? xf.multVec(new DzVec3(spec.index[0],spec.index[1],spec.index[2])) : null;
+		function score() {
+			var dw = vecDist(wrist.getWSPos(), tw), dk = vecDist(knuckle.getWSPos(), tk);
+			var di=indexBone ? vecDist(indexBone.getWSPos(),targetIndex) : 0; var de=spec.elbow_below_wrist_cm ? Math.max(0,findBone(figure,"l_forearm").getWSPos().y-wrist.getWSPos().y+Number(spec.elbow_below_wrist_cm)) : 0; return 0.5*de*de+Number(spec.wrist_weight || 1)*dw*dw+dk*dk+di*di+(spec.neutral_wrist ? 0.03*(controls[10].getValue()*controls[10].getValue()+controls[11].getValue()*controls[11].getValue()) : 0);
+		}
+		function values() { var v=[]; for(var q=0;q<controls.length;q+=1){v.push(controls[q].getValue());} return v; }
+		function restore(v) { for(var q=0;q<controls.length;q+=1){var val=v[q];if(spec.neutral_wrist && q>=9){var lim=spec.wrist_limits ? Number(spec.wrist_limits[q-9]) : (q===9?10:(q===10?15:25));val=Math.max(-lim,Math.min(lim,val));}controls[q].setValue(val);} }
+		var before = wrist.getWSPos();
+		controls[4].setValue(original[4] - 10);
+		var immediate = wrist.getWSPos(); processEvents(); var settled = wrist.getWSPos();
+		restore(original); processEvents();
+		appendLog("CONTACT transform probe " + toJson({before:[before.x,before.y,before.z],immediate:[immediate.x,immediate.y,immediate.z],settled:[settled.x,settled.y,settled.z],targetWrist:[tw.x,tw.y,tw.z],targetKnuckle:[tk.x,tk.y,tk.z]}));
+		var seeds = [original, [0,0,0,0,-40,45,0,-80,0,0,0,0], [0,0,0,0,-70,70,0,-50,0,0,0,0]];
+		if(spec.neutral_wrist){seeds.push([0,0,0,-60,-30,30,-80,-80,0,0,0,0]);seeds.push([0,0,0,60,-30,30,-80,-80,0,0,0,0]);seeds.push([0,0,0,-60,-30,30,70,-80,0,0,0,0]);}
+		var best = original, bestScore = score();
+		var steps = [20,10,5,2,1,0.5];
+		for (var si=0;si<seeds.length;si+=1) {
+			restore(seeds[si]);
+			for (var st=0;st<steps.length;st+=1) {
+				for (var sweep=0;sweep<10;sweep+=1) {
+					var improved=false;
+					for (var ci=0;ci<controls.length;ci+=1) {
+						var ctrl=controls[ci], base=ctrl.getValue(), win=base, loss=score();
+						for(var sign=-1;sign<=1;sign+=2) {
+							var trial=Math.max(ctrl.getMin(),Math.min(ctrl.getMax(),base+sign*steps[st]));
+							if(spec.neutral_wrist && ci>=9){var limit=spec.wrist_limits ? Number(spec.wrist_limits[ci-9]) : (ci===9?10:(ci===10?15:25));trial=Math.max(-limit,Math.min(limit,trial));} ctrl.setValue(trial);
+							var candidate=score();
+							if(candidate<loss-0.000001){loss=candidate;win=ctrl.getValue();improved=true;}
+						}
+						ctrl.setValue(win);
+					}
+					processEvents();
+					if(!improved){break;}
+				}
+			}
+			var s=score();
+			if(s<bestScore){bestScore=s;best=values();}
+		}
+		restore(best); processEventsABit();
+		return {wrist_error:vecDist(wrist.getWSPos(),tw),knuckle_error:vecDist(knuckle.getWSPos(),tk),socket:spec,score:bestScore,visual_acceptance:false};
+	}
+
+	// Opt-in SE arm probes. Baseline camera is built once; no reframe per pose.
+	// Opt-in auxiliary label pass. Full geometry stays visible, retaining real occlusion.
+	function renderMaterialLabels(cfg, cam, renderer, sizePx) {
+		var palette = {skin:[255,0,0],tank_top:[0,255,0],trousers:[0,0,255],weapon:[255,0,255],hair:[255,255,0],boots:[0,255,255],other:[255,255,255],skip:[255,255,255]};
+		var records = [];
+		var counts = {};
+		for (var i=0;i<Scene.getNumNodes();i++) {
+			var node=Scene.getNode(i), obj=node.getObject ? node.getObject() : null;
+			if (!obj) {continue;}
+			var shape=obj.getCurrentShape(); if(!shape){continue;}
+			for(var mi=0;mi<shape.getNumMaterials();mi++){
+				var mat=shape.getMaterial(mi), role=classifyMaterialRole(node,mat);
+				appendLog("LABEL material " + node.getLabel() + " / " + mat.getLabel()); var rgb=palette[role] || palette.other;
+				var props=mat.getPropertyList(), baseSet=false, mutations=[];
+				for(var pi=0;pi<props.length;pi++){
+					var p=props[pi], name=String(p.getName()), label=String(p.getLabel());
+					if(name === "Diffuse Color"){
+						p.clearMap();
+						p.setColorValue(new Color(rgb[0],rgb[1],rgb[2]));
+						var c=p.getColorValue();
+						baseSet=true;
+						mutations.push({name:name,color:String(c),map_cleared:!p.getMapValue()});
+					} else if (/^(Metallic Weight|Glossy Weight|Glossy Layered Weight|Dual Lobe Specular Weight|Top Coat Weight|Translucency Weight|Refraction Weight|Makeup Weight|Detail Weight|Diffuse Overlay Weight|Metallic Flakes Weight|Backscattering Weight|Luminance)$/.test(name)){
+						p.setValue(0); mutations.push({name:name,value:p.getValue()});
+					} else if(name === "Diffuse Weight" || name === "Diffuse Strength"){
+						p.setValue(1);
+					}
+				}
+				counts[role]=(counts[role]||0)+(baseSet?1:0);
+				records.push({node:String(node.getLabel()),material:String(mat.getLabel()),role:role,base_set:baseSet,changes:mutations});
+			}
+		}
+		gState.material_labels={palette:palette,counts:counts,materials:records,camera:logCameraReadback(cam),kind:"DIAGNOSTIC_MATERIAL_GUIDANCE_NOT_BEAUTY"};
+		writeResult();
+		var requiredRoles=["skin","tank_top","trousers","weapon","hair","boots"]; for(var rk=0;rk<requiredRoles.length;rk++){ var roleKey=requiredRoles[rk];
+			if(roleKey !== "skip" && roleKey !== "other" && !counts[roleKey]){fail("render","LABEL_ROLE_MISSING",roleKey);return false;}
+		}
+		processEventsABit();
+		var path=cfg.label_output_path || (String(cfg.source_dir)+"/material_labels_se.png");
+		if(!renderOne(cam,renderer,path,sizePx)){return false;}
+		gState.material_labels.path=path;
+		writeResult();
+		return true;
+	}
+
+		function applySceneLightingProbe(flux) {
+ var env=null;
+ for(var ni=0;ni<Scene.getNumNodes();ni++){var nn=Scene.getNode(ni);if(nn.inherits("DzEnvironmentNode")){env=nn;break;}}
+ if(!env){env=new DzEnvironmentNode();Scene.addNode(env);}
+ var settings=[["Environment Mode",3],["Draw Dome",0],["Draw Ground",0]];
+ var audit={environment:{},lights:[]};
+ for(var ei=0;ei<settings.length;ei++){var ep=env.findProperty(settings[ei][0]);if(!ep){throw new Error("Missing environment property "+settings[ei][0]);}ep.setValue(settings[ei][1]);audit.environment[settings[ei][0]]=ep.getValue();if(ep.getValue()!=settings[ei][1]){throw new Error("Environment readback mismatch");}}
+ for(var li=0;li<Scene.getNumNodes();li++){
+  var ln=Scene.getNode(li),name=String(ln.getName());
+  if(name!=="SmokeKey" && name!=="SmokeFill"){continue;}
+  var ls=[["Photometric Mode",1],["Flux",Number(flux)*(name==="SmokeKey"?1:0.2)],["Intensity",1],["Shadow Type",2]];
+  var la={name:name};
+var cp=ln.findProperty("Color");if(!cp){throw new Error("Missing light color");}
+var beforeColor=cp.getColorValue();la.color_before=[beforeColor.red,beforeColor.green,beforeColor.blue];
+cp.setColorValue(new Color(255,255,255));var afterColor=cp.getColorValue();la.color_after=[afterColor.red,afterColor.green,afterColor.blue];
+if(afterColor.red!==255 || afterColor.green!==255 || afterColor.blue!==255){throw new Error("Light color readback mismatch");}
+  for(var si=0;si<ls.length;si++){var lp=ln.findProperty(ls[si][0]);if(!lp){throw new Error("Missing light property "+ls[si][0]);}lp.setValue(ls[si][1]);la[ls[si][0]]=lp.getValue();}
+  audit.lights.push(la);
+ }
+ if(audit.lights.length!==2){throw new Error("Expected two controlled lights");}
+ return audit;
+}
+
+function runSourceComposition(cfg, recipe, figure, renderer, sizePx) {
+		if(cfg.composition_lighting){
+ gState.light_unit_audit=[];
+ for(var li=0;li<Scene.getNumNodes();li++){
+  var lightNode=Scene.getNode(li), lightName=String(lightNode.getName());
+  if(lightName !== "SmokeKey" && lightName !== "SmokeFill"){continue;}
+  var control=lightNode.getIntensityControl();
+  var audit={name:lightName,before:control.getValue(),min:control.getMin(),max:control.getMax(),trials:[]};
+  var tests=[96,20,0.96,0.20];
+  for(var ti=0;ti<tests.length;ti++){control.setValue(tests[ti]);audit.trials.push({requested:tests[ti],effective:control.getValue()});}
+  control.setValue(lightName === "SmokeKey" ? 0.96 : 0.20);
+  audit.final=control.getValue();gState.light_unit_audit.push(audit);
+ }
+ writeResult();
+}
+		var views=cfg.composition_probe, cameras=[], paths=[];
+		if(!views || views.length>4){fail("camera","BAD_COMPOSITION_GRID","Maximum four views");return;}
+		gState.composition_probe=[];
+		for(var i=0;i<views.length;i++){
+			var v=views[i]; if(v.flux){gState.scene_lighting_probe=applySceneLightingProbe(v.flux);writeResult();}
+			if(!/^[A-Za-z0-9_]+$/.test(v.id)){fail("camera","BAD_VIEW_ID",String(v.id));return;}
+			setFigureYaw(figure,Number(v.yaw));
+			var profile={id:"COMPOSITION_"+v.id,elevation_deg:Number(v.elevation),focal_length_mm:160,headlamp_intensity:0,fit_padding:1.10};
+			var c=buildCamera(figure,profile,figureBounds(figure));
+			if(!c){fail("camera","COMPOSITION_CAMERA_FAILED",v.id);return;}
+			c.getFocalLengthControl().setValue(Number(v.focal || 320));
+			processEventsABit();
+			var p=String(cfg.source_dir)+"/"+v.id+"_beauty.png";
+			cameras.push(c); paths.push(p);
+			gState.composition_probe.push({id:v.id,yaw:Number(v.yaw),elevation_requested:Number(v.elevation),camera:logCameraReadback(c),beauty:p,accepted:false});
+			writeResult();
+			appendLog("COMPOSITION beauty "+v.id);
+			if(!renderOne(c,renderer,p,sizePx)){fail("render","COMPOSITION_RENDER_FAILED",v.id);return;}
+		}
+		for(var j=0;j<views.length;j++){
+			setFigureYaw(figure,Number(views[j].yaw)); if(views[j].flux){applySceneLightingProbe(views[j].flux);}
+			var labelPath=String(cfg.source_dir)+"/"+views[j].id+"_labels.png";
+			appendLog("COMPOSITION labels "+views[j].id);
+			if(!renderMaterialLabels({source_dir:cfg.source_dir,label_output_path:labelPath},cameras[j],renderer,sizePx)){return;}
+			gState.composition_probe[j].labels=labelPath;
+			gState.composition_probe[j].label_report=gState.material_labels;
+			writeResult();
+		}
+		pass("render","Source composition candidates rendered. No camera, pose or style accepted.");
+	}
+
+function runGripProbe(cfg,recipe,figure,weapon,renderer) {
+ var initial=[], names=["l_shoulder","l_upperarm","l_forearm","l_hand"];
+ for(var bi=0;bi<names.length;bi++){var b=findBone(figure,names[bi]);initial.push([b.getXRotControl().getValue(),b.getYRotControl().getValue(),b.getZRotControl().getValue()]);}
+ setFigureYaw(figure,0);
+ applySceneLightingProbe(150000);
+ var cam=buildCamera(figure,{id:"GRIP_FIXED_FRONT40",elevation_deg:40,focal_length_mm:160,headlamp_intensity:0,fit_padding:1.10},figureBounds(figure));
+ cam.getXPosControl().setValue(4.4534959793);cam.getYPosControl().setValue(860.1187133789);cam.getZPosControl().setValue(907.8461303711);
+ cam.getXRotControl().setValue(-40);cam.getYRotControl().setValue(0);cam.getZRotControl().setValue(0);cam.getFocalLengthControl().setValue(320);
+ gState.grip_probe=[];
+ for(var gi=0;gi<cfg.grip_probe.length;gi++){
+  for(var bi=0;bi<names.length;bi++){var b=findBone(figure,names[bi]);b.getXRotControl().setValue(initial[bi][0]);b.getYRotControl().setValue(initial[bi][1]);b.getZRotControl().setValue(initial[bi][2]);}
+  var spec=cfg.grip_probe[gi];appendLog("GRIP solve "+spec.id);
+  var result;if(spec.fixed_bones){for(var fi=0;fi<spec.fixed_bones.length;fi++){var fb=spec.fixed_bones[fi],node=findBone(figure,fb.bone);if(!node){throw new Error("Fixed bone missing: "+fb.bone);}var vals=[fb.x,fb.y,fb.z];for(var ax=0;ax<3;ax++){rotCtrl(node,ax).setValue(Number(vals[ax]));if(Math.abs(rotCtrl(node,ax).getValue()-Number(vals[ax]))>0.001){throw new Error("Fixed bone readback mismatch: "+fb.bone+" axis "+ax);}}}processEventsABit();result={fixed_pose:true,readback_verified:true,source_run:spec.source_run};}else{result=solveSupportContact(figure,weapon,spec);}
+  if(spec.close_index){var fb=findBone(figure,"l_index1");fb.getZRotControl().setValue(-60);fb=findBone(figure,"l_index2");fb.getZRotControl().setValue(-65);fb=findBone(figure,"l_index3");fb.getZRotControl().setValue(-25);processEventsABit();} var points=[], bn=["l_shoulder","l_upperarm","l_forearm","r_hand","l_hand","l_index1","l_mid1","l_ring1","l_pinky1","l_thumb1"];
+  var xf=weapon.getWSTransform(), o=xf.multVec(new DzVec3(0,0,0)), ex=xf.multVec(new DzVec3(1,0,0)),ey=xf.multVec(new DzVec3(0,1,0)),ez=xf.multVec(new DzVec3(0,0,1));
+  var basis=[[ex.x-o.x,ex.y-o.y,ex.z-o.z],[ey.x-o.x,ey.y-o.y,ey.z-o.z],[ez.x-o.x,ez.y-o.y,ez.z-o.z]];
+  for(var ni=0;ni<bn.length;ni++){var b=findBone(figure,bn[ni]);if(!b){continue;}var p=b.getWSPos(),v=[p.x-o.x,p.y-o.y,p.z-o.z],local=[];
+   for(var a=0;a<3;a++){var u=basis[a];local.push((v[0]*u[0]+v[1]*u[1]+v[2]*u[2])/(u[0]*u[0]+u[1]*u[1]+u[2]*u[2]));}
+   points.push({bone:bn[ni],weapon_local:local,rotation:[b.getXRotControl().getValue(),b.getYRotControl().getValue(),b.getZRotControl().getValue()]});
+  }
+  var path=String(cfg.source_dir)+"/"+spec.id+".png";
+  gState.grip_probe.push({id:spec.id,contact:result,bones:points,camera:logCameraReadback(cam),path:path,accepted:false});writeResult();
+  if(!renderOne(cam,renderer,path,512)){fail("render","GRIP_RENDER_FAILED",spec.id);return;}
+if(cfg.grip_closeup){
+ var rh=findBone(figure,"r_hand").getWSPos(),lh=findBone(figure,"l_hand").getWSPos();
+ var center=new DzVec3((rh.x+lh.x)/2,(rh.y+lh.y)/2,(rh.z+lh.z)/2);
+ var qc=buildCamera(figure,{id:"DIAGNOSTIC_HANDS",elevation_deg:40,focal_length_mm:160,headlamp_intensity:0,fit_padding:1.10},figureBounds(figure));
+ qc.getXPosControl().setValue(center.x);qc.getYPosControl().setValue(center.y+1100*Math.sin(40*Math.PI/180));qc.getZPosControl().setValue(center.z+1100*Math.cos(40*Math.PI/180));
+ qc.getXRotControl().setValue(-40);qc.getYRotControl().setValue(0);qc.getZRotControl().setValue(0);qc.getFocalLengthControl().setValue(900);
+ var qAudit={center:[center.x,center.y,center.z],before:[],after:[],origin:[]};
+var qpos=qc.getWSPos(),qo=qc.getOrigin();qAudit.before=[qpos.x,qpos.y,qpos.z];qAudit.origin=[qo.x,qo.y,qo.z];
+qc.setWSPos(new DzVec3(center.x,center.y+1100*Math.sin(40*Math.PI/180),center.z+1100*Math.cos(40*Math.PI/180)));
+processEventsABit();qpos=qc.getWSPos();qAudit.after=[qpos.x,qpos.y,qpos.z];
+gState.grip_probe[gState.grip_probe.length-1].camera_coordinate_audit=qAudit;
+var qp=String(cfg.source_dir)+"/"+spec.id+"_hands_DIAGNOSTIC.png";
+ gState.grip_probe[gState.grip_probe.length-1].closeup={path:qp,camera:logCameraReadback(qc),diagnostic_not_source:true};writeResult();
+ if(!renderOne(qc,renderer,qp,512)){fail("render","GRIP_CLOSEUP_FAILED",spec.id);return;}
+}
+
+ }
+ try{
+  var audit={renderer:[],elements:[],constructors:[]};
+  for(var k in renderer){if(/canvas|depth|normal|export|defin|creat|insert|append|add/i.test(k)){audit.renderer.push(k);}}
+  var els=App.getRenderMgr().getRenderElementObjects();
+  for(var ei=0;ei<els.length;ei++){var e=els[ei],info={type:String(e),api:[],children:[]};for(var k in e){if(/canvas|depth|normal|export|defin|creat|insert|append|add/i.test(k)){info.api.push(k);}}
+   for(var ci=0;ci<e.getNumElementChildren();ci++){var ch=e.getElementChild(ci),cr={type:String(ch),api:[]};for(var kk in ch){if(/canvas|defin|creat|append|insert|add|toon/i.test(kk)){cr.api.push(kk);}}info.children.push(cr);}audit.elements.push(info);
+  }
+  var cn=["DzIrayCanvas","DzIrayCanvasSettings","DzIrayRenderer","DzIrayPropertyHolder","DzIrayCanvasDefinition"];for(var ci=0;ci<cn.length;ci++){audit.constructors.push(cn[ci]+":"+eval("typeof "+cn[ci]));}
+  for(var ei=0;ei<els.length;ei++){var el=els[ei];if(el.getNumCanvasDefinitions){audit.canvas_count=el.getNumCanvasDefinitions();audit.canvas_objects=[];for(var ci=0;ci<el.getNumCanvasDefinitions();ci++){var cd=el.getCanvasDefinition(ci),rec={type:String(cd),api:[]};for(var key in cd){rec.api.push(key);}audit.canvas_objects.push(rec);}}}
+audit.canvas_factory=[];if(typeof DzIrayCanvasDefinition!=="undefined"){for(var ck in DzIrayCanvasDefinition){audit.canvas_factory.push({name:ck,value:String(DzIrayCanvasDefinition[ck])});}} gState.structural_capabilities=audit;
+ }catch(e){gState.structural_capabilities={error:String(e)};}
+ pass("render","Grip candidates rendered for inspection, not acceptance.");
+}
+
+function runArmProbe(cfg, recipe, figure, weaponNode, cam, renderer, sizePx) {
+		var cells = cfg.arm_probe;
+		var frozenCamera = toJson(logCameraReadback(cam));
+		gState.arm_probe = [];
+		for (var ci = 0; ci < cells.length; ci += 1) {
+			var cell = cells[ci];
+			if (!/^[A-Za-z0-9_]+$/.test(String(cell.id))) {
+				fail("pose", "BAD_PROBE_ID", "Unsafe arm probe id"); return;
+			}
+			if (!applyArmedPose(figure, recipe, recipe.integrity_proof.pose, weaponNode)) { return; }
+			setFigureYaw(figure, Number(recipe.direction_yaw_deg.se));
+			var changes = cell.adjustments || [];
+			for (var ai = 0; ai < changes.length; ai += 1) {
+				if (!/^[rl]_(shoulder|upperarm|forearm|hand)$/.test(String(changes[ai].bone))) {
+					fail("pose", "BAD_PROBE_BONE", "Probe may only alter arms"); return;
+				}
+			}
+			applyBoneAdjustments(figure, changes);
+			var reach = null;
+			var support = null;
+			if(cfg.skip_initial_support_solve && cfg.grip_probe){support=null;} else if (cell.support_socket) {
+				support = solveSupportContact(figure, weaponNode, cell.support_socket);
+			} else if (changes.length > 0) {
+				reach = refineArmReach(figure, "l", weaponReachTarget(weaponNode, 0.72), 8);
+			}
+			var cameraNow = logCameraReadback(cam);
+			if (toJson(cameraNow) !== frozenCamera) {
+				fail("camera", "PROBE_CAMERA_DRIFT", "Camera changed during arm probe"); return;
+			}
+			var boneValues = [];
+			var names = ["hip", "r_thigh", "l_thigh", "r_shoulder", "r_upperarm", "r_forearm", "r_hand", "l_shoulder", "l_upperarm", "l_forearm", "l_hand"];
+			for (var bi = 0; bi < names.length; bi += 1) {
+				var bone = findBone(figure, names[bi]);
+				if (bone) {
+					var channelInfo = [];
+					for (var ax = 0; ax < 3; ax += 1) {
+						var rc = rotCtrl(bone, ax);
+						channelInfo.push({axis:ax,label:String(rc.getLabel()),value:rc.getValue(),min:rc.getMin(),max:rc.getMax()});
+					}
+					var wp = bone.getWSPos();
+					boneValues.push({name:names[bi], x:bone.getXRotControl().getValue(), y:bone.getYRotControl().getValue(), z:bone.getZRotControl().getValue(), channels:channelInfo, ws:[wp.x,wp.y,wp.z]});
+				}
+			}
+			var check = validateWeaponPose(figure, weaponNode);
+			var path = String(cfg.source_dir) + "/" + String(cell.id) + "_se.png";
+			gState.arm_probe.push({id:cell.id, camera:cameraNow, bones:boneValues, weapon:check, approximate_left_reach:reach, support_contact:support, visual_acceptance:false, path:(cfg.arm_probe_measure_only || cfg.material_label_only) ? null : path});
+			writeResult();
+			if (cfg.arm_probe_measure_only) { continue; }
+			if(cfg.grip_probe){runGripProbe(cfg,recipe,figure,weaponNode,renderer);return;}
+			if(cfg.composition_probe){runSourceComposition(cfg,recipe,figure,renderer,sizePx);return;}
+			if(cfg.material_label_only){ if(cells.length !== 1){fail("render","LABEL_SINGLE_CELL_ONLY","One cell required");return;} if(renderMaterialLabels(cfg,cam,renderer,sizePx)){pass("render","Auxiliary material guidance rendered; not beauty or style acceptance");} return; }
+			appendLog("ARM_PROBE render " + cell.id);
+			if (!renderOne(cam, renderer, path, sizePx)) {
+				fail("render", "PROBE_RENDER_FAILED", String(cell.id)); return;
+			}
+			gState.render_files.push(path);
+			if (cfg.material_label_pass) {
+				if(cells.length !== 1){fail('render','LABEL_SINGLE_CELL_ONLY','One cell required');return;}
+				if(!renderMaterialLabels(cfg,cam,renderer,sizePx)){return;}
+			}
+
+			writeResult();
+		}
+		pass(cfg.arm_probe_measure_only ? "measure" : "render", "Diagnostic arm probe completed. This is not pose or product acceptance.");
+	}
+
+	function runIntegrityProof(cfg, recipe, figure) {
+		var spec = recipe.integrity_proof;
+		var poseSpec = spec.pose;
+		var dir = String(spec.direction || "se");
+		var yawMap = recipe.direction_yaw_deg || {};
+		var profile = recipe.render_profile || {};
+		var offset = Number(profile.facing_yaw_offset_deg || 0);
+		var yaw = Number(yawMap[dir] || 0) + offset;
+		var sizePx = Number((recipe.output_profile && recipe.output_profile.source_size) || 512);
+		var wHints = (recipe.weapon && recipe.weapon.node_hints) ? recipe.weapon.node_hints : ["Carbine", "PMWS"];
+		var weaponNode = findChildByHints(wHints);
+		if (!weaponNode) {
+			fail("weapon", "WEAPON_LOAD_FAILED", "Weapon node missing before integrity proof");
+			return;
+		}
+		appendLog("integrity pose " + poseSpec.id);
+		if (!applyArmedPose(figure, recipe, poseSpec, weaponNode)) {
+			return;
+		}
+		if (!setFigureYaw(figure, yaw)) {
+			fail("render", "RENDER_FAILED", "Could not rotate figure for integrity direction " + dir);
+			return;
+		}
+		var renderer = configureIray();
+		removeCalibCameras();
+		var box = figureBounds(figure);
+		var cam = buildCamera(figure, profile, box);
+		if (!cam) {
+			fail("camera", "CAMERA_BUILD_FAILED", "Could not build integrity camera");
+			return;
+		}
+		assignCameraToViewports(cam);
+		logMaterialInventory();
+		applyMatteMutedOverrides();
+		removeStyleLights();
+		buildLight(mergeLightProfile(profile, spec.lights || {}));
+		processEventsABit();
+		if (cfg.arm_probe && cfg.arm_probe.length > 0) {
+			runArmProbe(cfg, recipe, figure, weaponNode, cam, renderer, sizePx);
+			return;
+		}
+		var visChain = visibilityChain(weaponNode);
+		appendLog("weapon visibility chain " + toJson(visChain));
+		var corrections = [];
+		var chainI;
+		for (chainI = 0; chainI < visChain.length; chainI += 1) {
+			if (visChain[chainI].visible === false) {
+				corrections.push("ancestor_hidden:" + visChain[chainI].label);
+			}
+			if (visChain[chainI].visible_in_render === false) {
+				corrections.push("ancestor_hidden_in_render:" + visChain[chainI].label);
+			}
+		}
+		if (nodeIsVisible(weaponNode) === false) {
+			if (setNodeVisible(weaponNode, true)) {
+				corrections.push("setVisible(weapon,true)");
+				appendLog("CORRECTION setVisible weapon true");
+			}
+		}
+		if (nodeRenderVisible(weaponNode) === false) {
+			if (setNodeRenderVisible(weaponNode, true)) {
+				corrections.push("setVisibleInRender(weapon,true)");
+				appendLog("CORRECTION setVisibleInRender weapon true");
+			}
+		}
+		gState.integrity_correction = corrections;
+		var readbacks = {
+			"camera": logCameraReadback(cam),
+			"lights": logLightsReadback(),
+			"iray": readIrayState(),
+			"weapon_visibility_chain": visChain,
+			"weapon_materials": logWeaponMaterials(weaponNode),
+			"weapon_validation": gState.weapon_validation,
+			"scene_save": null
+		};
+		gState.integrity_readbacks = readbacks;
+		writeResult();
+		var scenePath = String(cfg.run_dir).replace(/[\\\/]+$/, "") + "\\integrity_assembled_scene.duf";
+		if (spec.save_scene) {
+			readbacks.scene_save = { "path": scenePath, "ok": saveSceneExternal(scenePath) };
+			gState.integrity_readbacks = readbacks;
+			writeResult();
+		}
+		gState.stage = "render";
+		var files = [];
+		function renderLabeled(label, outName) {
+			var outPath = String(cfg.source_dir).replace(/[\\\/]+$/, "") + "\\" + outName;
+			appendLog("render " + label + " -> " + outPath);
+			if (!renderOne(cam, renderer, outPath, sizePx)) {
+				fail("render", "RENDER_FAILED", "Integrity render failed for " + label);
+				return false;
+			}
+			files.push(outPath);
+			gState.render_files = files;
+			writeResult();
+			return true;
+		}
+		if (!renderLabeled("full_scene_SOURCE_2_equivalent", recipe.variant_id + "_integrity_full_scene_se.png")) {
+			return;
+		}
+		var hqSamples = Number(spec.hq_max_samples || 256);
+		var hqTime = Number(spec.hq_max_time || 90);
+		var hqQuality = Number(spec.hq_quality || 1.0);
+		appendLog("hq iray samples=" + hqSamples + " time=" + hqTime + " quality=" + hqQuality);
+		applyIrayLimits(hqSamples, hqTime, hqQuality);
+		readbacks.iray_hq_requested = { "max_samples": hqSamples, "max_time": hqTime, "quality": hqQuality };
+		readbacks.iray_hq_effective = readIrayState();
+		gState.integrity_readbacks = readbacks;
+		writeResult();
+		var hqStart = nowIso();
+		if (!renderLabeled("full_scene_hq", recipe.variant_id + "_integrity_full_scene_hq_se.png")) {
+			return;
+		}
+		readbacks.hq_started_at = hqStart;
+		readbacks.hq_finished_at = nowIso();
+		gState.integrity_readbacks = readbacks;
+		writeResult();
+		var inheritOff = setInheritVisibility(weaponNode, false);
+		appendLog("isolation inherit visibility off=" + inheritOff);
+		var unparented = unparentKeepWorld(weaponNode);
+		appendLog("isolation unparented=" + unparented);
+		hideNonWeaponGeometry(weaponNode);
+		setNodeVisible(weaponNode, true);
+		setNodeRenderVisible(weaponNode, true);
+		readbacks.isolation_unparented = unparented;
+		readbacks.isolation_inherit_off = inheritOff;
+		readbacks.isolation_weapon_bbox = gState.weapon_validation;
+		readbacks.isolation_visibility = visibilityChain(weaponNode);
+		gState.integrity_readbacks = readbacks;
+		writeResult();
+		if (!renderLabeled("weapon_isolation_DIAGNOSTIC_NOT_SOURCE", recipe.variant_id + "_weapon_isolation_DIAGNOSTIC_NOT_SOURCE_se.png")) {
+			return;
+		}
+		gState.render_files = files;
+		pass("render", "integrity diagnostic renders complete. Isolation is not a production source.");
+	}
+
 	function runCalibration(cfg, recipe, figure) {
 		var calib = recipe.calibration;
 		var cameras = calib.cameras || [];
@@ -1443,6 +2591,14 @@
 		}
 		var figure = assemble(recipe);
 		if (!figure) {
+			return;
+		}
+		if (recipe.integrity_proof) {
+			runIntegrityProof(cfg, recipe, figure);
+			return;
+		}
+		if (recipe.style_conversion) {
+			runStyleConversion(cfg, recipe, figure);
 			return;
 		}
 		if (recipe.calibration) {
@@ -1536,9 +2692,7 @@
 	try {
 		main();
 	} catch (e) {
-		if (!gWroteResult) {
-			fail("boot", "FAIL", "Unhandled factory exception: " + e);
-		}
+		fail("script", "UNHANDLED_EXCEPTION", "Unhandled factory exception: " + e);
 	}
 
 	try { App.delayedExit(gExitCode); } catch (eExit) {

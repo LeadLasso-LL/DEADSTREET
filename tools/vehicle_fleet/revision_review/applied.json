@@ -1,0 +1,15 @@
+{
+  "source_files": [
+    "tools/vehicle_fleet/build_art.py",
+    "tools/vehicle_fleet/vehicle_detail_geometry.py",
+    "tools/vehicle_fleet/build_catalog.py",
+    "tools/vehicle_fleet/build_guide.py",
+    "tools/vehicle_fleet/build_revision_boards.py",
+    "tools/vehicle_fleet/validate_fleet.gd",
+    "tools/vehicle_fleet/validate_panel.gd",
+    "tools/vehicle_fleet/review_native.gd",
+    "gameplay/vehicle_fleet_panel.gd"
+  ],
+  "head_before": "f23b807c79d48c0a29ed039f592aed09ceb9590b",
+  "passed": true
+}

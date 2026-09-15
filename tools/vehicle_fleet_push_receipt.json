@@ -1,0 +1,8 @@
+{
+  "commit": "f23b807c79d48c0a29ed039f592aed09ceb9590b",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "remote_confirmed": true,
+  "staged_files": 938,
+  "native_tests_passed": true,
+  "remaining": "Two-wheel riding/pedaling animations; later full campaign vehicle interfaces"
+}

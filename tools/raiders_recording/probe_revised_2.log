@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(9.80000019073486, 0.0) segment=0 into=9.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_03__door_0_north slot sandbox_transport_03__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_03__door_0_south slot sandbox_transport_03__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_03__door_1_north slot sandbox_transport_03__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_03__door_1_south slot sandbox_transport_03__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__left
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__rear
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_03__body_cover slot sandbox_transport_03__body_cover__right
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+PACE {"events":0,"nbpd":12,"raiders":12,"time":0.0333333333333333}
+PACE {"events":0,"nbpd":12,"raiders":12,"time":10.0333333333333}
+PACE {"events":0,"nbpd":12,"raiders":12,"time":20.0333333333335}
+PACE {"events":21,"nbpd":11,"raiders":12,"time":30.033333333334}
+PACE {"events":83,"nbpd":10,"raiders":8,"time":40.0333333333336}
+PACE {"events":125,"nbpd":7,"raiders":6,"time":50.0333333333331}
+PACE {"events":149,"nbpd":7,"raiders":3,"time":60.0333333333325}
+PACE {"events":161,"nbpd":5,"raiders":2,"time":70.0333333333319}
+PROBE {"commands":[{"accepted":["sandbox_attacker_unit_01","sandbox_attacker_unit_02","sandbox_attacker_unit_03","sandbox_attacker_unit_04","sandbox_attacker_unit_05","sandbox_attacker_unit_06","sandbox_attacker_unit_07"],"command":"push","failed":[],"line":59.570225579398,"reason":"Advance assault element through cover to establish contact","time":3.06666666666667},{"accepted":["sandbox_attacker_unit_01","sandbox_attacker_unit_02","sandbox_attacker_unit_03","sandbox_attacker_unit_04","sandbox_attacker_unit_05"],"command":"push","failed":["sandbox_attacker_unit_06","sandbox_attacker_unit_07"],"line":109.677936008998,"reason":"Advance assault element through cover to establish contact","time":21.2666666666669},{"command":"hold","feedback":{"accepted":3,"command":"hold","failed":0},"ids":["sandbox_attacker_unit_08","sandbox_attacker_unit_09","sandbox_attacker_unit_12"],"reason":"Firing support has established covered overwatch","time":30.2000000000007},{"accepted":["sandbox_attacker_unit_02","sandbox_attacker_unit_03","sandbox_attacker_unit_04"],"command":"push","failed":[],"line":136.796435038249,"reason":"Advance assault element through cover to establish contact","time":39.366666666667},{"command":"clear","feedback":{"accepted":1,"command":"clear","failed":0},"ids":["sandbox_attacker_unit_08"],"reason":"Overwatch has lost contact; allow support to reposition","time":44.4},{"command":"clear","feedback":{"accepted":1,"command":"clear","failed":0},"ids":["sandbox_attacker_unit_12"],"reason":"Overwatch has lost contact; allow support to reposition","time":54.5666666666661},{"command":"clear","feedback":{"accepted":1,"command":"clear","failed":0},"ids":["sandbox_attacker_unit_09"],"reason":"Overwatch has lost contact; allow support to reposition","time":58.6333333333326}],"duration":79.6333333333314,"phase":"resolved","seed":9141,"snapshots":[{"events":0,"nbpd":12,"raiders":12,"time":0.0333333333333333},{"events":0,"nbpd":12,"raiders":12,"time":10.0333333333333},{"events":0,"nbpd":12,"raiders":12,"time":20.0333333333335},{"events":21,"nbpd":11,"raiders":12,"time":30.033333333334},{"events":83,"nbpd":10,"raiders":8,"time":40.0333333333336},{"events":125,"nbpd":7,"raiders":6,"time":50.0333333333331},{"events":149,"nbpd":7,"raiders":3,"time":60.0333333333325},{"events":161,"nbpd":5,"raiders":2,"time":70.0333333333319}],"winner":"defender"}

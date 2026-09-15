@@ -1,0 +1,36 @@
+[{"file": "whittaker_radio.wav", "seconds": 20.86956916099773, "sha256": "5820f552ca140391b5f1f6f91060a9c482bab8ae5d1ff8cd05d81df970e19023", "peak": 0.75, "rms": 0.11971093028831256}, {"file": "trc_horn.wav", "seconds": 14.0, "sha256": "b59072cee15c77da4d1f1d4f2ecb177757a121c2d5fb40fb47fa16127d134d99", "peak": 0.75, "rms": 0.22986038712351473}]
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+PACE {"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16}
+PACE {"events":135,"time":10.0333333333333,"trc":15,"whittaker":10}
+PACE {"events":200,"time":20.0333333333335,"trc":11,"whittaker":5}
+PACE {"events":228,"time":30.033333333334,"trc":8,"whittaker":3}
+PACE {"events":236,"time":40.0333333333336,"trc":7,"whittaker":3}
+PROBE {"commands":[{"accepted":["sandbox_attacker_unit_01","sandbox_attacker_unit_02","sandbox_attacker_unit_03","sandbox_attacker_unit_04","sandbox_attacker_unit_05","sandbox_attacker_unit_06","sandbox_attacker_unit_07","sandbox_attacker_unit_08"],"command":"push","failed":[],"line":57.6499977111816,"reason":"Exploit local numerical advantage","time":3.06666666666667},{"accepted":["sandbox_attacker_unit_02","sandbox_attacker_unit_05","sandbox_attacker_unit_08"],"command":"push","failed":[],"line":92.3994369506836,"reason":"Advance assault element through cover to establish contact","time":21.2666666666669},{"command":"hold","feedback":{"accepted":2,"command":"hold","failed":0},"ids":["sandbox_attacker_unit_09","sandbox_attacker_unit_12"],"reason":"Firing support has established covered overwatch","time":30.2000000000007},{"accepted":["sandbox_attacker_unit_02","sandbox_attacker_unit_05"],"command":"push","failed":[],"line":118.650001525879,"reason":"Exploit local numerical advantage","time":39.366666666667}],"duration":44.0666666666667,"phase":"resolved","seed":9146,"snapshots":[{"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16},{"events":135,"time":10.0333333333333,"trc":15,"whittaker":10},{"events":200,"time":20.0333333333335,"trc":11,"whittaker":5},{"events":228,"time":30.033333333334,"trc":8,"whittaker":3},{"events":236,"time":40.0333333333336,"trc":7,"whittaker":3}],"winner":"attacker"}
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+ERROR: Could not create directory: 'res://assets'.
+   at: make_dir_recursive (core/io/dir_access.cpp:179)
+ERROR: Can't save PNG at path: 'res://assets/art/whittaker_estate/ground.png'.
+   at: save_image (drivers/png/resource_saver_png.cpp:56)
+ESTATE_GROUND_BAKED 7 3072x1536
+
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\whittaker_estate\advance_worker.py", line 11, in <module>
+    if p.returncode or 'SCRIPT ERROR' in log or 'RECORD_ERROR' in log or 'ESTATE_FAIL' in log:raise RuntimeError(mode+' failed')
+                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: estate_bake failed

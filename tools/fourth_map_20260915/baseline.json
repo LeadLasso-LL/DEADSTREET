@@ -1,0 +1,15 @@
+{
+  "head": "408f62cb2c3642e4ba9e33713f531c35757a6a2f",
+  "before": {
+    "gameplay/tactical_convoy_audio.gd": "6811bead2d0e4d125ead503f2f72978f11f1d52d2f8be004667248cd1f319460",
+    "gameplay/tactical_actor_presenter.gd": "c0720be438431f6db5d747a8cbf2d08409da8c6fb9c690cf35817d5cbce7ce3a",
+    "gameplay/sandbox_force_config.gd": "a8fd01d3f4e7297bcc31756677c7c6d1f736b0e5771391d805b15ead9d28d902",
+    "gameplay/arsenal_battle_fixture.gd": "7d127bc686fca1462772ee3831841b3e0dfbbe4aac45b4a030cfcc368f8fc00a",
+    "gameplay/tactical_battle_view.gd": "2b369698fb3f131db07413abadab5a64ea3ca39c86628b178808d32814897184",
+    "gameplay/tactical_battle_outro.gd": "174d609a34b0773cda3974187931a3f01a7f4ce037ff7f7d888dfab9f2d7fb05",
+    "gameplay/tactical_battle_presentation.gd": "3b431041c74744afd775d5227b48b2b2515e90b46fd093f597581c6c1353886c",
+    "gameplay/sandbox_force_builder.gd": "dee052dfee5a25dbb5a54094e3a1d2a7eee3965f06064348011796f056a8a3bb",
+    "battle/presentation/tactical_participant_visual.gd": "537fc251743e338540ca6b3c0601ed37a8a6ac0ada746ce687c9796b0755453f",
+    "battle/vehicles/battle_arrival_service.gd": "42e6cadf651491d6e8867590def9f912e4fb3edecab1a8fa36fc34c76f89c9f5"
+  }
+}

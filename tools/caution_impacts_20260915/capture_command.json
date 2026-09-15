@@ -1,0 +1,18 @@
+[
+  "C:\\Users\\brand\\OneDrive\\Documents\\Godot\\Godot_v4.7.2-stable_win64_console.exe",
+  "--path",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\caution_impacts_20260915\\capture_project",
+  "--resolution",
+  "1280x720",
+  "--position",
+  "0,0",
+  "--fixed-fps",
+  "30",
+  "--disable-vsync",
+  "--write-movie",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\caution_impacts_20260915\\lossless\\frame.png",
+  "--log-file",
+  "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\caution_impacts_20260915\\native_engine.log",
+  "--script",
+  "res://tools/caution_impacts_20260915/review.gd"
+]

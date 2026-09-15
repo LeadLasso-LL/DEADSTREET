@@ -1,0 +1,31 @@
+v3_pack1 0 pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+
+v3_estate_bake 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+ESTATE_GROUND_BAKED 0 3072x1536
+
+v3_estate_bake_props 0 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+ESTATE_PROP_PLATES 55
+
+v3_pack2 0 pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+
+v3_geometry 1 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+ESTATE_GEOMETRY {"cover_slots":282,"errors":["front steps"],"placed_units":32,"route_checks":[{"error":"","reachable":true,"route":"main gate"},{"error":"","reachable":true,"route":"approach to court"},{"error":"","reachable":true,"route":"north garden"},{"error":"","reachable":true,"route":"south service"},{"error":"Battle navigation failed: start position is inside blocking obstacle 'hedge_85_78'.","reachable":false,"route":"front steps"}]}
+

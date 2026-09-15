@@ -1,0 +1,270 @@
+diff --git a/assets/art/harold_frontage/ground.png b/assets/art/harold_frontage/ground.png
+index fd9eba0..075460f 100644
+Binary files a/assets/art/harold_frontage/ground.png and b/assets/art/harold_frontage/ground.png differ
+diff --git a/battle/ai/battle_vehicle_deployment_planner.gd b/battle/ai/battle_vehicle_deployment_planner.gd
+index 7b9ce8d..b30490a 100644
+--- a/battle/ai/battle_vehicle_deployment_planner.gd
++++ b/battle/ai/battle_vehicle_deployment_planner.gd
+@@ -179,7 +179,7 @@ static func _choose_candidate(
+ 	for candidate: Dictionary in candidates:
+ 		var position: Vector2 = candidate.get("position", Vector2.ZERO)
+ 		var pose_facing: Vector2 = candidate.get("facing", facing)
+-		if not _candidate_is_free(occupied, position, pose_facing, profile):
++		if not _candidate_is_free(occupied, position, pose_facing, profile, context.parking_clearance if context != null else 0.6):
+ 			continue
+ 		var error_code: String = BattleVehicleBodyService.get_placement_error(
+ 			battle_state,
+@@ -211,7 +211,8 @@ static func _candidate_is_free(
+ 	occupied: Array[Dictionary],
+ 	position: Vector2,
+ 	facing: Vector2,
+-	profile: BattleVehiclePhysicalProfile
++	profile: BattleVehiclePhysicalProfile,
++	clearance: float = 0.6
+ ) -> bool:
+ 	var ghost: BattleVehicle = BattleVehicle.new("ghost", "ghost", "", "", profile.vehicle_type_id, "")
+ 	ghost.has_battle_position = true
+@@ -229,7 +230,7 @@ static func _candidate_is_free(
+ 		other_ghost.has_battle_position = true
+ 		other_ghost.battle_position = other.get("position", Vector2.ZERO)
+ 		other_ghost.set_facing_direction(other.get("facing", Vector2.RIGHT))
+-		if not Geometry2D.intersect_polygons(BattleVehicleBodyService.cleared_corners(ghost,0.6),BattleVehicleBodyService.cleared_corners(other_ghost,0.6)).is_empty():
++		if not Geometry2D.intersect_polygons(BattleVehicleBodyService.cleared_corners(ghost,clearance),BattleVehicleBodyService.cleared_corners(other_ghost,clearance)).is_empty():
+ 			return false
+ 	return true
+ 
+diff --git a/battle/geometry/harold_street_catalog.gd b/battle/geometry/harold_street_catalog.gd
+index d988322..7088267 100644
+--- a/battle/geometry/harold_street_catalog.gd
++++ b/battle/geometry/harold_street_catalog.gd
+@@ -13,22 +13,30 @@ const NEIGHBORHOOD = Location.NEIGHBORHOOD
+ const STREET = Location.STREET
+ const OBJECTIVE = Location.OBJECTIVE
+ const STORE = Location.STORE
+-const SIZE = Vector2(64,46)
++# The same scale controls parked traffic art and its physical cover footprint.
++const VehicleModels = preload("res://campaign/vehicles/vehicle_model_catalog.gd")
++const ROAD = Rect2(0,23,64,20)
++const SOUTH_SHIFT = ROAD.size.y-12.0
++const VEHICLE_CLEARANCE = 0.95*VehicleModels.TACTICAL_SCALE
++const SIZE = Vector2(64,46+SOUTH_SHIFT)
++# Neighborhood transport; the two HQ cars are modest Mercer upgrades.
++const PARKED_CARS = [["north_car_0", "rattleback", 1.0], ["north_car_1", "bayou", 8.8], ["north_car_2", "cabrillo", 19.0], ["north_car_3", "rancher", 29.6], ["north_car_4", "bayou", 40.5], ["north_car_5", "courier", 54.0], ["south_car_0", "bayou", 1.8], ["south_car_1", "workhorse", 12.1], ["south_car_2", "rattleback", 22.4], ["south_car_3", "bayou", 32.7], ["south_car_4", "civicline", 43.0], ["south_car_5", "rattleback", 53.3]]
++const ARRIVAL_BAND = Vector2(ROAD.position.y+1.0,ROAD.size.y-1.2)
+ const OBJECTIVE_ENTRANCE = Vector2(25,15)
+-const DEFENDER_ZONE = Rect2(1,15,29,19)
+-const ARRIVAL_CENTER = Vector2(49,28)
++const DEFENDER_ZONE = Rect2(1,15,29,19+SOUTH_SHIFT)
++const ARRIVAL_CENTER = Vector2(49,ROAD.position.y+ROAD.size.y*.5)
+ # Shared lamp anchors keep the light pool and the post together, just inside each curb.
+-const STREET_LIGHTS = [[Vector2(6,22.4),1.1],[Vector2(29,22.4),1.0],[Vector2(54,22.4),1.1],[Vector2(17,35.6),.8],[Vector2(45,35.6),.8]]
+-# Authored positions for the following deployment milestone; not selectable yet.
+-const ARRIVAL_OPTIONS = {"close":{"center":Vector2(39,28),"radius":5.5},"medium":{"center":Vector2(49,28),"radius":6.5},"far":{"center":Vector2(57,28),"radius":7.0}}
++const STREET_LIGHTS = [[Vector2(6,22.4),1.1],[Vector2(29,22.4),1.0],[Vector2(54,22.4),1.1],[Vector2(17,35.6+SOUTH_SHIFT),.8],[Vector2(45,35.6+SOUTH_SHIFT),.8]]
++# All arrival choices share the widened street center and legal road band.
++const ARRIVAL_OPTIONS = {"close":{"center":Vector2(39,ROAD.position.y+ROAD.size.y*.5),"radius":5.5},"medium":{"center":Vector2(49,ROAD.position.y+ROAD.size.y*.5),"radius":6.5},"far":{"center":Vector2(57,ROAD.position.y+ROAD.size.y*.5),"radius":7.0}}
+ static func props() -> Array:
+ 	var rows: Array = [
+ 		["mercer_market",Rect2(0,0,17,15),"building",STORE],
+ 		["harold_apartments",Rect2(17,0,16,15),"building",OBJECTIVE],
+ 		["east_apartments",Rect2(39,0,25,15),"building",""],
+-		["south_west",Rect2(0,41,21,5),"building",""],
+-		["south_middle",Rect2(21,41,22,5),"building",""],
+-		["south_east",Rect2(43,41,21,5),"building",""],
++		["south_west",Rect2(0,41+SOUTH_SHIFT,21,5),"building",""],
++		["south_middle",Rect2(21,41+SOUTH_SHIFT,22,5),"building",""],
++		["south_east",Rect2(43,41+SOUTH_SHIFT,21,5),"building",""],
+ 		["stoop_west",Rect2(22,15,.9,4.5),"stoop_wall",""],
+ 		["stoop_east",Rect2(27.1,15,.9,4.5),"stoop_wall",""],
+ 		["east_stoop_west",Rect2(48.8,15,.8,3.9),"stoop_wall",""],
+@@ -39,24 +47,24 @@ static func props() -> Array:
+ 		["north_bin_west",Rect2(16.2,21.55,1.15,1.05),"trash_can",""],
+ 		["north_bin_spilled",Rect2(18.8,21.05,1.65,.95),"trash_can_fallen",""],
+ 		["north_bin_east",Rect2(40.5,21.55,1.15,1.05),"trash_can",""],
+-		["south_bin_west",Rect2(9.5,35.7,1.15,1.05),"trash_can",""],
+-		["south_bin_spilled",Rect2(12,36.5,1.65,.95),"trash_can_fallen",""],
+-		["south_bin_east",Rect2(38.9,36,1.15,1.05),"trash_can",""],
++		["south_bin_west",Rect2(9.5,35.7+SOUTH_SHIFT,1.15,1.05),"trash_can",""],
++		["south_bin_spilled",Rect2(12,36.5+SOUTH_SHIFT,1.65,.95),"trash_can_fallen",""],
++		["south_bin_east",Rect2(38.9,36+SOUTH_SHIFT,1.15,1.05),"trash_can",""],
+ 		["alley_extent",Rect2(33,0,6,8),"boundary",""]
+ 	]
+-	for i in range(6):
+-		var x: float = [2.,10.,19.,27.,43.,54.][i]
+-		rows.append(["north_car_"+str(i),Rect2(x,23.7,5.0+(i%3)*.15,2.1),"car",""])
+-	for i in range(6):
+-		var x: float = [3.,13.,23.,34.,44.,55.][i]
+-		rows.append(["south_car_"+str(i),Rect2(x,32.3,5.0+(i%3)*.15,2.1),"car",""])
++	for spec in PARKED_CARS:
++		var model = VehicleModels.model(spec[1])
++		var size = Vector2(float(model.length),float(model.width))*VehicleModels.TACTICAL_SCALE
++		var north = str(spec[0]).begins_with("north")
++		var y = ROAD.position.y+.7 if north else ROAD.end.y-.6-size.y
++		rows.append([spec[0],Rect2(Vector2(spec[2],y),size),"car","",spec[1]])
+ 	return rows
+ static func build():
+ 	var d = Definition.new()
+ 	d.definition_id=ID;d.width=SIZE.x;d.height=SIZE.y
+-	d.surfaces.append(Surface.new("main_road",Surface.KIND_ASPHALT,Rect2(0,23,64,12)))
++	d.surfaces.append(Surface.new("main_road",Surface.KIND_ASPHALT,ROAD))
+ 	d.surfaces.append(Surface.new("north_walk",Surface.KIND_SIDEWALK,Rect2(0,15,64,8)))
+-	d.surfaces.append(Surface.new("south_walk",Surface.KIND_SIDEWALK,Rect2(0,35,64,6)))
++	d.surfaces.append(Surface.new("south_walk",Surface.KIND_SIDEWALK,Rect2(0,ROAD.end.y,64,6)))
+ 	for row in props():
+ 		var b: Rect2=row[1]
+ 		var kind: String=row[2]
+@@ -77,9 +85,10 @@ static func build():
+ 			for other in props():
+ 				if other[1].has_point(point): blocked=true;break
+ 			if not blocked: d.cover_slots.append(Slot.new(id+"_"+str(n),id,point,points[n][1]))
+-	d.attacker_deployment_area.add_pocket(Pocket.new("arrival",rect_points(Rect2(41,24,20,10.8))))
++	d.attacker_deployment_area.add_pocket(Pocket.new("arrival",rect_points(Rect2(31,ARRIVAL_BAND.x,33,ARRIVAL_BAND.y))))
+ 	d.defender_deployment_area.add_pocket(Pocket.new("frontage",rect_points(DEFENDER_ZONE)))
+ 	d.attacker_vehicle_placement_context=VehicleContext.new(true,ARRIVAL_CENTER,true,Vector2.LEFT)
++	d.attacker_vehicle_placement_context.parking_clearance=VEHICLE_CLEARANCE
+ 	return d
+ static func rect_points(r: Rect2) -> PackedVector2Array:
+ 	return PackedVector2Array([r.position,Vector2(r.end.x,r.position.y),r.end,Vector2(r.position.x,r.end.y)])
+diff --git a/battle/vehicles/battle_arrival_service.gd b/battle/vehicles/battle_arrival_service.gd
+index 47ae4af..be6b05c 100644
+--- a/battle/vehicles/battle_arrival_service.gd
++++ b/battle/vehicles/battle_arrival_service.gd
+@@ -24,13 +24,15 @@ static func choose(b,choice: String) -> bool:
+  if vehicles.is_empty():return false
+  var c: Vector2=Catalog.ARRIVAL_OPTIONS[choice].center
+  var convoy_length=0.
+- for v in vehicles:convoy_length+=Body.profile_for_vehicle(v).length+1.3
+- var right=minf(64,c.x+12);var left=maxf(31,right-maxf(20.,convoy_length))
+- var rect=Rect2(left,24,right-left,10.8)
++ for v in vehicles:convoy_length+=Body.profile_for_vehicle(v).length+2.0*Catalog.VEHICLE_CLEARANCE
++ # Long current-scale convoys need their full length even for Close/Medium.
++ var right=minf(Catalog.SIZE.x,c.x+12);var left=maxf(1.,right-maxf(20.,convoy_length))
++ var rect=Rect2(left,Catalog.ARRIVAL_BAND.x,right-left,Catalog.ARRIVAL_BAND.y)
+  var old_area=g.attacker_deployment_area;var old_rect=g.attacker_deployment_rect
+  var area=Area.new();area.add_pocket(Pocket.new("arrival_"+choice,Catalog.rect_points(rect)))
+  g.attacker_deployment_area=area;g.attacker_deployment_rect=rect
+  var context=preload("res://battle/vehicles/battle_vehicle_placement_context.gd").new(vehicles.size()==1,c,true,Vector2.LEFT)
++ context.parking_clearance=Catalog.VEHICLE_CLEARANCE
+  # Query a complete new convoy arrangement with old bodies/doors temporarily absent.
+  # Restore every query-time change before either accepting or rejecting the choice.
+  var obstacles=g.obstacles.duplicate();var objects=g.cover_objects.duplicate();var slots=g.cover_slots.duplicate()
+diff --git a/battle/vehicles/battle_vehicle_placement_context.gd b/battle/vehicles/battle_vehicle_placement_context.gd
+index c0ab082..4fedafc 100644
+--- a/battle/vehicles/battle_vehicle_placement_context.gd
++++ b/battle/vehicles/battle_vehicle_placement_context.gd
+@@ -9,6 +9,8 @@ var has_anchor: bool = false
+ var anchor_position: Vector2 = Vector2.ZERO
+ var has_arrival_heading: bool = false
+ var arrival_heading: Vector2 = Vector2.ZERO
++# Optional authored body padding; default preserves existing map placement.
++var parking_clearance: float = 0.6
+ 
+ 
+ func _init(
+diff --git a/gameplay/harold_street_art.gd b/gameplay/harold_street_art.gd
+index e5a3d04..dff567a 100644
+--- a/gameplay/harold_street_art.gd
++++ b/gameplay/harold_street_art.gd
+@@ -18,7 +18,15 @@ func _ready() -> void:
+ 	shop_font.font_names=PackedStringArray(["Arial","Liberation Sans"])
+ 	shop_font.font_weight=700
+ 
+-	if not prop.is_empty() and prop[2]=="car":
++	if not prop.is_empty() and prop[2]=="car" and prop.size()>4:
++		# Use the canonical fleet sprite, palette, scale and ground-centre anchor.
++		material=null
++		position=prop[1].get_center()*Vector2(8,6)
++		var parked=preload("res://gameplay/fleet_vehicle_art.gd").new()
++		parked.name="ParkedArsenalVehicle";parked.model_id=str(prop[4])
++		parked.facing=Vector2.LEFT if str(prop[0]).begins_with("north") else Vector2.RIGHT
++		add_child(parked)
++	elif not prop.is_empty() and prop[2]=="car":
+ 		var colors=[Color("#777367"),Color("#75443e"),Color("#536258"),Color("#989786"),Color("#424d5e"),Color("#514e46")]
+ 		var paint=colors[absi(str(prop[0]).hash())%colors.size()]
+ 		if prop[0]=="arrival_car":paint=colors[2]
+@@ -50,7 +58,7 @@ func _ready() -> void:
+ 			frontage_bounds=cache_bounds(key,Rect2() if prop.is_empty() else prop[1])
+ 
+ static func cache_bounds(key: String,bounds: Rect2=Rect2()) -> Rect2:
+-	if key=="ground":return Rect2(-320,-280,1152,568)
++	if key=="ground":return Rect2(-320,-280,1152,280+(H.SIZE.y+2)*6)
+ 	if "_bin_" in key:return Rect2(bounds.position.x*8-3,bounds.end.y*6-18,bounds.size.x*8+7,24)
+ 	# Alley return and ironwork extend beyond the front elevation, including its top.
+ 	var extra=72 if key=="harold_apartments" else 0
+@@ -60,27 +68,27 @@ static func cache_bounds(key: String,bounds: Rect2=Rect2()) -> Rect2:
+ func ground() -> void:
+ 	rng.seed=991
+ 	rect(Rect2(-1000,-1000,2500,2000),Color("#161c23"))
+-	box(Rect2(-40,0,144,46),Color("#30332f"))
+-	box(Rect2(-40,23,144,12),Color("#252b30"))
+-	for band in [Rect2(-40,15,144,8),Rect2(-40,35,144,6)]:
++	box(Rect2(-40,0,144,H.SIZE.y),Color("#30332f"))
++	box(Rect2(-40,H.ROAD.position.y,144,H.ROAD.size.y),Color("#252b30"))
++	for band in [Rect2(-40,15,144,8),Rect2(-40,H.ROAD.end.y,144,6)]:
+ 		box(band,Color("#484841"))
+ 		for x in range(-40,104,2):
+ 			for y in range(int(band.position.y),int(band.end.y),2):
+ 				var q=p(Vector2(x,y))
+ 				rect(Rect2(q+Vector2(.4,.4),Vector2(15.2,11.2)),Color("#515047").lightened(rng.randf_range(-.022,.014)))
+ 				if rng.randf()<.25:line(q+Vector2(2,1),q+Vector2(7,8),Color("#303630"),.45)
+-	for y in [23,35]:
++	for y in [H.ROAD.position.y,H.ROAD.end.y]:
+ 		var q=p(Vector2(-40,y))
+ 		rect(Rect2(q,Vector2(1152,1.5)),Color("#8a8370"))
+ 		rect(Rect2(q+Vector2(0,1.5),Vector2(1152,1.2)),Color("#171f23"))
+ 	for x in range(-320,830,27):
+-		for y in [173,175]:rect(Rect2(x,y,13,.65),Color("#897044"))
++		for y in [H.ROAD.get_center().y*6-1,H.ROAD.get_center().y*6+1]:rect(Rect2(x,y,13,.65),Color("#897044"))
+ 	# Dry asphalt: aggregate and cracks; no wet reflections.
+-	for i in range(7500):
+-		var q=Vector2(rng.randf_range(-70,580),rng.randf_range(140,209))
++	for i in range(roundi(7500*H.ROAD.size.y/12.)):
++		var q=Vector2(rng.randf_range(-70,580),rng.randf_range(H.ROAD.position.y*6+2,H.ROAD.end.y*6-1))
+ 		rect(Rect2(q,Vector2(.45,.35)),Color(.55,.55,.5,rng.randf_range(.035,.13)))
+ 	for i in range(50):
+-		var q=Vector2(rng.randf_range(0,512),rng.randf_range(141,208))
++		var q=Vector2(rng.randf_range(0,512),rng.randf_range(H.ROAD.position.y*6+3,H.ROAD.end.y*6-2))
+ 		line(q,q+Vector2(3,1),Color("#151d21"),.5);line(q+Vector2(3,1),q+Vector2(5,-1),Color("#151d21"),.4)
+ 	# Small, irregular accumulations by bins and deliveries; no dotted curb border.
+ 	for cluster in [Vector2(29,107),Vector2(127,105),Vector2(274,108),Vector2(310,119),Vector2(456,106)]:
+@@ -91,7 +99,7 @@ func ground() -> void:
+ 	for x in [7,19,41,60]:
+ 		var q=p(Vector2(x,23.2));rect(Rect2(q,Vector2(9,2.2)),INK)
+ 		for n in range(9):line(q+Vector2(n,0),q+Vector2(n,2),Color("#686c61"),.45)
+-	for q in [Vector2(120,187),Vector2(367,165)]:
++	for q in [Vector2(120,H.ROAD.get_center().y*6+13),Vector2(367,H.ROAD.get_center().y*6-9)]:
+ 		draw_circle(q,3.4,Color("#151e22"));draw_circle(q,2.8,Color("#525a52"))
+ 		for n in range(-2,3):line(q+Vector2(-2,n*.7),q+Vector2(2,n*.7),Color("#27342f"),.45)
+ 	# Facades continue off both map edges with the road.
+@@ -107,7 +115,7 @@ func ground() -> void:
+ 	box(Rect2(33,0,6,8),Color(0.025,.04,.055,.5))
+ 	for x in [33.4,38.6]:line(p(Vector2(x,8)),p(Vector2(x,8.5)),Color("#7d7c66"),.65)
+ 	# Uncollected rubbish belongs at service walls and beside the alley.
+-	for spot in [Vector2(3.8,16.7),Vector2(16,16.6),Vector2(32.4,16.3),Vector2(39.5,19.2),Vector2(57,16.4),Vector2(4,40.4),Vector2(42,40.4),Vector2(10.9,37.8),Vector2(40.6,37.8)]:
++	for spot in [Vector2(3.8,16.7),Vector2(16,16.6),Vector2(32.4,16.3),Vector2(39.5,19.2),Vector2(57,16.4),Vector2(4,40.4+H.SOUTH_SHIFT),Vector2(42,40.4+H.SOUTH_SHIFT),Vector2(10.9,37.8+H.SOUTH_SHIFT),Vector2(40.6,37.8+H.SOUTH_SHIFT)]:
+ 		var t=p(spot)
+ 		draw_circle(t+Vector2(2,1),5,Color(.03,.055,.045,.5))
+ 		trash(t)
+@@ -653,6 +661,7 @@ func spilled_rubbish(q: Vector2,sz: Vector2) -> void:
+ 
+ var door_open: float = 1.0
+ func street_car(q: Vector2,sz: Vector2) -> void:
++	if prop.size()>4:return # Canonical fleet child renders this parked vehicle.
+ 	var end=Vector2(q.x+sz.x/2,q.y+sz.y+1)
+ 	var arrival=prop[0]=="arrival_car"
+ 	var facing=-1. if str(prop[0]).begins_with("north") or arrival else 1.
+diff --git a/tools/dusk_review/bake_harold_frontage.gd b/tools/dusk_review/bake_harold_frontage.gd
+index 2d2111d..f9d58a3 100644
+--- a/tools/dusk_review/bake_harold_frontage.gd
++++ b/tools/dusk_review/bake_harold_frontage.gd
+@@ -7,8 +7,8 @@ func _initialize() -> void:
+ 	call_deferred("bake")
+ func bake() -> void:
+ 	DirAccess.make_dir_recursive_absolute(OUTPUT)
+-	var jobs=[["ground",[],Rect2(-320,-280,1152,568)]]
+-	for row in Catalog.props():
++	var jobs=[["ground",[],Art.cache_bounds("ground")]]
++	for row in ([] if "--ground-only" in OS.get_cmdline_user_args() else Catalog.props()):
+ 		if (row[2]=="building" and not str(row[0]).begins_with("south")) or row[2] in ["trash_can","trash_can_fallen"]:
+ 			var b: Rect2=row[1]
+ 			jobs.append([row[0],row,Art.cache_bounds(str(row[0]),b)])

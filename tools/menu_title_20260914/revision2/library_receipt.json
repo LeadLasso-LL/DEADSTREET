@@ -1,0 +1,20 @@
+{
+  "current_version_number": 1,
+  "directory_id": "6aa0207fd3c08191bffca33062d73c97",
+  "external_connectors_accessed": false,
+  "file_id": "file_00000000bdac81f5872bb1bd18535b5e",
+  "file_name": "Dead_Street_Opening_Preview.mp4",
+  "file_size_bytes": 10376426,
+  "library_file_id": "libfile_bd207446ea3c81919a3d39bce90ae156",
+  "mime_type": "video/mp4",
+  "operation": "replace_library_file",
+  "path": "/Dead Street/Dead_Street_Opening_Preview.mp4",
+  "restored_from_version_number": null,
+  "status": "succeeded",
+  "xattrs": [
+    {
+      "name": "user.library-file-version",
+      "value": "1"
+    }
+  ]
+}

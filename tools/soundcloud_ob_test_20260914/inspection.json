@@ -1,0 +1,35 @@
+{
+  "source_url": "https://on.soundcloud.com/7xSTXKeQvsfhgntLOU",
+  "resolved_url": "https://soundcloud.com/colinobriennn/bond?ref=clipboard&p=i&c=0&si=05C62959F67D49E9A34819A80D898CC3&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+  "status": 200,
+  "html_bytes": 74127,
+  "page_title": "Stream Bond by OB | Listen online for free on SoundCloud",
+  "title": "Bond",
+  "artist": "OB",
+  "track_id": 408242721,
+  "duration_ms": 139662,
+  "policy": "MONETIZE",
+  "downloadable": false,
+  "public": true,
+  "permalink_url": "https://soundcloud.com/colinobriennn/bond",
+  "transcodings": [
+    {
+      "preset": "mp3_0_0",
+      "duration": 139662,
+      "format": {
+        "protocol": "hls",
+        "mime_type": "audio/mpeg"
+      },
+      "snipped": false
+    },
+    {
+      "preset": "mp3_0_0",
+      "duration": 139662,
+      "format": {
+        "protocol": "progressive",
+        "mime_type": "audio/mpeg"
+      },
+      "snipped": false
+    }
+  ]
+}

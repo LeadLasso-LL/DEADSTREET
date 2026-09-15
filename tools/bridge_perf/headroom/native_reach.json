@@ -1,0 +1,42 @@
+{
+  "damage": 12.739,
+  "fps": 54.5346584577958,
+  "late_paused_fps": 60.6277686348621,
+  "living": 20,
+  "max_frame_ms": 84.785,
+  "over_100ms": 0,
+  "over_33ms": 13,
+  "p95_frame_ms": 25.874,
+  "p99_frame_ms": 32.858,
+  "rendered": 24,
+  "sim_seconds": 30.0922454814814,
+  "units": 24,
+  "wall_seconds": 30.017608,
+  "windows": [
+    {
+      "fps": 56.2516980233313,
+      "sim_seconds": 5.10141333333333,
+      "wall_seconds": 5.013182
+    },
+    {
+      "fps": 58.7338304665963,
+      "sim_seconds": 10.1088396666667,
+      "wall_seconds": 10.018815
+    },
+    {
+      "fps": 58.8775934831485,
+      "sim_seconds": 15.1177673333335,
+      "wall_seconds": 15.02921
+    },
+    {
+      "fps": 59.9646088878344,
+      "sim_seconds": 20.1199390000001,
+      "wall_seconds": 20.032161
+    },
+    {
+      "fps": 48.9618787986506,
+      "sim_seconds": 25.1380323333334,
+      "wall_seconds": 25.056478
+    }
+  ]
+}

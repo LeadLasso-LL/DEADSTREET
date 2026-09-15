@@ -1,0 +1,39 @@
+{
+  "commit": "a8a1aa95c58e6732eb9f584d58dca2a936707107",
+  "models": 75,
+  "sprites": 1560,
+  "reports": {
+    "validation_blockades.json": {
+      "checks": 68,
+      "errors": []
+    },
+    "validation_blockade_fleet.json": {
+      "catalog_models": 75,
+      "checks": 281,
+      "errors": [],
+      "models_tested": [
+        "roadwarden",
+        "bloodhound"
+      ]
+    },
+    "validation_encounters.json": {
+      "checks": 77,
+      "errors": []
+    },
+    "validation_driveby.json": {
+      "checks": 61,
+      "errors": []
+    },
+    "blockade_review/report.json": {
+      "engine": "4.7.2-stable (official)",
+      "errors": [],
+      "models": [
+        "roadwarden",
+        "bloodhound"
+      ],
+      "scenarios": 2
+    }
+  },
+  "pushed": false,
+  "scope_files": 93
+}

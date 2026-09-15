@@ -1,0 +1,23 @@
+{
+  "index": 1,
+  "id": "coupe_ob",
+  "artist": "OB",
+  "title": "Coupe",
+  "source_url": "https://soundcloud.com/colinobriennn/buttons",
+  "start_timestamp": "00:44",
+  "start_seconds": 44,
+  "duration_seconds": 30,
+  "basename": "OB_Coupe",
+  "status": "downloaded",
+  "source_title": "buttons",
+  "source_artist": "OB",
+  "source_track_id": 407827704,
+  "canonical_url": "https://soundcloud.com/colinobriennn/buttons",
+  "source_duration_seconds": 123.961,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 1983215,
+  "sha256": "e629d47bd276787b4148c543678284602b9489a670fcf076b6d42b74b285f186",
+  "settings_changed": false
+}

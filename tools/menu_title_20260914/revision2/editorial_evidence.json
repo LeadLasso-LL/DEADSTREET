@@ -1,0 +1,15 @@
+{
+  "bridge_casualty_source_evidence": {
+    "51.5-53.633": "Native count changes from 9 active / 3 eliminated at 52s to 8 / 4 at 53s.",
+    "54.6-56.733": "Native count changes from 8 active / 4 eliminated at 55s to 7 / 5 at 56s.",
+    "61-63.133": "Native count changes from 7 active / 5 eliminated at 62s to 6 / 6 at 63s."
+  },
+  "first_scene": "Owner specifically required first visible footage to be an active firefight: Bridge source 34.5\u201336.633s, strong visible crossfire at 35.3s.",
+  "trc_approach": "Estate source 6.2\u20139.333, vehicles crossing grass",
+  "trc_dismount": "Estate source 9.0\u201312.133, troops emerge from arrived vehicles",
+  "new_timing": [
+    21,
+    27
+  ],
+  "native_integration": "Still not installed; video preview only."
+}

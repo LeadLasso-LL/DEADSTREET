@@ -1,0 +1,24 @@
+{
+  "commit": "269dbeca1382cd0fe3871f17ae140a87b9691282",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "remote_verified": true,
+  "owned_paths": [
+    "gameplay/music_catalog.gd",
+    "assets/data/music_catalog.json",
+    "assets/audio/music/OB_Bond.mp3",
+    "assets/audio/music/OB_Bond_battle_21_51.wav",
+    "tools/soundtrack_import_20260914/README.md",
+    "tools/soundtrack_import_20260914/build_assets.py",
+    "tools/soundtrack_import_20260914/check_native.gd",
+    "tools/soundtrack_import_20260914/audio_validation.json",
+    "tools/soundtrack_import_20260914/native_validation.json",
+    "tools/soundtrack_import_20260914/change_receipt.json",
+    "tools/soundtrack_import_20260914/music_playlist.patch",
+    "tools/soundtrack_import_20260914/playlist.png"
+  ],
+  "docs": [
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md"
+  ]
+}

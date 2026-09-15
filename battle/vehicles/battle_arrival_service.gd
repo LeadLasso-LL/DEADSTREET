@@ -24,13 +24,15 @@ static func choose(b,choice: String) -> bool:
  if vehicles.is_empty():return false
  var c: Vector2=Catalog.ARRIVAL_OPTIONS[choice].center
  var convoy_length=0.
- for v in vehicles:convoy_length+=Body.profile_for_vehicle(v).length+1.3
- var right=minf(64,c.x+12);var left=maxf(31,right-maxf(20.,convoy_length))
- var rect=Rect2(left,24,right-left,10.8)
+ for v in vehicles:convoy_length+=Body.profile_for_vehicle(v).length+2.0*Catalog.VEHICLE_CLEARANCE
+ # Long current-scale convoys need their full length even for Close/Medium.
+ var right=minf(Catalog.SIZE.x,c.x+12);var left=maxf(1.,right-maxf(20.,convoy_length))
+ var rect=Rect2(left,Catalog.ARRIVAL_BAND.x,right-left,Catalog.ARRIVAL_BAND.y)
  var old_area=g.attacker_deployment_area;var old_rect=g.attacker_deployment_rect
  var area=Area.new();area.add_pocket(Pocket.new("arrival_"+choice,Catalog.rect_points(rect)))
  g.attacker_deployment_area=area;g.attacker_deployment_rect=rect
  var context=preload("res://battle/vehicles/battle_vehicle_placement_context.gd").new(vehicles.size()==1,c,true,Vector2.LEFT)
+ context.parking_clearance=Catalog.VEHICLE_CLEARANCE
  # Query a complete new convoy arrangement with old bodies/doors temporarily absent.
  # Restore every query-time change before either accepting or rejecting the choice.
  var obstacles=g.obstacles.duplicate();var objects=g.cover_objects.duplicate();var slots=g.cover_slots.duplicate()
@@ -112,8 +114,10 @@ static func ensure_doors(b,v) -> void:
  for spec in specs:
   if g.has_cover_object(spec.id) or not g.obstacles.has(spec.id):continue
   if not g.contains_point(spec.slot) or not g.get_movement_blocking_obstacle_id_at(spec.slot).is_empty() or not Body.blocking_vehicle_id_at(b,spec.slot).is_empty():continue
+  if g.authored_layout_id in [Catalog.ID,"doble_ocho_yard_v1","freight_exchange_v1"] and not _reserve_door_space(b,spec):continue
   g.add_cover_object(CoverObject.new(spec.id,spec.id))
   g.add_cover_slot(Slot.new(spec.id+"_cover",spec.id,spec.slot,spec.facing))
+ if g.authored_layout_id in [Catalog.ID,"doble_ocho_yard_v1","freight_exchange_v1"]:_space_body_cover(b)
 static func remove_doors(b,v) -> void:
  var g=b.battlefield_geometry
  for spec in door_specs(v):
@@ -129,3 +133,31 @@ static func restore_clear_slots(b) -> void:
   if g.has_cover_slot(id):b.vehicle_hidden_cover_slots.erase(id);continue
   if g.contains_point(slot.position) and g.get_movement_blocking_obstacle_id_at(slot.position).is_empty():
    if g.add_cover_slot(slot):b.vehicle_hidden_cover_slots.erase(id)
+
+static func _reserve_door_space(b,spec) -> bool:
+ # A single usable firing position per tight door cluster, not stacked people.
+ var g=b.battlefield_geometry;var hidden=[]
+ for slot in g.cover_slots.values():
+  if slot.position.distance_squared_to(spec.slot)>=2.4*2.4:continue
+  if slot.is_occupied() or slot.is_reserved():return false
+  if "__body_cover" not in slot.cover_object_id:return false
+  hidden.append(slot)
+ for slot in hidden:
+  b.vehicle_hidden_cover_slots[slot.cover_slot_id]=slot
+  g.remove_cover_slot(slot.cover_slot_id)
+ return true
+
+static func _space_body_cover(b) -> void:
+ var g=b.battlefield_geometry;var kept=[];var bodies=[]
+ for slot in g.cover_slots.values():
+  if "__body_cover" in slot.cover_object_id:bodies.append(slot)
+  else:kept.append(slot)
+ bodies.sort_custom(func(a,c):return a.cover_slot_id<c.cover_slot_id)
+ for slot in bodies:
+  var close=false
+  for other in kept:
+   if other.position.distance_squared_to(slot.position)<2.4*2.4:close=true;break
+  if close and not slot.is_occupied() and not slot.is_reserved():
+   b.vehicle_hidden_cover_slots[slot.cover_slot_id]=slot
+   g.remove_cover_slot(slot.cover_slot_id)
+  else:kept.append(slot)

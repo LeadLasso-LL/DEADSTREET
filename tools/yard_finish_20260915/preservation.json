@@ -1,0 +1,13 @@
+{
+  "head": "9604323afae49ee63915b378048cfac9940f1f66",
+  "index": "",
+  "baseline_count": 248,
+  "changed_sources": [
+    "gameplay\\doble_ocho_art.gd",
+    "gameplay\\tactical_convoy_audio.gd"
+  ],
+  "other_sources_unchanged": 246,
+  "capture_hash_count": 251,
+  "changed_since_capture": [],
+  "exact_battle_comparison": "PASS: winner/survivors/combat time/orders/manifest/results identical"
+}

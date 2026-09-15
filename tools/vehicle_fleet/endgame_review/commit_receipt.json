@@ -1,0 +1,28 @@
+{
+  "commit": "a61f77bf41e5bd3e00d397c5f523476741de7857",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "remote_confirmed": false,
+  "push_status": "blocked_by_automatic_approval_review",
+  "reports": {
+    "validation.json": {
+      "checks": 4387,
+      "errors": []
+    },
+    "validation_mixed.json": {
+      "checks": 43,
+      "errors": []
+    },
+    "validation_encounters.json": {
+      "checks": 77,
+      "errors": []
+    },
+    "endgame_review/report.json": {
+      "engine": "4.7.2-stable (official)",
+      "errors": [],
+      "scenarios": 6
+    }
+  },
+  "models": 71,
+  "sprites": 1480,
+  "scope_files": 298
+}

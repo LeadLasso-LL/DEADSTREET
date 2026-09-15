@@ -1,0 +1,225 @@
+{
+  "frames": 720,
+  "seconds": 24,
+  "size": [
+    1280,
+    720
+  ],
+  "maps": [
+    "bridge",
+    "doble",
+    "estate",
+    "freight",
+    "harold"
+  ],
+  "shots": [
+    [
+      "bridge",
+      34.7,
+      54,
+      [
+        380,
+        140,
+        512,
+        288
+      ],
+      "Bridge exchange between vehicles"
+    ],
+    [
+      "harold",
+      18.3,
+      60,
+      [
+        520,
+        250,
+        768,
+        432
+      ],
+      "Harold close street exchange"
+    ],
+    [
+      "freight",
+      54.75,
+      66,
+      [
+        970,
+        412,
+        640,
+        360
+      ],
+      "Freight southern railcar exchange"
+    ],
+    [
+      "estate",
+      7.5,
+      72,
+      [
+        300,
+        160,
+        640,
+        360
+      ],
+      "Whittaker convoy already in frame"
+    ],
+    [
+      "doble",
+      20.9,
+      60,
+      [
+        640,
+        190,
+        512,
+        288
+      ],
+      "Doble Ocho gate firefight"
+    ],
+    [
+      "bridge",
+      51.0,
+      54,
+      [
+        520,
+        144,
+        480,
+        270
+      ],
+      "Bridge close blockade engagement"
+    ],
+    [
+      "freight",
+      60.35,
+      60,
+      [
+        1000,
+        25,
+        576,
+        324
+      ],
+      "Freight dispatch defender fires back"
+    ],
+    [
+      "doble",
+      24.1,
+      60,
+      [
+        280,
+        145,
+        512,
+        288
+      ],
+      "Doble Ocho close vehicle exchange"
+    ],
+    [
+      "harold",
+      35.0,
+      60,
+      [
+        650,
+        305,
+        704,
+        396
+      ],
+      "Harold late engagement"
+    ],
+    [
+      "estate",
+      42.85,
+      54,
+      [
+        370,
+        230,
+        400,
+        225
+      ],
+      "Whittaker close gate firefight"
+    ],
+    [
+      "doble",
+      17.8,
+      60,
+      [
+        245,
+        160,
+        432,
+        243
+      ],
+      "Doble Ocho close western firefight"
+    ],
+    [
+      "freight",
+      71.25,
+      60,
+      [
+        570,
+        340,
+        512,
+        288
+      ],
+      "Freight final attack across the loading lane"
+    ]
+  ],
+  "candidate_sha256": "44e9a1e5f3d2581c90033f68fbb01281a984b483bc3a2dca64db954f1a2d63f5",
+  "source_hashes": {
+    "estate": "64a8b2cc27cd13bdb7b71b9cb17b9efba9404bdf16bf05dc9e7808b373d21210",
+    "bridge": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93",
+    "harold": "6232fa6663fcd165cb7dfefe885a5ac024c813edb00abc4ef79306b51636db0d",
+    "doble": "ec3fdff9efa7bae722f4abe833df58b72b99bc5367a864a140f621db3b3e38c6",
+    "freight": "45839ac0a2536cd77926c23edbac030b69bf89d9889ac67eb9332065fa43ecbd"
+  },
+  "preview": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\montage_action_20260915\\DEAD_STREET_Action_Montage.mp4",
+  "bytes": 6968073,
+  "sha256": "dd1652fbbf8d0dc0261d8a41fbe1655c35ffbba342e96681b77c6f1767934fc2",
+  "parts": [
+    {
+      "name": "part_000.txt",
+      "bytes": 750000,
+      "sha256": "c59080d0c82444b94d919f0af90e06362cbd9244659e3f3da5be0224258d905c"
+    },
+    {
+      "name": "part_001.txt",
+      "bytes": 750000,
+      "sha256": "a3ed3fd252dbb368406e89ea383c7520577ab60220e10700653fb43b4216a03c"
+    },
+    {
+      "name": "part_002.txt",
+      "bytes": 750000,
+      "sha256": "682d20defd0cf438f07eaebee6861e5153ce6298e3a1216ded399fc67b60ba96"
+    },
+    {
+      "name": "part_003.txt",
+      "bytes": 750000,
+      "sha256": "d9c61394cc7cba234256b3e9076fd50c6aaa2700373c5eb53859f5e0c4c48c76"
+    },
+    {
+      "name": "part_004.txt",
+      "bytes": 750000,
+      "sha256": "59d2b2ed7a7718f5362e26e4680fa92d66add366cb597d778333978e97a978ae"
+    },
+    {
+      "name": "part_005.txt",
+      "bytes": 750000,
+      "sha256": "aa4a8232de53b132584c838230bbd90941ddf53ead7f51a8aeefd7a89566aa0d"
+    },
+    {
+      "name": "part_006.txt",
+      "bytes": 750000,
+      "sha256": "7503f303eb27fc8dec44a76bd0f76d2d71dd6b9c1beb1200728037a1b8d6cdd9"
+    },
+    {
+      "name": "part_007.txt",
+      "bytes": 750000,
+      "sha256": "2f591021581a6b7bcd1b3b61dceea92f4a2e8e4cbdcb15684135fa063fc5b73b"
+    },
+    {
+      "name": "part_008.txt",
+      "bytes": 750000,
+      "sha256": "c249a2489874137088db3e08eecefc6eb80691531789287395eb4bee35d3870c"
+    },
+    {
+      "name": "part_009.txt",
+      "bytes": 218073,
+      "sha256": "75cc56f15b9a3060265fe645e84561cfd8888744210823153899db24cc9be068"
+    }
+  ],
+  "review_type": "Edited montage preview using exact candidate and existing native title/UI coordinates; not a full intro capture"
+}

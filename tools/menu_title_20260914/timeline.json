@@ -1,0 +1,43 @@
+{
+  "scene_holds": [
+    [
+      "Gloria Systems",
+      0,
+      3
+    ],
+    [
+      "Godot Engine",
+      4,
+      7
+    ],
+    [
+      "Redacted caution sign",
+      8,
+      11
+    ]
+  ],
+  "transitions": [
+    [
+      "Gloria to Godot",
+      3,
+      4
+    ],
+    [
+      "Godot to warning",
+      7,
+      8
+    ],
+    [
+      "Redaction zoom / main reveal",
+      11,
+      12
+    ]
+  ],
+  "full_black_at_seconds": 11.5,
+  "main_screen_settled_at_seconds": 12,
+  "open_sandbox_first_visible_seconds": 17,
+  "preview_sandbox_entry_seconds": 36,
+  "preview_music_card_docks_seconds": 39.75,
+  "preview_playlist_opens_seconds": 42,
+  "audio": "Dead Street \u2014 B-22; plays continuously from 0 and persists on sandbox entry, no offset/restart"
+}

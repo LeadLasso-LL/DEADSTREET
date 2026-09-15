@@ -1,0 +1,34 @@
+{
+  "battles": [
+    {
+      "alive": {
+        "attacker": 0,
+        "defender": 1
+      },
+      "elapsed": 51.1499999999992,
+      "equal_loadouts": false,
+      "observation_cutoff": false,
+      "pair": 2,
+      "phase": "resolved",
+      "seed": 4202,
+      "shots": {
+        "attacker": 47,
+        "defender": 61
+      },
+      "snipers": false,
+      "survivors": [
+        {
+          "id": "rival_soldier_rifle",
+          "model": "g36c",
+          "move": "",
+          "position": "(22.15, 33.35)",
+          "target": "player_soldier",
+          "wounded": true
+        }
+      ],
+      "wall_ms": 19677,
+      "winner": "defender"
+    }
+  ],
+  "errors": []
+}

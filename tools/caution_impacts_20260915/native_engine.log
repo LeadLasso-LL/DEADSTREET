@@ -1,0 +1,50 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+Movie Maker mode enabled, recording movie in 1280×720 @ 30 FPS...
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] picture (res://gameplay/sandbox_opening.gd:55)
+       [2] _ready (res://gameplay/sandbox_opening.gd:35)
+       [3] run (res://tools/caution_impacts_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/camera_ui.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] picture (res://gameplay/sandbox_opening.gd:55)
+       [2] _ready (res://gameplay/sandbox_opening.gd:39)
+       [3] run (res://tools/caution_impacts_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/enter_button.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] action_button (res://gameplay/sandbox_opening.gd:65)
+       [2] _ready (res://gameplay/sandbox_opening.gd:40)
+       [3] run (res://tools/caution_impacts_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/open_button.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:51)
+       [1] action_button (res://gameplay/sandbox_opening.gd:65)
+       [2] _ready (res://gameplay/sandbox_opening.gd:41)
+       [3] run (res://tools/caution_impacts_20260915/review.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] _ready (res://gameplay/sandbox_opening.gd:44)
+       [3] run (res://tools/caution_impacts_20260915/review.gd:18)
+OPENING_GATE_READY
+OPENING_ACTIVATED
+CAUTION_HIT 1 7.20376825183105
+CAUTION_HIT 2 7.5490811539917
+CAUTION_HIT 3 7.95539289059448
+CAUTION_HIT 4 8.23513965286255
+CAUTION_HIT 5 8.60260826477051
+OPENING_TITLE 21.013105911499
+OPENING_SANDBOX_ENABLED 27.0068852391357
+OPENING_SANDBOX_ENTERED 29.1963831029053
+INTRO_REVIEW {"black_max":0,"button_at":27.0068852391357,"checks":31,"errors":[],"hit_times":[7.20376825183105,7.5490811539917,7.95539289059448,8.23513965286255,8.60260826477051],"sandbox_at":29.1963831029053,"signature_play_count":1,"start_frame":31,"status":"PASS","title_at":21.013105911499,"total_frames":1036,"viewport":[1280,720]}

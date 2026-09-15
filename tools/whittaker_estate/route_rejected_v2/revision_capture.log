@@ -1,0 +1,22 @@
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CAPTURE_PID 16324
+CAPTURE_EXIT 0
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\whittaker_estate\encode.py", line 9, in <module>
+    assert not record['arrival_route_errors'] and not record['outro_errors']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+pack exit 0 errors 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\whittaker_estate\record_worker.py", line 25, in <module>
+    subprocess.run([sys.executable,str(out/'encode.py')],cwd=r,check=True,timeout=420)
+  File "subprocess.py", line 571, in run
+subprocess.CalledProcessError: Command '['C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\python\\python.exe', 'C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\encode.py']' returned non-zero exit status 1.

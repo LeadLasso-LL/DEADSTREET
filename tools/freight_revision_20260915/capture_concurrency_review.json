@@ -1,0 +1,12 @@
+{
+  "changed_files": [
+    "campaign\\vehicles\\convoy_formation_catalog.gd",
+    "gameplay\\bridge_battle_setup.gd",
+    "gameplay\\sandbox_convoy_rules.gd",
+    "gameplay\\sandbox_menu_panels.gd",
+    "gameplay\\vehicle_fleet_panel.gd"
+  ],
+  "reason": "Concurrent bike-slots-01 revises motorcycle packing, bridge bike placement, and menu. This standalone capture loaded its scripts at boot, uses three enclosed cars, and reports the identical rehearsed native outcome. No Freight-owned source, runtime combat, weather/audio, art, or showcase script changed during capture. New motorcycle packing is not validated by this capture.",
+  "capture_source_hashes": "capture_source_hashes.json",
+  "record": "record.json"
+}

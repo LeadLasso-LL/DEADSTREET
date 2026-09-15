@@ -23,3 +23,22 @@ tools/battle_finish/transfer/
 tools/battle_finish/pose_svg/
 tools/battle_finish/*.log
 tools/battle_finish/*.uid
+
+# Reproducible capture mirrors can link recursively back into the project.
+tools/**/capture_project/
+
+# Raw recording and transfer intermediates; finished MP4s and game media remain tracked.
+tools/**/*.avi
+tools/**/*.mkv
+tools/**/*.b64
+tools/**/transfer/
+tools/**/transfer_*/
+tools/**/*.log.mbtree
+tools/repository_checkpoint_20260915/local/
+
+# Frame-by-frame raw MovieWriter outputs.
+tools/**/lossless/
+tools/**/*_lossless/
+
+# Generated standalone playtest candidate; rebuild from source and keep local.
+tools/playtest_release_20260915/candidate/

@@ -1,0 +1,23 @@
+{
+  "index": 3,
+  "id": "ripper_b22",
+  "artist": "B-22",
+  "title": "Ripper",
+  "source_url": "https://soundcloud.com/brandonharb-1/ripper",
+  "start_timestamp": "00:48",
+  "start_seconds": 48,
+  "duration_seconds": 30,
+  "basename": "B-22_Ripper",
+  "status": "downloaded",
+  "source_title": "Ripper",
+  "source_artist": "brandon",
+  "source_track_id": 314562346,
+  "canonical_url": "https://soundcloud.com/brandonharb-1/ripper",
+  "source_duration_seconds": 217.829,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 3484942,
+  "sha256": "e11d74b281971343d2d076b6982a468c9ff79aeb06b59000e88209f950b22156",
+  "settings_changed": false
+}

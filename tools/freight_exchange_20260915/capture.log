@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+Movie Maker mode enabled, recording movie in 1152×648 @ 30 FPS...
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+--------------------------------------------------------------------------------
+Done recording movie at path: C:\Users\brand\OneDrive\Documents\dead-street\tools\freight_exchange_20260915\freight_raw.avi
+834 frames at 30 FPS (movie length: 00:00:27:24), recorded in 00:00:49 (55% of real-time speed).
+CPU render time: 0.54 seconds (average: 0.64 ms/frame)
+GPU render time: 3.57 seconds (average: 4.28 ms/frame)
+Encoding time: 5.62 seconds (average: 6.74 ms/frame)
+--------------------------------------------------------------------------------
+WARNING: 10 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

@@ -1,0 +1,17 @@
+from pathlib import Path
+import base64,zlib,runpy,subprocess,sys
+sys.stdout.reconfigure(encoding='utf-8',errors='backslashreplace')
+out=Path(__file__).parent;r=out.parents[1]
+(out/'fix_clearance.py').write_bytes(zlib.decompress(base64.b64decode('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')))
+runpy.run_path(str(out/'fix_clearance.py'),run_name='__main__')
+for name in ['after_final.log','after_report.json','screenshot.log']:
+ p=out/name
+ if p.exists():p.replace(out/('before_clearance_'+name))
+engine=str(r.parent/'Godot/Godot_v4.7.2-stable_win64.exe')
+for label,args in [('after_final',[]),('screenshot',['--','--screenshot'])]:
+ log_path=out/(label+'.log')
+ with (out/(label+'_stdout.log')).open('w',encoding='utf-8') as log:
+  p=subprocess.Popen([engine,'--path',str(r),'--script','res://tools/harold_scale_20260915/check.gd','--position','20,30','--log-file',str(log_path),*args],stdout=log,stderr=subprocess.STDOUT)
+  print(label,p.pid,flush=True);code=p.wait(timeout=180)
+ text=log_path.read_text(encoding='utf-8');print(label,code,text[-3000:],flush=True)
+ if code!=0 or 'SCRIPT ERROR' in text:sys.exit(1)

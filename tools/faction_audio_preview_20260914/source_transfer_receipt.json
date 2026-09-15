@@ -1,0 +1,11 @@
+{
+  "compose.py": "be146dd0432f1c242f00bdc0e61874385ab517eace7f0a2ec7659f1116dbd536",
+  "package_review.py": "df999f5d2a510b38c3889fdc598146c37e054d1a18ff7dcb9fd2ec536e0fcd26",
+  "fetch_instruments.py": "d9653a68d028adede0c4648ba5aab31e8b6bb4ea5928d33633957db69f97af45",
+  "README.md": "e107f279cd29e66326401d6e409e4401c116a4d936c69d9d02977cd8af8c6703",
+  "manifest.json": "48f91e373c9daff9737510812d93d07b64a5eb54248e3fcec89c573b8ad5691c",
+  "review_index.json": "8f118c707c7f84b533e97301f5aaf1f1975db7aa9669c3c0c3dfc85ca53b0758",
+  "validation.json": "77ef66b0464d2aacc6e82e8c21f58b7e92745420332556b37cdcd959e79c78cf",
+  "dependencies/GeneralUser_LICENSE.txt": "88726e4b018fb66050054b6633a2996335b0f8fd4186251c20d0546fa0ab44fc",
+  "review/LISTENING_GUIDE.md": "fcfd03ca09990cba344e2efc0ab0e6cd507c04de35888f3de5a2a4bde4f4fe61"
+}

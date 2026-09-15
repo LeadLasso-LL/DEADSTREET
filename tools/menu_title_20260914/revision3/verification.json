@@ -1,0 +1,157 @@
+{
+  "status": "PASS",
+  "frames": 1710,
+  "duration": 57,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "full_video_audio_decode": "PASS",
+  "caution_checks": {
+    "full_brightness_hold": [
+      8.0,
+      9.25
+    ],
+    "checked_still_frames": 38,
+    "maximum_hold_mean_pixel_error": 0.09897786458333334,
+    "black_hold_frames_checked": 45,
+    "black_hold_max_pixel": 0,
+    "top_edge_max_pixel_11_2_to_11_5": 5,
+    "last_zoom_frames_max_pixel": 0
+  },
+  "black_hold_checked_frames": [
+    345,
+    360,
+    389
+  ],
+  "title_complete_frame": 630,
+  "title_correlation": 0.9997576451190404,
+  "finishing_pixel_count": 6251,
+  "finishing_pixel_brightness_gain_at_21": 1.4784834426491762,
+  "title_before_completion_error": 0.6537814670138888,
+  "title_completed_error": 0.6727726483585859,
+  "background_starts_at": 21,
+  "button_first_frame": 810,
+  "button_border_delta": 20.371666666666663,
+  "button_ink_before": 62.50830564784053,
+  "button_ink_after": 235.27408637873754,
+  "hover_offsets": [
+    {
+      "frame": 630,
+      "offset": 0
+    },
+    {
+      "frame": 648,
+      "offset": 1
+    },
+    {
+      "frame": 660,
+      "offset": -2
+    },
+    {
+      "frame": 680,
+      "offset": 2
+    },
+    {
+      "frame": 720,
+      "offset": 2
+    }
+  ],
+  "scene_checks": [
+    {
+      "shot": 0,
+      "time": 22.0,
+      "label": "CROSSFIRE",
+      "correlation": 0.9979986647567484
+    },
+    {
+      "shot": 1,
+      "time": 24.0,
+      "label": "HAROLD STREET CROSSFIRE",
+      "correlation": 0.9964008232427239
+    },
+    {
+      "shot": 2,
+      "time": 26.5,
+      "label": "TRC CONVOY ACROSS GRASS",
+      "correlation": 0.998152130149619
+    },
+    {
+      "shot": 3,
+      "time": 29.0,
+      "label": "BRIDGE CASUALTY",
+      "correlation": 0.9992570335405524
+    },
+    {
+      "shot": 4,
+      "time": 31.5,
+      "label": "TRC DISMOUNT",
+      "correlation": 0.9965560650172091
+    },
+    {
+      "shot": 5,
+      "time": 34.0,
+      "label": "MERCER FRONTAGE FIREFIGHT",
+      "correlation": 0.9972573543344921
+    },
+    {
+      "shot": 6,
+      "time": 36.0,
+      "label": "BLOCKADE FIREFIGHT",
+      "correlation": 0.9992672288057826
+    },
+    {
+      "shot": 7,
+      "time": 38.0,
+      "label": "GATE ASSAULT",
+      "correlation": 0.9978111191710911
+    },
+    {
+      "shot": 8,
+      "time": 40.0,
+      "label": "RAIDERS ADVANCE",
+      "correlation": 0.9994212592552193
+    },
+    {
+      "shot": 9,
+      "time": 42.0,
+      "label": "ORLOV STREET ASSAULT",
+      "correlation": 0.9961223437950292
+    },
+    {
+      "shot": 10,
+      "time": 44.0,
+      "label": "FINAL CROSSFIRE",
+      "correlation": 0.9990322240632615
+    }
+  ],
+  "first_scene": "Bridge crossfire; source 34.5s",
+  "first_scene_max_bright_change_pixels": 5123,
+  "audio_continuity": [
+    {
+      "from": 10,
+      "to": 15,
+      "correlation": 0.9998875420799989
+    },
+    {
+      "from": 19,
+      "to": 23,
+      "correlation": 0.9998186791036096
+    },
+    {
+      "from": 43,
+      "to": 49,
+      "correlation": 0.9959656991591883
+    },
+    {
+      "from": 50,
+      "to": 54,
+      "correlation": 0.9976016708589392
+    }
+  ],
+  "audio_peak_mono": 0.79024338722229,
+  "music_scale": 0.88,
+  "source_title_sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+  "sha256": "27dfdb1cb7e9066a7dfeca409cedd9180aeee003cc7f3db29bd0a8b5d9186132",
+  "bytes": 9625058,
+  "scope": "57-second edited design preview; no native controller integration"
+}

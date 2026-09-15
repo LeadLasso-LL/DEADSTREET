@@ -1,0 +1,17 @@
+{
+  "status": "implemented_native_validated",
+  "checks": 398,
+  "head": "d262e8f43f34b889ce72b1705d0f4de36d7e40fd",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "index_preserved": "",
+  "publication": "not_attempted_existing_automatic_review_block",
+  "individual_shader_unchanged": true,
+  "preview": "libfile_dc8a5348e68c8191a128d8afca8c77f5",
+  "source_hashes": {
+    "gameplay/tactical_selection_range.gd": "fcd60791746d653c2b754f2b3d7c7b6a15ffcc05423d731e43161ebfd67df519",
+    "gameplay/tactical_group_range.gdshader": "56729d578f4f3b44e829a9520c6166964fe5f843f97821d7390b4d14a3269be3",
+    "gameplay/tactical_selection_range.gdshader": "41daea36192da26a82337ca6b563316343cc61dcb9c23f4d525856744b6cef91",
+    "gameplay/tactical_orders_controller.gd": "6afa1c67eb1fe2b44000dacaaae1a655c9cb407f23d758028ffafd0f1beeaeee",
+    "gameplay/tactical_battle_view.gd": "c3dd91ae5bd1f4dd3e2a243c3e168635563070c4b9f506c3e193399a8b7578d0"
+  }
+}

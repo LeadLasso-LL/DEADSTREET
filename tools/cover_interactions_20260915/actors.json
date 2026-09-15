@@ -1,0 +1,514 @@
+{
+	"actors": [
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				401.811187744141,
+				211.919998168945
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_01",
+			"position": [
+				50.6263999938965,
+				35.3199996948242
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_00__door_1_north_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				401.811187744141,
+				184.080001831055
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_02",
+			"position": [
+				50.6263999938965,
+				30.6800003051758
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_00__door_1_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				475.689575195313,
+				215.279998779297
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_03",
+			"position": [
+				59.861198425293,
+				35.8800010681152
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_01__door_0_north_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				475.689575195313,
+				185.52001953125
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_04",
+			"position": [
+				59.861198425293,
+				30.9200019836426
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_01__door_0_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				488.543975830078,
+				215.279998779297
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_05",
+			"position": [
+				61.4679985046387,
+				35.8800010681152
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_01__door_1_north_cover",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				488.543975830078,
+				185.52001953125
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_06",
+			"position": [
+				61.4679985046387,
+				30.9200019836426
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_01__door_1_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				307.9033203125,
+				214.223999023438
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_07",
+			"position": [
+				38.8879165649414,
+				35.7039985656738
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_02__door_0_north_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				307.9033203125,
+				186.575988769531
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_08",
+			"position": [
+				38.8879165649414,
+				31.0959968566895
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_02__door_0_south_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				319.260131835938,
+				214.223999023438
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_09",
+			"position": [
+				40.3075180053711,
+				35.7039985656738
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_02__door_1_north_cover",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				319.260131835938,
+				186.575988769531
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_10",
+			"position": [
+				40.3075180053711,
+				31.0959968566895
+			],
+			"side": "attacker",
+			"slot": "sandbox_transport_02__door_1_south_cover",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				271.040008544922,
+				163.684005737305
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_11",
+			"position": [
+				33.8800010681152,
+				27.814001083374
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_3_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				308.879974365234,
+				151.992004394531
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_attacker_unit_12",
+			"position": [
+				39.0099983215332,
+				25.3320007324219
+			],
+			"side": "attacker",
+			"slot": "cover_north_car_3_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				158.799987792969,
+				151.704010009766
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_01",
+			"position": [
+				19.4499988555908,
+				25.2840003967285
+			],
+			"side": "defender",
+			"slot": "cover_north_car_2_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				175.599990844727,
+				246.0
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_02",
+			"position": [
+				21.5499992370605,
+				41.0
+			],
+			"side": "defender",
+			"slot": "cover_south_car_2_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				213.199996948242,
+				116.100006103516
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_03",
+			"position": [
+				26.25,
+				19.3500003814697
+			],
+			"side": "defender",
+			"slot": "cover_stoop_east_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				93.1999969482422,
+				245.040008544922
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_04",
+			"position": [
+				11.25,
+				40.8400001525879
+			],
+			"side": "defender",
+			"slot": "cover_south_car_1_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				17.2000007629395,
+				110.500007629395
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_05",
+			"position": [
+				2.15000009536743,
+				18.9500007629395
+			],
+			"side": "defender",
+			"slot": "cover_store_delivery_1",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				146.799987792969,
+				129.149993896484
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_06",
+			"position": [
+				17.9499988555908,
+				21.5249996185303
+			],
+			"side": "defender",
+			"slot": "cover_north_bin_spilled_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "e",
+			"draw_position": [
+				233.199996948242,
+				151.992004394531
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_07",
+			"position": [
+				28.75,
+				25.3320007324219
+			],
+			"side": "defender",
+			"slot": "cover_north_car_3_2",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "w",
+			"draw_position": [
+				232.080001831055,
+				246.0
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_08",
+			"position": [
+				29.4099998474121,
+				41.0
+			],
+			"side": "defender",
+			"slot": "cover_south_car_2_3",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				103.360000610352,
+				164.260009765625
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_09",
+			"position": [
+				12.9200000762939,
+				27.9100017547607
+			],
+			"side": "defender",
+			"slot": "cover_north_car_1_1",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "n",
+			"draw_position": [
+				32.6399993896484,
+				160.900009155273
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_10",
+			"position": [
+				4.07999992370605,
+				27.3500003814697
+			],
+			"side": "defender",
+			"slot": "cover_north_car_0_1",
+			"sprite_offset": [
+				0.0,
+				-40.0
+			]
+		},
+		{
+			"clip": "idle",
+			"direction": "s",
+			"draw_position": [
+				191.5,
+				189.75
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_11",
+			"position": [
+				23.9375,
+				31.625
+			],
+			"side": "defender",
+			"slot": "",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		},
+		{
+			"clip": "cover_tucked_idle",
+			"direction": "s",
+			"draw_position": [
+				129.120010375977,
+				233.779998779297
+			],
+			"facing": "(0.0, 0.0)",
+			"id": "sandbox_defender_unit_12",
+			"position": [
+				16.1400012969971,
+				38.4300003051758
+			],
+			"side": "defender",
+			"slot": "cover_south_car_1_0",
+			"sprite_offset": [
+				0.0,
+				-46.0
+			]
+		}
+	],
+	"tight_pairs": [
+		{
+			"a": "sandbox_attacker_unit_03",
+			"b": "sandbox_attacker_unit_05",
+			"distance": 1.6068000793457,
+			"slot_a": "sandbox_transport_01__door_0_north_cover",
+			"slot_b": "sandbox_transport_01__door_1_north_cover"
+		},
+		{
+			"a": "sandbox_attacker_unit_04",
+			"b": "sandbox_attacker_unit_06",
+			"distance": 1.6068000793457,
+			"slot_a": "sandbox_transport_01__door_0_south_cover",
+			"slot_b": "sandbox_transport_01__door_1_south_cover"
+		},
+		{
+			"a": "sandbox_attacker_unit_07",
+			"b": "sandbox_attacker_unit_09",
+			"distance": 1.41960144042969,
+			"slot_a": "sandbox_transport_02__door_0_north_cover",
+			"slot_b": "sandbox_transport_02__door_1_north_cover"
+		},
+		{
+			"a": "sandbox_attacker_unit_08",
+			"b": "sandbox_attacker_unit_10",
+			"distance": 1.41960144042969,
+			"slot_a": "sandbox_transport_02__door_0_south_cover",
+			"slot_b": "sandbox_transport_02__door_1_south_cover"
+		}
+	]
+}

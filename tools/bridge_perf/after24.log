@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_02__door_0_north slot sandbox_transport_02__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover cover_traffic_1_0 slot cover_traffic_1_0_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover cover_traffic_2_0 slot cover_traffic_2_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_traffic_3_0 slot cover_traffic_3_0_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__front
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__left
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover sandbox_transport_00__body_cover slot sandbox_transport_00__body_cover__rear
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+GameplayRuntime: mode=tactical_active pending=
+BENCH_PROGRESS after24 { "sim_seconds": 5.99999999999999, "mean_update_ms": 52.2362583333333, "fps_snapshot": 16.0 }
+BENCH_PROGRESS after24 { "sim_seconds": 12.0, "mean_update_ms": 39.3263416666667, "fps_snapshot": 21.0 }
+BENCH_PROGRESS after24 { "sim_seconds": 18.0000000000001, "mean_update_ms": 42.3119666666667, "fps_snapshot": 19.0 }
+BENCH_PROGRESS after24 { "sim_seconds": 24.0000000000002, "mean_update_ms": 60.8713333333334, "fps_snapshot": 13.0 }
+BENCH_PROGRESS after24 { "sim_seconds": 30.0000000000003, "mean_update_ms": 80.6340916666667, "fps_snapshot": 11.0 }
+BENCH_DONE {"checkpoints":[{"fps_snapshot":16.0,"mean_update_ms":52.2362583333333,"sim_seconds":5.99999999999999},{"fps_snapshot":21.0,"mean_update_ms":39.3263416666667,"sim_seconds":12.0},{"fps_snapshot":19.0,"mean_update_ms":42.3119666666667,"sim_seconds":18.0000000000001},{"fps_snapshot":13.0,"mean_update_ms":60.8713333333334,"sim_seconds":24.0000000000002},{"fps_snapshot":11.0,"mean_update_ms":80.6340916666667,"sim_seconds":30.0000000000003}],"damage":16.063,"label":"after24","living":18,"max_ms":146.787,"mean_ms":55.0759983333333,"moved":18,"occupied":13,"p95_ms":91.002,"paused_fps":1.0,"phase":"active","rendered":24,"sim_seconds":30.0000000000003,"stages_ms":{"combat":20807.322,"movement":4963.43500000001,"path_follow":153.896,"pressure":1839.972,"tactics":61.242,"targets":3194.145,"weapon":1970.571},"steps":600,"units":24}

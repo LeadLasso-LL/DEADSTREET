@@ -1,0 +1,23 @@
+{
+  "black_max": 0,
+  "button_at": 27.0068852391357,
+  "checks": 31,
+  "errors": [],
+  "hit_times": [
+    7.20376825183105,
+    7.5490811539917,
+    7.95539289059448,
+    8.23513965286255,
+    8.60260826477051
+  ],
+  "sandbox_at": 29.1963831029053,
+  "signature_play_count": 1,
+  "start_frame": 31,
+  "status": "PASS",
+  "title_at": 21.013105911499,
+  "total_frames": 1036,
+  "viewport": [
+    1280,
+    720
+  ]
+}

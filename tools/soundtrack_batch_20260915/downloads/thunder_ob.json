@@ -1,0 +1,23 @@
+{
+  "index": 2,
+  "id": "thunder_ob",
+  "artist": "OB",
+  "title": "Thunder",
+  "source_url": "https://soundcloud.com/colinobriennn/thunder",
+  "start_timestamp": "00:15",
+  "start_seconds": 15,
+  "duration_seconds": 30,
+  "basename": "OB_Thunder",
+  "status": "downloaded",
+  "source_title": "thunder",
+  "source_artist": "OB",
+  "source_track_id": 333801279,
+  "canonical_url": "https://soundcloud.com/colinobriennn/thunder",
+  "source_duration_seconds": 89.556,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 1432763,
+  "sha256": "a09508b53c042b7e5d785dc502db1bf2ac0200b27919b7d7bc836e53ee806699",
+  "settings_changed": false
+}

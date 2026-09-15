@@ -1,0 +1,14 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const dir=path.dirname(fileURLToPath(import.meta.url));
+const source='https://on.soundcloud.com/7xSTXKeQvsfhgntLOU';
+const r=await fetch(source,{signal:AbortSignal.timeout(25000)});
+const html=await r.text();
+await fs.writeFile(path.join(dir,'page.html'),html);
+const m=html.match(/window.__sc_hydration\s*=\s*(\[.*?\]);/s);
+const track=m?JSON.parse(m[1]).find(x=>x.hydratable==='sound')?.data:null;
+const meta={source_url:source,resolved_url:r.url,status:r.status,html_bytes:html.length,page_title:html.match(/<title>(.*?)<\/title>/s)?.[1]};
+if(track) Object.assign(meta,{title:track.title,artist:track.user?.username,track_id:track.id,duration_ms:track.duration,policy:track.policy,downloadable:track.downloadable,public:track.public,permalink_url:track.permalink_url,transcodings:track.media?.transcodings?.map(x=>({preset:x.preset,duration:x.duration,format:x.format,snipped:x.snipped}))});
+await fs.writeFile(path.join(dir,'inspection.json'),JSON.stringify(meta,null,2));
+console.log(JSON.stringify(meta));

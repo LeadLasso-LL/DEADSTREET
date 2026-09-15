@@ -1,0 +1,26 @@
+{
+  "head": "2bf17c3b676bd7d962e5c752cb05b70d3f693f1f",
+  "remote": "2bf17c3b676bd7d962e5c752cb05b70d3f693f1f",
+  "mobile_sha256": "a6a719bb2ab888bea55b31eadc860c398a8b14617400b3db378f3f5fe7469d93",
+  "seconds": 98.33666666666667,
+  "files": [
+    "battle/core/battle_victory_result.gd",
+    "gameplay/battle_result_summary.gd",
+    "gameplay/tactical_battle_presentation.gd",
+    "gameplay/tactical_convoy_audio.gd",
+    "gameplay/tactical_compact_card.gd",
+    "gameplay/tactical_command_hud.gd",
+    "tools/tactical_controls/result_summary_checks.gd",
+    "tools/tactical_controls/raiders_record.gd",
+    "tools/raiders_recording/video_delta.py",
+    "tools/raiders_recording/record.json",
+    "tools/raiders_recording/video.json",
+    "tools/raiders_recording/mobile.json",
+    "tools/raiders_recording/victory_audio_source_hashes.json",
+    "tools/raiders_recording/README.md",
+    "tools/convoy_arrival/README.md",
+    "docs/DEAD_STREET_JOURNAL.md",
+    "docs/DEAD_STREET_HIVE_MIND.md",
+    "docs/DEAD_STREET_PROJECT_CONTROL.md"
+  ]
+}

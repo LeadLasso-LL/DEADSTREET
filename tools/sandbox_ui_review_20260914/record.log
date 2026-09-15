@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+Movie Maker mode enabled, recording movie in 1152×860 @ 30 FPS...
+UI_STEP 30 Open Battle Sandbox
+UI_STEP 143 Arsenal / weapon preview
+UI_STEP 255 Armor catalog / three HP tiers
+UI_STEP 406 Custom Battle Setup / choose the map
+UI_STEP 589 Choose attacking faction
+UI_STEP 652 Clear and build five attackers
+UI_STEP 1173 Change an existing unit class
+UI_STEP 1299 Duplicate and remove a unit
+UI_STEP 1401 Attacker / Pistol
+UI_STEP 1637 Attacker / Smg
+UI_STEP 1873 Attacker / Shotgun
+UI_STEP 2109 Attacker / Rifle
+UI_STEP 2345 Attacker / Sniper
+UI_STEP 2549 Choose defending faction
+UI_STEP 2668 Defender / Pistol
+UI_STEP 2904 Defender / Smg
+UI_STEP 3140 Defender / Shotgun
+UI_STEP 3376 Defender / Rifle
+UI_STEP 3612 Defender / Sniper
+UI_STEP 3816 Attacking convoy / manual selection
+UI_STEP 4096 Seat validation / add a second vehicle
+UI_STEP 4483 Auto-Fit Seats / inspect automatic convoy
+UI_STEP 4726 Defending convoy / Auto-Fit Defenders
+UI_STEP 5187 Final 5 vs 5 / ready to launch
+UI_REVIEW_COMPLETE 224 checks / 0 errors / 5563 frames
+--------------------------------------------------------------------------------
+Done recording movie at path: C:\Users\brand\OneDrive\Documents\dead-street\tools\sandbox_ui_review_20260914\sandbox_ui_raw.avi
+5563 frames at 30 FPS (movie length: 00:03:05:13), recorded in 00:01:40 (185% of real-time speed).
+CPU render time: 2.69 seconds (average: 0.48 ms/frame)
+GPU render time: 3.69 seconds (average: 0.66 ms/frame)
+Encoding time: 37.03 seconds (average: 6.66 ms/frame)
+--------------------------------------------------------------------------------

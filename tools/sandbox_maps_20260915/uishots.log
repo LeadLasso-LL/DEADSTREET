@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:48)
+       [1] picture (res://gameplay/sandbox_opening.gd:52)
+       [2] _ready (res://gameplay/sandbox_opening.gd:32)
+       [3] run (res://tools/sandbox_maps_20260915/uishots.gd:9)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/camera_ui.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:48)
+       [1] picture (res://gameplay/sandbox_opening.gd:52)
+       [2] _ready (res://gameplay/sandbox_opening.gd:36)
+       [3] run (res://tools/sandbox_maps_20260915/uishots.gd:9)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/enter_button.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:48)
+       [1] action_button (res://gameplay/sandbox_opening.gd:62)
+       [2] _ready (res://gameplay/sandbox_opening.gd:37)
+       [3] run (res://tools/sandbox_maps_20260915/uishots.gd:9)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/open_button.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://gameplay/sandbox_opening.gd:48)
+       [1] action_button (res://gameplay/sandbox_opening.gd:62)
+       [2] _ready (res://gameplay/sandbox_opening.gd:38)
+       [3] run (res://tools/sandbox_maps_20260915/uishots.gd:9)
+OPENING_GATE_READY
+OPENING_SANDBOX_ENTERED 0.0
+NATIVE_PREVIEWS_DONE

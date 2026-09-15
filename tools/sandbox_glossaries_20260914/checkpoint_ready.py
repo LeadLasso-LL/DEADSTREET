@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,re
+repo=Path(r'C:\Users\brand\OneDrive\Documents\dead-street');out=repo/'tools/sandbox_glossaries_20260914'
+d=json.loads((out/'delivery.json').read_text());l=json.loads((out/'library_receipt.json').read_text())
+assert d['full_decode_passed'] and not d['errors'] and l['status']=='succeeded'
+entry=f'''## 20260914-sandbox-glossaries-04 - Illustrated menu ready for review
+
+IMPLEMENTED / VALIDATED: Battle Setup, Faction Glossary, Arsenal, Vehicles and Tutorial. Both native smoke and final recording runs passed {d['checks']:,} checks with zero errors. All 23 factions, 115 associated unit/weapon portraits, 30 guns and 75 vehicles are covered. Conditional leadership and campaign spoilers are omitted. Existing setup state, fleet/Encounter Lab and Tutorial remain reachable; configured bridge launch/return works. First smoke's leader-search spacing issue is resolved. Native screenshots and an exported MP4 frame visually inspected; full MP4 decode passed.
+
+Preview: {d['filename']}, {d['duration_seconds']:.2f}s / {d['frames']} frames, 1440x1000, 30fps H.264/yuv420p fast-start, {d['bytes']} bytes; SHA256 {d['sha256']}. Saved as {l['library_file_id']} v{l['current_version_number']}. The video reviews menu UI only; its trim excludes bulk validation, resizing and the final battle launch check. Owner visual acceptance is PENDING.
+
+Publication checkpoint now being committed under Brandon's direct push approval. Only owned menu/data/tools and this chat's journal/control sections/hive row are staged. Other chats' source/assets/uncommitted work and the shared release runtime remain preserved. Opening chat must refresh its menu source snapshot and package new scripts/data plus current portraits/icons when connecting the accepted opening; the existing arsenal_review.tscn entry remains valid. Reproduction and receipts: tools/sandbox_glossaries_20260914/README.md, run_capture.py, validate.gd, smoke.json, record.json, source_hashes.json, delivery.json and library_receipt.json.
+'''
+p=repo/'docs/DEAD_STREET_JOURNAL.md';assert entry.splitlines()[0] not in p.read_text(encoding='utf-8')
+with p.open('a',encoding='utf-8') as f:f.write('\n\n'+entry)
+p=repo/'docs/DEAD_STREET_PROJECT_CONTROL.md';title='## 2026-09-14 - Sandbox Glossary Panels';assert title not in p.read_text(encoding='utf-8')
+with p.open('a',encoding='utf-8') as f:f.write('\n\n'+title+'\n\nBattle Setup is the leftmost default tab, followed by Faction Glossary, Arsenal, Vehicles and Tutorial. Illustrated faction profiles contain canonical fixed leaders, spoiler-safe in-world descriptions and all 115 established class/weapon portraits. Arsenal exposes all 30 guns and combat specs; Vehicles exposes all 75 models, four classes, capabilities and service/ability details. Vehicle tiers do not exist in current canon, so none were invented. Setup selections persist across browsing and battle launch/return.\n\nIMPLEMENTED / VALIDATED: two native runs, 3,684 checks each, zero failures; all images/text/interaction/state checks passed. The 79.63s H.264 preview is '+l['library_file_id']+' v0. Owner visual acceptance pending. Opening/music/launcher integration remains with chat3438f1ea0e55, which must refresh the new menu scripts/data/assets in its pack. Shared runtime untouched by this task. See journal sandbox-glossaries-01 through -04 and tools/sandbox_glossaries_20260914/README.md.\n')
+p=repo/'docs/DEAD_STREET_HIVE_MIND.md';s=p.read_text(encoding='utf-8');pattern=r'(?m)^\| Parallel assignment chat 3ca0ac6a33c3 \|.*$';assert re.search(pattern,s)
+row='| Parallel assignment chat 3ca0ac6a33c3 | Sandbox interior/top navigation; glossary panels/data; arsenal_review.gd and embedded setup; tools/sandbox_glossaries_20260914/ | IMPLEMENTED / VALIDATED: five top tabs; 23 factions / 115 paired portraits, 30 guns, 75 vehicles. 3,684 native checks pass; 79.63s MP4 saved. Owner visual review pending. Scoped publication underway (journal sandbox-glossaries-04). Opening chat must refresh menu scripts/data/assets in its native pack; arsenal_review.tscn entry retained. Tutorial published previously as 04034d8. |'
+p.write_text(re.sub(pattern,lambda m:row,s),encoding='utf-8')
+print('Review checkpoint and coordination records updated.')

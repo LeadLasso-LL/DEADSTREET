@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover sandbox_transport_02__door_0_north slot sandbox_transport_02__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_north_car_2 slot cover_north_car_2_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover cover_north_car_3 slot cover_north_car_3_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover cover_north_car_3 slot cover_north_car_3_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover cover_north_car_3 slot cover_north_car_3_3
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+ERROR: BattlefieldGeometry.remove_cover_object: cover object 'sandbox_transport_02__body_cover' still has owned slots.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] remove_cover_object (res://battle/geometry/battlefield_geometry.gd:356)
+       [1] choose (res://battle/vehicles/battle_arrival_service.gd:66)
+       [2] run (res://tools/harold_scale_20260915/check.gd:30)
+       [3] start_battle (res://gameplay/arsenal_review.gd:193)
+ERROR: BattlefieldGeometry.remove_cover_object: cover object 'sandbox_transport_02__body_cover' still has owned slots.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] remove_cover_object (res://battle/geometry/battlefield_geometry.gd:356)
+       [1] choose (res://battle/vehicles/battle_arrival_service.gd:66)
+       [2] run (res://tools/harold_scale_20260915/check.gd:30)
+       [3] start_battle (res://gameplay/arsenal_review.gd:193)
+ERROR: BattlefieldGeometry.remove_cover_object: cover object 'sandbox_transport_02__body_cover' still has owned slots.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] remove_cover_object (res://battle/geometry/battlefield_geometry.gd:356)
+       [1] choose (res://battle/vehicles/battle_arrival_service.gd:66)
+       [2] run (res://tools/harold_scale_20260915/check.gd:30)
+       [3] start_battle (res://gameplay/arsenal_review.gd:193)
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_03 to cover sandbox_transport_01__door_0_north slot sandbox_transport_01__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_04 to cover sandbox_transport_01__door_0_south slot sandbox_transport_01__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_05 to cover sandbox_transport_01__door_1_north slot sandbox_transport_01__door_1_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_06 to cover sandbox_transport_01__door_1_south slot sandbox_transport_01__door_1_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_07 to cover sandbox_transport_02__door_0_north slot sandbox_transport_02__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_08 to cover sandbox_transport_02__door_0_south slot sandbox_transport_02__door_0_south_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_09 to cover cover_north_car_2 slot cover_north_car_2_3
+TacticalDeploymentController: deployed sandbox_attacker_unit_10 to cover cover_north_car_3 slot cover_north_car_3_1
+TacticalDeploymentController: deployed sandbox_attacker_unit_11 to cover cover_north_car_3 slot cover_north_car_3_2
+TacticalDeploymentController: deployed sandbox_attacker_unit_12 to cover cover_north_car_3 slot cover_north_car_3_3
+GameplayRuntime: mode=tactical_active pending=
+HAROLD_REPORT {"advance_ms_median":7.624,"advance_ms_p95":14.982,"battle_phase":"active","checks":942,"disembark_routes":12,"errors":[],"frame_ms_median":23.343,"frame_ms_p95":34.178,"frames":823,"phase":"after","seconds":20.016053}

@@ -1,0 +1,181 @@
+{
+	"checks": 478,
+	"errors": [],
+	"runs": [
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "whittaker_estate",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "mercer",
+			"vehicles": 4
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "whittaker_estate",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "stateline",
+			"vehicles": 6
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "whittaker_estate",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "zangyaku",
+			"vehicles": 6
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "whittaker_estate",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "trc",
+			"vehicles": 6
+		},
+		{
+			"map": "harold",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "river_bridge",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "whittaker_estate",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "doble_ocho",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		},
+		{
+			"map": "freight_exchange",
+			"passengers": 16,
+			"path_errors": [],
+			"variant": "twelve_bikes",
+			"vehicles": 12
+		}
+	]
+}

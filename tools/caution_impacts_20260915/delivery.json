@@ -1,0 +1,37 @@
+{
+  "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\caution_impacts_20260915\\DEAD_STREET_Revised_Intro.mp4",
+  "bytes": 6200923,
+  "sha256": "90d05e01c1c748aa711f75da28231bb07d3ed75f1c536ee954605147e1b7f409",
+  "seconds": 34.6,
+  "frames": 1038,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "full_decode": "PASS",
+  "audio_peak": 0.6697484254837036,
+  "audio_rms": 0.05457547679543495,
+  "source_hashes_unchanged": true,
+  "native": {
+    "black_max": 0,
+    "button_at": 27.0068852391357,
+    "checks": 31,
+    "errors": [],
+    "hit_times": [
+      7.20376825183105,
+      7.5490811539917,
+      7.95539289059448,
+      8.23513965286255,
+      8.60260826477051
+    ],
+    "sandbox_at": 29.1963831029053,
+    "signature_play_count": 1,
+    "start_frame": 31,
+    "status": "PASS",
+    "title_at": 21.013105911499,
+    "total_frames": 1036,
+    "viewport": [
+      1280,
+      720
+    ]
+  }
+}

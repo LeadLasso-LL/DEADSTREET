@@ -1,0 +1,20 @@
+{
+  "current_version_number": 0,
+  "directory_id": "6aa0207fd3c08191bffca33062d73c97",
+  "external_connectors_accessed": false,
+  "file_id": "file_000000004e5481f98ae854d8310ef9c7",
+  "file_name": "DEAD_STREET_Harold_HQ_Upgrade.png",
+  "file_size_bytes": 401039,
+  "library_file_id": "libfile_3be973d1a23881919f24d5110f3ea205",
+  "mime_type": "image/png",
+  "operation": "create_library_file",
+  "path": "/Dead Street/DEAD_STREET_Harold_HQ_Upgrade.png",
+  "restored_from_version_number": null,
+  "status": "succeeded",
+  "xattrs": [
+    {
+      "name": "user.library-file-version",
+      "value": "0"
+    }
+  ]
+}

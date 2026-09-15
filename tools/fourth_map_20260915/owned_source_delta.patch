@@ -1,0 +1,291 @@
+--- before/battle/presentation/tactical_participant_visual.gd
++++ after/battle/presentation/tactical_participant_visual.gd
+@@ -75,10 +75,10 @@
+ 	if participant == null or not participant.has_battle_position:
+ 		return Vector2.ZERO
+ 	var view_pos: Vector2 = participant.battle_position * pixels_per_unit
+-	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"]:
++	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1", "doble_ocho_yard_v1"]:
+ 		view_pos.y *= 0.75
+ 	# Harold cover positions include body clearance; aiming must not slide feet into scenery.
+-	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
++	if battle_state != null and battle_state.battlefield_geometry != null and battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "doble_ocho_yard_v1"]:
+ 		return view_pos
+ 	if not participant.has_occupied_cover_slot():
+ 		return view_pos
+--- before/battle/vehicles/battle_arrival_service.gd
++++ after/battle/vehicles/battle_arrival_service.gd
+@@ -114,10 +114,10 @@
+  for spec in specs:
+   if g.has_cover_object(spec.id) or not g.obstacles.has(spec.id):continue
+   if not g.contains_point(spec.slot) or not g.get_movement_blocking_obstacle_id_at(spec.slot).is_empty() or not Body.blocking_vehicle_id_at(b,spec.slot).is_empty():continue
+-  if g.authored_layout_id==Catalog.ID and not _reserve_door_space(b,spec):continue
++  if g.authored_layout_id in [Catalog.ID,"doble_ocho_yard_v1"] and not _reserve_door_space(b,spec):continue
+   g.add_cover_object(CoverObject.new(spec.id,spec.id))
+   g.add_cover_slot(Slot.new(spec.id+"_cover",spec.id,spec.slot,spec.facing))
+- if g.authored_layout_id==Catalog.ID:_space_body_cover(b)
++ if g.authored_layout_id in [Catalog.ID,"doble_ocho_yard_v1"]:_space_body_cover(b)
+ static func remove_doors(b,v) -> void:
+  var g=b.battlefield_geometry
+  for spec in door_specs(v):
+--- before/gameplay/arsenal_battle_fixture.gd
++++ after/gameplay/arsenal_battle_fixture.gd
+@@ -151,6 +151,10 @@
+   if not Weapons.equip_for_setup(b,p,id):return {"error":"review equip "+id}
+  var convoy_setup=preload("res://gameplay/tactical_convoy_setup.gd").apply(b,loadouts.attacker)
+  if convoy_setup.has("error"):return convoy_setup
++ var yard=loadouts.get("map_id","")=="doble_ocho"
++ if yard:
++  var yard_result=preload("res://gameplay/doble_ocho_setup.gd").apply(b,loadouts)
++  if yard_result.has("error"):return yard_result
+  var estate=loadouts.get("map_id","harold")=="whittaker_estate"
+  if estate:
+   var estate_result=preload("res://gameplay/estate_battle_setup.gd").apply(b,loadouts)
+@@ -161,10 +165,12 @@
+   if bridge_result.has("error"):return bridge_result
+  if not preload("res://gameplay/blockade_battle_setup.gd").apply(b,loadouts.get("blockade_encounter",{})):return {"error":"invalid checkpoint battle geometry"}
+  var controller=runtime.tactical_deployment_controller
+- if not bridge and not estate:controller.choose_arrival("far")
++ if not bridge and not estate and not yard:controller.choose_arrival("far")
+  for v in b.vehicles.values():
+   if not v.has_battle_position:return {"error":"This convoy cannot fit the street arrival area. Choose fewer or smaller vehicles."}
+- var covered=preload("res://gameplay/estate_battle_setup.gd").deploy_attackers(b) if estate else controller.place_unplaced_in_cover()
++ var covered=false if yard else (preload("res://gameplay/estate_battle_setup.gd").deploy_attackers(b) if estate else controller.place_unplaced_in_cover())
++ if yard:covered=preload("res://gameplay/doble_ocho_setup.gd").deploy(b,b.attacker_side_id)
++ if not covered and yard:return {"error":"Auto-yard attackers could not reach opening cover."}
+  if not covered and bridge:covered=preload("res://gameplay/bridge_battle_setup.gd").deploy_remaining_attackers(b)
+  if not covered:
+   var fallback=AI.apply_and_commit_side(b,b.attacker_side_id,b.defender_side_id)
+@@ -178,5 +184,5 @@
+    if placed==null or not placed.success:return {"error":"review defender placement"}
+  runtime._sync_armor_store()
+  runtime.set_process(false)
+- var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=1.2 if estate else (2.4 if bridge else 1.30);view._dusk_pan=Vector2(0,-42) if estate else (Vector2(-360,-22) if bridge else Vector2(-5,-30));view._frame_camera()
++ var view=runtime.get_node("TacticalBattleView");view._dusk_zoom=1.60 if yard else (1.2 if estate else (2.4 if bridge else 1.30));view._dusk_pan=Vector2(38,-55) if yard else (Vector2(0,-42) if estate else (Vector2(-360,-22) if bridge else Vector2(-5,-30)));view._frame_camera()
+  return {"battle":b,"counts":check.counts}
+--- before/gameplay/sandbox_force_builder.gd
++++ after/gameplay/sandbox_force_builder.gd
+@@ -25,6 +25,7 @@
+ var map_description: Label
+ var defender_controls=[]
+ var embedded=false
++var yard_preset_button: Button
+ 
+ func _ready():
+  size=Vector2(1152,860);mouse_filter=Control.MOUSE_FILTER_STOP
+@@ -33,10 +34,15 @@
+  var bg=ColorRect.new();add_child(bg);bg.size=size;bg.color=Color("#121c20")
+  var title=label_at(self,Vector2(28,20),Vector2(920,36),"DEAD STREET / BATTLE SETUP",26)
+  map_option=option(self,Vector2(28,62),Vector2(310,33))
+- map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge");map_option.add_item("Whittaker Estate")
+- map_option.select(["harold","river_bridge","whittaker_estate"].find(config.get("map_id","harold")))
+- map_option.item_selected.connect(func(i):choose_map(["harold","river_bridge","whittaker_estate"][i]))
++ map_option.add_item("Harold Avenue");map_option.add_item("River Suspension Bridge");map_option.add_item("Whittaker Estate");map_option.add_item("Doble Ocho Auto Yard")
++ map_option.select(["harold","river_bridge","whittaker_estate","doble_ocho"].find(config.get("map_id","harold")))
++ map_option.item_selected.connect(func(i):choose_map(["harold","river_bridge","whittaker_estate","doble_ocho"][i]))
+  map_description=label_at(self,Vector2(356,66),Vector2(768,28),"1–12 units per side / All factions and equipment unlocked",12)
++ yard_preset_button=button_at(self,Vector2(936,62),Vector2(188,33),"LOAD YARD 7 vs 7",func():
++  config=preload("res://gameplay/doble_ocho_scenario.gd").config()
++  for side in ["attacker","defender"]:
++   faction_options[side].select(Factions.all_ids().find(config[side].faction));MenuEmblem.apply(lists[side].get_parent().get_parent().get_node("FactionEmblem"),config[side].faction);refresh_side(side)
++ )
+  var close=button_at(self,Vector2(992,20),Vector2(132,36),"ARSENAL",queue_free)
+  for side_index in range(2):build_side("attacker" if side_index==0 else "defender",28+side_index*564)
+  convoy_label=label_at(self,Vector2(28,720),Vector2(720,65),"",13)
+@@ -142,6 +148,9 @@
+ func refresh_status():
+  if status==null:return
+  map_description.text="1–%d units per side / All factions and equipment unlocked"%Config.max_units(config.get("map_id","harold"))
++ if yard_preset_button!=null:yard_preset_button.visible=config.get("map_id","")=="doble_ocho"
++ if config.get("map_id","")=="doble_ocho":map_description.text="South-side garage / Recommended 6–7 per side";map_description.size.x=565
++ else:map_description.size.x=768
+  var check=Config.validate(config)
+  start_button.disabled=not check.valid
+  start_button.text="START %d vs %d"%[config.attacker.units.size(),config.defender.units.size()]
+@@ -153,6 +162,8 @@
+   convoy_label.text="WEST APPROACH  /  %d vehicles  /  %d seats for %d attackers\nEAST BLOCKADE  /  %d vehicles  /  %d seats for %d defenders"%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size(),config.defender.get("vehicles",[]).size(),defense.get("units",0),config.defender.units.size()]
+  if config.get("map_id","harold")=="whittaker_estate":
+   convoy_label.text="ESTATE APPROACH  /  %d vehicles  /  %d seats for %d attackers\nDefenders begin on the estate grounds with prepared cover."%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size()]
++ if config.get("map_id","")=="doble_ocho":
++  convoy_label.text="AUTO YARD ASSAULT  /  %d vehicles  /  %d seats for %d attackers\nDefenders hold the garage. Main gate and service gate offer separate approaches."%[config.attacker.vehicles.size(),summary.get("units",0),config.attacker.units.size()]
+  var slots=Config.Formation.slots(config.attacker.vehicles,config.attacker.faction).size()
+  convoy_label.text=convoy_label.text.replace("%d vehicles"%config.attacker.vehicles.size(),"%d slots / %d vehicles"%[slots,config.attacker.vehicles.size()])
+  status.text=error_override if not error_override.is_empty() else ("Ready. Each convoy uses its own units as drivers.\nEsc returns here after a battle; your setup is retained." if check.valid else check.error)
+--- before/gameplay/sandbox_force_config.gd
++++ after/gameplay/sandbox_force_config.gd
+@@ -38,7 +38,7 @@
+ 
+ static func validate(config: Dictionary) -> Dictionary:
+  var counts={}
+- if config.get("map_id","harold") not in ["harold","river_bridge","whittaker_estate"]:return {"valid":false,"error":"Choose an available battlefield."}
++ if config.get("map_id","harold") not in ["harold","river_bridge","whittaker_estate","doble_ocho"]:return {"valid":false,"error":"Choose an available battlefield."}
+  for side in ["attacker","defender"]:
+   if not config.get(side) is Dictionary:return {"valid":false,"error":"Choose both forces."}
+   var team: Dictionary=config[side]
+--- before/gameplay/tactical_actor_presenter.gd
++++ after/gameplay/tactical_actor_presenter.gd
+@@ -247,7 +247,7 @@
+ 	body.centered = true
+ 	body.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
+ 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+-	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"]:
++	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1", "doble_ocho_yard_v1"]:
+ 		var finish := ShaderMaterial.new()
+ 		finish.shader = load("res://assets/art/street_detail/unit_finish.gdshader")
+ 		body.material = finish
+@@ -275,7 +275,7 @@
+ 		return
+ 	node.position = TacticalParticipantVisual.view_origin(battle_state, participant, pixels_per_unit)
+ 	node.rotation = 0.0
+-	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"] else 1.0)
++	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1", "doble_ocho_yard_v1"] else 1.0)
+ 	unit_root.y_sort_enabled = true
+ 	if participant.is_wounded and participant.is_alive:
+ 		node.modulate = Color.WHITE
+--- before/gameplay/tactical_battle_outro.gd
++++ after/gameplay/tactical_battle_outro.gd
+@@ -19,7 +19,9 @@
+  kind="enter_objective" if winning==b.attacker_side_id else ("check_comrades" if not fallen.is_empty() else "regroup")
+  var bridge=b.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
+  if bridge and winning==b.attacker_side_id:kind="secure_crossing"
+- var estate=b.battlefield_geometry.authored_layout_id=="whittaker_estate_v1"
++ var yard=b.battlefield_geometry.authored_layout_id=="doble_ocho_yard_v1"
++ var estate=b.battlefield_geometry.authored_layout_id in ["whittaker_estate_v1","doble_ocho_yard_v1"]
++ if yard and winning==b.attacker_side_id:kind="secure_yard"
+  var assigned={};var occupied=[];var guard_index=0
+  for i in range(winners.size()):
+   var p=winners[i];var target=entrance+Vector2(0,.35);var action="enter";var facing=Vector2.UP
+@@ -81,7 +83,7 @@
+    # The landing is between the full-height stair walls; face outward down the street.
+    target=entrance+Vector2(-1.1+(guard_index%2)*2.2,1.6+floorf(guard_index/2.)*1.9)
+    facing=Vector2(-.35+(guard_index%2)*.7,1).normalized();action="guard";guard_index+=1
+-  if bridge and kind!="check_comrades":
++  if (bridge or yard) and kind!="check_comrades":
+    # Hold reachable individual positions; nobody fades through a nonexistent doorway.
+    target=p.battle_position;action="guard";facing=Vector2.RIGHT if winning==b.attacker_side_id else Vector2.LEFT
+   var stationary=target.is_equal_approx(p.battle_position)
+--- before/gameplay/tactical_battle_presentation.gd
++++ after/gameplay/tactical_battle_presentation.gd
+@@ -93,7 +93,8 @@
+  stage="ready";clock=intro_duration;routes={};apply_poses()
+ func is_bridge() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="river_suspension_bridge_v1"
+ func is_estate() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="whittaker_estate_v1"
+-func fixed_defenders() -> bool:return is_bridge() or is_estate()
++func is_yard() -> bool:return battle!=null and battle.battlefield_geometry.authored_layout_id=="doble_ocho_yard_v1"
++func fixed_defenders() -> bool:return is_bridge() or is_estate() or is_yard()
+ func begin_arrival():
+  stage="arrival";clock=0.;routes={};last_path_errors=[];original_zoom=view._dusk_zoom;original_pan=view._dusk_pan
+  if view.deployment_controller!=null:view.deployment_controller.apply_pending_cover_to_live()
+@@ -145,13 +146,14 @@
+   arrival_buttons[choice].disabled=b.is_side_deployment_committed(b.attacker_side_id)
+  arrival_status.text={"close":"Closer contact. Less room before the first exchange.","medium":"Balanced approach with nearby street cover.","far":"More space to organize. A longer advance to contact."}.get(b.arrival_choice,"")
+  if is_bridge():arrival_status.text="WEST APPROACH / Convoy stops behind the traffic queue."
++ if is_yard():arrival_status.text="AUTO YARD / Main gate and service-gate approach."
+  if is_estate():arrival_status.text="ESTATE APPROACH / Convoy enters from the public road."
+  if stage=="deployment" and b.battle_phase=="deployment" and all_committed():begin_arrival()
+  if b.battle_phase=="active" and stage!="active":
+   stage="active";routes={};sound.set_engine(Vector2.ZERO,false)
+   if not start_played:sound.play("start",Vector2(32,28),-19.);start_played=true
+  if b.battle_phase=="resolved" and stage!="ending":
+-  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if is_estate() else (Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE),view)
++  stage="ending";end_clock=0.;original_zoom=view._dusk_zoom;original_pan=view._dusk_pan;build_results();outro.build(battle,preload("res://battle/geometry/doble_ocho_catalog.gd").ENTRANCE if is_yard() else (preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if is_estate() else (Vector2(170,28) if is_bridge() else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE)),view)
+  if stage=="arrival":
+   clock+=delta
+   if clock>=6.6 and not door_played:
+@@ -198,6 +200,9 @@
+    at+=offset
+    if is_estate():
+     var pose=preload("res://gameplay/estate_battle_setup.gd").arrival_pose(v,clock,stop)
++    at=pose.position;node.facing=pose.facing
++   if is_yard():
++    var pose=preload("res://gameplay/doble_ocho_setup.gd").arrival_pose(v,clock,stop)
+     at=pose.position;node.facing=pose.facing
+    node.position=at*Vector2(8,6)
+    node.door_open=smoothstep(stop+.05,stop+.65,clock)
+@@ -252,6 +257,7 @@
+   if target_distance-float(route.distance)>.85:
+    route.distance=target_distance;sound.play("step"+str(sound.cursor%4),point,-22.,sound.cursor)
+ func vehicle_stop_time(vehicle) -> float:
++ if is_yard():return 8.4+float(vehicle.get_meta("convoy_slot",0))*1.7 if vehicle!=null else 8.4
+  if is_estate():return 8.0+float(vehicle.get_meta("convoy_slot",0))*1.1 if vehicle!=null else 8.0
+  return 6.5+float(vehicle.get_meta("convoy_slot",0))*.18 if vehicle!=null else 6.5
+ func prepare_riders():
+@@ -344,12 +350,12 @@
+   if p.attacker.emblem!=null:draw_emblem(p.attacker.emblem,left)
+   if p.defender.emblem!=null:draw_emblem(p.defender.emblem,right)
+   var ink=Color("#e3e1d3");var muted=Color("#a6b1a5")
+-  draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("CITY OUTSKIRTS  /  WHITTAKER ESTATE" if p.is_estate() else ("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE.")),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
++  draw_string(p.font,Vector2(12,17).lerp(Vector2(30,29),t),("SOUTH SIDE  /  DOBLE OCHO AUTO YARD" if p.is_yard() else "CITY OUTSKIRTS  /  WHITTAKER ESTATE" if p.is_estate() else ("RIVER CROSSING  /  SUSPENSION BRIDGE" if p.is_bridge() else "MERCER HEIGHTS  /  HAROLD AVE.")),HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(10,14,t)),muted)
+   draw_faction_title(p,p.attacker,Vector2(60,45),Vector2(155,98),212.,t,ink)
+   draw_faction_title(p,p.defender,Vector2(343,45),Vector2(675,98),126.,t,ink)
+   draw_string(p.font,Vector2(60,65).lerp(Vector2(155,140),t),"ATTACKING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+   draw_string(p.font,Vector2(343,65).lerp(Vector2(675,140),t),"DEFENDING",HORIZONTAL_ALIGNMENT_LEFT,-1,int(lerpf(8,11,t)),muted)
+-  var location="ESTATE ASSAULT" if p.is_estate() else ("ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS")
++  var location="GARAGE RAID" if p.is_yard() else "ESTATE ASSAULT" if p.is_estate() else ("ROAD BLOCKADE" if p.is_bridge() else "HAROLD APARTMENTS")
+   var location_size=int(lerpf(8,12,t))
+   var location_width=p.font.get_string_size(location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size).x
+   draw_string(p.font,Vector2(size.x-lerpf(12.,30.,t)-location_width,lerpf(17.,29.,t)),location,HORIZONTAL_ALIGNMENT_LEFT,-1,location_size,muted)
+--- before/gameplay/tactical_battle_view.gd
++++ after/gameplay/tactical_battle_view.gd
+@@ -3847,7 +3847,7 @@
+ 	if participant == null or not participant.has_battle_position:
+ 		return Vector2.ZERO
+ 	var view_pos: Vector2 = _to_view(participant.battle_position)
+-	if battle_state.battlefield_geometry.authored_layout_id == "dead_street_dusk_v1":
++	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1","doble_ocho_yard_v1"]:
+ 		return view_pos
+ 	if not participant.has_occupied_cover_slot():
+ 		return view_pos
+@@ -4251,7 +4251,7 @@
+ 	return _geometry()!=null and _geometry().authored_layout_id=="river_suspension_bridge_v1"
+ func _is_dusk_street() -> bool:
+ 	var g = _geometry()
+-	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1","whittaker_estate_v1"]
++	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1","whittaker_estate_v1","doble_ocho_yard_v1"]
+ func _street_projection() -> Vector2:
+ 	return Vector2(1,0.75) if _is_dusk_street() else Vector2.ONE
+ func _sync_dusk_art() -> void:
+@@ -4271,6 +4271,8 @@
+ 			if is_instance_valid(n) and not n.is_queued_for_deletion():n.queue_free()
+ 		_dusk_nodes.clear()
+ 	if not _dusk_nodes.is_empty(): return
++	if _geometry().authored_layout_id=="doble_ocho_yard_v1":
++		_spawn_doble_ocho_art();return
+ 	if _geometry().authored_layout_id=="whittaker_estate_v1":
+ 		_spawn_estate_art();return
+ 	if _is_river_bridge():
+@@ -4315,6 +4317,16 @@
+ 	dynamic_unit_root.y_sort_enabled=true
+ 	for row in preload("res://battle/geometry/whittaker_estate_catalog.gd").props():
+ 		if row[2]=="fountain_body":continue
++		var item=art.new();item.prop=row;item.view=self
++		var box: Rect2=row[1]
++		item.position=box.get_center()*Vector2(8,6) if row[2]=="traffic" else Vector2(box.get_center().x*8,box.end.y*6)
++		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
++
++func _spawn_doble_ocho_art() -> void:
++	var art=preload("res://gameplay/doble_ocho_art.gd")
++	var ground=art.new();static_surface_root.add_child(ground);_dusk_nodes.append(ground)
++	dynamic_unit_root.y_sort_enabled=true
++	for row in preload("res://battle/geometry/doble_ocho_catalog.gd").props():
+ 		var item=art.new();item.prop=row;item.view=self
+ 		var box: Rect2=row[1]
+ 		item.position=box.get_center()*Vector2(8,6) if row[2]=="traffic" else Vector2(box.get_center().x*8,box.end.y*6)
+--- before/gameplay/tactical_convoy_audio.gd
++++ after/gameplay/tactical_convoy_audio.gd
+@@ -70,13 +70,14 @@
+  if side==b.defender_side_id and layout not in ["river_suspension_bridge_v1","whittaker_estate_v1"]:building=true
+  if building:
+   var anchor=preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if layout=="whittaker_estate_v1" else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE
++  if layout=="doble_ocho_yard_v1":anchor=preload("res://battle/geometry/doble_ocho_catalog.gd").ENTRANCE
+   player.set_meta("fixed_position",anchor)
+  elif not candidates.is_empty():
+   key=str(candidates[0].battle_vehicle_id)
+  else:
+   for p in b.participants.values():
+    if p.side_id==side:player.set_meta("fixed_position",p.battle_position);break
+- var estate=building and layout=="whittaker_estate_v1"
++ var estate=building and layout in ["whittaker_estate_v1","doble_ocho_yard_v1"]
+  player.set_meta("base_gain",-25. if estate else -18.);player.set_meta("victory_gain",-18.)
+  player.set_meta("battle_drop",6. if building else 14.)
+  player.set_meta("range",1100. if building else 900.);player.set_meta("attenuation",1.2 if building else .7)

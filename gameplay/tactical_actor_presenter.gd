@@ -247,7 +247,7 @@ func _ensure_unit_node(battle_state: BattleState, participant: BattleParticipant
 	body.centered = true
 	body.offset = Vector2(64,64) - TacticalUnitAnimationCatalog.foot_anchor(TacticalUnitAnimationCatalog.variant_for(participant.identity.gang_archetype_id, participant.weapon_type, participant.weapon_model_id, participant.specialist_id))
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"]:
+	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1", "doble_ocho_yard_v1", "freight_exchange_v1"]:
 		var finish := ShaderMaterial.new()
 		finish.shader = load("res://assets/art/street_detail/unit_finish.gdshader")
 		body.material = finish
@@ -275,7 +275,7 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 		return
 	node.position = TacticalParticipantVisual.view_origin(battle_state, participant, pixels_per_unit)
 	node.rotation = 0.0
-	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1"] else 1.0)
+	node.scale = Vector2.ONE * (1.48 if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1", "river_suspension_bridge_v1", "whittaker_estate_v1", "doble_ocho_yard_v1", "freight_exchange_v1"] else 1.0)
 	unit_root.y_sort_enabled = true
 	if participant.is_wounded and participant.is_alive:
 		node.modulate = Color.WHITE
@@ -344,6 +344,9 @@ func _apply_unit_transform(battle_state: BattleState, participant: BattlePartici
 	state["age"] = float(state.get("age", 0.0)) + dt
 	var age: float = float(state["age"])
 	var body := node.get_node("body") as AnimatedSprite2D
+	# The actor owns its foot anchor; camera-dependent offsets create a fit feedback loop.
+	body.position=Vector2.ZERO
+	body.self_modulate=Color(1.22,1.20,1.15,1.) if battle_state.battlefield_geometry.authored_layout_id=="freight_exchange_v1" else Color.WHITE
 	var anim: String = TacticalUnitAnimationCatalog.animation_name(clip, dir_id)
 	if body.sprite_frames.has_animation(anim):
 		body.animation = anim

@@ -1,0 +1,245 @@
+{
+  "checks": 224,
+  "config": {
+    "attacker": {
+      "faction": "mercer",
+      "units": [
+        {
+          "armor": "",
+          "class": "pistol",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "usp"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "smg",
+          "specialist": "",
+          "tier": 2,
+          "weapon": "mac10"
+        },
+        {
+          "armor": "field_carrier",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "benelli_m2"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 2,
+          "weapon": "scar_h"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "svd"
+        }
+      ],
+      "vehicles": [
+        "bayou",
+        "workhorse"
+      ]
+    },
+    "defender": {
+      "faction": "orlov",
+      "units": [
+        {
+          "armor": "reinforced_carrier",
+          "class": "pistol",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m1911"
+        },
+        {
+          "armor": "",
+          "class": "smg",
+          "specialist": "",
+          "tier": 1,
+          "weapon": "mp5k"
+        },
+        {
+          "armor": "patrol_vest",
+          "class": "shotgun",
+          "specialist": "",
+          "tier": 2,
+          "weapon": "benelli_m4"
+        },
+        {
+          "armor": "field_carrier",
+          "class": "rifle",
+          "specialist": "",
+          "tier": 3,
+          "weapon": "m4a1"
+        },
+        {
+          "armor": "reinforced_carrier",
+          "class": "sniper",
+          "specialist": "",
+          "tier": 2,
+          "weapon": "psg1"
+        }
+      ],
+      "vehicles": [
+        "workhorse",
+        "rattleback"
+      ]
+    },
+    "map_id": "river_bridge"
+  },
+  "errors": [],
+  "events": [
+    {
+      "chapter": "Open Battle Sandbox",
+      "focus": "full",
+      "frame": 30,
+      "seconds": 1.0
+    },
+    {
+      "chapter": "Arsenal / weapon preview",
+      "focus": "full",
+      "frame": 143,
+      "seconds": 4.76666666666667
+    },
+    {
+      "chapter": "Armor catalog / three HP tiers",
+      "focus": "full",
+      "frame": 255,
+      "seconds": 8.5
+    },
+    {
+      "chapter": "Custom Battle Setup / choose the map",
+      "focus": "full",
+      "frame": 406,
+      "seconds": 13.5333333333333
+    },
+    {
+      "chapter": "Choose attacking faction",
+      "focus": "attacker",
+      "frame": 589,
+      "seconds": 19.6333333333333
+    },
+    {
+      "chapter": "Clear and build five attackers",
+      "focus": "attacker",
+      "frame": 652,
+      "seconds": 21.7333333333333
+    },
+    {
+      "chapter": "Change an existing unit class",
+      "focus": "attacker",
+      "frame": 1173,
+      "seconds": 39.1
+    },
+    {
+      "chapter": "Duplicate and remove a unit",
+      "focus": "attacker",
+      "frame": 1299,
+      "seconds": 43.3
+    },
+    {
+      "chapter": "Attacker / Pistol",
+      "focus": "attacker",
+      "frame": 1401,
+      "seconds": 46.7
+    },
+    {
+      "chapter": "Attacker / Smg",
+      "focus": "attacker",
+      "frame": 1637,
+      "seconds": 54.5666666666667
+    },
+    {
+      "chapter": "Attacker / Shotgun",
+      "focus": "attacker",
+      "frame": 1873,
+      "seconds": 62.4333333333333
+    },
+    {
+      "chapter": "Attacker / Rifle",
+      "focus": "attacker",
+      "frame": 2109,
+      "seconds": 70.3
+    },
+    {
+      "chapter": "Attacker / Sniper",
+      "focus": "attacker",
+      "frame": 2345,
+      "seconds": 78.1666666666667
+    },
+    {
+      "chapter": "Choose defending faction",
+      "focus": "defender",
+      "frame": 2549,
+      "seconds": 84.9666666666667
+    },
+    {
+      "chapter": "Defender / Pistol",
+      "focus": "defender",
+      "frame": 2668,
+      "seconds": 88.9333333333333
+    },
+    {
+      "chapter": "Defender / Smg",
+      "focus": "defender",
+      "frame": 2904,
+      "seconds": 96.8
+    },
+    {
+      "chapter": "Defender / Shotgun",
+      "focus": "defender",
+      "frame": 3140,
+      "seconds": 104.666666666667
+    },
+    {
+      "chapter": "Defender / Rifle",
+      "focus": "defender",
+      "frame": 3376,
+      "seconds": 112.533333333333
+    },
+    {
+      "chapter": "Defender / Sniper",
+      "focus": "defender",
+      "frame": 3612,
+      "seconds": 120.4
+    },
+    {
+      "chapter": "Attacking convoy / manual selection",
+      "focus": "full",
+      "frame": 3816,
+      "seconds": 127.2
+    },
+    {
+      "chapter": "Seat validation / add a second vehicle",
+      "focus": "full",
+      "frame": 4096,
+      "seconds": 136.533333333333
+    },
+    {
+      "chapter": "Auto-Fit Seats / inspect automatic convoy",
+      "focus": "full",
+      "frame": 4483,
+      "seconds": 149.433333333333
+    },
+    {
+      "chapter": "Defending convoy / Auto-Fit Defenders",
+      "focus": "full",
+      "frame": 4726,
+      "seconds": 157.533333333333
+    },
+    {
+      "chapter": "Final 5 vs 5 / ready to launch",
+      "focus": "full",
+      "frame": 5187,
+      "seconds": 172.9
+    }
+  ],
+  "fast": false,
+  "fps": 30,
+  "frames": 5563,
+  "no_combat": true
+}

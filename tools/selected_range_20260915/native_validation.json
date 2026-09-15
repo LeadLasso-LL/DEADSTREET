@@ -1,0 +1,144 @@
+{
+  "checks": 234,
+  "combat_balance_changed": false,
+  "engine": "4.7.2-stable (official)",
+  "errors": [],
+  "fixture_units_per_side": 5,
+  "samples": [
+    {
+      "center": "(464.656, 192.72)",
+      "class": "pistol",
+      "map": "harold",
+      "model": "glock_17",
+      "projected_radii": "(192.0, 144.0)",
+      "radius": 24.0,
+      "tier": 1
+    },
+    {
+      "center": "(464.656, 160.08)",
+      "class": "smg",
+      "map": "harold",
+      "model": "mac10",
+      "projected_radii": "(136.0, 102.0)",
+      "radius": 17.0,
+      "tier": 2
+    },
+    {
+      "center": "(388.8713, 192.9773)",
+      "class": "shotgun",
+      "map": "harold",
+      "model": "spas12",
+      "projected_radii": "(112.0, 84.0)",
+      "radius": 14.0,
+      "tier": 3
+    },
+    {
+      "center": "(388.8713, 164.7533)",
+      "class": "rifle",
+      "map": "harold",
+      "model": "g36c",
+      "projected_radii": "(280.0, 210.0)",
+      "radius": 35.0,
+      "tier": 1
+    },
+    {
+      "center": "(401.4012, 192.9773)",
+      "class": "sniper",
+      "map": "harold",
+      "model": "awm",
+      "projected_radii": "(624.0, 468.0)",
+      "radius": 78.0,
+      "tier": 2
+    },
+    {
+      "center": "(278.784, 193.68)",
+      "class": "pistol",
+      "map": "river_bridge",
+      "model": "glock_17",
+      "projected_radii": "(192.0, 144.0)",
+      "radius": 24.0,
+      "tier": 1
+    },
+    {
+      "center": "(278.784, 226.32)",
+      "class": "smg",
+      "map": "river_bridge",
+      "model": "mac10",
+      "projected_radii": "(136.0, 102.0)",
+      "radius": 17.0,
+      "tier": 2
+    },
+    {
+      "center": "(270.7507, 231.888)",
+      "class": "shotgun",
+      "map": "river_bridge",
+      "model": "spas12",
+      "projected_radii": "(112.0, 84.0)",
+      "radius": 14.0,
+      "tier": 3
+    },
+    {
+      "center": "(270.7507, 260.112)",
+      "class": "rifle",
+      "map": "river_bridge",
+      "model": "g36c",
+      "projected_radii": "(280.0, 210.0)",
+      "radius": 35.0,
+      "tier": 1
+    },
+    {
+      "center": "(258.2208, 231.888)",
+      "class": "sniper",
+      "map": "river_bridge",
+      "model": "awm",
+      "projected_radii": "(624.0, 468.0)",
+      "radius": 78.0,
+      "tier": 2
+    },
+    {
+      "center": "(384.8, 240.0)",
+      "class": "pistol",
+      "map": "whittaker_estate",
+      "model": "glock_17",
+      "projected_radii": "(192.0, 144.0)",
+      "radius": 24.0,
+      "tier": 1
+    },
+    {
+      "center": "(384.8, 276.0)",
+      "class": "smg",
+      "map": "whittaker_estate",
+      "model": "mac10",
+      "projected_radii": "(136.0, 102.0)",
+      "radius": 17.0,
+      "tier": 2
+    },
+    {
+      "center": "(331.3303, 304.8503)",
+      "class": "shotgun",
+      "map": "whittaker_estate",
+      "model": "spas12",
+      "projected_radii": "(112.0, 84.0)",
+      "radius": 14.0,
+      "tier": 3
+    },
+    {
+      "center": "(385.2, 252.0)",
+      "class": "rifle",
+      "map": "whittaker_estate",
+      "model": "g36c",
+      "projected_radii": "(280.0, 210.0)",
+      "radius": 35.0,
+      "tier": 1
+    },
+    {
+      "center": "(384.8, 456.0)",
+      "class": "sniper",
+      "map": "whittaker_estate",
+      "model": "awm",
+      "projected_radii": "(624.0, 468.0)",
+      "radius": 78.0,
+      "tier": 2
+    }
+  ]
+}

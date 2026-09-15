@@ -70,13 +70,15 @@ func add_faction_radio(b,side: String,identity: String,candidates: Array,track_i
  if side==b.defender_side_id and layout not in ["river_suspension_bridge_v1","whittaker_estate_v1"]:building=true
  if building:
   var anchor=preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if layout=="whittaker_estate_v1" else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE
+  if layout=="doble_ocho_yard_v1":anchor=preload("res://battle/geometry/doble_ocho_catalog.gd").ENTRANCE
+  if layout=="freight_exchange_v1":anchor=preload("res://battle/geometry/freight_exchange_catalog.gd").ENTRANCE
   player.set_meta("fixed_position",anchor)
  elif not candidates.is_empty():
   key=str(candidates[0].battle_vehicle_id)
  else:
   for p in b.participants.values():
    if p.side_id==side:player.set_meta("fixed_position",p.battle_position);break
- var estate=building and layout=="whittaker_estate_v1"
+ var estate=building and layout in ["whittaker_estate_v1","doble_ocho_yard_v1","freight_exchange_v1"]
  player.set_meta("base_gain",-25. if estate else -18.);player.set_meta("victory_gain",-18.)
  player.set_meta("battle_drop",6. if building else 14.)
  player.set_meta("range",1100. if building else 900.);player.set_meta("attenuation",1.2 if building else .7)
@@ -105,6 +107,18 @@ func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix
   player.max_distance=lerpf(float(player.get_meta("range",900.)),100000.,foreground) if is_radio else 1050.
   player.attenuation=lerpf(float(player.get_meta("attenuation",.7)),0.,foreground)
   player.panning_strength=.75*(1.-foreground)
+  # Arrival belongs to the approaching convoy, even while its radio is farther away.
+  # Return to the existing battle mix over the presentation's final two arrival seconds.
+  var arrival_focus=(1.-clampf(battle_mix,0.,1.)) if b.battle_phase!="resolved" else 0.
+  if is_radio and arrival_focus>0.:
+   if v!=null and v.side_id==b.attacker_side_id:
+    player.volume_db=lerpf(player.volume_db,-3.0,arrival_focus)
+    player.max_distance=lerpf(player.max_distance,6000.,arrival_focus)
+    player.attenuation=lerpf(player.attenuation,.18,arrival_focus)
+    # Open-window arrival still has interior coloration; parked combat remains muffled.
+    RadioFilter.update(player,maxf(foreground,arrival_focus*.42))
+   elif str(player.get_meta("side_id",""))==b.defender_side_id:
+    player.volume_db-=14.*arrival_focus
   if bool(player.get_meta("is_trc_siren",false)):
    # A persistent warning source, not radio music. Use broken, wavering warning pulses and
    # enough distance reach to remain audible after the camera leaves the convoy.

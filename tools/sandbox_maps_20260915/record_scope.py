@@ -1,0 +1,6 @@
+from pathlib import Path
+r=Path(__file__).resolve().parents[2]
+entry="\n\n## 20260915-sandbox-maps-02 - Visual convoy workflow and limits approved\nOWNER-AUTHORIZED scope expansion: Brandon requires universal16-per-side sandbox cap, exactly3 convoy slots, up to3 motorcycles per slot for biker factions (Stateline/Blacktop), NBPD and TRC. Convoy selection becomes a conspicuous visual step below faction/map setup. Picker shows Your Convoy with3 image-filled slots/model/seats/removal; additions that violate slots/drivers or strand the force without enough possible seats become unclickable and visibly dimmed. Preserve independent vehicle bodies, actual drivers/passengers and existing audio. This supersedes12-unit/non-estate limit and undecided3-slot record. No requested extra arbitrary heavy-vehicle quota; slot and unit limits apply equally. Need actual16v16 map startup/cover and bike grouping checks, not UI-only validation. Existing map-layout draft is not yet installed. Next implement unified legality and visual slots, then native integration.\n"
+for name in ['DEAD_STREET_HIVE_MIND.md','DEAD_STREET_JOURNAL.md','DEAD_STREET_PROJECT_CONTROL.md']:
+ p=r/'docs'/name;t=p.read_text(encoding='utf-8');assert '20260915-sandbox-maps-02' not in t;p.write_text(t+entry,encoding='utf-8')
+print('Recorded convoy scope')

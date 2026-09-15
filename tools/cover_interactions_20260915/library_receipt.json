@@ -1,0 +1,20 @@
+{
+  "current_version_number": 0,
+  "directory_id": "6aa0207fd3c08191bffca33062d73c97",
+  "external_connectors_accessed": false,
+  "file_id": "file_00000000ad5c823081eb229f21062720",
+  "file_name": "DEAD_STREET_Harold_Cover_Correction.png",
+  "file_size_bytes": 405757,
+  "library_file_id": "libfile_bb76d14df0988191a841554ed6fe8033",
+  "mime_type": "image/png",
+  "operation": "create_library_file",
+  "path": "/Dead Street/DEAD_STREET_Harold_Cover_Correction.png",
+  "restored_from_version_number": null,
+  "status": "succeeded",
+  "xattrs": [
+    {
+      "name": "user.library-file-version",
+      "value": "0"
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (9 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  10% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  20% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  30% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  70% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  80% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (69 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | ground.png[39m[0m
+[   1% ] [90m[1m_update_scan_actions[22m | ak47.png[39m[0m
+[   2% ] [90m[1m_update_scan_actions[22m | aug.png[39m[0m
+[   4% ] [90m[1m_update_scan_actions[22m | awm.png[39m[0m
+[   5% ] [90m[1m_update_scan_actions[22m | benelli_m2.png[39m[0m
+[   7% ] [90m[1m_update_scan_actions[22m | benelli_m4.png[39m[0m
+[   8% ] [90m[1m_update_scan_actions[22m | cz75.png[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | desert_eagle.png[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | five_seven.png[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | g36c.png[39m[0m
+[  14% ] [90m[1m_update_scan_actions[22m | glock_17.png[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | m4a1.png[39m[0m
+[  17% ] [90m[1m_update_scan_actions[22m | m1911.png[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | mac10.png[39m[0m
+[  20% ] [90m[1m_update_scan_actions[22m | mini14.png[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | moss500.png[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | mp5.png[39m[0m
+[  24% ] [90m[1m_update_scan_actions[22m | mp5k.png[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | p90.png[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | psg1.png[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | rem700.png[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | rem870.png[39m[0m
+[  31% ] [90m[1m_update_scan_actions[22m | saiga12.png[39m[0m
+[  32% ] [90m[1m_update_scan_actions[22m | scar_h.png[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | sks.png[39m[0m
+[  35% ] [90m[1m_update_scan_actions[22m | spas12.png[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | ssg69.png[39m[0m
+[  38% ] [90m[1m_update_scan_actions[22m | svd.png[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | usp.png[39m[0m
+[  41% ] [90m[1m_update_scan_actions[22m | uzi.png[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | vector.png[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | ak47.svg[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | awm.svg[39m[0m
+[  47% ] [90m[1m_update_scan_actions[22m | psg1.svg[39m[0m
+[  48% ] [90m[1m_update_scan_actions[22m | rem700.svg[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | sks.svg[39m[0m
+[  51% ] [90m[1m_update_scan_actions[22m | ssg69.svg[39m[0m
+[  52% ] [90m[1m_update_scan_actions[22m | svd.svg[39m[0m
+[  54% ] [90m[1m_update_scan_actions[22m | after_combat.png[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | after_ready.png[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | ak47.png[39m[0m
+[  58% ] [90m[1m_update_scan_actions[22m | awm.png[39m[0m
+[  60% ] [90m[1m_update_scan_actions[22m | psg1.png[39m[0m
+[  61% ] [90m[1m_update_scan_actions[22m | rem700.png[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | sks.png[39m[0m
+[  64% ] [90m[1m_update_scan_actions[22m | ssg69.png[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | svd.png[39m[0m
+[  67% ] [90m[1m_update_scan_actions[22m | ak47.svg[39m[0m
+[  68% ] [90m[1m_update_scan_actions[22m | awm.svg[39m[0m
+[  70% ] [90m[1m_update_scan_actions[22m | psg1.svg[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | rem700.svg[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | sks.svg[39m[0m
+[  74% ] [90m[1m_update_scan_actions[22m | ssg69.svg[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | svd.svg[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | ak47.png[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | battle_setup.png[39m[0m
+[  80% ] [90m[1m_update_scan_actions[22m | emblems_after.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | faction_mercer.png[39m[0m
+[  82% ] [90m[1m_update_scan_actions[22m | faction_nbpd.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | faction_orlov.png[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | music_popup.png[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | music_shuffle_menu.png[39m[0m
+[  88% ] [90m[1m_update_scan_actions[22m | precision_guns.png[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | sniper_awm.png[39m[0m
+[  91% ] [90m[1m_update_scan_actions[22m | sniper_psg1.png[39m[0m
+[  92% ] [90m[1m_update_scan_actions[22m | sniper_rem700.png[39m[0m
+[  94% ] [90m[1m_update_scan_actions[22m | sniper_sks.png[39m[0m
+[  95% ] [90m[1m_update_scan_actions[22m | sniper_ssg69.png[39m[0m
+[  97% ] [90m[1m_update_scan_actions[22m | sniper_svd.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (39 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   2% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   5% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   7% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  10% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  12% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  17% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  20% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  22% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  25% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  27% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  30% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  32% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  35% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  37% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  40% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  42% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  45% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  47% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  52% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  55% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  57% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  60% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  62% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  65% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  67% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  70% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  72% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  75% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  77% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  80% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  82% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  85% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  87% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  90% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  92% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  95% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | rem700.svg[39m[0m
+[   2% ] [90m[1mreimport[22m | sks.svg[39m[0m
+[   5% ] [90m[1mreimport[22m | ssg69.svg[39m[0m
+[   7% ] [90m[1mreimport[22m | svd.svg[39m[0m
+[  10% ] [90m[1mreimport[22m | ak47.png[39m[0m
+[  12% ] [90m[1mreimport[22m | battle_setup.png[39m[0m
+[  15% ] [90m[1mreimport[22m | emblems_after.png[39m[0m
+[  17% ] [90m[1mreimport[22m | faction_mercer.png[39m[0m
+[  20% ] [90m[1mreimport[22m | faction_nbpd.png[39m[0m
+[  22% ] [90m[1mreimport[22m | faction_orlov.png[39m[0m
+[  25% ] [90m[1mreimport[22m | music_popup.png[39m[0m
+[  27% ] [90m[1mreimport[22m | music_shuffle_menu.png[39m[0m
+[  30% ] [90m[1mreimport[22m | precision_guns.png[39m[0m
+[  32% ] [90m[1mreimport[22m | sniper_awm.png[39m[0m
+[  35% ] [90m[1mreimport[22m | sniper_psg1.png[39m[0m
+[  37% ] [90m[1mreimport[22m | sniper_rem700.png[39m[0m
+[  40% ] [90m[1mreimport[22m | sniper_sks.png[39m[0m
+[  42% ] [90m[1mreimport[22m | sniper_ssg69.png[39m[0m
+[  45% ] [90m[1mreimport[22m | sniper_svd.png[39m[0m
+[  47% ] [90m[1mreimport[22m | ground.png[39m[0m
+[  50% ] [90m[1mreimport[22m | ak47.svg[39m[0m
+[  52% ] [90m[1mreimport[22m | awm.svg[39m[0m
+[  55% ] [90m[1mreimport[22m | psg1.svg[39m[0m
+[  57% ] [90m[1mreimport[22m | rem700.svg[39m[0m
+[  60% ] [90m[1mreimport[22m | sks.svg[39m[0m
+[  62% ] [90m[1mreimport[22m | ssg69.svg[39m[0m
+[  65% ] [90m[1mreimport[22m | svd.svg[39m[0m
+[  67% ] [90m[1mreimport[22m | after_combat.png[39m[0m
+[  70% ] [90m[1mreimport[22m | after_ready.png[39m[0m
+[  72% ] [90m[1mreimport[22m | ak47.png[39m[0m
+[  75% ] [90m[1mreimport[22m | awm.png[39m[0m
+[  77% ] [90m[1mreimport[22m | psg1.png[39m[0m
+[  80% ] [90m[1mreimport[22m | rem700.png[39m[0m
+[  82% ] [90m[1mreimport[22m | sks.png[39m[0m
+[  85% ] [90m[1mreimport[22m | ssg69.png[39m[0m
+[  87% ] [90m[1mreimport[22m | svd.png[39m[0m
+[  90% ] [90m[1mreimport[22m | ak47.svg[39m[0m
+[  92% ] [90m[1mreimport[22m | awm.svg[39m[0m
+[  95% ] [90m[1mreimport[22m | psg1.svg[39m[0m
+[  97% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (39 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

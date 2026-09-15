@@ -1,0 +1,11 @@
+{
+  "gameplay/freight_exchange_art.gd": "64403fc40e184d8f0e4d41119f1bddacb6cd28406dccb46b52142691c2a6653c",
+  "gameplay/freight_exchange_weather.gd": "ec1e48ce9378b264c789f54713fdbd32af2b5aeb7642f6fce9f7f7326393d222",
+  "gameplay/freight_exchange_setup.gd": "305267381d46e13c1ec73b5fe7e5ded69dac6c1acca8319cbd336729aee2763e",
+  "gameplay/freight_exchange_scenario.gd": "b2b57492861ef46aea478314eed6ec101ecbeb3e550df9bb9b6c5ec3f606e89b",
+  "battle/geometry/freight_exchange_catalog.gd": "e367d264e3885d745d40e323c259ab7c4f651a14bb1ef0f299699adf49509375",
+  "gameplay/sandbox_map_catalog.gd": "04ee630703fd1c07032775a13cdf41d9f7ccb2422221010750c80c5404b4e1f3",
+  "gameplay/tactical_battle_presentation.gd": "4eb0373d49f068a99d5c88df31c7b02e871b743cca819e36cac7a21275ce8a44",
+  "assets/art/freight_exchange/ground.png": "55542ad29ba4e065f619e17eb88e2ebae5b860c9e38437252568499601853dc7",
+  "assets/menu/maps/freight_exchange.png": "0ab20e1b408f7c29863137c17e9ca5093dcc8c87bce1d7df7a2df6dc9711ef80"
+}

@@ -1,0 +1,152 @@
+{
+  "coverage": 18,
+  "tempo_all_80_percent": true,
+  "all_scores_changed": true,
+  "note": "These checks verify structure/tempo, not subjective darkness or owner approval.",
+  "factions": [
+    {
+      "faction": "eastex",
+      "old_bpm": 80,
+      "new_bpm": 64.0,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Cold Houston menace · blown-out sub · haunted keys"
+    },
+    {
+      "faction": "calle_ocho",
+      "old_bpm": 88,
+      "new_bpm": 70.4,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "After-midnight lowrider threat · dirty guitar · deep bass"
+    },
+    {
+      "faction": "ventresca",
+      "old_bpm": 98,
+      "new_bpm": 78.4,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Back-room intimidation · wounded trumpet · black organ"
+    },
+    {
+      "faction": "ravicci",
+      "old_bpm": 90,
+      "new_bpm": 72.0,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Funeral procession · low piano · suffocating strings"
+    },
+    {
+      "faction": "orlov",
+      "old_bpm": 128,
+      "new_bpm": 102.4,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Concrete brutality · cold bass ostinato · corroded guitar"
+    },
+    {
+      "faction": "zangyaku",
+      "old_bpm": 142,
+      "new_bpm": 113.6,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Half-time industrial violence · jagged cuts · sub impact"
+    },
+    {
+      "faction": "bitian",
+      "old_bpm": 82,
+      "new_bpm": 65.6,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Rain-black crime scene · hollow keys · crushing trip-hop"
+    },
+    {
+      "faction": "sierra_roja",
+      "old_bpm": 104,
+      "new_bpm": 83.2,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Execution corrido · low picked strings · threatening brass"
+    },
+    {
+      "faction": "mcallister",
+      "old_bpm": 100,
+      "new_bpm": 80.0,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Old-money cruelty · baritone blues · cold piano"
+    },
+    {
+      "faction": "mercer44",
+      "old_bpm": 86,
+      "new_bpm": 68.8,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Hostile Southern weight · distorted 808 · black brass"
+    },
+    {
+      "faction": "wm_corp",
+      "old_bpm": 102,
+      "new_bpm": 81.6,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Oil-black Southern sludge · corrupt power · slow violence"
+    },
+    {
+      "faction": "union_sur",
+      "old_bpm": 94,
+      "new_bpm": 75.2,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Cartel street menace · heavy percussion · threatening strings"
+    },
+    {
+      "faction": "lombardia",
+      "old_bpm": 84,
+      "new_bpm": 67.2,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Imperial dread · crushing brass · fatal strings"
+    },
+    {
+      "faction": "sand_raiders",
+      "old_bpm": 76,
+      "new_bpm": 60.8,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Rust, violence and rot · broken metal · detuned grime"
+    },
+    {
+      "faction": "saffar",
+      "old_bpm": 90,
+      "new_bpm": 72.0,
+      "tempo_ratio": 0.8,
+      "new_score": true,
+      "direction": "Desert-night dread · low plucked strings · merciless drums"
+    },
+    {
+      "faction": "kurgan",
+      "old_bpm": 96,
+      "new_bpm": 76.8,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Mechanized brutality · steel impacts · low marching weight"
+    },
+    {
+      "faction": "ashford_crane",
+      "old_bpm": 96,
+      "new_bpm": 76.8,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Rotten aristocracy · decaying piano · chamber horror"
+    },
+    {
+      "faction": "blacktop",
+      "old_bpm": 68,
+      "new_bpm": 54.4,
+      "tempo_ratio": 0.7999999999999999,
+      "new_score": true,
+      "direction": "Punishing funeral doom · filthy low guitars · absolute weight"
+    }
+  ]
+}

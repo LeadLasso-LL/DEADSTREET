@@ -241,6 +241,7 @@ var _deployment_cache_valid: bool = false
 var _surface_cache_valid: bool = false
 var static_layer: TacticalStaticBattlefieldLayer = null
 var dynamic_layer: TacticalDynamicBattlefieldLayer = null
+var selection_range_layer: Node2D = null
 var static_surface_root: Node2D = null
 var static_building_root: Node2D = null
 var static_composite_root: Node2D = null
@@ -556,6 +557,12 @@ func _ensure_layers() -> void:
 		static_composite_root.name = "StaticCompositeRoot"
 		static_composite_root.z_index = 0
 		add_child(static_composite_root)
+	if selection_range_layer == null:
+		selection_range_layer = preload("res://gameplay/tactical_selection_range.gd").new()
+		selection_range_layer.name = "SelectedUnitRange"
+		selection_range_layer.host = self
+		selection_range_layer.z_index = 0
+		add_child(selection_range_layer)
 	if static_building_root == null:
 		static_building_root = Node2D.new()
 		static_building_root.name = "StaticBuildingRoot"
@@ -617,6 +624,7 @@ func _order_presentation_roots() -> void:
 		static_surface_root,
 		static_layer,
 		static_composite_root,
+		selection_range_layer,
 		static_building_root,
 		static_detail_root,
 		static_asset_root,
@@ -3839,6 +3847,8 @@ func _soldier_presentation_origin(battle_state: BattleState, participant: Battle
 	if participant == null or not participant.has_battle_position:
 		return Vector2.ZERO
 	var view_pos: Vector2 = _to_view(participant.battle_position)
+	if battle_state.battlefield_geometry.authored_layout_id in ["dead_street_dusk_v1","doble_ocho_yard_v1"]:
+		return view_pos
 	if not participant.has_occupied_cover_slot():
 		return view_pos
 	var facing: Vector2 = _participant_view_facing(battle_state, participant)
@@ -4241,7 +4251,7 @@ func _is_river_bridge() -> bool:
 	return _geometry()!=null and _geometry().authored_layout_id=="river_suspension_bridge_v1"
 func _is_dusk_street() -> bool:
 	var g = _geometry()
-	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1","whittaker_estate_v1"]
+	return g != null and g.authored_layout_id in ["dead_street_dusk_v1","river_suspension_bridge_v1","whittaker_estate_v1","doble_ocho_yard_v1","freight_exchange_v1"]
 func _street_projection() -> Vector2:
 	return Vector2(1,0.75) if _is_dusk_street() else Vector2.ONE
 func _sync_dusk_art() -> void:
@@ -4261,6 +4271,10 @@ func _sync_dusk_art() -> void:
 			if is_instance_valid(n) and not n.is_queued_for_deletion():n.queue_free()
 		_dusk_nodes.clear()
 	if not _dusk_nodes.is_empty(): return
+	if _geometry().authored_layout_id=="freight_exchange_v1":
+		_spawn_freight_exchange_art();return
+	if _geometry().authored_layout_id=="doble_ocho_yard_v1":
+		_spawn_doble_ocho_art();return
 	if _geometry().authored_layout_id=="whittaker_estate_v1":
 		_spawn_estate_art();return
 	if _is_river_bridge():
@@ -4309,6 +4323,28 @@ func _spawn_estate_art() -> void:
 		var box: Rect2=row[1]
 		item.position=box.get_center()*Vector2(8,6) if row[2]=="traffic" else Vector2(box.get_center().x*8,box.end.y*6)
 		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
+
+func _spawn_doble_ocho_art() -> void:
+	var art=preload("res://gameplay/doble_ocho_art.gd")
+	var ground=art.new();static_surface_root.add_child(ground);_dusk_nodes.append(ground)
+	dynamic_unit_root.y_sort_enabled=true
+	for row in preload("res://battle/geometry/doble_ocho_catalog.gd").props():
+		var item=art.new();item.prop=row;item.view=self
+		var box: Rect2=row[1]
+		item.position=box.get_center()*Vector2(8,6) if row[2]=="traffic" else Vector2(box.get_center().x*8,box.end.y*6)
+		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
+
+func _spawn_freight_exchange_art() -> void:
+	var art=preload("res://gameplay/freight_exchange_art.gd")
+	var ground=art.new();static_surface_root.add_child(ground);_dusk_nodes.append(ground)
+	dynamic_unit_root.y_sort_enabled=true
+	for row in preload("res://battle/geometry/freight_exchange_catalog.gd").props():
+		var item=art.new();item.prop=row;item.view=self
+		var box: Rect2=row[1];item.position=Vector2(box.get_center().x*8,box.end.y*6)
+		dynamic_unit_root.add_child(item);_dusk_nodes.append(item)
+
+	var weather=preload("res://gameplay/freight_exchange_weather.gd").new();weather.view=self
+	static_surface_root.add_child(weather);_dusk_nodes.append(weather)
 
 # Dusk camera: wheel to inspect, middle drag to pan, Home to fit.
 

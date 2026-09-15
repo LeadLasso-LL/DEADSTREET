@@ -1,0 +1,15 @@
+[aist#0:1/pcm_s16le @ 000001e379859540] Guessed Channel Layout: stereo
+[Parsed_fade_3 @ 000001e379856f00] Unable to parse option value ".8" as duration
+Error applying option 'd' to filter 'fade': Invalid argument
+Error opening output file NUL.
+Error opening output files: Invalid argument
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\whittaker_estate\encode.py", line 20, in <module>
+    subprocess.run(base+['-pass','1','-an','-f','null','NUL'],check=True,timeout=180)
+  File "subprocess.py", line 571, in run
+subprocess.CalledProcessError: Command '['C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\python\\Lib\\site-packages\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe', '-y', '-v', 'warning', '-ss', '0.03333333333333333', '-i', 'C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\estate_raw.avi', '-t', '76.96666666666667', '-map', '0:v:0', '-map', '0:a:0', '-vf', 'scale=1280:720:flags=lanczos,setsar=1,fade=t=in:st=0:d=0.25,fade=t=out:st=76.16666666666667:d=.8', '-c:v', 'libx264', '-preset', 'medium', '-b:v', '692755', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-r', '30', '-g', '60', '-passlogfile', 'C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\estate_mobile_pass', '-pass', '1', '-an', '-f', 'null', 'NUL']' returned non-zero exit status 4294967274.
+Traceback (most recent call last):
+  File "C:\Users\brand\OneDrive\Documents\dead-street\tools\whittaker_estate\export_worker.py", line 4, in <module>
+    subprocess.run([sys.executable,'-X','utf8','-u',str(out/'encode.py')],cwd=r,check=True,timeout=420)
+  File "subprocess.py", line 571, in run
+subprocess.CalledProcessError: Command '['C:\\Users\\brand\\AppData\\Local\\DeadStreetTools\\python\\python.exe', '-X', 'utf8', '-u', 'C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\encode.py']' returned non-zero exit status 1.

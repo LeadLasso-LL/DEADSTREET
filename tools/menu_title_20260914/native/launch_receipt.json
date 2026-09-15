@@ -1,0 +1,32 @@
+{
+  "status": "INSTALLED",
+  "time_utc": "2026-09-14T22:13:34.595800+00:00",
+  "head": "4dde3f8c79fc142955169a9fd75c6a703da07217",
+  "launcher": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\arsenal_production\\Open-Arsenal.ps1",
+  "double_click_file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\Open Dead Street Sandbox.cmd",
+  "gui": "C:\\Users\\brand\\OneDrive\\Documents\\Godot\\Godot_v4.7.2-stable_win64.exe",
+  "scene": "res://gameplay/sandbox_opening.tscn",
+  "validation": {
+    "audio_play_count": 1,
+    "button_at": 27.0027584880165,
+    "checks": 29,
+    "errors": [],
+    "mode": "smoke",
+    "native_black_max_pixel": 0,
+    "runtime_and_menu_real": true,
+    "sandbox_at": 27.1051468143104,
+    "status": "PASS",
+    "title_at": 21.0004240204872,
+    "viewport": [
+      1280,
+      720
+    ]
+  },
+  "publication": "not committed or pushed in this pass",
+  "files": {
+    "tools\\arsenal_production\\Open-Arsenal.ps1": "a377d34b47420a1b7b521f5b30d8920d28e956faf07862e9d7b09c197a51e5e6",
+    "Open Dead Street Sandbox.cmd": "6f17b5394850b25ea8ccf7108a460bcb82e7ba35a9fac0072906ed7a73919e29",
+    "gameplay\\sandbox_opening.gd": "ad343c57220d54ff281e95c3ad976c853b12e3719c72dfe6421f96724f503289",
+    "gameplay\\sandbox_menu_music.gd": "26697063fa9f95864c043fb2a199ad5bce10dd270f1b38e2a91b3c1e6e3abff0"
+  }
+}

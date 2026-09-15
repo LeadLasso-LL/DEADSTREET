@@ -1,4 +1,6 @@
 {
   "checks": 63,
-  "errors": []
+  "errors": [
+    "push destination assigns current badge"
+  ]
 }

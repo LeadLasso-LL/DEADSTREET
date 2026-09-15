@@ -1,0 +1,34 @@
+[
+  {
+    "step": "specialist_final_art",
+    "exit": 0
+  },
+  {
+    "step": "art_review",
+    "exit": 0
+  },
+  {
+    "step": "mercer_import",
+    "exit": 0
+  },
+  {
+    "step": "mercer_complete_check",
+    "exit": 0
+  },
+  {
+    "step": "arsenal_regression",
+    "exit": 0
+  },
+  {
+    "step": "tactics_regression",
+    "exit": 0
+  },
+  {
+    "step": "mercer_live_battles",
+    "exit": 0
+  },
+  {
+    "step": "mercer_ui_capture",
+    "exit": 0
+  }
+]

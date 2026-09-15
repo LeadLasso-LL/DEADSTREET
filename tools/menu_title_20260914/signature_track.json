@@ -1,0 +1,30 @@
+{
+  "title": "Dead Street",
+  "source_artist": "brandon",
+  "artist": "B-22",
+  "source_url": "https://soundcloud.com/brandonharb-1/track-22/s-eO7fL",
+  "track_id": 258053063,
+  "duration_ms": 155338,
+  "role": "signature_intro_and_shuffle",
+  "exclude_first_shuffle": true,
+  "source_format": "mp3_0_0",
+  "bytes": 2485184,
+  "sha256": "e624827c72e62dc1c6568762f7ad73f7aaa3cf8b912dbb4ae88c6099887dbb5d",
+  "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\menu_title_20260914\\B-22_Dead_Street.mp3",
+  "verified_decode": true,
+  "structural_validation": {
+    "structural_validation": "PASS",
+    "frames": 5946,
+    "seconds": 155.32408163264,
+    "sample_rates": [
+      44100
+    ],
+    "bitrates_kbps": [
+      128
+    ],
+    "all_bytes_parsed": true,
+    "full_decode_test": false
+  },
+  "source_title": "Track 22",
+  "source_sha256": "74f73732e59f915fd96cb007571004540d26839ffb4ddf2a3f7fc152294680bb"
+}

@@ -1,0 +1,11 @@
+{
+  "verified_utc": "2026-09-14T17:43:26.651356+00:00",
+  "head": "77874acc264fe3318583780bf48b0776a3eba499",
+  "remote": "77874acc264fe3318583780bf48b0776a3eba499",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "status": "pushed and remote verified",
+  "video_version": 3,
+  "video_sha256": "4b3925d681c7c22d11e97571d903e332909718b3f146c2b448cfd8d92519bfbe",
+  "next": "Owner reviews version 3; vocals remain parked; preserve unrelated work",
+  "receipt_policy": "Local completion note accompanies next substantive checkpoint; no recursive receipt commit"
+}

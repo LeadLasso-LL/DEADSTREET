@@ -1,0 +1,129 @@
+{
+  "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\freight_revision_20260915\\DEAD_STREET_Eastex_Freight_Exchange_Battle.mp4",
+  "bytes": 22668919,
+  "sha256": "8a117a2f6c9f5169a35e1a83fdb70322decebe8b100be940a1ee854d9d9aea5d",
+  "seconds": 88.1333333333333,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "decoded_to_end": true,
+  "audio_peak": 0.44565045833587646,
+  "audio_rms": 0.028113478794693947,
+  "parts": [
+    {
+      "name": "part_000.txt",
+      "bytes": 1000000,
+      "sha256": "67e1e81522a6bd4aab5b4e8f6d913ef58d7e45bb7779bce20832b7a2a795abd8"
+    },
+    {
+      "name": "part_001.txt",
+      "bytes": 1000000,
+      "sha256": "63c51c246eb46a4b0dfedbaca7299fe06a849a0fe2f8e98d190e5ebd9f7e6997"
+    },
+    {
+      "name": "part_002.txt",
+      "bytes": 1000000,
+      "sha256": "8fc3564c9273122cb924391e7913ec5b6279fd13b4283e28439f754df071aeb5"
+    },
+    {
+      "name": "part_003.txt",
+      "bytes": 1000000,
+      "sha256": "4244073718f497a5e36014d34e6bc3ee2b5d078b95e46cb5a9100407974db099"
+    },
+    {
+      "name": "part_004.txt",
+      "bytes": 1000000,
+      "sha256": "00369e68a7e3957af6c58d7dc6b5a9b4992e8a94f85e5c61a88f3475849b3e10"
+    },
+    {
+      "name": "part_005.txt",
+      "bytes": 1000000,
+      "sha256": "79d407a32aee66a377afb4d507b472117b01b30e41438ee34bbfdcd50e0887d7"
+    },
+    {
+      "name": "part_006.txt",
+      "bytes": 1000000,
+      "sha256": "a493556460a0e709b5075c92763e3c3822ad8c23ef29e481066acaf0b18c740b"
+    },
+    {
+      "name": "part_007.txt",
+      "bytes": 1000000,
+      "sha256": "c1eb91f37ee60e50cbc885644718cfa8df525118063d923d83ff694fc0f0873a"
+    },
+    {
+      "name": "part_008.txt",
+      "bytes": 1000000,
+      "sha256": "5d50b58d0d2183deb6fe4acd6cc5087d8e98d8153a89889eec47348dec1ffb3a"
+    },
+    {
+      "name": "part_009.txt",
+      "bytes": 1000000,
+      "sha256": "b6ff52d52bcd1c121ac7643dc1408f897c0c819abb68821b5d3ed03ceaa8ec52"
+    },
+    {
+      "name": "part_010.txt",
+      "bytes": 1000000,
+      "sha256": "2eba0965426aef53c85033395c0efc7ff1913ae570084954c794d0e2bcfaa387"
+    },
+    {
+      "name": "part_011.txt",
+      "bytes": 1000000,
+      "sha256": "e1e71eb7f7e71a32f66a13fda8d624c335d3bf84e3be3d2756751c90eed2d1e5"
+    },
+    {
+      "name": "part_012.txt",
+      "bytes": 1000000,
+      "sha256": "3cb5a9ab0e57c21a5070a68c754352260d6826fa0eab3fc37b088a8f3b9da195"
+    },
+    {
+      "name": "part_013.txt",
+      "bytes": 1000000,
+      "sha256": "4c413adbeec821763cff460a4030b3de63219216309a8b3fdbb02422a0245665"
+    },
+    {
+      "name": "part_014.txt",
+      "bytes": 1000000,
+      "sha256": "44fc4218a14ebd38500a2751c3a20dc67f372b212b4f49f3052eeca713282c65"
+    },
+    {
+      "name": "part_015.txt",
+      "bytes": 1000000,
+      "sha256": "7a85787400b2dbd9ed18dc1211bb8adc8cf7ad52eaa7e2ece14964c68d1ca270"
+    },
+    {
+      "name": "part_016.txt",
+      "bytes": 1000000,
+      "sha256": "273be27c850efec66984094f0c702101fed65419351cfb748062ae2fbb7a9183"
+    },
+    {
+      "name": "part_017.txt",
+      "bytes": 1000000,
+      "sha256": "2a5cd5679e238c7cfac2510353b4c211678d6e6b68b3eacf0a44543a8f859b6f"
+    },
+    {
+      "name": "part_018.txt",
+      "bytes": 1000000,
+      "sha256": "f1706a9bd4c16b318b9b43cf487e175070281ff0ff28c276f8c994a9e6eadbba"
+    },
+    {
+      "name": "part_019.txt",
+      "bytes": 1000000,
+      "sha256": "f68a715f99921d26aa4a63632115bbfbecdb172f3c81fa938ce5ffec83524923"
+    },
+    {
+      "name": "part_020.txt",
+      "bytes": 1000000,
+      "sha256": "b467478f054895d35d51d3a5c43ab1444a1c4e54965d49df6a3ce724717c2970"
+    },
+    {
+      "name": "part_021.txt",
+      "bytes": 1000000,
+      "sha256": "2bd5e75bd93182a34395f12d739aa793a0e99f397070c8739e06c9a3c1febd30"
+    },
+    {
+      "name": "part_022.txt",
+      "bytes": 668919,
+      "sha256": "197c7bd6575af493e9c63cf191b8a24187de28771e18f342925ec5fe1b56eac3"
+    }
+  ]
+}

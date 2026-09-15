@@ -3,7 +3,7 @@
   "not_canon": true,
   "not_accepted": true,
   "not_runtime_bound": true,
-  "purpose": "Controlled static source baseline for the next Dead Street style-conversion calibration only. Not canonical camera. Not accepted pose. Not accepted art.",
+  "purpose": "Controlled static source baseline for Dead Street style-conversion calibration. Not canonical camera. Not accepted pose. Not accepted art.",
   "character": {
     "variant_id": "local_street_gang_rifleman_proof_01",
     "recipe": "recipes/local_street_gang_rifleman_proof_01.json",
@@ -24,14 +24,17 @@
   },
   "style": {
     "accepted_profile": null,
-    "comparison_only": ["grounded_grit"]
+    "comparison_only": ["grounded_grit", "POST_0", "POST_1", "POST_2"],
+    "v13_recipe": "recipes/local_street_gang_rifleman_style_v13.json",
+    "v13_status": "3x3 generated. Product review pending. No style accepted."
   },
   "history": {
     "v11_camera_pose_recipe": "recipes/local_street_gang_rifleman_calib_v11.json",
     "v12_silhouette_recipe": "recipes/local_street_gang_rifleman_silhouette_v12.json",
+    "v13_style_recipe": "recipes/local_street_gang_rifleman_style_v13.json",
     "retain_alternates": true
   },
-  "next_milestone": "DEAD STREET STYLE CONVERSION V1.3",
+  "next_milestone": "Product-owner review of V1.3 style-conversion boards. No style accepted.",
   "deferred_until_style_selected_and_8dir_proven": [
     "animation/walk-cycle proof",
     "Godot movement integration"

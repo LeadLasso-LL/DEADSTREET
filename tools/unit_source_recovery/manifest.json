@@ -1,0 +1,109 @@
+{
+  "fps": 16,
+  "tile_size": [
+    128,
+    128
+  ],
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "clips": {
+    "cover_over": 40,
+    "cover_edge": 32,
+    "hit": 16,
+    "injured_run": 24,
+    "death": 24,
+    "reload": 40
+  },
+  "anchor": [
+    64,
+    110
+  ],
+  "status": "VISUAL_REVIEW_CANDIDATE",
+  "root_motion": "in_place",
+  "integration": "LIVE_GODOT_PROJECT_UNAVAILABLE_DEVICE_OFFLINE",
+  "atlas_paths": [
+    "atlases/0_uzi_smg_cover_over.png",
+    "atlases/0_uzi_smg_cover_edge.png",
+    "atlases/0_uzi_smg_hit.png",
+    "atlases/0_uzi_smg_injured_run.png",
+    "atlases/0_uzi_smg_death.png",
+    "atlases/0_uzi_smg_reload.png",
+    "atlases/0_ak_rifle_cover_over.png",
+    "atlases/0_ak_rifle_cover_edge.png",
+    "atlases/0_ak_rifle_hit.png",
+    "atlases/0_ak_rifle_injured_run.png",
+    "atlases/0_ak_rifle_death.png",
+    "atlases/0_ak_rifle_reload.png",
+    "atlases/0_pistol_cover_over.png",
+    "atlases/0_pistol_cover_edge.png",
+    "atlases/0_pistol_hit.png",
+    "atlases/0_pistol_injured_run.png",
+    "atlases/0_pistol_death.png",
+    "atlases/0_pistol_reload.png",
+    "atlases/1_uzi_smg_cover_over.png",
+    "atlases/1_uzi_smg_cover_edge.png",
+    "atlases/1_uzi_smg_hit.png",
+    "atlases/1_uzi_smg_injured_run.png",
+    "atlases/1_uzi_smg_death.png",
+    "atlases/1_uzi_smg_reload.png",
+    "atlases/1_ak_rifle_cover_over.png",
+    "atlases/1_ak_rifle_cover_edge.png",
+    "atlases/1_ak_rifle_hit.png",
+    "atlases/1_ak_rifle_injured_run.png",
+    "atlases/1_ak_rifle_death.png",
+    "atlases/1_ak_rifle_reload.png",
+    "atlases/1_pistol_cover_over.png",
+    "atlases/1_pistol_cover_edge.png",
+    "atlases/1_pistol_hit.png",
+    "atlases/1_pistol_injured_run.png",
+    "atlases/1_pistol_death.png",
+    "atlases/1_pistol_reload.png",
+    "atlases/2_uzi_smg_cover_over.png",
+    "atlases/2_uzi_smg_cover_edge.png",
+    "atlases/2_uzi_smg_hit.png",
+    "atlases/2_uzi_smg_injured_run.png",
+    "atlases/2_uzi_smg_death.png",
+    "atlases/2_uzi_smg_reload.png",
+    "atlases/2_ak_rifle_cover_over.png",
+    "atlases/2_ak_rifle_cover_edge.png",
+    "atlases/2_ak_rifle_hit.png",
+    "atlases/2_ak_rifle_injured_run.png",
+    "atlases/2_ak_rifle_death.png",
+    "atlases/2_ak_rifle_reload.png",
+    "atlases/2_pistol_cover_over.png",
+    "atlases/2_pistol_cover_edge.png",
+    "atlases/2_pistol_hit.png",
+    "atlases/2_pistol_injured_run.png",
+    "atlases/2_pistol_death.png",
+    "atlases/2_pistol_reload.png"
+  ],
+  "looping_clips": [
+    "injured_run",
+    "cover_edge"
+  ],
+  "death_endpoint": "hold last frame; no gameplay resurrection",
+  "reload_events": {
+    "note": "normalized illustrative timing; simulation owns ammo",
+    "remove_magazine": 0.18,
+    "hand_to_belt": 0.475,
+    "insert_magazine": 0.8
+  },
+  "outfits": [
+    "street_gang",
+    "russian_mafia",
+    "italian_mob"
+  ],
+  "weapons": [
+    "uzi_smg",
+    "ak_rifle",
+    "pistol"
+  ]
+}

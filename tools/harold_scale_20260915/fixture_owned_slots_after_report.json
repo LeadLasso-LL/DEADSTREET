@@ -1,0 +1,13 @@
+{
+	"advance_ms_median": 7.624,
+	"advance_ms_p95": 14.982,
+	"battle_phase": "active",
+	"checks": 942,
+	"disembark_routes": 12,
+	"errors": [],
+	"frame_ms_median": 23.343,
+	"frame_ms_p95": 34.178,
+	"frames": 823,
+	"phase": "after",
+	"seconds": 20.016053
+}

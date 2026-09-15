@@ -1,0 +1,24 @@
+{
+  "staged_files": 27385,
+  "whitespace_exit": 2,
+  "whitespace_lines": 7707,
+  "whitespace_sample": [
+    "battle/geometry/doble_ocho_catalog.gd:97: new blank line at EOF.",
+    "gameplay/doble_ocho_setup.gd:96: new blank line at EOF.",
+    "tools/bridge_perf/headroom/cover_profile32.log:1: trailing whitespace.",
+    "+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+    "",
+    "tools/bridge_perf/headroom/cover_profile32.log:2: trailing whitespace.",
+    "+",
+    "",
+    "tools/bridge_perf/headroom/cover_profile32.log:3: trailing whitespace.",
+    "+GameplayRuntime: mode=campaign pending=",
+    "",
+    "tools/bridge_perf/headroom/cover_profile32.log:4: trailing whitespace.",
+    "+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.79999971389771, 0.0) segment=0 into=7.8 pending=",
+    "",
+    "tools/bridge_perf/headroom/cover_profile32.log:5: trailing whitespace.",
+    "+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.7000007629395, 0.0) segment=0 into=11.7 pending="
+  ],
+  "staged_summary": "27385 files changed, 1201040 insertions(+), 1848 deletions(-)"
+}

@@ -1,0 +1,19 @@
+{
+  "installed_sha256": "44e9a1e5f3d2581c90033f68fbb01281a984b483bc3a2dca64db954f1a2d63f5",
+  "preview_sha256": "dd1652fbbf8d0dc0261d8a41fbe1655c35ffbba342e96681b77c6f1767934fc2",
+  "preview_bytes": 6968073,
+  "native": {
+    "black_samples": 0,
+    "loops": 1,
+    "max_position": 23.966666666667,
+    "passed": true,
+    "playing": true,
+    "samples": 6,
+    "texture_size": "(1280.0, 720.0)"
+  },
+  "title_music_camera_unchanged": true,
+  "production_files_changed": [
+    "assets/menu/opening/montage.ogv"
+  ],
+  "preview_type": "Edited montage preview using exact candidate and existing native title/UI coordinates; not a full intro capture"
+}

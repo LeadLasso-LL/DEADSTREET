@@ -1,0 +1,88 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/mercer.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/eastex.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/calle_ocho.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/ventresca.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/ravicci.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/orlov.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/zangyaku.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/bitian.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/stateline.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/sierra_roja.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/whittaker.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/mcallister.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/mercer44.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/wm_corp.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/union_sur.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/lombardia.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/sand_raiders.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/saffar.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/kurgan.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/ashford_crane.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/factions/roster/blacktop.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] build (res://tools/faction_music_picker_20260915/picker.gd:60)
+PICKER_CHECKS { "21_factions": true, "21_snippets": true, "authorities_excluded": true, "all_rows_fit": true, "emblems_and_all_choices": true, "selection_plays": true, "draft_saved": true, "pause": true, "resume": true, "clear": true }

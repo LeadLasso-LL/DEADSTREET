@@ -1,0 +1,11 @@
+{
+  "head": "710964102ef3f6cca3f47bcbf26a815653e59453",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "baseline_sha256": "159bb50290add6fc7fba62b97af459754345f863395a8d00b439fdf5f31ec35d",
+  "owned_paths": [
+    "gameplay/tactical_battle_view.gd",
+    "gameplay/tactical_selection_range.gd",
+    "gameplay/tactical_selection_range.gdshader"
+  ],
+  "git_publication": "NOT ATTEMPTED"
+}

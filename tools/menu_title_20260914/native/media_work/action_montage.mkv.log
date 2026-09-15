@@ -1,0 +1,12 @@
+-filter_complex_script is deprecated, use -/filter_complex C:\Users\brand\OneDrive\Documents\dead-street\tools\menu_title_20260914\native\media_work\action.ffgraph instead
+[swscaler @ 000001a7271a2fc0] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a7274b3ac0] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a72755b200] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a7275ec900] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a727696c80] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a7277842c0] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a72783e040] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a72790f040] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a727a0f040] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a727a5cf80] deprecated pixel format used, make sure you did set range correctly
+[swscaler @ 000001a727b0c040] deprecated pixel format used, make sure you did set range correctly

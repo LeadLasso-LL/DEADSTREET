@@ -1,0 +1,16 @@
+{
+  "audio_play_count": 1,
+  "button_at": 27.0010074880165,
+  "checks": 29,
+  "errors": [],
+  "mode": "smoke",
+  "native_black_max_pixel": 0,
+  "runtime_and_menu_real": true,
+  "sandbox_at": 27.1057197681679,
+  "status": "PASS",
+  "title_at": 21.0004740204872,
+  "viewport": [
+    1280,
+    720
+  ]
+}

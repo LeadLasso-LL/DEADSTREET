@@ -1,0 +1,166 @@
+{
+  "status": "ALL_20_SAVED",
+  "version": 0,
+  "deliverables": [
+    {
+      "name": "Dead_Street_All_Factions_Individual04.mp4",
+      "path": "/Dead Street/Dead_Street_All_Factions_Individual04.mp4",
+      "library_file_id": "libfile_3589763548ec8191ba3c6c0c6623d25a",
+      "file_id": "file_0000000097e081fd8a2b0f6c623905fb",
+      "sha256": "d5433eb4177cbb69451c7739593ee78881fe183c33c0776baee23214ad4bd04c",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/review/Dead_Street_All_Factions_Individual04.mp4"
+    },
+    {
+      "name": "Dead_Street_All_Factions_Individual04_Player.html",
+      "path": "/Dead Street/Dead_Street_All_Factions_Individual04_Player.html",
+      "library_file_id": "libfile_62828c5e369c81918244e67ee781b80d",
+      "file_id": "file_00000000e36881fd8bb6ed7ace1ee486",
+      "sha256": "095b67956b5dffe3c1384b5fa1eb9c05763c797a28bec08d1797943ed279892d",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/review/Dead_Street_All_Factions_Individual04_Player.html"
+    },
+    {
+      "name": "01_eastex_i4.mp3",
+      "path": "/Dead Street/01_eastex_i4.mp3",
+      "library_file_id": "libfile_a8f38a8851e88191813af9a4b057786c",
+      "file_id": "file_00000000f94c81fda68bd8eb88424752",
+      "sha256": "6415f88bd8ae0b4f4406404a55b6fd050dbf7a4c1ac4dddbba002068b056d04e",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/01_eastex_i4.mp3"
+    },
+    {
+      "name": "02_calle_ocho_i4.mp3",
+      "path": "/Dead Street/02_calle_ocho_i4.mp3",
+      "library_file_id": "libfile_c2a0ba06fbfc819180cefecdf62c07f1",
+      "file_id": "file_0000000008e881fd8b1511fa80427f3d",
+      "sha256": "21c533063479a585d718cc530fe38928436fb6124952a4767031d8d31fb85af0",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/02_calle_ocho_i4.mp3"
+    },
+    {
+      "name": "03_ventresca_i4.mp3",
+      "path": "/Dead Street/03_ventresca_i4.mp3",
+      "library_file_id": "libfile_352e48f6830081919b96bd4662aa1705",
+      "file_id": "file_0000000088c081fd9d9ad4b76130f945",
+      "sha256": "c4c8a4bdf141331527a55589ce82c19b43c9ea692e352e4c7be5b6402d4c98e8",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/03_ventresca_i4.mp3"
+    },
+    {
+      "name": "04_ravicci_i4.mp3",
+      "path": "/Dead Street/04_ravicci_i4.mp3",
+      "library_file_id": "libfile_ce0ee846c6b881919423358037618f4f",
+      "file_id": "file_00000000800081fd9bbe4347f805ee4c",
+      "sha256": "e93b5172aba65d27e7bbb815dc11597dce0804ea679fdb1098aecb2d9011b673",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/04_ravicci_i4.mp3"
+    },
+    {
+      "name": "05_orlov_i4.mp3",
+      "path": "/Dead Street/05_orlov_i4.mp3",
+      "library_file_id": "libfile_91c25e101ec88191a0964da252cb6d39",
+      "file_id": "file_00000000d03c81fd91aacdf15e925043",
+      "sha256": "9fc85b97fded82a5a82fe90af93de290844d5f08fbd4a8390e0c4dd92dd0834c",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/05_orlov_i4.mp3"
+    },
+    {
+      "name": "06_zangyaku_i4.mp3",
+      "path": "/Dead Street/06_zangyaku_i4.mp3",
+      "library_file_id": "libfile_a5026313b7288191b8c1614487daae73",
+      "file_id": "file_00000000c35082309b5ed5cec21f5d69",
+      "sha256": "46bb130a917f518add063f03f441bb34bc67f265a144d8ca58cc2f44372cce16",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/06_zangyaku_i4.mp3"
+    },
+    {
+      "name": "07_bitian_i4.mp3",
+      "path": "/Dead Street/07_bitian_i4.mp3",
+      "library_file_id": "libfile_4fdf30838e088191be606c6c5394f8c8",
+      "file_id": "file_000000003d7081fd832849370183af0c",
+      "sha256": "b95c20d43121fe20e48ad301c5b2a5d17034b141b2fe4fdeca33027b490794ea",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/07_bitian_i4.mp3"
+    },
+    {
+      "name": "08_sierra_roja_i4.mp3",
+      "path": "/Dead Street/08_sierra_roja_i4.mp3",
+      "library_file_id": "libfile_030623a5f3fc8191a6fb7a8d501ccfcb",
+      "file_id": "file_00000000808481fd9c57d5110dffeb71",
+      "sha256": "3ebf16558626452eae46c61c0f2245e5c052559db02582323fef4da7ea32e331",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/08_sierra_roja_i4.mp3"
+    },
+    {
+      "name": "09_mcallister_i4.mp3",
+      "path": "/Dead Street/09_mcallister_i4.mp3",
+      "library_file_id": "libfile_bfaba095dad8819182a6e69c0d2f9159",
+      "file_id": "file_00000000e73c8230a008a45b016c9bce",
+      "sha256": "f9546e9d1efa411e3c90b149816b04664816c33678dea5a6a1cccb05bc6995ac",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/09_mcallister_i4.mp3"
+    },
+    {
+      "name": "10_mercer44_i4.mp3",
+      "path": "/Dead Street/10_mercer44_i4.mp3",
+      "library_file_id": "libfile_175b57636f208191823c9bba27ca534d",
+      "file_id": "file_00000000e92c81fd8655440a4e5fe52b",
+      "sha256": "7fc73d9f3aa23fc09d044fc16d01e9f9b39523a3584d48a8bff92c0300d4c7cc",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/10_mercer44_i4.mp3"
+    },
+    {
+      "name": "11_wm_corp_i4.mp3",
+      "path": "/Dead Street/11_wm_corp_i4.mp3",
+      "library_file_id": "libfile_081685cf66308191bfb23fcabf42fe57",
+      "file_id": "file_00000000ab5481fda15c9c95eab082f5",
+      "sha256": "744803d0115a72e92530cc2aa044b4a74f5931ba49712172c2566c5c84f99b87",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/11_wm_corp_i4.mp3"
+    },
+    {
+      "name": "12_union_sur_i4.mp3",
+      "path": "/Dead Street/12_union_sur_i4.mp3",
+      "library_file_id": "libfile_55b31a0555588191ad6e3a7dabc89ea6",
+      "file_id": "file_00000000d30c81fb8aa132697c1728b7",
+      "sha256": "12397b555219f8a00fa54524d792dca98a318e9e54e0ac508d32d9069be51337",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/12_union_sur_i4.mp3"
+    },
+    {
+      "name": "13_lombardia_i4.mp3",
+      "path": "/Dead Street/13_lombardia_i4.mp3",
+      "library_file_id": "libfile_5892eea77dbc819197c5c319057075a6",
+      "file_id": "file_00000000283c81fd984c9711a53b8161",
+      "sha256": "d25084b2ef2ee345d60f0e82283a6bef63131f0c7392063b89e916da214c382e",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/13_lombardia_i4.mp3"
+    },
+    {
+      "name": "14_sand_raiders_i4.mp3",
+      "path": "/Dead Street/14_sand_raiders_i4.mp3",
+      "library_file_id": "libfile_fc15f161d15c8191a87f3474e14039af",
+      "file_id": "file_000000008aa481fd913c2dcc620990f1",
+      "sha256": "9035230aada5aa8603f320d0c62f9640a5c89f592e82a74a8bcf4249a4e68aee",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/14_sand_raiders_i4.mp3"
+    },
+    {
+      "name": "15_saffar_i4.mp3",
+      "path": "/Dead Street/15_saffar_i4.mp3",
+      "library_file_id": "libfile_510632c142548191b691ad1daacaa81a",
+      "file_id": "file_0000000058a081fdb61d688a0f9def8c",
+      "sha256": "fc006c3a95e5dc01b41917e54468929a5c153b60fbc7700f9e75af9a42ede587",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/15_saffar_i4.mp3"
+    },
+    {
+      "name": "16_kurgan_i4.mp3",
+      "path": "/Dead Street/16_kurgan_i4.mp3",
+      "library_file_id": "libfile_a26cc1b1d1888191b352929bd6820401",
+      "file_id": "file_00000000d18881fd9de79aa11d6e6676",
+      "sha256": "e2fdee49861f892d80b620b80e3311afc1213b88e8a9645f45d2e9ffac65ce88",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/16_kurgan_i4.mp3"
+    },
+    {
+      "name": "17_ashford_crane_i4.mp3",
+      "path": "/Dead Street/17_ashford_crane_i4.mp3",
+      "library_file_id": "libfile_220fc4f57fe48191bf1ee5044314fe5f",
+      "file_id": "file_000000004edc81fb9e55ab56569cc071",
+      "sha256": "062c1618980b4c901f6810d668d3be79a51fae869a49cc74d55d30c9854ff29e",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/17_ashford_crane_i4.mp3"
+    },
+    {
+      "name": "18_blacktop_i4.mp3",
+      "path": "/Dead Street/18_blacktop_i4.mp3",
+      "library_file_id": "libfile_8390ce2bd86081918f33fe01e2636883",
+      "file_id": "file_0000000007ec81fd88ead570dcd65eac",
+      "sha256": "432a2e16504ffb3ae3ca57dea9a3ca4f659789901de9c8773ed6589e3f32d0e1",
+      "local_path": "/workspace/scratch/6a4bd31e258d/faction_audio_preview_20260914/individual04/previews/18_blacktop_i4.mp3"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "current_version_number": 0,
+      "file_id": "file_000000002ab48211aabb2d0ee25aef00",
+      "file_name": "DEAD_STREET_Battle_Setup.png",
+      "library_file_id": "libfile_e1d76a53395c8191977f2b7cfa9f7c2b",
+      "local_metadata_applied": true,
+      "local_path": "/workspace/scratch/6a4bd31e258d/sandbox_refresh/DEAD_STREET_Battle_Setup.png",
+      "path": "/Dead Street/DEAD_STREET_Battle_Setup.png",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "delivered_sha256": "47fa019d1e322c83aa051f7858a77f068665b4c065f74100c925fd3fcc1cbba2",
+      "native_path": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\sandbox_maps_20260915\\setup_1920x1080.png",
+      "native_current_sha256": "47fa019d1e322c83aa051f7858a77f068665b4c065f74100c925fd3fcc1cbba2"
+    },
+    {
+      "current_version_number": 0,
+      "file_id": "file_00000000e78c8210b8a30f6ad2632404",
+      "file_name": "DEAD_STREET_Convoy_Builder.png",
+      "library_file_id": "libfile_c15393ca1308819191d9b088489df7c9",
+      "local_metadata_applied": true,
+      "local_path": "/workspace/scratch/6a4bd31e258d/sandbox_refresh/DEAD_STREET_Convoy_Builder.png",
+      "path": "/Dead Street/DEAD_STREET_Convoy_Builder.png",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "delivered_sha256": "bc903b24d7df8790216da7541c571f2e894f131ab7eb59e1c35ea75ef85c4942",
+      "native_path": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\sandbox_maps_20260915\\convoy_bikes.png",
+      "native_current_sha256": "bc903b24d7df8790216da7541c571f2e894f131ab7eb59e1c35ea75ef85c4942"
+    }
+  ]
+}

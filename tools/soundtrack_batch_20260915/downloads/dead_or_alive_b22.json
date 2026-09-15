@@ -1,0 +1,23 @@
+{
+  "index": 11,
+  "id": "dead_or_alive_b22",
+  "artist": "B-22",
+  "title": "Dead or Alive",
+  "source_url": "https://soundcloud.com/brandonharb-1/dead-or-alive-1",
+  "start_timestamp": "00:45",
+  "start_seconds": 45,
+  "duration_seconds": 30,
+  "basename": "B-22_Dead_or_Alive",
+  "status": "downloaded",
+  "source_title": "dead or alive",
+  "source_artist": "brandon",
+  "source_track_id": 324943386,
+  "canonical_url": "https://soundcloud.com/brandonharb-1/dead-or-alive-1",
+  "source_duration_seconds": 200.717,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 3211179,
+  "sha256": "914a8c640b9a4e64fc0fe0c7c8d784bb8fa1eb7aaf78d0565367b5ea742bbbf8",
+  "settings_changed": false
+}

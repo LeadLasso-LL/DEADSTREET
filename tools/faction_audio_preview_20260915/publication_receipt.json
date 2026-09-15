@@ -1,0 +1,9 @@
+{
+  "state": "pushed and remote verified",
+  "commit": "50a000753b04c7115bfeef48cb46dea0b2ddbbd4",
+  "parent": "db2da64b0cb8a11c5b57a056b0829dcea246d289",
+  "checks": 250,
+  "scope_files": 21,
+  "destination": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "remote": "50a000753b04c7115bfeef48cb46dea0b2ddbbd4"
+}

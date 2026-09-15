@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(7.59999990463257, 0.0) segment=0 into=7.6 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.3999996185303, 0.0) segment=0 into=11.4 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+GameplayRuntime: mode=tactical_active pending=
+PACE {"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16}
+PACE {"events":137,"time":10.0333333333333,"trc":12,"whittaker":13}
+PACE {"events":200,"time":20.0333333333335,"trc":7,"whittaker":9}
+PACE {"events":266,"time":30.033333333334,"trc":4,"whittaker":6}
+PACE {"events":294,"time":40.0333333333336,"trc":1,"whittaker":4}
+PROBE {"commands":[{"command":"hold","feedback":{"accepted":2,"command":"hold","failed":0},"ids":["sandbox_attacker_unit_09","sandbox_attacker_unit_10"],"reason":"Firing support has established covered overwatch","time":6.06666666666665},{"event":"defender_counterattack","reason":"TRC assault has lost half its effective strength","result":{"accepted":["sandbox_defender_unit_03","sandbox_defender_unit_05","sandbox_defender_unit_06","sandbox_defender_unit_08","sandbox_defender_unit_09","sandbox_defender_unit_10","sandbox_defender_unit_11","sandbox_defender_unit_12","sandbox_defender_unit_13","sandbox_defender_unit_14","sandbox_defender_unit_15","sandbox_defender_unit_16"],"failed":[]},"time":16.2},{"command":"clear","feedback":{"accepted":2,"command":"clear","failed":0},"ids":["sandbox_attacker_unit_09","sandbox_attacker_unit_10"],"reason":"Overwatch has lost contact; allow support to reposition","time":24.2000000000004}],"duration":45.7333333333333,"phase":"resolved","seed":9146,"snapshots":[{"events":0,"time":0.0333333333333333,"trc":16,"whittaker":16},{"events":137,"time":10.0333333333333,"trc":12,"whittaker":13},{"events":200,"time":20.0333333333335,"trc":7,"whittaker":9},{"events":266,"time":30.033333333334,"trc":4,"whittaker":6},{"events":294,"time":40.0333333333336,"trc":1,"whittaker":4}],"survivor_positions":[{"anchor":"(122.85, 25.0)","at":"(78.0, 36.1)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_14","nav":"","order":"","slot":"cover_planter_70_37_6","target":"sandbox_attacker_unit_16"},{"anchor":"(128.85, 86.85)","at":"(80.85, 75.85)","defend":true,"feedback":"Push complete","id":"sandbox_defender_unit_16","nav":"","order":"","slot":"cover_planter_72_75_3","target":"sandbox_attacker_unit_16"}],"winner":"defender"}

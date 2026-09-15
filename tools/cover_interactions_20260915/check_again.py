@@ -1,0 +1,8 @@
+import pathlib,subprocess
+p=pathlib.Path(r'C:\Users\brand\OneDrive\Documents\dead-street'); out=p/'tools/cover_interactions_20260915'
+f=p/'battle/geometry/harold_street_catalog.gd'; t=f.read_text(); old='\t\t\tvar point: Vector2=points[n][0]\n\t\t\tvar blocked=false'; new='\t\t\tvar point: Vector2=points[n][0]\n\t\t\tif not Rect2(Vector2.ZERO,SIZE).has_point(point):continue\n\t\t\tvar blocked=false'; assert t.count(old)==1;f.write_text(t.replace(old,new))
+f=out/'after_probe.gd'; t=f.read_text(); t=t.replace('out+"report.json"','out+"after_report.json"').replace('out + "report.json"','out + "after_report.json"')
+t=t.replace('\tview.set_process(false)\n\tview._camera.zoom', '\tview.set_process(false)\n\tfor child in view.get_children():\n\t\tif child.get_script()!=null and str(child.get_script().resource_path).ends_with("tactical_camera_safety.gd"):child.set_process(false)\n\tview._camera.zoom').replace('\tawait settle(.15)','\tview._camera.force_update_scroll()\n\tawait settle(.15)');f.write_text(t)
+godot=r'C:\Users\brand\OneDrive\Documents\Godot\Godot_v4.7.2-stable_win64.exe'
+with (out/'after2_stdout.log').open('w',encoding='utf-8') as log:
+ child=subprocess.Popen([godot,'--path',str(p),'--log-file',str(out/'after2.log'),'--script','res://tools/cover_interactions_20260915/after_probe.gd'],cwd=p,stdout=log,stderr=subprocess.STDOUT); print('PID',child.pid,flush=True); print('EXIT',child.wait(timeout=180),flush=True)

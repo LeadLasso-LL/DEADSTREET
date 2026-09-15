@@ -23,6 +23,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invo
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode proof
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode calibrate
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode silhouette
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/character_factory/invoke_character_factory.ps1 -Mode style
 ```
 
 DAZ may open visibly. Do not click it. The factory script must close DAZ itself.
@@ -36,11 +37,12 @@ Never copy generated PNGs into `assets/` or bind them at runtime.
 
 ## Provisional continuation baseline (NOT canon, NOT accepted)
 
-`provisional_baseline.json` is the machine-readable lock for the next style-conversion pass:
+`provisional_baseline.json` is the machine-readable lock for the current style-conversion experiment:
 
 - Camera: `PROVISIONAL_TACTICAL_56` / `elevation_deg` 56.0
 - Pose: `HYBRID_B`
 - Character/assets: same as `local_street_gang_rifleman_proof_01`
+- V1.3 recipe: `recipes/local_street_gang_rifleman_style_v13.json` (3×3 generated; **no style accepted**)
 
 V1.1 (`recipes/local_street_gang_rifleman_calib_v11.json`) and V1.2 (`recipes/local_street_gang_rifleman_silhouette_v12.json`) stay as calibration history. Alternate cameras and hybrids are not deleted. Nothing is bound into `TacticalUnitAnimationCatalog`. Do not copy these numbers into `TacticalUnitPipelineSpec`.
 

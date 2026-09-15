@@ -1,7 +1,7 @@
 {
   "source_commit": "15c6bbc1292c745408869e545d5ae9dab31991cc",
-  "remote_commit": "cd23759a82e0d7c2c5c1060ca9dd084cb1bab80c",
-  "push_status": "source_and_original_handoff_pushed_verified",
+  "remote_commit": "a493f38afd27802798d84159ee56ef3abc7221f7",
+  "push_status": "all_approved_checkpoints_pushed_verified",
   "origin": "https://github.com/LeadLasso-LL/DEADSTREET.git",
   "branch": "build/arsenal-checkpoint-20260911",
   "paths": [
@@ -101,6 +101,7 @@
   "video_version": 2,
   "video_sha256": "98e9a795b3faf329877619f673ec754826bef6bb2bc8b8b68637947c0991dccf",
   "approval_text": "push approved, will review video shortly and provide feedback",
-  "completion_receipt_publication": "blocked_by_automatic_review_as_additional_payload",
-  "next_step": "Owner video feedback; local completion receipt publication requires separate approval"
+  "completion_receipt_publication": "pushed_verified_under_explicit_in_chat_approval",
+  "next_step": "Owner video feedback; local status records accompany next substantive build checkpoint",
+  "completion_receipt_approval": "approve"
 }

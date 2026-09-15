@@ -1,0 +1,24 @@
+{
+  "count": 2292,
+  "failed": [
+    "interactive_deploy_screen_convert_ok",
+    "interactive_deploy_htb_mouse_ok",
+    "vispass_m7_safety_ok",
+    "vispass_m7b_schema_ok",
+    "vispass_m7b_live_ok",
+    "vispass_m7b_safety_ok",
+    "vispass_m7c_schema_ok",
+    "vispass_m7c_live_ok",
+    "vispass_m7c_safety_ok",
+    "vispass_m7d_schema_ok",
+    "vispass_m7d_live_ok",
+    "vispass_m7d_safety_ok",
+    "vispass_m7e_schema_ok",
+    "vispass_m7e_live_ok",
+    "vispass_m7e_safety_ok",
+    "vispass_m7f_schema_ok",
+    "vispass_m7f_live_ok",
+    "vispass_m7f_safety_ok"
+  ],
+  "passed": false
+}

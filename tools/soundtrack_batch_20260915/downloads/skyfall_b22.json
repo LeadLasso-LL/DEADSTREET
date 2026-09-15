@@ -1,0 +1,23 @@
+{
+  "index": 14,
+  "id": "skyfall_b22",
+  "artist": "B-22",
+  "title": "Skyfall",
+  "source_url": "https://soundcloud.com/brandonharb-1/skyfall",
+  "start_timestamp": "00:00",
+  "start_seconds": 0,
+  "duration_seconds": 30,
+  "basename": "B-22_Skyfall",
+  "status": "downloaded",
+  "source_title": "Skyfall",
+  "source_artist": "brandon",
+  "source_track_id": 311704844,
+  "canonical_url": "https://soundcloud.com/brandonharb-1/skyfall",
+  "source_duration_seconds": 226.11,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 3617435,
+  "sha256": "3d32a7f0e6e6ed37e06e970a7d5ab98c4965b36a2ecf7eebc23123f3f3f7b854",
+  "settings_changed": false
+}

@@ -1,0 +1,145 @@
+{
+  "status": "PASS",
+  "frames": 1710,
+  "duration": 57,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "full_video_audio_decode": "PASS",
+  "black_hold_checked_frames": [
+    345,
+    360,
+    389
+  ],
+  "title_complete_frame": 630,
+  "title_correlation": 0.9997662969318143,
+  "finishing_pixel_count": 6251,
+  "finishing_pixel_brightness_gain_at_21": 1.3341865301551752,
+  "title_before_completion_error": 0.6373771898674242,
+  "title_completed_error": 0.659115569760101,
+  "background_starts_at": 21,
+  "button_first_frame": 810,
+  "button_border_delta": 20.381666666666668,
+  "button_ink_before": 62.3156146179402,
+  "button_ink_after": 235.40199335548172,
+  "hover_offsets": [
+    {
+      "frame": 630,
+      "offset": 0
+    },
+    {
+      "frame": 648,
+      "offset": 1
+    },
+    {
+      "frame": 660,
+      "offset": -2
+    },
+    {
+      "frame": 680,
+      "offset": 2
+    },
+    {
+      "frame": 720,
+      "offset": 2
+    }
+  ],
+  "scene_checks": [
+    {
+      "shot": 0,
+      "time": 22.0,
+      "label": "CROSSFIRE",
+      "correlation": 0.9981239848047352
+    },
+    {
+      "shot": 1,
+      "time": 24.0,
+      "label": "COURTYARD GUNFIRE",
+      "correlation": 0.9965088924516659
+    },
+    {
+      "shot": 2,
+      "time": 26.5,
+      "label": "TRC CONVOY ACROSS GRASS",
+      "correlation": 0.9981471708967736
+    },
+    {
+      "shot": 3,
+      "time": 29.0,
+      "label": "BRIDGE CASUALTY",
+      "correlation": 0.9992437245936907
+    },
+    {
+      "shot": 4,
+      "time": 31.5,
+      "label": "TRC DISMOUNT",
+      "correlation": 0.9963515327695486
+    },
+    {
+      "shot": 5,
+      "time": 34.0,
+      "label": "COURTYARD CASUALTY",
+      "correlation": 0.9972367267945632
+    },
+    {
+      "shot": 6,
+      "time": 36.0,
+      "label": "BLOCKADE FIREFIGHT",
+      "correlation": 0.999239834771897
+    },
+    {
+      "shot": 7,
+      "time": 38.0,
+      "label": "GATE ASSAULT",
+      "correlation": 0.9978177915106924
+    },
+    {
+      "shot": 8,
+      "time": 40.0,
+      "label": "RAIDERS ADVANCE",
+      "correlation": 0.9994178776155087
+    },
+    {
+      "shot": 9,
+      "time": 42.0,
+      "label": "ESTATE PRESSURE",
+      "correlation": 0.9972047503083
+    },
+    {
+      "shot": 10,
+      "time": 44.0,
+      "label": "FINAL CROSSFIRE",
+      "correlation": 0.9990253505518631
+    }
+  ],
+  "first_scene": "Bridge crossfire; source 34.5s",
+  "first_scene_max_bright_change_pixels": 5123,
+  "audio_continuity": [
+    {
+      "from": 10,
+      "to": 15,
+      "correlation": 0.9998875420799989
+    },
+    {
+      "from": 19,
+      "to": 23,
+      "correlation": 0.9998186791036096
+    },
+    {
+      "from": 43,
+      "to": 49,
+      "correlation": 0.9959656991591883
+    },
+    {
+      "from": 50,
+      "to": 54,
+      "correlation": 0.9976016708589392
+    }
+  ],
+  "audio_peak_mono": 0.79024338722229,
+  "music_scale": 0.88,
+  "source_title_sha256": "a7ad354ff6bb1e8182b88ad22a08fcc2c8452d9891a3e26d7afa0fb269d199a9",
+  "sha256": "f78e031422f5effad363f083fbae987c3e648cd2dd2f97c269a457ca9b2ac7ba",
+  "bytes": 10376426,
+  "scope": "57-second edited design preview; no native controller integration"
+}

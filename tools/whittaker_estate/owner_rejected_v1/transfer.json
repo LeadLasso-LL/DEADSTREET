@@ -1,0 +1,204 @@
+{
+  "file": "C:\\Users\\brand\\OneDrive\\Documents\\dead-street\\tools\\whittaker_estate\\Dead_Street_Whittaker_Estate_Mobile.mp4",
+  "bytes": 7559487,
+  "sha256": "9438786053438a08bae9e0f0d9af584835fda674c32dd9ebc5f3a423f3e4d663",
+  "seconds": 76.96666666666667,
+  "video_bitrate": 692755,
+  "decoded_to_end": true,
+  "winner": "defender",
+  "parts": [
+    {
+      "name": "part_000.txt",
+      "bytes": 1950000,
+      "sha256": "49c0d16dcda4d42fba0c060082a8025a6fb797b4e776e07cca596bf3d2dd118e"
+    },
+    {
+      "name": "part_001.txt",
+      "bytes": 1950000,
+      "sha256": "536f566374fa83d44fbc2dbddd71de8e5b32d1e48fae64ae711ed43a319c95a9"
+    },
+    {
+      "name": "part_002.txt",
+      "bytes": 1950000,
+      "sha256": "d00c892126cce38b994f5dee01977a52932d6a33bed89b376b07132d314ad019"
+    },
+    {
+      "name": "part_003.txt",
+      "bytes": 1709487,
+      "sha256": "af3eab58fe8430ecbf6c540a501d6f4de7a08fffd21ca60ab48c9ddfe78300a3"
+    }
+  ],
+  "audio_peak": 0.9932104349136353,
+  "audio_rms": 0.03325146809220314,
+  "record": {
+    "winner": "defender",
+    "seed": 9146,
+    "combat_seconds": 45.7333333333333,
+    "results": {
+      "attacker": {
+        "remaining": 0,
+        "retreated": false,
+        "text": "0 Units Remaining"
+      },
+      "defender": {
+        "remaining": 2,
+        "retreated": false,
+        "text": "2 Units Remaining"
+      }
+    },
+    "victory_audio": [
+      {
+        "cards_visible": false,
+        "end_clock": 0.1,
+        "levels": [
+          {
+            "attenuation": 0.699999988079071,
+            "foreground": 0.0,
+            "gain_db": -30.3333339691162,
+            "is_radio": false,
+            "panning": 0.75,
+            "playing": true,
+            "side": "attacker"
+          },
+          {
+            "attenuation": 0.699999988079071,
+            "foreground": 0.0,
+            "gain_db": -35.3333320617676,
+            "is_radio": true,
+            "panning": 0.75,
+            "playing": true,
+            "side": "defender"
+          }
+        ],
+        "movie_seconds": 60.0333333333333
+      },
+      {
+        "cards_visible": false,
+        "end_clock": 2.0,
+        "levels": [
+          {
+            "attenuation": 0.699999988079071,
+            "foreground": 0.0,
+            "gain_db": -27.0,
+            "is_radio": false,
+            "panning": 0.75,
+            "playing": true,
+            "side": "attacker"
+          },
+          {
+            "attenuation": 0.0,
+            "foreground": 1.0,
+            "gain_db": -18.0,
+            "is_radio": true,
+            "panning": 0.0,
+            "playing": true,
+            "side": "defender"
+          }
+        ],
+        "movie_seconds": 61.9333333333333
+      },
+      {
+        "cards_visible": true,
+        "end_clock": 8.03333333333332,
+        "levels": [
+          {
+            "attenuation": 0.699999988079071,
+            "foreground": 0.0,
+            "gain_db": -32.0,
+            "is_radio": false,
+            "panning": 0.75,
+            "playing": true,
+            "side": "attacker"
+          },
+          {
+            "attenuation": 0.0,
+            "foreground": 1.0,
+            "gain_db": -18.0,
+            "is_radio": true,
+            "panning": 0.0,
+            "playing": true,
+            "side": "defender"
+          }
+        ],
+        "movie_seconds": 67.9666666666667
+      },
+      {
+        "cards_visible": true,
+        "end_clock": 15.0333333333333,
+        "levels": [
+          {
+            "attenuation": 0.699999988079071,
+            "foreground": 0.0,
+            "gain_db": -32.0,
+            "is_radio": false,
+            "panning": 0.75,
+            "playing": true,
+            "side": "attacker"
+          },
+          {
+            "attenuation": 0.0,
+            "foreground": 1.0,
+            "gain_db": -18.0,
+            "is_radio": true,
+            "panning": 0.0,
+            "playing": true,
+            "side": "defender"
+          }
+        ],
+        "movie_seconds": 74.9666666666667
+      }
+    ],
+    "commands": [
+      {
+        "command": "hold",
+        "feedback": {
+          "accepted": 2,
+          "command": "hold",
+          "failed": 0
+        },
+        "ids": [
+          "sandbox_attacker_unit_09",
+          "sandbox_attacker_unit_10"
+        ],
+        "reason": "Firing support has established covered overwatch",
+        "time": 6.06666666666665
+      },
+      {
+        "event": "defender_counterattack",
+        "reason": "TRC assault has lost half its effective strength",
+        "result": {
+          "accepted": [
+            "sandbox_defender_unit_03",
+            "sandbox_defender_unit_05",
+            "sandbox_defender_unit_06",
+            "sandbox_defender_unit_08",
+            "sandbox_defender_unit_09",
+            "sandbox_defender_unit_10",
+            "sandbox_defender_unit_11",
+            "sandbox_defender_unit_12",
+            "sandbox_defender_unit_13",
+            "sandbox_defender_unit_14",
+            "sandbox_defender_unit_15",
+            "sandbox_defender_unit_16"
+          ],
+          "failed": []
+        },
+        "time": 16.2
+      },
+      {
+        "command": "clear",
+        "feedback": {
+          "accepted": 2,
+          "command": "clear",
+          "failed": 0
+        },
+        "ids": [
+          "sandbox_attacker_unit_09",
+          "sandbox_attacker_unit_10"
+        ],
+        "reason": "Overwatch has lost contact; allow support to reposition",
+        "time": 24.2000000000004
+      }
+    ]
+  }
+}

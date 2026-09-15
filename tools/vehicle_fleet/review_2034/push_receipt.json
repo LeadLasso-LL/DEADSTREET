@@ -1,0 +1,11 @@
+{
+  "commit": "a16fdb99b98440571aa05fd13511c3d697b47eea",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "remote_confirmed": true,
+  "model_checks": 3730,
+  "mixed_checks": 43,
+  "native_scenarios": 6,
+  "models": 60,
+  "sprites": 1248,
+  "scope_files": 1190
+}

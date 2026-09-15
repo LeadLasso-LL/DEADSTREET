@@ -1,0 +1,146 @@
+[
+  [
+    "bridge",
+    34.7,
+    54,
+    [
+      380,
+      140,
+      512,
+      288
+    ],
+    "Bridge exchange between vehicles"
+  ],
+  [
+    "harold",
+    18.3,
+    60,
+    [
+      520,
+      250,
+      768,
+      432
+    ],
+    "Harold close street exchange"
+  ],
+  [
+    "freight",
+    54.75,
+    66,
+    [
+      970,
+      412,
+      640,
+      360
+    ],
+    "Freight southern railcar exchange"
+  ],
+  [
+    "estate",
+    7.5,
+    72,
+    [
+      300,
+      160,
+      640,
+      360
+    ],
+    "Whittaker convoy already in frame"
+  ],
+  [
+    "doble",
+    20.9,
+    60,
+    [
+      640,
+      190,
+      512,
+      288
+    ],
+    "Doble Ocho gate firefight"
+  ],
+  [
+    "bridge",
+    51.0,
+    54,
+    [
+      520,
+      144,
+      480,
+      270
+    ],
+    "Bridge close blockade engagement"
+  ],
+  [
+    "freight",
+    60.35,
+    60,
+    [
+      1000,
+      25,
+      576,
+      324
+    ],
+    "Freight dispatch defender fires back"
+  ],
+  [
+    "doble",
+    24.1,
+    60,
+    [
+      280,
+      145,
+      512,
+      288
+    ],
+    "Doble Ocho close vehicle exchange"
+  ],
+  [
+    "harold",
+    35.0,
+    60,
+    [
+      650,
+      305,
+      704,
+      396
+    ],
+    "Harold late engagement"
+  ],
+  [
+    "estate",
+    42.85,
+    54,
+    [
+      370,
+      230,
+      400,
+      225
+    ],
+    "Whittaker close gate firefight"
+  ],
+  [
+    "doble",
+    17.8,
+    60,
+    [
+      245,
+      160,
+      432,
+      243
+    ],
+    "Doble Ocho close western firefight"
+  ],
+  [
+    "freight",
+    71.25,
+    60,
+    [
+      570,
+      340,
+      512,
+      288
+    ],
+    "Freight final attack across the loading lane"
+  ]
+]

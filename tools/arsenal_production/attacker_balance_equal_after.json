@@ -1,0 +1,180 @@
+{
+  "battles": [
+    {
+      "alive": {
+        "attacker": 1,
+        "defender": 2
+      },
+      "elapsed": 240.00000000002,
+      "equal_loadouts": true,
+      "observation_cutoff": true,
+      "pair": 0,
+      "phase": "active",
+      "seed": 4200,
+      "shots": {
+        "attacker": 49,
+        "defender": 49
+      },
+      "snipers": false,
+      "survivors": [
+        {
+          "id": "player_soldier",
+          "model": "ak47",
+          "move": "",
+          "position": "(57.082, 26.45)",
+          "target": "rival_soldier",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier",
+          "model": "glock_17",
+          "move": "",
+          "position": "(39.65, 22.075)",
+          "target": "player_soldier",
+          "wounded": true
+        },
+        {
+          "id": "rival_soldier_rifle",
+          "model": "ak47",
+          "move": "",
+          "position": "(22.15, 33.35)",
+          "target": "player_soldier",
+          "wounded": false
+        }
+      ],
+      "wall_ms": 61642,
+      "winner": ""
+    },
+    {
+      "alive": {
+        "attacker": 2,
+        "defender": 3
+      },
+      "elapsed": 240.00000000002,
+      "equal_loadouts": true,
+      "observation_cutoff": true,
+      "pair": 2,
+      "phase": "active",
+      "seed": 4202,
+      "shots": {
+        "attacker": 34,
+        "defender": 35
+      },
+      "snipers": false,
+      "survivors": [
+        {
+          "id": "player_soldier",
+          "model": "m4a1",
+          "move": "",
+          "position": "(57.082, 26.45)",
+          "target": "rival_soldier_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "player_soldier_smg",
+          "model": "mp5",
+          "move": "",
+          "position": "(49.0, 24.75)",
+          "target": "rival_soldier_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier",
+          "model": "usp",
+          "move": "",
+          "position": "(26.25, 19.35)",
+          "target": "player_soldier_smg",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier_rifle",
+          "model": "m4a1",
+          "move": "",
+          "position": "(12.15, 33.35)",
+          "target": "player_soldier_smg",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier_shotgun",
+          "model": "mp5",
+          "move": "",
+          "position": "(26.15, 24.75)",
+          "target": "player_soldier_smg",
+          "wounded": true
+        }
+      ],
+      "wall_ms": 80100,
+      "winner": ""
+    },
+    {
+      "alive": {
+        "attacker": 2,
+        "defender": 4
+      },
+      "elapsed": 240.00000000002,
+      "equal_loadouts": true,
+      "observation_cutoff": true,
+      "pair": 4,
+      "phase": "active",
+      "seed": 4204,
+      "shots": {
+        "attacker": 12,
+        "defender": 19
+      },
+      "snipers": false,
+      "survivors": [
+        {
+          "id": "player_soldier",
+          "model": "scar_h",
+          "move": "",
+          "position": "(57.082, 26.45)",
+          "target": "rival_arsenal_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "player_soldier_shotgun",
+          "model": "desert_eagle",
+          "move": "",
+          "position": "(42.5, 22.075)",
+          "target": "rival_soldier_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "rival_arsenal_shotgun",
+          "model": "benelli_m4",
+          "move": "",
+          "position": "(33.15, 33.35)",
+          "target": "player_soldier_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier",
+          "model": "desert_eagle",
+          "move": "",
+          "position": "(17.95, 21.525)",
+          "target": "player_soldier_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier_rifle",
+          "model": "scar_h",
+          "move": "",
+          "position": "(12.15, 33.35)",
+          "target": "player_soldier_shotgun",
+          "wounded": false
+        },
+        {
+          "id": "rival_soldier_shotgun",
+          "model": "vector",
+          "move": "",
+          "position": "(26.15, 24.75)",
+          "target": "player_soldier_shotgun",
+          "wounded": false
+        }
+      ],
+      "wall_ms": 52808,
+      "winner": ""
+    }
+  ],
+  "errors": []
+}

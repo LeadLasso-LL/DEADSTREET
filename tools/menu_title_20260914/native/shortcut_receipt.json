@@ -1,0 +1,5 @@
+﻿{
+    "Path":  "C:\\Users\\brand\\OneDrive\\Desktop\\Dead Street Sandbox.lnk",
+    "Target":  "C:\\Users\\brand\\OneDrive\\Documents\\Godot\\Godot_v4.7.2-stable_win64.exe",
+    "Arguments":  "--path \"C:\\Users\\brand\\OneDrive\\Documents\\dead-street\" \"res://gameplay/sandbox_opening.tscn\""
+}

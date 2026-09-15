@@ -1,0 +1,155 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/freight_clarity_20260915/check.gd:27)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.8000001907349, 0.0) segment=0 into=11.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+ERROR: arrival source audibly lifted by more than8dB
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:43)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: arrival interior filter opens moderately
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:45)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: combat radio remains quiet
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:49)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:54)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+CLARITY_CHECK {"arrival":{"cutoff":2400.0,"frames":48128,"peak":0.0695028677582741,"rms":0.0163233634666723,"volume_db":-14.1721458435059},"arrival_errors":[],"arrival_gain_db":-2.88623595730655,"before":{"cutoff":2400.0,"frames":46080,"peak":0.0804417952895164,"rms":0.0227573374251768,"volume_db":-14.1721458435059},"checks":127,"combat":{"cutoff":2400.0,"frames":48640,"peak":0.0842000544071198,"rms":0.0169988789930391,"volume_db":-14.1721458435059},"errors":["arrival source audibly lifted by more than8dB","arrival interior filter opens moderately","combat radio remains quiet","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p","36px badge at1080p"],"markers":[{"position":"(228.0, 99.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(235.0, 212.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(220.0, 302.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(243.0, 386.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(248.0, 84.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(260.0, 197.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(245.0, 287.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(263.0, 371.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(250.0, 120.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(178.0, 198.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(1013.0, 120.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(972.0, 185.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(965.0, 343.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(990.0, 357.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(1013.0, 164.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(996.0, 201.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(1058.0, 288.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(965.0, 372.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(1095.0, 168.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"},{"position":"(972.0, 216.0)","size":"(24.0, 24.0)","texture":"(24.0, 24.0)"}]}

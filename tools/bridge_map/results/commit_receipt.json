@@ -1,0 +1,13 @@
+{
+  "commit": "e2c9a1374c5f82336126c59becc9d59a9d5090d3",
+  "branch": "build/arsenal-checkpoint-20260911",
+  "pushed": true,
+  "files": 34,
+  "bridge_checks": 243,
+  "native_checks": 42,
+  "native_fps": 16.0,
+  "harold_checks": 285,
+  "first_pass_owner_review_pending": true,
+  "performance_work_pending": true,
+  "remote_commit": "e2c9a1374c5f82336126c59becc9d59a9d5090d3"
+}

@@ -5,13 +5,22 @@ const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 static func motorcycle(id: String) -> bool:
  var m=Models.model(id)
  return m.get("vehicle_class","")=="two_wheelers" and m.get("body","")!="bicycle"
+static func two_wheeler(id: String) -> bool:
+ return Models.model(id).get("vehicle_class","")=="two_wheelers"
+static func two_wheelers_per_slot(faction_id: String) -> int:
+ return 4 if faction_id in ["stateline","blacktop","zangyaku","bitian","nbpd","trc"] else 2
+static func packs_motorcycles(faction_id: String) -> bool:
+ return two_wheelers_per_slot(faction_id)>1
 static func slots(models: Array,faction_id: String) -> Array:
  var result=[]
  for i in range(models.size()):
-  var pack=faction_id=="stateline" and motorcycle(str(models[i]))
-  if pack and not result.is_empty() and result[-1].motorcycles and result[-1].indices.size()<3:
-   result[-1].indices.append(i)
-  else:result.append({"indices":[i],"motorcycles":pack})
+  var pack=two_wheeler(str(models[i]))
+  var placed=false
+  if pack:
+   for group in result:
+    if group.motorcycles and group.indices.size()<two_wheelers_per_slot(faction_id):
+     group.indices.append(i);placed=true;break
+  if not placed:result.append({"indices":[i],"motorcycles":pack})
  return result
 static func bed_capacity(model_id: String) -> int:
  return 2 if Models.model(model_id).get("body","") in ["pickup","crew_pickup"] else 0

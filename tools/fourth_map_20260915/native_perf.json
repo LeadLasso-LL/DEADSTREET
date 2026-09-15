@@ -1,0 +1,10 @@
+{
+	"average_fps": 53.6837331428249,
+	"frames": 806,
+	"initial_units": 14,
+	"median_frame_ms": 17.874,
+	"note": "Native wall-clock sample, no fixed-FPS movie mode. Separate from visual acceptance and not an expansion-headroom certification.",
+	"p95_frame_ms": 23.232,
+	"resolution": "1280x720",
+	"seconds": 15.013859
+}

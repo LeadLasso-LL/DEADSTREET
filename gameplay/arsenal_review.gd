@@ -193,7 +193,8 @@ func start_battle(snipers: bool,config: Dictionary={}):
  battle=result.battle;ready_started=false;battle_clock=0.;ui.visible=false
 func _process(delta: float):
  if surface!=null:
-  var viewport=get_viewport().get_visible_rect().size;var scale_factor=minf(viewport.x/1152.,viewport.y/860.);surface.scale=Vector2.ONE*scale_factor;surface.position=(viewport-Vector2(1152,860)*scale_factor)*.5
+  var viewport=get_viewport().get_visible_rect().size;var scale_factor=minf(viewport.x/1504.,viewport.y/860.);surface.scale=Vector2.ONE*scale_factor;surface.position=Vector2.ZERO;surface.size=viewport/scale_factor
+  if menu_panels!=null:menu_panels.arrange(surface.size)
  if battle==null:return
  if not ready_started:
   var director=runtime.get_node("TacticalBattleView").battle_presentation

@@ -1,0 +1,14 @@
+{
+  "checks": 2292,
+  "baseline_failed": 68,
+  "current_failed": 74,
+  "new_failures": [
+    "battleclosing_defend_ok",
+    "battledefend_far_target_ok",
+    "battlefallback_counters_ok",
+    "battlefocus_counters_ok",
+    "battlepush_counter_ok",
+    "defender_ai_cover_ok"
+  ],
+  "resolved": []
+}

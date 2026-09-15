@@ -1,0 +1,23 @@
+{
+  "index": 16,
+  "id": "97_b22",
+  "artist": "B-22",
+  "title": "’97",
+  "source_url": "https://soundcloud.com/brandonharb-1/97a",
+  "start_timestamp": "00:38",
+  "start_seconds": 38,
+  "duration_seconds": 30,
+  "basename": "B-22_97",
+  "status": "downloaded",
+  "source_title": "'97",
+  "source_artist": "brandon",
+  "source_track_id": 292933808,
+  "canonical_url": "https://soundcloud.com/brandonharb-1/97a",
+  "source_duration_seconds": 165.788,
+  "downloadable": false,
+  "source_policy": "MONETIZE",
+  "source_format": "mp3_0_0",
+  "bytes": 2652368,
+  "sha256": "cdfc687ee67480b72855c00222604df698c9918bf038c59d81e61c394890dccb",
+  "settings_changed": false
+}

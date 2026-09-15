@@ -1,0 +1,18 @@
+{
+  "freight_rain": {
+    "seconds": 20,
+    "sample_rate": 44100,
+    "peak_dbfs": -6.943102758506368,
+    "rms_dbfs": -21.03245627423874,
+    "loop_boundary_step": 0.036213305317496926,
+    "normal_step_p99": 0.08156842431280607
+  },
+  "freight_roof_rain": {
+    "seconds": 20,
+    "sample_rate": 44100,
+    "peak_dbfs": -7.958050540170757,
+    "rms_dbfs": -21.878373527839564,
+    "loop_boundary_step": 0.02890339570124975,
+    "normal_step_p99": 0.11529865094107121
+  }
+}

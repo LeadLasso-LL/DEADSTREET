@@ -1,0 +1,21 @@
+﻿import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const dir=path.dirname(fileURLToPath(import.meta.url)), repo=path.resolve(dir,'../..');
+const b=await fs.readFile(path.join(dir,'B-22_Track_22.mp3'));let p=0,frames=0,seconds=0,rates=new Set(),bitrates=new Set();
+if(b.toString('ascii',0,3)==='ID3')p=10+((b[6]&127)<<21)+((b[7]&127)<<14)+((b[8]&127)<<7)+(b[9]&127);
+while(p+4<=b.length){if(b.length-p===128&&b.toString('ascii',p,p+3)==='TAG'){p+=128;break;}
+const h=b.readUInt32BE(p);if((h>>>21)!==2047)throw Error('Invalid frame sync at '+p);
+const v=(h>>>19)&3,layer=(h>>>17)&3,bi=(h>>>12)&15,ri=(h>>>10)&3,pad=(h>>>9)&1;
+if(v===1||layer!==1||bi===0||bi===15||ri===3)throw Error('Unsupported MPEG header');
+const sr=[44100,48000,32000][ri]/(v===3?1:v===2?2:4), kb=(v===3?[0,32,40,48,56,64,80,96,112,128,160,192,224,256,320]:[0,8,16,24,32,40,48,56,64,80,96,112,128,144,160])[bi];
+const len=Math.floor((v===3?144000:72000)*kb/sr)+pad;if(p+len>b.length)throw Error('Truncated MP3 frame');
+p+=len;frames++;seconds+=(v===3?1152:576)/sr;rates.add(sr);bitrates.add(kb);}
+if(p!==b.length||Math.abs(seconds-155.338)>0.5)throw Error('Duration or trailing bytes mismatch');
+const result={structural_validation:'PASS',frames,seconds,sample_rates:[...rates],bitrates_kbps:[...bitrates],all_bytes_parsed:true,full_decode_test:false};
+await fs.writeFile(path.join(dir,'mp3_validation.json'),JSON.stringify(result,null,2));
+const m=JSON.parse(await fs.readFile(path.join(dir,'track_22.json'),'utf8'));m.structural_validation=result;await fs.writeFile(path.join(dir,'track_22.json'),JSON.stringify(m,null,2));
+const brief=await fs.readFile(path.join(dir,'BRIEF.md'),'utf8');await fs.writeFile(path.join(dir,'BRIEF.md'),brief.replace('Decode verification pending.','Full-frame MPEG structural validation passed; see mp3_validation.json. Full decode/listening check not run.'));
+await fs.appendFile(path.join(repo,'docs/DEAD_STREET_JOURNAL.md'),"\n\n## 20260914-title-menu-01 — Opening/music direction and first track\n\nSource: Brandon, chat 3438f1ea0e55. Earlier brainstorming-only instruction honored; user then authorized title work and supplied the signature SoundCloud link for extraction. See tools/menu_title_20260914/BRIEF.md for all owner requirements and unanswered decisions. This chat owns that new scoped folder and title concept preview; existing BUILD ownership and unrelated dirty work are preserved. HEAD freshly observed 54b1597.\n\nIMPLEMENTED: retrieved full progressive MP3 for Track 22 by brandon (in-game credit B-22), source duration 155338 ms, 2485184 bytes, SHA256 74f73732e59f915fd96cb007571004540d26839ffb4ddf2a3f7fc152294680bb. Exact source/provenance and signature/first-shuffle exclusion are in track_22.json. File has not been integrated into the runtime. Validation result is in mp3_validation.json; structural parsing is not a full decoder or listening check. Scratch execution connection failed during dependency setup; retrieval completed on the development PC using public playback metadata from the owner's supplied link.\n\nAUTHORIZED NEXT: generate the static DEAD STREET title concept for owner review, using the current Mercer Saints Old English emblem as a letterform reference. Opening montage/menu/music player implementation remains future work. No owner acceptance of a title design yet. No changes to game behavior; no commit or push in this pass. Generated concept will be displayed in chat; integrate only the chosen revision. The signature song belongs in shuffle but can never be the first post-intro selection. Menu-to-battle audio behavior remains unanswered.\n");
+await fs.appendFile(path.join(repo,'docs/DEAD_STREET_HIVE_MIND.md'),"\n\n## Title/menu concept scope — 2026-09-14\nChat 3438f1ea0e55 owns tools/menu_title_20260914/ and the first static title concept. Owner authorized title work and supplied signature Track 22 (credit B-22); full MP3 retrieved. See journal title-menu-01 and tools/menu_title_20260914/BRIEF.md for exact design and music rules. Next: owner title-art review; opening/menu implementation remains pending. Existing estate scope stays with BUILD. This record adds no acceptance or runtime change.\n");
+console.log(JSON.stringify(result));console.log('Brief, provenance, journal and hive scope saved.');

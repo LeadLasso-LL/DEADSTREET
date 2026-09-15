@@ -1,0 +1,38 @@
+{
+  "head": "50a000753b04c7115bfeef48cb46dea0b2ddbbd4",
+  "protected": {
+    "gameplay/harold_street_art.gd": "4634d50890d76481660a714740a6d05137794af73d073b6a3eb7dd929ea43100",
+    "gameplay/tactical_battle_view.gd": "c3dd91ae5bd1f4dd3e2a243c3e168635563070c4b9f506c3e193399a8b7578d0",
+    "battle/vehicles/battle_arrival_service.gd": "15b3f5a21cbf72d2b1987cda35de8ebd6cc6388a70dc3bedf382c0f1a9af9fbc",
+    "battle/vehicles/battle_vehicle_placement_context.gd": "40930a71a8d9cceac3eab69ec5b04c578a2ca9d61a85b492034fa59fe4974d98",
+    "battle/ai/battle_vehicle_deployment_planner.gd": "07b54d0fd429db1829a32e8d5b90960e942d105d2972d7c12609dd635adeeb02",
+    "assets/data/vehicle_models.json": "50d491eae1796e4bca8a1e3aeb42b09445ceaf92c255cecc5071f9bc55bdadd7"
+  },
+  "owned_before": {
+    "battle/geometry/harold_street_catalog.gd": "94c5583fa214f34597ebe1f021ba85564d90536656a6edbdb68274c042800c35",
+    "assets/art/harold_frontage/ground.png": "1a4c842da78b0a3f2e2492e17b20d01d119a0008ab6dd10d10f53e6b61ae18cc"
+  },
+  "model": {
+    "id": "volta",
+    "name": "Volta GT",
+    "vehicle_class": "passenger_cars",
+    "body": "grandtourer",
+    "unit_capacity": 2,
+    "movement_per_turn": 6.9,
+    "price": 68000,
+    "upkeep_per_turn": 98,
+    "resource_capacity": 0,
+    "length": 4.65,
+    "width": 1.94,
+    "height": 1.28,
+    "paint": "#187db0",
+    "description": "Azure-blue grand tourer with a long sculpted hood, swept headlights and a black roof.",
+    "cover": true,
+    "doors": 2,
+    "design_era": "contemporary_2034",
+    "brand": "",
+    "door_rows": [
+      0.12
+    ]
+  }
+}

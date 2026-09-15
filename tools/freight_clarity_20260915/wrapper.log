@@ -1,0 +1,33 @@
+OWNED_NATIVE_PID 10804
+EXIT 1
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1650 with Max-Q Design
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/freight_clarity_20260915/check.gd:27)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(11.8000001907349, 0.0) segment=0 into=11.8 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: attacker vehicle auto-placement failed code=no_legal_candidates
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: attacker side attacker committed
+VIEWPORT_DIAG (1920, 1080) visible=[P: (0.0, 0.0), S: (1152.0, 648.0)] scale_size=(1152, 648) factor=1.0 mode=1 window=(1920, 1080) screen=(1920, 1080) view=[P: (0.0, 0.0), S: (1152.0, 648.0)] path=/root
+ERROR: 36px badge at1080p
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:56)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+ERROR: one texture pixel per screen pixel
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tools/freight_clarity_20260915/check.gd:10)
+       [1] run (res://tools/freight_clarity_20260915/check.gd:58)
+       [2] level (res://tools/freight_clarity_20260915/check.gd:24)
+CLARITY_CHECK {"arrival":{"cutoff":3873.0068359375,"frames":48128,"peak":0.265266507863998,"rms":0.0637368030149511,"volume_db":-3.0},"arrival_errors":[],"arrival_gain_db":11.0724469004302,"before":{"cutoff":2400.0,"frames":47616,"peak":0.0708048194646835,"rms":0.017814265916442,"volume_db":-14.1721458435059},"checks":127,"combat":{"cutoff":2400.0,"frames":48128,"peak":0.00440537231042981,"rms":0.00121464450538561,"volume_db":-32.0},"errors":["36px badge at1080p","one texture pixel per screen pixel"],"markers":[{"position":"(515.0, 611.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(525.0, 754.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(506.0, 868.0001)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(534.0, 974.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(541.0, 592.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(556.0, 734.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(537.0, 848.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(560.0, 956.0001)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(544.0, 637.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(452.0, 736.0)","size":"(35.99997, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1511.0, 637.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1460.0, 720.0001)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1451.0, 920.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1483.0, 938.0001)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1511.0, 694.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1490.0, 740.0001)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1568.0, 851.0)","size":"(36.00073, 36.00024)","texture":"(36.0, 36.0)"},{"position":"(1451.0, 957.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1616.0, 699.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"},{"position":"(1460.0, 759.0)","size":"(36.0, 36.0)","texture":"(36.0, 36.0)"}]}
+

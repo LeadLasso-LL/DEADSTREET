@@ -1,0 +1,9 @@
+from pathlib import Path
+root=Path(r'C:\Users\brand\OneDrive\Documents\dead-street')
+entry='\n\n## 20260915-faction-music-apply-04 - Final mapping ready locally; publication review blocked\n\nFinal owner mapping is implemented: Calle Ocho=Glock, La Union del Sur=Burn;21 unique loops for21 non-authority factions, TRC/NBPD sirens unchanged.115 native wiring checks plus13 final correction checks passed; owner mapping/evidence/README/shared records complete. Automatic approval review rejected execution of tools/faction_music_apply_20260915/publish.py, stating that private project source/documentation publication to the GitHub destination was not clearly authorized in the transcript. No staging/commit/push occurred from this rejected call; no workaround or retry performed.\n\nExact remaining action: ask owner approval to publish the final faction-audio mapping/wiring and assignment utility/evidence to https://github.com/LeadLasso-LL/DEADSTREET.git on build/arsenal-checkpoint-20260911. Once explicitly approved, run the prepared publisher after its built-in branch/origin/index/hash/report guards. It stages only the three owned audio/catalogue sources, final mapping/utility/evidence and owned shared-record sections, then pushes and verifies remote hash. No repeat processing/full testing needed absent changed owned hashes. Preserve concurrent menu shuffle/toast, Harold geometry, range and portrait work. No faction choice remains unresolved; local sandbox loads final mapping after reopen.\n'
+for name in ['DEAD_STREET_HIVE_MIND.md','DEAD_STREET_JOURNAL.md','DEAD_STREET_PROJECT_CONTROL.md']:
+    p=root/'docs'/name
+    if '## 20260915-faction-music-apply-04' not in p.read_text(encoding='utf-8'):
+        with p.open('a',encoding='utf-8') as f:f.write(entry)
+    assert entry in p.read_text(encoding='utf-8')
+print('FINAL_MAPPING_AND_PUBLICATION_BLOCK_RECORDED',flush=True)
