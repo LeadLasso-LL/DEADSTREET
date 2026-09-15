@@ -1,0 +1,56 @@
+--- a/gameplay/sandbox_menu_music.gd
++++ b/gameplay/sandbox_menu_music.gd
+@@ -26,12 +26,14 @@
+ var track_finished = false
+ var play_count = 0
+ var user_paused = false
++var preview_paused = false
+ var last_clock = 0.0
+ var output_latency = 0.0
+ var settings_path = "user://dead_street_music.cfg"
+ var volume_value = db_to_linear(-4.0)
+ 
+ func _ready():
++	add_to_group("dead_street_menu_music")
+ 	tracks = Catalog.tracks()
+ 	current_id = str(Catalog.catalogue().get("signature_track", "dead_street"))
+ 	var cfg = ConfigFile.new()
+@@ -156,7 +158,7 @@
+ 	if not in_sandbox: return
+ 	var menu_visible = is_instance_valid(sandbox) and sandbox.ui.visible
+ 	layer.visible = menu_visible
+-	player.stream_paused = user_paused or not menu_visible
++	player.stream_paused = user_paused or preview_paused or not menu_visible
+ 	var viewport = get_viewport().get_visible_rect().size; surface.size = viewport
+ 	var factor = maxf(0.1,minf(1.0,minf(viewport.x/1280.0,viewport.y/720.0))); surface.scale = Vector2.ONE*factor
+ 	var area = viewport/factor
+@@ -185,7 +187,7 @@
+ 	var was_paused = user_paused
+ 	current_id = id; player.stream = stream; player.play(); play_count += 1
+ 	track_finished = false; user_paused = was_paused if preserve_pause else false
+-	player.stream_paused = user_paused or (in_sandbox and (not is_instance_valid(sandbox) or not sandbox.ui.visible))
++	player.stream_paused = user_paused or preview_paused or (in_sandbox and (not is_instance_valid(sandbox) or not sandbox.ui.visible))
+ 	# Refill only at a round boundary; exclude the song just selected.
+ 	if queue.is_empty(): refill_queue()
+ 	refresh_tracks()
+@@ -215,7 +217,7 @@
+ 		if not advance(false) and enabled_tracks.get(current_id,false):
+ 			player.play(); play_count += 1; track_finished = false; user_paused = false
+ 	else: user_paused = not user_paused
+-	player.stream_paused = user_paused
++	player.stream_paused = user_paused or preview_paused
+ 	update_transport_button()
+ 
+ func finished():
+@@ -224,6 +226,11 @@
+ 	# Before entry preserve the completed signature clock for the opening.
+ 	user_paused = true
+ 	update_transport_button()
++
++func set_preview_paused(on: bool):
++	preview_paused=on
++	var hidden=in_sandbox and (not is_instance_valid(sandbox) or not sandbox.ui.visible)
++	player.stream_paused=user_paused or preview_paused or hidden
+ 
+ func save_settings():
+ 	var cfg = ConfigFile.new()

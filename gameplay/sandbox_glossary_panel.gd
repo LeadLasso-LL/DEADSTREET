@@ -1,4 +1,5 @@
 extends Control
+const FactionPreview = preload("res://gameplay/faction_audio_preview.gd")
 const MenuEmblem = preload("res://gameplay/sandbox_emblem.gd")
 const Factions = preload("res://battle/identity/faction_unit_catalog.gd")
 const Weapons = preload("res://battle/combat/battle_weapon_catalog.gd")
@@ -29,6 +30,8 @@ var detail_labels = {}
 var active_texture: TextureRect
 var selected_faction_rows: Dictionary = {}
 var leader_image: TextureRect
+var faction_audio: Node
+var audio_button: Button
 
 func _ready():
 	size = Vector2(1152,764)
@@ -37,6 +40,11 @@ func _ready():
 	if mode == "factions":
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/faction_glossary.json"))
 		if parsed is Dictionary: data = parsed.get("factions",{})
+		faction_audio=FactionPreview.new();add_child(faction_audio)
+		faction_audio.playback_changed.connect(update_audio_button)
+		visibility_changed.connect(func():
+			if not is_visible_in_tree():faction_audio.stop())
+		tree_exiting.connect(faction_audio.stop)
 		build_factions()
 	else: build_equipment()
 
@@ -111,7 +119,19 @@ func mark_faction():
 	for id in item_buttons:
 		item_buttons[id].add_theme_stylebox_override("normal",Card.style(Color("#39443b") if id==selected_id else Color("#243237"),TAN if id==selected_id else Color("#425451")))
 
+func toggle_faction_audio():
+	if faction_audio.current_faction==selected_id:faction_audio.stop()
+	else:faction_audio.play_faction(selected_id)
+
+func update_audio_button():
+	if not is_instance_valid(audio_button):return
+	var playing=faction_audio.current_faction==selected_id
+	audio_button.icon=faction_audio.icon(playing)
+	audio_button.tooltip_text="Stop faction audio" if playing else "Play faction audio"
+	audio_button.set_meta("playing",playing)
+
 func show_faction(id: String):
+	faction_audio.stop()
 	selected_id = id; clear(detail); unit_images.clear(); detail_labels.clear(); leader_image=null; mark_faction()
 	var row: Dictionary = data.get(id,{})
 	selected_faction_rows = row
@@ -130,6 +150,12 @@ func show_faction(id: String):
 	var story = panel(detail,Vector2(0,116),Vector2(612,158))
 	label(story,Vector2(18,14),Vector2(576,23),str(row.get("kind","Organization")).to_upper(),12,TAN)
 	detail_labels.description = label(story,Vector2(18,45),Vector2(576,102),str(row.get("description","")),16)
+	label(detail,Vector2(630,260),Vector2(150,27),"Faction Audio",13,TAN)
+	audio_button=button(detail,"",Vector2(794,257),Vector2(34,32),toggle_faction_audio)
+	audio_button.name="FactionAudioToggle";audio_button.icon_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	audio_button.disabled=not faction_audio.available(id)
+	update_audio_button()
+	if audio_button.disabled:audio_button.tooltip_text="Faction audio unavailable"
 	label(detail,Vector2(0,296),Vector2(800,28),"REGULAR UNITS",16,TAN)
 	for i in range(CLASSES.size()):
 		var role: String = CLASSES[i]

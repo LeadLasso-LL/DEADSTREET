@@ -1,3 +1,7 @@
+# Current milestone - faction glossary audio preview - 2026-09-15
+
+IMPLEMENTED / NATIVE-VALIDATED: Faction Audio filled play/stop controls for all 23 factions, automatic menu-music pause and same-position resume, one-shot end/navigation cleanup. 250 native checks PASS. 21 approved snippets and both existing authority sirens reused; no source audio or battlefield changes. Evidence/ownership/continuation: tools/faction_audio_preview_20260915/README.md and journal faction-preview-02. Previous approved menu-polish 07046958 is pushed/verified; current publication status is separate. Reopen normal Sandbox; owner review pending.
+
 # Current milestone - sandbox emblem, precision-art and music polish - 2026-09-15
 
 IMPLEMENTED / NATIVE-VALIDATED. All23 menu emblems lose white outer canvases; AK-47/six sniper close-ups refined; compact158x56 current-song popup; Shuffle rebuilds enabled order and immediately starts its first track.249 native checks PASS. Exact behavior, seven-gun visual evidence, source ownership/delta and reproduction: tools/menu_polish_20260915/README.md and journal menu-polish-02. Prior approved portrait checkpoint dc045054 is pushed/verified. Current publication status is separate in the task receipt. Reopen normal live-source Sandbox; owner appearance review pending. Other scope milestones remain valid below.

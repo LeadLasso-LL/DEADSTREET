@@ -1,0 +1,42 @@
+{
+  "scope": [
+    "gameplay/faction_audio_preview.gd",
+    "gameplay/sandbox_glossary_panel.gd",
+    "gameplay/sandbox_menu_panels.gd",
+    "tools/faction_audio_preview_20260915/applied_music_delta.patch",
+    "tools/faction_audio_preview_20260915/baseline.json",
+    "tools/faction_audio_preview_20260915/check_native.gd",
+    "tools/faction_audio_preview_20260915/finalize.py",
+    "tools/faction_audio_preview_20260915/install.py",
+    "tools/faction_audio_preview_20260915/mercer_playing.png",
+    "tools/faction_audio_preview_20260915/mercer_stopped.png",
+    "tools/faction_audio_preview_20260915/native.log",
+    "tools/faction_audio_preview_20260915/native_validation.json",
+    "tools/faction_audio_preview_20260915/nbpd_siren.png",
+    "tools/faction_audio_preview_20260915/owned_doc_deltas.json",
+    "tools/faction_audio_preview_20260915/publish.py",
+    "tools/faction_audio_preview_20260915/README.md",
+    "tools/faction_audio_preview_20260915/validated_sources.json"
+  ],
+  "hashes": {
+    "gameplay/faction_audio_preview.gd": "129eae256a1b126fd74e27cb982d1d4a8907bf6c0fae687a69791913e4da327b",
+    "gameplay/sandbox_glossary_panel.gd": "b6b2805eef5ea17b1e7cf59fc50922c0170e4ae5dd4e9ac7d85aea924f63805c",
+    "gameplay/sandbox_menu_panels.gd": "6d4541979f4dbaa55ab6be94615d7da7ac8bae4c90f02b7b49698319b19758d0",
+    "tools/faction_audio_preview_20260915/applied_music_delta.patch": "f581c99c1448f2cfba328387bc0eb0a3deb9f9bb06914ed827338df13609d427",
+    "tools/faction_audio_preview_20260915/baseline.json": "cc10c71d591e2b0e0a516223656f364ee8b6d310e17502586c8c9ad38b749e43",
+    "tools/faction_audio_preview_20260915/check_native.gd": "5a496c2fd23b8fdeb4098895d777d8b1b54d61701fba1b03fc4fd038a9378ee1",
+    "tools/faction_audio_preview_20260915/finalize.py": "c4734f5e5ca57c7994bf6c8c92bc80ca3ca41cef83072bce36a44074055dba73",
+    "tools/faction_audio_preview_20260915/install.py": "4b96fb1743be5213784474e19389e1e6f0d39027d83128c2c19b673ab6fa6db9",
+    "tools/faction_audio_preview_20260915/mercer_playing.png": "4e5c144ec6a04aad9f13c588d9571c01e59620b560411088392c414b62696107",
+    "tools/faction_audio_preview_20260915/mercer_stopped.png": "70bb2ff2c4300d105bc67b1c86eb202c89dde8d646cb47eadd28f062b8624529",
+    "tools/faction_audio_preview_20260915/native.log": "a5037b9e6ac018e75eacab0db8a4d89b2818253563e8f6fb948adf3461b8743e",
+    "tools/faction_audio_preview_20260915/native_validation.json": "e0276b447a0f4cd99ad0236494f3f4a72eca928bbdf2d19e1f395a48e87db195",
+    "tools/faction_audio_preview_20260915/nbpd_siren.png": "4c3e82faaae41ccdcf747f50e84d2ec8ff0b4ad698474055fdf25d396f88a750",
+    "tools/faction_audio_preview_20260915/owned_doc_deltas.json": "f6ef87cfc7b22de55f10f69c31340c28263d7f7c72d70ffc22d9656a715c16f6",
+    "tools/faction_audio_preview_20260915/publish.py": "7acf05c4dc7d9892f851a36401f4a0a457fd17e58230456e307f0052c4575ad2",
+    "tools/faction_audio_preview_20260915/README.md": "453050c10431658eda46577d267fc98550e342a400fa559c5f8b831e127303ae",
+    "tools/faction_audio_preview_20260915/validated_sources.json": "b50d3e85cdfa2ed70e462c68683d1c813fd991ffa6e4df1d776bd6e17d3cf71a"
+  },
+  "live_music_hash": "e69a149de6a7556c732bb2cf3ef5c25cda81543c2656379c37fc3270f0292bb1",
+  "checks": 250
+}

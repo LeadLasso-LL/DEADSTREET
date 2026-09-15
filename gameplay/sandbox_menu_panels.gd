@@ -33,6 +33,7 @@ func _ready():
 	show_tab("battle_setup")
 
 func show_tab(id: String):
+	if id!="factions" and pages.has("factions"):pages.factions.faction_audio.stop()
 	if id=="tutorial":owner_scene.open_tutorial();return
 	if not pages.has(id):
 		var page=Glossary.new();page.mode=id;page.name=id.capitalize()+"Glossary";page.fleet_requested.connect(open_fleet_lab);body.add_child(page);pages[id]=page
