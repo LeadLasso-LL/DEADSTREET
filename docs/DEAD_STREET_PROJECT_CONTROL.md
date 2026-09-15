@@ -1,3 +1,7 @@
+# Current milestone - gun and vehicle comparison / SMG labels - 2026-09-15
+
+IMPLEMENTED / NATIVE-VALIDATED: click to select a gun or vehicle; hover another to compare both values and signed changes across categories. SMG uppercase throughout force selection. 3,736 native checks PASS for 30 guns / 75 vehicles and three layouts. No stat/economy changes. Evidence, interaction rules, scope and continuation: tools/arsenal_compare_20260915/README.md and journal arsenal-compare-02. Current publication receipt records actual Git outcome; prior Faction Audio 50a0007 is published. Reopen Sandbox for owner review.
+
 # Current milestone - faction glossary audio preview - 2026-09-15
 
 IMPLEMENTED / NATIVE-VALIDATED: Faction Audio filled play/stop controls for all 23 factions, automatic menu-music pause and same-position resume, one-shot end/navigation cleanup. 250 native checks PASS. 21 approved snippets and both existing authority sirens reused; no source audio or battlefield changes. Evidence/ownership/continuation: tools/faction_audio_preview_20260915/README.md and journal faction-preview-02. Previous approved menu-polish 07046958 is pushed/verified; current publication status is separate. Reopen normal Sandbox; owner review pending.

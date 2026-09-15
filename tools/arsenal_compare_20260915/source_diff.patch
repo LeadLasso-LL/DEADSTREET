@@ -1,0 +1,180 @@
+diff --git a/gameplay/sandbox_force_builder.gd b/gameplay/sandbox_force_builder.gd
+index 722f939..d1c9473 100644
+--- a/gameplay/sandbox_force_builder.gd
++++ b/gameplay/sandbox_force_builder.gd
+@@ -77,7 +77,7 @@ func build_side(side: String,x: int):
+  var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(14,101);scroll.size=Vector2(504,431);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+  var list=VBoxContainer.new();scroll.add_child(list);list.size_flags_horizontal=Control.SIZE_EXPAND_FILL;list.add_theme_constant_override("separation",8);lists[side]=list
+  var classes=option(panel,Vector2(14,546),Vector2(242,31));add_classes[side]=classes
+- for kind in Config.CLASSES:classes.add_item(kind.capitalize());classes.set_item_metadata(classes.item_count-1,kind)
++ for kind in Config.CLASSES:classes.add_item(class_label(kind));classes.set_item_metadata(classes.item_count-1,kind)
+  classes.select(3)
+  add_buttons[side]=button_at(panel,Vector2(270,546),Vector2(248,31),"+ ADD UNIT",func():add_unit(side,str(classes.get_item_metadata(classes.selected))))
+  refresh_side(side)
+@@ -97,7 +97,7 @@ func build_row(side: String,index: int,parent):
+  var host=Control.new();shell.add_child(host)
+  label_at(host,Vector2(8,9),Vector2(26,22),"%02d"%(index+1),12)
+  var kind=option(host,Vector2(35,5),Vector2(113,31))
+- for id in Config.CLASSES:kind.add_item(id.capitalize());kind.set_item_metadata(kind.item_count-1,id)
++ for id in Config.CLASSES:kind.add_item(class_label(id));kind.set_item_metadata(kind.item_count-1,id)
+  kind.select(Config.CLASSES.find(row["class"]));kind.item_selected.connect(func(i):
+   row["class"]=str(kind.get_item_metadata(i));row.weapon=Weapons.default_model(row["class"]);row.specialist="";refresh_side(side))
+  var weapon=option(host,Vector2(155,5),Vector2(233,31))
+@@ -112,7 +112,7 @@ func build_row(side: String,index: int,parent):
+  var variant=Anim.variant_for(config[side].faction,row["class"],row.weapon,row.get("specialist",""))
+  portrait.texture=Anim._load_texture(Anim.atlas_path(variant,"portraits"))
+  label_at(host,Vector2(72,39),Vector2(110,17),"UNIT TIER",9)
+- host.tooltip_text=Factions.display_name(config[side].faction)+" / "+row["class"].capitalize()+ (" / Dual pistols" if not row.get("specialist","").is_empty() else "")
++ host.tooltip_text=Factions.display_name(config[side].faction)+" / "+class_label(row["class"])+ (" / Dual pistols" if not row.get("specialist","").is_empty() else "")
+  var tier=option(host,Vector2(72,57),Vector2(110,29))
+  for rank in range(1,4):
+   tier.add_item("Tier %d"%rank);tier.set_item_tooltip(rank-1,["Regular","Experienced","Veteran"][rank-1])
+@@ -174,3 +174,6 @@ func choose_map(id: String):
+  if id=="river_bridge" and not config.defender.has("vehicles"):
+   config.defender.vehicles=Config.auto_convoy(config.defender.units.size())
+  changed()
++
++func class_label(id: String) -> String:
++ return "SMG" if id.to_lower()=="smg" else id.capitalize()
+diff --git a/gameplay/sandbox_glossary_panel.gd b/gameplay/sandbox_glossary_panel.gd
+index b0b9fe3..180da88 100644
+--- a/gameplay/sandbox_glossary_panel.gd
++++ b/gameplay/sandbox_glossary_panel.gd
+@@ -1,4 +1,5 @@
+ extends Control
++const Comparison = preload("res://gameplay/equipment_comparison.gd")
+ const FactionPreview = preload("res://gameplay/faction_audio_preview.gd")
+ const MenuEmblem = preload("res://gameplay/sandbox_emblem.gd")
+ const Factions = preload("res://battle/identity/faction_unit_catalog.gd")
+@@ -32,6 +33,10 @@ var selected_faction_rows: Dictionary = {}
+ var leader_image: TextureRect
+ var faction_audio: Node
+ var audio_button: Button
++var comparison_base = ""
++var compared_id = ""
++var comparison_cells = {}
++var comparison_hint: Label
+ 
+ func _ready():
+ 	size = Vector2(1152,764)
+@@ -172,6 +177,9 @@ func show_faction(id: String):
+ 		label(tile,Vector2(12,302),Vector2(136,25),"WEAPON TIER %d"%weapon.tier,11,MUTED)
+ 
+ func build_equipment():
++	comparison_hint=label(self,Vector2(205,10),Vector2(646,26),"Click to select; hover another to compare.",12,MUTED)
++	visibility_changed.connect(func():
++		if not is_visible_in_tree() and not compared_id.is_empty():show_equipment(comparison_base,false))
+ 	if mode=="vehicles": selected_class="two_wheelers"
+ 	label(self,Vector2(24,8),Vector2(950,29),"ARSENAL" if mode=="arsenal" else "VEHICLES",19,TAN)
+ 	if mode=="vehicles": button(self,"FLEET & ENCOUNTER LAB",Vector2(862,4),Vector2(266,32),func():fleet_requested.emit())
+@@ -216,8 +224,9 @@ func choose_class(id: String):
+ 		picture(b,Vector2(12,53),Vector2(219,76),equipment_texture(model_id))
+ 		var footer = "TIER %d  /  $%s"%[model.tier,money(Weapons.purchase_price(model_id))] if mode=="arsenal" else "%d SEATS  /  $%s"%[model.unit_capacity,money(model.price)]
+ 		label(b,Vector2(12,141),Vector2(219,20),footer,11,TAN)
++		b.mouse_entered.connect(hover_equipment.bind(model_id))
+ 		item_buttons[model_id]=b
+-	if not ids.is_empty(): show_equipment(ids[0])
++	if not ids.is_empty(): show_equipment(comparison_base if not comparison_base.is_empty() else ids[0],false)
+ 
+ func money(value) -> String:
+ 	var source = str(int(value)); var result = ""
+@@ -236,7 +245,11 @@ func stat(label_text: String, value: String, y: float, hint: String = ""):
+ 	left.mouse_filter=Control.MOUSE_FILTER_PASS; right.mouse_filter=Control.MOUSE_FILTER_PASS
+ 	detail_labels[label_text]=right
+ 
+-func show_equipment(id: String):
++func show_equipment(id: String, pin: bool = true):
++	compared_id="";comparison_cells.clear()
++	if pin:comparison_base=id
++	var base_name = (Weapons.get_model(comparison_base).display_name if mode=="arsenal" else Vehicles.model(comparison_base).name) if not comparison_base.is_empty() else ""
++	comparison_hint.text="Selected: "+base_name+"  ·  Hover to compare; click to reselect." if not comparison_base.is_empty() else "Click to select; hover another to compare."
+ 	selected_id=id; clear(detail); detail_labels.clear(); detail_scroll.scroll_vertical=0
+ 	for key in item_buttons:
+ 		item_buttons[key].add_theme_stylebox_override("normal",Card.style(Color("#39443b") if key==id else Color("#243237"),TAN if key==id else Color("#425451")))
+@@ -246,25 +259,8 @@ func show_equipment(id: String):
+ 	active_texture=picture(detail,Vector2(24,81),Vector2(502,123),equipment_texture(id))
+ 	label(detail,Vector2(18,218),Vector2(514,25),("%s  /  WEAPON TIER %d"%[m.weapon_type_id.to_upper(),m.tier]) if mode=="arsenal" else Vehicles.class_name_for(m.vehicle_class).to_upper(),13,TAN)
+ 	if mode=="arsenal":
+-		var rows=[
+-			["Price","$"+money(Weapons.purchase_price(id)),"Purchase price per firearm. Unit recruitment and training are separate."],
+-			["Range","%.1f"%m.max_range,"Maximum firing distance in battlefield units."],
+-			["Fire rate","%.2f shots / sec"%m.shots_per_second,"Shot pace while firing. Aiming, movement and reloads can slow it."],
+-			["Movement","%+.0f%%"%((m.movement_multiplier-1.)*100.),"Change to the unit's normal movement speed while carrying this weapon."],
+-			["Standard hit damage","%.2f"%m.solid_trauma,"Health damage from a solid hit."],
+-			["Critical hit damage","%.2f"%m.critical_trauma,"Health damage from a critical hit."],
+-			["Graze damage","%.2f"%m.graze_trauma,"Health damage from a grazing hit."],
+-			["Initial aim","%.2f sec"%m.acquire_seconds,"Time to acquire an initial shot."],
+-			["Aim recovery","%.2f sec"%m.reacquire_seconds,"Time to reacquire a shot after losing settled aim."],
+-			["Shots before reload",str(m.magazine_capacity),"Shots per magazine before the next reload."],
+-			["Reload cycle","%.1f sec"%m.reload_seconds,"The reload duration used by this weapon's class."],
+-			["Recoil per shot","%.3f"%m.recoil_per_shot,"How much each shot unsettles aim."],
+-			["Recoil recovery","%.3f"%m.recoil_recovery,"How quickly accumulated recoil settles."],
+-			["Base solid hit chance","%.0f%%"%(m.solid_probability*100.),"Chance before battle conditions and unit bonuses."],
+-			["Base critical hit chance","%.0f%%"%(m.critical_probability*100.),"Chance before battle conditions and unit bonuses."],
+-			["Base graze chance","%.0f%%"%(m.graze_probability*100.),"Chance before battle conditions and unit bonuses."],
+-			["Base miss chance","%.0f%%"%(m.miss_probability*100.),"Chance before battle conditions and unit bonuses."]]
+-		for i in range(rows.size()): stat(rows[i][0],rows[i][1],275+i*30,rows[i][2])
++		var rows=Comparison.rows(id)
++		for i in range(rows.size()): stat(rows[i].label,rows[i].text,275+i*30,rows[i].hint)
+ 		label(detail,Vector2(18,275+rows.size()*30+15),Vector2(514,53),"Weapon stats before unit-tier bonuses. Range uses battlefield units; damage is health lost on that hit.",12,MUTED)
+ 		detail.custom_minimum_size.y=275+rows.size()*30+83
+ 	else:
+@@ -288,3 +284,58 @@ func show_equipment(id: String):
+ 			label(detail,Vector2(18,y),Vector2(514,112),str(m.ability_limits),13,MUTED);y+=120
+ 		label(detail,Vector2(18,y),Vector2(514,54),"Convoys travel at their slowest vehicle's pace. Vehicle abilities can be tried in the Encounter Lab." if m.get("ability_status","")=="encounter_lab" else "Convoys travel at their slowest vehicle's pace. Seats include the driver.",12,MUTED)
+ 		detail.custom_minimum_size.y=maxf(660,y+68)
++
++
++func hover_equipment(id: String):
++	if comparison_base.is_empty(): return
++	if id == comparison_base:
++		if not compared_id.is_empty(): show_equipment(comparison_base, false)
++		return
++	if compared_id == id: return
++	compared_id = id
++	clear(detail); detail_labels.clear(); comparison_cells.clear()
++	detail_scroll.scroll_vertical = 0
++	panel(detail, Vector2.ZERO, Vector2(550,252))
++	for side in range(2):
++		var model_id = comparison_base if side == 0 else id
++		var model = Weapons.get_model(model_id) if mode=="arsenal" else Vehicles.model(model_id)
++		var x = 18.0 if side == 0 else 292.0
++		label(detail,Vector2(x,14),Vector2(240,20),"SELECTED" if side == 0 else "HOVERED",11,TAN)
++		label(detail,Vector2(x,40),Vector2(240,54),model.display_name if mode=="arsenal" else model.name,19)
++		picture(detail,Vector2(x,100),Vector2(240,80),equipment_texture(model_id))
++		label(detail,Vector2(x,189),Vector2(240,22),("%s / TIER %d" % [model.weapon_type_id.to_upper(),model.tier]) if mode=="arsenal" else Vehicles.class_name_for(model.vehicle_class).to_upper(),12,MUTED)
++	label(detail,Vector2(18,222),Vector2(514,22),"Changes = hovered minus selected",12,TAN)
++	for column in [[18,180,"STAT"],[205,96,"SELECTED"],[315,96,"HOVERED"],[425,107,"CHANGE"]]:
++		label(detail,Vector2(column[0],265),Vector2(column[1],20),column[2],11,TAN)
++	var rows = Comparison.compare(comparison_base,id,mode=="vehicles")
++	for i in range(rows.size()):
++		var row = rows[i]
++		var y = 295.0+i*32.0
++		var tint = Color("#92c69c") if row.benefit > 0 else (Color("#dc9690") if row.benefit < 0 else MUTED)
++		var name_label = label(detail,Vector2(18,y),Vector2(180,28),row.label,13,MUTED)
++		var base_label = label(detail,Vector2(205,y),Vector2(96,28),row.base_text,13)
++		var other_label = label(detail,Vector2(315,y),Vector2(96,28),row.text,13)
++		var delta_label = label(detail,Vector2(425,y),Vector2(107,28),row.delta_text,13,tint)
++		for cell in [name_label,base_label,other_label,delta_label]:
++			cell.tooltip_text = row.hint
++			cell.mouse_filter = Control.MOUSE_FILTER_PASS
++		comparison_cells[row.label] = {"base":base_label,"other":other_label,"delta":delta_label,"data":row}
++	var bottom = 310.0+rows.size()*32.0
++	label(detail,Vector2(18,bottom),Vector2(514,57),"Green: benefit  ·  Red: drawback  ·  —: unchanged\n"+("pp = percentage points. Before unit-tier bonuses and battle conditions." if mode=="arsenal" else "Upkeep is per turn. Dimensions and door counts are neutral tradeoffs."),12,MUTED)
++	bottom += 72.0
++	if mode=="vehicles":
++		for model_id in [comparison_base,id]:
++			var model = Vehicles.model(model_id)
++			var note = str(model.get("ability_summary",""))
++			if not str(model.get("ability_limits","")).is_empty():note += "\n"+str(model.ability_limits)
++			if model.get("service_role","")=="bank_cash":note = "Cash capacity: $"+money(model.cash_capacity)+"\n"+note
++			elif model.get("service_role","")=="prisoner_transfer":note = "Custody transport: 3 guards + 8 prisoners\n"+note
++			if note.is_empty():continue
++			label(detail,Vector2(18,bottom),Vector2(514,26),model.name+" / "+str(model.get("ability_name","SPECIAL ROLE")),13,TAN)
++			bottom += 32.0
++			var height = maxf(50,font.get_multiline_string_size(note,HORIZONTAL_ALIGNMENT_LEFT,514,13).y+12)
++			label(detail,Vector2(18,bottom),Vector2(514,height),note,13,MUTED)
++			bottom += height+18.0
++	detail.custom_minimum_size.y = maxf(640,bottom+12)
++	# Retain the last hovered comparison so the pointer can enter and scroll its
++	# details. Hovering the selected tile, clicking a tile or changing tabs clears it.

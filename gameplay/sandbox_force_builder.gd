@@ -77,7 +77,7 @@ func build_side(side: String,x: int):
  var scroll=ScrollContainer.new();panel.add_child(scroll);scroll.position=Vector2(14,101);scroll.size=Vector2(504,431);scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
  var list=VBoxContainer.new();scroll.add_child(list);list.size_flags_horizontal=Control.SIZE_EXPAND_FILL;list.add_theme_constant_override("separation",8);lists[side]=list
  var classes=option(panel,Vector2(14,546),Vector2(242,31));add_classes[side]=classes
- for kind in Config.CLASSES:classes.add_item(kind.capitalize());classes.set_item_metadata(classes.item_count-1,kind)
+ for kind in Config.CLASSES:classes.add_item(class_label(kind));classes.set_item_metadata(classes.item_count-1,kind)
  classes.select(3)
  add_buttons[side]=button_at(panel,Vector2(270,546),Vector2(248,31),"+ ADD UNIT",func():add_unit(side,str(classes.get_item_metadata(classes.selected))))
  refresh_side(side)
@@ -97,7 +97,7 @@ func build_row(side: String,index: int,parent):
  var host=Control.new();shell.add_child(host)
  label_at(host,Vector2(8,9),Vector2(26,22),"%02d"%(index+1),12)
  var kind=option(host,Vector2(35,5),Vector2(113,31))
- for id in Config.CLASSES:kind.add_item(id.capitalize());kind.set_item_metadata(kind.item_count-1,id)
+ for id in Config.CLASSES:kind.add_item(class_label(id));kind.set_item_metadata(kind.item_count-1,id)
  kind.select(Config.CLASSES.find(row["class"]));kind.item_selected.connect(func(i):
   row["class"]=str(kind.get_item_metadata(i));row.weapon=Weapons.default_model(row["class"]);row.specialist="";refresh_side(side))
  var weapon=option(host,Vector2(155,5),Vector2(233,31))
@@ -112,7 +112,7 @@ func build_row(side: String,index: int,parent):
  var variant=Anim.variant_for(config[side].faction,row["class"],row.weapon,row.get("specialist",""))
  portrait.texture=Anim._load_texture(Anim.atlas_path(variant,"portraits"))
  label_at(host,Vector2(72,39),Vector2(110,17),"UNIT TIER",9)
- host.tooltip_text=Factions.display_name(config[side].faction)+" / "+row["class"].capitalize()+ (" / Dual pistols" if not row.get("specialist","").is_empty() else "")
+ host.tooltip_text=Factions.display_name(config[side].faction)+" / "+class_label(row["class"])+ (" / Dual pistols" if not row.get("specialist","").is_empty() else "")
  var tier=option(host,Vector2(72,57),Vector2(110,29))
  for rank in range(1,4):
   tier.add_item("Tier %d"%rank);tier.set_item_tooltip(rank-1,["Regular","Experienced","Veteran"][rank-1])
@@ -174,3 +174,6 @@ func choose_map(id: String):
  if id=="river_bridge" and not config.defender.has("vehicles"):
   config.defender.vehicles=Config.auto_convoy(config.defender.units.size())
  changed()
+
+func class_label(id: String) -> String:
+ return "SMG" if id.to_lower()=="smg" else id.capitalize()

@@ -1,0 +1,10 @@
+{
+  "gameplay/sandbox_glossary_panel.gd": "81fe3a661aac9a998533b332799f8651b8c8cb6fc8f6b175352390bb3daa4f05",
+  "gameplay/sandbox_force_builder.gd": "dee052dfee5a25dbb5a54094e3a1d2a7eee3965f06064348011796f056a8a3bb",
+  "gameplay/equipment_comparison.gd": "56f2881a74adc5f4f65e9f3c2dc6de07d3b0d605d4992c391ed9c243a94db467",
+  "battle/combat/battle_weapon_catalog.gd": "7a1d28022955d78e138eba528e48ee616e4f6c5143ed901f263b3aab9064d0ef",
+  "campaign/vehicles/vehicle_model_catalog.gd": "99a89c35b7465198a98334632ac9352a56e90bdba9ac1986180e658f99a71481",
+  "assets/data/vehicle_models.json": "50d491eae1796e4bca8a1e3aeb42b09445ceaf92c255cecc5071f9bc55bdadd7",
+  "gameplay/faction_audio_preview.gd": "129eae256a1b126fd74e27cb982d1d4a8907bf6c0fae687a69791913e4da327b",
+  "gameplay/sandbox_menu_panels.gd": "6d4541979f4dbaa55ab6be94615d7da7ac8bae4c90f02b7b49698319b19758d0"
+}

@@ -1,0 +1,54 @@
+
+func hover_equipment(id: String):
+	if comparison_base.is_empty(): return
+	if id == comparison_base:
+		if not compared_id.is_empty(): show_equipment(comparison_base, false)
+		return
+	if compared_id == id: return
+	compared_id = id
+	clear(detail); detail_labels.clear(); comparison_cells.clear()
+	detail_scroll.scroll_vertical = 0
+	panel(detail, Vector2.ZERO, Vector2(550,252))
+	for side in range(2):
+		var model_id = comparison_base if side == 0 else id
+		var model = Weapons.get_model(model_id) if mode=="arsenal" else Vehicles.model(model_id)
+		var x = 18.0 if side == 0 else 292.0
+		label(detail,Vector2(x,14),Vector2(240,20),"SELECTED" if side == 0 else "HOVERED",11,TAN)
+		label(detail,Vector2(x,40),Vector2(240,54),model.display_name if mode=="arsenal" else model.name,19)
+		picture(detail,Vector2(x,100),Vector2(240,80),equipment_texture(model_id))
+		label(detail,Vector2(x,189),Vector2(240,22),("%s / TIER %d" % [model.weapon_type_id.to_upper(),model.tier]) if mode=="arsenal" else Vehicles.class_name_for(model.vehicle_class).to_upper(),12,MUTED)
+	label(detail,Vector2(18,222),Vector2(514,22),"Changes = hovered minus selected",12,TAN)
+	for column in [[18,180,"STAT"],[205,96,"SELECTED"],[315,96,"HOVERED"],[425,107,"CHANGE"]]:
+		label(detail,Vector2(column[0],265),Vector2(column[1],20),column[2],11,TAN)
+	var rows = Comparison.compare(comparison_base,id,mode=="vehicles")
+	for i in range(rows.size()):
+		var row = rows[i]
+		var y = 295.0+i*32.0
+		var tint = Color("#92c69c") if row.benefit > 0 else (Color("#dc9690") if row.benefit < 0 else MUTED)
+		var name_label = label(detail,Vector2(18,y),Vector2(180,28),row.label,13,MUTED)
+		var base_label = label(detail,Vector2(205,y),Vector2(96,28),row.base_text,13)
+		var other_label = label(detail,Vector2(315,y),Vector2(96,28),row.text,13)
+		var delta_label = label(detail,Vector2(425,y),Vector2(107,28),row.delta_text,13,tint)
+		for cell in [name_label,base_label,other_label,delta_label]:
+			cell.tooltip_text = row.hint
+			cell.mouse_filter = Control.MOUSE_FILTER_PASS
+		comparison_cells[row.label] = {"base":base_label,"other":other_label,"delta":delta_label,"data":row}
+	var bottom = 310.0+rows.size()*32.0
+	label(detail,Vector2(18,bottom),Vector2(514,57),"Green: benefit  ·  Red: drawback  ·  —: unchanged\n"+("pp = percentage points. Before unit-tier bonuses and battle conditions." if mode=="arsenal" else "Upkeep is per turn. Dimensions and door counts are neutral tradeoffs."),12,MUTED)
+	bottom += 72.0
+	if mode=="vehicles":
+		for model_id in [comparison_base,id]:
+			var model = Vehicles.model(model_id)
+			var note = str(model.get("ability_summary",""))
+			if not str(model.get("ability_limits","")).is_empty():note += "\n"+str(model.ability_limits)
+			if model.get("service_role","")=="bank_cash":note = "Cash capacity: $"+money(model.cash_capacity)+"\n"+note
+			elif model.get("service_role","")=="prisoner_transfer":note = "Custody transport: 3 guards + 8 prisoners\n"+note
+			if note.is_empty():continue
+			label(detail,Vector2(18,bottom),Vector2(514,26),model.name+" / "+str(model.get("ability_name","SPECIAL ROLE")),13,TAN)
+			bottom += 32.0
+			var height = maxf(50,font.get_multiline_string_size(note,HORIZONTAL_ALIGNMENT_LEFT,514,13).y+12)
+			label(detail,Vector2(18,bottom),Vector2(514,height),note,13,MUTED)
+			bottom += height+18.0
+	detail.custom_minimum_size.y = maxf(640,bottom+12)
+	# Retain the last hovered comparison so the pointer can enter and scroll its
+	# details. Hovering the selected tile, clicking a tile or changing tabs clears it.
