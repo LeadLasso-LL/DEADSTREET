@@ -1,0 +1,255 @@
+{
+  "mercer": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "eastex": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "calle_ocho": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "ventresca": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      126
+    ]
+  },
+  "ravicci": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      126
+    ]
+  },
+  "orlov": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "zangyaku": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      126
+    ]
+  },
+  "bitian": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "stateline": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.05,
+    "size": [
+      128,
+      125
+    ]
+  },
+  "sierra_roja": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "whittaker": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "mcallister": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      126
+    ]
+  },
+  "trc": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      127,
+      128
+    ]
+  },
+  "nbpd": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "mercer44": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "wm_corp": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.55,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "union_sur": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "lombardia": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "sand_raiders": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "saffar": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "kurgan": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  },
+  "ashford_crane": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 62.55,
+    "size": [
+      128,
+      126
+    ]
+  },
+  "blacktop": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": 63.05,
+    "size": [
+      128,
+      127
+    ]
+  }
+}

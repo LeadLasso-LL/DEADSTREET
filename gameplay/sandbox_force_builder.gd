@@ -1,4 +1,5 @@
 extends Control
+const MenuEmblem = preload("res://gameplay/sandbox_emblem.gd")
 const Config=preload("res://gameplay/sandbox_force_config.gd")
 const Anim=preload("res://battle/presentation/tactical_unit_animation_catalog.gd")
 const Weapons=preload("res://battle/combat/battle_weapon_catalog.gd")
@@ -63,13 +64,13 @@ func build_side(side: String,x: int):
  counters[side]=label_at(panel,Vector2(14,12),Vector2(280,25),side.to_upper(),18)
  button_at(panel,Vector2(302,12),Vector2(136,30),"BALANCED FIVE",func():set_balanced(side))
  button_at(panel,Vector2(446,12),Vector2(72,30),"CLEAR",func():config[side].units.clear();refresh_side(side))
- var badge=TextureRect.new();panel.add_child(badge);badge.name="FactionEmblem";badge.position=Vector2(14,51);badge.size=Vector2(36,36);badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;badge.texture=Anim._load_texture(Factions.emblem_path(config[side].faction))
+ var badge=TextureRect.new();panel.add_child(badge);badge.name="FactionEmblem";badge.position=Vector2(14,51);badge.size=Vector2(36,36);badge.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;badge.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;MenuEmblem.apply(badge,config[side].faction)
  var faction=option(panel,Vector2(60,52),Vector2(458,34));faction_options[side]=faction
  for id in Factions.all_ids():
   faction.add_item(Factions.display_name(id));faction.set_item_metadata(faction.item_count-1,id);faction.set_item_tooltip(faction.item_count-1,Factions.display_name(id))
   if id==config[side].faction:faction.select(faction.item_count-1)
  faction.item_selected.connect(func(i):
-  config[side].faction=str(faction.get_item_metadata(i));badge.texture=Anim._load_texture(Factions.emblem_path(config[side].faction))
+  config[side].faction=str(faction.get_item_metadata(i));MenuEmblem.apply(badge,config[side].faction)
   if config[side].faction!="mercer":
    for row in config[side].units:row.specialist=""
   refresh_side(side))

@@ -3,6 +3,7 @@ Native SVG authoring. Does not change unit rig anchors, silhouettes or atlases.
 Used by the normal arsenal icon build, so the polish survives regeneration.
 """
 import copy, xml.etree.ElementTree as E
+from weapon_precision_art import precision_art
 N='{http://www.w3.org/2000/svg}'
 EDGE='#142025';MID='#536267';LIGHT='#a4b2ad';LOW='#2b373d'
 def p(g,d,fill='none',stroke=EDGE,width=.55,**kw):
@@ -136,7 +137,8 @@ def make_display_icon(model,art):
         group=g[0];g.remove(group)
         for c in group:g.append(c)
     id=model['id'];kind=model['weapon_class']
-    if kind=='pistol':pistol(g,id)
+    if precision_art(g,id):pass
+    elif kind=='pistol':pistol(g,id)
     elif kind=='smg':smg(g,id)
     else:longgun(g,id,kind)
     return root

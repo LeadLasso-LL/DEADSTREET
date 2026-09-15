@@ -1,3 +1,7 @@
+# Current milestone - sandbox emblem, precision-art and music polish - 2026-09-15
+
+IMPLEMENTED / NATIVE-VALIDATED. All23 menu emblems lose white outer canvases; AK-47/six sniper close-ups refined; compact158x56 current-song popup; Shuffle rebuilds enabled order and immediately starts its first track.249 native checks PASS. Exact behavior, seven-gun visual evidence, source ownership/delta and reproduction: tools/menu_polish_20260915/README.md and journal menu-polish-02. Prior approved portrait checkpoint dc045054 is pushed/verified. Current publication status is separate in the task receipt. Reopen normal live-source Sandbox; owner appearance review pending. Other scope milestones remain valid below.
+
 # Current milestone — portrait and Arsenal continuation — 2026-09-15
 
 IMPLEMENTED / NATIVE-VALIDATED; owner visual review and economy playtesting remain. All 20 approved leader photographs installed upper right; all 691 standing portraits reviewed and normalized; 75 vehicles ordered by ascending price within category; 30 canonical firearm prices integrated in Arsenal; gun close-ups refined with emphasis on pistols/SMGs. Native 6178 checks PASS. No combat-stat or animation-atlas changes. Exact evidence, review scope and continuation: tools/sandbox_finish_20260915/README.md and journal portrait-arsenal-takeover-03. Reopen normal live-source sandbox. Publication status is separate in the task receipt. Other milestones below remain valid for their own scopes.

@@ -1,4 +1,5 @@
 extends Control
+const MenuEmblem = preload("res://gameplay/sandbox_emblem.gd")
 const Factions = preload("res://battle/identity/faction_unit_catalog.gd")
 const Weapons = preload("res://battle/combat/battle_weapon_catalog.gd")
 const Vehicles = preload("res://campaign/vehicles/vehicle_model_catalog.gd")
@@ -99,7 +100,7 @@ func refresh_faction_list():
 		if not needle.is_empty() and needle not in haystack and needle.replace(" ","") not in haystack.replace(" ",""): continue
 		var b = button(list,"",Vector2.ZERO,Vector2(230,58),show_faction.bind(id))
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		picture(b,Vector2(8,9),Vector2(38,38),Anim._load_texture(Factions.emblem_path(id)))
+		MenuEmblem.apply(picture(b,Vector2(8,9),Vector2(38,38),null),id)
 		label(b,Vector2(55,6),Vector2(172,48),Factions.display_name(id),12)
 		b.tooltip_text = Factions.display_name(id)
 		item_buttons[id] = b
@@ -114,7 +115,7 @@ func show_faction(id: String):
 	selected_id = id; clear(detail); unit_images.clear(); detail_labels.clear(); leader_image=null; mark_faction()
 	var row: Dictionary = data.get(id,{})
 	selected_faction_rows = row
-	picture(detail,Vector2(0,0),Vector2(96,96),Anim._load_texture(Factions.emblem_path(id)))
+	MenuEmblem.apply(picture(detail,Vector2(0,0),Vector2(96,96),null),id)
 	detail_labels.title = label(detail,Vector2(114,0),Vector2(498,65),Factions.display_name(id),25)
 	detail_labels.leader = label(detail,Vector2(114,71),Vector2(498,35),"LEADER  /  "+leader_for(id),15,TAN)
 	var photo_path = str(row.get("leader_photo",""))

@@ -1,0 +1,107 @@
+--- a/gameplay/sandbox_menu_music.gd
++++ b/gameplay/sandbox_menu_music.gd
+@@ -11,6 +11,7 @@
+ var toast_label: Label
+ var toggle: Button
+ var skip: Button
++var shuffle: Button
+ var volume: HSlider
+ var queue_box: VBoxContainer
+ var track_checks = {}
+@@ -69,12 +70,13 @@
+ 	var actions = HBoxContainer.new(); box.add_child(actions)
+ 	toggle = Button.new(); toggle.name = "PlayPause"; toggle.custom_minimum_size = Vector2(38,32); toggle.pressed.connect(pause_music); actions.add_child(toggle)
+ 	skip = Button.new(); skip.name = "NextTrack"; skip.custom_minimum_size = Vector2(38,32); skip.icon = transport_icon("next"); skip.pressed.connect(next_track); actions.add_child(skip)
++	shuffle = Button.new(); shuffle.name = "ShuffleTracks"; shuffle.custom_minimum_size = Vector2(38,32); shuffle.icon = transport_icon("shuffle"); shuffle.pressed.connect(reshuffle_tracks); actions.add_child(shuffle)
+ 	volume = HSlider.new(); volume.min_value = 0; volume.max_value = 1; volume.step = 0.01; volume.value = volume_value; volume.size_flags_horizontal = Control.SIZE_EXPAND_FILL; volume.tooltip_text = "Music volume"; actions.add_child(volume)
+ 	volume.value_changed.connect(func(value):volume_value=value; player.volume_db=linear_to_db(maxf(value,0.0001)); save_settings())
+-	toast = PanelContainer.new(); surface.add_child(toast); toast.custom_minimum_size = Vector2(282,93); toast.hide(); style(toast); toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
++	toast = PanelContainer.new(); surface.add_child(toast); toast.custom_minimum_size = Vector2(158,56); toast.hide(); style(toast); toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 	var tm = MarginContainer.new(); tm.mouse_filter = Control.MOUSE_FILTER_IGNORE; toast.add_child(tm)
+-	for side in ["left","top","right","bottom"]: tm.add_theme_constant_override("margin_"+side,10 if side in ["top","bottom"] else 14)
+-	toast_label = Label.new(); toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE; toast_label.custom_minimum_size.x = 254; toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; toast_label.add_theme_font_size_override("font_size",16); tm.add_child(toast_label)
++	for side in ["left","top","right","bottom"]: tm.add_theme_constant_override("margin_"+side,8)
++	toast_label = Label.new(); toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE; toast_label.custom_minimum_size = Vector2(140,34); toast_label.autowrap_mode = TextServer.AUTOWRAP_OFF; toast_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS; toast_label.clip_text = true; toast_label.add_theme_font_size_override("font_size",12); tm.add_child(toast_label)
+ 
+ func info(id: String) -> Dictionary:
+ 	for track in tracks:
+@@ -118,7 +120,8 @@
+ 		queue_box.add_child(check); track_checks[id] = check
+ 	var current = info(current_id)
+ 	label.text = str(current.get("title",""))+"\n"+str(current.get("artist",""))
+-	toast_label.text = "NOW PLAYING\n"+label.text
++	toast_label.text = label.text
++	toast_label.tooltip_text = label.text
+ 	update_transport_button()
+ 
+ func _bind_check(check: CheckBox, id: String):
+@@ -147,7 +150,7 @@
+ 
+ func show_track_toast():
+ 	entry_clock = Time.get_ticks_msec()/1000.0
+-	toast.scale = Vector2.ONE; toast.modulate.a = 1; toast.show(); dock.hide()
++	toast.scale = Vector2.ONE; toast.modulate.a = 1; toast.show(); dock.show()
+ 
+ func _process(_delta: float):
+ 	if not in_sandbox: return
+@@ -159,13 +162,13 @@
+ 	var area = viewport/factor
+ 	dock.position = area-Vector2(151,51)
+ 	panel.position = Vector2(maxf(12,area.x-panel.size.x-28),maxf(12,area.y-panel.size.y-70))
+-	toast.position = area-Vector2(toast.size.x+28,toast.size.y+47)
+-	if panel.visible: toast.position = Vector2(panel.position.x,maxf(12,panel.position.y-toast.size.y-12))
++	toast.position = Vector2(area.x-toast.size.x-28,dock.position.y-toast.size.y-8)
++	if panel.visible: toast.position = Vector2(panel.position.x+panel.size.x-toast.size.x,maxf(12,panel.position.y-toast.size.y-8))
+ 	var elapsed = Time.get_ticks_msec()/1000.0-entry_clock
+ 	if elapsed >= 3.0:
+ 		var q = clampf((elapsed-3.0)/0.75,0.0,1.0)
+ 		if not panel.visible:
+-			toast.position = toast.position.lerp(dock.position,q); toast.scale = Vector2.ONE.lerp(Vector2(0.436,0.387),q)
++			toast.position = toast.position.lerp(dock.position,q); toast.scale = Vector2.ONE.lerp(dock.size/toast.size,q)
+ 		toast.modulate.a = 1-q
+ 		if q >= 1: toast.hide(); dock.show()
+ 
+@@ -192,6 +195,21 @@
+ func next_track():
+ 	if in_sandbox and layer.visible: advance(true)
+ 
++func reshuffle_tracks():
++	if not in_sandbox or not layer.visible: return
++	var fresh: Array[String] = []
++	for track in tracks:
++		var id = str(track.id)
++		if enabled_tracks.get(id,false): fresh.append(id)
++	if fresh.is_empty(): return
++	fresh.shuffle()
++	if fresh.size()>1 and fresh[0]==current_id:
++		var alternate = randi_range(1,fresh.size()-1)
++		fresh[0]=fresh[alternate]; fresh[alternate]=current_id
++	queue.assign(fresh)
++	# A deliberate new shuffle starts its first song immediately, including from pause.
++	advance(false)
++
+ func pause_music():
+ 	if track_finished:
+ 		if not advance(false) and enabled_tracks.get(current_id,false):
+@@ -229,7 +247,8 @@
+ 	var shapes = {
+ 		"pause":'<rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/>',
+ 		"play":'<path d="M6 4 L20 12 L6 20 Z"/>',
+-		"next":'<path d="M3 4 L16 12 L3 20 Z"/><rect x="17" y="4" width="4" height="16"/>'}
++		"next":'<path d="M3 4 L16 12 L3 20 Z"/><rect x="17" y="4" width="4" height="16"/>',
++		"shuffle":'<g fill="none" stroke="#dce2df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6H6C10 6 14 18 18 18H21M17 14l4 4 -4 4M3 18H6C8 18 9 15 10.5 13M13.5 9C15 7 16 6 18 6H21M17 2l4 4 -4 4"/></g>'}
+ 	var image = Image.new()
+ 	image.load_svg_from_string('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#dce2df">'+shapes[symbol]+'</svg>')
+ 	return ImageTexture.create_from_image(image)
+@@ -237,6 +256,11 @@
+ func update_transport_button():
+ 	toggle.icon = transport_icon("play" if user_paused else "pause")
+ 	toggle.tooltip_text = "Play music" if user_paused else "Pause music"
++	var enabled_count = 0
++	for track in tracks:
++		if enabled_tracks.get(str(track.id),false): enabled_count += 1
++	shuffle.disabled = enabled_count==0
++	shuffle.tooltip_text = "Shuffle enabled songs and play the new first song" if enabled_count>0 else "Check a track to enable Shuffle."
+ 	skip.disabled = queue.is_empty()
+ 	skip.tooltip_text = "Next track" if not skip.disabled else "Check another track to enable Next."
+ 
