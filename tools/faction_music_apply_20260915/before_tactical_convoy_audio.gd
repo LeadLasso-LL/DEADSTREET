@@ -1,7 +1,6 @@
 extends RefCounted
 # World-positioned ambience. Radio belongs to Raiders transport; sirens belong
 # to police vehicles. These sources never replace or drive combat events.
-const Music=preload("res://gameplay/music_catalog.gd")
 const Models=preload("res://campaign/vehicles/vehicle_model_catalog.gd")
 var view
 var sources={}
@@ -23,14 +22,11 @@ func stream(name: String):
  streams[name]=s;return s
 func rebuild(b):
  clear();battle_id=b.get_instance_id()
- var mappings: Dictionary=Music.catalogue().get("faction_tracks",{})
  for side in [b.attacker_side_id,b.defender_side_id]:
   var identity=faction(b,side);var candidates=[]
   for v in b.vehicles.values():
    if v.side_id==side:candidates.append(v)
   candidates.sort_custom(func(a,z):return int(Models.model(a.vehicle_type_id).unit_capacity)>int(Models.model(z.vehicle_type_id).unit_capacity))
-  if identity not in ["trc","nbpd"] and mappings.has(identity):
-   add_faction_radio(b,side,identity,candidates,str(mappings[identity]));continue
   if identity=="whittaker" and b.battlefield_geometry.authored_layout_id=="whittaker_estate_v1":
    var clip=stream("whittaker_radio")
    if clip!=null:
@@ -56,32 +52,6 @@ func rebuild(b):
    player.pitch_scale=.75 if identity=="trc" else 1.
    player.set_meta("is_radio",identity=="stateline");player.set_meta("side_id",side)
    sources[v.battle_vehicle_id]=player;count+=1
-func add_faction_radio(b,side: String,identity: String,candidates: Array,track_id: String):
- var key="faction_"+side
- var cache_key="track_"+track_id
- if not streams.has(cache_key):streams[cache_key]=Music.battle_stream(track_id)
- var clip=streams[cache_key]
- if clip==null:return
- var player=AudioStreamPlayer2D.new();view.add_child(player);player.stream=clip
- var layout=str(b.battlefield_geometry.authored_layout_id)
- var building=side==b.defender_side_id and layout in ["harold_street_v1","whittaker_estate_v1"]
- # Harold layouts use the apartment entrance; bridge radios follow transport.
- if side==b.defender_side_id and layout not in ["river_suspension_bridge_v1","whittaker_estate_v1"]:building=true
- if building:
-  var anchor=preload("res://battle/geometry/whittaker_estate_catalog.gd").ENTRANCE if layout=="whittaker_estate_v1" else preload("res://battle/geometry/harold_street_catalog.gd").OBJECTIVE_ENTRANCE
-  player.set_meta("fixed_position",anchor)
- elif not candidates.is_empty():
-  key=str(candidates[0].battle_vehicle_id)
- else:
-  for p in b.participants.values():
-   if p.side_id==side:player.set_meta("fixed_position",p.battle_position);break
- var estate=building and layout=="whittaker_estate_v1"
- player.set_meta("base_gain",-25. if estate else -18.);player.set_meta("victory_gain",-18.)
- player.set_meta("battle_drop",6. if building else 14.)
- player.set_meta("range",1100. if building else 900.);player.set_meta("attenuation",1.2 if building else .7)
- player.set_meta("offset",0.);player.set_meta("is_radio",true);player.set_meta("side_id",side)
- player.set_meta("faction_id",identity);player.set_meta("track_id",track_id)
- sources[key]=player
 func sync(b,poses: Dictionary,enabled: bool,duck: float,ending: float,battle_mix: float=0.0,victory_mix: float=0.0):
  if b==null:return
  if battle_id!=b.get_instance_id():rebuild(b)

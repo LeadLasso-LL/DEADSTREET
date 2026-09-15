@@ -1,5 +1,6 @@
 extends Node
 # Event-driven presentation only. Uses an independent deterministic variation index.
+const Music=preload("res://gameplay/music_catalog.gd")
 const Weapons=preload("res://battle/combat/battle_weapon_catalog.gd")
 var view: Node
 var enabled=true
@@ -14,6 +15,7 @@ var positions={}
 var foot_distance={}
 var reloads={}
 var battle_id=0
+var has_faction_music=false
 var shots_played=0
 var gun_duck=0.
 const APARTMENT_BASE_GAIN_DB=-13.5
@@ -66,7 +68,12 @@ func _process(_delta):
  engine.stream_paused=frozen
  if frozen:return
  if not city.playing:city.play()
- if b.battlefield_geometry.authored_layout_id in ["river_suspension_bridge_v1","whittaker_estate_v1"]:music.stop()
+ if battle_id!=b.get_instance_id():
+  has_faction_music=false
+  var mappings: Dictionary=Music.catalogue().get("faction_tracks",{})
+  for p in b.participants.values():
+   if p.identity!=null and mappings.has(p.identity.gang_archetype_id):has_faction_music=true;break
+ if has_faction_music or b.battlefield_geometry.authored_layout_id in ["river_suspension_bridge_v1","whittaker_estate_v1"]:music.stop()
  elif not music.playing:music.play()
  if battle_id!=b.get_instance_id():battle_id=b.get_instance_id();seen={};positions={};foot_distance={};reloads={};shots_played=0
  for e in b.combat_feedback_events:

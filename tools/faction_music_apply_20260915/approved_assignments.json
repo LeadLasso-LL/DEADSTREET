@@ -1,0 +1,182 @@
+{
+  "assignments": [
+    {
+      "artist": "OB",
+      "faction": "Mercer Saints",
+      "faction_id": "mercer",
+      "track": "Thunder",
+      "track_id": "thunder_ob"
+    },
+    {
+      "artist": "OB",
+      "faction": "Eastex 44’s",
+      "faction_id": "eastex",
+      "track": "Smoke",
+      "track_id": "smoke_ob"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Calle Ocho",
+      "faction_id": "calle_ocho",
+      "track": "Glock",
+      "track_id": "glock_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Ventresca Family",
+      "faction_id": "ventresca",
+      "track": "Natural",
+      "track_id": "natural_b22"
+    },
+    {
+      "artist": "OB",
+      "faction": "Ravicci Family",
+      "faction_id": "ravicci",
+      "track": "Bond",
+      "track_id": "bond_ob"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Orlov Bratva",
+      "faction_id": "orlov",
+      "track": "Ripper",
+      "track_id": "ripper_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Zangyaku",
+      "faction_id": "zangyaku",
+      "track": "’97",
+      "track_id": "97_b22"
+    },
+    {
+      "artist": "OB",
+      "faction": "Bìtiān",
+      "faction_id": "bitian",
+      "track": "Coupe",
+      "track_id": "coupe_ob"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Stateline Raiders MC",
+      "faction_id": "stateline",
+      "track": "Lurk",
+      "track_id": "lurk_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Cártel de Sierra Roja",
+      "faction_id": "sierra_roja",
+      "track": "Break Bad",
+      "track_id": "break_bad_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Whittaker Oil & Land Co.",
+      "faction_id": "whittaker",
+      "track": "Keys",
+      "track_id": "keys_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "McAllister Holdings, Inc.",
+      "faction_id": "mcallister",
+      "track": "Watchin’",
+      "track_id": "watchin_b22"
+    },
+    {
+      "artist": "OB",
+      "faction": "Mercer 44’s",
+      "faction_id": "mercer44",
+      "track": "Block",
+      "track_id": "block_ob"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Whittaker-McAllister Corporation",
+      "faction_id": "wm_corp",
+      "track": "Money Way",
+      "track_id": "money_way_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "La Unión del Sur",
+      "faction_id": "union_sur",
+      "track": "Burn",
+      "track_id": "burn_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "L’Ordine di Lombardia",
+      "faction_id": "lombardia",
+      "track": "Jumpman",
+      "track_id": "jumpman_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Raiders of the Sand",
+      "faction_id": "sand_raiders",
+      "track": "Skyfall",
+      "track_id": "skyfall_b22"
+    },
+    {
+      "artist": "OB",
+      "faction": "Majmu’at al-Saffar",
+      "faction_id": "saffar",
+      "track": "Maria",
+      "track_id": "maria_ob"
+    },
+    {
+      "artist": "B-22",
+      "faction": "The Kurgan Group",
+      "faction_id": "kurgan",
+      "track": "Switch",
+      "track_id": "switch_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "The Ashford-Crane Collective",
+      "faction_id": "ashford_crane",
+      "track": "‘88",
+      "track_id": "88_b22"
+    },
+    {
+      "artist": "B-22",
+      "faction": "Blacktop Apostles MC",
+      "faction_id": "blacktop",
+      "track": "Dead or Alive",
+      "track_id": "dead_or_alive_b22"
+    }
+  ],
+  "faction_tracks": {
+    "ashford_crane": "88_b22",
+    "bitian": "coupe_ob",
+    "blacktop": "dead_or_alive_b22",
+    "calle_ocho": "glock_b22",
+    "eastex": "smoke_ob",
+    "kurgan": "switch_b22",
+    "lombardia": "jumpman_b22",
+    "mcallister": "watchin_b22",
+    "mercer": "thunder_ob",
+    "mercer44": "block_ob",
+    "orlov": "ripper_b22",
+    "ravicci": "bond_ob",
+    "saffar": "maria_ob",
+    "sand_raiders": "skyfall_b22",
+    "sierra_roja": "break_bad_b22",
+    "stateline": "lurk_b22",
+    "union_sur": "burn_b22",
+    "ventresca": "natural_b22",
+    "whittaker": "keys_b22",
+    "wm_corp": "money_way_b22",
+    "zangyaku": "97_b22"
+  },
+  "schema": 1,
+  "siren_factions": [
+    "trc",
+    "nbpd"
+  ],
+  "status": "owner_approved",
+  "approval_source": "Owner returned completed 21/21 assignment screenshot in chat, 2026-09-15.",
+  "correction": "Owner: make glock the track for calle ocho. La Union del Sur keeps Burn."
+}

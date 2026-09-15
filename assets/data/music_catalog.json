@@ -517,5 +517,27 @@
       }
     }
   ],
-  "faction_tracks": {}
+  "faction_tracks": {
+    "mercer": "thunder_ob",
+    "eastex": "smoke_ob",
+    "calle_ocho": "glock_b22",
+    "ventresca": "natural_b22",
+    "ravicci": "bond_ob",
+    "orlov": "ripper_b22",
+    "zangyaku": "97_b22",
+    "bitian": "coupe_ob",
+    "stateline": "lurk_b22",
+    "sierra_roja": "break_bad_b22",
+    "whittaker": "keys_b22",
+    "mcallister": "watchin_b22",
+    "mercer44": "block_ob",
+    "wm_corp": "money_way_b22",
+    "union_sur": "burn_b22",
+    "lombardia": "jumpman_b22",
+    "sand_raiders": "skyfall_b22",
+    "saffar": "maria_ob",
+    "kurgan": "switch_b22",
+    "ashford_crane": "88_b22",
+    "blacktop": "dead_or_alive_b22"
+  }
 }
