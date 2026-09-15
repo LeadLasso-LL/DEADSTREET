@@ -1,0 +1,10 @@
+{
+  "status": "IMPLEMENTED / NATIVE-VALIDATED; OWNER-APPROVED FOR PUBLICATION",
+  "native_checks": 36,
+  "source_sha256": "8af83c7a7d95512f3882a17f2f00ee86ba4556e6bb97289a10b7e8a329796b1b",
+  "baseline_sha256": "24d03fe3e0dbdf8061a034bca847648922e72e495e386d28066aea8789e64abc",
+  "faction_assignment": null,
+  "publication": "Brandon explicitly approved this code/audio upload to LeadLasso-LL/DEADSTREET on2026-09-15 UTC; scoped publication follows.",
+  "destination": "https://github.com/LeadLasso-LL/DEADSTREET.git",
+  "branch": "build/arsenal-checkpoint-20260911"
+}

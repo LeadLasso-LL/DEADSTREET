@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "signature_track": "dead_street",
+  "tracks": [
+    {
+      "id": "dead_street",
+      "title": "Dead Street",
+      "artist": "B-22",
+      "menu_file": "res://assets/menu/opening/B-22_Dead_Street.mp3",
+      "source_title": "Track 22",
+      "source_artist": "brandon",
+      "source_url": "https://soundcloud.com/brandonharb-1/track-22/s-eO7fL",
+      "menu_sha256": "e624827c72e62dc1c6568762f7ad73f7aaa3cf8b912dbb4ae88c6099887dbb5d",
+      "default_enabled": true
+    },
+    {
+      "id": "bond_ob",
+      "title": "Bond",
+      "artist": "OB",
+      "menu_file": "res://assets/audio/music/OB_Bond.mp3",
+      "source_title": "Bond",
+      "source_artist": "OB",
+      "source_url": "https://soundcloud.com/colinobriennn/bond",
+      "source_track_id": 408242721,
+      "menu_sha256": "b2e7a8f318a5c64083ad1ff3b9723b42f987638ba12c633b165e0b930f783634",
+      "default_enabled": true,
+      "battle_loop": {
+        "file": "res://assets/audio/music/OB_Bond_battle_21_51.wav",
+        "source_start_seconds": 21.0,
+        "duration_seconds": 30.0,
+        "seam_blend_seconds": 0.08,
+        "seam_preroll_seconds": 0.08,
+        "sample_rate": 44100,
+        "channels": 2,
+        "frames": 1323000,
+        "sha256": "a09434ca72e208b0cc3f336ecc7fcd449ddee065dbe6c89190713a474ee47e29"
+      }
+    }
+  ],
+  "faction_tracks": {}
+}

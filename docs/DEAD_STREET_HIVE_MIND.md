@@ -190,3 +190,26 @@ Brandon explicitly directed this chat to follow the shared handoff/update rhythm
 ## Music controls current - 20260914-music-controls-02
 
 Chat3ca0ac6a33c3 completed outside-click/tap dismissal and pause/play/next icons in the live sandbox_menu_music.gd. Native15 observations PASS; playback/state/inside controls preserved, no dismissal click-through. Existing desktop launcher loads the changes on restart. Full music source remains opening chat's uncommitted ownership; only the owned delta patch/evidence/records are published. Opening chat3438f1ea0e55 should include this already-applied delta in its later opening checkpoint; portrait/audio work unchanged. See journal music-controls-02 and tools/music_controls_20260914/README.md. Owner visual acceptance pending.
+
+## SoundCloud playlist intake - 20260914-music-import-readiness-01
+
+Chat3ca0ac6a33c3 is ready for additional owner-supplied SoundCloud URLs; existing full-audio extraction script and title/artist rules verified. Preserve source titles; brandon becomes B-22, OB remains OB; Dead Street is the explicit signature-title exception. Signature continues through sandbox entry, remains eligible later, and must not repeat immediately after ending/skipping when another enabled song exists. Multi-track queue/Next/exclusions/now-playing behavior will be implemented and validated with actual new imports; only one track currently exists. No new audio or runtime changes in this discussion. See journal music-import-readiness-01. Next: owner supplies URLs. Concurrent portrait/faction-audio scopes preserved.
+
+## SoundCloud track-title rule - 20260914-music-import-title-rule-01
+
+Owner text outside a submitted SoundCloud URL is the intended track title and overrides the source title. Use it as written. URL alone: use the SoundCloud title. This updates the preceding intake rule; source provenance and artist-credit mappings remain. See journal music-import-title-rule-01. Apply to subsequent imports.
+
+## SoundCloud OB extraction test - 20260914-soundcloud-ob-test-01
+
+VALIDATED: Bond by OB retrieved in full from the supplied SoundCloud link under existing settings; no settings change or contact with OB needed. Full strict decode139.598s, duration/hash/size checks PASS. Candidate and reproducible evidence: tools/soundcloud_ob_test_20260914/; see journal soundcloud-ob-test-01. This was the requested extraction-only test: no playlist installation, faction mapping or runtime changes. Candidate/records are currently uncommitted. Next: report result, retain the validated track for expanded shared music catalogue/intake; preserve native intro continuity and concurrent portrait/BUILD work.
+
+## Bond playlist and battle-loop model - 20260914-bond-playlist-02
+
+IMPLEMENTED / VALIDATED: menu now has Dead Street/B-22 and Bond/OB, actual queue/Next/end advancement, persisted selections/volume and unobstructed now-playing popup. Native36 checks PASS. Bond battle excerpt is exactly00:21-00:51,30 seconds, native looping ready; no faction assigned. Shared catalogue assets/data/music_catalog.json + gameplay/music_catalog.gd; full tracks and derived loop share a track ID, while faction assignments stay separate. See journal bond-playlist-02 and tools/soundtrack_import_20260914/README.md for batch workflow, seam processing and evidence. Own new files/assets and applied delta patch saved locally; publication blocked by automatic approval review; original opening/music source remains separately uncommitted. Opening chat must retain combined live music source. Next: owner reviews and sends batch; BUILD coordinates explicit faction bindings/spatial mix. No generated faction audio resumed.
+
+
+PUBLICATION BLOCKED (2026-09-15 UTC): automatic approval review rejected the proposed scoped commit/push twice. Fresh remote check exactly matched https://github.com/LeadLasso-LL/DEADSTREET.git at ec7a60edaaa7d25493bdae523a6ab44d42148391 and the standing workflow authorization names that destination, but the review still requires trusted explicit user approval for this code/audio payload. No bypass, staging, commit or push performed. Current local implementation works through the existing live-source launcher. New files, patch, README and validation evidence saved. Next publication action: obtain explicit owner confirmation to push the Bond assets/catalogue/music delta and owned records to that GitHub repository, then scoped publish. Other chats' work remains untouched.
+
+## 20260915-bond-playlist-03 - Explicit upload approval received
+
+Brandon replied "approved. report back quickly please." to the exact request to push the Bond code/audio changes to https://github.com/LeadLasso-LL/DEADSTREET. This supersedes the earlier publication blocker. Proceed with only the validated Bond assets, shared catalogue/loader, already-applied music delta/evidence and owned records on build/arsenal-checkpoint-20260911. No gameplay/audio rework or test rerun needed; native36 checks and asset/source hashes remain verified. Existing opening-source ownership and all unrelated work preserved. Publication result will be recorded in tools/soundtrack_import_20260914/publication_receipt.json and the live hive/journal.

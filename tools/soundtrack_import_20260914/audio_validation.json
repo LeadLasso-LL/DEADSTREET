@@ -1,0 +1,27 @@
+{
+  "source_sha256": "b2e7a8f318a5c64083ad1ff3b9723b42f987638ba12c633b165e0b930f783634",
+  "menu_sha256": "b2e7a8f318a5c64083ad1ff3b9723b42f987638ba12c633b165e0b930f783634",
+  "source_start_seconds": 21.0,
+  "source_end_seconds": 51.0,
+  "duration_seconds": 30.0,
+  "frames": 1323000,
+  "sample_rate": 44100,
+  "channels": 2,
+  "seam_blend_seconds": 0.08,
+  "seam_blend_preroll_seconds": [
+    20.92,
+    21.0
+  ],
+  "raw_boundary_step": 0.22402243316173553,
+  "processed_boundary_step": 0.017623096704483032,
+  "normal_source_step_at_start": 0.017623099359072462,
+  "decoded_source_peak": 1.0142223834991455,
+  "battle_gain_db": -1.122663820606523,
+  "pcm_peak": 0.8912509083747864,
+  "battle_sha256": "a09434ca72e208b0cc3f336ecc7fcd449ddee065dbe6c89190713a474ee47e29",
+  "unchanged_before_final_blend": true,
+  "loop_period_exact": true,
+  "no_compression_on_menu": true,
+  "listening_approval": false,
+  "full_wav_decode": true
+}
