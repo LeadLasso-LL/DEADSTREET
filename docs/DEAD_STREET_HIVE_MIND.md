@@ -213,3 +213,25 @@ PUBLICATION BLOCKED (2026-09-15 UTC): automatic approval review rejected the pro
 ## 20260915-bond-playlist-03 - Explicit upload approval received
 
 Brandon replied "approved. report back quickly please." to the exact request to push the Bond code/audio changes to https://github.com/LeadLasso-LL/DEADSTREET. This supersedes the earlier publication blocker. Proceed with only the validated Bond assets, shared catalogue/loader, already-applied music delta/evidence and owned records on build/arsenal-checkpoint-20260911. No gameplay/audio rework or test rerun needed; native36 checks and asset/source hashes remain verified. Existing opening-source ownership and all unrelated work preserved. Publication result will be recorded in tools/soundtrack_import_20260914/publication_receipt.json and the live hive/journal.
+
+## 20260915-bond-playlist-04 - Publication verified
+
+PUSHED / VERIFIED: 269dbeca1382cd0fe3871f17ae140a87b9691282 on origin/build/arsenal-checkpoint-20260911. Scoped new Bond assets/shared catalogue/loader/applied music delta, evidence and owned records published under explicit owner approval. Native36 checks already passed; source/audio hashes reverified before publishing, no rework or test rerun. Local live-source launcher loads the two-song menu; Bond30-second21-51 battle loop ready, faction assignment open. Original opening/music source and unrelated work remain separately owned/uncommitted. Next: owner bulk track submission and explicit faction associations. Receipt: tools/soundtrack_import_20260914/publication_receipt.json.
+
+## Seventeen-track batch ready - 20260915-soundtrack-batch-01
+
+Awaiting17 URLs, each followed by separate artist/title/start-time fields. Format artists exactly OB/B-22, retain owner title, extract30s from that entry's timestamp; artist/timestamp are not title text. Reuse published Bond catalogue/player/loop model269dbec. Plan bounded concurrent downloads with saved progress, one decode/asset pass per track, per-file integrity/loop checks, one catalogue integration and consolidated native UI/loop validation. No new tracks received or processed yet; no faction mappings inferred. Exact plan and revised parsing rule: journal soundtrack-batch-01. Next: owner sends all17 entries.
+
+## Seventeen-track batch complete - 20260915-soundtrack-batch-03
+
+IMPLEMENTED / VALIDATED: all17 supplied tracks (5 OB/12 B-22) imported with owner titles and exact30s excerpts. Catalogue now19 menu songs/18 loops; original signature/Bond retained. Full audio validation and93 native checks PASS, all18 real loop wraps verified. Zero-start Switch/Skyfall handled without shifting starts. No runtime source edits, permission changes or faction assignments. Scope/evidence/batch mappings: tools/soundtrack_batch_20260915/README.md and journal soundtrack-batch-03. Next: scoped publication and owner use through reopened live-source sandbox; await faction associations. Preserve concurrent portrait/BUILD and original opening ownership.
+
+## 20260915-soundtrack-batch-04 - Batch complete locally; publication approval blocked
+
+All17 imports and loops are implemented/file-validated/native-validated;19 menu songs/18 loops,93 native checks PASS. Automatic approval review rejected execution of tools/soundtrack_batch_20260915/run_publish.py because this is a new17-track private code/audio payload to GitHub and the explicit preceding approval covered Bond only. Destination is the established https://github.com/LeadLasso-LL/DEADSTREET.git, branch build/arsenal-checkpoint-20260911. No bypass or retry without new authorization; no staging/commit/push occurred. All unaffected local work/evidence/records are complete and saved.
+
+Exact remaining action: ask Brandon to approve publishing the17-track code/audio batch to that repository. After confirmation, run the prepared publisher: it verifies native93 checks, source/asset hashes, branch/origin/index and exact owned scope; stages34 new audio assets, catalogue, batch evidence and owned docs only; commits/pushes and verifies remote hash. Scripts/payloads in tools/soundtrack_batch_20260915; no rerender/redownload/retesting needed unless current protected hashes differ. Current published HEAD remains269dbeca1382cd0fe3871f17ae140a87b9691282; local sandbox already reads all19 songs. Faction assignments remain open.
+
+## 20260915-soundtrack-batch-05 - Owner explicitly approved batch upload
+
+Brandon replied "approved" to the explicit request to upload the17-track batch to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the publication block in soundtrack-batch-04. Proceed with the validated34 new audio assets, catalogue, batch tools/evidence and owned records on build/arsenal-checkpoint-20260911; preserve other chats' work. No new processing or test reruns unless protected hashes changed. Publication receipt and final status follow.

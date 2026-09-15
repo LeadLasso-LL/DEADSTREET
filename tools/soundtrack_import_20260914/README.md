@@ -34,3 +34,8 @@ Reproduce: use configured DeadStreetTools Python build_assets.py for Bond asset 
 The opening/music script was previously untracked opening-chat work. This checkpoint preserves its baseline and publishes our already-applied music_playlist.patch plus new catalogue/assets/evidence; it does not take ownership of the entire original opening. Do not apply the patch twice. Opening chat includes combined live sandbox_menu_music.gd in its later source checkpoint. Existing launcher uses live source on restart. Other chats' staged/uncommitted work and shared release pack are preserved.
 
 Publication authorized explicitly by Brandon on2026-09-15 UTC for these code/audio changes to https://github.com/LeadLasso-LL/DEADSTREET.git. This supersedes the prior automatic-review block.
+
+
+## Upcoming batch format — 2026-09-15
+
+For the owner's forthcoming17-link submission, each URL is followed by separate artist, Dead Street title and excerpt-start fields. This supersedes step2 above for that submission: use only the title field as title, normalize the artist field to OB or B-22, and extract30 seconds from its timestamp. Do not concatenate artist/timestamp into the title. Reuse catalogue/player; process in a bounded, resumable batch and integrate once. See journal20260915-soundtrack-batch-01 for execution plan. Links not yet received.
