@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/menu/opening/approved_title.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://gameplay/sandbox_menu_panels.gd:20)
+       [1] _ready (res://gameplay/arsenal_review.gd:137)
+       [2] run (res://tools/cover_slot_picker_20260915/check.gd:50)
+SCRIPT ERROR: Parse Error: Class "TacticalBattleView" hides a global script class.
+   at: GDScript::reload (res://gameplay/tactical_battle_view.gd:1)
+   GDScript backtrace (most recent call first):
+       [0] start_battle (res://gameplay/arsenal_review.gd:182)
+       [1] run (res://tools/cover_slot_picker_20260915/check.gd:63)
+SCRIPT ERROR: Parse Error: Class "TacticalOrdersController" hides a global script class.
+   at: GDScript::reload (res://gameplay/tactical_orders_controller.gd:1)
+   GDScript backtrace (most recent call first):
+       [0] start_battle (res://gameplay/arsenal_review.gd:182)
+       [1] run (res://tools/cover_slot_picker_20260915/check.gd:63)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://gameplay/gameplay_runtime.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] start_battle (res://gameplay/arsenal_review.gd:182)
+       [1] run (res://tools/cover_slot_picker_20260915/check.gd:63)
+ERROR: Failed to load script "res://gameplay/gameplay_runtime.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] start_battle (res://gameplay/arsenal_review.gd:182)
+       [1] run (res://tools/cover_slot_picker_20260915/check.gd:63)
+GameplayRuntime: booted mode=campaign turn=1 player=player_gang pending=
+GameplayRuntime: mode=campaign pending=
+GameplayRuntime: after_turn force=debug_hq_force state=traveling_outbound campaign_pos=(10.0, 0.0) segment=0 into=10.0 pending=
+GameplayRuntime: after_turn force=debug_hq_force state=at_destination campaign_pos=(12.0, 0.0) segment=0 into=12.0 pending=debug_hq_assault
+TacticalDeploymentController: auto-placed 1 attacker vehicle(s)
+GameplayRuntime: mode=tactical_deployment pending=
+TacticalDeploymentController: deployed sandbox_attacker_unit_01 to cover sandbox_transport_00__door_0_north slot sandbox_transport_00__door_0_north_cover
+TacticalDeploymentController: deployed sandbox_attacker_unit_02 to cover sandbox_transport_00__door_0_south slot sandbox_transport_00__door_0_south_cover
+TacticalDeploymentController: attacker side attacker committed
+TacticalDeploymentController: defender AI deployed and committed side defender posture=even
+SCRIPT ERROR: Invalid assignment of property or key '_dusk_zoom' with value of type 'float' on a base object of type 'Node2D'.
+   at: setup_flexible (res://gameplay/arsenal_battle_fixture.gd:195)
+   GDScript backtrace (most recent call first):
+       [0] setup_flexible (res://gameplay/arsenal_battle_fixture.gd:195)
+       [1] setup (res://gameplay/arsenal_battle_fixture.gd:18)
+       [2] start_battle (res://gameplay/arsenal_review.gd:186)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_node' in base 'Nil'.
+   at: run (res://tools/cover_slot_picker_20260915/check.gd:65)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tools/cover_slot_picker_20260915/check.gd:65)
+       [1] start_battle (res://gameplay/arsenal_review.gd:192)

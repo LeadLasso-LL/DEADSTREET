@@ -40,7 +40,6 @@ var confirmation: Dictionary = {}
 var hold_pulses: Array = []
 var feedback_sequence: int = 0
 var last_command_feedback: Dictionary = {}
-var command_feedback_events: Array = []
 var dragging: bool = false
 var drag_start: Vector2
 var drag_end: Vector2
@@ -50,8 +49,6 @@ var drag_additive: bool = false
 
 func bind_session(p_session: CampaignBattleSession) -> void:
 	session = p_session
-	command_feedback_events.clear()
-	last_command_feedback.clear()
 	clear_selection()
 	sync_from_authority()
 
@@ -232,7 +229,7 @@ func _issue_target_one(participant: BattleParticipant, hostile_id: String):
 	return TacticalOrderResult.succeeded(participant.participant_id, ORDER_TARGET, hostile_id)
 
 
-func _issue_cover_one(participant: BattleParticipant, cover_object_id: String, exact_slot_id: String = ""):
+func _issue_cover_one(participant: BattleParticipant, cover_object_id: String):
 	if participant == null:
 		return TacticalOrderResult.failed(
 			"no_selection",
@@ -253,33 +250,12 @@ func _issue_cover_one(participant: BattleParticipant, cover_object_id: String, e
 	var slot: BattleCoverSlot = _resolve_cover_object_slot(
 		battle_state,
 		participant,
-		cover_object_id,
-		exact_slot_id
+		cover_object_id
 	)
 	if slot == null:
 		return TacticalOrderResult.failed(
 			"cover_unavailable",
 			"Tactical order failed: cover object '%s' has no usable slot." % cover_object_id,
-			participant.participant_id,
-			ORDER_COVER,
-			cover_object_id
-		)
-	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
-		battle_state,
-		participant.battle_position,
-		slot.position
-	)
-	if navigation == null or not navigation.success:
-		var error_code: String = "path_failed"
-		var error_message: String = "Tactical order failed: no path to cover slot."
-		if navigation != null:
-			if not navigation.error_code.is_empty():
-				error_code = navigation.error_code
-			if not navigation.error_message.is_empty():
-				error_message = navigation.error_message
-		return TacticalOrderResult.failed(
-			error_code,
-			error_message,
 			participant.participant_id,
 			ORDER_COVER,
 			cover_object_id
@@ -317,6 +293,27 @@ func _issue_cover_one(participant: BattleParticipant, cover_object_id: String, e
 		return TacticalOrderResult.failed(
 			reserve_code,
 			reserve_message,
+			participant.participant_id,
+			ORDER_COVER,
+			cover_object_id
+		)
+	var navigation: BattleNavigationResult = BattleNavigationService.find_path(
+		battle_state,
+		participant.battle_position,
+		slot.position
+	)
+	if navigation == null or not navigation.success:
+		BattleCoverService.release_reservation(battle_state, participant.participant_id)
+		var error_code: String = "path_failed"
+		var error_message: String = "Tactical order failed: no path to cover slot."
+		if navigation != null:
+			if not navigation.error_code.is_empty():
+				error_code = navigation.error_code
+			if not navigation.error_message.is_empty():
+				error_message = navigation.error_message
+		return TacticalOrderResult.failed(
+			error_code,
+			error_message,
 			participant.participant_id,
 			ORDER_COVER,
 			cover_object_id
@@ -367,7 +364,6 @@ func release_cover():
 	if participant.navigation_source == BattleParticipant.NAVIGATION_SOURCE_EXTERNAL:
 		participant.clear_navigation_path()
 	participant.clear_player_cover_intent()
-	acknowledge("clear", {"accepted":[participant.participant_id], "failed":[]})
 	return TacticalOrderResult.succeeded(participant.participant_id, "release")
 
 
@@ -423,8 +419,7 @@ func _occupy_arrived_player_cover() -> void:
 func _resolve_cover_object_slot(
 	battle_state: BattleState,
 	participant: BattleParticipant,
-	cover_object_id: String,
-	exact_slot_id: String = ""
+	cover_object_id: String
 ) -> BattleCoverSlot:
 	if battle_state == null or participant == null or cover_object_id.is_empty():
 		return null
@@ -442,8 +437,6 @@ func _resolve_cover_object_slot(
 		threat
 	)
 	for slot: BattleCoverSlot in ranked:
-		if not exact_slot_id.is_empty() and slot.cover_slot_id != exact_slot_id:
-			continue
 		if slot == null or slot.cover_object_id != cover_object_id:
 			continue
 		if BattleCoverService.is_at_slot(participant, slot):
@@ -589,8 +582,7 @@ func commit_line() -> Dictionary:
 
 func acknowledge(command: String, result: Dictionary) -> void:
 	feedback_sequence += 1
-	last_command_feedback = {"command":command, "accepted":result.accepted.size(), "accepted_ids":result.accepted.duplicate(), "failed":result.failed.size(), "selection_count":selected_participant_ids.size(), "sequence":feedback_sequence}
-	command_feedback_events.append(last_command_feedback.duplicate(true))
+	last_command_feedback = {"command":command, "accepted":result.accepted.size(), "accepted_ids":result.accepted.duplicate(), "failed":result.failed.size()}
 	feedback = "" if result.failed.is_empty() else "Order unavailable for %d unit(s): no suitable reachable cover or valid advance" % result.failed.size()
 
 
@@ -598,8 +590,6 @@ func _issue_selected(kind: String, destination):
 	sync_from_authority()
 	var command = pending_command_id if kind != ORDER_TARGET else ""
 	pending_command_id = ""
-	var accepted_ids: Array = []
-	var failed_ids: Array = []
 	var count = 0
 	var failed = 0
 	var last_error = "No living friendly selected"
@@ -611,7 +601,6 @@ func _issue_selected(kind: String, destination):
 		if p == null:
 			continue
 		if p.is_wounded:
-			failed_ids.append(ids[index])
 			failed += 1
 			last_error = "Wounded units retain survival behavior"
 			p.player_order_feedback = last_error
@@ -632,19 +621,16 @@ func _issue_selected(kind: String, destination):
 			if result == null or not result.success:
 				result = _issue_move_one(p, point)
 		if result != null and result.success:
-			accepted_ids.append(ids[index])
 			count += 1
 			if kind != ORDER_TARGET:
 				p.player_group_command_id = command
 			p.player_order_feedback = {"move":"Moving to assigned position", "cover":"Taking assigned cover", "target":"Priority target — fire when a shot is possible"}.get(kind, "Order assigned")
 		else:
-			failed_ids.append(ids[index])
 			failed += 1
 			last_error = "Cover occupied or no reachable protective slot" if kind == ORDER_COVER else "No route to destination"
 			if kind == ORDER_TARGET:
 				last_error = "Target is no longer available"
 			p.player_order_feedback = last_error
-	acknowledge(kind, {"accepted":accepted_ids, "failed":failed_ids})
 	feedback = "%s · %d units" % [command.replace("_", " ").capitalize() if not command.is_empty() else kind.capitalize(), count]
 	if failed > 0 or count == 0:
 		feedback += " · " + last_error
@@ -676,9 +662,6 @@ func handle_input(view: Node, event: InputEvent) -> bool:
 	var b = _battle_state()
 	if b == null or b.battle_phase != "active":
 		return false
-	if view.command_feedback_layer != null and view.command_feedback_layer.cover_picker != null:
-		if view.command_feedback_layer.cover_picker.handle_input(event):
-			return true
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_SPACE:
 			b.tactical_paused = not b.tactical_paused
@@ -769,34 +752,3 @@ func click_world(view: Node, screen: Vector2, additive: bool = false) -> void:
 		issue_cover(cover)
 		return
 	issue_move(view.screen_to_tactical_position(screen))
-
-
-
-func cover_choices(cover_id: String) -> Array:
-	# Preview queries never reserve slots or alter the current order.
-	var result: Array = []
-	var b = _battle_state()
-	var p = _controllable_selected()
-	if selected_participant_ids.size() != 1 or p == null or p.is_wounded:
-		return result
-	var threat = BattleCombatCoverEvaluationService.relevant_cover_threat(b, p)
-	for slot in BattleCombatCoverEvaluationService.rank_legal_slots_on_cover_object(b, p, cover_id, threat):
-		var route = BattleNavigationService.find_path(b, p.battle_position, slot.position)
-		if route != null and route.success:
-			result.append({"slot":slot, "route":route})
-	return result
-
-
-func issue_cover_slot(cover_id: String, slot_id: String):
-	sync_from_authority()
-	var p = _controllable_selected()
-	var result = TacticalOrderResult.failed("cover_unavailable", "That cover position is no longer available", selected_participant_id, ORDER_COVER)
-	if not slot_id.is_empty() and selected_participant_ids.size() == 1 and p != null and not p.is_wounded:
-		result = _issue_cover_one(p, cover_id, slot_id)
-	pending_command_id = ""
-	acknowledge(ORDER_COVER, {"accepted":[selected_participant_id] if result.success else [], "failed":[] if result.success else [selected_participant_id]})
-	if result.success:
-		p.player_order_feedback = "Taking assigned cover"
-	else:
-		feedback = "That cover position is no longer available"
-	return result

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "checks": 246,
+  "source_sha256": {
+    "gameplay/tactical_orders_controller.gd": "51550f35adf29a922ee205facb9c132bb9604c71ab849fef10f32a43832c3b3a",
+    "gameplay/tactical_command_feedback.gd": "41efb490810c525464dbc07ff923fc7b18fb353744e481b6cacc986673ad3201",
+    "gameplay/tactical_order_audio.gd": "22e60fb7ddbdb766565befdb95cfe723196b99ccf47dc4ee17176056ae73b164",
+    "gameplay/tactical_cover_picker.gd": "7dfc1a99a65c71149b709228ea6113d7d32673286042ef535e88ce6b016c53e2"
+  },
+  "results": [
+    "native_result.json",
+    "visual_result.json",
+    "railcar_result.json"
+  ],
+  "native_maps": 5,
+  "renderer": "Godot 4.7.2 OpenGL compatibility / GTX 1650 Max-Q",
+  "visual_review": [
+    "harold_choosing.png",
+    "freight_exchange_choosing.png",
+    "freight_exchange_choosing_railcar.png"
+  ],
+  "limits": "Focused 2v2 interactions; no new full battle/FPS benchmark or standalone package rebuild. Owner playtest acceptance pending.",
+  "timestamp_utc": "2026-09-15T22:03:44.307504+00:00"
+}

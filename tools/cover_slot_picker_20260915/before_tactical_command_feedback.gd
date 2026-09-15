@@ -14,14 +14,9 @@ var _cover_modulate := Color.WHITE
 var _body_modulate := Color.WHITE
 var _images: Dictionary = {}
 var _battle_id := 0
-var cover_picker: Node2D
 
 func _ready() -> void:
 	process_priority = 100
-	cover_picker = preload("res://gameplay/tactical_cover_picker.gd").new()
-	cover_picker.host = host
-	cover_picker.z_index = 40
-	add_child(cover_picker)
 
 func pointer_is_over_ui(screen: Vector2) -> bool:
 	if not host.get_viewport_rect().has_point(screen):
@@ -131,7 +126,7 @@ static func describe_orders(battle, ids: Array) -> Array:
 				result.append({"id": str(id), "kind": "target", "points": PackedVector2Array([p.battle_position, target.battle_position]), "destination": target.battle_position})
 	return result
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not is_instance_valid(host):
 		return
 	var battle = host._battle_state()
@@ -139,26 +134,12 @@ func _process(delta: float) -> void:
 	if current_id != _battle_id:
 		_clear_hover()
 		_images.clear()
-		cover_picker.cancel()
-		cover_picker.confirmation.clear()
 		_battle_id = current_id
 	var active: bool = host.is_visible_in_tree() and battle != null and battle.battle_phase == "active" and host.orders_controller != null
 	visible = active
 	paths = describe_orders(battle, host.orders_controller.selected_participant_ids) if active else []
 	if not active:
 		_clear_hover()
-		cover_picker.cancel()
-		cover_picker.confirmation.clear()
-		return
-	cover_picker.tick(delta)
-	if cover_picker.active:
-		set_hover("", "")
-		cover_picker.fade_cover()
-		var preview: Dictionary = cover_picker.preview_path()
-		if not preview.is_empty():
-			paths = paths.filter(func(row): return row.id != preview.id or row.kind == "target")
-			paths.append(preview)
-		queue_redraw()
 		return
 	var screen: Vector2 = get_viewport().get_mouse_position()
 	var id := pick_unit(screen)
@@ -256,5 +237,3 @@ func _draw() -> void:
 
 func _exit_tree() -> void:
 	_clear_hover()
-	if is_instance_valid(cover_picker):
-		cover_picker.cancel()

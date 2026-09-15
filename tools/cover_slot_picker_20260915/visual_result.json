@@ -1,0 +1,16 @@
+{
+  "checks": 58,
+  "failures": [],
+  "maps": [
+    {
+      "choices": 3,
+      "cover": "cover_north_car_3",
+      "map": "harold"
+    },
+    {
+      "choices": 20,
+      "cover": "cover_north_loading",
+      "map": "freight_exchange"
+    }
+  ]
+}

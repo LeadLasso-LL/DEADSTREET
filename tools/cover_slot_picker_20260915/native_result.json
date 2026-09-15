@@ -1,0 +1,31 @@
+{
+  "checks": 145,
+  "failures": [],
+  "maps": [
+    {
+      "choices": 3,
+      "cover": "cover_north_car_3",
+      "map": "harold"
+    },
+    {
+      "choices": 4,
+      "cover": "cover_traffic_3_0",
+      "map": "river_bridge"
+    },
+    {
+      "choices": 29,
+      "cover": "cover_boundary_fence_49_9",
+      "map": "whittaker_estate"
+    },
+    {
+      "choices": 24,
+      "cover": "cover_south_fence",
+      "map": "doble_ocho"
+    },
+    {
+      "choices": 20,
+      "cover": "cover_north_loading",
+      "map": "freight_exchange"
+    }
+  ]
+}
