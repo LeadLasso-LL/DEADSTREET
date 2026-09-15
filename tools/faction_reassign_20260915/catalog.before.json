@@ -3,8 +3,7 @@
     "switch_b22",
     "ripper_b22",
     "dead_or_alive_b22",
-    "lurk_b22",
-    "glock_b22"
+    "lurk_b22"
   ],
   "schema_version": 1,
   "signature_track": "dead_street",
@@ -532,19 +531,7 @@
       "source_artist": "B-22",
       "source_filename": "cav.mp3",
       "menu_sha256": "80d968bdd7bd0618a409eea105ccc8346aceca24881eb0fb6d984d110e577682",
-      "default_enabled": true,
-      "battle_loop": {
-        "file": "res://assets/audio/music/B-22_Mercy_battle_0_30.wav",
-        "source_start_seconds": 0,
-        "duration_seconds": 30.0,
-        "seam_blend_seconds": 0.08,
-        "seam_mode": "zero_start_odd_reflection",
-        "seam_preroll_seconds": 0.0,
-        "sample_rate": 44100,
-        "channels": 2,
-        "frames": 1323000,
-        "sha256": "14337a1714b2ee7ed4a2784a15c5ce97305b13f518798398214a21808feb7667"
-      }
+      "default_enabled": true
     },
     {
       "id": "hitters_b22",
@@ -555,19 +542,7 @@
       "source_artist": "B-22",
       "source_filename": "dumpman SAM.mp3",
       "menu_sha256": "21037157bfd382df5ea13c79c30da498610c010a2f6fc57b429fbf2f8ceaa07a",
-      "default_enabled": true,
-      "battle_loop": {
-        "file": "res://assets/audio/music/B-22_Hitters_battle_17_47.wav",
-        "source_start_seconds": 17,
-        "duration_seconds": 30.0,
-        "seam_blend_seconds": 0.08,
-        "seam_mode": "source_preroll",
-        "seam_preroll_seconds": 0.08,
-        "sample_rate": 44100,
-        "channels": 2,
-        "frames": 1323000,
-        "sha256": "dcd42abf2b6eef53409c23178bab9ce88d47d483edeebc35fa990c971fbb9b4d"
-      }
+      "default_enabled": true
     },
     {
       "id": "creepin_b22",
@@ -578,28 +553,16 @@
       "source_artist": "B-22",
       "source_filename": "sour.mp3",
       "menu_sha256": "99d26d3b11df622b5d20735364f52ff5a896bdb1e0fcdea7d02289a25c0ad67e",
-      "default_enabled": true,
-      "battle_loop": {
-        "file": "res://assets/audio/music/B-22_Creepin_battle_12_42.wav",
-        "source_start_seconds": 12,
-        "duration_seconds": 30.0,
-        "seam_blend_seconds": 0.08,
-        "seam_mode": "source_preroll",
-        "seam_preroll_seconds": 0.08,
-        "sample_rate": 44100,
-        "channels": 2,
-        "frames": 1323000,
-        "sha256": "9ecee12b25d6446831d9d1eca0a59d0c2108ac3b2e8f5662b5613ebbe813ec44"
-      }
+      "default_enabled": true
     }
   ],
   "faction_tracks": {
     "mercer": "thunder_ob",
     "eastex": "smoke_ob",
-    "calle_ocho": "mercy_b22",
+    "calle_ocho": "glock_b22",
     "ventresca": "natural_b22",
     "ravicci": "bond_ob",
-    "orlov": "hitters_b22",
+    "orlov": "ripper_b22",
     "zangyaku": "97_b22",
     "bitian": "coupe_ob",
     "stateline": "lurk_b22",
@@ -608,7 +571,7 @@
     "mcallister": "watchin_b22",
     "mercer44": "block_ob",
     "wm_corp": "money_way_b22",
-    "union_sur": "creepin_b22",
+    "union_sur": "burn_b22",
     "lombardia": "jumpman_b22",
     "sand_raiders": "skyfall_b22",
     "saffar": "maria_ob",

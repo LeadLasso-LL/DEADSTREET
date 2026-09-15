@@ -1,0 +1,45 @@
+{
+  "assignments": {
+    "calle_ocho": [
+      "mercy_b22",
+      0.0
+    ],
+    "orlov": [
+      "hitters_b22",
+      17.0
+    ],
+    "union_sur": [
+      "creepin_b22",
+      12.0
+    ]
+  },
+  "checks": 195,
+  "errors": [
+    "menu paused mercer",
+    "menu paused eastex",
+    "menu paused calle_ocho",
+    "menu paused ventresca",
+    "menu paused ravicci",
+    "menu paused orlov",
+    "menu paused zangyaku",
+    "menu paused bitian",
+    "menu paused stateline",
+    "menu paused sierra_roja",
+    "menu paused whittaker",
+    "menu paused mcallister",
+    "menu paused trc",
+    "menu paused nbpd",
+    "menu paused mercer44",
+    "menu paused wm_corp",
+    "menu paused union_sur",
+    "menu paused lombardia",
+    "menu paused sand_raiders",
+    "menu paused saffar",
+    "menu paused kurgan",
+    "menu paused ashford_crane",
+    "menu paused blacktop"
+  ],
+  "factions": 23,
+  "menu_tracks": 20,
+  "passed": false
+}
