@@ -1,10 +1,5 @@
 {
-  "menu_excluded_tracks": [
-    "switch_b22",
-    "ripper_b22",
-    "dead_or_alive_b22",
-    "lurk_b22"
-  ],
+  "menu_excluded_tracks": ["switch_b22", "ripper_b22", "dead_or_alive_b22", "lurk_b22"],
   "schema_version": 1,
   "signature_track": "dead_street",
   "tracks": [
@@ -521,39 +516,6 @@
         "frames": 1323000,
         "sha256": "a3c147751bdbc2e55cdbb647515af9256a8bea51df1dc77e1534e30c125fe004"
       }
-    },
-    {
-      "id": "mercy_b22",
-      "title": "Mercy",
-      "artist": "B-22",
-      "menu_file": "res://assets/audio/music/B-22_Mercy.mp3",
-      "source_title": "cav",
-      "source_artist": "B-22",
-      "source_filename": "cav.mp3",
-      "menu_sha256": "80d968bdd7bd0618a409eea105ccc8346aceca24881eb0fb6d984d110e577682",
-      "default_enabled": true
-    },
-    {
-      "id": "hitters_b22",
-      "title": "Hitters",
-      "artist": "B-22",
-      "menu_file": "res://assets/audio/music/B-22_Hitters.mp3",
-      "source_title": "dumpman SAM",
-      "source_artist": "B-22",
-      "source_filename": "dumpman SAM.mp3",
-      "menu_sha256": "21037157bfd382df5ea13c79c30da498610c010a2f6fc57b429fbf2f8ceaa07a",
-      "default_enabled": true
-    },
-    {
-      "id": "creepin_b22",
-      "title": "Creepin’",
-      "artist": "B-22",
-      "menu_file": "res://assets/audio/music/B-22_Creepin.mp3",
-      "source_title": "sour",
-      "source_artist": "B-22",
-      "source_filename": "sour.mp3",
-      "menu_sha256": "99d26d3b11df622b5d20735364f52ff5a896bdb1e0fcdea7d02289a25c0ad67e",
-      "default_enabled": true
     }
   ],
   "faction_tracks": {

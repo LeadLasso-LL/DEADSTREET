@@ -1,0 +1,20 @@
+[
+  {
+    "source": "cav.mp3",
+    "file": "B-22_Mercy.mp3",
+    "title": "Mercy",
+    "sha256": "80d968bdd7bd0618a409eea105ccc8346aceca24881eb0fb6d984d110e577682"
+  },
+  {
+    "source": "dumpman SAM.mp3",
+    "file": "B-22_Hitters.mp3",
+    "title": "Hitters",
+    "sha256": "21037157bfd382df5ea13c79c30da498610c010a2f6fc57b429fbf2f8ceaa07a"
+  },
+  {
+    "source": "sour.mp3",
+    "file": "B-22_Creepin.mp3",
+    "title": "Creepin\u2019",
+    "sha256": "99d26d3b11df622b5d20735364f52ff5a896bdb1e0fcdea7d02289a25c0ad67e"
+  }
+]

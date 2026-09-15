@@ -1551,3 +1551,7 @@ All eight trigger improvements and 691 current-weapon portraits are installed in
 ## 20260915-weapon-cards-06 - Owner explicitly approved artwork publication
 
 Brandon replied "Approved" to this chat's request to push the new shotgun/Mini-14/AUG trigger improvements and all 691 current-weapon card portraits to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the automatic-review publication block in weapon-cards-05. Existing 3,578 native checks and both-angle framing checks remain valid; all non-documentation owned file hashes and protected source hashes are unchanged. Proceed with the prepared scoped publisher on build/arsenal-checkpoint-20260911, preserving concurrent Harold cover/stair work and previously published comparison UI. Record remote verification; no repeated art generation or optional validation is needed.
+
+
+## 20260915-menu-additions-03 - Explicit publication approval
+Brandon explicitly approved committing and pushing the completed Mercy, Hitters and Creepin’ menu-only update to LeadLasso-LL/DEADSTREET branch build/arsenal-checkpoint-20260911 after automatic review requested exact-payload approval. This supersedes the prior publishing blocker. All three B-22 full MP3s are enabled by default; 21 menu songs / 25 total records. Existing 22 records, four exclusions and faction mappings preserved exactly; native menu loading and switching PASS. Snippet times and faction assignments await owner. Evidence and publication status: tools/menu_additions_20260915/.
