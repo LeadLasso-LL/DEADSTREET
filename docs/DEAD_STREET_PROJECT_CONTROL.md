@@ -1449,3 +1449,23 @@ Exact remaining action: ask Brandon to approve publishing the17-track code/audio
 ## 20260915-soundtrack-batch-05 - Owner explicitly approved batch upload
 
 Brandon replied "approved" to the explicit request to upload the17-track batch to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the publication block in soundtrack-batch-04. Proceed with the validated34 new audio assets, catalogue, batch tools/evidence and owned records on build/arsenal-checkpoint-20260911; preserve other chats' work. No new processing or test reruns unless protected hashes changed. Publication receipt and final status follow.
+
+## 20260915-soundtrack-batch-06 - Seventeen-track publication verified
+
+PUSHED / VERIFIED: 710964102ef3f6cca3f47bcbf26a815653e59453 on origin/build/arsenal-checkpoint-20260911. All17 full MP3s and17 exact30s WAV loops,19-song shared catalogue, batch source/mappings/evidence and owned records published.93 native checks passed; source/audio hashes reverified before commit. No permission changes, runtime code edits, faction mappings or unrelated-file staging. Earlier Bond/signature retained; current total19 menu songs/18 battle loops. Next: reopen normal live-source sandbox and provide faction associations when ready. Complete source/provenance/timing/processing and receipt in tools/soundtrack_batch_20260915/.
+
+## 20260915-soundtrack-extra-02 - Three additional tracks implemented and validated
+
+Glock, Keys and Ripper by B-22 are imported as full menu MP3s plus exact 30-second battle WAV loops at 30–60s, 31–61s and 48–78s respectively. Current catalogue: 22 menu songs / 21 battle loops. All three files and loops pass full decoding, frame/timing/hash/seam validation; 25 focused native Godot checks and four integrity checks pass. Existing 19 catalogue entries, faction map and music consumer sources are unchanged. No account or SoundCloud permission changes.
+
+Native checks covered each new title/artist/start, full stream, checkbox, Next playback and real loop wrap; actual file-end advance and expanded playlist scrolling also pass. No subjective listening approval or faction assignments claimed. Tools, exact mappings and evidence: tools/soundtrack_extra_20260915/README.md. Next: scoped publication to the established DEADSTREET origin/build branch under standing authorization, verify remote commit, reopen live-source sandbox for owner review. Preserve concurrent portrait/arsenal and original opening ownership.
+
+## 20260915-soundtrack-extra-03 - Complete locally; three-track publication blocked
+
+All three full songs and exact loops are implemented and validated locally: 22 menu songs, 21 loops, 25 native checks and four integrity checks passed. Automatic approval review rejected tools/soundtrack_extra_20260915/publish.py because the visible preceding publication approval covered the earlier 17-track batch, not this later three-track private audio/code payload to GitHub. No bypass/retry performed. Target: https://github.com/LeadLasso-LL/DEADSTREET.git on build/arsenal-checkpoint-20260911. Unaffected processing, catalogue integration, evidence, README and shared records are complete.
+
+Remaining action: request explicit owner approval to publish Glock, Keys and Ripper (six new audio assets, catalogue, batch source/evidence and owned records) to the established repository. After approval run the prepared publish.py, which checks current branch/origin/index, source/asset hashes and validation, stages only owned changes, commits/pushes and verifies remote hash. No retrieval or processing rerun needed unless protected hashes changed. Faction associations remain pending. Live-source sandbox already reads the local 22-track catalogue.
+
+## 20260915-soundtrack-extra-04 - Owner explicitly approved three-track publication
+
+Brandon replied "approved" to the explicit request to publish Glock, Keys and Ripper to https://github.com/LeadLasso-LL/DEADSTREET. This resolves the automatic-review publication block in soundtrack-extra-03. Authorized scope: six new audio assets, shared catalogue, this batch source/evidence and owned records on build/arsenal-checkpoint-20260911. Proceed with the prepared publisher and fresh branch/index/source/asset checks; preserve concurrent work. All processing and 25 native checks already passed; do not rerun absent a changed protected source. Verify remote hash and record final receipt.

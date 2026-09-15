@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "actual_end_advances_queue": true,
+    "faction_mapping_unchanged": true,
+    "glock_b22_checkbox_title": true,
+    "glock_b22_exact_loop": true,
+    "glock_b22_full_menu_stream": true,
+    "glock_b22_metadata": true,
+    "glock_b22_native_wrap": true,
+    "glock_b22_next_playback": true,
+    "keys_b22_checkbox_title": true,
+    "keys_b22_exact_loop": true,
+    "keys_b22_full_menu_stream": true,
+    "keys_b22_metadata": true,
+    "keys_b22_native_wrap": true,
+    "keys_b22_next_playback": true,
+    "last_row_reachable": true,
+    "playlist_scrolls_with_fixed_panel": true,
+    "ripper_b22_checkbox_title": true,
+    "ripper_b22_exact_loop": true,
+    "ripper_b22_full_menu_stream": true,
+    "ripper_b22_metadata": true,
+    "ripper_b22_native_wrap": true,
+    "ripper_b22_next_playback": true,
+    "signature_preserved": true,
+    "twenty_one_registered_loops": true,
+    "twenty_two_tracks_and_checkboxes": true
+  },
+  "failures": [],
+  "loops": 21,
+  "songs": 22,
+  "validation_limit": "Focused new-track playback, actual file-end advance and one native wrap per new loop. No subjective listening approval or faction assignment."
+}

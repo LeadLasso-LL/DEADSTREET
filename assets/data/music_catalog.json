@@ -443,6 +443,78 @@
         "frames": 1323000,
         "sha256": "b026a54a40d06426faa9a1dbf93a4d8943ccdd2aad8ea1e8a7c6d092446b6b6d"
       }
+    },
+    {
+      "id": "glock_b22",
+      "title": "Glock",
+      "artist": "B-22",
+      "menu_file": "res://assets/audio/music/B-22_Glock.mp3",
+      "source_title": "+ GlocKk & Draco +",
+      "source_artist": "brandon",
+      "source_url": "https://soundcloud.com/brandonharb-1/glockk-draco",
+      "source_track_id": 305644638,
+      "menu_sha256": "35284062d7b2f2513cc08edc3c5c865085bbabecf83e205f0e578b1b82f5ce4f",
+      "default_enabled": true,
+      "battle_loop": {
+        "file": "res://assets/audio/music/B-22_Glock_battle_30_60.wav",
+        "source_start_seconds": 30,
+        "duration_seconds": 30.0,
+        "seam_blend_seconds": 0.08,
+        "seam_mode": "source_preroll",
+        "seam_preroll_seconds": 0.08,
+        "sample_rate": 44100,
+        "channels": 2,
+        "frames": 1323000,
+        "sha256": "5bf4c3085aabca29fa0833c2c88e00f08e5aeb641f52e53d321ee059f21fc01f"
+      }
+    },
+    {
+      "id": "keys_b22",
+      "title": "Keys",
+      "artist": "B-22",
+      "menu_file": "res://assets/audio/music/B-22_Keys.mp3",
+      "source_title": "Keys ++",
+      "source_artist": "brandon",
+      "source_url": "https://soundcloud.com/brandonharb-1/keys",
+      "source_track_id": 312947788,
+      "menu_sha256": "2a5c5b22e6c71dd0796dc5d2a74b3cffbfd2f0c7a50ee24dd328de63767d37ef",
+      "default_enabled": true,
+      "battle_loop": {
+        "file": "res://assets/audio/music/B-22_Keys_battle_31_61.wav",
+        "source_start_seconds": 31,
+        "duration_seconds": 30.0,
+        "seam_blend_seconds": 0.08,
+        "seam_mode": "source_preroll",
+        "seam_preroll_seconds": 0.08,
+        "sample_rate": 44100,
+        "channels": 2,
+        "frames": 1323000,
+        "sha256": "b01e3d94dbc2b2eea8e05fa839df3e1c8c9bb2f2405c89fed4f78c811b540c92"
+      }
+    },
+    {
+      "id": "ripper_b22",
+      "title": "Ripper",
+      "artist": "B-22",
+      "menu_file": "res://assets/audio/music/B-22_Ripper.mp3",
+      "source_title": "Ripper",
+      "source_artist": "brandon",
+      "source_url": "https://soundcloud.com/brandonharb-1/ripper",
+      "source_track_id": 314562346,
+      "menu_sha256": "e11d74b281971343d2d076b6982a468c9ff79aeb06b59000e88209f950b22156",
+      "default_enabled": true,
+      "battle_loop": {
+        "file": "res://assets/audio/music/B-22_Ripper_battle_48_78.wav",
+        "source_start_seconds": 48,
+        "duration_seconds": 30.0,
+        "seam_blend_seconds": 0.08,
+        "seam_mode": "source_preroll",
+        "seam_preroll_seconds": 0.08,
+        "sample_rate": 44100,
+        "channels": 2,
+        "frames": 1323000,
+        "sha256": "a3c147751bdbc2e55cdbb647515af9256a8bea51df1dc77e1534e30c125fe004"
+      }
     }
   ],
   "faction_tracks": {}
